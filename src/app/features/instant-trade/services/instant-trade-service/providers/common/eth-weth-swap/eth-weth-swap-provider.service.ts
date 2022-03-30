@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import wethContractAbi from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-abi';
 import {
   WETH_CONTRACT_ADDRESSES_NET_MODE,
@@ -43,7 +43,7 @@ export class EthWethSwapProviderService {
   }
 
   public isEthAndWethSwap(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
@@ -77,7 +77,7 @@ export class EthWethSwapProviderService {
   }
 
   private swapEthToWeth(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
@@ -94,7 +94,7 @@ export class EthWethSwapProviderService {
   }
 
   private swapWethToEth(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {

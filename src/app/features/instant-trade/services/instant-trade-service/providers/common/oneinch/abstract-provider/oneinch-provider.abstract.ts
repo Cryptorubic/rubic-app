@@ -7,7 +7,7 @@ import {
   ItProvider
 } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/common-oneinch.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
@@ -16,12 +16,12 @@ import { RequiredField } from '@shared/models/utility-types/required-field';
 export abstract class OneinchProviderAbstract implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
 
-  private readonly blockchain: BLOCKCHAIN_NAME;
+  private readonly blockchain: EthLikeBlockchainName;
 
   public readonly contractAddress = this.commonOneinchService.contractAddress;
 
   protected constructor(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     private readonly commonOneinchService: CommonOneinchService
   ) {
     this.blockchain = blockchain;

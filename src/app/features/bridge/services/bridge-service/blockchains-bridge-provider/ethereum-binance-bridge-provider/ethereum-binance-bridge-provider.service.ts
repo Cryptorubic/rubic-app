@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
@@ -26,7 +26,7 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
     throw new UnknownError();
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
     if (tokenPair.symbol === 'RBC') {
       return this.rubicBridgeProvider.getFee(tokenPair, toBlockchain);
     }

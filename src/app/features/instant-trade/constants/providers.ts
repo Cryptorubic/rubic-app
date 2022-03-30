@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
@@ -24,7 +24,7 @@ function getDefaultStateByProviders(
   }));
 }
 
-export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderControllerData[]>> = {
+export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, ProviderControllerData[]>> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
     INSTANT_TRADES_PROVIDERS.UNISWAP_V3,
     INSTANT_TRADES_PROVIDERS.ONEINCH,

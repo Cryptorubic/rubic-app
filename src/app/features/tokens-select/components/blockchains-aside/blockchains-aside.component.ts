@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { BLOCKCHAIN_LABEL } from '@features/tokens-select/constants/blockchains-labels';
 
@@ -10,15 +10,15 @@ import { BLOCKCHAIN_LABEL } from '@features/tokens-select/constants/blockchains-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsAsideComponent {
-  @Input() blockchain: BLOCKCHAIN_NAME;
+  @Input() blockchain: BlockchainName;
 
-  @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+  @Input() allowedBlockchains: BlockchainName[] | undefined;
 
   @Input() idPrefix: string;
 
-  @Output() blockchainChange = new EventEmitter<BLOCKCHAIN_NAME>();
+  @Output() blockchainChange = new EventEmitter<BlockchainName>();
 
-  private readonly allBlockchains: BLOCKCHAIN_NAME[] = [
+  private readonly allBlockchains: BlockchainName[] = [
     BLOCKCHAIN_NAME.ETHEREUM,
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
@@ -39,7 +39,7 @@ export class BlockchainsAsideComponent {
     ])
   );
 
-  get blockchains(): BLOCKCHAIN_NAME[] {
+  get blockchains(): BlockchainName[] {
     if (this.allowedBlockchains) {
       return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
     }
@@ -48,11 +48,11 @@ export class BlockchainsAsideComponent {
 
   constructor() {}
 
-  public getBlockchainLabel(blockchainName: BLOCKCHAIN_NAME): string {
+  public getBlockchainLabel(blockchainName: BlockchainName): string {
     return BLOCKCHAIN_LABEL[blockchainName];
   }
 
-  public onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
+  public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
   }

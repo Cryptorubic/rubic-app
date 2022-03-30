@@ -36,8 +36,8 @@ export class TargetNetworkAddressService {
       .pipe(startWith(this.formService.inputValue))
       .subscribe(form => {
         this._displayAddress$.next(
-          this.networksRequiresAddress.includes(form.fromBlockchain) ||
-            this.networksRequiresAddress.includes(form.toBlockchain)
+          this.networksRequiresAddress.some(blockchain => blockchain === form.fromBlockchain) ||
+            this.networksRequiresAddress.some(blockchain => blockchain === form.toBlockchain)
         );
       });
   }

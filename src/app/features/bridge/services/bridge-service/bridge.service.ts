@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCKCHAIN_NAMES,
+  BlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
@@ -29,10 +33,10 @@ import { NotificationsService } from '@core/services/notifications/notifications
 @Injectable()
 export class BridgeService {
   private blockchainsProviders: Partial<
-    Record<BLOCKCHAIN_NAME, Partial<Record<BLOCKCHAIN_NAME, BlockchainsBridgeProvider>>>
+    Record<BlockchainName, Partial<Record<BlockchainName, BlockchainsBridgeProvider>>>
   >;
 
-  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
+  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>(undefined);
 
   public get tokens$(): Observable<BridgeTokenPairsByBlockchains[]> {
     return this._tokens$.asObservable();
@@ -90,12 +94,8 @@ export class BridgeService {
   private setTokens(): void {
     const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
 
-    Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
-      Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
-        if (fromBlockchain.includes('_TESTNET') || toBlockchain.includes('_TESTNET')) {
-          return;
-        }
-
+    BLOCKCHAIN_NAMES.forEach(fromBlockchain => {
+      BLOCKCHAIN_NAMES.forEach(toBlockchain => {
         const provider: BlockchainsBridgeProvider =
           this.blockchainsProviders[fromBlockchain]?.[toBlockchain];
 
@@ -256,7 +256,7 @@ export class BridgeService {
   }
 
   private async checkBalance(
-    fromBlockchain: BLOCKCHAIN_NAME,
+    fromBlockchain: BlockchainName,
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {

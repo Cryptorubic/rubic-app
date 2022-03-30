@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
@@ -71,15 +71,15 @@ import { RefFinanceService } from '@features/instant-trade/services/instant-trad
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.XDAI];
+  private static readonly unsupportedItNetworks: BlockchainName[] = [];
 
   private blockchainsProviders: Partial<
-    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDERS, ItProvider>>>
+    Record<BlockchainName, Partial<Record<INSTANT_TRADES_PROVIDERS, ItProvider>>>
   >;
 
   private readonly modalSubscriptions: Queue<Subscription>;
 
-  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
+  public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
@@ -487,7 +487,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress(txHash: string, blockchain: BLOCKCHAIN_NAME): void {
+  private notifyTradeInProgress(txHash: string, blockchain: BlockchainName): void {
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
         'default',

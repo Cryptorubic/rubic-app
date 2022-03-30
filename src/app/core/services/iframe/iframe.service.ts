@@ -7,7 +7,7 @@ import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance
 import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
@@ -132,7 +132,7 @@ export class IframeService implements OnDestroy {
   }
 
   public isIframeWithFee(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     providerType: INSTANT_TRADES_PROVIDERS
   ): boolean {
     if (!this.isIframe || !this.iframeParameters.fee) {

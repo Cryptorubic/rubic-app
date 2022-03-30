@@ -58,12 +58,6 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       uniswapV3Constants.routerTokensNetMode,
       uniswapV3Constants.routerLiquidityPoolsNetMode
     );
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.quoterController.setTestingMode();
-      }
-    });
   }
 
   public async calculateTrade(

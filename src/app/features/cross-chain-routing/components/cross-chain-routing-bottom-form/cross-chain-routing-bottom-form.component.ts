@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -88,7 +88,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public readonly smartRoutingLoading$ = this.crossChainRoutingService.smartRoutingLoading$;
 
-  public toBlockchain: BLOCKCHAIN_NAME;
+  public toBlockchain: BlockchainName;
 
   public toToken: TokenAmount;
 

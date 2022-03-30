@@ -24,7 +24,7 @@ import {
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TransactionReceipt } from 'web3-eth';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
@@ -334,9 +334,7 @@ export class StakingService {
   ): Observable<TransactionReceipt | unknown> {
     const enterStakeMethod = viaWhitelist ? 'enterWhitelist' : 'enter';
     const tokenBlockchain = this.selectedToken.blockchain;
-    const needSwap =
-      tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET &&
-      tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+    const needSwap = tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     const amountInWei = Web3Pure.toWei(amount);
 
     if (needSwap) {
@@ -845,7 +843,7 @@ export class StakingService {
    * @param blockchain Blockchain of selected token.
    * @return Observable<unknown>
    */
-  private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<boolean> {
+  private openSwapModal(amount: BigNumber, blockchain: BlockchainName): Observable<boolean> {
     return this.dialogService.open<boolean>(
       new PolymorpheusComponent(SwapModalComponent, this.injector),
       {
@@ -861,7 +859,7 @@ export class StakingService {
    * @param amount Amount that user wants to stake.
    * @return BridgeTrade
    */
-  private getBridgeTradeObject(fromBlockchain: BLOCKCHAIN_NAME, amount: BigNumber): BridgeTrade {
+  private getBridgeTradeObject(fromBlockchain: BlockchainName, amount: BigNumber): BridgeTrade {
     switch (fromBlockchain) {
       case BLOCKCHAIN_NAME.POLYGON:
         return {
@@ -968,7 +966,7 @@ export class StakingService {
    * @return BinancePolygonRubicBridgeProviderService | EthereumBinanceRubicBridgeProviderService
    */
   private getRubicBridge(
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BlockchainName
   ): BinancePolygonRubicBridgeProviderService | EthereumBinanceRubicBridgeProviderService {
     if (blockchain === BLOCKCHAIN_NAME.POLYGON) {
       return this.polygonBinanceBridge;

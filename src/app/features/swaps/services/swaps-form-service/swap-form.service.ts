@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { FormService } from '@shared/models/swaps/form-service';
 import { Observable } from 'rxjs';
 import { SwapForm, SwapFormInput, SwapFormOutput } from 'src/app/features/swaps/models/swap-form';
@@ -41,8 +41,8 @@ export class SwapFormService implements FormService {
   constructor() {
     this.commonTrade = new FormGroup<SwapForm>({
       input: new FormGroup<SwapFormInput>({
-        fromBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
-        toBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
+        fromBlockchain: new FormControl<BlockchainName>(BLOCKCHAIN_NAME.ETHEREUM),
+        toBlockchain: new FormControl<BlockchainName>(BLOCKCHAIN_NAME.ETHEREUM),
         fromToken: new FormControl<TokenAmount>(null),
         toToken: new FormControl<TokenAmount>(null),
         fromAmount: new FormControl<BigNumber>(null)

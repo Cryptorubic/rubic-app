@@ -74,18 +74,4 @@ export const FAKE_BRBC: TokenAmount = {
   favorite: true
 };
 
-export const XBRBC: TokenAmount = {
-  name: 'Rubic Staking Tokens',
-  symbol: 'xBRBC',
-  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
-  address: '0x2C85DAf343e31fB871Bae1b1BFBD790d81BAE855',
-  decimals: 18,
-  image: '',
-  rank: TOKEN_RANK.LOW,
-  usedInIframe: false,
-  amount: new BigNumber(0),
-  favorite: false,
-  price: 5
-};
-
-export const BSC_TEST_TOKENS = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];
+export const BSC_TEST_TOKENS = [BNB, USDT, ETH, BRBC, FAKE_BRBC];

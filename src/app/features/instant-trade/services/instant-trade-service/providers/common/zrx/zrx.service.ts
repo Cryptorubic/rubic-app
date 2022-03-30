@@ -10,13 +10,12 @@ import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-a
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
@@ -33,9 +32,9 @@ import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 
 const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 
@@ -44,7 +43,7 @@ const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 })
 export class ZrxService implements ItProvider {
   public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BlockchainName
   ): blockchain is SupportedZrxBlockchain {
     return SUPPORTED_ZRX_BLOCKCHAINS.some(
       supportedBlockchain => supportedBlockchain === blockchain
@@ -73,14 +72,11 @@ export class ZrxService implements ItProvider {
 
   private walletAddress: string;
 
-  private isTestingMode: boolean;
-
   constructor(
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly httpService: HttpService,
     private readonly tokensService: TokensService,
@@ -105,11 +101,6 @@ export class ZrxService implements ItProvider {
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
     });
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      this.isTestingMode = isTestingMode;
-      this.setZrxParams();
-    });
   }
 
   /**
@@ -117,29 +108,17 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams(): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    if (
-      BlockchainsInfo.getBlockchainType(fromBlockchain) !== 'ethLike' ||
-      BlockchainsInfo.getBlockchainType(toBlockchain) !== 'ethLike'
-    ) {
+    if (!isEthLikeBlockchainName(fromBlockchain) || !isEthLikeBlockchainName(toBlockchain)) {
       console.debug('0x wallet error');
       return;
     }
-    this.fromBlockchainAdapter = this.publicBlockchainAdapterService[
-      fromBlockchain
-    ] as EthLikeWeb3Public;
-    this.toBlockchainAdapter = this.publicBlockchainAdapterService[
-      toBlockchain
-    ] as EthLikeWeb3Public;
 
-    let blockchain: BLOCKCHAIN_NAME;
-    if (this.isTestingMode) {
-      blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
-    } else {
-      blockchain = fromBlockchain;
-    }
-    if (ZrxService.isSupportedBlockchain(blockchain)) {
-      this.blockchain = blockchain;
-      this.apiAddress = ZRX_API_ADDRESS[blockchain];
+    this.fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    this.toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
+
+    if (ZrxService.isSupportedBlockchain(fromBlockchain)) {
+      this.blockchain = fromBlockchain;
+      this.apiAddress = ZRX_API_ADDRESS[fromBlockchain];
     }
   }
 

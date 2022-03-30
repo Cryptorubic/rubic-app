@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
@@ -79,12 +79,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
-  private rubicConfig: Partial<
-    Record<
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN | BLOCKCHAIN_NAME.ETHEREUM | BLOCKCHAIN_NAME.POLYGON,
-      RubicConfig
-    >
-  >;
+  private rubicConfig: Partial<Record<RubicBridgeSupportedBlockchains, RubicConfig>>;
 
   private readonly contracts: Record<RubicBridgeSupportedBlockchains, number> = {
     [BLOCKCHAIN_NAME.ETHEREUM]: 2,
@@ -181,7 +176,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
     if (toBlockchain === this.defaultConfig.from.blockchainName) {
       return of(tokenPair.fromEthFee);
     }
@@ -213,9 +208,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[
-      bridgeTrade.fromBlockchain
-    ] as EthLikeWeb3Public;
+    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     return from(
@@ -257,7 +250,10 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private async createRubicTrade(bridgeTrade: BridgeTrade): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    const blockchainAdapter =
+      this.publicBlockchainAdapterService[
+        bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains
+      ];
 
     const fromDecimals = token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals;
 
@@ -274,11 +270,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     };
 
     const onApprove = bridgeTrade.onTransactionHash;
-
-    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    await this.provideAllowance(trade, blockchainAdapter as EthLikeWeb3Public, onApprove);
+    await this.provideAllowance(trade, blockchainAdapter, onApprove);
 
     const blockchain = this.contracts[bridgeTrade.toBlockchain as RubicBridgeSupportedBlockchains];
 

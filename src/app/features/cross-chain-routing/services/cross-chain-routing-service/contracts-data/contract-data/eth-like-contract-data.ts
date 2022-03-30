@@ -3,7 +3,6 @@ import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/ser
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { crossChainContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/eth-like/cross-chain-contract-abi';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
@@ -14,6 +13,8 @@ import { OneinchInstantTrade } from '@features/instant-trade/services/instant-tr
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import IsNotEthLikeError from '@core/errors/models/common/is-not-eth-like-error';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -26,8 +27,10 @@ export class EthLikeContractData extends ContractData {
   ) {
     super(blockchain, providersData, numOfBlockchain);
 
-    BlockchainsInfo.checkIsEthLike(blockchain);
-    this.blockchainAdapter = publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    if (!isEthLikeBlockchainName(blockchain)) {
+      throw new IsNotEthLikeError(blockchain);
+    }
+    this.blockchainAdapter = publicBlockchainAdapterService[blockchain];
   }
 
   public minTokenAmount(): Promise<string> {

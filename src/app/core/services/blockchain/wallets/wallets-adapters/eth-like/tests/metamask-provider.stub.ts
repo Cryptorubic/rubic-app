@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 // @ts-ignore
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import * as config from 'src/test/enviroment.test.json';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -33,7 +33,7 @@ export default () => {
         id: 42
       };
     },
-    get networkName(): BLOCKCHAIN_NAME {
+    get networkName(): BlockchainName {
       return this.network.name;
     },
     defaultGasLimit: '400000'

@@ -3,7 +3,11 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCKCHAIN_NAMES,
+  BlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
@@ -16,7 +20,6 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
-import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
@@ -154,8 +157,8 @@ export class QueryParamsService {
           )
         ),
         mergeMap(({ tokens, protectedParams }) => {
-          const fromBlockchain = protectedParams.fromChain as BLOCKCHAIN_NAME;
-          const toBlockchain = protectedParams.toChain as BLOCKCHAIN_NAME;
+          const fromBlockchain = protectedParams.fromChain;
+          const toBlockchain = protectedParams.toChain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
             tokens,
@@ -197,16 +200,12 @@ export class QueryParamsService {
     return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
       first(pairsArray => !!pairsArray?.size),
       map(pairsArray => {
-        const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
-          queryParams?.fromChain as BLOCKCHAIN_NAME
-        )
-          ? (queryParams.fromChain as BLOCKCHAIN_NAME)
+        const fromChain = BLOCKCHAIN_NAMES.includes(queryParams?.fromChain)
+          ? queryParams.fromChain
           : DEFAULT_PARAMETERS.swap.fromChain;
 
-        const toChain = Object.values(BLOCKCHAIN_NAME).includes(
-          queryParams?.toChain as BLOCKCHAIN_NAME
-        )
-          ? (queryParams.toChain as BLOCKCHAIN_NAME)
+        const toChain = BLOCKCHAIN_NAMES.includes(queryParams?.toChain)
+          ? queryParams.toChain
           : DEFAULT_PARAMETERS.swap.toChain;
 
         const newParams = {
@@ -265,7 +264,7 @@ export class QueryParamsService {
   private getTokenBySymbolOrAddress(
     tokens: List<TokenAmount>,
     token: string,
-    chain: BLOCKCHAIN_NAME
+    chain: BlockchainName
   ): Observable<TokenAmount> {
     if (!token) {
       return of(null);
@@ -287,14 +286,14 @@ export class QueryParamsService {
   private searchTokenBySymbol(
     tokens: List<TokenAmount>,
     symbol: string,
-    chain: string
+    chain: BlockchainName
   ): Observable<TokenAmount> {
     const similarTokens = tokens.filter(
       token => token.symbol === symbol && token.blockchain === chain
     );
 
     if (!similarTokens.size) {
-      return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
         map(foundTokens => {
           if (foundTokens?.size) {
             const token =
@@ -323,7 +322,7 @@ export class QueryParamsService {
   private searchTokenByAddress(
     tokens: List<TokenAmount>,
     address: string,
-    chain: BLOCKCHAIN_NAME
+    chain: BlockchainName
   ): Observable<TokenAmount> {
     const searchingToken = tokens.find(
       token => compareAddresses(token.address, address) && token.blockchain === chain
@@ -331,7 +330,7 @@ export class QueryParamsService {
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+      : this.tokensService.fetchQueryTokens(address, chain).pipe(
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
             backendTokens => of(backendTokens.first()),

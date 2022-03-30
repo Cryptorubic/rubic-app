@@ -1,5 +1,5 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { ErrorsService } from '@core/errors/errors.service';
 import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
+import { isBlockchainName } from '@shared/utils/blockchain/is-blockchain-name';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   protected selectedAddress: string;
@@ -77,7 +78,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * current selected network name
    * @return current selected network name or undefined if isActive is false
    */
-  get networkName(): BLOCKCHAIN_NAME {
+  get networkName(): BlockchainName {
     return this.network?.name;
   }
 
@@ -98,10 +99,10 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected getNetwork(): BlockchainData | null {
     if (this.isEnabled && this.selectedChain) {
-      return (
-        BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME) ||
-        BlockchainsInfo.getBlockchainById(this.selectedChain)
-      );
+      if (isBlockchainName(this.selectedChain)) {
+        return BlockchainsInfo.getBlockchainByName(this.selectedChain);
+      }
+      return BlockchainsInfo.getBlockchainById(this.selectedChain);
     }
     return null;
   }

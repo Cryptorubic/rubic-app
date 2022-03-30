@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
@@ -13,7 +13,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 export class BridgeStakeNotificationComponent {
   public txHash: string;
 
-  public blockchain: BLOCKCHAIN_NAME;
+  public blockchain: BlockchainName;
 
   public addressType = ADDRESS_TYPE;
 
@@ -21,7 +21,7 @@ export class BridgeStakeNotificationComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       void,
-      { txHash: string; fromBlockchain: BLOCKCHAIN_NAME }
+      { txHash: string; fromBlockchain: BlockchainName }
     >
   ) {
     this.txHash = this.context.data.txHash;

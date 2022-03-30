@@ -10,7 +10,6 @@ import {
   mergeMap,
   switchMap
 } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -85,7 +84,7 @@ export class MyTradesService {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens$.pipe(
-        filter(tokens => !!tokens.size),
+        filter(tokens => !!tokens),
         first()
       )
     ]).pipe(
@@ -125,9 +124,6 @@ export class MyTradesService {
 
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
-      switchMap(async trades =>
-        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
-      ),
       mergeMap(bridgeTrades => {
         const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
           return of({
@@ -152,44 +148,6 @@ export class MyTradesService {
         return of([]);
       })
     );
-  }
-
-  private async prepareBridgeData(trade: TableTrade): Promise<TableTrade> {
-    let fromSymbol = trade.fromToken.symbol;
-    let toSymbol = trade.toToken.symbol;
-
-    if (trade.provider === 'polygon') {
-      [fromSymbol, toSymbol] = await Promise.all([
-        (
-          await this.tokensService.getTokenByAddress({
-            address: fromSymbol,
-            blockchain: trade.fromToken.blockchain as BLOCKCHAIN_NAME
-          })
-        ).symbol,
-        (
-          await this.tokensService.getTokenByAddress({
-            address: toSymbol,
-            blockchain: trade.toToken.blockchain as BLOCKCHAIN_NAME
-          })
-        ).symbol
-      ]);
-
-      if (!fromSymbol || !toSymbol) {
-        return null;
-      }
-    }
-
-    return {
-      ...trade,
-      fromToken: {
-        ...trade.fromToken,
-        symbol: fromSymbol
-      },
-      toToken: {
-        ...trade.toToken,
-        symbol: toSymbol
-      }
-    };
   }
 
   private getCrossChainTrades(): Observable<TableTrade[]> {

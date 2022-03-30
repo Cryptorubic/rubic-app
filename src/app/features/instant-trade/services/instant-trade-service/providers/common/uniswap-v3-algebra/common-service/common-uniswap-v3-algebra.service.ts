@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import {
   ItSettingsForm,
   SettingsService
@@ -15,7 +15,6 @@ import {
   ItProvider
 } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { subtractPercent } from '@shared/utils/utils';
 import {
   UniswapV3AlgebraInstantTrade,
@@ -32,7 +31,6 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
@@ -44,7 +42,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   protected abstract readonly unwrapWethMethodName: 'unwrapWETH9' | 'unwrapWNativeToken';
 
-  protected readonly blockchain: BLOCKCHAIN_NAME;
+  protected readonly blockchain: EthLikeBlockchainName;
 
   protected blockchainAdapter: EthLikeWeb3Public;
 
@@ -71,15 +69,10 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   private readonly settingsService = inject(SettingsService);
 
-  protected readonly useTestingModeService = inject(UseTestingModeService);
-
   protected constructor(uniswapV3Constants: UniswapV3AlgebraConstants) {
     this.blockchain = uniswapV3Constants.blockchain;
 
-    BlockchainsInfo.checkIsEthLike(this.blockchain);
-    this.blockchainAdapter = this.publicBlockchainAdapterService[
-      this.blockchain
-    ] as EthLikeWeb3Public;
+    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
 
     this.wethAddress = uniswapV3Constants.wethAddressNetMode.mainnet;
     this.swapRouterContract = uniswapV3Constants.swapRouterContract;
@@ -95,15 +88,6 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
-    });
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.blockchainAdapter = this.publicBlockchainAdapterService[
-          this.blockchain
-        ] as EthLikeWeb3Public;
-        this.wethAddress = uniswapV3Constants.wethAddressNetMode.testnet;
-      }
     });
   }
 
