@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { compareAddresses } from '@shared/utils/utils';
 import { MethodData } from '@shared/models/blockchain/method-data';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/is-eth-from-or-to';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
 import {

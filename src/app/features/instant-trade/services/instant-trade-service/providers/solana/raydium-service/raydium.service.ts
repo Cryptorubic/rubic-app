@@ -3,7 +3,6 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Account, Connection, SignatureResult, Transaction } from '@solana/web3.js';
 import {
@@ -276,8 +275,8 @@ export class RaydiumService implements ItProvider {
     return this.connection?.sendRawTransaction(trx?.serialize());
   }
 
-  public getAllowance(_tokenAddress: string): Observable<BigNumber> {
-    return of(new BigNumber(NaN));
+  public async getAllowance(_tokenAddress: string): Promise<BigNumber> {
+    return new BigNumber(NaN);
   }
 
   private isWrap(fromAddress: string, toAddress: string): boolean {

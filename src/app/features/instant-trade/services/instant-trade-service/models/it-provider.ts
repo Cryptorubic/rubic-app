@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { Observable } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
@@ -17,7 +16,7 @@ export interface ItProvider {
 
   get contractAddress(): string;
 
-  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Observable<BigNumber>;
+  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Promise<BigNumber>;
 
   approve: (
     tokenAddress: string,

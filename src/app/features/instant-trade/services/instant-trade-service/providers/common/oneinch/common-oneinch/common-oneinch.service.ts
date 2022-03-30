@@ -8,7 +8,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith } from 'rxjs/operators';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { from, Observable, of } from 'rxjs';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
@@ -130,22 +129,13 @@ export class CommonOneinchService {
     blockchain: EthLikeBlockchainName,
     tokenAddress: string,
     targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
+  ): Promise<BigNumber> {
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
-    if (blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-
-    return from(
-      blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
+    return blockchainAdapter.getAllowance({
+      tokenAddress,
+      ownerAddress: this.walletAddress,
+      spenderAddress: targetContractAddress
+    });
   }
 
   public async approve(
@@ -262,7 +252,7 @@ export class CommonOneinchService {
 
       if (shouldCalculateGas) {
         if (fromTokenAddress !== this.oneInchNativeAddress) {
-          const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
+          const allowance = await this.getAllowance(blockchain, fromTokenAddress);
           if (new BigNumber(amountAbsolute).gt(allowance)) {
             throw new CustomError('User have no allowance');
           }

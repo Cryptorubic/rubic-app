@@ -1,6 +1,5 @@
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import { Observable } from 'rxjs';
 import {
   ItOptions,
   ItProvider
@@ -27,7 +26,7 @@ export abstract class OneinchProviderAbstract implements ItProvider {
     this.blockchain = blockchain;
   }
 
-  public getAllowance(tokenAddress: string, targetContractAddress: string): Observable<BigNumber> {
+  public getAllowance(tokenAddress: string, targetContractAddress: string): Promise<BigNumber> {
     return this.commonOneinchService.getAllowance(
       this.blockchain,
       tokenAddress,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import {
   ItOptions,
   ItProvider
@@ -16,7 +16,7 @@ import {
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
+import { ZrxApiResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/models/zrx-types';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
@@ -113,22 +113,21 @@ export class ZrxService implements ItProvider {
     }
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return this.tradeDataIsUpdated$.pipe(
-      filter(value => !!value),
-      first(),
-      mergeMap(() => {
-        this.tradeDataIsUpdated$.next(false);
-        return this.blockchainAdapter.getAllowance({
-          tokenAddress,
-          ownerAddress: this.walletAddress,
-          spenderAddress: this.currentTradeData?.allowanceTarget
-        });
-      })
-    );
+  public getAllowance(tokenAddress: string): Promise<BigNumber> {
+    return this.tradeDataIsUpdated$
+      .pipe(
+        filter(value => !!value),
+        first(),
+        mergeMap(() => {
+          this.tradeDataIsUpdated$.next(false);
+          return this.blockchainAdapter.getAllowance({
+            tokenAddress,
+            ownerAddress: this.walletAddress,
+            spenderAddress: this.currentTradeData?.allowanceTarget
+          });
+        })
+      )
+      .toPromise();
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {

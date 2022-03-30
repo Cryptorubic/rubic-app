@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import BigNumber from 'bignumber.js';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import {
   ItOptions,
@@ -24,9 +22,8 @@ import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
-} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { InstantTradeProvidersService } from '@features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
-import { Providers } from '@features/instant-trade/services/instant-trade-service/models/providers';
 import { EthWethSwapProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 
 @Injectable({
@@ -39,7 +36,7 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
-  private readonly providers: Providers;
+  private readonly providers = this.instantTradeProvidersService.providers;
 
   constructor(
     private readonly instantTradeProvidersService: InstantTradeProvidersService,
@@ -51,50 +48,44 @@ export class InstantTradeService {
     private readonly notificationsService: NotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService
-  ) {
-    this.providers = this.instantTradeProvidersService.providers;
+  ) {}
+
+  public getTargetContractAddress(
+    fromBlockchain: BlockchainName,
+    providerName: INSTANT_TRADE_PROVIDER
+  ): string {
+    return this.iframeService.isIframeWithFee(fromBlockchain, providerName)
+      ? IT_PROXY_FEE_CONTRACT_ADDRESS
+      : undefined;
   }
 
-  public getAllowance(providersNames: INSTANT_TRADE_PROVIDER[]): Observable<boolean[]> | never {
+  public getAllowance(providersNames: INSTANT_TRADE_PROVIDER[]): Promise<boolean[]> {
     const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
 
     const providers = providersNames.map(
       providerName => this.providers[fromBlockchain][providerName]
     );
-    const providerApproveData = providers.map((provider: ItProvider) => {
-      const targetContractAddress = this.iframeService.isIframeWithFee(
+    const providerApproveData = providers.map(async (provider: ItProvider) => {
+      const targetContractAddress = this.getTargetContractAddress(
         fromBlockchain,
         provider.providerType
-      )
-        ? IT_PROXY_FEE_CONTRACT_ADDRESS
-        : undefined;
-
-      return provider.getAllowance(fromToken.address, targetContractAddress).pipe(
-        catchError((err: unknown) => {
-          console.debug(err, provider);
-          return of(null);
-        })
       );
+      const allowance = await provider.getAllowance(fromToken.address, targetContractAddress);
+      return fromAmount.gt(allowance);
     });
 
-    return forkJoin(providerApproveData).pipe(
-      map((allowances: BigNumber[]) => {
-        return allowances.map(allowance => fromAmount.gt(allowance));
-      })
-    );
+    return Promise.all(providerApproveData);
   }
 
-  public async approve(provider: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async approve(providerName: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      const targetContractAddress = this.iframeService.isIframeWithFee(fromBlockchain, provider)
-        ? IT_PROXY_FEE_CONTRACT_ADDRESS
-        : undefined;
+      const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
 
       let subscription$: Subscription;
-      await this.providers[trade.blockchain][provider].approve(
+      await this.providers[trade.blockchain][providerName].approve(
         trade.from.token.address,
         {
           onTransactionHash: () => {
@@ -173,17 +164,7 @@ export class InstantTradeService {
 
         this.successTxModalService.open(transactionHash, trade.blockchain);
 
-        if (this.iframeService.isIframeWithFee(trade.blockchain, providerName)) {
-          await this.postTrade(
-            hash,
-            providerName,
-            trade,
-            this.iframeService.feeData.fee,
-            this.iframeService.promoCode
-          );
-        } else {
-          await this.postTrade(hash, providerName, trade);
-        }
+        await this.postTrade(hash, providerName, trade);
       }
     };
 
@@ -274,10 +255,14 @@ export class InstantTradeService {
   private async postTrade(
     transactionHash: string,
     providerName: INSTANT_TRADE_PROVIDER,
-    trade: InstantTrade,
-    fee?: number,
-    promoCode?: string
+    trade: InstantTrade
   ): Promise<void> {
+    let fee: number;
+    let promoCode: string;
+    if (this.iframeService.isIframeWithFee(trade.blockchain, providerName)) {
+      fee = this.iframeService.feeData.fee;
+      promoCode = this.iframeService.promoCode;
+    }
     await this.instantTradesApiService
       .createTrade(transactionHash, providerName, trade, fee, promoCode)
       .toPromise();

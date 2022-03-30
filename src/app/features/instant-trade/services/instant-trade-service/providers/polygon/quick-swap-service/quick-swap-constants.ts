@@ -1,4 +1,4 @@
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const quickSwapContractAddress = '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff';

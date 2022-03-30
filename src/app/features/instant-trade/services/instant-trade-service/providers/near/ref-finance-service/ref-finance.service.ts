@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import {
   ItSettingsForm,
   SettingsService
@@ -270,8 +270,8 @@ export class RefFinanceService implements ItProvider {
     });
   }
 
-  public getAllowance(): Observable<BigNumber> {
-    return of(new BigNumber(Infinity));
+  public async getAllowance(): Promise<BigNumber> {
+    return new BigNumber(Infinity);
   }
 
   /**

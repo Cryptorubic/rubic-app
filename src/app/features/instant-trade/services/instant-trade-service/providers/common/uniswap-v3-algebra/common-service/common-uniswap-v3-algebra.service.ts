@@ -6,7 +6,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from '@features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -25,7 +24,7 @@ import { UniswapV3AlgebraConstants } from '@features/instant-trade/services/inst
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { MethodData } from '@shared/models/blockchain/method-data';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/is-eth-from-or-to';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
@@ -94,18 +93,12 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
   public getAllowance(
     tokenAddress: string,
     targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-
-    return from(
-      this.blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
+  ): Promise<BigNumber> {
+    return this.blockchainAdapter.getAllowance({
+      tokenAddress,
+      ownerAddress: this.walletAddress,
+      spenderAddress: targetContractAddress
+    });
   }
 
   public async approve(

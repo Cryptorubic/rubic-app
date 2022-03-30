@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
 import { OneInchPolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
@@ -31,13 +31,15 @@ import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/insta
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
-import { Providers } from '@features/instant-trade/services/instant-trade-service/models/providers';
+import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstantTradeProvidersService {
-  public readonly providers: Providers;
+  public readonly providers: Partial<
+    Record<BlockchainName, Partial<Record<INSTANT_TRADE_PROVIDER, ItProvider>>>
+  >;
 
   constructor(
     // Ethereum.

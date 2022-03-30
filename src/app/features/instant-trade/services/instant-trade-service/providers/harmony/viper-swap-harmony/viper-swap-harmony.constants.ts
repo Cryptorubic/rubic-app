@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 
 const viperSwapHarmonyContractAddress = '0xf012702a5f0e54015362cBCA26a26fc90AA832a3';
 

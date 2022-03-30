@@ -249,6 +249,10 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getAllowance(params: AllowanceParams): Promise<BigNumber> {
     const { tokenAddress, ownerAddress, spenderAddress } = params;
+    if (this.isNativeAddress(tokenAddress)) {
+      return new BigNumber(Infinity);
+    }
+
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const allowance = await contract.methods

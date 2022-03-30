@@ -9,7 +9,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -35,7 +34,7 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TransactionReceipt } from 'web3-eth';
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
@@ -57,7 +56,7 @@ import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
-} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { IframeService } from '@core/services/iframe/iframe.service';
 
 interface RecGraphVisitorOptions {
@@ -173,17 +172,12 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   public getAllowance(
     tokenAddress: string,
     targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return from(
-      this.blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
+  ): Promise<BigNumber> {
+    return this.blockchainAdapter.getAllowance({
+      tokenAddress,
+      ownerAddress: this.walletAddress,
+      spenderAddress: targetContractAddress
+    });
   }
 
   public async approve(

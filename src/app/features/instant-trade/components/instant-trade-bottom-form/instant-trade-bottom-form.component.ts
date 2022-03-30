@@ -48,7 +48,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { IT_PROXY_FEE } from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
+import { IT_PROXY_FEE } from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 
 interface SettledProviderTrade {
   providerName: INSTANT_TRADE_PROVIDER;
@@ -323,8 +323,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
           const providersApproveData$ = this.authService.user?.address
             ? this.instantTradeService.getAllowance(providersNames)
             : of(new Array(this.providersData.length).fill(null));
-          const providersTrades$ = from(this.instantTradeService.calculateTrades(providersNames));
-          const tokenBalance$ = from(this.tokensService.getAndUpdateTokenBalance(this.fromToken));
+          const providersTrades$ = this.instantTradeService.calculateTrades(providersNames);
+          const tokenBalance$ = this.tokensService.getAndUpdateTokenBalance(this.fromToken);
 
           return forkJoin([providersApproveData$, providersTrades$, tokenBalance$]).pipe(
             map(([providersApproveData, providersTrades]) => {
