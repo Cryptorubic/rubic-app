@@ -4,7 +4,6 @@ import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
@@ -123,7 +122,6 @@ export class WalletConnectorService {
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: RubicWindow,
@@ -286,11 +284,7 @@ export class WalletConnectorService {
       throw new AccountError();
     }
 
-    const isTestingMode = this.useTestingModeService.isTestingMode.getValue();
-    if (
-      this.networkName !== selectedBlockchain &&
-      (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
-    ) {
+    if (this.networkName !== selectedBlockchain) {
       if (this.provider.walletName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
       } else if (!this.provider.isMultiChainWallet) {

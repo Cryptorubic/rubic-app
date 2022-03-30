@@ -11,7 +11,6 @@ import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +55,6 @@ export class IframeService implements OnDestroy {
   }
 
   public get originDomain(): string {
-    const testingModeDomain = this.testingModeService.iframeSettings.domain.getValue();
-    if (testingModeDomain) {
-      return testingModeDomain;
-    }
-
     const url =
       this.window.location !== this.window.parent.location
         ? document.referrer
@@ -72,8 +66,7 @@ export class IframeService implements OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
     @Inject(WINDOW) private readonly window: Window,
-    private readonly promotionPromoterAddressApiService: PromotionPromoterAddressApiService,
-    private readonly testingModeService: UseTestingModeService
+    private readonly promotionPromoterAddressApiService: PromotionPromoterAddressApiService
   ) {}
 
   ngOnDestroy() {

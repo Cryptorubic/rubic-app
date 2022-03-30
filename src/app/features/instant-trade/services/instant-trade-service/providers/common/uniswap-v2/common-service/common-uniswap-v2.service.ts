@@ -35,7 +35,6 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
@@ -117,8 +116,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private readonly tokensService = inject(TokensService);
 
-  private readonly useTestingModeService = inject(UseTestingModeService);
-
   private readonly gasService = inject(GasService);
 
   private readonly iframeService = inject(IframeService);
@@ -154,16 +151,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     this._contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
     this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
     this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
-
-        this._contractAddress = uniswapConstants.contractAddressNetMode.testnet;
-        this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
-        this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
-      }
-    });
   }
 
   /**

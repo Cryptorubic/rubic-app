@@ -3,7 +3,6 @@ import {
   BLOCKCHAIN_NAME,
   ETH_LIKE_BLOCKCHAIN_NAMES
 } from '@shared/models/blockchain/blockchain-name';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
@@ -35,7 +34,6 @@ export class PrivateBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3PrivateService;
 
   constructor(
-    private useTestingModeService: UseTestingModeService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService,
     private readonly nearWeb3privateService: NearWeb3PrivateService

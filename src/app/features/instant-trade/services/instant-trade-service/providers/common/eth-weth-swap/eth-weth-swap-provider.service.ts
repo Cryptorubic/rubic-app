@@ -7,7 +7,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-addresses-net-mode';
 import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -30,16 +29,9 @@ export class EthWethSwapProviderService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService,
-    private readonly useTestingMode: UseTestingModeService
+    private readonly authService: AuthService
   ) {
     this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.mainnet;
-
-    useTestingMode.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.testnet;
-      }
-    });
   }
 
   public isEthAndWethSwap(

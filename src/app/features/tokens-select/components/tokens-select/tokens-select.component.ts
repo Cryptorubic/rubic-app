@@ -45,7 +45,6 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { compareTokens } from '@shared/utils/utils';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
@@ -201,7 +200,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly useTestingModeService: UseTestingModeService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.searchQueryLoading = false;
@@ -550,10 +548,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Fetches new tokens page.
    */
   public fetchNewPageTokens(): void {
-    if (!this.useTestingModeService.isTestingMode.getValue()) {
-      this.tokensListUpdating = true;
-      this.tokensService.fetchNetworkTokens(this.blockchain);
-    }
+    this.tokensListUpdating = true;
+    this.tokensService.fetchNetworkTokens(this.blockchain);
   }
 
   /**

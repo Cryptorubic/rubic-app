@@ -4,7 +4,6 @@ import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
@@ -75,8 +74,6 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private readonly bridgeApiService = inject(BridgeApiService);
 
-  private readonly useTestingMode = inject(UseTestingModeService);
-
   private readonly walletConnectorService = inject(WalletConnectorService);
 
   private rubicConfig: Partial<Record<RubicBridgeSupportedBlockchains, RubicConfig>>;
@@ -91,16 +88,6 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     super();
     this.setRubicConfig(defaultConfig, 'mainnet');
     this.loadRubicTokenInfo();
-    this.initTestingMode();
-  }
-
-  private initTestingMode(): void {
-    this.useTestingMode.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.setRubicConfig(this.defaultConfig, 'testnet');
-        this.loadRubicTokenInfo();
-      }
-    });
   }
 
   private async loadRubicTokenInfo(): Promise<void> {
