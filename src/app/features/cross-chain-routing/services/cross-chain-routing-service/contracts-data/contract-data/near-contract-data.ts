@@ -1,8 +1,6 @@
 import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
-import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
@@ -46,13 +44,12 @@ export class NearContractData extends ContractData {
   }
 
   constructor(
-    public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
     public readonly numOfBlockchain: BlockchainNumber,
     public readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
-    super(blockchain, providersData, numOfBlockchain);
-    BlockchainsInfo.checkIsNear(blockchain);
+    super(BLOCKCHAIN_NAME.NEAR, providersData, numOfBlockchain);
+
     this.blockchainAdapter = publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
     this._contract = this.loadContract();
   }

@@ -10,6 +10,15 @@ export const ETH_LIKE_BLOCKCHAIN_NAME = {
   AURORA: 'AURORA'
 } as const;
 
+export type EthLikeBlockchainName =
+  typeof ETH_LIKE_BLOCKCHAIN_NAME[keyof typeof ETH_LIKE_BLOCKCHAIN_NAME];
+
+export type SolanaBlockchainName = 'SOLANA';
+
+export type NearBlockchainName = 'NEAR';
+
+export type BlockchainName = EthLikeBlockchainName | SolanaBlockchainName | NearBlockchainName;
+
 export const BLOCKCHAIN_NAME = {
   ...ETH_LIKE_BLOCKCHAIN_NAME,
   SOLANA: 'SOLANA',
@@ -19,8 +28,3 @@ export const BLOCKCHAIN_NAME = {
 export const ETH_LIKE_BLOCKCHAIN_NAMES = Object.values(ETH_LIKE_BLOCKCHAIN_NAME);
 
 export const BLOCKCHAIN_NAMES = Object.values(BLOCKCHAIN_NAME);
-
-export type EthLikeBlockchainName =
-  typeof ETH_LIKE_BLOCKCHAIN_NAME[keyof typeof ETH_LIKE_BLOCKCHAIN_NAME];
-
-export type BlockchainName = typeof BLOCKCHAIN_NAME[keyof typeof BLOCKCHAIN_NAME];

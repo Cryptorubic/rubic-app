@@ -21,8 +21,9 @@ import { SushiSwapMoonRiverService } from '@features/instant-trade/services/inst
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import {
   BLOCKCHAIN_NAME,
-  BlockchainName,
-  EthLikeBlockchainName
+  EthLikeBlockchainName,
+  NearBlockchainName,
+  SolanaBlockchainName
 } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { OneInchPolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
@@ -38,17 +39,14 @@ import { TrisolarisAuroraService } from '@features/instant-trade/services/instan
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { NearContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
-import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContractsDataService {
   public readonly contracts: Record<EthLikeBlockchainName, EthLikeContractData> &
-    Record<
-      SupportedCrossChainBlockchain & Exclude<BlockchainName, EthLikeBlockchainName>,
-      ContractData
-    >;
+    Record<SupportedCrossChainBlockchain & SolanaBlockchainName, SolanaContractData> &
+    Record<SupportedCrossChainBlockchain & NearBlockchainName, NearContractData>;
 
   constructor(
     // providers start
@@ -268,7 +266,6 @@ export class ContractsDataService {
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
-        BLOCKCHAIN_NAME.SOLANA,
         [
           {
             provider: this.raydiumService,
@@ -279,7 +276,6 @@ export class ContractsDataService {
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.NEAR]: new NearContractData(
-        BLOCKCHAIN_NAME.NEAR,
         [
           {
             provider: this.refFinanceService,

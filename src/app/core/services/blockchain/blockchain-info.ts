@@ -33,22 +33,4 @@ export class BlockchainsInfo {
   static getBlockchainLabel(name: BlockchainName): string {
     return networks.find(network => network.name === name).label;
   }
-
-  static checkIsEthLike(name: BlockchainName): void | never {
-    if (this.getBlockchainType(name) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-  }
-
-  static checkIsSolana(name: BlockchainName): void | never {
-    if (this.getBlockchainType(name) !== 'solana') {
-      throw new CustomError('Wrong blockchain error');
-    }
-  }
-
-  static checkIsNear(name: BlockchainName): void | never {
-    if (this.getBlockchainType(name) !== 'near') {
-      throw new CustomError('Wrong blockchain error');
-    }
-  }
 }

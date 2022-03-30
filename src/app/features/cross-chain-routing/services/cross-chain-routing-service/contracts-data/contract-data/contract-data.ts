@@ -161,8 +161,8 @@ export abstract class ContractData {
    */
   public getSecondPath(
     instantTrade: InstantTrade,
-    providerIndex?: number,
-    fromBlockchain?: BlockchainName
+    providerIndex: number,
+    fromBlockchain: BlockchainName
   ): string[] {
     const toBlockchainAdapter =
       this.blockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
