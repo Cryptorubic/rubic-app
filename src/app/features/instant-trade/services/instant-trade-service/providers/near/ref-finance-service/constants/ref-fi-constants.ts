@@ -1,5 +1,6 @@
 export const REF_FI_CONTRACT_ID = 'v2.ref-finance.near';
 export const WRAP_NEAR_CONTRACT = 'wrap.near';
+export const WRAP_NEAR_DECIMALS = 24;
 
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEW_ACCOUNT_STORAGE_COST = '0.00125';
