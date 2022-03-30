@@ -17,20 +17,13 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
-/*
-interface HashPair {
-  fromTransactionHash: string;
-  toTransactionHash: string;
-}
-*/
-
 @Injectable({
   providedIn: 'root'
 })
 export class MyTradesService {
-  private _tableData$ = new BehaviorSubject<TableData>(undefined);
+  private readonly _tableData$ = new BehaviorSubject<TableData>(undefined);
 
-  public tableData$ = this._tableData$.asObservable();
+  public readonly tableData$ = this._tableData$.asObservable();
 
   private tokens: List<TokenAmount>;
 
@@ -70,7 +63,7 @@ export class MyTradesService {
       });
   }
 
-  public updateTableTrades(page = 0): Observable<TableTrade[]> {
+  public updateTableTrades(page = 0, pageSize = 10): Observable<TableTrade[]> {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens$.pipe(
@@ -90,7 +83,7 @@ export class MyTradesService {
           return EMPTY;
         }
 
-        return forkJoin([this.getCrossChainTrades(page)]).pipe(
+        return forkJoin([this.getCrossChainTrades(page, pageSize)]).pipe(
           map(([tableData]) => {
             const adjustedData = tableData.trades.flat().map(trade => ({
               ...trade,
@@ -114,79 +107,8 @@ export class MyTradesService {
     );
   }
 
-  /*
-  private getBridgeTransactions(): Observable<TableTrade[]> {
-    return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
-      switchMap(async trades =>
-        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
-      ),
-      mergeMap(bridgeTrades => {
-        const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
-          return of({
-            fromTransactionHash: trade.fromTransactionHash,
-            toTransactionHash: trade.toTransactionHash
-          });
-        });
-        return forkJoin(sources).pipe(
-          map((txHashes: HashPair[]) =>
-            txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
-              ...bridgeTrades[index],
-              fromTransactionHash,
-              toTransactionHash
-            }))
-          ),
-          defaultIfEmpty<TableTrade[]>([])
-        );
-      }),
-      catchError((err: unknown) => {
-        console.debug(err);
-        this._warningHandler$.next();
-        return of([]);
-      })
-    );
-  }
-
-  private async prepareBridgeData(trade: TableTrade): Promise<TableTrade> {
-    let fromSymbol = trade.fromToken.symbol;
-    let toSymbol = trade.toToken.symbol;
-
-    if (trade.provider === 'polygon') {
-      [fromSymbol, toSymbol] = await Promise.all([
-        (
-          await this.tokensService.getTokenByAddress({
-            address: fromSymbol,
-            blockchain: trade.fromToken.blockchain as BLOCKCHAIN_NAME
-          })
-        ).symbol,
-        (
-          await this.tokensService.getTokenByAddress({
-            address: toSymbol,
-            blockchain: trade.toToken.blockchain as BLOCKCHAIN_NAME
-          })
-        ).symbol
-      ]);
-
-      if (!fromSymbol || !toSymbol) {
-        return null;
-      }
-    }
-
-    return {
-      ...trade,
-      fromToken: {
-        ...trade.fromToken,
-        symbol: fromSymbol
-      },
-      toToken: {
-        ...trade.toToken,
-        symbol: toSymbol
-      }
-    };
-  }
-  */
-
-  private getCrossChainTrades(page: number): Observable<TableData> {
-    return this.crossChainRoutingApiService.getUserTrades(this.walletAddress, page).pipe(
+  private getCrossChainTrades(page: number, pageSize: number): Observable<TableData> {
+    return this.crossChainRoutingApiService.getUserTrades(this.walletAddress, page, pageSize).pipe(
       map(data => {
         return {
           totalCount: data.totalCount,
@@ -227,47 +149,6 @@ export class MyTradesService {
       })
     );
   }
-
-  /*
-  private getGasRefundTrades(): Observable<TableTrade[]> {
-    return this.gasRefundApiService.getGasRefundTransactions().pipe(
-      map(transactions =>
-        transactions
-          .map(item => {
-            const toToken = this.tokens.find(token =>
-              compareTokens(token, { address: item.tokenAddress, blockchain: item.network })
-            );
-            if (!toToken) {
-              return null;
-            }
-            const amount = Web3Pure.fromWei(item.value, toToken.decimals).toFixed();
-            return {
-              fromTransactionHash: item.hash,
-              transactionHashScanUrl: this.scannerLinkPipe.transform(
-                item.hash,
-                item.network,
-                ADDRESS_TYPE.TRANSACTION
-              ),
-              status: TRANSACTION_STATUS.COMPLETED,
-              provider: 'GAS_REFUND_PROVIDER' as TableProvider,
-              fromToken: null,
-              toToken: {
-                ...toToken,
-                amount
-              },
-              date: item.date
-            };
-          })
-          .filter(item => !!item)
-      ),
-      catchError((err: unknown) => {
-        console.debug(err);
-        this._warningHandler$.next();
-        return of([]);
-      })
-    );
-  }
-  */
 
   public getTableTradeByDate(date: Date): TableTrade {
     return this._tableData$

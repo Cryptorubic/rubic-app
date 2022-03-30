@@ -56,10 +56,15 @@ export class CrossChainRoutingApiService {
    * Gets list of user's cross chain trades.
    * @param walletAddress Wallet address of user.
    * @param page Page in pagination.
+   * @param pageSize Page size in pagination.
    */
-  public getUserTrades(walletAddress: string, page: number): Observable<TableData> {
+  public getUserTrades(
+    walletAddress: string,
+    page: number,
+    pageSize: number
+  ): Observable<TableData> {
     return this.httpService
-      .get('trades/', { user: walletAddress, page: page + 1, page_size: 10 }, BASE_URL)
+      .get('trades/', { user: walletAddress, page: page + 1, page_size: pageSize }, BASE_URL)
       .pipe(
         map((trades: CrossChainTradesResponseApi) => {
           return {

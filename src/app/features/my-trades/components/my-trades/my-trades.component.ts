@@ -23,6 +23,7 @@ import { catchError, filter, first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { NoDataMyTradesError } from '@core/errors/models/my-trades/no-data-my-trades-error';
+import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -144,9 +145,9 @@ export class MyTradesComponent implements OnInit {
     this.walletsModalService.open$();
   }
 
-  public onPageChange(page: number): void {
+  public onPageChange(data: PageData): void {
     this.loading = true;
-    this.myTradesService.updateTableTrades(page).pipe(first()).subscribe();
+    this.myTradesService.updateTableTrades(data.page, data.pageSize).pipe(first()).subscribe();
   }
 
   @HostListener('window:resize')

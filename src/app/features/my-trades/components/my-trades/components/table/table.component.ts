@@ -14,6 +14,7 @@ import { AbstractTableDataComponent } from 'src/app/features/my-trades/component
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
 
 @Component({
   selector: 'app-table',
@@ -29,7 +30,7 @@ export class TableComponent extends AbstractTableDataComponent {
    */
   @Input() tableData$: Observable<TableRowsData>;
 
-  @Output() onPageChange = new EventEmitter<number>();
+  @Output() onPageChange = new EventEmitter<PageData>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -43,13 +44,15 @@ export class TableComponent extends AbstractTableDataComponent {
 
   private _page = 0;
 
+  public size = 10;
+
   public get page(): number {
     return this._page;
   }
 
   public set page(page: number) {
     this._page = page;
-    this.onPageChange.emit(this._page);
+    this.onPageChange.emit({ page: this._page, pageSize: this.size });
   }
 
   constructor(injector: Injector) {

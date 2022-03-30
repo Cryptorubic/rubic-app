@@ -97,8 +97,6 @@ export class HeaderComponent implements AfterViewInit {
   ) {
     this.loadUser();
     this.advertisementType = 'default';
-    // TODO: remake update table trades by the right way
-    this.myTradesService.updateTableTrades().subscribe();
     this.currentUser$ = this.authService.getCurrentUser();
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();

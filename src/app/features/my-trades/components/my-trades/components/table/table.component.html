@@ -194,7 +194,11 @@
   <tfoot>
     <tr>
       <td [colSpan]="COLUMNS.length">
-        <tui-table-pagination [total]="table.totalCount" [(page)]="page"></tui-table-pagination>
+        <tui-table-pagination
+          [total]="table.totalCount"
+          [(page)]="page"
+          [(size)]="size"
+        ></tui-table-pagination>
       </td>
     </tr>
   </tfoot>

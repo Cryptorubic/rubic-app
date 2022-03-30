@@ -21,6 +21,7 @@ import { COLUMNS } from '@features/my-trades/components/my-trades/constants/colu
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
 
 @Component({
   selector: 'app-accordion',
@@ -35,7 +36,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
    */
   @Input() tableData$: Observable<TableRowsData>;
 
-  @Output() onPageChange = new EventEmitter<number>();
+  @Output() onPageChange = new EventEmitter<PageData>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -61,7 +62,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public set index(page: number) {
     this._page = page;
-    this.onPageChange.emit(page);
+    this.onPageChange.emit({ page, pageSize: this.PAGE_SIZE });
   }
 
   constructor(
