@@ -159,7 +159,6 @@ export class StakingLpService {
       )
     ).pipe(
       catchError((error: unknown) => {
-        console.log(error);
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
@@ -196,7 +195,6 @@ export class StakingLpService {
       )
     ).pipe(
       catchError((error: unknown) => {
-        console.log(error);
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
