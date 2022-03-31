@@ -1,4 +1,4 @@
-<div class="lp-card">
+<div class="lp-card" *ngLet="isMobile$ | async as isMobile">
   <div class="title">
     <img src="assets/images/usdc-util-icon.png" alt="USDC" />
     <img src="assets/images/rbc-util-icon.png" alt="BRBC" />
@@ -6,14 +6,15 @@
   </div>
   <div class="params">
     <div class="params__param">
-      <span class="params__param-label">APR:</span> {{ apr || '--.--' + '%' }}
+      <span class="params__param-label">APR:</span> <br />
+      {{ apr || '--.--' + '%' }}
     </div>
     <div class="params__param">
-      <span class="params__param-label">Pool Limit:</span>
+      <span class="params__param-label">Pool Limit:</span> <br />
       {{ poolLimit ? (poolLimit | bigNumberFormat) : '--.--' }} USDC
     </div>
     <div class="params__param">
-      <span class="params__param-label">Your Balance:</span>
+      <span class="params__param-label">Your Balance:</span> <br />
       {{ balance ? (balance | bigNumberFormat: 3:true) : '--.--' }} USDC
     </div>
   </div>
@@ -21,7 +22,7 @@
     <app-status-badge
       *ngIf="startTime"
       type="inactive"
-      [text]="'Start: ' + (startTime | date: 'long')"
+      [text]="'Start: ' + (startTime | date: (isMobile ? 'mediumDate' : 'long'))"
     ></app-status-badge>
     <app-status-badge
       *ngFor="let status of statuses"

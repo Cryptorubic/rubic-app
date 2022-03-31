@@ -13,6 +13,7 @@ import {
   TuiDropdownControllerModule,
   TuiDropdownModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiManualHintModule
 } from '@taiga-ui/core';
 
@@ -31,7 +32,8 @@ import {
     TuiManualHintModule,
     TuiHostedDropdownModule,
     TuiDropdownControllerModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiLoaderModule
   ],
   exports: [],
   providers: [StakingLpService, StakingLpApiService]

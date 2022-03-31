@@ -6,9 +6,12 @@ import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { UserInterface } from '@app/core/services/auth/models/user.interface';
+import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { transitTokens } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
@@ -17,14 +20,16 @@ import {
   catchError,
   distinctUntilChanged,
   filter,
-  finalize,
   map,
   switchMap,
+  take,
   tap,
   withLatestFrom
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AbiItem } from 'web3-utils';
+import { BlockchainsInfo } from '@app/core/services/blockchain/blockchain-info';
+import { PDA_DELEGATE } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 
 @Injectable()
 export class StakingLpService {
@@ -42,8 +47,14 @@ export class StakingLpService {
 
   private readonly lpContracts: { address: string; abi: AbiItem[]; active?: boolean }[] = [];
 
+  private readonly crosschainContracts = ENVIRONMENT.crossChain.contractAddresses;
+
   get activeStakingContract(): { address: string; abi: AbiItem[]; active?: boolean } {
     return this.stakingContracts.find(contract => contract.active);
+  }
+
+  get activeLpContract(): { address: string; abi: AbiItem[]; active?: boolean } {
+    return this.lpContracts.find(contract => contract.active);
   }
 
   private readonly userAddress$ = this.authService.getCurrentUser().pipe(
@@ -75,9 +86,13 @@ export class StakingLpService {
 
   public readonly totalRewardsInUsdc$ = this._totalRewardsInUsdc$.asObservable();
 
-  private readonly _statisticsLoading$ = new BehaviorSubject<boolean>(false);
+  private readonly _balanceAndRewardsLoading$ = new BehaviorSubject<boolean>(false);
 
-  public readonly statisticsLoading$ = this._statisticsLoading$.asObservable();
+  public readonly balanceAndRewardsLoading$ = this._balanceAndRewardsLoading$.asObservable();
+
+  private readonly _tvlAndTtvLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly tvlAndTtvLoading$ = this._tvlAndTtvLoading$.asObservable();
 
   private readonly _stakingBalanceByRound$ = new BehaviorSubject<{
     roundOne: BigNumber;
@@ -91,8 +106,23 @@ export class StakingLpService {
 
   private readonly stakingToken = STAKING_TOKENS[0];
 
+  private readonly _stakingTokenUsdPrice$ = new BehaviorSubject<number>(undefined);
+
+  private readonly _tvlStaking$ = new BehaviorSubject<BigNumber>(undefined);
+
+  public readonly tvlStaking$ = this._tvlStaking$.asObservable();
+
+  private readonly _tvlMultichain$ = new BehaviorSubject<BigNumber>(undefined);
+
+  public readonly tvlMultichain$ = this._tvlMultichain$.asObservable();
+
+  // private readonly _ttv$ = new BehaviorSubject<TradeVolume>(undefined);
+
+  // public readonly ttv$ = this._ttv$.asObservable();
+
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
+    private readonly volumeApiService: VolumeApiService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService
@@ -100,12 +130,10 @@ export class StakingLpService {
 
   public getTotalBalanceAndRewards(): Observable<BigNumber[]> {
     return this.userAddress$.pipe(
-      tap(() => this.toggleStatisticsLoading(true)),
+      tap(() => this.toggleLoading('balanceAndRewards', true)),
+      take(1),
       switchMap(user => {
-        return forkJoin([
-          this.getActiveStakingRoundBalance(user.address),
-          this.getLpBalance(user.address)
-        ]);
+        return forkJoin([this.getActiveStakingRoundBalance(user.address), this.getLpBalance()]);
       }),
       withLatestFrom(
         from(
@@ -116,6 +144,8 @@ export class StakingLpService {
         )
       ),
       tap(([[stakingBalance, lpBalance], stakingTokenUsdPrice]) => {
+        this._stakingTokenUsdPrice$.next(stakingTokenUsdPrice);
+
         this._stakingBalance$.next(stakingBalance);
 
         this._lpBalance$.next(lpBalance);
@@ -124,8 +154,7 @@ export class StakingLpService {
           stakingBalance.multipliedBy(stakingTokenUsdPrice).plus(lpBalance)
         );
       }),
-      switchMap(([_, stakingTokenUsdPrice]) => this.getTotalRewards(stakingTokenUsdPrice)),
-      finalize(() => this.toggleStatisticsLoading(false))
+      switchMap(([_, stakingTokenUsdPrice]) => this.getTotalRewards(stakingTokenUsdPrice))
     );
   }
 
@@ -147,8 +176,7 @@ export class StakingLpService {
     );
   }
 
-  private getLpBalance(userAddress?: string): Observable<BigNumber> {
-    console.log(userAddress);
+  private getLpBalance(): Observable<BigNumber> {
     return of(new BigNumber(0));
   }
 
@@ -191,8 +219,14 @@ export class StakingLpService {
     return of(new BigNumber(0));
   }
 
-  public toggleStatisticsLoading(value: boolean): void {
-    this._statisticsLoading$.next(value);
+  public toggleLoading(dataType: 'balanceAndRewards' | 'tvlAndTtv', value: boolean): void {
+    if (dataType === 'balanceAndRewards') {
+      this._balanceAndRewardsLoading$.next(value);
+    }
+
+    if (dataType === 'tvlAndTtv') {
+      this._tvlAndTtvLoading$.next(value);
+    }
   }
 
   public getStakingBalanceByRound(): Observable<BigNumber[]> {
@@ -224,4 +258,60 @@ export class StakingLpService {
   }
 
   public getLpBalanceAndAprByRound(): void {}
+
+  public getTtv(): void {}
+
+  public getTvlMultichain(): Observable<BigNumber> {
+    const crosschainContracts = Object.entries(this.crosschainContracts) as [
+      SupportedCrossChainBlockchain,
+      string
+    ][];
+
+    return forkJoin(
+      crosschainContracts.map(async contract => {
+        const [blockchain, address] = contract;
+        const transitToken = transitTokens[blockchain];
+
+        const poolBalance = await this.web3PublicService[blockchain].getTokenBalance(
+          BlockchainsInfo.getBlockchainType(blockchain) === 'solana' ? PDA_DELEGATE : address,
+          transitToken.address
+        );
+
+        return Web3Pure.fromWei(poolBalance, transitToken.decimals);
+      })
+    ).pipe(
+      map(poolBalances => {
+        return poolBalances.reduce((prev, curr) => {
+          return prev.plus(curr);
+        }, new BigNumber(0));
+      }),
+      tap(tvlMultichain => {
+        this._tvlMultichain$.next(tvlMultichain);
+      })
+    );
+  }
+
+  public getTvlStaking(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.activeStakingContract.address,
+        this.activeStakingContract.abi,
+        'totalRBCEntered'
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return of(new BigNumber(0));
+      }),
+      map(totalRbcEntered => {
+        const totalRbcEnteredInTokens = Web3Pure.fromWei(totalRbcEntered);
+        const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
+
+        return totalRbcEnteredInTokens.multipliedBy(stakingTokenUsdPrice);
+      }),
+      tap(tvlStaking => {
+        this._tvlStaking$.next(tvlStaking);
+      })
+    );
+  }
 }

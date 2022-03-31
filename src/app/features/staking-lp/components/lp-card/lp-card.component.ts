@@ -6,6 +6,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
+import { HeaderStore } from '@app/core/header/services/header.store';
 import { RoundStatus } from '../../models/round-status.enum';
 
 const STATUS_BADGE_TYPE = {
@@ -47,7 +48,9 @@ export class LpCardComponent implements OnInit {
 
   public readonly roundStatus = RoundStatus;
 
-  constructor() {}
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  constructor(private readonly headerStore: HeaderStore) {}
 
   ngOnInit(): void {
     return undefined;

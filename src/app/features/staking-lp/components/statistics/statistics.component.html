@@ -1,50 +1,65 @@
-<div class="statistics" [class.statistics_loading]="statisticsLoading$ | async">
-  <div class="statistics__col">
-    <div class="statistics__param">
-      <div class="statistics__param-label">
-        Your Total Balance
-        <span
-          class="statistics__param-hint"
-          (click)="toggleHint('balance')"
-          [inlineSVG]="'assets/images/icons/hint.svg'"
-          [tuiManualHint]="balanceHintTpl"
-          [tuiManualHintShow]="balanceHintShown"
-        ></span>
+<div
+  class="statistics"
+  [class.statistics_loading]="tvlAndTtvLoading$ | async"
+  *ngLet="{ tvlStaking: tvlStaking$ | async, tvlMultichain: tvlMultichain$ | async } as tvl"
+>
+  <div class="statistics__col" (click)="toggleHintsMobile()">
+    <tui-loader [overlay]="true" [loading]="balanceAndRewardsLoading$ | async">
+      <div class="statistics__param">
+        <div class="statistics__param-label">
+          Your Total Balance
+          <span
+            class="statistics__param-hint"
+            (click)="toggleHint('balance')"
+            [inlineSVG]="'assets/images/icons/hint.svg'"
+            [tuiManualHint]="balanceHintTpl"
+            [tuiManualHintShow]="balanceHintShown"
+          ></span>
+        </div>
+        <div class="statistics__param-value" *ngLet="totalBalanceInUsdc$ | async as totalBalance">
+          ${{ totalBalance ? (totalBalance | bigNumberFormat: 3:true) : '--.--' }}
+        </div>
       </div>
-      <div class="statistics__param-value" *ngLet="totalBalanceInUsdc$ | async as totalBalance">
-        ${{ totalBalance ? (totalBalance | bigNumberFormat: 3:true) : '--.--' }}
+      <div class="statistics__param">
+        <div class="statistics__param-label">
+          Your Total Rewards
+          <span
+            class="statistics__param-hint"
+            (click)="toggleHint('rewards')"
+            [inlineSVG]="'assets/images/icons/hint.svg'"
+            [tuiManualHint]="rewardsHintTpl"
+            [tuiManualHintShow]="rewardsHintShow"
+          ></span>
+        </div>
+        <div class="statistics__param-value" *ngLet="totalRewardsInUsdc$ | async as totalRewards">
+          ${{ totalRewards ? (totalRewards | bigNumberFormat: 3:true) : '--.--' }}
+        </div>
       </div>
-    </div>
-    <div class="statistics__param">
-      <div class="statistics__param-label">
-        Your Total Rewards
-        <span
-          class="statistics__param-hint"
-          (click)="toggleHint('rewards')"
-          [inlineSVG]="'assets/images/icons/hint.svg'"
-          [tuiManualHint]="rewardsHintTpl"
-          [tuiManualHintShow]="rewardsHintShow"
-        ></span>
-      </div>
-      <div class="statistics__param-value" *ngLet="totalRewardsInUsdc$ | async as totalRewards">
-        ${{ totalRewards ? (totalRewards | bigNumberFormat: 3:true) : '--.--' }}
-      </div>
-    </div>
+    </tui-loader>
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
       <div class="statistics__param-label">TVL</div>
-      <div class="statistics__param-value">$2,076,953</div>
+      <div
+        class="statistics__param-value"
+        *ngLet="tvl.tvlMultichain?.plus(tvl.tvlStaking) as totalTvl"
+      >
+        ${{ totalTvl ? (totalTvl | bigNumberFormat: 0) : '--.--' }}
+      </div>
     </div>
     <div class="statistics__param">
       <div class="statistics__param-label">TVL Multi-Chain</div>
-      <div class="statistics__param-value">$1,037,148</div>
+      <div class="statistics__param-value">
+        ${{ tvl.tvlMultichain ? (tvl.tvlMultichain | bigNumberFormat: 0) : '--.--' }}
+      </div>
     </div>
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
       <div class="statistics__param-label">TVL Staking</div>
-      <div class="statistics__param-value">$1,039,805</div>
+      <div class="statistics__param-value">
+        ${{ tvl.tvlStaking ? (tvl.tvlStaking | bigNumberFormat: 0) : '--.--' }}
+      </div>
     </div>
     <div class="statistics__param">
       <div
@@ -59,9 +74,13 @@
     </div>
   </div>
   <app-rotating-icon
+    *ngLet="{
+      balanceAndRewardsLoading: balanceAndRewardsLoading$ | async,
+      tvlAndTtvLoading: tvlAndTtvLoading$ | async
+    } as loading"
     class="statistics__refresh"
     (iconClick)="refreshStatistics()"
-    [rotating]="statisticsLoading$ | async"
+    [rotating]="loading.balanceAndRewardsLoading || loading.tvlAndTtvLoading"
   ></app-rotating-icon>
 </div>
 

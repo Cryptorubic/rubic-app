@@ -7,6 +7,10 @@
 
   background: #202622;
   border-radius: 20px;
+
+  @include b($tablet) {
+    padding: 16px;
+  }
 }
 
 .statuses {
@@ -15,6 +19,15 @@
   right: 12px;
 
   display: flex;
+
+  @include b($tablet) {
+    top: 10px;
+    right: 10px;
+
+    app-status-badge:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
     
   app-status-badge:not(:last-child) {
     display: block;
@@ -30,9 +43,21 @@
   align-items: center;
   margin-bottom: 24px;
 
+  @include b($tablet) {
+    margin-bottom: 18px;
+
+    font-size: 18px;
+    line-height: 21.6px;
+  }
+
   img {
     width: 34px;
     height: 34px;
+
+    @include b($tablet) {
+      width: 28px;
+      height: 28px;
+    }
   }
 
   img:first-child {
@@ -56,12 +81,29 @@
   &__param {
     @include font(18px, 22px, 500, white, 0.03em);
 
+    @include b($tablet) {
+      font-size: 14px;
+      line-height: 24px;
+
+      br {
+        display: block;
+      }
+    }
+
+    br {
+      display: none;
+    }
+
     &-label {
       color: grey;
     }
 
     &:not(:last-child) {
       margin-right: 38px;
+
+      @include b($tablet) {
+        margin-right: 30px;
+      }
     }
   }
 }
@@ -70,6 +112,16 @@
   position: absolute;
   right: 24px;
   bottom: 24px;
+
+  @include b($tablet) {
+    position: relative;
+    right: unset;
+    bottom: unset;
+
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+  }
 
   ::ng-deep {
     button {

@@ -11,6 +11,13 @@
   background: #181a19;
   border-radius: 30px;
 
+  @include b($tablet) {
+    flex-direction: column;
+    padding: 28px 12px 12px;
+
+    border-radius: 22px;
+  }
+
   &_loading {
     .statistics__param-value {
       opacity: 0.4;
@@ -21,12 +28,39 @@
     position: absolute;
     top: 22px;
     right: 22px;
+
+    @include b($tablet) {
+      top: 12px;
+      right: 12px;
+    }
   }
 
   &__col {
     display: flex;
     flex-direction: column;
     padding: 35px 60px;
+
+    @include b($tablet) {
+      flex-direction: row;
+      padding: 26px 22px;
+
+      &:first-child {
+        order: 3;
+        padding: 26px 22px;
+      }
+
+      &:nth-child(2) {
+        order: 1;
+        margin-bottom: 52px;
+        padding: 0 22px;
+      }
+
+      &:nth-child(3) {
+        order: 2;
+        margin-bottom: 26px;
+        padding: 0px 22px;
+      }
+    }
 
     &:first-child {
       align-items: center;
@@ -38,15 +72,30 @@
 
     .statistics__param:first-child {
       margin-bottom: 50px;
+
+      @include b($tablet) {
+        margin-bottom: 0;
+      }
     }
   }
 
   &__param {
+    @include b($tablet) {
+      width: 50%;
+    }
+
     &-label {
       @include font(18px, 22px, 500, rgba(255, 255, 255, 0.6));
       display: flex;
       align-items: center;
       margin-bottom: 12px;
+
+      @include b($tablet) {
+        margin-bottom: 4px;
+
+        font-size: 14px;
+        line-height: 17px;
+      }
 
       &_btn {
 
@@ -63,12 +112,23 @@
     &-value {
       @include font(26px, 31px, 600, var(--rubic-base-02));
       transition: 0.4s opacity ease-in-out;
+
+      @include b($tablet) {
+        font-size: 20px;
+        line-height: 24px;
+      }
     }
 
     &-hint {
+      display: flex;
+      align-items: center;
       margin-left: 8px;
 
       cursor: pointer;
+
+      @include b($tablet) {
+        margin-left: 3px;
+      }
     }
   }
 }

@@ -1,17 +1,24 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: block;
   width: fit-content;
 }
 
 .status-badge {
-  padding: 4px 8px;
 
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 20px;
+  @include font(18px, 20px, 500, #ffffff);
+  padding: 4px 8px;
   text-align: center;
 
   border-radius: 6px;
+
+  @include b($tablet) {
+    padding: 3px 7px;
+
+    font-size: 13px;
+    line-height: 20px;
+  }
 }
 
 .warning {

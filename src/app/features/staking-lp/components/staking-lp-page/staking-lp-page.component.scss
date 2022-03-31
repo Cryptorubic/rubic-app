@@ -4,7 +4,11 @@
   display: block;
   max-width: 1003px;
   margin: 0 auto;
-  padding-top: 58px;
+  padding-top: 38px;
+
+  @include b($tablet) {
+    padding-top: 3px;
+  }
 }
 
 .statistics {
@@ -32,7 +36,6 @@
 }
 
 .lp {
-  margin-bottom: 22px;
   padding: 32px;
 
   background: #181a19;
@@ -46,5 +49,40 @@
   &__card:not(:last-child) {
     display: block;
     margin-bottom: 12px;
+  }
+}
+
+@include b($tablet) {
+  .statistics {
+    margin-bottom: 12px;
+
+    border-radius: 22px;
+  }
+
+  .staking {
+    margin-bottom: 12px;
+    
+    &__title {
+      margin-bottom: 22px;
+
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+  
+  .lp {
+    &__title {
+      margin-bottom: 22px;
+
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+
+  .staking,
+  .lp {
+    padding: 22px;
+
+    border-radius: 22px;
   }
 }
