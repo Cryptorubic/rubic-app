@@ -9,6 +9,7 @@
 
   @include font(18px, 20px, 500, #ffffff);
   padding: 4px 8px;
+
   text-align: center;
 
   border-radius: 6px;
@@ -46,7 +47,13 @@
 }
 
 .inactive {
-  color: #fff;
+  color: #4762ef;
+  
+  background: rgba(71, 98, 239, 0.2);
 
-  background: rgba(255, 255, 255, 0.15);;
+  @include dark {
+    color: #fff;
+  
+    background: rgba(255, 255, 255, 0.15);
+  }
 }

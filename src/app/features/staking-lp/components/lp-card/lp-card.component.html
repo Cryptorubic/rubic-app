@@ -6,16 +6,20 @@
   </div>
   <div class="params">
     <div class="params__param">
-      <span class="params__param-label">APR:</span> <br />
-      {{ apr || '--.--' + '%' }}
+      <span class="params__param-label">APR: </span>
+      <span class="params__param-value">{{ apr || '--.--' + '%' }}</span>
     </div>
     <div class="params__param">
-      <span class="params__param-label">Pool Limit:</span> <br />
-      {{ poolLimit ? (poolLimit | bigNumberFormat) : '--.--' }} USDC
+      <span class="params__param-label">Pool Limit: </span>
+      <span class="params__param-value">
+        {{ poolLimit ? (poolLimit | bigNumberFormat) : '--.--' }} USDC
+      </span>
     </div>
     <div class="params__param">
-      <span class="params__param-label">Your Balance:</span> <br />
-      {{ balance ? (balance | bigNumberFormat: 3:true) : '--.--' }} USDC
+      <span class="params__param-label">Your Balance: </span>
+      <span class="params__param-value">
+        {{ balance ? (balance | bigNumberFormat: 3:true) : '--.--' }} USDC
+      </span>
     </div>
   </div>
   <div class="statuses">

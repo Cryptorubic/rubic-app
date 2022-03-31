@@ -5,7 +5,7 @@
 
   padding: 32px;
 
-  background: #202622;
+  background: var(--rubic-base-23);
   border-radius: 20px;
 
   @include b($tablet) {
@@ -36,7 +36,7 @@
 }
 
 .title {
-  @include font(22px, 26px, 600, white);
+  @include font(22px, 26px, 600, var(--rubic-base-02));
   position: relative;
 
   display: flex;
@@ -70,7 +70,7 @@
     position: absolute;
     left: 20px;
 
-    border: 3px solid #202622;
+    border: 3px solid var(--rubic-base-23);
     border-radius: 100px;
   }
 }
@@ -79,23 +79,18 @@
   display: flex;
 
   &__param {
-    @include font(18px, 22px, 500, white, 0.03em);
+    @include font(18px, 22px, 500, var(--rubic-base-02), 0.03em);
 
     @include b($tablet) {
+      display: flex;
+      flex-direction: column;
+
       font-size: 14px;
       line-height: 24px;
-
-      br {
-        display: block;
-      }
-    }
-
-    br {
-      display: none;
     }
 
     &-label {
-      color: grey;
+      color: var(--rubic-base-25);
     }
 
     &:not(:last-child) {

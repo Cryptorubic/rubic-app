@@ -20,12 +20,12 @@
   margin-bottom: 22px;
   padding: 32px;
 
-  background: #181a19;
+  background: var(--rubic-base-22);
   border-radius: 30px;
 
 
   &__title {
-    @include font(24px, 29px, 600, white);
+    @include font(24px, 29px, 600, var(--rubic-base-02));
     margin-bottom: 31px;  
   }
 
@@ -38,11 +38,11 @@
 .lp {
   padding: 32px;
 
-  background: #181a19;
+  background: var(--rubic-base-22);
   border-radius: 30px;
   
   &__title {
-    @include font(24px, 29px, 600, white);
+    @include font(24px, 29px, 600, var(--rubic-base-02));
     margin-bottom: 31px;  
   }
 

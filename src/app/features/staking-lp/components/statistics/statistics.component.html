@@ -1,23 +1,19 @@
-<div
-  class="statistics"
-  [class.statistics_loading]="tvlAndTtvLoading$ | async"
-  *ngLet="{ tvlStaking: tvlStaking$ | async, tvlMultichain: tvlMultichain$ | async } as tvl"
->
+<div class="statistics">
   <div class="statistics__col" (click)="toggleHintsMobile()">
-    <tui-loader [overlay]="true" [loading]="balanceAndRewardsLoading$ | async">
+    <tui-loader [overlay]="true" [showLoader]="balanceAndRewardsLoading$ | async">
       <div class="statistics__param">
         <div class="statistics__param-label">
           Your Total Balance
           <span
             class="statistics__param-hint"
-            (click)="toggleHint('balance')"
+            (click)="toggleHintDesktop('balance')"
             [inlineSVG]="'assets/images/icons/hint.svg'"
             [tuiManualHint]="balanceHintTpl"
             [tuiManualHintShow]="balanceHintShown"
           ></span>
         </div>
         <div class="statistics__param-value" *ngLet="totalBalanceInUsdc$ | async as totalBalance">
-          ${{ totalBalance ? (totalBalance | bigNumberFormat: 3:true) : '--.--' }}
+          ${{ totalBalance ? (totalBalance | bigNumberFormat: 2:true) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">
@@ -25,14 +21,14 @@
           Your Total Rewards
           <span
             class="statistics__param-hint"
-            (click)="toggleHint('rewards')"
+            (click)="toggleHintDesktop('rewards')"
             [inlineSVG]="'assets/images/icons/hint.svg'"
             [tuiManualHint]="rewardsHintTpl"
             [tuiManualHintShow]="rewardsHintShow"
           ></span>
         </div>
         <div class="statistics__param-value" *ngLet="totalRewardsInUsdc$ | async as totalRewards">
-          ${{ totalRewards ? (totalRewards | bigNumberFormat: 3:true) : '--.--' }}
+          ${{ totalRewards ? (totalRewards | bigNumberFormat: 2:true) : '--.--' }}
         </div>
       </div>
     </tui-loader>
@@ -42,23 +38,28 @@
       <div class="statistics__param-label">TVL</div>
       <div
         class="statistics__param-value"
-        *ngLet="tvl.tvlMultichain?.plus(tvl.tvlStaking) as totalTvl"
+        *ngLet="tvlTotal$ | async as tvlTotal"
+        [class.statistics__param-value_loading]="tvlAndTtvLoading$ | async"
       >
-        ${{ totalTvl ? (totalTvl | bigNumberFormat: 0) : '--.--' }}
+        ${{ tvlTotal ? (tvlTotal | bigNumberFormat: 0) : '--.--' }}
       </div>
     </div>
     <div class="statistics__param">
       <div class="statistics__param-label">TVL Multi-Chain</div>
-      <div class="statistics__param-value">
-        ${{ tvl.tvlMultichain ? (tvl.tvlMultichain | bigNumberFormat: 0) : '--.--' }}
+      <div class="statistics__param-value" *ngLet="tvlMultichain$ | async as tvlMultichain">
+        ${{ tvlMultichain ? (tvlMultichain | bigNumberFormat: 0) : '--.--' }}
       </div>
     </div>
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
       <div class="statistics__param-label">TVL Staking</div>
-      <div class="statistics__param-value">
-        ${{ tvl.tvlStaking ? (tvl.tvlStaking | bigNumberFormat: 0) : '--.--' }}
+      <div
+        class="statistics__param-value"
+        *ngLet="tvlStaking$ | async as tvlStaking"
+        [class.statistics__param-value_loading]="tvlAndTtvLoading$ | async"
+      >
+        ${{ tvlStaking ? (tvlStaking | bigNumberFormat: 0) : '--.--' }}
       </div>
     </div>
     <div class="statistics__param">

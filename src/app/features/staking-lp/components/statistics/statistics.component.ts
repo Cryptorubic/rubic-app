@@ -3,7 +3,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject } from 'rxjs';
-import { startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TtvFilters } from '../../models/ttv-filters.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
 
@@ -37,6 +37,8 @@ export class StatisticsComponent implements OnInit {
   public readonly tvlStaking$ = this.stakingLpService.tvlStaking$;
 
   public readonly tvlMultichain$ = this.stakingLpService.tvlMultichain$;
+
+  public readonly tvlTotal$ = this.stakingLpService.tvlTotal$;
 
   public readonly balanceAndRewardsLoading$ = this.stakingLpService.balanceAndRewardsLoading$;
 
@@ -78,7 +80,10 @@ export class StatisticsComponent implements OnInit {
 
     this.stakingLpService
       .getTvlMultichain()
-      .pipe(switchMap(() => this.stakingLpService.getTvlStaking()))
+      .pipe(
+        switchMap(() => this.stakingLpService.getTvlStaking()),
+        tap(() => this.stakingLpService.getTotalTvl())
+      )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
         this.cdr.detectChanges();
@@ -91,25 +96,28 @@ export class StatisticsComponent implements OnInit {
       .pipe(take(1))
       .subscribe(() => {
         this.stakingLpService.toggleLoading('balanceAndRewards', false);
-        this.cdr.detectChanges();
       });
 
     this.stakingLpService
       .getTvlMultichain()
-      .pipe(switchMap(() => this.stakingLpService.getTvlStaking()))
+      .pipe(
+        switchMap(() => this.stakingLpService.getTvlStaking()),
+        tap(() => this.stakingLpService.getTotalTvl())
+      )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
-        this.cdr.detectChanges();
       });
   }
 
-  public toggleHint(hintType: 'balance' | 'rewards'): void {
-    if (hintType === 'balance') {
-      this.balanceHintShown = !this.balanceHintShown;
-    }
+  public toggleHintDesktop(hintType: 'balance' | 'rewards'): void {
+    if (!this.headerStore.isMobile) {
+      if (hintType === 'balance') {
+        this.balanceHintShown = !this.balanceHintShown;
+      }
 
-    if (hintType === 'rewards') {
-      this.rewardsHintShow = !this.rewardsHintShow;
+      if (hintType === 'rewards') {
+        this.rewardsHintShow = !this.rewardsHintShow;
+      }
     }
   }
 
