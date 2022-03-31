@@ -222,7 +222,7 @@ export class SolanaWeb3PrivateService {
         null,
         owner,
         TOKENS.WSOL.mintAddress,
-        new BigNumber(amount + rent),
+        new BigNumber(amount).plus(rent),
         instructions,
         signers
       );
@@ -264,8 +264,7 @@ export class SolanaWeb3PrivateService {
         SystemProgram.createAccount({
           fromPubkey: owner,
           newAccountPubkey: publicKey,
-          lamports:
-            lamports ?? (await this._connection.getMinimumBalanceForRentExemption(layout.span)),
+          lamports,
           space: layout.span,
           programId
         })
@@ -496,13 +495,15 @@ export class SolanaWeb3PrivateService {
     const fromNative = fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
     const toNative = toCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
 
+    const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
+
     const fromAccount = {
       key: fromNative
         ? await this.createTokenAccountIfNotExist(
             null,
             owner,
             TOKENS.WSOL.mintAddress,
-            new BigNumber(amountIn).plus(1e7, 16),
+            new BigNumber(amountIn).plus(rent),
             instructions,
             signers
           )
@@ -518,7 +519,7 @@ export class SolanaWeb3PrivateService {
                 null,
                 owner,
                 TOKENS.WSOL.mintAddress,
-                new BigNumber(1e7, 16),
+                new BigNumber(rent),
                 instructions,
                 signers
               )
