@@ -49,9 +49,10 @@ export class TokensApiService {
       tokens
         .map((token: BackendToken) => ({
           ...token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-          price: token.usd_price,
-          usedInIframe: token.used_in_iframe
+          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
+          price: token.usdPrice,
+          usedInIframe: token.usedInIframe,
+          hasDirectPair: token.hasDirectPair
         }))
         .filter(token => token.address && token.blockchain)
     );
@@ -135,22 +136,11 @@ export class TokensApiService {
         image:
           'https://api.rubic.exchange/assets/xdai/0x0000000000000000000000000000000000000000/logo.png',
         rank: 1,
-        blockchain_network: 'xdai',
-        coingecko_id: '0',
-        usd_price: 1,
-        used_in_iframe: false
-      },
-      {
-        address: '5EbpXhW7t8ypBF3Q1X7odFaHjuh7XJfCohXR3VYAW32i',
-        name: 'MALL',
-        symbol: 'MALL',
-        decimals: 3,
-        image: '',
-        rank: 1,
-        blockchain_network: 'solana',
-        coingecko_id: '0',
-        usd_price: 1,
-        used_in_iframe: false
+        blockchainNetwork: 'xdai',
+        coingeckoId: '0',
+        usdPrice: 1,
+        usedInIframe: false,
+        hasDirectPair: true
       }
     ];
   }
@@ -179,7 +169,7 @@ export class TokensApiService {
     );
     return forkJoin(requests$).pipe(
       map(results => {
-        const backendTokens = results.flatMap(el => el.results || []);
+        const backendTokens = results.flatMap(el => el || []);
         const staticTokens = TokensApiService.fetchStaticTokens();
         return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
       })

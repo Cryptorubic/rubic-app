@@ -379,7 +379,11 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       )
       .subscribe(({ backendTokens, customToken }) => {
         if (backendTokens) {
-          this._tokensToShow$.next(backendTokens);
+          this._tokensToShow$.next(
+            this.isCrossChainSwap()
+              ? backendTokens.filter(el => el.hasDirectPair === null || el.hasDirectPair === true)
+              : backendTokens
+          );
         } else if (customToken) {
           this.customToken = customToken;
         } else {
@@ -399,7 +403,11 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
         ...token,
         favorite: favoriteTokens.some(favoriteToken => compareTokens(favoriteToken, token))
       }));
-      this._tokensToShow$.next(tokens);
+      this._tokensToShow$.next(
+        this.isCrossChainSwap()
+          ? tokens.filter(el => el.hasDirectPair === null || el.hasDirectPair === true)
+          : tokens
+      );
     });
   }
 
@@ -514,7 +522,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
             ),
           favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
             compareTokens(favoriteToken, blockchainToken)
-          )
+          ),
+          hasDirectPair: true
         };
       }
     }
@@ -588,11 +597,25 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
           }));
         const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
-        this._tokensToShow$.next(tokensWithFavorite);
+        this._tokensToShow$.next(
+          this.isCrossChainSwap()
+            ? tokensWithFavorite.filter(
+                el => el.hasDirectPair === null || el.hasDirectPair === true
+              )
+            : tokensWithFavorite
+        );
         this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
         this.tokensListUpdating = false;
         this.cdr.markForCheck();
       }
     );
+  }
+
+  public isCrossChainSwap(): boolean {
+    const secondBlockchain =
+      this.formType === 'from'
+        ? this.form.controls.toBlockchain.value
+        : this.form.controls.fromBlockchain.value;
+    return secondBlockchain !== this.blockchain;
   }
 }

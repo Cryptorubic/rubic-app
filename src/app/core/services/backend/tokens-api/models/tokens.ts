@@ -19,13 +19,14 @@ export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchain_network: FromBackendBlockchain;
+  blockchainNetwork: FromBackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
-  coingecko_id: string;
-  usd_price: number;
-  used_in_iframe: boolean;
+  coingeckoId: string;
+  usdPrice: number;
+  usedInIframe: boolean;
+  hasDirectPair: boolean;
 }
 
 export interface TokensBackendResponse {

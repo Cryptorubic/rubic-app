@@ -28,7 +28,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-api/models/tokens';
+import { BackendToken, ENDPOINTS } from '@core/services/backend/tokens-api/models/tokens';
 import { map } from 'rxjs/operators';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
@@ -225,11 +225,11 @@ export class RaydiumLiquidityManager {
   @Cacheable({ maxAge: 13_000 })
   private fetchSolanaBackendTokens(): Observable<{ [key: string]: SolanaTokenInfo }> {
     return this.httpClient
-      .get<TokensBackendResponse>(`${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
+      .get<BackendToken[]>(`${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
       .pipe(
-        map(tokensResponse => {
+        map(tokens => {
           return Object.fromEntries(
-            tokensResponse.results.map(el => [
+            tokens.map(el => [
               el.address,
               {
                 symbol: el.symbol,

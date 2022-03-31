@@ -386,9 +386,14 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
       connector.provider,
       new PublicKey(connector.address)
     );
-    const transactionRequests = allSignedTransactions.map(el => this.sendOneTransaction(el));
-    const transactionsHashes = await Promise.all(transactionRequests);
 
-    return transactionsHashes.pop();
+    await this.sendOneTransaction(allSignedTransactions[0]);
+    // Send trade transaction with interval.
+    return await new Promise(resolve => {
+      const wait = setTimeout(async () => {
+        clearTimeout(wait);
+        resolve(await this.sendOneTransaction(allSignedTransactions[1]));
+      }, 1000);
+    });
   }
 }
