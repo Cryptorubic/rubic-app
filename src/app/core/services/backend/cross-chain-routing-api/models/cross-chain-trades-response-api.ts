@@ -10,6 +10,11 @@ export interface CrossChainTokenApi {
 }
 
 export interface CrossChainTradesResponseApi {
+  count: number;
+  results: CrossChainTradeApi[];
+}
+
+export interface CrossChainTradeApi {
   walletAddress: string;
   fromToken: CrossChainTokenApi;
   toToken: CrossChainTokenApi;
