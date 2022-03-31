@@ -552,12 +552,18 @@ export class TokensService {
     const isAddress = query.length >= 42;
 
     if (network === 'NEAR') {
-      const tempName = this.tokensApiService.fetchQueryTokens({ network, address: query });
-      const tempName1 = this.tokensApiService.fetchQueryTokens({ network, symbol: query });
+      const fetchQueryTokensByAddress = this.tokensApiService.fetchQueryTokens({
+        network,
+        address: query
+      });
+      const fetchQueryTokensBySymbol = this.tokensApiService.fetchQueryTokens({
+        network,
+        symbol: query
+      });
 
-      return forkJoin([tempName, tempName1]).pipe(
-        map(([foundTokens1, foundTokens2]) => {
-          return foundTokens1.size > 0 ? foundTokens1 : foundTokens2;
+      return forkJoin([fetchQueryTokensByAddress, fetchQueryTokensBySymbol]).pipe(
+        map(([foundTokensByAddress, foundTokensBySymbol]) => {
+          return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
         })
       );
     }
