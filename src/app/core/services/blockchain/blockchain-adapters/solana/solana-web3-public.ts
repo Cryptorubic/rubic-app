@@ -387,13 +387,15 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
       new PublicKey(connector.address)
     );
 
+    const transactionsMsDelay = 3000;
+
     await this.sendOneTransaction(allSignedTransactions[0]);
     // Send trade transaction with interval.
     return await new Promise(resolve => {
       const wait = setTimeout(async () => {
         clearTimeout(wait);
         resolve(await this.sendOneTransaction(allSignedTransactions[1]));
-      }, 1000);
+      }, transactionsMsDelay);
     });
   }
 }

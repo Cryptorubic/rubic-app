@@ -31,6 +31,8 @@ import { RaydiumManagers } from '@features/instant-trade/services/instant-trade-
 import { HttpService } from '@core/services/http/http.service';
 import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
 import CustomError from '@core/errors/models/custom-error';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +59,20 @@ export class RaydiumService implements ItProvider {
   private readonly wrapManager: RaydiumWrapManager;
 
   public readonly routerManager: RaydiumRouterManager;
+
+  private static handleRaydiumError(err: TransactionError | null): CustomError {
+    if (typeof err === 'string') {
+      return new CustomError(err);
+    } else if ('InstructionError' in err) {
+      const error = err as { InstructionError: ({ [key: string]: number } | 0)[] };
+      const instructionError = error.InstructionError.find(el => el !== 0);
+      const [message, code] = Object.entries(instructionError)[0];
+      const resultError = new CustomError(`Error: ${message}`);
+      resultError.code = code || 0;
+      return resultError;
+    }
+    return new CustomError('Unknown Error');
+  }
 
   constructor(
     private readonly httpClient: HttpService,
@@ -180,6 +196,19 @@ export class RaydiumService implements ItProvider {
     trade: InstantTrade,
     options: { onConfirm?: (hash: string) => Promise<void> }
   ): Promise<Partial<TransactionReceipt>> {
+    const solBalance = Web3Pure.fromWei(
+      await this.blockchainAdapter.getTokenOrNativeBalance(
+        this.walletConnectorService.address,
+        NATIVE_SOLANA_MINT_ADDRESS
+      ),
+      9
+    );
+    const limitValue = '0.05';
+    if (solBalance.lte(limitValue)) {
+      throw new CustomError(
+        `Insufficient SOL balance. You have to have at least ${limitValue} SOL to make a transaction.`
+      );
+    }
     const tradeData = await this.getTrade(trade);
     const hash = await this.blockchainAdapter.signAndSendRaydiumTransaction(
       tradeData,
@@ -192,7 +221,7 @@ export class RaydiumService implements ItProvider {
         if (!signatureResult.err) {
           resolve(hash);
         } else {
-          reject(this.handleRaydiumError(signatureResult.err));
+          reject(RaydiumService.handleRaydiumError(signatureResult.err));
         }
       });
     });
@@ -201,20 +230,6 @@ export class RaydiumService implements ItProvider {
       from: this.walletConnectorService.address,
       transactionHash: hash
     };
-  }
-
-  private handleRaydiumError(err: TransactionError | null): CustomError {
-    if (typeof err === 'string') {
-      return new CustomError(err);
-    } else if ('InstructionError' in err) {
-      const error = err as { InstructionError: ({ [key: string]: number } | 0)[] };
-      const instructionError = error.InstructionError.find(el => el !== 0);
-      const [message, code] = Object.entries(instructionError)[0];
-      const resultError = new CustomError(`Error: ${message}`);
-      resultError.code = code || 0;
-      return resultError;
-    }
-    return new CustomError('Unknown Error');
   }
 
   public getAllowance(_tokenAddress: string): Observable<BigNumber> {
