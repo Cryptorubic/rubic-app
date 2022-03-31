@@ -194,8 +194,8 @@ const networks: ReadonlyArray<Network> = [
     id: 42,
     name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
     label: 'Ethereum',
-    scannerUrl: 'https://kovan.etherscan.io/',
-    rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    scannerUrl: 'https://ropsten.etherscan.io/',
+    rpcLink: 'https://ropsten.infura.io/v3/6404468fce8b4bd0b248c0aa96fa8130',
     additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/kovan.png',
     nativeCoin: {

@@ -57,9 +57,9 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
+  public [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: EthLikeWeb3Public = null;
+  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: EthLikeWeb3Public = null;
 

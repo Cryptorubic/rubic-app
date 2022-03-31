@@ -48,7 +48,7 @@
 
   <tbody tuiTbody [data]="table.visibleData">
     <ng-container *ngFor="let item of table.visibleData">
-      <tr tuiTr *tuiLet="getTableTrade(item) as trade">
+      <tr tuiTr *tuiLet="item | functionCall: getTableTrade:this as trade">
         <ng-container *ngIf="trade">
           <td *tuiCell="'Status'" tuiTd class="status">
             <a

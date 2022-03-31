@@ -64,7 +64,7 @@ html.dark {
   --referral-banner-bg: linear-gradient(97.16deg, #1f2021 5.58%, #1c1c1d 53%, #252d33 94.42%);
 
   &_colored {
-    background-color: $backgrond-black;
+    background-color: $background-black;
   }
 
   body {
@@ -127,7 +127,7 @@ html.dark {
       width: 800px;
       height: 800px;
 
-      background-image: radial-gradient(var(--primary-color) 0%, $backgrond-black 70%, $backgrond-black 100%);
+      background-image: radial-gradient(var(--primary-color) 0%, $background-black 70%, $background-black 100%);
 
       filter: blur(50px);
 

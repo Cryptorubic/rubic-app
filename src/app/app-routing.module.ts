@@ -45,6 +45,13 @@ const routes: Routes = [
       import('./features/staking-lp/staking-lp.module').then(m => m.StakingLpModule)
   },
   {
+    path: ROUTE_PATH.LIQUIDITY_PROVIDING,
+    loadChildren: () =>
+      import('./features/liquidity-providing/liquidity-providing.module').then(
+        m => m.LiquidityProvidingModule
+      )
+  },
+  {
     path: ROUTE_PATH.PROMOTION,
     loadChildren: () => import('./features/promotion/promotion.module').then(m => m.PromotionModule)
   },

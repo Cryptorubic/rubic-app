@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  max-width: 1003px;
+  padding-top: 41px;
+}
+
+.progress-and-info {
+  display: flex;
+  margin-bottom: 22px;
+
+  &__progress {
+    display: block;
+    width: 100%;
+    max-width: 442px;
+    height: 246px;
+    margin-right: 22px;
+  }
+
+  &__info {
+    display: block;
+    width: 100%;
+    max-width: 539px;
+    height: 246px;
+  }
+}

@@ -34,7 +34,8 @@
     "switchTo": "Переключиться на сеть {{ networkName }}",
     "tradeVia": "Торговать через ",
     "bridge": "Bridge",
-    "transactionDetails": "Детали транзакции"
+    "transactionDetails": "Детали транзакции",
+    "approveToken": "Утвердить {{symbol}}"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -310,6 +311,9 @@
     "blockchainsHint": "Больше блокчейнов",
     "tradingNotAvailable": "Трэйдинг недоступен",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
+  },
+  "lpProviding": {
+    "liquidityTime": "Liquidity time"
   },
   "staking": {
     "stake": {

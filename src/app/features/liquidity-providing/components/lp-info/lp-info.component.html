@@ -1,0 +1,33 @@
+<div class="info-wrapper">
+  <tui-loader [overlay]="true" [showLoader]="infoLoading$ | async">
+    <div class="info">
+      <div class="info__stat">
+        <div class="info__stat-title">Balance</div>
+        <div class="info__stat-data">
+          <ng-container *ngLet="balance$ | async as balance">
+            {{ balance || 0 | percent }} of Pool
+          </ng-container>
+        </div>
+      </div>
+      <div class="info__stat">
+        <div class="info__stat-title">APR</div>
+        <div class="info__stat-data">{{ (apr$ | async) || 0 | percent }}</div>
+      </div>
+      <div class="info__stat">
+        <div class="info__stat-title">Collect now</div>
+        <div class="info__stat-data">
+          <ng-container *ngLet="amountToCollect$ | async as amountToCollect">
+            {{ (amountToCollect | bigNumberFormat: 2:true) || 0 }} USDC
+          </ng-container>
+          <!-- {{ (amountToCollect$ | async | bigNumberFormat: 2:true) || 0 }} USDC -->
+        </div>
+      </div>
+      <div class="info__stat">
+        <div class="info__stat-title">Total collected</div>
+        <div class="info__stat-data">
+          {{ (totalCollectedAmount$ | async | bigNumberFormat: 2:true) || 0 }} USDC
+        </div>
+      </div>
+    </div>
+  </tui-loader>
+</div>

@@ -1,0 +1,34 @@
+<tui-loader [showLoader]="depositsLoading$ | async" [overlay]="true">
+  <div class="deposits">
+    <div class="deposits__head">
+      <div class="deposits__title">Your Deposits</div>
+      <div class="deposits__actions">
+        <app-rubic-button
+          class="deposits__actions-create"
+          appearance="secondary"
+          (click)="navigateToDepositForm(false)"
+        >
+          Create deposit
+        </app-rubic-button>
+        <app-rubic-button
+          appearance="secondary"
+          class="deposits__actions-create"
+          (click)="navigateToDepositForm(true)"
+          *ngIf="isWhitelistUser$ | async"
+        >
+          Enter whitelist
+        </app-rubic-button>
+      </div>
+    </div>
+    <div class="deposits__list">
+      <ng-container *ngFor="let deposit of deposits$ | async">
+        <app-deposit-card
+          [deposit]="deposit"
+          [loading]="(processingTokenId$ | async) === deposit.tokenId"
+          (onCollectRewards)="collectReward(deposit.tokenId)"
+          (onRemoveDeposit)="removeDeposit(deposit.tokenId)"
+        ></app-deposit-card>
+      </ng-container>
+    </div>
+  </div>
+</tui-loader>
