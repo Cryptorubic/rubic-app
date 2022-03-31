@@ -90,8 +90,9 @@
     class="hint"
     *ngLet="{ stakingRewards: stakingRewards$ | async, lpRewards: lpRewards$ | async } as rewards"
   >
-    Staking: {{ rewards.stakingRewards | bigNumberFormat: 2:true || '--.--' }} RBC <br />LP:
-    {{ rewards.lpRewards | bigNumberFormat: 2:true || '--.--' }} USDC
+    Staking:
+    {{ rewards.stakingRewards ? (rewards.stakingRewards | bigNumberFormat: 2:true) : '--.--' }} RBC
+    <br />LP: {{ rewards.lpRewards ? (rewards.lpRewards | bigNumberFormat: 2:true) : '--.--' }} USDC
   </div>
 </ng-template>
 
@@ -100,8 +101,10 @@
     class="hint"
     *ngLet="{ stakingBalance: stakingBalance$ | async, lpBalance: lpBalance$ | async } as balances"
   >
-    Staking: {{ balances.stakingBalance | bigNumberFormat: 2:true || '--.--' }} RBC <br />
-    LP: {{ balances.lpBalance | bigNumberFormat: 2:true || '--.--' }} USDC
+    Staking:
+    {{ balances.stakingBalance ? (balances.stakingBalance | bigNumberFormat: 2:true) : '--.--' }}
+    RBC <br />
+    LP: {{ balances.lpBalance ? (balances.lpBalance | bigNumberFormat: 2:true) : '--.--' }} USDC
   </div>
 </ng-template>
 

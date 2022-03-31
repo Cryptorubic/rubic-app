@@ -210,6 +210,24 @@ export class StakingLpService {
     return of(new BigNumber(0));
   }
 
+  public resetTotalBalanceAndRewards(): void {
+    this._lpBalance$.next(undefined);
+
+    this._stakingBalance$.next(undefined);
+
+    this._stakingRewards$.next(undefined);
+
+    this._lpRewards$.next(undefined);
+
+    this._totalBalanceInUsdc$.next(undefined);
+
+    this._totalRewardsInUsdc$.next(undefined);
+  }
+
+  public resetStakingBalances(): void {
+    this._stakingBalanceByRound$.next({ roundOne: undefined, roundTwo: undefined });
+  }
+
   public toggleLoading(dataType: 'balanceAndRewards' | 'tvlAndTtv', value: boolean): void {
     if (dataType === 'balanceAndRewards') {
       this._balanceAndRewardsLoading$.next(value);

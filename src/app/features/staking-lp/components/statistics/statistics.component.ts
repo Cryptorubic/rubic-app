@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TtvFilters } from '../../models/ttv-filters.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
@@ -70,6 +70,14 @@ export class StatisticsComponent implements OnInit {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
+        switchMap(address => {
+          if (address === null) {
+            this.stakingLpService.resetTotalBalanceAndRewards();
+            return EMPTY;
+          } else {
+            return of(null);
+          }
+        }),
         switchMap(() => this.stakingLpService.getTotalBalanceAndRewards()),
         takeUntil(this.destroy$)
       )

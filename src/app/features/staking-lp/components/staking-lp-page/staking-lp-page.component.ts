@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { EMPTY, of } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { RoundStatus } from '../../models/round-status.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
@@ -27,6 +28,14 @@ export class StakingLpPageComponent implements OnInit {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
+        switchMap(address => {
+          if (address === null) {
+            this.stakingLpService.resetStakingBalances();
+            return EMPTY;
+          } else {
+            return of(null);
+          }
+        }),
         switchMap(() => this.stakingLpService.getStakingBalanceByRound())
       )
       .subscribe(() => {
