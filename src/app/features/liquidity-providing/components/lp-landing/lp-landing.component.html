@@ -1,54 +1,29 @@
-<div class="lp-steps">
-  <div class="lp-steps__title">Create your first Deposit now!</div>
-
-  <div class="lp-steps__steps">
-    <div class="step">
-      <div class="step__icon">
-        <img src="assets/images/icons/lp-providing/lp-step-1.png" alt="" />
-      </div>
-      <div class="step__text">
-        <span class="highlight">Buy RBC</span> to get profit and participate in our
-        <span class="hightlight">staking</span>
-      </div>
+<div class="landing">
+  <div class="landing__step">
+    <div class="landing__step-icon">
+      <img src="assets/images/icons/lp-providing/lp-step-1.png" />
     </div>
-    <div class="step">
-      <div class="step__icon">
-        <img src="assets/images/icons/lp-providing/lp-step-2.png" alt="" />
-      </div>
-      <div class="step__text">Stake RBC/USDC to get a rewards in BRBC</div>
-    </div>
-    <div class="step">
-      <div class="step__icon">
-        <img src="assets/images/icons/lp-providing/lp-step-3.png" alt="" />
-      </div>
-      <div class="step__text">
-        <span class="highlight">0.5% of our 0.6%</span> Multi-Chain fee will be used to
-        <span class="highlight">buyback</span>
-      </div>
-    </div>
+    <div class="landing__step-text">Buy RBC to get profit and participate in our staking</div>
   </div>
-
-  <ng-container *ngIf="needLogin$ | async; else createDeposit">
-    <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
-      Connect wallet
-    </app-rubic-button>
-  </ng-container>
-
-  <ng-template #createDeposit>
-    <app-rubic-button
-      class="lp-steps__create"
-      appearance="secondary"
-      (click)="navigateToDepositForm(true)"
-      *ngIf="isWhitelistUser$ | async"
-    >
-      Enter whitelist
-    </app-rubic-button>
-    <app-rubic-button
-      class="lp-steps__create"
-      appearance="secondary"
-      (click)="navigateToDepositForm(false)"
-    >
-      Create deposit
-    </app-rubic-button>
-  </ng-template>
+  <div class="landing__step">
+    <div class="landing__step-icon">
+      <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+    </div>
+    <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
+  </div>
 </div>
+<ng-container *ngIf="needLogin$ | async; else createDeposit">
+  <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
+    Connect wallet
+  </app-rubic-button>
+</ng-container>
+
+<ng-template #createDeposit>
+  <app-rubic-button
+    class="lp-steps__create"
+    appearance="secondary"
+    (click)="navigateToDepositForm(false)"
+  >
+    Create deposit
+  </app-rubic-button>
+</ng-template>

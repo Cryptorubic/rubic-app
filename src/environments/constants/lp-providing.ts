@@ -20,7 +20,8 @@ export const LP_PROVIDING_CONFIG_PROD = {
       symbol: 'USDC',
       image: 'assets/images/icons/lp-providing/usdc.svg',
       address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      decimals: 18
     }
   },
   whitelist: [

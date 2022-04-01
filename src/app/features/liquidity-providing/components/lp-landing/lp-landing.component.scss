@@ -1,74 +1,44 @@
 @use 'src/scss/core' as *;
 
-.lp-steps {
+.landing {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
-  padding: 18px 22px 42px;
+  margin-bottom: 42px;
+  padding: 33px 50px;
 
-  background: #181a19;
-  border-radius: 30px;
+  border: 1px solid #262927;
+  border-radius: 20px;
 
-  &__title {
-    margin-bottom: 30px;
-
-    color: #fff;
-    font-weight: 500;
-    font-size: 22px;
-    line-height: 26px;
-  }
-
-  &__steps {
+  &__step {
     display: flex;
-    margin-bottom: 38px;
-  }
+    align-items: center;
 
-  .step {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    max-width: 305px;
-    padding: 24px;
-
-    background: linear-gradient(0deg, #202622, #202622);
-    border-radius: 20px;
-
-    &:not(:last-child) {
-      margin-right: 22px;
+    &:first-child {
+      margin-right: 52px;
     }
 
-    .highlight {
-      color: #4aa956;
-    }
+    &-icon {
+      width: 95px;
+      height: 95px;
+      margin-right: 15px;
 
-    &__icon {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 26px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.16) 0%, #000 100%);
 
       img {
-        width: 98px;
-        height: 98px;
-
-        border-radius: 26px;
+        width: 100%;
+        height: 100%;
       }
     }
 
-    &__text {
-      color: #fff;
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 23px;
-      text-align: center;
+    &-text {
+      @include font(18px, 23px, 600, var(--rubic-base-02));
     }
   }
+}
 
-  &__create {
-    display: block;
-    max-width: 480px;
-    margin: 0 auto;
-
-    &:not(first-child) {
-      margin-top: 10px;
-    }
-  }
+app-rubic-button {
+  display: block;
+  width: 696px;
+  margin: 0 auto;
 }

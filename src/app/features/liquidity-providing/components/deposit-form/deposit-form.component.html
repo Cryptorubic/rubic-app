@@ -1,6 +1,6 @@
 <div class="deposit-form">
   <img
-    src="assets/images/icons/back.svg"
+    src="assets/images/icons/arrow/long-arrow-left.svg"
     alt="Back"
     (click)="navigateBack()"
     class="deposit-form__back"
@@ -8,36 +8,7 @@
   <div class="deposit-form__header">
     <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
     <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
-    BRBC / USDC
-  </div>
-  <div class="asset">
-    <div class="asset__symbol-amount">
-      <div class="asset__symbol">
-        <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
-        USDC
-      </div>
-      <input
-        type="text"
-        class="asset__amount"
-        name="usdc-amount"
-        autocomplete="off"
-        placeholder="0.0"
-        appTokenAmount
-        [decimals]="18"
-        [formControl]="usdcAmountCtrl"
-      />
-    </div>
-    <div class="asset__balance-usd-price">
-      <div class="asset__balance" *ngLet="usdcBalance$ | async as usdcBalance">
-        You have {{ usdcBalance ? (usdcBalance | bigNumberFormat: 2:true) : 0 }}
-        <span class="asset__balance-max" (click)="setMaxTokenAmount(usdcBalance, poolToken.USDC)">
-          MAX
-        </span>
-      </div>
-      <div class="asset__usd-price" *ngIf="usdcAmountUsdPrice$ | async as usdPrice">
-        {{ usdPrice }}$
-      </div>
-    </div>
+    Deposit
   </div>
   <div class="asset">
     <div class="asset__symbol-amount">
@@ -68,43 +39,42 @@
       </div>
     </div>
   </div>
-  <div class="hint">
-    <div class="hint__icon">
-      <img src="assets/images/icons/info-warning.svg" alt="Info" />
-    </div>
-    <div class="hint__text">
-      If you take the deposit ahead of time, a penalty of 10% will be assigned
-    </div>
-  </div>
-  <div class="lp-time">
-    <div class="lp-time__header">
-      <div class="lp-time__header-text">
-        {{ 'lpProviding.liquidityTime' | translate }}
-        <span class="lp-time__header-days">{{ liquidityPeriodCtrl.value }} Days</span>
+  <div class="asset-and-hint" [class.asset-and-hint_opened]="usdcDepositOpened$ | async">
+    <div class="asset">
+      <div class="asset__symbol-amount">
+        <div class="asset__symbol">
+          <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+          USDC
+        </div>
+        <input
+          type="text"
+          class="asset__amount"
+          name="usdc-amount"
+          autocomplete="off"
+          placeholder="0.0"
+          appTokenAmount
+          [decimals]="18"
+          [formControl]="usdcAmountCtrl"
+        />
       </div>
-      <div class="lp-time__header-hotkeys">
-        <ng-container *ngFor="let key of liquidityPeriodHotkeys">
-          <tui-tag
-            status="custom"
-            class="tag"
-            [class.tag_selected]="liquidityPeriodInMonth[key] === liquidityPeriodCtrl.value"
-            [value]="key"
-            (click)="setLiquidityTimeHotkey(key)"
-          ></tui-tag>
-        </ng-container>
+      <div class="asset__balance-usd-price">
+        <div class="asset__balance"></div>
+        <div class="asset__usd-price">300$</div>
       </div>
     </div>
-    <tui-slider
-      class="lp-time__slider"
-      [formControl]="liquidityPeriodCtrl"
-      [max]="180"
-      [steps]="180"
-    ></tui-slider>
+    <div class="hint">
+      <div class="hint__icon">
+        <img src="assets/images/icons/info-warning.svg" alt="Info" />
+      </div>
+      <div class="hint__text">
+        If you take the deposit ahead of time, a penalty of 10% will be assigned
+      </div>
+    </div>
   </div>
   <app-deposit-button
+    class="deposit"
     [usdcAmount$]="usdcAmount$"
     [brbcAmount$]="brbcAmount$"
-    [liquidityPeriod$]="liquidityPeriod$"
     [loading]="buttonLoading$ | async"
     (onLogin)="login()"
     (onApprove)="approveTokens($event)"

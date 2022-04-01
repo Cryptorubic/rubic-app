@@ -6,18 +6,18 @@ import { DepositButtonComponent } from './components/deposit-button/deposit-butt
 import { DepositCardComponent } from './components/deposit-card/deposit-card.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
-import { TuiProgressModule, TuiSliderModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiProgressModule, TuiSliderModule, TuiTagModule } from '@taiga-ui/kit';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LpPageComponent } from './components/lp-page/lp-page.component';
-import { LpProgressComponent } from './components/lp-progress/lp-progress.component';
-import { LpInfoComponent } from './components/lp-info/lp-info.component';
 import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { LiquidityProvidingNotificationsService } from './services/liquidity-providing-notifications.service';
 import { LiquidityProvidingModalsService } from './services/liquidity-providing-modals.service';
 import { DepositModalComponent } from './components/deposit-modal/deposit-modal.component';
 import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
+import { LpStatisticsComponent } from './components/lp-statistics/lp-statistics.component';
+import { ProgressComponent } from './components/progress/progress.component';
 
 @NgModule({
   declarations: [
@@ -25,12 +25,12 @@ import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-mod
     DepositCardComponent,
     DepositFormComponent,
     LpPageComponent,
-    LpProgressComponent,
-    LpInfoComponent,
     LpLandingComponent,
     DepositsComponent,
     DepositModalComponent,
-    WithdrawModalComponent
+    WithdrawModalComponent,
+    LpStatisticsComponent,
+    ProgressComponent
   ],
   imports: [
     CommonModule,
@@ -42,8 +42,7 @@ import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-mod
     TuiLoaderModule,
     TuiSliderModule,
     TuiProgressModule,
-    TuiTagModule,
-    TuiToggleModule
+    TuiTagModule
   ],
   exports: [],
   providers: [

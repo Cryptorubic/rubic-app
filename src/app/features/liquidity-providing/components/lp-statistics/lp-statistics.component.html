@@ -1,0 +1,59 @@
+<div
+  class="statistics"
+  *ngLet="statisticsLoading$ | async as loading"
+  [class.statistics_loading]="loading"
+>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">APR</div>
+      <div class="statistics__param-value" *ngLet="apr$ | async as totalBalance">
+        {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }}%
+      </div>
+    </div>
+    <div class="statistics__param">
+      <app-progress
+        [label]="'Total Staked (BRBC)'"
+        [value]="totalStaked$ | async"
+        [size]="poolSize"
+        [loading]="loading"
+      ></app-progress>
+    </div>
+  </div>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">Balance</div>
+      <div class="statistics__param-value" *ngLet="balance$ | async as balance">
+        {{ balance ? (balance | percent) : '--.--' }}%
+      </div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">Total Collected</div>
+      <div class="statistics__param-value" *ngLet="collectedRewards$ | async as collectedRewards">
+        {{ collectedRewards ? (collectedRewards | bigNumberFormat: 0) : '--.--' }} USDC
+      </div>
+    </div>
+  </div>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">Collect Now</div>
+      <div class="statistics__param-value" *ngLet="rewardsToCollect$ | async as rewardsToCollect">
+        {{ rewardsToCollect ? (rewardsToCollect | bigNumberFormat: 0) : '--.--' }} USDC
+      </div>
+    </div>
+    <div class="statistics__param">
+      <app-progress
+        [label]="'You Staked (BRBC)'"
+        [value]="usersTotalStaked$ | async"
+        [size]="maxEnterAmount"
+        [needLogin]="needLogin$ | async"
+        [loading]="loading"
+      ></app-progress>
+    </div>
+  </div>
+  <app-rotating-icon
+    class="statistics__refresh"
+    [rotating]="loading"
+    (iconClick)="refreshStatistics()"
+  ></app-rotating-icon>
+  <div class="statistics__end"><span>End of Round: </span>March 24, 2022 at 21:23 UTC</div>
+</div>

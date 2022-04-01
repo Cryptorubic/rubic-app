@@ -8,13 +8,13 @@
   margin: 0 auto;
   padding: 40px 36px;
 
-  background: #181a19;
-  border-radius: $border-radius-2;
+  background: var(--rubic-base-22);
+  border-radius: 30px;
 
   &__back {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 46px;
+    left: 37px;
 
     width: 22px;
 
@@ -52,20 +52,10 @@
       }
     }
   }
-
-  &__divider {
-    width: 100%;
-    height: 1px;
-
-    background: #3e413f;
-  }
 }
 
 .asset {
-  margin-bottom: 42px;
-  padding-bottom: 42px;
-
-  border-bottom: 1px solid #3e413f;
+  padding-bottom: 38px;
 
   &__symbol-amount {
     display: flex;
@@ -80,7 +70,7 @@
     padding: 10px 20px;
 
     font-size: 24px;
-    line-height: 30px;
+    line-height: 29px;
 
     background: #202622;
     border-radius: 100px;
@@ -129,6 +119,24 @@
   }
 }
 
+.asset-and-hint {
+  max-height: 0;
+  overflow: hidden;
+
+  transition: max-height 0.4s ease-in-out;
+
+  &_opened {
+    max-height: 300px;
+  }
+
+  .asset {
+    padding-top: 38px;
+    padding-bottom: 46px;
+
+    border-top: 1px solid #3e413f;
+  }
+}
+
 .hint {
   display: flex;
   margin-bottom: 22px;
@@ -147,75 +155,3 @@
   }
 }
 
-.lp-time {
-  margin-bottom: 60px;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 29px;
-
-    &-days {
-      margin-left: 12px;
-      padding: 9px 14px;
-
-      color: #fff;
-      font-weight: 500;
-      font-size: 22px;
-      line-height: 20px;
-
-      background: #202622;
-      border-radius: 100px;
-    }
-
-    &-text {
-      font-weight: 500;
-      font-size: 24px;
-      line-height: 30px;
-    }
-        
-    &-hotkeys {
-      display: flex;
-      align-items: center;
-
-      tui-tag {
-        &:not(:last-child) {
-          margin-right: 8px;
-        }
-
-        &.tag {
-          display: flex;
-          align-items: center;
-          height: 44px;
-          padding: 12px 15px;
-
-          font-weight: 500;
-          font-size: 18px;
-          line-height: 20px;
-          letter-spacing: 2.5px;
-          text-transform: uppercase;
-
-          background: transparent;
-          border: 1px solid transparent;
-          border-radius: 100px;
-          cursor: pointer;
-
-          &_selected {
-            border: 1px solid $rubic-primary;
-          }
-
-          ::ng-deep .tag {
-            padding: 0;
-          }
-        }
-      }
-    }
-  }
-
-  &__slider ::ng-deep {
-    .dot:active {
-      background-color: $rubic-primary;
-    }
-  }
-}

@@ -1,0 +1,152 @@
+@use 'src/scss/core'as *;
+
+.statistics {
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+
+
+  background: var(--rubic-base-22);
+  border-radius: 30px;
+
+  @include b($tablet) {
+    flex-direction: column;
+    padding: 28px 12px 12px;
+
+    border-radius: 22px;
+  }
+
+  &__refresh {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+
+    @include b($tablet) {
+      top: 12px;
+      right: 12px;
+    }
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+    padding-top: 35px;
+    padding-bottom: 58px;
+
+    border: 2px solid transparent;
+
+    @include b($tablet) {
+      flex-direction: row;
+      padding: 26px 22px;
+
+      &:first-child {
+        order: 3;
+        padding: 26px 22px;
+      }
+
+      &:nth-child(2) {
+        order: 1;
+        margin-bottom: 52px;
+        padding: 0 22px;
+      }
+
+      &:nth-child(3) {
+        order: 2;
+        margin-bottom: 26px;
+        padding: 0px 22px;
+      }
+    }
+
+    &:nth-child(2) {
+      margin-right: 100px;
+    }
+
+    &:first-child {
+      min-width: 340px;
+      margin-right: 50px;
+      padding-right: 50px;
+      padding-left: 50px;
+
+      border-color: $rubic-primary;
+      border-radius: 18px;
+    }
+
+    .statistics__param:first-child {
+      margin-bottom: 50px;
+
+      @include b($tablet) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__param {
+    @include b($tablet) {
+      width: 50%;
+    }
+
+    &-label {
+      @include font(18px, 22px, 500, var(--rubic-base-24));
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+
+      @include b($tablet) {
+        margin-bottom: 4px;
+
+        font-size: 14px;
+        line-height: 17px;
+      }
+
+      &_btn {
+
+        cursor: pointer;
+
+        img {
+          width: 15px;
+          height: 9px;
+          margin-left: 10px;
+        }
+      }
+    }
+
+    &-value {
+      @include font(26px, 31px, 600, var(--rubic-base-02));
+      transition: 0.4s opacity ease-in-out;
+
+      @include b($tablet) {
+        font-size: 20px;
+        line-height: 24px;
+      }
+
+      &_loading {
+        opacity: 0.4;
+      }
+    }
+
+    &-hint {
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+
+      cursor: pointer;
+
+      @include b($tablet) {
+        margin-left: 3px;
+      }
+    }
+  }
+
+  &__end {
+    @include font(18px, 22px, 500, var(--rubic-base-02));
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    span {
+      color: var(--rubic-base-24);
+    }
+  }
+}

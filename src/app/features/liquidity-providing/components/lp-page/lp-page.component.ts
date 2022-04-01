@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
@@ -32,7 +33,8 @@ export class LpPageComponent implements OnInit {
     private readonly service: LiquidityProvidingService,
     private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -48,5 +50,9 @@ export class LpPageComponent implements OnInit {
 
   public login(): void {
     this.walletsModalService.open().subscribe();
+  }
+
+  public navigateBack(): void {
+    this.router.navigate(['staking-lp']);
   }
 }

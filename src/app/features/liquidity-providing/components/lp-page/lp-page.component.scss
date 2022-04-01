@@ -1,25 +1,35 @@
-:host {
-  display: block;
-  max-width: 1003px;
+@use 'src/scss/core'as *;
+
+:host {display: block;
   padding-top: 41px;
 }
 
-.progress-and-info {
+.wrapper {
+  display: block;
+  max-width: 1003px;
+  margin: 0 auto;
+  padding: 32px 22px 42px;
+
+  background: var(--rubic-base-22);
+  border-radius: 30px;
+}
+
+.title {
   display: flex;
-  margin-bottom: 22px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 34px;
 
-  &__progress {
-    display: block;
-    width: 100%;
-    max-width: 442px;
-    height: 246px;
-    margin-right: 22px;
+  &__back {
+    cursor: pointer;
   }
 
-  &__info {
-    display: block;
-    width: 100%;
-    max-width: 539px;
-    height: 246px;
+  &__round {
+    @include font(20px, 24px, 600, white);
   }
+}
+
+.statistics {
+  display: block;
+  margin-bottom: 36px;
 }

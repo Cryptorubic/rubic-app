@@ -1,12 +1,20 @@
-<div class="progress-and-info">
-  <app-lp-progress class="progress-and-info__progress"></app-lp-progress>
-  <app-lp-info class="progress-and-info__info"></app-lp-info>
-</div>
-<ng-container *ngIf="showDeposits$ | async; else deposits">
-  <tui-loader [showLoader]="depositsLoading$ | async" [overlay]="true">
+<div class="wrapper">
+  <div class="title">
+    <div class="title__back" (click)="navigateBack()">
+      <img src="assets/images/icons/arrow/long-arrow-left.svg" alt="Back" />
+    </div>
+    <div class="title__round">LP Round 1</div>
+    <app-status-badge [text]="'Active'" type="active"></app-status-badge>
+  </div>
+  <app-lp-statistics class="statistics"></app-lp-statistics>
+  <tui-loader
+    *ngIf="showDeposits$ | async; else deposits"
+    [showLoader]="depositsLoading$ | async"
+    [overlay]="true"
+  >
     <app-lp-landing></app-lp-landing>
   </tui-loader>
-</ng-container>
-<ng-template #deposits>
-  <app-deposits></app-deposits>
-</ng-template>
+  <ng-template #deposits>
+    <app-deposits></app-deposits>
+  </ng-template>
+</div>

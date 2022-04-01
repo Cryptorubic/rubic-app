@@ -1,0 +1,14 @@
+<div class="progress">
+  <div class="progress__label">{{ label }}</div>
+  <div class="progress__value" [class.progress__value_loading]="loading">
+    <ng-container *ngIf="!needLogin; else connectWallet"> {{ value }} / {{ size }} </ng-container>
+  </div>
+  <progress
+    tuiProgressBar
+    class="progress__progress-bar"
+    [max]="size"
+    [value]="value || 4"
+  ></progress>
+</div>
+
+<ng-template #connectWallet> Connect wallet</ng-template>

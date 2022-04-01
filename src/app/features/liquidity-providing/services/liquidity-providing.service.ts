@@ -34,7 +34,6 @@ import { Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { WHITELIST_PERIOD } from '../constants/WHITELIST_PERIOD';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
-import { LpInfoResponse } from '../models/lp-info-response.interface';
 import { DepositsResponse } from '../models/deposits-response.interface';
 
 @Injectable()
@@ -79,6 +78,10 @@ export class LiquidityProvidingService {
     })
   );
 
+  private get userAddress(): string {
+    return this.authService.user?.address;
+  }
+
   public readonly needLogin$ = this.authService
     .getCurrentUser()
     .pipe(map(user => !Boolean(user?.address)));
@@ -105,6 +108,10 @@ export class LiquidityProvidingService {
 
   public readonly progressLoading$ = this._progressLoading$.asObservable();
 
+  private readonly _statisticsLoading$ = new BehaviorSubject<boolean>(true);
+
+  public readonly statisticsLoading$ = this._statisticsLoading$.asObservable();
+
   private readonly _depositsLoading$ = new BehaviorSubject<boolean>(false);
 
   public readonly depositsLoading$ = this._depositsLoading$.asObservable();
@@ -117,13 +124,13 @@ export class LiquidityProvidingService {
 
   public readonly deposits$ = this._deposits$.asObservable();
 
-  private readonly _totalCollectedAmount$ = new BehaviorSubject<BigNumber>(undefined);
+  private readonly _totalCollectedRewards$ = new BehaviorSubject<BigNumber>(undefined);
 
-  public readonly totalCollectedAmount$ = this._totalCollectedAmount$.asObservable();
+  public readonly totalCollectedRewards$ = this._totalCollectedRewards$.asObservable();
 
-  private readonly _amountToCollect$ = new BehaviorSubject<BigNumber>(undefined);
+  private readonly _rewardsToCollect$ = new BehaviorSubject<BigNumber>(undefined);
 
-  public readonly amountToCollect$ = this._amountToCollect$.asObservable();
+  public readonly rewardsToCollect$ = this._rewardsToCollect$.asObservable();
 
   private readonly _totalStaked$ = new BehaviorSubject<number>(0);
 
@@ -187,45 +194,84 @@ export class LiquidityProvidingService {
     private readonly router: Router
   ) {}
 
-  public getLpProvidingInfo(): Observable<(number | BigNumber)[] | string> {
+  public getStatistics(): Observable<unknown> {
     return this.userAddress$.pipe(
-      tap(() => this.setInfoLoading(true)),
       switchMap(user => {
-        if (user?.address) {
-          return from(
-            this.web3PublicService[this.blockchain].callContractMethod<LpInfoResponse>(
-              this.lpContractAddress,
-              LP_PROVIDING_CONTRACT_ABI,
-              'stakingInfoParsed',
-              { methodArguments: [user.address], from: user.address }
-            )
-          ).pipe(
-            catchError((error: unknown) => {
-              this.errorService.catchAnyError(error as Error);
-              return EMPTY;
-            }),
-            map(result => {
-              const { amountToCollectTotal, amountCollectedTotal, aprInfo } = result;
-              return [
-                Web3Pure.fromWei(amountToCollectTotal),
-                Web3Pure.fromWei(amountCollectedTotal),
-                this.parseApr(aprInfo)
-              ];
-            }),
-            tap(([amountToCollect, amountCollectedTotal, apr]: [BigNumber, BigNumber, number]) => {
-              this._amountToCollect$.next(amountToCollect);
-              this._totalCollectedAmount$.next(amountCollectedTotal);
-              this._apr$.next(apr);
-            })
-          );
+        if (user.address) {
+          return forkJoin([
+            this.getTotalRewards(),
+            this.getTotalCollectedRewards(),
+            this.getUserTotalStaked()
+          ]);
         } else {
-          return this.getApr().pipe(tap(() => !user?.address && this._balance$.next(0)));
+          return EMPTY;
         }
+      }),
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
       })
     );
   }
 
-  public getApr(): Observable<string> {
+  private getTotalRewards(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewRewardsTotal',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(rewards => this._rewardsToCollect$.next(rewards))
+    );
+  }
+
+  private getTotalCollectedRewards(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewCollectedRewardsTotal',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(rewards => this._totalCollectedRewards$.next(rewards))
+    );
+  }
+
+  private getUserTotalStaked(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewUSDCAmountOf',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(userTotalStaked => {
+        const totalStaked = this._totalStaked$.getValue();
+
+        this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
+        this._balance$.next(userTotalStaked.dividedBy(totalStaked).toNumber());
+      })
+    );
+  }
+
+  public getAprAndTotalStaked(): Observable<[string, BigNumber]> {
+    this.setStatisticsLoading(true);
+    return forkJoin([this.getApr(), this.getTotalStaked()]).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
+      })
+    );
+  }
+
+  private getApr(): Observable<string> {
     return from(
       this.web3PublicService[this.blockchain].callContractMethod<string>(
         this.lpContractAddress,
@@ -235,58 +281,7 @@ export class LiquidityProvidingService {
     ).pipe(tap(apr => this._apr$.next(this.parseApr(apr))));
   }
 
-  public setInfoLoading(value: boolean): void {
-    this._infoLoading$.next(value);
-  }
-
-  public getLpProvidingProgress(): Observable<BigNumber[] | BigNumber> {
-    return this.userAddress$.pipe(
-      tap(() => this.setProgressLoading(true)),
-      switchMap(user => {
-        if (user?.address) {
-          return from(
-            this.web3PublicService[this.blockchain].callContractMethod<BigNumber[]>(
-              this.lpContractAddress,
-              LP_PROVIDING_CONTRACT_ABI,
-              'stakingProgressParsed',
-              { methodArguments: [user.address], from: user.address }
-            )
-          ).pipe(
-            map(data => {
-              const { '0': yourTotalUSDC, '1': totalUSDC } = data;
-
-              return [yourTotalUSDC, totalUSDC];
-            })
-          );
-        } else {
-          return this.getTotalStaked();
-        }
-      }),
-      catchError((error: unknown) => {
-        this.errorService.catchAnyError(error as Error);
-        return EMPTY;
-      }),
-      tap(data => {
-        if (Array.isArray(data)) {
-          const [usersTotalStaked, totalStaked] = data;
-          const usersTotalStakedInTokens = Web3Pure.fromWei(usersTotalStaked).toNumber();
-          const totalStakedInTokens = Web3Pure.fromWei(totalStaked).toNumber();
-
-          this._totalStaked$.next(totalStakedInTokens);
-          this._userTotalStaked$.next(usersTotalStakedInTokens);
-          this._balance$.next(usersTotalStakedInTokens / totalStakedInTokens);
-        } else {
-          this._totalStaked$.next(Web3Pure.fromWei(data).toNumber());
-        }
-      })
-    );
-  }
-
-  public setProgressLoading(value: boolean): void {
-    this._progressLoading$.next(value);
-  }
-
-  public getTotalStaked(): Observable<BigNumber> {
+  private getTotalStaked(): Observable<BigNumber> {
     return from(
       this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
         this.lpContractAddress,
@@ -294,6 +289,10 @@ export class LiquidityProvidingService {
         'totalPoolStakedUSDC'
       )
     );
+  }
+
+  public setStatisticsLoading(value: boolean): void {
+    this._statisticsLoading$.next(value);
   }
 
   public getAndUpdatePoolTokensBalances(address?: string): Observable<BigNumber[]> {
