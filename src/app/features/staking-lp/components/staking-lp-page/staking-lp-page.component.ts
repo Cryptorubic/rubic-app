@@ -17,6 +17,12 @@ export class StakingLpPageComponent implements OnInit {
 
   public readonly stakingBalanceByRound$ = this.stakingLpService.stakingBalanceByRound$;
 
+  public readonly lpAprByRound$ = this.stakingLpService.lpAprByRound$;
+
+  public readonly lpBalanceByRound$ = this.stakingLpService.lpBalanceByRound$;
+
+  public readonly lpRoundStarted$ = this.stakingLpService.lpRoundStarted$;
+
   constructor(
     private readonly router: Router,
     private readonly stakingLpService: StakingLpService,
@@ -31,12 +37,14 @@ export class StakingLpPageComponent implements OnInit {
         switchMap(address => {
           if (address === null) {
             this.stakingLpService.resetStakingBalances();
+            this.stakingLpService.resetLpBalances();
             return EMPTY;
           } else {
             return of(null);
           }
         }),
-        switchMap(() => this.stakingLpService.getStakingBalanceByRound())
+        switchMap(() => this.stakingLpService.getStakingBalanceByRound()),
+        switchMap(() => this.stakingLpService.getLpBalanceAndAprByRound())
       )
       .subscribe(() => {
         this.cdr.detectChanges();
@@ -48,7 +56,11 @@ export class StakingLpPageComponent implements OnInit {
     this.router.navigate(['staking', roundRoutePath]);
   }
 
-  navigateToLp(): void {
-    this.router.navigate(['liquidity-providing']);
+  navigateToLp(isStarted: boolean): void {
+    if (isStarted) {
+      this.router.navigate(['liquidity-providing']);
+    } else {
+      this.router.navigateByUrl('https://rubic.exchange/');
+    }
   }
 }

@@ -32,10 +32,11 @@ export const LP_PROVIDING_CONFIG_PROD = {
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  contractAddress: '0x36684Be8C3980097Bf193795b94c14FA8569347e',
-  minEnterAmount: 1,
-  maxEnterAmount: 10,
-  poolSize: 90,
+  contractAddress: '0xC85A61d178bBdDc7752C6618bA498074cD6FA9f1',
+  minEnterAmount: 5,
+  maxEnterAmount: 8,
+  poolSize: 80,
+  maxEnterAmountWhitelist: 8,
   poolTokens: {
     [PoolToken.BRBC]: {
       name: 'Rubic',

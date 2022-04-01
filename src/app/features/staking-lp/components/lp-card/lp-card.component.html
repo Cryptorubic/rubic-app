@@ -7,7 +7,7 @@
   <div class="params">
     <div class="params__param">
       <span class="params__param-label">APR: </span>
-      <span class="params__param-value">{{ apr || '--.--' + '%' }}</span>
+      <span class="params__param-value">{{ apr || '--.--' }}%</span>
     </div>
     <div class="params__param">
       <span class="params__param-label">Pool Limit: </span>
@@ -18,13 +18,13 @@
     <div class="params__param">
       <span class="params__param-label">Your Balance: </span>
       <span class="params__param-value">
-        {{ balance ? (balance | bigNumberFormat: 3:true) : '--.--' }} USDC
+        {{ balance ? (balance | bigNumberFormat: 2:true) : '--.--' }} USDC
       </span>
     </div>
   </div>
   <div class="statuses">
     <app-status-badge
-      *ngIf="startTime"
+      *ngIf="startTime | functionCall: isInPast:this"
       type="inactive"
       [text]="'Start: ' + (startTime | date: (isMobile ? 'mediumDate' : 'long'))"
     ></app-status-badge>

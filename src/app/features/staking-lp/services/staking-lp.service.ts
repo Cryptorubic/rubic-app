@@ -15,12 +15,21 @@ import { transitTokens } from '@app/features/cross-chain-routing/services/cross-
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AbiItem } from 'web3-utils';
 import { BlockchainsInfo } from '@app/core/services/blockchain/blockchain-info';
 import { PDA_DELEGATE } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
+import { LP_PROVIDING_CONTRACT_ABI } from '@app/features/liquidity-providing/constants/LP_PROVIDING_CONTRACT_ABI';
 
 @Injectable()
 export class StakingLpService {
@@ -36,7 +45,13 @@ export class StakingLpService {
     }
   ];
 
-  private readonly lpContracts: { address: string; abi: AbiItem[]; active?: boolean }[] = [];
+  private readonly lpContracts: { address: string; abi: AbiItem[]; active?: boolean }[] = [
+    {
+      address: ENVIRONMENT.lpProviding.contractAddress,
+      abi: LP_PROVIDING_CONTRACT_ABI,
+      active: true
+    }
+  ];
 
   private readonly crosschainContracts = ENVIRONMENT.crossChain.contractAddresses;
 
@@ -48,10 +63,14 @@ export class StakingLpService {
     return this.lpContracts.find(contract => contract.active);
   }
 
-  private readonly userAddress$ = this.authService.getCurrentUser().pipe(
+  private readonly user$ = this.authService.getCurrentUser().pipe(
     filter<UserInterface>(user => Boolean(user?.address)),
     distinctUntilChanged((a, b) => a?.address === b?.address)
   );
+
+  private get userAddress(): string {
+    return this.authService.user?.address;
+  }
 
   private readonly _stakingBalance$ = new BehaviorSubject<BigNumber>(undefined);
 
@@ -99,6 +118,18 @@ export class StakingLpService {
 
   private readonly _stakingTokenUsdPrice$ = new BehaviorSubject<number>(undefined);
 
+  private readonly _lpAprByRound$ = new BehaviorSubject<{ roundOne: string }>({
+    roundOne: undefined
+  });
+
+  public readonly lpAprByRound$ = this._lpAprByRound$.asObservable();
+
+  private readonly _lpBalanceByRound$ = new BehaviorSubject<{ roundOne: BigNumber }>({
+    roundOne: undefined
+  });
+
+  public readonly lpBalanceByRound$ = this._lpBalanceByRound$.asObservable();
+
   private readonly _tvlStaking$ = new BehaviorSubject<BigNumber>(undefined);
 
   public readonly tvlStaking$ = this._tvlStaking$.asObservable();
@@ -114,6 +145,10 @@ export class StakingLpService {
   // private readonly _ttv$ = new BehaviorSubject<TradeVolume>(undefined);
 
   // public readonly ttv$ = this._ttv$.asObservable();
+
+  private readonly _lpRoundStarted$ = new BehaviorSubject<boolean>(undefined);
+
+  public readonly lpRoundStarted$ = this._lpRoundStarted$.asObservable();
 
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
@@ -131,7 +166,7 @@ export class StakingLpService {
   }
 
   public getTotalBalanceAndRewards(): Observable<BigNumber[]> {
-    return this.userAddress$.pipe(
+    return this.user$.pipe(
       tap(() => this.toggleLoading('balanceAndRewards', true)),
       switchMap(user => {
         return forkJoin([this.getActiveStakingRoundBalance(user.address), this.getLpBalance()]);
@@ -167,7 +202,18 @@ export class StakingLpService {
   }
 
   private getLpBalance(): Observable<BigNumber> {
-    return of(new BigNumber(0));
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.activeLpContract.address,
+        this.activeLpContract.abi,
+        'viewUSDCAmountOf',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(balance =>
+        Web3Pure.fromWei(balance, transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].decimals)
+      )
+    );
   }
 
   private getTotalRewards(): Observable<BigNumber[]> {
@@ -205,7 +251,19 @@ export class StakingLpService {
   }
 
   private getLpRewards(): Observable<BigNumber> {
-    return of(new BigNumber(0));
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.activeLpContract.address,
+        this.activeLpContract.abi,
+        'viewRewardsTotal',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(rewards => {
+        const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+        return Web3Pure.fromWei(rewards, bscUSDCToken.decimals);
+      })
+    );
   }
 
   public resetTotalBalanceAndRewards(): void {
@@ -224,6 +282,10 @@ export class StakingLpService {
 
   public resetStakingBalances(): void {
     this._stakingBalanceByRound$.next({ roundOne: undefined, roundTwo: undefined });
+  }
+
+  public resetLpBalances(): void {
+    this._lpBalanceByRound$.next({ roundOne: undefined });
   }
 
   public toggleLoading(dataType: 'balanceAndRewards' | 'tvlAndTtv', value: boolean): void {
@@ -255,7 +317,8 @@ export class StakingLpService {
         );
       });
 
-    return this.userAddress$.pipe(
+    return this.user$.pipe(
+      take(1),
       switchMap(user => forkJoin(balanceRequests(user.address))),
       tap(balances => {
         const [roundOne, roundTwo] = balances;
@@ -264,7 +327,66 @@ export class StakingLpService {
     );
   }
 
-  public getLpBalanceAndAprByRound(): void {}
+  public checkIsLpRoundStarted(): Observable<boolean> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.activeLpContract.address,
+        this.activeLpContract.abi,
+        'startTime'
+      )
+    ).pipe(
+      map(startTime => {
+        const isStarted = Number(startTime) !== 0;
+        this._lpRoundStarted$.next(isStarted);
+        return isStarted;
+      })
+    );
+  }
+
+  public getLpBalanceAndAprByRound(): Observable<string[][]> {
+    const balanceAndAprRequests = (userAddress: string) => {
+      return this.lpContracts.map(contract => {
+        return forkJoin([
+          this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+            contract.address,
+            contract.abi,
+            'viewUSDCAmountOf',
+            { methodArguments: [userAddress] }
+          ),
+          this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+            contract.address,
+            contract.abi,
+            'apr'
+          )
+        ]);
+      });
+    };
+
+    return this.user$.pipe(
+      take(1),
+      switchMap(user => {
+        return forkJoin([of(user), this.checkIsLpRoundStarted()]);
+      }),
+      switchMap(([user, isLpStarted]) => {
+        if (isLpStarted) {
+          return forkJoin(balanceAndAprRequests(user.address));
+        } else {
+          return EMPTY;
+        }
+      }),
+      tap(response => {
+        const [roundOne] = response;
+        const [balance, apr] = roundOne;
+        const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+
+        this._lpAprByRound$.next({ roundOne: apr });
+
+        this._lpBalanceByRound$.next({
+          roundOne: Web3Pure.fromWei(balance, bscUSDCToken.decimals)
+        });
+      })
+    );
+  }
 
   public getTtv(): void {}
 
