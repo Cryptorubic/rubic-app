@@ -1,23 +1,13 @@
 <table
-  *ngLet="{
-    sorter: sorter$ | async,
-    direction: direction$ | async,
-    visibleData: visibleData$ | async,
-    data: tableData$ | async,
-    totalSize: total$ | async
-  } as table"
+  *ngIf="tableData$ | async as table"
   tuiTable
   class="table"
-  [ngClass]="{ table_hidden: loading === false && !table.data.length }"
+  [ngClass]="{ table_hidden: loading === false && !table.totalCount }"
   [columns]="['Status', 'FromTo', 'Provider', 'Sent', 'Expected', 'Date']"
-  [sorter]="table.sorter"
-  [direction]="table.direction"
-  (sorterChange)="setSorter$($event)"
-  (directionChange)="setDirection$($event)"
 >
   <thead>
     <tr tuiThGroup>
-      <th tuiTh [resizable]="true" *ngFor="let column of columns" [sorter]="sorters[column.value]">
+      <th tuiTh [resizable]="true" *ngFor="let column of COLUMNS">
         <span class="title" *ngIf="column.value !== 'FromTo'">{{
           column.translateKey | translate
         }}</span>
@@ -29,25 +19,12 @@
             [alt]="'tradesTable.columns.to' | translate"
           />{{ 'tradesTable.columns.to' | translate }}
         </span>
-
-        <div
-          class="sort-arrow"
-          [class.sort-arrow_green]="
-            table.sorter === sorters[column.value] && table.direction === -1
-          "
-          inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
-        ></div>
-        <div
-          class="sort-arrow"
-          [class.sort-arrow_green]="table.sorter === sorters[column.value] && table.direction === 1"
-          inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
-        ></div>
       </th>
     </tr>
   </thead>
 
-  <tbody tuiTbody [data]="table.visibleData">
-    <ng-container *ngFor="let item of table.visibleData">
+  <tbody tuiTbody [data]="table.rowTrades">
+    <ng-container *ngFor="let item of table.rowTrades">
       <tr tuiTr *tuiLet="item | functionCall: getTableTrade:this as trade">
         <ng-container *ngIf="trade">
           <td *tuiCell="'Status'" tuiTd class="status">
@@ -77,7 +54,7 @@
                   <div class="status-circle__inner"></div>
                 </div>
                 <span class="status__text">{{
-                  translationStatusKeys[trade.status] | translate
+                  TRANSLATION_STATUS_KEY[trade.status] | translate
                 }}</span>
                 <img
                   [src]="'assets/images/icons/scanner.svg'"
@@ -154,11 +131,11 @@
               <div class="img-container">
                 <img
                   (error)="handleImageError($event)"
-                  [src]="tradesProviders[trade.provider].image"
+                  [src]="TRADES_PROVIDERS[trade.provider].image"
                   alt="provider"
                 />
               </div>
-              {{ tradesProviders[trade.provider].name }}
+              {{ TRADES_PROVIDERS[trade.provider].name }}
             </a>
           </td>
 
@@ -216,11 +193,11 @@
 
   <tfoot>
     <tr>
-      <td [colSpan]="columns.length">
+      <td [colSpan]="COLUMNS.length">
         <tui-table-pagination
-          [total]="table.totalSize"
-          (pageChange)="setPage$($event)"
-          (sizeChange)="setSize$($event)"
+          [total]="table.totalCount"
+          [(page)]="page"
+          [(size)]="size"
         ></tui-table-pagination>
       </td>
     </tr>
