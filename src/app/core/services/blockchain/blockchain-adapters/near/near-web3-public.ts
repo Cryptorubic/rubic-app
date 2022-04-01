@@ -9,10 +9,19 @@ import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   public static addressToBytes32(address: string): string {
     return EthLikeWeb3Pure.asciiToBytes32(address);
+  }
+
+  /**
+   * Gets pool address based on token address.
+   * @param address Token address.
+   */
+  public static getAddress(address: string): string {
+    return address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : address;
   }
 
   /**

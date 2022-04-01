@@ -15,7 +15,10 @@ import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-a
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { RefPool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
+import {
+  RefPool,
+  RefStablePool
+} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { NearTransaction } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/near-transaction';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
@@ -23,6 +26,7 @@ import { WalletConnection } from 'near-api-js';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { RefFinanceStableService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-stable.service';
 
 @Injectable({
   providedIn: 'root'
@@ -248,19 +252,29 @@ export class RefFinanceSwapService {
       toToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : toToken.address;
 
     return Promise.all(
-      pools
-        .map(pool => {
-          const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
-          const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
-          const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
-          const estimate = amountWithFee
-            .multipliedBy(outBalance)
-            .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
-            .toString();
+      pools.map(async pool => {
+        // Stable pool.
+        if (pool.tokenIds.length > 2) {
+          const poolInfo = await this.getStablePool(pool.id);
 
-          return { estimate, pool };
-        })
-        .filter(el => el.pool.tokenIds.length === 2) // @TODO Near. Add stable swap support.
+          const [swappedAmount] = RefFinanceStableService.getSwappedAmount(
+            fromToken.address,
+            toToken.address,
+            Web3Pure.toWei(fromAmount, fromToken.decimals),
+            poolInfo
+          );
+
+          return { estimate: Web3Pure.fromWei(new BigNumber(swappedAmount), 24).toFixed(), pool };
+        }
+        const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
+        const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
+        const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
+        const estimate = amountWithFee
+          .multipliedBy(outBalance)
+          .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
+          .toString();
+        return { estimate, pool };
+      })
     );
   }
 
@@ -473,5 +487,22 @@ export class RefFinanceSwapService {
     }
 
     return transactions;
+  }
+
+  /**
+   * Gets stable pool information.
+   * @param pool_id Pool identifier.
+   */
+  public async getStablePool(pool_id: number): Promise<RefStablePool> {
+    const account = new WalletConnection(this.walletConnectorService.nearConnection, 'rubic');
+
+    const pool_info = await account
+      .account()
+      .viewFunction(REF_FI_CONTRACT_ID, 'get_stable_pool', { pool_id });
+
+    return {
+      ...pool_info,
+      id: pool_id
+    };
   }
 }

@@ -7,10 +7,7 @@ import {
 } from '@features/swaps/services/settings-service/settings.service';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import {
-  REF_FI_CONTRACT_ID,
-  WRAP_NEAR_CONTRACT
-} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import { REF_FI_CONTRACT_ID } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { first, startWith, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -24,7 +21,6 @@ import { InstantTradesApiService } from '@core/services/backend/instant-trades-a
 import { ErrorsService } from '@core/errors/errors.service';
 import CustomError from '@core/errors/models/custom-error';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
@@ -38,6 +34,7 @@ import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
+import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
 
 interface SwapParams {
   msg: string;
@@ -236,12 +233,8 @@ export class RefFinanceService implements ItProvider {
     const amountOutWithSlippage = trade.to.amount.multipliedBy(1 - this.settings.slippageTolerance);
     const minAmountOut = Web3Pure.toWei(amountOutWithSlippage, trade.to.token.decimals);
 
-    const fromTokenAddress =
-      trade.from.token.address === NATIVE_NEAR_ADDRESS
-        ? WRAP_NEAR_CONTRACT
-        : trade.from.token.address;
-    const toTokenAddress =
-      trade.to.token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : trade.to.token.address;
+    const fromTokenAddress = NearWeb3Public.getAddress(trade.from.token.address);
+    const toTokenAddress = NearWeb3Public.getAddress(trade.to.token.address);
 
     const registerTokensTransactions =
       await this.refFinanceSwapService.createRegisterTokensTransactions(
@@ -266,7 +259,7 @@ export class RefFinanceService implements ItProvider {
     );
 
     return new Promise(resolve => {
-      setTimeout(() => resolve(''), 2000);
+      setTimeout(() => resolve(''), 5000);
     });
   }
 
