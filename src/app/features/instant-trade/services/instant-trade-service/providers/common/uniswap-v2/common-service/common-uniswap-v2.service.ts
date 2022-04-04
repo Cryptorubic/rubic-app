@@ -1,20 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import {
-  ItSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import {
-  ItOptions,
-  ItProvider
-} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { DEFAULT_ESTIMATED_GAS } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
 import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/get-trade-data';
 import { GasCalculationMethod } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/gas-calculation-method';
@@ -32,7 +20,6 @@ import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/get-trade-supporting-fee-data';
 import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/trade-contract-data';
@@ -50,6 +37,7 @@ import {
   IT_PROXY_FEE_CONTRACT_METHOD
 } from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { EthLikeInstantTradeProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -62,7 +50,7 @@ interface RecGraphVisitorOptions {
 }
 
 @Injectable()
-export abstract class CommonUniswapV2Service implements ItProvider {
+export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProviderService {
   public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
   protected readonly contractAbi = DEFAULT_UNISWAP_V2_ABI;
@@ -73,44 +61,19 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private readonly gasMargin = 1.2; // 120%
 
-  protected web3Public: EthLikeWeb3Public;
-
-  // Uniswap constants
-  private readonly blockchain: EthLikeBlockchainName;
-
   private readonly wethAddress: string;
-
-  public readonly contractAddress: string;
 
   private readonly routingProviders: SymbolToken[];
 
   private readonly maxTransitTokens: number;
 
   // Injected services start
-  private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
-
-  private readonly web3PrivateService = inject(EthLikeWeb3PrivateService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
-
-  private readonly authService = inject(AuthService);
-
-  private readonly settingsService = inject(SettingsService);
-
   private readonly tokensService = inject(TokensService);
 
   private readonly gasService = inject(GasService);
 
   private readonly iframeService = inject(IframeService);
   // Injected services end
-
-  private get walletAddress(): string {
-    return this.authService.userAddress;
-  }
-
-  private get settings(): ItSettingsForm {
-    return this.settingsService.instantTradeValue;
-  }
 
   private get deadline(): number {
     return Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
@@ -121,13 +84,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    this.blockchain = uniswapConstants.blockchain;
+    super(uniswapConstants.blockchain, uniswapConstants.contractAddress);
+
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this.contractAddress = uniswapConstants.contractAddress;
     this.wethAddress = uniswapConstants.wethAddress;
     this.routingProviders = uniswapConstants.routingProviders;
-
-    this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
   }
 
   /**
@@ -144,31 +105,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         methodName,
         methodArguments
       }))
-    );
-  }
-
-  public getAllowance(
-    tokenAddress: string,
-    targetContractAddress = this.contractAddress
-  ): Promise<BigNumber> {
-    return this.web3Public.getAllowance({
-      tokenAddress,
-      ownerAddress: this.walletAddress,
-      spenderAddress: targetContractAddress
-    });
-  }
-
-  public async approve(
-    tokenAddress: string,
-    options: TransactionOptions,
-    targetContractAddress = this.contractAddress
-  ): Promise<void> {
-    this.walletConnectorService.checkSettings(this.blockchain);
-    await this.web3PrivateService.approveTokens(
-      tokenAddress,
-      targetContractAddress,
-      'infinity',
-      options
     );
   }
 

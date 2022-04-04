@@ -15,7 +15,7 @@ import { OneinchInstantTrade } from '@features/instant-trade/services/instant-tr
 export abstract class OneinchProviderAbstract implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
-  private readonly blockchain: EthLikeBlockchainName;
+  public readonly blockchain: EthLikeBlockchainName;
 
   public readonly contractAddress = this.commonOneinchService.contractAddress;
 

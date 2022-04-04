@@ -41,7 +41,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   protected abstract readonly unwrapWethMethodName: 'unwrapWETH9' | 'unwrapWNativeToken';
 
-  protected readonly blockchain: EthLikeBlockchainName;
+  public readonly blockchain: EthLikeBlockchainName;
 
   protected blockchainAdapter: EthLikeWeb3Public;
 

@@ -63,7 +63,7 @@ export class ZrxService implements ItProvider {
 
   private tradeDataIsUpdated$: BehaviorSubject<boolean>;
 
-  protected blockchain: SupportedZrxBlockchain;
+  public blockchain: SupportedZrxBlockchain;
 
   private apiAddress: string;
 

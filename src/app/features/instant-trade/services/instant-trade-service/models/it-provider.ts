@@ -14,31 +14,29 @@ export interface ItOptions {
 export interface ItProvider {
   readonly providerType: INSTANT_TRADE_PROVIDER;
 
-  get contractAddress(): string;
+  readonly contractAddress: string;
 
-  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Promise<BigNumber>;
+  getAllowance(tokenAddress: string, targetContractAddress?: string): Promise<BigNumber>;
 
-  approve: (
+  approve(
     tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    },
+    options: TransactionOptions,
     targetContractAddress?: string
-  ) => Promise<void>;
+  ): Promise<void>;
 
-  calculateTrade: (
+  calculateTrade(
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string
-  ) => Promise<InstantTrade>;
+  ): Promise<InstantTrade>;
 
-  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
+  createTrade(trade: InstantTrade, options: ItOptions): Promise<Partial<TransactionReceipt>>;
 
-  checkAndEncodeTrade?: (
+  checkAndEncodeTrade?(
     trade: InstantTrade,
     options: ItOptions,
     receiverAddress: string
-  ) => Promise<RequiredField<TransactionOptions, 'data'>>;
+  ): Promise<RequiredField<TransactionOptions, 'data'>>;
 }

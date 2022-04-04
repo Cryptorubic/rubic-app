@@ -73,9 +73,7 @@ type CcrRequest = {
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADE_PROVIDER.REF;
 
-  get contractAddress(): string {
-    return REF_FI_CONTRACT_ID;
-  }
+  public readonly contractAddress = REF_FI_CONTRACT_ID;
 
   private settings: ItSettingsForm;
 
