@@ -36,6 +36,10 @@ export abstract class CommonUniswapV3AlgebraService extends EthLikeInstantTradeP
 
   protected readonly swapRouterContract: ContractData;
 
+  private get slippageTolerance(): number {
+    return this.settings.slippageTolerance / 100;
+  }
+
   protected constructor(uniswapV3Constants: UniswapV3AlgebraConstants) {
     super(uniswapV3Constants.blockchain);
 
@@ -220,7 +224,7 @@ export abstract class CommonUniswapV3AlgebraService extends EthLikeInstantTradeP
   }
 
   protected getAmountOutMin(route: UniswapV3AlgebraRoute): string {
-    return subtractPercent(route.outputAbsoluteAmount, this.settings.slippageTolerance).toFixed(0);
+    return subtractPercent(route.outputAbsoluteAmount, this.slippageTolerance).toFixed(0);
   }
 
   /**
