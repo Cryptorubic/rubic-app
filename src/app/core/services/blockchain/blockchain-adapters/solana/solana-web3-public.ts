@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import {
+  Commitment,
   Connection,
   PublicKey,
   Signer,
@@ -349,11 +350,16 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   /**
    * Sends raw transaction to blockchain skipping preflight.
    * @param transaction Transaction to send.
+   * @param commitment: Commitment status.
    */
-  public async sendOneTransaction(transaction: Transaction): Promise<string> {
+  public async sendOneTransaction(
+    transaction: Transaction,
+    commitment?: Commitment
+  ): Promise<string> {
     const serializedTransaction = transaction.serialize();
     return this.connection.sendRawTransaction(serializedTransaction, {
-      skipPreflight: true
+      skipPreflight: true,
+      ...(commitment && { preflightCommitment: commitment })
     });
   }
 
@@ -387,20 +393,11 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
       new PublicKey(connector.address)
     );
 
-    const transactionsMsDelay = 3000;
-
-    const firstTransactionHash = await this.sendOneTransaction(allSignedTransactions[0]);
-
     if (allSignedTransactions.length < 2) {
-      return firstTransactionHash;
+      return await this.sendOneTransaction(allSignedTransactions[0]);
+    } else {
+      await this.sendOneTransaction(allSignedTransactions[0], 'finalized');
     }
-
-    // Send second transaction with interval.
-    return await new Promise(resolve => {
-      const wait = setTimeout(async () => {
-        clearTimeout(wait);
-        resolve(await this.sendOneTransaction(allSignedTransactions[1]));
-      }, transactionsMsDelay);
-    });
+    return await this.sendOneTransaction(allSignedTransactions[1]);
   }
 }
