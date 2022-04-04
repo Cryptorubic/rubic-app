@@ -389,8 +389,13 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
 
     const transactionsMsDelay = 3000;
 
-    await this.sendOneTransaction(allSignedTransactions[0]);
-    // Send trade transaction with interval.
+    const firstTransactionHash = await this.sendOneTransaction(allSignedTransactions[0]);
+
+    if (allSignedTransactions.length < 2) {
+      return firstTransactionHash;
+    }
+
+    // Send second transaction with interval.
     return await new Promise(resolve => {
       const wait = setTimeout(async () => {
         clearTimeout(wait);

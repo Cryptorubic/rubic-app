@@ -6,6 +6,7 @@ export interface RaydiumRouterInfo {
   middleCoin: {
     address: string;
     symbol: string;
+    decimals: number;
   };
   priceImpact: number;
   route: [Route, Route];

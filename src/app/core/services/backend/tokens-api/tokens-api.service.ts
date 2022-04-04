@@ -149,7 +149,7 @@ export class TokensApiService {
    * Fetches basic tokens from backend.
    */
   private fetchBasicTokens(): Observable<List<Token>> {
-    const options = { page: 1, page_size: DEFAULT_PAGE_SIZE };
+    const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
     const blockchainsToFetch = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -169,7 +169,7 @@ export class TokensApiService {
     );
     return forkJoin(requests$).pipe(
       map(results => {
-        const backendTokens = results.flatMap(el => el || []);
+        const backendTokens = results.flatMap(el => el.results || []);
         const staticTokens = TokensApiService.fetchStaticTokens();
         return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
       })
@@ -207,7 +207,7 @@ export class TokensApiService {
     const options = {
       network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
       page: requestOptions.page,
-      page_size: DEFAULT_PAGE_SIZE
+      pageSize: DEFAULT_PAGE_SIZE
     };
     return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, options).pipe(
       map(tokensResponse => {

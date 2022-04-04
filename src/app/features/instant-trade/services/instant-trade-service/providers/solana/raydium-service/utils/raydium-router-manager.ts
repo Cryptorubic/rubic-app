@@ -28,6 +28,7 @@ import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-
 import { subtractPercent } from '@shared/utils/utils';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 export class RaydiumRouterManager {
   public static readonly transitTokens = ['USDC', 'wSOL', 'SOL', 'mSOL', 'RAY', 'PAI', 'USDT'];
@@ -226,7 +227,11 @@ export class RaydiumRouterManager {
     const middleMint = this.routerInfo.middleCoin.address;
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const middleFinalAmount = Math.floor(parseFloat(this.routerInfo.route[1].amountA.toString()));
+    const middleAmount = Web3Pure.toWei(
+      this.routerInfo.route[1].amountA,
+      this.routerInfo.middleCoin.decimals
+    );
+    const middleFinalAmount = Math.floor(parseFloat(middleAmount));
     const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
 
     const { from: fromAccount } = await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
@@ -515,7 +520,8 @@ export class RaydiumRouterManager {
               priceImpact,
               middleCoin: {
                 address: middleCoin.mintAddress,
-                symbol: middleCoin.symbol
+                symbol: middleCoin.symbol,
+                decimals: middleCoin.decimals
               },
               route: [
                 {
@@ -561,16 +567,6 @@ export class RaydiumRouterManager {
     priceImpact: number;
     poolInfo: LiquidityPoolInfo[];
   }> {
-    const fromCoinMint =
-      fromToken.address === WRAPPED_SOL.mintAddress ||
-      fromToken.address === NATIVE_SOLANA_MINT_ADDRESS
-        ? NATIVE_SOL.mintAddress
-        : fromToken.address;
-    const toCoinMint =
-      toToken.address === WRAPPED_SOL.mintAddress || toToken.address === NATIVE_SOLANA_MINT_ADDRESS
-        ? NATIVE_SOL.mintAddress
-        : toToken.address;
-
     const poolInfos = await liquidityManager.requestInfos(
       fromToken.symbol,
       toToken.symbol,
@@ -578,7 +574,7 @@ export class RaydiumRouterManager {
       true
     );
 
-    const { maxAmountOut, middleCoin, priceImpact } = this.calculate(
+    const { maxAmountOut, middleCoin, priceImpact, route } = this.calculate(
       poolInfos,
       fromToken,
       toToken,
@@ -586,21 +582,9 @@ export class RaydiumRouterManager {
       slippageTolerance
     );
     const poolInfo: LiquidityPoolInfo[] = [];
-    if (maxAmountOut) {
-      poolInfo[0] = Object.values(poolInfos)
-        .filter(
-          p =>
-            (p.coin.mintAddress === fromCoinMint && p.pc.mintAddress === middleCoin.address) ||
-            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === fromCoinMint)
-        )
-        .pop();
-      poolInfo[1] = Object.values(poolInfos)
-        .filter(
-          p =>
-            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === toCoinMint) ||
-            (p.coin.mintAddress === toCoinMint && p.pc.mintAddress === middleCoin.address)
-        )
-        .pop();
+    if (maxAmountOut && route.length === 2) {
+      poolInfo[0] = Object.values(poolInfos).find(el => el.ammId === route[0].id);
+      poolInfo[1] = Object.values(poolInfos).find(el => el.ammId === route[1].id);
     }
     return { maxAmountOut, middleCoin, priceImpact, poolInfo };
   }

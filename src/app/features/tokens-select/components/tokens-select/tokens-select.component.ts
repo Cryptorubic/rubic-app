@@ -379,11 +379,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       )
       .subscribe(({ backendTokens, customToken }) => {
         if (backendTokens) {
-          this._tokensToShow$.next(
-            this.isCrossChainSwap()
-              ? backendTokens.filter(el => el.hasDirectPair === null || el.hasDirectPair === true)
-              : backendTokens
-          );
+          this._tokensToShow$.next(backendTokens);
         } else if (customToken) {
           this.customToken = customToken;
         } else {

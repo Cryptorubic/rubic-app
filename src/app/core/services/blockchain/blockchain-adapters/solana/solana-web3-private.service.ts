@@ -441,26 +441,17 @@ export class SolanaWeb3PrivateService {
       keys.push(tempKeys);
     }
 
-    const accounts: Array<null | AccountInfo<Buffer | null>> = [];
-
-    const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = {};
-    await Promise.all(
-      keys.map(async (key, index) => {
-        resArray[index] = (await this._connection.getMultipleAccountsInfo(
-          key,
-          commitment
-        )) as AccountInfo<Buffer>[];
+    const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = await Promise.all(
+      keys.map(key => {
+        return this._connection.getMultipleAccountsInfo(key, commitment || 'finalized');
       })
     );
 
-    Object.keys(resArray)
+    const accounts: Array<null | AccountInfo<Buffer | null>> = Object.keys(resArray)
       .sort((a, b) => parseInt(a) - parseInt(b))
-      .forEach(itemIndex => {
-        const res = resArray[parseInt(itemIndex)];
-        for (const account of res) {
-          accounts.push(account);
-        }
-      });
+      .map(itemIndex => resArray[parseInt(itemIndex)])
+      .flat();
+
     return accounts.map((account, idx) => {
       if (account === null) {
         return null;
@@ -474,7 +465,6 @@ export class SolanaWeb3PrivateService {
 
   /**
    * Gets or create accounts for from and to trade tokens.
-   * @param mintAccountsAddresses All tokens mint addresses.
    * @param fromCoinMint From token mint address.
    * @param toCoinMint To token mint address.
    * @param owner Owner account.

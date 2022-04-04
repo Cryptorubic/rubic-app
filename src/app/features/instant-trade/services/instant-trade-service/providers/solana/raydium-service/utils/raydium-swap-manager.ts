@@ -234,9 +234,9 @@ export class RaydiumSwapManager {
 
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
     const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
-    const amountIn = new BigNumber(aIn.toString()).multipliedBy(fromDecimals);
+    const amountIn = aIn.multipliedBy(fromDecimals);
     const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
-    const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
+    const amountOut = aOut.multipliedBy(toDecimals);
 
     return {
       owner,
@@ -448,7 +448,7 @@ export class RaydiumSwapManager {
             new PublicKey(poolInfo.serumEventQueue),
             new PublicKey(poolInfo.serumCoinVaultAccount),
             new PublicKey(poolInfo.serumPcVaultAccount),
-            new PublicKey(poolInfo.serumVaultSigner),
+            new PublicKey(poolInfo?.serumVaultSigner || NATIVE_SOL.mintAddress),
             fromAccount.key,
             toAccount.key,
             owner,
@@ -470,7 +470,7 @@ export class RaydiumSwapManager {
             new PublicKey(poolInfo.serumEventQueue),
             new PublicKey(poolInfo.serumCoinVaultAccount),
             new PublicKey(poolInfo.serumPcVaultAccount),
-            new PublicKey(poolInfo.serumVaultSigner),
+            new PublicKey(poolInfo?.serumVaultSigner || NATIVE_SOL.mintAddress),
             fromAccount.key,
             toAccount.key,
             owner,

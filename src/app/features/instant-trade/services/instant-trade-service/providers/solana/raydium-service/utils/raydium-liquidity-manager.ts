@@ -224,23 +224,21 @@ export class RaydiumLiquidityManager {
 
   @Cacheable({ maxAge: 13_000 })
   private fetchSolanaBackendTokens(): Observable<{ [key: string]: SolanaTokenInfo }> {
-    return this.httpClient
-      .get<BackendToken[]>(`${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
-      .pipe(
-        map(tokens => {
-          return Object.fromEntries(
-            tokens.map(el => [
-              el.address,
-              {
-                symbol: el.symbol,
-                name: el.name,
-                mintAddress: el.address,
-                decimals: el.decimals
-              }
-            ])
-          );
-        })
-      );
+    return this.httpClient.get<BackendToken[]>(`${ENDPOINTS.TOKKENS}?network=solana`).pipe(
+      map(tokens => {
+        return Object.fromEntries(
+          tokens.map(el => [
+            el.address,
+            {
+              symbol: el.symbol,
+              name: el.name,
+              mintAddress: el.address,
+              decimals: el.decimals
+            }
+          ])
+        );
+      })
+    );
   }
 
   private async getSpecificPools(
@@ -249,8 +247,6 @@ export class RaydiumLiquidityManager {
     fromSymbol: string,
     toSymbol: string
   ): Promise<LpInfo> {
-    const publicKeys: PublicKey[] = [];
-    const liquidityPools: LpInfo = {};
     let LP: LiquidityPoolInfo[] = [];
     if (multihops) {
       const transitTokens = RaydiumRouterManager.transitTokens;
@@ -276,6 +272,16 @@ export class RaydiumLiquidityManager {
       );
     }
 
+    LP = LP.map(pool => {
+      const pc = { ...pool.pc, balance: new BigNumber(0) };
+      const coin = { ...pool.coin, balance: new BigNumber(0) };
+
+      return { ...pool, pc, coin };
+    });
+
+    const publicKeys: PublicKey[] = [];
+    const liquidityPools: LpInfo = {};
+
     LP.forEach(pool => {
       const { poolCoinTokenAccount, poolPcTokenAccount, ammOpenOrders, ammId, lp } = pool;
 
@@ -287,17 +293,11 @@ export class RaydiumLiquidityManager {
         new PublicKey(lp.mintAddress)
       );
 
-      const poolInfo: LiquidityPoolInfo = { ...pool };
-
-      poolInfo.coin.balance = new BigNumber(0);
-      poolInfo.pc.balance = new BigNumber(0);
-
-      liquidityPools[lp.mintAddress] = poolInfo;
+      liquidityPools[lp.mintAddress] = { ...pool };
     });
 
     const multipleInfo = await this.privateBlockchainAdapter.getMultipleAccounts(publicKeys);
     const modelAccount: { [account: string]: string[] } = {};
-
     multipleInfo.forEach(info => {
       if (info) {
         const address = info.publicKey.toBase58();
@@ -376,7 +376,6 @@ export class RaydiumLiquidityManager {
         }
       }
     });
-
     if (Object.keys(modelAccount).length > 0) {
       const modelAccountData = await this.privateBlockchainAdapter.getMultipleAccounts(
         Object.keys(modelAccount).map(item => new PublicKey(item))
