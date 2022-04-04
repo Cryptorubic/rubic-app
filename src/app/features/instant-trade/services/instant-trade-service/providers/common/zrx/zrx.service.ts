@@ -20,9 +20,7 @@ import { SupportedZrxBlockchain } from '@features/instant-trade/services/instant
 
 const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export abstract class ZrxService extends EthLikeInstantTradeProviderService {
   public readonly providerType = INSTANT_TRADE_PROVIDER.ZRX;
 
