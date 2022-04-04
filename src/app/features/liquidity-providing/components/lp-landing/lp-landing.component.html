@@ -18,7 +18,23 @@
       <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
     </div>
   </div>
-  <div class="whitelist-info"></div>
+  <div class="whitelist-info">
+    <div class="whitelist-info__icon">
+      <img src="assets/images/icons/info-blue.svg" alt="Info" />
+    </div>
+    <div class="whitelist-info__text">
+      <div class="whitelist-info__text-paragraph">
+        If you participated in the 1st round of Staking, then you have the option to allocate of
+        500&5,000 USDC will be available during 24 hours
+      </div>
+      <div class="whitelist-info__text-paragraph">
+        If you did not participate, you will be able to enter the round after
+        <span class="whitelist-info__timer" *ngLet="whitelistTimer$ | async as timer">{{
+          timer ? (timer | date: 'h:mm:ss') : '--:--'
+        }}</span>
+      </div>
+    </div>
+  </div>
   <ng-container *ngIf="needLogin$ | async; else createDeposit">
     <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
       Connect wallet
@@ -28,7 +44,7 @@
   <ng-template #createDeposit>
     <ng-container *ngIf="whitelist.isWhitelistInProgress && !whitelist.isWhitelistUser">
       <app-rubic-button class="lp-steps__create" appearance="secondary" [disabled]="true">
-        Your address is not in Whitelist
+        Your address is not Whitelist
       </app-rubic-button>
     </ng-container>
     <ng-container *ngIf="whitelist.isWhitelistInProgress && whitelist.isWhitelistUser">
@@ -37,7 +53,7 @@
         appearance="secondary"
         (onClick)="navigateToDepositForm(depositType.WHITELIST)"
       >
-        Create as whitelist
+        Create Deposit with Whitelist
       </app-rubic-button>
     </ng-container>
     <ng-container *ngIf="!whitelist.isWhitelistInProgress">
@@ -46,7 +62,7 @@
         appearance="secondary"
         (onClick)="navigateToDepositForm(depositType.REGULAR)"
       >
-        create deposit
+        Create Deposit
       </app-rubic-button>
     </ng-container>
   </ng-template>

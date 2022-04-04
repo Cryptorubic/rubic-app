@@ -11,7 +11,6 @@ import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
-import { UntilTimeGuard } from './shared/guards/until-time.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +32,6 @@ import { UntilTimeGuard } from './shared/guards/until-time.guard';
       id: 'GTM-PZ8NH4J'
     })
   ],
-  providers: [UntilTimeGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

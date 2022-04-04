@@ -380,8 +380,8 @@ export class StakingLpService {
         const [roundOne] = response;
         const [balance, apr] = roundOne;
         const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
-
-        this._lpAprByRound$.next({ roundOne: apr });
+        const parsedApr = +apr / Math.pow(10, 29);
+        this._lpAprByRound$.next({ roundOne: parsedApr.toFixed(0) });
 
         this._lpBalanceByRound$.next({
           roundOne: Web3Pure.fromWei(balance, bscUSDCToken.decimals)
@@ -404,13 +404,13 @@ export class StakingLpService {
 
     switch (period) {
       case TtvFilters.ALL_TIME:
-        return ttv.total_value;
+        return ttv.totalValue;
       case TtvFilters.ONE_DAY:
-        return ttv.total_value_by_1day;
+        return ttv.totalValueBy1Day;
       case TtvFilters.ONE_MONTH:
-        return ttv.total_value_by_1months;
+        return ttv.totalValueBy1Month;
       case TtvFilters.SIX_MONTH:
-        return ttv.total_value_by_6months;
+        return ttv.totalValueByHalfYear;
       default:
         return undefined;
     }

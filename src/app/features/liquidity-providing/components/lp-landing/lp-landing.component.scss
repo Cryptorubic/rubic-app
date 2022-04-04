@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 42px;
+  margin-bottom: 32px;
   padding: 33px 50px;
 
   border: 1px solid #262927;
@@ -56,6 +56,32 @@
         line-height: 18px;
       }
     }
+  }
+}
+
+.whitelist-info {
+  display: flex;
+  max-width: 701px;
+  margin: 0 auto 22px;
+  padding: 15px;
+
+  background: rgba(98, 126, 234, 0.15);
+  border-radius: 14px;
+
+  &__icon {
+    margin-right: 14px;
+  }
+
+  &__text {
+    @include font(18px, 21px, 500, #627EEA);
+
+    &-paragraph:first-child {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__timer {
+    color: rgb(235, 187, 78);
   }
 }
 

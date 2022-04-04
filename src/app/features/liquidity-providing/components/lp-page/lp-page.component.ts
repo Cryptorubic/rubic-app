@@ -11,7 +11,7 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatest } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
 @Component({
@@ -44,14 +44,16 @@ export class LpPageComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.service
-      .getDeposits()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.service.setDepositsLoading(false));
-
-    this.walletConnectorService.addressChange$.subscribe(() => {
-      this.cdr.detectChanges();
-    });
+    this.walletConnectorService.addressChange$
+      .pipe(
+        startWith(this.authService.userAddress),
+        switchMap(() => this.service.getDeposits()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.service.setDepositsLoading(false);
+        this.cdr.detectChanges();
+      });
   }
 
   public login(): void {

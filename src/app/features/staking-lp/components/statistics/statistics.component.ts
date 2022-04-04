@@ -2,17 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-  withLatestFrom
-} from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, of } from 'rxjs';
+import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TtvFilters } from '../../models/ttv-filters.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
 
@@ -57,10 +48,11 @@ export class StatisticsComponent implements OnInit {
 
   public readonly selectedTtvFilter$ = this._selectedTtvFilter$.asObservable();
 
-  public readonly ttv$ = this.selectedTtvFilter$.pipe(
-    withLatestFrom(this.stakingLpService.ttv$),
+  public readonly ttv$ = combineLatest([this.selectedTtvFilter$, this.stakingLpService.ttv$]).pipe(
     filter(([_, ttv]) => Boolean(ttv)),
-    map(([period]) => this.stakingLpService.getTtvByPeriod(period))
+    map(([period]) => {
+      return this.stakingLpService.getTtvByPeriod(period);
+    })
   );
 
   public readonly ttvFiltersText = TTV_FILTERS_TEXT;

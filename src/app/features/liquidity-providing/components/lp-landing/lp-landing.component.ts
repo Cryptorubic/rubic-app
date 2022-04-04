@@ -17,6 +17,8 @@ export class LpLandingComponent {
 
   public readonly isWhitelistUser$ = this.service.isWhitelistUser$;
 
+  public readonly whitelistTimer$ = this.service.whitelistTimer$;
+
   public readonly depositType = DepositType;
 
   constructor(

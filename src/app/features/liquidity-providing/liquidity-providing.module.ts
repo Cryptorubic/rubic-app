@@ -18,6 +18,7 @@ import { DepositModalComponent } from './components/deposit-modal/deposit-modal.
 import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
 import { LpStatisticsComponent } from './components/lp-statistics/lp-statistics.component';
 import { ProgressComponent } from './components/progress/progress.component';
+import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ProgressComponent } from './components/progress/progress.component';
   providers: [
     LiquidityProvidingService,
     LiquidityProvidingNotificationsService,
-    LiquidityProvidingModalsService
+    LiquidityProvidingModalsService,
+    UntilTimeGuard
   ]
 })
 export class LiquidityProvidingModule {}

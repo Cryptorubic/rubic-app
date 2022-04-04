@@ -3,13 +3,11 @@ import { CanActivate } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
-import { from, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ActivationResult } from '@shared/guards/models/types';
-import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { BLOCKCHAIN_NAME } from '../models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { LP_PROVIDING_CONTRACT_ABI } from '@app/features/liquidity-providing/constants/LP_PROVIDING_CONTRACT_ABI';
 import { switchMap } from 'rxjs/operators';
+import { LiquidityProvidingService } from '@app/features/liquidity-providing/services/liquidity-providing.service';
 
 @Injectable()
 export class UntilTimeGuard implements CanActivate {
@@ -26,7 +24,7 @@ export class UntilTimeGuard implements CanActivate {
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly web3PublicService: PublicBlockchainAdapterService
+    private readonly lpProvidingService: LiquidityProvidingService
   ) {}
 
   canActivate(): ActivationResult {
@@ -34,13 +32,7 @@ export class UntilTimeGuard implements CanActivate {
   }
 
   private redirectIfExpired(): Observable<Boolean> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<number>(
-        this.lpProvidingContract,
-        LP_PROVIDING_CONTRACT_ABI,
-        'startTime'
-      )
-    ).pipe(
+    return this.lpProvidingService.getStartTime().pipe(
       switchMap(startTime => {
         // if LP contract has start time === 0 - round didnt started
         const isStarted = +startTime !== 0;

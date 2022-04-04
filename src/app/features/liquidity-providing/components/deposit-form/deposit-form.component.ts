@@ -124,8 +124,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     this.service
       .createDeposit(amount)
       .pipe(finalize(() => this._buttonLoading$.next(false)))
-      .subscribe(v => {
-        console.log('balances', v);
+      .subscribe(() => {
         depositInProgressNotification$.unsubscribe();
         this.notificationService.showSuccessDepositNotification();
       });

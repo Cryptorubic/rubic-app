@@ -40,7 +40,7 @@ export class VolumeApiService {
    * @return Observable trade volume by period.
    */
   public fetchVolumesByPeriod(): Observable<TradeVolumeByPeriod> {
-    return this.httpService.get('total_values/stats/crosschain_total_value');
+    return this.httpService.get('total_values/stats/crosschain-lp');
   }
 
   /**

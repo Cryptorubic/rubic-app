@@ -3,15 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LpPageComponent } from './components/lp-page/lp-page.component';
 import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
+import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: LpPageComponent
+    component: LpPageComponent,
+    canActivate: [UntilTimeGuard]
   },
   {
     path: 'deposit',
-    component: DepositFormComponent
+    component: DepositFormComponent,
+    canActivate: [UntilTimeGuard]
   }
 ];
 

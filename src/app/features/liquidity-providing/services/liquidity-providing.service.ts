@@ -26,6 +26,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  scan,
   startWith,
   switchMap,
   take,
@@ -43,6 +44,7 @@ import { Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
+import { WHITELIST_PERIOD } from '../constants/WHITELIST_PERIOD';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -180,6 +182,8 @@ export class LiquidityProvidingService {
 
   private readonly _stopWhitelistWatch$ = new Subject<void>();
 
+  public whitelistTimer$: Observable<unknown>;
+
   private waitForReceipt$ = (hash: string) => {
     return interval(3000).pipe(
       switchMap(async () => {
@@ -219,6 +223,7 @@ export class LiquidityProvidingService {
         }
       }),
       catchError((error: unknown) => {
+        console.error(error);
         this.errorService.catchAnyError(error as Error);
         return EMPTY;
       })
@@ -267,7 +272,7 @@ export class LiquidityProvidingService {
         const totalStaked = this._totalStaked$.getValue();
 
         this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
-        this._balance$.next(userTotalStaked.dividedBy(totalStaked).multipliedBy(100).toNumber());
+        this._balance$.next(+userTotalStaked.dividedBy(totalStaked).multipliedBy(100).toFixed(2));
       })
     );
   }
@@ -342,7 +347,6 @@ export class LiquidityProvidingService {
           }),
           map(deposits => this.parseDeposits(deposits)),
           tap(deposits => {
-            console.log(deposits);
             this._deposits$.next(deposits);
           })
         );
@@ -367,8 +371,7 @@ export class LiquidityProvidingService {
       ),
       tap(isWhitelistInProgress => {
         this._isWhitelistInProgress$.next(isWhitelistInProgress);
-        this._isWhitelistUser$.next(this.whitelist.includes(this.userAddress.toLowerCase()));
-        debugger;
+        this._isWhitelistUser$.next(this.whitelist.includes(this?.userAddress?.toLowerCase()));
       }),
       takeUntil(this._stopWhitelistWatch$)
     );
@@ -512,6 +515,26 @@ export class LiquidityProvidingService {
       }),
       switchMap(() => this.getDeposits()),
       take(1)
+    );
+  }
+
+  public getStartTime(): Observable<string> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'startTime'
+      )
+    ).pipe(
+      tap(startTime => {
+        const currentTimestamp = +new Date();
+        const whitelistEndTimestamp = +startTime + WHITELIST_PERIOD;
+        const diff = whitelistEndTimestamp - currentTimestamp;
+        this.whitelistTimer$ = interval(1000).pipe(
+          scan(acc => --acc, diff),
+          map(ts => new Date(ts * 1000))
+        );
+      })
     );
   }
 

@@ -50,7 +50,6 @@ const routes: Routes = [
       import('./features/liquidity-providing/liquidity-providing.module').then(
         m => m.LiquidityProvidingModule
       )
-    // canActivate: [UntilTimeGuard]
   },
   {
     path: ROUTE_PATH.PROMOTION,

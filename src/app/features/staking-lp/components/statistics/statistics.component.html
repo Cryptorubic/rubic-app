@@ -72,7 +72,7 @@
         Total Trading Volume <img src="assets/images/icons/arrow/arrow-down-grey.svg" />
       </div>
       <div class="statistics__param-value" *ngLet="ttv$ | async as ttv">
-        ${{ ttv ? (ttv | bigNumberFormat) : '--.--' }}
+        ${{ ttv ? (ttv | bigNumberFormat: 0:true) : '--.--' }}
       </div>
     </div>
   </div>

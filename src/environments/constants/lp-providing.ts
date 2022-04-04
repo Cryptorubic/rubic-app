@@ -54,5 +54,8 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
     }
   },
-  whitelist: ['0xcc513c5e4f396e68c15282cfa02d3e9c615cd714']
+  whitelist: [
+    '0x449ab89a9c1dee7822580dad3cb6c0852210793a',
+    '0xcc513c5e4f396e68c15282cfa02d3e9c615cd714'
+  ]
 };

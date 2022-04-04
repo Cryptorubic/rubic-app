@@ -6,7 +6,7 @@
   <div class="statistics__col">
     <div class="statistics__param">
       <div class="statistics__param-label">APR</div>
-      <div class="statistics__param-value" *ngLet="apr$ | async as totalBalance">
+      <div class="statistics__param-value" *ngLet="apr$ | async as apr">
         {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }}%
       </div>
     </div>
