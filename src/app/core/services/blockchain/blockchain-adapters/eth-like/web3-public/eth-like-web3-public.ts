@@ -121,7 +121,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
       healthcheckData.contractAddress
     );
 
-    return from(contract.methods[healthcheckData.method]().call()).pipe(
+    return from(contract.methods.symbol().call()).pipe(
       timeout(timeoutMs),
       map(result => result === healthcheckData.expected),
       catchError((err: unknown) => {

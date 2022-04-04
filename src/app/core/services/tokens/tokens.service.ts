@@ -4,7 +4,7 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, NEAR_BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -513,7 +513,25 @@ export class TokensService {
    * @param blockchain Tokens blockchain.
    */
   public fetchQueryTokens(query: string, blockchain: BlockchainName): Observable<List<Token>> {
-    const isAddress = query.includes('0x');
+    const isAddress = query.length >= 42;
+
+    if (blockchain === NEAR_BLOCKCHAIN_NAME) {
+      const fetchQueryTokensByAddress$ = this.tokensApiService.fetchQueryTokens({
+        network: blockchain,
+        address: query
+      });
+      const fetchQueryTokensBySymbol$ = this.tokensApiService.fetchQueryTokens({
+        network: blockchain,
+        symbol: query
+      });
+
+      return forkJoin([fetchQueryTokensByAddress$, fetchQueryTokensBySymbol$]).pipe(
+        map(([foundTokensByAddress, foundTokensBySymbol]) => {
+          return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
+        })
+      );
+    }
+
     const params: TokensRequestQueryOptions = {
       network: blockchain,
       ...(!isAddress && { symbol: query }),

@@ -1,46 +1,29 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  defaultIfEmpty,
-  filter,
-  first,
-  map,
-  mergeMap,
-  switchMap
-} from 'rxjs/operators';
+import { catchError, debounceTime, filter, first, map, switchMap } from 'rxjs/operators';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
-import { TableProvider, TableTrade } from '@shared/models/my-trades/table-trade';
+import { TableData, TableTrade } from '@shared/models/my-trades/table-trade';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
-import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-
-interface HashPair {
-  fromTransactionHash: string;
-  toTransactionHash: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MyTradesService {
-  private _tableTrades$ = new BehaviorSubject<TableTrade[]>(undefined);
+  private readonly _tableData$ = new BehaviorSubject<TableData>(undefined);
 
-  public tableTrades$ = this._tableTrades$.asObservable();
+  public readonly tableData$ = this._tableData$.asObservable();
 
   private tokens: List<TokenAmount>;
 
@@ -80,7 +63,7 @@ export class MyTradesService {
       });
   }
 
-  public updateTableTrades(): Observable<TableTrade[]> {
+  public updateTableTrades(page = 0, pageSize = 10): Observable<TableTrade[]> {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens$.pipe(
@@ -93,17 +76,16 @@ export class MyTradesService {
         this.walletAddress = user?.address || null;
 
         if (!this.walletAddress || !tokens.size) {
-          this._tableTrades$.next([]);
+          this._tableData$.next({
+            totalCount: 0,
+            trades: []
+          });
           return EMPTY;
         }
 
-        return forkJoin([
-          this.getBridgeTransactions(),
-          this.getCrossChainTrades(),
-          this.getGasRefundTrades()
-        ]).pipe(
-          map(data => {
-            const adjustedData = data.flat().map(trade => ({
+        return forkJoin([this.getCrossChainTrades(page, pageSize)]).pipe(
+          map(([tableData]) => {
+            const adjustedData = tableData.trades.flat().map(trade => ({
               ...trade,
               transactionHashScanUrl: this.scannerLinkPipe.transform(
                 trade.fromTransactionHash || trade.toTransactionHash,
@@ -113,7 +95,10 @@ export class MyTradesService {
                 ADDRESS_TYPE.TRANSACTION
               )
             }));
-            this._tableTrades$.next(adjustedData);
+            this._tableData$.next({
+              totalCount: tableData.totalCount,
+              trades: adjustedData
+            });
             return adjustedData;
           })
         );
@@ -122,111 +107,52 @@ export class MyTradesService {
     );
   }
 
-  private getBridgeTransactions(): Observable<TableTrade[]> {
-    return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
-      mergeMap(bridgeTrades => {
-        const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
-          return of({
-            fromTransactionHash: trade.fromTransactionHash,
-            toTransactionHash: trade.toTransactionHash
-          });
-        });
-        return forkJoin(sources).pipe(
-          map((txHashes: HashPair[]) =>
-            txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
-              ...bridgeTrades[index],
-              fromTransactionHash,
-              toTransactionHash
-            }))
-          ),
-          defaultIfEmpty<TableTrade[]>([])
-        );
-      }),
-      catchError((err: unknown) => {
-        console.debug(err);
-        this._warningHandler$.next();
-        return of([]);
-      })
-    );
-  }
-
-  private getCrossChainTrades(): Observable<TableTrade[]> {
-    return this.crossChainRoutingApiService.getUserTrades(this.walletAddress).pipe(
-      map(tableTrades => {
-        return tableTrades.map(tableTrade => {
-          const { fromToken } = tableTrade;
-          const foundFromToken = this.tokens.find(
-            token =>
-              token.blockchain === fromToken.blockchain &&
-              token.address.toLowerCase() === fromToken.address.toLowerCase()
-          );
-          const { toToken } = tableTrade;
-          const foundToToken = this.tokens.find(
-            token =>
-              token.blockchain === toToken.blockchain &&
-              token.address.toLowerCase() === toToken.address.toLowerCase()
-          );
-          return {
-            ...tableTrade,
-            fromToken: {
-              ...fromToken,
-              image: foundFromToken?.image || fromToken.image
-            },
-            toToken: {
-              ...toToken,
-              image: foundToToken?.image || toToken.image
-            }
-          };
-        });
-      }),
-      catchError((err: unknown) => {
-        console.debug(err);
-        this._warningHandler$.next();
-        return of([]);
-      })
-    );
-  }
-
-  private getGasRefundTrades(): Observable<TableTrade[]> {
-    return this.gasRefundApiService.getGasRefundTransactions().pipe(
-      map(transactions =>
-        transactions
-          .map(item => {
-            const toToken = this.tokens.find(token =>
-              compareTokens(token, { address: item.tokenAddress, blockchain: item.network })
+  private getCrossChainTrades(page: number, pageSize: number): Observable<TableData> {
+    return this.crossChainRoutingApiService.getUserTrades(this.walletAddress, page, pageSize).pipe(
+      map(data => {
+        return {
+          totalCount: data.totalCount,
+          trades: data.trades.map(tableTrade => {
+            const { fromToken } = tableTrade;
+            const foundFromToken = this.tokens.find(
+              token =>
+                token.blockchain === fromToken.blockchain &&
+                token.address.toLowerCase() === fromToken.address.toLowerCase()
             );
-            if (!toToken) {
-              return null;
-            }
-            const amount = Web3Pure.fromWei(item.value, toToken.decimals).toFixed();
+            const { toToken } = tableTrade;
+            const foundToToken = this.tokens.find(
+              token =>
+                token.blockchain === toToken.blockchain &&
+                token.address.toLowerCase() === toToken.address.toLowerCase()
+            );
             return {
-              fromTransactionHash: item.hash,
-              transactionHashScanUrl: this.scannerLinkPipe.transform(
-                item.hash,
-                item.network,
-                ADDRESS_TYPE.TRANSACTION
-              ),
-              status: TRANSACTION_STATUS.COMPLETED,
-              provider: 'GAS_REFUND_PROVIDER' as TableProvider,
-              fromToken: null,
+              ...tableTrade,
+              fromToken: {
+                ...fromToken,
+                image: foundFromToken?.image || fromToken.image
+              },
               toToken: {
                 ...toToken,
-                amount
-              },
-              date: item.date
+                image: foundToToken?.image || toToken.image
+              }
             };
           })
-          .filter(item => !!item)
-      ),
+        };
+      }),
       catchError((err: unknown) => {
         console.debug(err);
         this._warningHandler$.next();
-        return of([]);
+        return of({
+          totalCount: 0,
+          trades: []
+        });
       })
     );
   }
 
   public getTableTradeByDate(date: Date): TableTrade {
-    return this._tableTrades$.getValue()?.find(trade => trade.date.getTime() === date.getTime());
+    return this._tableData$
+      .getValue()
+      ?.trades.find(trade => trade.date.getTime() === date.getTime());
   }
 }

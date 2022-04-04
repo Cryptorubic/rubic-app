@@ -28,3 +28,8 @@ export interface TableTrade {
   toToken: TableToken;
   date: Date;
 }
+
+export interface TableData {
+  totalCount: number;
+  trades: TableTrade[];
+}

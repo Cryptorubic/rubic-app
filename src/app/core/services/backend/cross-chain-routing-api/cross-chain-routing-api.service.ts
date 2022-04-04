@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
+import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { catchError, map, mapTo } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -10,6 +10,7 @@ import {
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   CrossChainTokenApi,
+  CrossChainTradeApi,
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
@@ -36,7 +37,7 @@ export class CrossChainRoutingApiService {
     };
   }
 
-  static parseTradeApiToTableTrade(tradeApi: CrossChainTradesResponseApi): TableTrade {
+  static parseTradeApiToTableTrade(tradeApi: CrossChainTradeApi): TableTrade {
     const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
     return {
@@ -52,17 +53,27 @@ export class CrossChainRoutingApiService {
   }
 
   /**
-   * get list of user's cross chain trades
-   * @param walletAddress wallet address of user
-   * @return list of trades
+   * Gets list of user's cross chain trades.
+   * @param walletAddress Wallet address of user.
+   * @param page Page in pagination.
+   * @param pageSize Page size in pagination.
    */
-  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
+  public getUserTrades(
+    walletAddress: string,
+    page: number,
+    pageSize: number
+  ): Observable<TableData> {
     return this.httpService
-      .get('trades/', { user: walletAddress }, BASE_URL)
+      .get('trades/', { user: walletAddress, page: page + 1, page_size: pageSize }, BASE_URL)
       .pipe(
-        map((trades: CrossChainTradesResponseApi[]) =>
-          trades.map(trade => CrossChainRoutingApiService.parseTradeApiToTableTrade(trade))
-        )
+        map((trades: CrossChainTradesResponseApi) => {
+          return {
+            totalCount: trades.count,
+            trades: trades.results.map(trade =>
+              CrossChainRoutingApiService.parseTradeApiToTableTrade(trade)
+            )
+          };
+        })
       );
   }
 

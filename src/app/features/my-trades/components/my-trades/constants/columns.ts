@@ -1,4 +1,4 @@
-import { TableRowKeyValue } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
+import { TableRowKeyValue } from '@features/my-trades/components/my-trades/models/table-row-trade';
 
 export const COLUMNS: TableRowKeyValue[] = [
   {
