@@ -11,9 +11,11 @@ import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-tra
 export class PangolinAvalancheService extends CommonUniswapV2Service {
   public readonly providerType = INSTANT_TRADE_PROVIDER.PANGOLIN;
 
+  protected readonly contractAbi = AVAX_CONTRACT_ABI;
+
+  protected readonly swapsMethod = AVAX_SWAP_METHOD;
+
   constructor() {
     super(PANGOLIN_AVALANCHE_CONSTANTS);
-    this.swapsMethod = AVAX_SWAP_METHOD;
-    this.contractAbi = AVAX_CONTRACT_ABI;
   }
 }
