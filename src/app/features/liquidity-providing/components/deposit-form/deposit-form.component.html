@@ -30,9 +30,7 @@
     <div class="asset__balance-usd-price">
       <div class="asset__balance" *ngLet="brbcBalance$ | async as brbcBalance">
         You have {{ brbcBalance ? (brbcBalance | bigNumberFormat: 2:true) : 0 }}
-        <span class="asset__balance-max" (click)="setMaxTokenAmount(brbcBalance, poolToken.BRBC)">
-          MAX
-        </span>
+        <span class="asset__balance-max" (click)="setMaxTokenAmount(brbcBalance)"> MAX </span>
       </div>
       <div class="asset__usd-price" *ngIf="rbcAmountUsdPrice$ | async as usdPrice">
         {{ usdPrice }}$
@@ -53,13 +51,15 @@
           autocomplete="off"
           placeholder="0.0"
           appTokenAmount
+          [disabled]="true"
           [decimals]="18"
           [formControl]="usdcAmountCtrl"
         />
       </div>
       <div class="asset__balance-usd-price">
-        <div class="asset__balance"></div>
-        <div class="asset__usd-price">300$</div>
+        <div class="asset__balance" *ngLet="usdcBalance$ | async as usdcBalance">
+          You have {{ usdcBalance ? (usdcBalance | bigNumberFormat: 2:true) : 0 }}
+        </div>
       </div>
     </div>
     <div class="hint">

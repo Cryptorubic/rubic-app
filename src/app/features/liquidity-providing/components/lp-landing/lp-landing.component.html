@@ -1,29 +1,53 @@
-<div class="landing">
-  <div class="landing__step">
-    <div class="landing__step-icon">
-      <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+<ng-container
+  *ngLet="{
+    isWhitelistUser: isWhitelistUser$ | async,
+    isWhitelistInProgress: isWhitelistInProgress$ | async
+  } as whitelist"
+>
+  <div class="landing">
+    <div class="landing__step">
+      <div class="landing__step-icon">
+        <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+      </div>
+      <div class="landing__step-text">Buy RBC to get profit and participate in our staking</div>
     </div>
-    <div class="landing__step-text">Buy RBC to get profit and participate in our staking</div>
-  </div>
-  <div class="landing__step">
-    <div class="landing__step-icon">
-      <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+    <div class="landing__step">
+      <div class="landing__step-icon">
+        <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+      </div>
+      <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
     </div>
-    <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
   </div>
-</div>
-<ng-container *ngIf="needLogin$ | async; else createDeposit">
-  <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
-    Connect wallet
-  </app-rubic-button>
-</ng-container>
+  <div class="whitelist-info"></div>
+  <ng-container *ngIf="needLogin$ | async; else createDeposit">
+    <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
+      Connect wallet
+    </app-rubic-button>
+  </ng-container>
 
-<ng-template #createDeposit>
-  <app-rubic-button
-    class="lp-steps__create"
-    appearance="secondary"
-    (click)="navigateToDepositForm(false)"
-  >
-    Create deposit
-  </app-rubic-button>
-</ng-template>
+  <ng-template #createDeposit>
+    <ng-container *ngIf="whitelist.isWhitelistInProgress && !whitelist.isWhitelistUser">
+      <app-rubic-button class="lp-steps__create" appearance="secondary" [disabled]="true">
+        Your address is not in Whitelist
+      </app-rubic-button>
+    </ng-container>
+    <ng-container *ngIf="whitelist.isWhitelistInProgress && whitelist.isWhitelistUser">
+      <app-rubic-button
+        class="lp-steps__create"
+        appearance="secondary"
+        (onClick)="navigateToDepositForm(depositType.WHITELIST)"
+      >
+        Create as whitelist
+      </app-rubic-button>
+    </ng-container>
+    <ng-container *ngIf="!whitelist.isWhitelistInProgress">
+      <app-rubic-button
+        class="lp-steps__create"
+        appearance="secondary"
+        (onClick)="navigateToDepositForm(depositType.REGULAR)"
+      >
+        create deposit
+      </app-rubic-button>
+    </ng-container>
+  </ng-template>
+</ng-container>

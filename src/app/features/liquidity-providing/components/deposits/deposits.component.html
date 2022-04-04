@@ -10,14 +10,6 @@
         >
           Create deposit
         </app-rubic-button>
-        <app-rubic-button
-          appearance="secondary"
-          class="deposits__actions-create"
-          (click)="navigateToDepositForm(true)"
-          *ngIf="isWhitelistUser$ | async"
-        >
-          Enter whitelist
-        </app-rubic-button>
       </div>
     </div>
     <div class="deposits__list">

@@ -10,7 +10,17 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, EMPTY, forkJoin, from, interval, Observable, of, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
@@ -19,20 +29,18 @@ import {
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
 import { LpFormError } from '../models/lp-form-error.enum';
-import { LiquidityPeriod } from '../models/liquidity-period.enum';
 import { TransactionReceipt } from 'web3-eth';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { TokenLp, TokenLpParsed } from '../models/token-lp.interface';
-import { LiquidityRate } from '../models/liquidity-rate.enum';
 import { DepositType } from '../models/deposit-type.enum';
 import { Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
-import { WHITELIST_PERIOD } from '../constants/WHITELIST_PERIOD';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
 
@@ -54,27 +62,9 @@ export class LiquidityProvidingService {
 
   public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
 
-  private readonly _isWhitelistActive$ = new BehaviorSubject<boolean>(undefined);
-
-  public get isWhitelistActive(): boolean {
-    return this._isWhitelistActive$.getValue();
-  }
-
-  private readonly _isWhitelistUser$ = new BehaviorSubject<boolean>(undefined);
-
-  public readonly isWhitelistUser$ = this._isWhitelistUser$.asObservable();
-
-  public get isWhitelistUser(): boolean {
-    return this._isWhitelistUser$.getValue();
-  }
-
   public readonly userAddress$ = this.authService.getCurrentUser().pipe(
     distinctUntilChanged((x, y) => {
       return x?.address === y?.address;
-    }),
-    tap(user => {
-      const isInWhitelist = this.whitelist.includes(user?.address?.toLowerCase());
-      this._isWhitelistUser$.next(isInWhitelist);
     })
   );
 
@@ -172,6 +162,24 @@ export class LiquidityProvidingService {
     return this.maxEnterAmount - this._userTotalStaked$.getValue();
   }
 
+  private readonly _isWhitelistInProgress$ = new BehaviorSubject<boolean>(undefined);
+
+  public readonly isWhitelistInProgress$ = this._isWhitelistInProgress$.asObservable();
+
+  public get isWhitelistInProgress(): boolean {
+    return this._isWhitelistInProgress$.getValue();
+  }
+
+  private readonly _isWhitelistUser$ = new BehaviorSubject<boolean>(undefined);
+
+  public readonly isWhitelistUser$ = this._isWhitelistUser$.asObservable();
+
+  public get isWhitelistUser(): boolean {
+    return this._isWhitelistUser$.getValue();
+  }
+
+  private readonly _stopWhitelistWatch$ = new Subject<void>();
+
   private waitForReceipt$ = (hash: string) => {
     return interval(3000).pipe(
       switchMap(async () => {
@@ -192,7 +200,9 @@ export class LiquidityProvidingService {
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
     private readonly router: Router
-  ) {}
+  ) {
+    this.watchWhitelist().subscribe();
+  }
 
   public getStatistics(): Observable<unknown> {
     return this.userAddress$.pipe(
@@ -201,7 +211,8 @@ export class LiquidityProvidingService {
           return forkJoin([
             this.getTotalRewards(),
             this.getTotalCollectedRewards(),
-            this.getUserTotalStaked()
+            this.getUserTotalStaked(),
+            this.getTotalStaked()
           ]);
         } else {
           return EMPTY;
@@ -256,7 +267,7 @@ export class LiquidityProvidingService {
         const totalStaked = this._totalStaked$.getValue();
 
         this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
-        this._balance$.next(userTotalStaked.dividedBy(totalStaked).toNumber());
+        this._balance$.next(userTotalStaked.dividedBy(totalStaked).multipliedBy(100).toNumber());
       })
     );
   }
@@ -286,8 +297,11 @@ export class LiquidityProvidingService {
       this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
-        'totalPoolStakedUSDC'
+        'poolUSDC'
       )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(totalStaked => this._totalStaked$.next(totalStaked.toNumber()))
     );
   }
 
@@ -340,20 +354,28 @@ export class LiquidityProvidingService {
     this._depositsLoading$.next(value);
   }
 
-  public getIsWhitelistActive(): Observable<string> {
-    return from(
-      this.web3PublicService[this.blockchain].callContractMethod(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'startTime'
-      )
-    ).pipe(
-      tap(startTime => {
-        const whitelistEndTimestamp = Number(startTime) + WHITELIST_PERIOD;
-        const currentTimestamp = Math.floor(Date.now() / 1000);
-        this._isWhitelistActive$.next(whitelistEndTimestamp < currentTimestamp);
-      })
+  public watchWhitelist(): Observable<boolean> {
+    return combineLatest([this.walletConnectorService.addressChange$, this.userAddress$]).pipe(
+      switchMap(() =>
+        from(
+          this.web3PublicService[this.blockchain].callContractMethod<boolean>(
+            this.lpContractAddress,
+            LP_PROVIDING_CONTRACT_ABI,
+            'viewWhitelistInProgress'
+          )
+        )
+      ),
+      tap(isWhitelistInProgress => {
+        this._isWhitelistInProgress$.next(isWhitelistInProgress);
+        this._isWhitelistUser$.next(this.whitelist.includes(this.userAddress.toLowerCase()));
+        debugger;
+      }),
+      takeUntil(this._stopWhitelistWatch$)
     );
+  }
+
+  public stopWatchWhitelist(): void {
+    this._stopWhitelistWatch$.next();
   }
 
   public getNeedTokensApprove(): Observable<BigNumber[]> {
@@ -426,7 +448,7 @@ export class LiquidityProvidingService {
     );
   }
 
-  public createDeposit(amount: BigNumber, period: number): Observable<BigNumber[]> {
+  public createDeposit(amount: BigNumber): Observable<BigNumber[]> {
     const depositMethod =
       this.depositType === DepositType.WHITELIST && Boolean(this.isWhitelistUser)
         ? 'whitelistStake'
@@ -437,7 +459,7 @@ export class LiquidityProvidingService {
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         depositMethod,
-        [Web3Pure.toWei(amount), period * 10]
+        [Web3Pure.toWei(amount)]
       )
     ).pipe(
       catchError((error: unknown) => {
@@ -452,6 +474,23 @@ export class LiquidityProvidingService {
         }
       }),
       switchMap(() => this.getAndUpdatePoolTokensBalances())
+    );
+  }
+
+  public withdraw(tokenId: string): Observable<unknown> {
+    return from(
+      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'withdraw',
+        [tokenId]
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
+      }),
+      switchMap(() => this.getDeposits().pipe(take(1)))
     );
   }
 
@@ -476,19 +515,7 @@ export class LiquidityProvidingService {
     );
   }
 
-  public async switchNetwork(): Promise<boolean> {
-    return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
-  }
-
-  public checkAmountAndPeriodForErrors(
-    amount: BigNumber,
-    balance: BigNumber,
-    period: number
-  ): LpFormError | null {
-    if (period < LiquidityPeriod.SHORT) {
-      return LpFormError.INVALID_PERIOD;
-    }
-
+  public checkDepositErrors(amount: BigNumber, balance: BigNumber): LpFormError | null {
     if (amount.gt(this.currentMaxLimit)) {
       return LpFormError.LIMIT_GT_MAX;
     }
@@ -506,18 +533,6 @@ export class LiquidityProvidingService {
     }
 
     return null;
-  }
-
-  public getRate(days: number): number {
-    if (days < LiquidityPeriod.AVERAGE) {
-      return LiquidityRate.SHORT;
-    }
-
-    if (days < LiquidityPeriod.LONG && days >= LiquidityPeriod.AVERAGE) {
-      return LiquidityRate.AVERAGE;
-    }
-
-    return LiquidityRate.LONG;
   }
 
   public async calculateUsdPrice(value: BigNumber, token: 'brbc' | 'usdc'): Promise<BigNumber> {
@@ -559,6 +574,10 @@ export class LiquidityProvidingService {
         period
       };
     });
+  }
+
+  public async switchNetwork(): Promise<boolean> {
+    return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
   private parseApr(apr: string): number {

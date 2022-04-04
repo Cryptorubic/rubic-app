@@ -56,11 +56,7 @@ export class StakingLpPageComponent implements OnInit {
     this.router.navigate(['staking', roundRoutePath]);
   }
 
-  navigateToLp(isStarted: boolean): void {
-    if (isStarted) {
-      this.router.navigate(['liquidity-providing']);
-    } else {
-      this.router.navigateByUrl('https://rubic.exchange/');
-    }
+  navigateToLp(): void {
+    this.router.navigate(['liquidity-providing']);
   }
 }

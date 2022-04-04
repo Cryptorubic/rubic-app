@@ -1,6 +1,7 @@
 @use 'src/scss/core'as *;
 
-:host {display: block;
+:host {
+  display: block;
   padding-top: 41px;
 }
 
@@ -12,6 +13,12 @@
 
   background: var(--rubic-base-22);
   border-radius: 30px;
+
+  @include b($tablet) {
+    padding: 25px 20px 20px;
+
+    border-radius: 22px;
+  }
 }
 
 .title {
@@ -20,8 +27,40 @@
   justify-content: space-between;
   margin-bottom: 34px;
 
+  @include b($tablet) {
+    position: relative;
+
+    display: flex;
+    margin-bottom: 0;
+    padding: 0px 0 25px;
+
+    &::after {
+      position: absolute;
+      top: 50px;
+      left: -20px;
+
+      display: block;
+      width: calc(100% + 40px);
+      height: 1px;
+
+      background: #262927;
+
+      content: '';
+    }
+  }
+
   &__back {
+    display: flex;
+    align-items: center;
+
     cursor: pointer;
+    
+    @include b($tablet) {
+      img {
+        width: 19px;
+        height: 15.32px;
+      }
+    }
   }
 
   &__round {

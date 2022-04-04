@@ -23,7 +23,7 @@
     <div class="statistics__param">
       <div class="statistics__param-label">Balance</div>
       <div class="statistics__param-value" *ngLet="balance$ | async as balance">
-        {{ balance ? (balance | percent) : '--.--' }}%
+        {{ balance ? balance : '--.--' }}%
       </div>
     </div>
     <div class="statistics__param">

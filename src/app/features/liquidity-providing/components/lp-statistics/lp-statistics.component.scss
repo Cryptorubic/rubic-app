@@ -12,9 +12,8 @@
 
   @include b($tablet) {
     flex-direction: column;
-    padding: 28px 12px 12px;
-
-    border-radius: 22px;
+    padding-top: 32px;
+    padding-bottom: 54px;
   }
 
   &__refresh {
@@ -23,8 +22,7 @@
     right: 22px;
 
     @include b($tablet) {
-      top: 12px;
-      right: 12px;
+      display: none;
     }
   }
 
@@ -42,40 +40,48 @@
       padding: 26px 22px;
 
       &:first-child {
-        order: 3;
+        width: 100%;
+        min-width: 100%;
+        margin-right: 0;
+        margin-bottom: 30px;
+        // order: 3;
         padding: 26px 22px;
       }
 
       &:nth-child(2) {
-        order: 1;
+        // order: 1;
         margin-bottom: 52px;
-        padding: 0 22px;
+        padding: 0 10px;
+
+        border: 0;
       }
 
       &:nth-child(3) {
-        order: 2;
-        margin-bottom: 26px;
-        padding: 0px 22px;
+        // order: 2;
+        width: 100%;
+        padding: 0 10px;
+
+        border: 0;
       }
     }
 
     &:nth-child(2) {
-      margin-right: 100px;
+      width: 33%;
     }
-
+    
     &:first-child {
       min-width: 340px;
       margin-right: 50px;
       padding-right: 50px;
       padding-left: 50px;
-
+    
       border-color: $rubic-primary;
       border-radius: 18px;
     }
-
+    
     .statistics__param:first-child {
       margin-bottom: 50px;
-
+    
       @include b($tablet) {
         margin-bottom: 0;
       }
@@ -144,6 +150,13 @@
     position: absolute;
     right: 0;
     bottom: 0;
+
+    @include b($tablet) {
+      left: 0;
+
+      font-size: 14px;
+      line-height: 22px;
+    }
 
     span {
       color: var(--rubic-base-24);

@@ -134,6 +134,10 @@
     padding-bottom: 46px;
 
     border-top: 1px solid #3e413f;
+
+    &__amount {
+      color: rgba(255, 255, 255, 0.6);
+    }
   }
 }
 

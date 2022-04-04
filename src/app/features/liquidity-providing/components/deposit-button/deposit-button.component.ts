@@ -24,8 +24,6 @@ export class DepositButtonComponent implements OnInit {
 
   @Input() brbcAmount$: Observable<BigNumber>;
 
-  @Input() liquidityPeriod$: Observable<number>;
-
   @Input() loading: boolean;
 
   @Output() onLogin = new EventEmitter<void>();
@@ -59,22 +57,18 @@ export class DepositButtonComponent implements OnInit {
   constructor(private readonly service: LiquidityProvidingService) {}
 
   ngOnInit(): void {
-    combineLatest([this.brbcAmount$, this.service.brbcBalance$, this.liquidityPeriod$])
+    combineLatest([this.brbcAmount$, this.service.brbcBalance$])
       .pipe(
-        tap(([brbcAmount, brbcBalance, period]) => {
-          this._error$.next(
-            this.service.checkAmountAndPeriodForErrors(brbcAmount, brbcBalance, period)
-          );
+        tap(([brbcAmount, brbcBalance]) => {
+          this._error$.next(this.service.checkDepositErrors(brbcAmount, brbcBalance));
         })
       )
       .subscribe();
 
-    combineLatest([this.usdcAmount$, this.service.usdcBalance$, this.liquidityPeriod$])
+    combineLatest([this.usdcAmount$, this.service.usdcBalance$])
       .pipe(
-        tap(([usdcAmount, usdcBalance, period]) => {
-          this._error$.next(
-            this.service.checkAmountAndPeriodForErrors(usdcAmount, usdcBalance, period)
-          );
+        tap(([usdcAmount, usdcBalance]) => {
+          this._error$.next(this.service.checkDepositErrors(usdcAmount, usdcBalance));
         })
       )
       .subscribe();

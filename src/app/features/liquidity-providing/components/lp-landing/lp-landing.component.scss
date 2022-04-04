@@ -10,12 +10,23 @@
   border: 1px solid #262927;
   border-radius: 20px;
 
+  @include b($tablet) {
+    flex-direction: column;
+    margin-bottom: 39px;
+    padding: 20px;
+  }
+
   &__step {
     display: flex;
     align-items: center;
 
     &:first-child {
       margin-right: 52px;
+
+      @include b($tablet) {
+        margin-right: 0;
+        margin-bottom: 32px;
+      }
     }
 
     &-icon {
@@ -25,6 +36,12 @@
 
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.16) 0%, #000 100%);
 
+      @include b($tablet) {
+        width: 56px;
+        height: 56px;
+        margin-right: 18px;
+      }
+
       img {
         width: 100%;
         height: 100%;
@@ -33,6 +50,11 @@
 
     &-text {
       @include font(18px, 23px, 600, var(--rubic-base-02));
+
+      @include b($tablet) {
+        font-size: 14px;
+        line-height: 18px;
+      }
     }
   }
 }
@@ -41,4 +63,8 @@ app-rubic-button {
   display: block;
   width: 696px;
   margin: 0 auto;
+
+  @include b(1024) {
+    width: 100%;
+  }
 }

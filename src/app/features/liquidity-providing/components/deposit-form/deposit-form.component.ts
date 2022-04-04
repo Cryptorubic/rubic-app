@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
   debounceTime,
@@ -21,6 +27,7 @@ import { LiquidityProvidingModalsService } from '../../services/liquidity-provid
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { PoolToken } from '../../models/pool-token.enum';
+import { DepositType } from '../../models/deposit-type.enum';
 
 @Component({
   selector: 'app-deposit-form',
@@ -29,12 +36,12 @@ import { PoolToken } from '../../models/pool-token.enum';
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DepositFormComponent implements OnInit {
+export class DepositFormComponent implements OnInit, OnDestroy {
   public readonly poolToken = PoolToken;
 
   public readonly brbcAmountCtrl = new FormControl(0);
 
-  public readonly usdcAmountCtrl = new FormControl();
+  public readonly usdcAmountCtrl = new FormControl({ value: 0, disabled: true });
 
   private readonly _rbcAmountUsdPrice$ = new BehaviorSubject<BigNumber>(undefined);
 
@@ -72,6 +79,8 @@ export class DepositFormComponent implements OnInit {
     takeUntil(this.destroy$)
   );
 
+  public readonly depositType = DepositType;
+
   constructor(
     private readonly service: LiquidityProvidingService,
     private readonly notificationService: LiquidityProvidingNotificationsService,
@@ -84,7 +93,12 @@ export class DepositFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.brbcAmount$.pipe(skip(1), debounceTime(500)).subscribe(() => {
+    this.brbcAmount$.pipe(skip(1), debounceTime(500)).subscribe(value => {
+      if (!value.isFinite()) {
+        this.usdcAmountCtrl.reset();
+      } else {
+        this.usdcAmountCtrl.patchValue(value);
+      }
       this._usdcDepositOpened$.next(true);
     });
 
@@ -99,45 +113,16 @@ export class DepositFormComponent implements OnInit {
         })
       )
       .subscribe();
-    // this.liquidityPeriod$
-    //   .pipe(withLatestFrom(this.usdcAmount$))
-    //   .subscribe(([liquidityPeriod, usdcAmount]) => {
-    //     const rate = this.service.getRate(liquidityPeriod);
-    //     const brbcAmount = (Number(usdcAmount) * rate).toFixed(2);
-    //     this.brbcAmountCtrl.setValue(brbcAmount, { emitEvent: false });
-    //   });
-    // this.brbcAmount$
-    //   .pipe(withLatestFrom(this.liquidityPeriod$))
-    //   .subscribe(([brbcAmount, liquidityPeriod]) => {
-    //     this._usdcDepositOpened$.next(true);
-    //     const rate = this.service.getRate(liquidityPeriod);
-    //     const usdcAmount = brbcAmount.multipliedBy(1 / rate).toFixed(2);
-    //     this.usdcAmountCtrl.setValue(usdcAmount, {
-    //       emitEvent: false
-    //     });
-    //   });
-    // this.usdcAmount$
-    //   .pipe(withLatestFrom(this.liquidityPeriod$))
-    //   .subscribe(([usdcAmount, liquidityPeriod]) => {
-    //     if (!usdcAmount.isFinite()) {
-    //       this.brbcAmountCtrl.setValue('', { emitEvent: false });
-    //       return;
-    //     }
-    //     const rate = this.service.getRate(liquidityPeriod);
-    //     const brbcAmount = usdcAmount.multipliedBy(rate).toFixed(2);
-    //     this.brbcAmountCtrl.setValue(brbcAmount, { emitEvent: false });
-    //   });
   }
 
   public createDeposit(): void {
-    const usdcAmount = new BigNumber(this.usdcAmountCtrl.value.toString().split(',').join(''));
-    const period = 111;
+    const amount = this.service.parseInputValue(this.usdcAmountCtrl.value);
     const depositInProgressNotification$ =
       this.notificationService.showDepositInProgressNotification();
     this._buttonLoading$.next(true);
 
     this.service
-      .createDeposit(usdcAmount, period)
+      .createDeposit(amount)
       .pipe(finalize(() => this._buttonLoading$.next(false)))
       .subscribe(v => {
         console.log('balances', v);
@@ -160,18 +145,13 @@ export class DepositFormComponent implements OnInit {
       .subscribe(() => {
         approveInProgressNotification$.unsubscribe();
         this.notificationService.showSuccessApproveNotification();
+        this.cdr.detectChanges();
       });
   }
 
-  public setMaxTokenAmount(amount: BigNumber, token: PoolToken): void {
-    switch (token) {
-      case PoolToken.BRBC:
-        this.brbcAmountCtrl.setValue(amount.toFixed(5));
-        break;
-      case PoolToken.USDC:
-        this.usdcAmountCtrl.setValue(amount.toFixed(5));
-        break;
-    }
+  public setMaxTokenAmount(amount: BigNumber): void {
+    this.brbcAmountCtrl.setValue(amount.toFixed(2));
+    this.usdcAmountCtrl.setValue(amount.toFixed(2));
   }
 
   public navigateBack(): void {
@@ -184,5 +164,9 @@ export class DepositFormComponent implements OnInit {
 
   public login(): void {
     this.walletsModalService.open().subscribe();
+  }
+
+  public ngOnDestroy(): void {
+    this.service.stopWatchWhitelist();
   }
 }

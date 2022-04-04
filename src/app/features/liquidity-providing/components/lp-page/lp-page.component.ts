@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -15,7 +21,7 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class LpPageComponent implements OnInit {
+export class LpPageComponent implements OnInit, OnDestroy {
   public readonly showDeposits$ = combineLatest([
     this.authService.getCurrentUser(),
     this.service.deposits$
@@ -37,7 +43,7 @@ export class LpPageComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.service
       .getDeposits()
       .pipe(takeUntil(this.destroy$))
@@ -54,5 +60,9 @@ export class LpPageComponent implements OnInit {
 
   public navigateBack(): void {
     this.router.navigate(['staking-lp']);
+  }
+
+  public ngOnDestroy(): void {
+    this.service.stopWatchWhitelist();
   }
 }
