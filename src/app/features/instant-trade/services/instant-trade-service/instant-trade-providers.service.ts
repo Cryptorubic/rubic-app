@@ -11,7 +11,6 @@ import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
-import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
 import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
@@ -32,6 +31,7 @@ import { TrisolarisAuroraService } from '@features/instant-trade/services/instan
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ZrxEthService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/zrx-eth-service/zrx-eth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,7 @@ export class InstantTradeProvidersService {
     private readonly uniswapV2Service: UniSwapV2Service,
     private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
     private readonly sushiSwapEthService: SushiSwapEthService,
-    private readonly zrxService: ZrxService,
+    private readonly zrxEthService: ZrxEthService,
     // BSC.
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly oneInchBscService: OneInchBscService,
@@ -90,7 +90,7 @@ export class InstantTradeProvidersService {
         [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: this.uniswapV2Service,
         [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: this.uniswapV3EthereumService,
         [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
-        [INSTANT_TRADE_PROVIDER.ZRX]: this.zrxService
+        [INSTANT_TRADE_PROVIDER.ZRX]: this.zrxEthService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchBscService,

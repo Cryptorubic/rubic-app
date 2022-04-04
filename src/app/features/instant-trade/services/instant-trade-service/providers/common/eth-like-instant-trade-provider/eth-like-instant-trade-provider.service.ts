@@ -20,9 +20,14 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 export abstract class EthLikeInstantTradeProviderService implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
+
+  public abstract readonly contractAddress: string;
+
+  protected abstract readonly gasMargin: number;
 
   protected readonly web3Public: EthLikeWeb3Public;
 
@@ -36,6 +41,8 @@ export abstract class EthLikeInstantTradeProviderService implements ItProvider {
   private readonly authService = inject(AuthService);
 
   private readonly settingsService = inject(SettingsService);
+
+  protected readonly tokensService = inject(TokensService);
   // Injected services end
 
   protected get walletAddress(): string {
@@ -46,10 +53,7 @@ export abstract class EthLikeInstantTradeProviderService implements ItProvider {
     return this.settingsService.instantTradeValue;
   }
 
-  protected constructor(
-    protected readonly blockchain: EthLikeBlockchainName,
-    public readonly contractAddress: string
-  ) {
+  protected constructor(protected readonly blockchain: EthLikeBlockchainName) {
     this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
   }
 

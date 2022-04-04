@@ -13,7 +13,6 @@ import {
   UniswapV2CalculatedInfo,
   UniswapV2CalculatedInfoWithProfit
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-calculated-info';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TransactionReceipt } from 'web3-eth';
 import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
@@ -53,13 +52,15 @@ interface RecGraphVisitorOptions {
 export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProviderService {
   public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
+  public readonly contractAddress: string;
+
   protected readonly contractAbi = DEFAULT_UNISWAP_V2_ABI;
 
   protected readonly swapsMethod = DEFAULT_SWAP_METHOD;
 
   private readonly defaultEstimateGas = DEFAULT_ESTIMATED_GAS;
 
-  private readonly gasMargin = 1.2; // 120%
+  protected readonly gasMargin = 1.2; // 120%
 
   private readonly wethAddress: string;
 
@@ -68,8 +69,6 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
   private readonly maxTransitTokens: number;
 
   // Injected services start
-  private readonly tokensService = inject(TokensService);
-
   private readonly gasService = inject(GasService);
 
   private readonly iframeService = inject(IframeService);
@@ -84,8 +83,9 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
   }
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    super(uniswapConstants.blockchain, uniswapConstants.contractAddress);
+    super(uniswapConstants.blockchain);
 
+    this.contractAddress = uniswapConstants.contractAddress;
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
     this.wethAddress = uniswapConstants.wethAddress;
     this.routingProviders = uniswapConstants.routingProviders;
