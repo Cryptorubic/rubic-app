@@ -71,7 +71,9 @@
       >
         Total Trading Volume <img src="assets/images/icons/arrow/arrow-down-grey.svg" />
       </div>
-      <div class="statistics__param-value">$37,183,302</div>
+      <div class="statistics__param-value" *ngLet="ttv$ | async as ttv">
+        ${{ ttv ? (ttv | bigNumberFormat) : '--.--' }}
+      </div>
     </div>
   </div>
   <app-rotating-icon

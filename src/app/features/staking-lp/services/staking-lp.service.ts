@@ -30,6 +30,8 @@ import { AbiItem } from 'web3-utils';
 import { BlockchainsInfo } from '@app/core/services/blockchain/blockchain-info';
 import { PDA_DELEGATE } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import { LP_PROVIDING_CONTRACT_ABI } from '@app/features/liquidity-providing/constants/LP_PROVIDING_CONTRACT_ABI';
+import { TradeVolumeByPeriod } from '@app/core/services/backend/volume-api/models/trade-volume-by-period';
+import { TtvFilters } from '../models/ttv-filters.enum';
 
 @Injectable()
 export class StakingLpService {
@@ -142,9 +144,9 @@ export class StakingLpService {
 
   public readonly tvlTotal$ = this._tvlTotal$.asObservable();
 
-  // private readonly _ttv$ = new BehaviorSubject<TradeVolume>(undefined);
+  private readonly _ttv$ = new BehaviorSubject<TradeVolumeByPeriod>(undefined);
 
-  // public readonly ttv$ = this._ttv$.asObservable();
+  public readonly ttv$ = this._ttv$.asObservable();
 
   private readonly _lpRoundStarted$ = new BehaviorSubject<boolean>(undefined);
 
@@ -388,7 +390,31 @@ export class StakingLpService {
     );
   }
 
-  public getTtv(): void {}
+  public getTtv(): Observable<TradeVolumeByPeriod> {
+    return this.volumeApiService.fetchVolumesByPeriod().pipe(
+      catchError(() => {
+        return EMPTY;
+      }),
+      tap(response => this._ttv$.next(response))
+    );
+  }
+
+  public getTtvByPeriod(period: TtvFilters): number {
+    const ttv = this._ttv$.getValue();
+
+    switch (period) {
+      case TtvFilters.ALL_TIME:
+        return ttv.total_value;
+      case TtvFilters.ONE_DAY:
+        return ttv.total_value_by_1day;
+      case TtvFilters.ONE_MONTH:
+        return ttv.total_value_by_1months;
+      case TtvFilters.SIX_MONTH:
+        return ttv.total_value_by_6months;
+      default:
+        return undefined;
+    }
+  }
 
   public getTvlMultichain(): Observable<BigNumber> {
     this.toggleLoading('tvlAndTtv', true);

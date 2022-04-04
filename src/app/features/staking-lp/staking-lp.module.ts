@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StakingLpPageComponent } from './components/staking-lp-page/staking-lp-page.component';
 import { StakingLpService } from './services/staking-lp.service';
-import { StakingLpApiService } from './services/staking-lp-api.service';
 import { StakingLpRoutingModule } from './staking-lp-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { StatisticsComponent } from './components/statistics/statistics.component';
@@ -36,6 +35,6 @@ import {
     TuiLoaderModule
   ],
   exports: [],
-  providers: [StakingLpService, StakingLpApiService]
+  providers: [StakingLpService]
 })
 export class StakingLpModule {}
