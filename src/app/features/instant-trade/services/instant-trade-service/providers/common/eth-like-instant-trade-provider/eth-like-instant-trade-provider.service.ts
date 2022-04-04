@@ -21,6 +21,7 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 export abstract class EthLikeInstantTradeProviderService implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
@@ -43,6 +44,8 @@ export abstract class EthLikeInstantTradeProviderService implements ItProvider {
   private readonly settingsService = inject(SettingsService);
 
   protected readonly tokensService = inject(TokensService);
+
+  protected readonly gasService = inject(GasService);
   // Injected services end
 
   protected get walletAddress(): string {

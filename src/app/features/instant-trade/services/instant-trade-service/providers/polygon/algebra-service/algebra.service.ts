@@ -30,7 +30,7 @@ export class AlgebraService extends CommonUniswapV3AlgebraService {
   constructor() {
     super(algebraConstants);
 
-    this.quoterController = new AlgebraQuoterController(this.blockchainAdapter, quoterContract);
+    this.quoterController = new AlgebraQuoterController(this.web3Public, quoterContract);
   }
 
   public async calculateTrade(

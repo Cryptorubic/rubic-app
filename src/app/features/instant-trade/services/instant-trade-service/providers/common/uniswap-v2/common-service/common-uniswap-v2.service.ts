@@ -15,7 +15,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-calculated-info';
 import { TransactionReceipt } from 'web3-eth';
 import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
-import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
@@ -69,8 +68,6 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
   private readonly maxTransitTokens: number;
 
   // Injected services start
-  private readonly gasService = inject(GasService);
-
   private readonly iframeService = inject(IframeService);
   // Injected services end
 

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { compareAddresses } from '@shared/utils/utils';
@@ -21,8 +21,6 @@ import {
   swapEstimatedGas,
   wethToEthEstimatedGas
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/constants/estimated-gas';
-import { GasService } from '@core/services/gas-service/gas.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 import { MAX_TRANSIT_POOL } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.constants';
 import { UniswapV3Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-constants';
@@ -38,13 +36,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
 
   protected readonly unwrapWethMethodName = 'unwrapWETH9';
 
-  private readonly gasMargin = 1.2;
-
   private readonly quoterController: UniSwapV3QuoterController;
-
-  private readonly gasService = inject(GasService);
-
-  private readonly tokensService = inject(TokensService);
 
   protected constructor(uniswapV3Constants: UniswapV3Constants) {
     super({
@@ -53,7 +45,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
     });
 
     this.quoterController = new UniSwapV3QuoterController(
-      this.blockchainAdapter,
+      this.web3Public,
       UNISWAP_V3_QUOTER_CONTRACT,
       uniswapV3Constants.routerTokens,
       uniswapV3Constants.routerLiquidityPools
@@ -182,7 +174,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
+        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
           this.swapRouterContract.abi,
           this.swapRouterContract.address,
           this.walletAddress,
@@ -219,7 +211,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       isEth,
       deadline
     );
-    const estimatedGas = await this.blockchainAdapter
+    const estimatedGas = await this.web3Public
       .getEstimatedGas(
         this.swapRouterContract.abi,
         this.swapRouterContract.address,
