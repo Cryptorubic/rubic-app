@@ -7,4 +7,7 @@
   [size]="buttonSize"
 >
   <img [src]="icon" alt="" />
+  <div class="label-container" *ngIf="label">
+    <span class="label">{{ label }}</span>
+  </div>
 </button>
