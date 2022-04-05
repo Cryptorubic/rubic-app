@@ -113,8 +113,10 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.AVALANCHE,
     label: 'Avalanche',
     scannerUrl: 'https://snowtrace.io/',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet',
-    additionalRpcLink: '',
+    rpcLink:
+      'https://rpc.ankr.com/avalanche/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink:
+      'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet',
     imagePath: 'assets/images/icons/coins/avalanche.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE,
