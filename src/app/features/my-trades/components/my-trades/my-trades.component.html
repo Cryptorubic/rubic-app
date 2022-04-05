@@ -21,14 +21,23 @@
 
       <div
         class="table-container__no-trades-text"
-        *ngIf="loading === false && walletAddress && !data.length"
+        *ngIf="loading === false && walletAddress && !data.totalCount"
       >
         {{ 'tradesTable.noData' | translate }}
       </div>
 
-      <app-accordion *ngIf="!isDesktop" [tableData$]="tableData$"></app-accordion>
+      <app-accordion
+        *ngIf="!isDesktop && data"
+        [tableData$]="tableData$"
+        (onPageChange)="onPageChange($event)"
+      ></app-accordion>
 
-      <app-table *ngIf="isDesktop" [loading]="loading" [tableData$]="tableData$"></app-table>
+      <app-table
+        *ngIf="isDesktop"
+        [loading]="loading"
+        [tableData$]="tableData$"
+        (onPageChange)="onPageChange($event)"
+      ></app-table>
     </div>
   </tui-loader>
 </div>

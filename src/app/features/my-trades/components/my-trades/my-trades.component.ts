@@ -9,20 +9,21 @@ import {
 import { BehaviorSubject, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { TableTrade } from '@shared/models/my-trades/table-trade';
+import { TableData } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
-import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import {
+  TableRowsData,
+  TableRowTrade
+} from '@features/my-trades/components/my-trades/models/table-row-trade';
 import { defaultSort } from '@taiga-ui/addon-table';
-import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { catchError, first, mergeMap, takeUntil } from 'rxjs/operators';
+import { catchError, filter, first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { NoDataMyTradesError } from '@core/errors/models/my-trades/no-data-my-trades-error';
+import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -34,7 +35,7 @@ const DESKTOP_WIDTH = 1240;
   providers: [TuiDestroyService]
 })
 export class MyTradesComponent implements OnInit {
-  private readonly tableDataSubject$ = new BehaviorSubject<TableRow[]>(undefined);
+  private readonly tableDataSubject$ = new BehaviorSubject<TableRowsData>(undefined);
 
   public readonly tableData$ = this.tableDataSubject$.asObservable();
 
@@ -48,11 +49,8 @@ export class MyTradesComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly myTradesService: MyTradesService,
     private readonly authService: AuthService,
-    private readonly translate: TranslateService,
     private readonly errorsService: ErrorsService,
     private readonly walletsModalService: WalletsModalService,
-    private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: Window
@@ -69,11 +67,15 @@ export class MyTradesComponent implements OnInit {
     this.counterNotificationsService.resetCounter();
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
 
-    this.myTradesService.tableTrades$
+    this.myTradesService.tableData$
       .pipe(
+        filter(trades => !!trades),
         catchError(() => {
           this.errorsService.catch(new NoDataMyTradesError());
-          return of([]);
+          return of({
+            totalCount: 0,
+            trades: []
+          });
         }),
         takeUntil(this.destroy$)
       )
@@ -95,7 +97,10 @@ export class MyTradesComponent implements OnInit {
           if (this.walletAddress) {
             return this.myTradesService.updateTableTrades().pipe(first());
           }
-          this.tableDataSubject$.next([]);
+          this.tableDataSubject$.next({
+            totalCount: 0,
+            rowTrades: []
+          });
           this.loading = false;
           return of(undefined);
         }),
@@ -104,8 +109,8 @@ export class MyTradesComponent implements OnInit {
       .subscribe();
   }
 
-  private updateTableData(tableTrades: TableTrade[]): void {
-    const tableData = tableTrades
+  private updateTableData(tableData: TableData): void {
+    const tableRowsData = tableData.trades
       .map(
         trade =>
           ({
@@ -115,13 +120,15 @@ export class MyTradesComponent implements OnInit {
             Sent: new BigNumber(trade.fromToken?.amount),
             Expected: new BigNumber(trade.toToken.amount),
             Date: trade.date,
-
             inProgress: false
-          } as TableRow)
+          } as TableRowTrade)
       )
       .sort((a, b) => defaultSort(a.Date, b.Date) * -1);
 
-    this.tableDataSubject$.next(tableData);
+    this.tableDataSubject$.next({
+      totalCount: tableData.totalCount,
+      rowTrades: tableRowsData
+    });
 
     setTimeout(() => {
       this.loading = false;
@@ -136,6 +143,11 @@ export class MyTradesComponent implements OnInit {
 
   public showConnectWalletModal(): void {
     this.walletsModalService.open$();
+  }
+
+  public onPageChange(data: PageData): void {
+    this.loading = true;
+    this.myTradesService.updateTableTrades(data.page, data.pageSize).pipe(first()).subscribe();
   }
 
   @HostListener('window:resize')

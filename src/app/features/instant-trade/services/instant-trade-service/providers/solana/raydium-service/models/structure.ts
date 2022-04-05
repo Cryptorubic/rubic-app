@@ -1,4 +1,5 @@
 import { bool, publicKey, struct, u128, u32, u64, u8 } from '@project-serum/borsh';
+import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 
 const bufferLayout = require('buffer-layout');
 
@@ -170,8 +171,8 @@ export const DATA_LAYOUT = struct([
 ]);
 
 export const AMM_INFO_LAYOUT_STABLE = struct([
+  u64('accountType'),
   u64('status'),
-  publicKey('own_address'),
   u64('nonce'),
   u64('orderNum'),
   u64('depth'),
@@ -187,11 +188,9 @@ export const AMM_INFO_LAYOUT_STABLE = struct([
   u64('minPriceMultiplier'),
   u64('maxPriceMultiplier'),
   u64('systemDecimalsValue'),
-
-  u64('ammMaxPrice'),
-  u64('ammMiddlePrice'),
-  u64('ammPriceMultiplier'),
-
+  u64('abortTradeFactor'),
+  u64('priceTickMultiplier'),
+  u64('priceTick'),
   // Fees
   u64('minSeparateNumerator'),
   u64('minSeparateDenominator'),
@@ -206,30 +205,36 @@ export const AMM_INFO_LAYOUT_STABLE = struct([
   u64('needTakePnlPc'),
   u64('totalPnlPc'),
   u64('totalPnlCoin'),
-  u128('poolTotalDepositPc'),
-  u128('poolTotalDepositCoin'),
+  u64('poolOpenTime'),
+  u64('punishPcAmount'),
+  u64('punishCoinAmount'),
+  u64('orderbookToInitTime'),
   u128('swapCoinInAmount'),
   u128('swapPcOutAmount'),
   u128('swapPcInAmount'),
   u128('swapCoinOutAmount'),
-  u64('swapPcFee'),
-  u64('swapCoinFee'),
+  u64('swapCoin2PcFee'),
+  u64('swapPc2CoinFee'),
 
   publicKey('poolCoinTokenAccount'),
   publicKey('poolPcTokenAccount'),
   publicKey('coinMintAddress'),
   publicKey('pcMintAddress'),
   publicKey('lpMintAddress'),
+  publicKey('modelDataAccount'),
   publicKey('ammOpenOrders'),
   publicKey('serumMarket'),
   publicKey('serumProgramId'),
   publicKey('ammTargetOrders'),
-  publicKey('poolWithdrawQueue'),
-  publicKey('poolTempLpTokenAccount'),
   publicKey('ammOwner'),
-  publicKey('pnlOwner'),
+  bufferLayout.seq(u64('padding'), 64, 'padding')
+]);
+const DATA_ELEMENT = struct([u64('x'), u64('y'), u64('price')]);
 
-  u128('currentK'),
-  u128('padding1'),
-  publicKey('padding2')
+export const MODEL_DATA_INFO = struct([
+  u64('accountType'),
+  u64('status'),
+  u64('multiplier'),
+  u64('validDataCount'),
+  bufferLayout.seq(DATA_ELEMENT, RaydiumStableManager.ELEMENT_SIZE, 'DataElement')
 ]);

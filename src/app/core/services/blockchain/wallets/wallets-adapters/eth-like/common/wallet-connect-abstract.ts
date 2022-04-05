@@ -31,7 +31,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
 
   get isMultiChainWallet(): boolean {
     const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];
-    const walletName = this.wallet.connector.peerMeta.name;
+    const walletName = this.wallet?.connector?.peerMeta?.name;
     return multiChainWalletNames.includes(walletName);
   }
 
