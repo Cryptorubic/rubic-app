@@ -3,8 +3,8 @@
 .deposits {
   padding: 32px 22px 22px;
 
-  background: #181a19;
-  border-radius: 30px;
+  // background: var(--rubic-base-22);
+  // border-radius: 30px;
   
   &__head {
     display: flex;
@@ -14,10 +14,7 @@
   }
 
   &__title {
-    color: #fff;
-    font-weight: 500;
-    font-size: 22px;
-    line-height: 26px;
+    @include font(22px, 26px, 500, var(--rubic-base-02));
   }
 
   &__actions {
@@ -46,10 +43,16 @@
       color: #fff;
       font-weight: 500;
       font-size: 18px;
-      line-height: 120%;
+      line-height: 21px;
+
+      border-radius: 100px;
 
       &:not(:first-child) {
         margin-left: 20px;
+      }
+
+      ::ng-deep button {
+        height: 42px;
       }
     }
   }

@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatest } from 'rxjs';
@@ -33,6 +34,8 @@ export class LpPageComponent implements OnInit, OnDestroy {
 
   public readonly depositsLoading$ = this.service.depositsLoading$;
 
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+
   constructor(
     private readonly walletsModalService: WalletsModalService,
     private readonly authService: AuthService,
@@ -40,7 +43,8 @@ export class LpPageComponent implements OnInit, OnDestroy {
     private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly themeService: ThemeService
   ) {}
 
   public ngOnInit(): void {

@@ -42,7 +42,7 @@ export class DepositsComponent {
       });
   }
 
-  public removeDeposit(tokenId: string): void {
+  public requestWithdraw(tokenId: string): void {
     this._processingTokenId$.next(tokenId);
     this.service
       .requestWithdraw(tokenId)
@@ -54,6 +54,10 @@ export class DepositsComponent {
       .subscribe(() => {
         this.notificationsService.showSuccessWithdrawRequestNotification();
       });
+  }
+
+  public withdraw(tokenId: string): void {
+    console.log(tokenId);
   }
 
   public navigateToDepositForm(asWhitelist: boolean): void {

@@ -64,7 +64,7 @@
   }
 
   &__round {
-    @include font(20px, 24px, 600, white);
+    @include font(20px, 24px, 600, var(--rubic-base-02));
   }
 }
 

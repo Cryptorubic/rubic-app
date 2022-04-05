@@ -11,8 +11,8 @@
     </div>
     <div class="deposit-card__front">
       <div class="deposit-card__title">
-        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
         <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
         BRBC / USDC
         <div class="deposit-card__title-start">
           {{ deposit.start | date: 'dd LLLL' }} at {{ deposit.start | date: 'shortTime' }}
@@ -60,12 +60,17 @@
           Collect rewards
         </app-rubic-button>
         <app-rubic-button
-          [disabled]="!deposit.isStaked"
-          (onClick)="onRemoveDeposit.emit()"
+          *ngIf="deposit.isStaked; else withdraw"
+          (onClick)="onRequestWithdraw.emit()"
           appearance="primary"
         >
           Request withdraw
         </app-rubic-button>
+        <ng-template #withdraw>
+          <app-rubic-button appearance="primary" (onClick)="onWithdraw.emit()">
+            Withdraw
+          </app-rubic-button>
+        </ng-template>
       </div>
     </div>
   </div>

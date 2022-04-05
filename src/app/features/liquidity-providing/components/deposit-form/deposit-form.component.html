@@ -1,19 +1,24 @@
-<div class="deposit-form">
+<div class="deposit-form" *ngLet="isDarkTheme$ | async as isDarkTheme">
   <img
-    src="assets/images/icons/arrow/long-arrow-left.svg"
+    [src]="
+      isDarkTheme
+        ? 'assets/images/icons/arrow/long-arrow-left.svg'
+        : 'assets/images/icons/arrow/long-arrow-left-black.svg'
+    "
     alt="Back"
     (click)="navigateBack()"
     class="deposit-form__back"
   />
   <div class="deposit-form__header">
-    <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
     <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+    <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
     Deposit
   </div>
+  <hr class="deposit-form__header-divider" />
   <div class="asset">
     <div class="asset__symbol-amount">
       <div class="asset__symbol">
-        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+        <img src="assets/images/icons/staking/brbc-bsc.svg" alt="RBC" />
         BRBC
       </div>
       <input
@@ -29,7 +34,7 @@
     </div>
     <div class="asset__balance-usd-price">
       <div class="asset__balance" *ngLet="brbcBalance$ | async as brbcBalance">
-        You have {{ brbcBalance ? (brbcBalance | bigNumberFormat: 2:true) : 0 }}
+        You have {{ brbcBalance ? (brbcBalance | bigNumberFormat: 2) : 0 }}
         <span class="asset__balance-max" (click)="setMaxTokenAmount(brbcBalance)"> MAX </span>
       </div>
       <div class="asset__usd-price" *ngIf="rbcAmountUsdPrice$ | async as usdPrice">
@@ -58,7 +63,7 @@
       </div>
       <div class="asset__balance-usd-price">
         <div class="asset__balance" *ngLet="usdcBalance$ | async as usdcBalance">
-          You have {{ usdcBalance ? (usdcBalance | bigNumberFormat: 2:true) : 0 }}
+          You have {{ usdcBalance ? (usdcBalance | bigNumberFormat: 2) : 0 }}
         </div>
       </div>
     </div>
@@ -67,7 +72,8 @@
         <img src="assets/images/icons/info-warning.svg" alt="Info" />
       </div>
       <div class="hint__text">
-        If you take the deposit ahead of time, a penalty of 10% will be assigned
+        If you take the Deposit early, you will be fined to a penalty of 10% of the original amount
+        of BRBC and USDC
       </div>
     </div>
   </div>

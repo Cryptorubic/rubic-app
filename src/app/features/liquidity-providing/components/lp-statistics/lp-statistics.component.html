@@ -13,7 +13,7 @@
     <div class="statistics__param">
       <app-progress
         [label]="'Total Staked (BRBC)'"
-        [value]="totalStaked$ | async"
+        [value]="totalStaked$ | async | bigNumberFormat: 2"
         [size]="poolSize"
         [loading]="loading"
       ></app-progress>
@@ -43,7 +43,7 @@
     <div class="statistics__param">
       <app-progress
         [label]="'You Staked (BRBC)'"
-        [value]="usersTotalStaked$ | async"
+        [value]="usersTotalStaked$ | async | bigNumberFormat: 2"
         [size]="maxEnterAmount"
         [needLogin]="needLogin$ | async"
         [loading]="loading"

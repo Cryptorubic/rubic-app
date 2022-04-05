@@ -18,7 +18,10 @@ export class DepositCardComponent {
   onCollectRewards = new EventEmitter<void>();
 
   @Output()
-  onRemoveDeposit = new EventEmitter<void>();
+  onRequestWithdraw = new EventEmitter<void>();
+
+  @Output()
+  onWithdraw = new EventEmitter<void>();
 
   constructor() {}
 }

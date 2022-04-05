@@ -28,6 +28,7 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { PoolToken } from '../../models/pool-token.enum';
 import { DepositType } from '../../models/deposit-type.enum';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 
 @Component({
   selector: 'app-deposit-form',
@@ -81,6 +82,8 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public readonly depositType = DepositType;
 
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+
   constructor(
     private readonly service: LiquidityProvidingService,
     private readonly notificationService: LiquidityProvidingNotificationsService,
@@ -89,6 +92,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     private readonly lpProvidingModalService: LiquidityProvidingModalsService,
     private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly themeService: ThemeService,
     private readonly walletConnectorService: WalletConnectorService
   ) {}
 
@@ -96,10 +100,11 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     this.brbcAmount$.pipe(skip(1), debounceTime(500)).subscribe(value => {
       if (!value.isFinite()) {
         this.usdcAmountCtrl.reset();
+        this._usdcDepositOpened$.next(false);
       } else {
         this.usdcAmountCtrl.patchValue(value);
+        this._usdcDepositOpened$.next(true);
       }
-      this._usdcDepositOpened$.next(true);
     });
 
     this.service.userAddress$

@@ -26,6 +26,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  retry,
   scan,
   startWith,
   switchMap,
@@ -342,6 +343,7 @@ export class LiquidityProvidingService {
             { methodArguments: [user.address], from: user.address }
           )
         ).pipe(
+          retry(3),
           catchError((error: unknown) => {
             this.errorService.catchAnyError(error as Error);
             return EMPTY;
@@ -579,6 +581,17 @@ export class LiquidityProvidingService {
   public navigateToDepositForm(depositType: DepositType): void {
     this._depositType$.next(depositType);
     this.router.navigate(['liquidity-providing', 'deposit']);
+  }
+
+  private checkDepositForWithdraw(tokenId: string): Observable<boolean> {
+    return from(
+      this.web3PublicService[this.blockchain].callContractMethod<boolean>(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewApprovedWithdrawToken',
+        { methodArguments: [tokenId] }
+      )
+    );
   }
 
   private parseDeposits(deposits: DepositsResponse): TokenLpParsed[] {

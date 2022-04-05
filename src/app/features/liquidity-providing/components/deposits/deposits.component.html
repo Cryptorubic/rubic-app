@@ -7,6 +7,7 @@
           class="deposits__actions-create"
           appearance="secondary"
           (click)="navigateToDepositForm(false)"
+          size="s"
         >
           Create deposit
         </app-rubic-button>
@@ -18,7 +19,8 @@
           [deposit]="deposit"
           [loading]="(processingTokenId$ | async) === deposit.tokenId"
           (onCollectRewards)="collectReward(deposit.tokenId)"
-          (onRemoveDeposit)="removeDeposit(deposit.tokenId)"
+          (onRequestWithdraw)="requestWithdraw(deposit.tokenId)"
+          (onWithdraw)="withdraw(deposit.tokenId)"
         ></app-deposit-card>
       </ng-container>
     </div>

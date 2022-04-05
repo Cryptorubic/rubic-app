@@ -1,7 +1,14 @@
 <div class="wrapper">
   <div class="title">
-    <div class="title__back" (click)="navigateBack()">
-      <img src="assets/images/icons/arrow/long-arrow-left.svg" alt="Back" />
+    <div class="title__back" (click)="navigateBack()" *ngLet="isDarkTheme$ | async as isDarkTheme">
+      <img
+        [src]="
+          isDarkTheme
+            ? 'assets/images/icons/arrow/long-arrow-left.svg'
+            : 'assets/images/icons/arrow/long-arrow-left-black.svg'
+        "
+        alt="Back"
+      />
     </div>
     <div class="title__round">LP Round 1</div>
     <app-status-badge [text]="'Active'" type="active"></app-status-badge>

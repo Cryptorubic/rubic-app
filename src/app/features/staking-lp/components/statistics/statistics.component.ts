@@ -86,32 +86,24 @@ export class StatisticsComponent implements OnInit {
           }
         }),
         switchMap(() => this.stakingLpService.getTotalBalanceAndRewards()),
-        switchMap(() => {
-          return this.stakingLpService.getTvlMultichain().pipe(
-            switchMap(() => this.stakingLpService.getTvlStaking()),
-            tap(() => this.stakingLpService.getTotalTvl()),
-            switchMap(() => this.stakingLpService.getTtv())
-          );
-        }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('balanceAndRewards', false);
-        this.stakingLpService.toggleLoading('tvlAndTtv', false);
         this.cdr.detectChanges();
       });
 
-    // this.stakingLpService
-    //   .getTvlMultichain()
-    //   .pipe(
-    //     switchMap(() => this.stakingLpService.getTvlStaking()),
-    //     tap(() => this.stakingLpService.getTotalTvl()),
-    //     switchMap(() => this.stakingLpService.getTtv())
-    //   )
-    //   .subscribe(() => {
-    //     this.stakingLpService.toggleLoading('tvlAndTtv', false);
-    //     this.cdr.detectChanges();
-    //   });
+    this.stakingLpService
+      .getTvlMultichain()
+      .pipe(
+        switchMap(() => this.stakingLpService.getTvlStaking()),
+        tap(() => this.stakingLpService.getTotalTvl()),
+        switchMap(() => this.stakingLpService.getTtv())
+      )
+      .subscribe(() => {
+        this.stakingLpService.toggleLoading('tvlAndTtv', false);
+        this.cdr.detectChanges();
+      });
   }
 
   public refreshStatistics(): void {
@@ -146,6 +138,13 @@ export class StatisticsComponent implements OnInit {
     }
   }
 
+  public toggleHintsMobile(): void {
+    if (this.headerStore.isMobile) {
+      this.balanceHintShown = !this.balanceHintShown;
+      this.rewardsHintShow = !this.rewardsHintShow;
+    }
+  }
+
   public toggleFilters(): void {
     this.ttvFiltersOpen = !this.ttvFiltersOpen;
   }
@@ -153,12 +152,5 @@ export class StatisticsComponent implements OnInit {
   public onFilterSelect(period: TtvFilters): void {
     this.ttvFiltersOpen = false;
     this._selectedTtvFilter$.next(period);
-  }
-
-  public toggleHintsMobile(): void {
-    if (this.headerStore.isMobile) {
-      this.balanceHintShown = !this.balanceHintShown;
-      this.rewardsHintShow = !this.rewardsHintShow;
-    }
   }
 }
