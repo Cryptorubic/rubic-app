@@ -1,5 +1,6 @@
 import {
   LIQUIDITY_POOL_PROGRAM_ID_V4,
+  LIQUIDITY_POOL_PROGRAM_ID_V5,
   SERUM_PROGRAM_ID_V3
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import {
@@ -8,6 +9,7 @@ import {
   SolanaTokenInfo,
   TOKENS
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { StableModelLayout } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 
 export interface LiquidityPoolInfo {
   fees?: { swapFeeDenominator: number; swapFeeNumerator: number };
@@ -43,9 +45,41 @@ export interface LiquidityPoolInfo {
 
   status?: number;
   currentK?: number;
+
+  modelDataAccount?: string;
+  modelData?: StableModelLayout;
 }
 
 export const LIQUIDITY_POOLS: LiquidityPoolInfo[] = [
+  {
+    name: 'USDT-USDC',
+    coin: { ...TOKENS.USDT },
+    pc: { ...TOKENS.USDC },
+    lp: { ...LP_TOKENS['USDT-USDC-V4'] },
+
+    version: 5,
+    programId: LIQUIDITY_POOL_PROGRAM_ID_V5,
+    ammId: '2EXiumdi14E9b8Fy62QcA5Uh6WdHS2b38wtSxp72Mibj',
+    ammAuthority: '3uaZBfHPfmpAHW7dsimC1SnyR61X4bJqQZKWmRSCXJxv',
+    ammOpenOrders: '4zbGjjRx8bmZjynJg2KnkJ54VAk1crcrYsGMy79EXK1P',
+    ammTargetOrders: 'AYf5abBGrwjz2n2gGP4YG91hJer22zakrizrRhddTehS',
+    modelDataAccount: 'CDSr3ssLcRB6XYPJwAfFt18MZvEZp4LjHcvzBVZ45duo',
+    // no need
+    ammQuantities: NATIVE_SOL.mintAddress,
+    poolCoinTokenAccount: '5XkWQL9FJL4qEvL8c3zCzzWnMGzerM3jbGuuyRprsEgG',
+    poolPcTokenAccount: 'jfrmNrBtxnX1FH36ATeiaXnpA4ppQcKtv7EfrgMsgLJ',
+    poolWithdrawQueue: '',
+    poolTempLpTokenAccount: '',
+    serumProgramId: SERUM_PROGRAM_ID_V3,
+    serumMarket: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    serumBids: '37m9QdvxmKRdjm3KKV2AjTiGcXMfWHQpVFnmhtb289yo',
+    serumAsks: 'AQKXXC29ybqL8DLeAVNt3ebpwMv8Sb4csberrP6Hz6o5',
+    serumEventQueue: '9MgPMkdEHFX7DZaitSh6Crya3kCCr1As6JC75bm3mjuC',
+    serumCoinVaultAccount: 'H61Y7xVnbWVXrQQx3EojTEqf3ogKVY5GfGjEn5ewyX7B',
+    serumPcVaultAccount: '9FLih4qwFMjdqRAGmHeCxa64CgjP1GtcgKJgHHgz44ar',
+    serumVaultSigner: 'FGBvMAu88q9d1Csz7ZECB5a2gbWwp6qicNxN2Mo7QhWG',
+    official: true
+  },
   {
     name: 'FIDA-RAY',
     coin: { ...TOKENS.FIDA },
@@ -53,7 +87,7 @@ export const LIQUIDITY_POOLS: LiquidityPoolInfo[] = [
     lp: { ...LP_TOKENS['FIDA-RAY-V4'] },
 
     version: 4,
-    programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
+    programId: LIQUIDITY_POOL_PROGRAM_ID_V5,
 
     ammId: '2dRNngAm729NzLbb1pzgHtfHvPqR4XHFmFyYK78EfEeX',
     ammAuthority: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',

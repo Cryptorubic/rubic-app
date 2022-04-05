@@ -15,7 +15,8 @@ const BNB: TokenAmount = {
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 const USDT: TokenAmount = {
@@ -29,7 +30,8 @@ const USDT: TokenAmount = {
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 const ETH: TokenAmount = {
@@ -43,7 +45,8 @@ const ETH: TokenAmount = {
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const BRBC: TokenAmount = {
@@ -57,7 +60,8 @@ export const BRBC: TokenAmount = {
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const FAKE_BRBC: TokenAmount = {
@@ -71,7 +75,8 @@ export const FAKE_BRBC: TokenAmount = {
   price: 0.2,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const XBRBC: TokenAmount = {
@@ -85,7 +90,8 @@ export const XBRBC: TokenAmount = {
   usedInIframe: false,
   amount: new BigNumber(0),
   favorite: false,
-  price: 5
+  price: 5,
+  hasDirectPair: true
 };
 
 export const BSC_TEST_TOKENS = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];

@@ -67,6 +67,7 @@ import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
+    ProgressTrxNotificationComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -195,6 +197,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     FunctionCallPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
-  entryComponents: [SuccessTrxNotificationComponent]
+  entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}
