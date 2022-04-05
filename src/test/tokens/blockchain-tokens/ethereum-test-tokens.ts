@@ -15,7 +15,8 @@ export const ETH: TokenAmount = {
   price: 1705,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const WETH: TokenAmount = {
@@ -29,7 +30,8 @@ export const WETH: TokenAmount = {
   price: 1705,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const WEENUS: TokenAmount = {
@@ -43,7 +45,8 @@ export const WEENUS: TokenAmount = {
   price: 10,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const YEENUS: TokenAmount = {
@@ -57,7 +60,8 @@ export const YEENUS: TokenAmount = {
   price: 50,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const XEENUS: TokenAmount = {
@@ -71,7 +75,8 @@ export const XEENUS: TokenAmount = {
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const WSATT: TokenAmount = {
@@ -85,7 +90,8 @@ export const WSATT: TokenAmount = {
   price: 5,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const RBC: TokenAmount = {
@@ -99,7 +105,8 @@ export const RBC: TokenAmount = {
   price: 6,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const ETHEREUM_TEST_TOKENS = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];

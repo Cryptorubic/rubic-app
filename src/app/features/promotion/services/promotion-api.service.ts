@@ -42,7 +42,7 @@ export class PromotionApiService {
           }
           return this.tokensService.addTokenByAddress(
             project.token.address,
-            FROM_BACKEND_BLOCKCHAINS[project.token.blockchain_network]
+            FROM_BACKEND_BLOCKCHAINS[project.token.blockchainNetwork]
           );
         });
 
@@ -53,7 +53,7 @@ export class PromotionApiService {
         return forkJoin(tokens$).pipe(
           map(tokens =>
             tokens.map((token, index) =>
-              this.convertBackendProjectAndTokenToTableItem(projects[index], token)
+              PromotionApiService.convertBackendProjectAndTokenToTableItem(projects[index], token)
             )
           )
         );
@@ -92,7 +92,7 @@ export class PromotionApiService {
     return this.httpService.get(PromotionApiService.baseUrl + endpoint, { walletAddress });
   }
 
-  private convertBackendProjectAndTokenToTableItem(
+  private static convertBackendProjectAndTokenToTableItem(
     project: BackendPromoProject,
     token: Token
   ): PromotionTableDataItem {

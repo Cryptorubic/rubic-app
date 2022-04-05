@@ -14,7 +14,8 @@ const MATIC: TokenAmount = {
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 const USDT: TokenAmount = {
@@ -28,7 +29,8 @@ const USDT: TokenAmount = {
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0),
-  favorite: true
+  favorite: true,
+  hasDirectPair: true
 };
 
 export const POLYGON_TEST_TOKENS = [MATIC, USDT];

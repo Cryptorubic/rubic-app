@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -9,6 +9,7 @@ import { HealthcheckService } from '@core/services/backend/healthcheck/healthche
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { timestamp } from '@app/timestamp';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,9 @@ export class AppComponent implements AfterViewInit {
     activatedRoute: ActivatedRoute,
     errorService: ErrorsService
   ) {
+    if (isDevMode()) {
+      console.log(`It's a development build, timestamp: ${timestamp}`);
+    }
     const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {
         try {
