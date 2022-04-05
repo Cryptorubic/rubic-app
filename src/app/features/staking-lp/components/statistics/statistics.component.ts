@@ -86,24 +86,32 @@ export class StatisticsComponent implements OnInit {
           }
         }),
         switchMap(() => this.stakingLpService.getTotalBalanceAndRewards()),
+        switchMap(() => {
+          return this.stakingLpService.getTvlMultichain().pipe(
+            switchMap(() => this.stakingLpService.getTvlStaking()),
+            tap(() => this.stakingLpService.getTotalTvl()),
+            switchMap(() => this.stakingLpService.getTtv())
+          );
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('balanceAndRewards', false);
-        this.cdr.detectChanges();
-      });
-
-    this.stakingLpService
-      .getTvlMultichain()
-      .pipe(
-        switchMap(() => this.stakingLpService.getTvlStaking()),
-        tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv())
-      )
-      .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
         this.cdr.detectChanges();
       });
+
+    // this.stakingLpService
+    //   .getTvlMultichain()
+    //   .pipe(
+    //     switchMap(() => this.stakingLpService.getTvlStaking()),
+    //     tap(() => this.stakingLpService.getTotalTvl()),
+    //     switchMap(() => this.stakingLpService.getTtv())
+    //   )
+    //   .subscribe(() => {
+    //     this.stakingLpService.toggleLoading('tvlAndTtv', false);
+    //     this.cdr.detectChanges();
+    //   });
   }
 
   public refreshStatistics(): void {
