@@ -33,7 +33,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  contractAddress: '0x21775a2d9008E42Ad97cE2Cc317554a15D0DB71e',
+  contractAddress: '0x027F99bc33Ec825aC65765F9945Aa4C3d347F05D',
   minEnterAmount: 5,
   maxEnterAmount: 50,
   poolSize: 80,
@@ -56,6 +56,7 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
   },
   whitelist: [
     '0x449ab89a9c1dee7822580dad3cb6c0852210793a',
-    '0xcc513c5e4f396e68c15282cfa02d3e9c615cd714'
+    '0x186915891222add6e2108061a554a1f400a25cbd',
+    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b'
   ]
 };
