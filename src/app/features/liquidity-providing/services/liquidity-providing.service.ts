@@ -211,7 +211,7 @@ export class LiquidityProvidingService {
   public getStatistics(): Observable<unknown> {
     return this.userAddress$.pipe(
       switchMap(user => {
-        if (user.address) {
+        if (user?.address) {
           return forkJoin([
             this.getTotalRewards(),
             this.getTotalCollectedRewards(),
@@ -219,6 +219,7 @@ export class LiquidityProvidingService {
             this.getTotalStaked()
           ]);
         } else {
+          this.setStatisticsLoading(false);
           return EMPTY;
         }
       }),
