@@ -26,7 +26,7 @@ interface AllQueryParams {
   slippageCcr: string;
   background: string;
   theme: string;
-  language: 'en' | 'es' | 'ko' | 'ru' | 'zh' | 'tr';
+  language: 'en' | 'es' | 'ko' | 'ru' | 'zh' | 'tr' | 'fr';
   fee: string;
   feeTarget: string;
   promoCode: string;
