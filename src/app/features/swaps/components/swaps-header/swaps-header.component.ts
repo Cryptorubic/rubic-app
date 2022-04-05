@@ -3,6 +3,8 @@ import { BlockchainItem } from '@features/swaps/models/blockchain-item';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BLOCKCHAINS_LIST } from '@features/swaps/constants/blockchains-list';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-swaps-header',
@@ -23,13 +25,18 @@ export class SwapsHeaderComponent {
     }
   }
 
-  @Input() public set swapType(type: SWAP_PROVIDER_TYPE) {
-    if (type) {
-      this.getIconUrl(type);
-
-      this.tradeType = type === 'INSTANT_TRADE' ? 'Instant Swap' : 'Multi-Chain';
-    }
-  }
+  public readonly swapType$ = this.swapsService.swapMode$.pipe(
+    map(mode => {
+      const swapTypeLabel = {
+        [SWAP_PROVIDER_TYPE.BRIDGE]: 'Bridge',
+        [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'Instant Trade',
+        [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'Multichain'
+      };
+      if (mode) {
+        return swapTypeLabel[mode];
+      }
+    })
+  );
 
   public fromBlockchainItem: BlockchainItem;
 
@@ -39,20 +46,9 @@ export class SwapsHeaderComponent {
 
   public tradeType: string;
 
-  constructor() {
+  constructor(private readonly swapsService: SwapsService) {
     const ethBlockchain = BLOCKCHAINS_LIST.find(el => el.symbol === BLOCKCHAIN_NAME.ETHEREUM);
     this.fromBlockchainItem = ethBlockchain;
     this.toBlockchainItem = ethBlockchain;
-    this.getIconUrl(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
-  }
-
-  private getIconUrl(swapType: SWAP_PROVIDER_TYPE): void {
-    const typeIcons: { [SWAP in SWAP_PROVIDER_TYPE]: string } = {
-      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'it.svg',
-      [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge.svg',
-      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'ccr.svg'
-    };
-    const defaultPath = '/assets/images/icons/swap-types/';
-    this.iconUrl = defaultPath + typeIcons[swapType];
   }
 }

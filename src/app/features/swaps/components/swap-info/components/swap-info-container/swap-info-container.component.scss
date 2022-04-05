@@ -9,8 +9,7 @@
     width: 100%;
 
     color: $rubic-primary;
-    font-weight: 300;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 22px;
 
     border-bottom: 0;
@@ -40,33 +39,33 @@
 
   ::ng-deep {
     .header {
-      height: 79px;
-
-      background: var(--main-form-background);
+      background: transparent;
       border-bottom: 0;
       border-radius: $border-radius-2;
     }
 
     .content {
-      padding: 0 1.25rem 1.25rem;
-
-      background: var(--main-form-background);
+      padding: 0 24px 24px;
     }
 
     > .wrapper {
+      background: transparent !important;
       border-color: unset;
       border-radius: $border-radius-2;
+    }
+  }
+
+  &__opened {
+    ::ng-deep {
+      > .wrapper {
+        background: var(--main-form-background) !important;
+      }
     }
   }
 }
 
 .swaps-info {
-  padding: 0 30px 30px;
-
   color: var(--form-bright-text-color);
-
-  background: var(--main-form-background);
-  border-radius: 16px;
 
   &__title {
     margin: 0;

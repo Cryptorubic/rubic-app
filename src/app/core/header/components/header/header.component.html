@@ -35,12 +35,6 @@
     >
     <a
       class="button-link"
-      (click)="navigateToBridgeOrCrossChain('bridge')"
-      [class.button-link_active]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
-      >Bridge</a
-    >
-    <a
-      class="button-link"
       (click)="navigateToBridgeOrCrossChain('cross-chain')"
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING

@@ -17,7 +17,7 @@
   </div>
   <div class="swaps-header__title">
     <div class="swaps-header__trade-type">
-      {{ tradeType }}
+      {{ swapType$ | async }}
     </div>
     <div class="swaps-header__name">
       <span>{{ fromBlockchainItem?.visibleName }}</span>

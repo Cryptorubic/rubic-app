@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
@@ -35,6 +35,7 @@ import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.s
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-header',
@@ -89,6 +90,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly myTradesService: MyTradesService,
+    private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
@@ -188,26 +190,31 @@ export class HeaderComponent implements AfterViewInit {
       toToken: null,
       fromAmount: null
     } as SwapFormInput;
-    this.swapFormService.input.patchValue(params);
+
+    const queryParams: Params = {
+      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      amount: undefined,
+      from: undefined,
+      to: undefined
+    };
 
     if (type === 'bridge') {
       this.swapsService.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
+      queryParams.amount = 1000;
+      queryParams.from = 'RBC';
+      queryParams.to = 'BRBC';
+
+      params.fromToken = this.tokensService.tokens.find(token => token.symbol === 'RBC');
+      params.toToken = this.tokensService.tokens.find(token => token.symbol === 'BRBC');
+      params.fromAmount = new BigNumber(1000);
     } else {
       this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
     }
 
+    this.swapFormService.input.patchValue(params);
     this.gtmService.reloadGtmSession();
-
-    await this.router.navigate(['/'], {
-      queryParams: {
-        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        amount: undefined,
-        from: undefined,
-        to: undefined
-      },
-      queryParamsHandling: 'merge'
-    });
+    await this.router.navigate(['/'], { queryParams, queryParamsHandling: 'merge' });
   }
 
   public handleMenuButtonClick(): void {

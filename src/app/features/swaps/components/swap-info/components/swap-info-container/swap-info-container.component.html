@@ -1,6 +1,7 @@
 <tui-accordion-item
   [style.display]="showTransactionInfo ? 'block' : 'none'"
   class="transaction-info"
+  [ngClass]="{ 'transaction-info__opened': accordionOpened }"
   [borders]="null"
   [showArrow]="false"
   [noPadding]="true"

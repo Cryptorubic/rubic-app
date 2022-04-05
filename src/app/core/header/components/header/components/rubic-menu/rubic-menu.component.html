@@ -40,6 +40,19 @@
             </button>
           </a>
         </ng-container>
+        <a
+          (click)="menuClickHandler('bridge')"
+          [class.data-list__link_active]="bridgeActive"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
+            <div
+              class="data-list__option-image"
+              [inlineSVG]="'assets/images/icons/swap-types/bridge.svg'"
+            ></div>
+            Rubic Bridge
+          </button>
+        </a>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">
@@ -49,14 +62,6 @@
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Swaps</button>
-        </a>
-
-        <a
-          (click)="menuClickHandler('bridge')"
-          [class.data-list__link_active]="bridgeActive"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">Bridge</button>
         </a>
 
         <a

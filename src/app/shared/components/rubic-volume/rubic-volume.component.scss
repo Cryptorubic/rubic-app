@@ -2,34 +2,29 @@
 
 .rubic-volume {
   display: flex;
-  gap: 30px;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
+
+  font-size: 16px;
 
   font-family: $sf-pro-font;
 
   &__icon {
-    width: 25px;
+    width: 18px;
     margin-right: 10px;
   }
 
   &__title {
     display: flex;
     align-items: center;
+    margin-right: 10px;
 
     color: var(--rubic-base-02);
-    font-weight: 200;
-    font-size: 22px;
-    line-height: 120%;
   }
 
   &__value {
-
     color: var(--main-green);
-    font-weight: 300;
-    font-size: 22px;
-    line-height: 120%;
   }
 }
 
