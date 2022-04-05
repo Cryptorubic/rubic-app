@@ -226,8 +226,8 @@
 
 @include b($mobile-md) {
   .tokens {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    align-items: center;
     justify-content: flex-start;
 
     border-radius: 0;
@@ -238,7 +238,7 @@
 
     &__clear-mobile {
       display: block;
-      margin-top: 5px;
+      margin-left: 10px;
     }
   }
 }

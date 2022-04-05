@@ -28,37 +28,9 @@
   }
 }
 
-@include b($mobile-md) {
-  .rubic-volume {
-    padding: 30px 20px;
-  }
-}
-
-@include b($mobile-md-minus) {
-  .rubic-volume {
-    &__title {
-      font-size: $rubic-font-size-02;
-    }
-
-    &__value {
-      font-size: $rubic-font-size-02;
-    }
-  }
-}
-
 @include b($mobile-sm) {
   .rubic-volume {
     flex-direction: column;
     gap: 0;
-
-    &__title {
-      margin-bottom: 15px;
-
-      font-size: $rubic-font-size-01;
-    }
-
-    &__value {
-      font-size: 42px;
-    }
   }
 }
