@@ -25,6 +25,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
+import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 
 type NearQueryParams =
   | {
@@ -505,10 +506,7 @@ export class QueryParamsService {
       return;
     }
 
-    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh', 'tr'];
-    const language = supportedLanguages.includes(queryParams.language)
-      ? queryParams.language
-      : 'en';
+    const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
     this.translateService.use(language);
   }
 
