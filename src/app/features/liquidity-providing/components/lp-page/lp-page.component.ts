@@ -50,7 +50,7 @@ export class LpPageComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.walletConnectorService.addressChange$
       .pipe(
-        startWith(this.authService.userAddress),
+        startWith(undefined),
         switchMap(() => this.service.getDeposits()),
         takeUntil(this.destroy$)
       )

@@ -27,19 +27,19 @@
       <div class="approves">
         <app-rubic-button
           appearance="secondary"
-          (click)="onApprove.emit(poolToken.USDC)"
-          [disabled]="!approves.needUsdcApprove"
-          [loading]="loading"
-        >
-          Approve USDC
-        </app-rubic-button>
-        <app-rubic-button
-          appearance="secondary"
           (click)="onApprove.emit(poolToken.BRBC)"
           [disabled]="!approves.needBrbcApprove"
           [loading]="loading"
         >
           Approve BRBC
+        </app-rubic-button>
+        <app-rubic-button
+          appearance="secondary"
+          (click)="onApprove.emit(poolToken.USDC)"
+          [disabled]="!approves.needUsdcApprove"
+          [loading]="loading"
+        >
+          Approve USDC
         </app-rubic-button>
       </div>
     </ng-container>
