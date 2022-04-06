@@ -23,13 +23,11 @@
           <ng-container *ngIf="errorText; else tokenAmountTpl">
             {{ 'tradePage.tradingNotAvailable' | translate }}
           </ng-container>
-          <ng-template #tokenAmountTpl>
+          <ng-template *ngIf="tokenAmount?.gt(0)" #tokenAmountTpl>
             {{
               tokenAmount
-                ? (tokenAmount
-                  | bigNumberFormat
-                  | withRound: 'toClosestValue':{ decimals: tokenDecimals })
-                : '0.0'
+                | bigNumberFormat
+                | withRound: 'toClosestValue':{ decimals: tokenDecimals }
             }}
           </ng-template>
         </div>
