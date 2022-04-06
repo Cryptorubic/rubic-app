@@ -727,15 +727,32 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
       this.checkContractBalance(),
-      blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
+      this.checkUserBalance()
     ]);
+  }
+
+  private async checkUserBalance(): Promise<void> {
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+
+    if (
+      !blockchainAdapter.isNativeAddress(tokenIn.address) ||
+      fromBlockchain === BLOCKCHAIN_NAME.NEAR
+    ) {
+      return blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress);
+    }
+
+    const inAmount = this.currentCrossChainTrade.cryptoFee.plus(tokenInAmount);
+    try {
+      await blockchainAdapter.checkBalance(tokenIn, inAmount, this.authService.userAddress);
+    } catch (_err) {
+      throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
+    }
   }
 
   public createTrade(options: TransactionOptions = {}): Observable<void> {
