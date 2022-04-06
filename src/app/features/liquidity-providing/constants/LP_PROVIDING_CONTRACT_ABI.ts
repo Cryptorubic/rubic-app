@@ -78,26 +78,77 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_tokenOwner',
+        type: 'address'
+      }
+    ],
     name: 'infoAboutDepositsParsed',
     outputs: [
       {
         components: [
-          { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-          { internalType: 'uint256', name: 'USDCAmount', type: 'uint256' },
-          { internalType: 'uint256', name: 'BRBCAmount', type: 'uint256' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
-          { internalType: 'uint32', name: 'deadline', type: 'uint32' },
-          { internalType: 'bool', name: 'isStaked', type: 'bool' },
-          { internalType: 'bool', name: 'isWhitelisted', type: 'bool' },
-          { internalType: 'uint256', name: 'lastRewardGrowth', type: 'uint256' }
+          {
+            internalType: 'uint256',
+            name: 'tokenId',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'USDCAmount',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'BRBCAmount',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint32',
+            name: 'startTime',
+            type: 'uint32'
+          },
+          {
+            internalType: 'uint32',
+            name: 'deadline',
+            type: 'uint32'
+          },
+          {
+            internalType: 'bool',
+            name: 'isStaked',
+            type: 'bool'
+          },
+          {
+            internalType: 'bool',
+            name: 'isWhitelisted',
+            type: 'bool'
+          },
+          {
+            internalType: 'uint256',
+            name: 'lastRewardGrowth',
+            type: 'uint256'
+          }
         ],
         internalType: 'struct RubicLP.TokenLP[]',
         name: 'parsedArrayOfTokens',
         type: 'tuple[]'
       },
-      { internalType: 'uint256[]', name: 'collectedRewards', type: 'uint256[]' },
-      { internalType: 'uint256[]', name: 'rewardsToCollect', type: 'uint256[]' }
+      {
+        internalType: 'uint256[]',
+        name: 'collectedRewards',
+        type: 'uint256[]'
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'rewardsToCollect',
+        type: 'uint256[]'
+      },
+      {
+        internalType: 'bool[]',
+        name: 'isWithdrawable',
+        type: 'bool[]'
+      }
     ],
     stateMutability: 'view',
     type: 'function'

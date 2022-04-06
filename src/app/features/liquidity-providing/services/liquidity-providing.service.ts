@@ -65,6 +65,10 @@ export class LiquidityProvidingService {
 
   public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
 
+  private readonly duration = ENVIRONMENT.lpProviding.duration;
+
+  public endDate: Date;
+
   public readonly userAddress$ = this.authService.getCurrentUser().pipe(
     distinctUntilChanged((x, y) => {
       return x?.address === y?.address;
@@ -494,7 +498,14 @@ export class LiquidityProvidingService {
     ).pipe(
       catchError((error: unknown) => {
         this.errorService.catchAnyError(error as Error);
-        return EMPTY;
+        return of(false);
+      }),
+      switchMap((hash: string | boolean) => {
+        if (hash !== false) {
+          return this.waitForReceipt$(hash as string);
+        } else {
+          return EMPTY;
+        }
       }),
       switchMap(() => this.getDeposits().pipe(take(1)))
     );
@@ -541,6 +552,10 @@ export class LiquidityProvidingService {
     );
   }
 
+  public getEndDate(startTime: number): void {
+    this.endDate = new Date((this.duration + startTime) * 1000);
+  }
+
   public checkDepositErrors(amount: BigNumber, balance: BigNumber): LpFormError | null {
     if (amount.gt(this.currentMaxLimit)) {
       return LpFormError.LIMIT_GT_MAX;
@@ -583,19 +598,8 @@ export class LiquidityProvidingService {
     this.router.navigate(['liquidity-providing', 'deposit']);
   }
 
-  private checkDepositForWithdraw(tokenId: string): Observable<boolean> {
-    return from(
-      this.web3PublicService[this.blockchain].callContractMethod<boolean>(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'viewApprovedWithdrawToken',
-        { methodArguments: [tokenId] }
-      )
-    );
-  }
-
   private parseDeposits(deposits: DepositsResponse): TokenLpParsed[] {
-    const { parsedArrayOfTokens, collectedRewards, rewardsToCollect } = deposits;
+    const { parsedArrayOfTokens, collectedRewards, rewardsToCollect, isWithdrawable } = deposits;
 
     return parsedArrayOfTokens.map((tokenInfo: TokenLp, i: number) => {
       const { startTime, deadline } = tokenInfo;
@@ -607,6 +611,7 @@ export class LiquidityProvidingService {
         BRBCAmount: Web3Pure.fromWei(tokenInfo.BRBCAmount),
         collectedRewards: Web3Pure.fromWei(collectedRewards[i]),
         rewardsToCollect: Web3Pure.fromWei(rewardsToCollect[i]),
+        canWithdraw: isWithdrawable[i],
         start,
         period
       };

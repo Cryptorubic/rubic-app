@@ -32,6 +32,8 @@ export class LpStatisticsComponent implements OnInit {
 
   public readonly statisticsLoading$ = this.lpService.statisticsLoading$;
 
+  public readonly endDate = this.lpService.endDate;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly walletConnectorService: WalletConnectorService,

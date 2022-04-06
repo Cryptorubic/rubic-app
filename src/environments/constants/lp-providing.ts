@@ -7,6 +7,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
   minEnterAmount: 1,
   maxEnterAmount: 10,
   poolSize: 90,
+  duration: 5270400, // 61 days
   poolTokens: {
     [PoolToken.BRBC]: {
       name: 'Rubic',
@@ -33,11 +34,12 @@ export const LP_PROVIDING_CONFIG_PROD = {
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  contractAddress: '0x027F99bc33Ec825aC65765F9945Aa4C3d347F05D',
+  contractAddress: '0x338448F789702d27e56D9Ec1A6A7B23d08fFEF26',
   minEnterAmount: 5,
   maxEnterAmount: 50,
   poolSize: 80,
   maxEnterAmountWhitelist: 8,
+  duration: 5270400,
   poolTokens: {
     [PoolToken.BRBC]: {
       name: 'Rubic',

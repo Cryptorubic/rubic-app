@@ -6,7 +6,6 @@ export interface TokenLp {
   deadline: string;
   isStaked: boolean;
   isWhitelisted: boolean;
-  canWithdraw: boolean;
   lastRewardGrowth: string;
   tokenId: string;
   startTime: string;

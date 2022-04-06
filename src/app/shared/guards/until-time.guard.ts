@@ -24,7 +24,7 @@ export class UntilTimeGuard implements CanActivate {
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly lpProvidingService: LiquidityProvidingService
+    private readonly lpService: LiquidityProvidingService
   ) {}
 
   canActivate(): ActivationResult {
@@ -32,13 +32,16 @@ export class UntilTimeGuard implements CanActivate {
   }
 
   private redirectIfExpired(): Observable<Boolean> {
-    return this.lpProvidingService.getStartTime().pipe(
+    return this.lpService.getStartTime().pipe(
       switchMap(startTime => {
         // if LP contract has start time === 0 - round didnt started
         const isStarted = +startTime !== 0;
+
         if (!isStarted) {
           this.window.location.href = this.redirectUrl;
         }
+
+        this.lpService.getEndDate(+startTime);
         return of(isStarted);
       })
     );

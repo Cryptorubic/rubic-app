@@ -65,5 +65,5 @@
     [rotating]="loading"
     (iconClick)="refreshStatistics()"
   ></app-rotating-icon>
-  <div class="statistics__end"><span>End of Round: </span>March 24, 2022 at 21:23 UTC</div>
+  <div class="statistics__end"><span>End of Round: </span>{{ endDate | date: 'long' }}</div>
 </div>

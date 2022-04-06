@@ -77,7 +77,11 @@
           Request withdraw
         </app-rubic-button>
         <ng-template #withdraw>
-          <app-rubic-button appearance="primary" (onClick)="onWithdraw.emit()">
+          <app-rubic-button
+            appearance="primary"
+            [disabled]="deposit.canWithdraw"
+            (onClick)="onWithdraw.emit()"
+          >
             Withdraw
           </app-rubic-button>
         </ng-template>
