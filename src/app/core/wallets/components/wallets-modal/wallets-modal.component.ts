@@ -14,7 +14,7 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
@@ -144,7 +144,7 @@ export class WalletsModalComponent implements OnInit {
       provider === WALLET_NAME.WALLET_LINK
     ) {
       this.dialogService
-        .open<BLOCKCHAIN_NAME>(
+        .open<BlockchainName>(
           new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
           {
             dismissible: true,

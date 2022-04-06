@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
@@ -29,7 +29,7 @@ function correctAddressValidator(
   providers: [TuiDestroyService]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  @Input() set targetBlockchain(blockchain: BLOCKCHAIN_NAME) {
+  @Input() set targetBlockchain(blockchain: BlockchainName) {
     this.address.clearValidators();
     this.address.setValidators(Validators.required);
     this.targetBlockchainName = blockchain;
@@ -37,7 +37,7 @@ export class TargetNetworkAddressComponent implements OnInit {
     this.address.setValidators(correctAddressValidator(blockchainAdapter));
   }
 
-  public targetBlockchainName: BLOCKCHAIN_NAME;
+  public targetBlockchainName: BlockchainName;
 
   public address: FormControl<string>;
 

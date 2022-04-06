@@ -4,7 +4,7 @@ import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-mo
 import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -23,7 +23,7 @@ export class SuccessTxModalService {
   public open(
     type: SuccessTxModalType = 'default',
     txHash?: string,
-    blockchain?: BLOCKCHAIN_NAME,
+    blockchain?: BlockchainName,
     callback?: () => void
   ): void {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';

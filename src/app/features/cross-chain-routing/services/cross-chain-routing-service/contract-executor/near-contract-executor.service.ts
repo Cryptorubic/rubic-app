@@ -52,7 +52,8 @@ export class NearContractExecutorService {
 
     const secondPath = this.contracts[trade.toBlockchain].getSecondPath(
       trade.toTrade,
-      trade.toProviderIndex
+      trade.toProviderIndex,
+      trade.fromBlockchain
     );
 
     const fromTransitTokenAmountMin =

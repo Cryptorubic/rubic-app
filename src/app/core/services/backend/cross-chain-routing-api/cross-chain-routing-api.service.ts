@@ -13,7 +13,7 @@ import {
   CrossChainTradeApi,
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
@@ -85,7 +85,7 @@ export class CrossChainRoutingApiService {
    */
   public postTrade(
     transactionHash: string,
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     promoCodeText?: string
   ): Promise<void> {
     const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];

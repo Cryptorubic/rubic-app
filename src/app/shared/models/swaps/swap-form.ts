@@ -1,5 +1,5 @@
 import { FormGroup } from '@ngneat/reactive-forms';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 
@@ -9,8 +9,8 @@ export interface ISwapForm {
 }
 
 export interface ISwapFormInput {
-  fromBlockchain: BLOCKCHAIN_NAME;
-  toBlockchain: BLOCKCHAIN_NAME;
+  fromBlockchain: BlockchainName;
+  toBlockchain: BlockchainName;
   fromToken: TokenAmount;
   toToken: TokenAmount;
 }

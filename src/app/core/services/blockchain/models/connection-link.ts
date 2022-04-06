@@ -1,7 +1,7 @@
-import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 export default interface ConnectionLink {
-  blockchainName: Web3SupportedBlockchains;
+  blockchainName: EthLikeBlockchainName;
   rpcLink: string;
   additionalRpcLink: string;
 }

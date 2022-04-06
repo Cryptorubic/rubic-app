@@ -5,7 +5,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
@@ -33,9 +33,9 @@ export class TokensSelectService {
     tokens$: Observable<AvailableTokenAmount[]>,
     favoriteTokens$: Observable<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
-    currentBlockchain: BLOCKCHAIN_NAME,
+    currentBlockchain: BlockchainName,
     form: FormGroup<ISwapFormInput>,
-    allowedBlockchains: BLOCKCHAIN_NAME[] | undefined,
+    allowedBlockchains: BlockchainName[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
     const size = this.iframeService.isIframe ? 'fullscreen' : 'm';
