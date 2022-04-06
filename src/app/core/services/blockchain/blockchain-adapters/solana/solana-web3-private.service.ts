@@ -5,19 +5,16 @@ import {
   Connection,
   PerfSample,
   PublicKey,
+  Signer,
   SystemProgram,
   Transaction,
-  TransactionInstruction,
-  TransactionSignature
+  TransactionInstruction
 } from '@solana/web3.js';
 import { Token } from '@solana/spl-token';
 import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
+import { ACCOUNT_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
-  ACCOUNT_LAYOUT,
-  MINT_LAYOUT
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
+  AT_PROGRAM_ID,
   RENT_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
@@ -25,10 +22,17 @@ import {
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
-import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { Injectable } from '@angular/core';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
+import { HttpService } from '@core/services/http/http.service';
+import {
+  AccountsRpcRequest,
+  ProgramAccounts
+} from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
+import { Cacheable } from 'ts-cacheable';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -42,8 +46,13 @@ export class SolanaWeb3PrivateService {
     }
   }
 
-  constructor() {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /**
+   * Looking for program address based on seeds.
+   * @param seeds Seeds which are using for address finding.
+   * @param programId Program identificator.
+   */
   public async findProgramAddress(
     seeds: Array<Buffer | Uint8Array>,
     programId: PublicKey
@@ -52,6 +61,10 @@ export class SolanaWeb3PrivateService {
     return { publicKey, nonce };
   }
 
+  /**
+   * Creates a PDA address, which can sign instructions.
+   * @param programId
+   */
   public async createAmmAuthority(
     programId: PublicKey
   ): Promise<{ publicKey: PublicKey; nonce: number }> {
@@ -61,37 +74,38 @@ export class SolanaWeb3PrivateService {
     );
   }
 
-  public async createAssociatedId(
-    infoId: PublicKey,
-    marketAddress: PublicKey,
-    bufferKey: string
-  ): Promise<PublicKey> {
-    const { publicKey } = await this.findProgramAddress(
-      [infoId.toBuffer(), marketAddress.toBuffer(), Buffer.from(bufferKey)],
-      infoId
-    );
-    return publicKey;
-  }
-
+  /**
+   * Finds the associated token account address.
+   * @param walletAddress
+   * @param tokenMintAddress
+   */
   public async findAssociatedTokenAddress(
     walletAddress: PublicKey,
     tokenMintAddress: PublicKey
   ): Promise<PublicKey> {
     const { publicKey } = await this.findProgramAddress(
       [walletAddress.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenMintAddress.toBuffer()],
-      ASSOCIATED_TOKEN_PROGRAM_ID
+      AT_PROGRAM_ID
     );
     return publicKey;
   }
 
+  /**
+   * Creates the token account if not exists.
+   * @param account Accounts to check existence.
+   * @param owner Owner account.
+   * @param mintAddress Token mint address.
+   * @param lamports Amount of lamports to pay network fee.
+   * @param instructions Transaction which stores the token creation instruction.
+   * @param signers Array of accounts which can sign transaction.
+   */
   public async createTokenAccountIfNotExist(
     account: string | undefined | null,
     owner: PublicKey,
     mintAddress: string,
     lamports: BigNumber,
-
-    transaction: Transaction,
-    signer: Array<Account>
+    instructions: TransactionInstruction[],
+    signers: Signer[]
   ): Promise<PublicKey> {
     let publicKey;
 
@@ -104,11 +118,11 @@ export class SolanaWeb3PrivateService {
         TOKEN_PROGRAM_ID,
         lamports.toNumber(),
         ACCOUNT_LAYOUT,
-        transaction,
-        signer
+        instructions,
+        signers
       );
 
-      transaction.add(
+      instructions.push(
         initializeAccount({
           account: publicKey,
           mint: new PublicKey(mintAddress),
@@ -120,18 +134,24 @@ export class SolanaWeb3PrivateService {
     return publicKey;
   }
 
+  /**
+   * Create the associated token account if not exists.
+   * @param account Accounts to check existence.
+   * @param owner Owner account.
+   * @param mintAddress Token mint address.
+   * @param instructions The token creation instructions.
+   * @param atas Associated token accounts.
+   */
   public async createAssociatedTokenAccountIfNotExist(
-    account: string | undefined | null | PublicKey,
     owner: PublicKey,
     mintAddress: string,
-    transaction: Transaction,
+    instructions: TransactionInstruction[],
     atas: string[] = []
   ): Promise<PublicKey> {
-    console.debug(account);
     const mint = new PublicKey(mintAddress);
 
     const ata = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      AT_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       mint,
       owner,
@@ -140,9 +160,9 @@ export class SolanaWeb3PrivateService {
     const accountInfo = await this._connection.getAccountInfo(ata);
 
     if (!accountInfo) {
-      transaction.add(
+      instructions.push(
         Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
+          AT_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
           mint,
           ata,
@@ -156,11 +176,19 @@ export class SolanaWeb3PrivateService {
     return ata;
   }
 
+  /**
+   * Creates associated SOL account and wrap tokens to wrapped version.
+   * @param account Token account.
+   * @param owner Owner account.
+   * @param instructions Token creation and wrap instructions.
+   * @param signers Array of accounts which can sign transaction.
+   * @param amount Amount of tokens to wrap.
+   */
   public async createAtaSolIfNotExistAndWrap(
     account: string | undefined | null,
     owner: PublicKey,
-    transaction: Transaction,
-    signers: Array<Account>,
+    instructions: TransactionInstruction[],
+    signers: Signer[],
     amount: number
   ): Promise<void> {
     let publicKey;
@@ -168,9 +196,8 @@ export class SolanaWeb3PrivateService {
       publicKey = new PublicKey(account);
     }
     const mint = new PublicKey(TOKENS.WSOL.mintAddress);
-    // @ts-ignore without ts ignore, yarn build will failed
     const ata = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      AT_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       mint,
       owner,
@@ -178,10 +205,10 @@ export class SolanaWeb3PrivateService {
     );
     if (!publicKey) {
       const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
-      transaction.add(
+      instructions.push(
         SystemProgram.transfer({ fromPubkey: owner, toPubkey: ata, lamports: amount + rent }),
         Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
+          AT_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
           mint,
           ata,
@@ -195,25 +222,35 @@ export class SolanaWeb3PrivateService {
         null,
         owner,
         TOKENS.WSOL.mintAddress,
-        new BigNumber(amount + rent),
-        transaction,
+        new BigNumber(amount).plus(rent),
+        instructions,
         signers
       );
-      transaction.add(
+      instructions.push(
         Token.createTransferInstruction(TOKEN_PROGRAM_ID, wsol, ata, owner, [], amount),
         Token.createCloseAccountInstruction(TOKEN_PROGRAM_ID, wsol, owner, owner, [])
       );
     }
   }
 
+  /**
+   * Create the program account if not exists.
+   * @param account Accounts to check existence.
+   * @param owner Owner account.
+   * @param programId Program Identifier account.
+   * @param lamports Amount of lamports to pay network fee.
+   * @param layout Creation layout to decode and encode operation from blockchain.
+   * @param instructions Token creation instructions.
+   * @param signers Array of accounts which can sign transaction.
+   */
   public async createProgramAccountIfNotExist(
     account: string | undefined | null,
     owner: PublicKey,
     programId: PublicKey,
     lamports: number | null,
     layout: Layout<unknown>,
-    transaction: Transaction,
-    signer: Array<Account>
+    instructions: TransactionInstruction[],
+    signers: Signer[]
   ): Promise<PublicKey> {
     let publicKey;
 
@@ -223,23 +260,28 @@ export class SolanaWeb3PrivateService {
       const newAccount = new Account();
       publicKey = newAccount.publicKey;
 
-      transaction.add(
+      instructions.push(
         SystemProgram.createAccount({
           fromPubkey: owner,
           newAccountPubkey: publicKey,
-          lamports:
-            lamports ?? (await this._connection.getMinimumBalanceForRentExemption(layout.span)),
+          lamports,
           space: layout.span,
           programId
         })
       );
 
-      signer.push(newAccount);
+      signers.push(newAccount);
     }
 
     return publicKey;
   }
 
+  /**
+   * Creates the associated token account.
+   * @param tokenMintAddress Token mint address.
+   * @param owner Owner account.
+   * @param transaction Transaction which stores the token creation instruction.
+   */
   public async createAssociatedTokenAccount(
     tokenMintAddress: PublicKey,
     owner: PublicKey,
@@ -288,7 +330,7 @@ export class SolanaWeb3PrivateService {
     transaction.add(
       new TransactionInstruction({
         keys,
-        programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+        programId: AT_PROGRAM_ID,
         data: Buffer.from([])
       })
     );
@@ -296,12 +338,17 @@ export class SolanaWeb3PrivateService {
     return associatedTokenAddress;
   }
 
+  /**
+   * Gets program accounts based on filters.
+   * @param programId Program Identifier.
+   * @param filters Params to filter accounts.
+   */
   public async getFilteredProgramAccounts(
     programId: PublicKey,
     filters: unknown
   ): Promise<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
-    // @ts-ignore
-    const resp = await this._connection._rpcRequest('getProgramAccounts', [
+    const connection = this._connection as Connection & AccountsRpcRequest<ProgramAccounts[]>;
+    const resp = await connection._rpcRequest('getProgramAccounts', [
       programId.toBase58(),
       {
         commitment: this._connection.commitment,
@@ -309,10 +356,9 @@ export class SolanaWeb3PrivateService {
         encoding: 'base64'
       }
     ]);
-    if (resp.error) {
+    if ('error' in resp) {
       throw new Error(resp.error.message);
     }
-    // @ts-ignore
     return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
       publicKey: new PublicKey(pubkey),
       accountInfo: {
@@ -324,35 +370,59 @@ export class SolanaWeb3PrivateService {
     }));
   }
 
-  public async getFilteredProgramAccountsAmmOrMarketCache(
+  /**
+   * Gets program accounts for AMM or Market based on filters.
+   * @param cacheName Request cache name, AMM or Market.
+   * @param programId Program Identifier.
+   * @param filters Params to filter accounts.
+   */
+  @Cacheable({ maxAge: 60_000 })
+  public getFilteredProgramAccountsAmmOrMarketCache(
     cacheName: String,
     programId: PublicKey,
     filters: unknown
-  ): Promise<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
+  ): Observable<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
     try {
       if (!cacheName) {
         throw new Error('cacheName error');
       }
-
-      const resp = await (await fetch(`https://api.raydium.io/cache/rpc/${cacheName}`)).json();
-      if (resp.error) {
-        throw new Error(resp.error.message);
-      }
-      // @ts-ignore
-      return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
-        publicKey: new PublicKey(pubkey),
-        accountInfo: {
-          data: Buffer.from(data[0], 'base64'),
-          executable,
-          owner: new PublicKey(owner),
-          lamports
-        }
-      }));
+      return this.httpService
+        .get<{
+          result: {
+            pubkey: PublicKey;
+            account: {
+              data: string[];
+              executable: boolean;
+              owner: string;
+              lamports: number;
+            };
+          }[];
+        }>(null, null, `https://api.raydium.io/cache/rpc/${cacheName}`)
+        .pipe(
+          map(cache => {
+            return cache.result.map(
+              ({ pubkey, account: { data, executable, owner, lamports } }) => ({
+                publicKey: new PublicKey(pubkey),
+                accountInfo: {
+                  data: Buffer.from(data[0], 'base64'),
+                  executable,
+                  owner: new PublicKey(owner),
+                  lamports
+                }
+              })
+            );
+          })
+        );
     } catch (e) {
-      return this.getFilteredProgramAccounts(programId, filters);
+      return from(this.getFilteredProgramAccounts(programId, filters));
     }
   }
 
+  /**
+   * Gets information about accounts.
+   * @param publicKeys Array of accounts to find information about.
+   * @param commitment The level of commitment desired when querying state.
+   */
   public async getMultipleAccounts(
     publicKeys: PublicKey[],
     commitment?: Commitment
@@ -371,26 +441,17 @@ export class SolanaWeb3PrivateService {
       keys.push(tempKeys);
     }
 
-    const accounts: Array<null | AccountInfo<Buffer | null>> = [];
-
-    const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = {};
-    await Promise.all(
-      keys.map(async (key, index) => {
-        resArray[index] = (await this._connection.getMultipleAccountsInfo(
-          key,
-          commitment
-        )) as AccountInfo<Buffer>[];
+    const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = await Promise.all(
+      keys.map(key => {
+        return this._connection.getMultipleAccountsInfo(key, commitment || 'finalized');
       })
     );
 
-    Object.keys(resArray)
+    const accounts: Array<null | AccountInfo<Buffer | null>> = Object.keys(resArray)
       .sort((a, b) => parseInt(a) - parseInt(b))
-      .forEach(itemIndex => {
-        const res = resArray[parseInt(itemIndex)];
-        for (const account of res) {
-          accounts.push(account);
-        }
-      });
+      .map(itemIndex => resArray[parseInt(itemIndex)])
+      .flat();
+
     return accounts.map((account, idx) => {
       if (account === null) {
         return null;
@@ -402,50 +463,29 @@ export class SolanaWeb3PrivateService {
     });
   }
 
-  public async signTransaction(
-    wallet: {
-      publicKey: PublicKey;
-      signTransaction: (transaction: Transaction) => Promise<Transaction>;
-    },
-    transaction: Transaction,
-    signers: Array<Account> = []
-  ): Promise<Transaction> {
-    transaction.recentBlockhash = (await this._connection.getRecentBlockhash()).blockhash;
-    transaction.setSigners(wallet.publicKey, ...signers.map(s => s.publicKey));
-    if (signers.length > 0) {
-      transaction.partialSign(...signers);
-    }
-    return await wallet.signTransaction(transaction);
-  }
-
-  public async sendTransaction(
-    wallet: SolanaWallet,
-    transaction: Transaction,
-    signers: Array<Account> = []
-  ): Promise<string> {
-    const txid: TransactionSignature = await wallet.sendTransaction(transaction, this._connection, {
-      signers,
-      skipPreflight: true,
-      preflightCommitment: 'confirmed'
-    });
-
-    return txid;
-  }
-
+  /**
+   * Gets or create accounts for from and to trade tokens.
+   * @param fromCoinMint From token mint address.
+   * @param toCoinMint To token mint address.
+   * @param owner Owner account.
+   * @param amountIn Amount in.
+   * @param instructions Instructions.
+   * @param signers Array of signers.
+   * @param skipToAccount Get and create account for pair the of tokens or just for from token.
+   */
   public async getOrCreatesTokensAccounts(
-    mintAccountsAddresses: { [P: string]: string },
     fromCoinMint: string,
     toCoinMint: string,
     owner: PublicKey,
     amountIn: number,
-    transaction: Transaction,
-    signers: Account[]
+    instructions: TransactionInstruction[],
+    signers: Signer[],
+    skipToAccount: boolean = false
   ): Promise<TokenAccounts> {
     const fromNative = fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
     const toNative = toCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
 
-    const fromTokenAccount = mintAccountsAddresses[fromCoinMint];
-    const toTokenAccount = mintAccountsAddresses[toCoinMint];
+    const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
 
     const fromAccount = {
       key: fromNative
@@ -453,41 +493,37 @@ export class SolanaWeb3PrivateService {
             null,
             owner,
             TOKENS.WSOL.mintAddress,
-            new BigNumber(amountIn).plus(1e7, 16),
-            transaction,
+            new BigNumber(amountIn).plus(rent),
+            instructions,
             signers
           )
-        : await this.createAssociatedTokenAccountIfNotExist(
-            fromTokenAccount,
-            owner,
-            fromCoinMint,
-            transaction
-          ),
+        : await this.createAssociatedTokenAccountIfNotExist(owner, fromCoinMint, instructions),
       isWeth: fromNative
     };
 
-    const toAccount = {
-      key: toNative
-        ? await this.createTokenAccountIfNotExist(
-            null,
-            owner,
-            TOKENS.WSOL.mintAddress,
-            new BigNumber(1e7, 16),
-            transaction,
-            signers
-          )
-        : await this.createAssociatedTokenAccountIfNotExist(
-            toTokenAccount,
-            owner,
-            toCoinMint,
-            transaction
-          ),
-      isWeth: toNative
-    };
+    const toAccount = skipToAccount
+      ? null
+      : {
+          key: toNative
+            ? await this.createTokenAccountIfNotExist(
+                null,
+                owner,
+                TOKENS.WSOL.mintAddress,
+                new BigNumber(rent),
+                instructions,
+                signers
+              )
+            : await this.createAssociatedTokenAccountIfNotExist(owner, toCoinMint, instructions),
+          isWeth: toNative
+        };
 
     return { from: fromAccount, to: toAccount };
   }
 
+  /**
+   * Gets accounts for exact token.
+   * @param address Token address.
+   */
   public async getTokenAccounts(address: string): Promise<{ [P: string]: string }> {
     const parsedTokenAccounts = await this._connection.getParsedTokenAccountsByOwner(
       new PublicKey(address),
@@ -506,52 +542,10 @@ export class SolanaWeb3PrivateService {
     return Object.fromEntries(mintAccountAddresses);
   }
 
-  public mergeTransactions(transactions: (Transaction | undefined)[]): Transaction {
-    const transaction = new Transaction();
-    transactions
-      .filter((t): t is Transaction => t !== undefined)
-      .forEach(t => {
-        transaction.add(t);
-      });
-    return transaction;
-  }
-
-  private throwIfNull<T>(value: T | null, message = 'account not found'): T {
-    if (value === null) {
-      throw new Error(message);
-    }
-    return value;
-  }
-
-  public async getMintDecimals(mint: PublicKey): Promise<number> {
-    const { data } = this.throwIfNull(
-      await this._connection.getAccountInfo(mint),
-      'mint not found'
-    );
-    const { decimals } = MINT_LAYOUT.decode(data);
-    return decimals;
-  }
-
-  public async getFilteredTokenAccountsByOwner(
-    programId: PublicKey,
-    mint: PublicKey
-  ): Promise<{ context: {}; value: [] }> {
-    // @ts-ignore
-    const resp = await this._connection._rpcRequest('getTokenAccountsByOwner', [
-      programId.toBase58(),
-      {
-        mint: mint.toBase58()
-      },
-      {
-        encoding: 'jsonParsed'
-      }
-    ]);
-    if (resp.error) {
-      throw new Error(resp.error.message);
-    }
-    return resp.result;
-  }
-
+  /**
+   * Gets recent Solana performance samples (TPS)
+   * @param limit Limit of samples.
+   */
   public async getRecentPerformanceSamples(limit?: number): Promise<PerfSample[]> {
     return this._connection.getRecentPerformanceSamples(limit);
   }

@@ -47,9 +47,10 @@ export class TokensApiService {
       tokens
         .map((token: BackendToken) => ({
           ...token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-          price: token.usd_price,
-          usedInIframe: token.used_in_iframe
+          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
+          price: token.usdPrice,
+          usedInIframe: token.usedInIframe,
+          hasDirectPair: token.hasDirectPair
         }))
         .filter(token => token.address && token.blockchain)
     );
@@ -123,7 +124,7 @@ export class TokensApiService {
    * Fetches basic tokens from backend.
    */
   private fetchBasicTokens(): Observable<List<Token>> {
-    const options = { page: 1, page_size: DEFAULT_PAGE_SIZE };
+    const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
     const blockchainsToFetch = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -180,7 +181,7 @@ export class TokensApiService {
     const options = {
       network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
       page: requestOptions.page,
-      page_size: DEFAULT_PAGE_SIZE
+      pageSize: DEFAULT_PAGE_SIZE
     };
     return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
       map(tokensResponse => {

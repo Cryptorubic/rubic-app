@@ -153,12 +153,7 @@ export class SettingsService {
         tap(() => {
           const localData = this.storeService.getItem('settings') as string;
           if (localData && !this.iframeService.isIframe) {
-            this.settingsForm.patchValue(
-              { ...JSON.parse(localData) },
-              {
-                emitEvent: false
-              }
-            );
+            this.settingsForm.patchValue({ ...JSON.parse(localData) });
           }
         }),
         switchMap(() => {

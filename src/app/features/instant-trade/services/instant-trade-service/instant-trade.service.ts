@@ -66,6 +66,7 @@ import {
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,13 @@ export class InstantTradeService {
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
+
+  public showTrxInProgressTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(ProgressTrxNotificationComponent), {
+      status: TuiNotification.Info,
+      autoClose: 15000
+    });
+  };
 
   public showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -293,7 +301,7 @@ export class InstantTradeService {
         receipt = await this.checkFeeAndCreateTrade(provider, trade, options);
       }
       this.modalSubscriptions.pop()?.unsubscribe();
-
+      this.showSuccessTrxNotification();
       this.updateTrade(transactionHash, true);
 
       await this.instantTradesApiService
@@ -403,8 +411,11 @@ export class InstantTradeService {
    * @param err Error thrown during creating transaction.
    */
   private isTransactionCancelled(err: Error): boolean {
-    return !err.message.includes(
-      'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+    return (
+      Boolean(err?.message?.includes) &&
+      !err.message.includes(
+        'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+      )
     );
   }
 
@@ -493,7 +504,7 @@ export class InstantTradeService {
         'default',
         txHash,
         blockchain,
-        this.showSuccessTrxNotification
+        this.showTrxInProgressTrxNotification
       );
     }
   }

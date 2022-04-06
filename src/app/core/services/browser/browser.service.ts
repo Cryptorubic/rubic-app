@@ -19,7 +19,6 @@ export class BrowserService {
         return BROWSER.MOBILE;
       case this.window.ethereum?.isMetaMask:
         return BROWSER.METAMASK;
-      // @ts-ignore
       case this.window.ethereum?.isWalletLink || this.window.ethereum?.isCoinbaseWallet:
         return BROWSER.COINBASE;
       default:
