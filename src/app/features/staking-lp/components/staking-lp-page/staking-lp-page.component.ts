@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EMPTY, of } from 'rxjs';
-import { startWith, switchMap } from 'rxjs/operators';
+import { startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { RoundStatus } from '../../models/round-status.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
 
@@ -10,7 +11,8 @@ import { StakingLpService } from '../../services/staking-lp.service';
   selector: 'app-staking-lp-page',
   templateUrl: './staking-lp-page.component.html',
   styleUrls: ['./staking-lp-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class StakingLpPageComponent implements OnInit {
   public readonly roundStatus = RoundStatus;
@@ -27,7 +29,8 @@ export class StakingLpPageComponent implements OnInit {
     private readonly router: Router,
     private readonly stakingLpService: StakingLpService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
@@ -44,19 +47,20 @@ export class StakingLpPageComponent implements OnInit {
           }
         }),
         switchMap(() => this.stakingLpService.getStakingBalanceByRound()),
-        switchMap(() => this.stakingLpService.getLpBalanceAndAprByRound())
+        switchMap(() => this.stakingLpService.getLpBalanceAndAprByRound()),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.cdr.detectChanges();
       });
   }
 
-  navigateToStaking(round: number): void {
+  public navigateToStaking(round: number): void {
     const roundRoutePath = round === 1 ? 'round-one' : 'round-two';
     this.router.navigate(['staking', roundRoutePath]);
   }
 
-  navigateToLp(): void {
+  public navigateToLp(): void {
     this.router.navigate(['liquidity-providing']);
   }
 }

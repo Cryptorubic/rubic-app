@@ -36,8 +36,7 @@ export class StakingCardComponent implements OnInit {
 
   @Input() statuses: RoundStatus[];
 
-  @Output()
-  onNavigate = new EventEmitter<number>();
+  @Output() onNavigate = new EventEmitter<number>();
 
   public readonly statusBadgeType = STATUS_BADGE_TYPE;
 

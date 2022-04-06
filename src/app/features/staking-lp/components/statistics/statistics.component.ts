@@ -73,7 +73,7 @@ export class StatisticsComponent implements OnInit {
     private readonly destroy$: TuiDestroyService
   ) {}
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
@@ -98,7 +98,8 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv())
+        switchMap(() => this.stakingLpService.getTtv()),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
@@ -119,7 +120,8 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv())
+        switchMap(() => this.stakingLpService.getTtv()),
+        take(1)
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);

@@ -9,7 +9,6 @@ import { UserInterface } from '@app/core/services/auth/models/user.interface';
 import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { transitTokens } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
@@ -27,11 +26,10 @@ import {
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AbiItem } from 'web3-utils';
-import { BlockchainsInfo } from '@app/core/services/blockchain/blockchain-info';
-import { PDA_DELEGATE } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import { LP_PROVIDING_CONTRACT_ABI } from '@app/features/liquidity-providing/constants/LP_PROVIDING_CONTRACT_ABI';
 import { TradeVolumeByPeriod } from '@app/core/services/backend/volume-api/models/trade-volume-by-period';
 import { TtvFilters } from '../models/ttv-filters.enum';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class StakingLpService {
@@ -157,7 +155,8 @@ export class StakingLpService {
     private readonly volumeApiService: VolumeApiService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly httpClient: HttpClient
   ) {
     this.tokensService
       .getAndUpdateTokenPrice({
@@ -419,36 +418,20 @@ export class StakingLpService {
   public getTvlMultichain(): Observable<BigNumber> {
     this.toggleLoading('tvlAndTtv', true);
 
-    const crosschainContracts = Object.entries(this.crosschainContracts) as [
-      SupportedCrossChainBlockchain,
-      string
-    ][];
+    const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
 
-    return forkJoin(
-      crosschainContracts.map(async contract => {
-        const [blockchain, address] = contract;
-        const transitToken = transitTokens[blockchain];
-
-        try {
-          const poolBalance = await this.web3PublicService[blockchain].getTokenBalance(
-            BlockchainsInfo.getBlockchainType(blockchain) === 'solana' ? PDA_DELEGATE : address,
-            transitToken.address
-          );
-
-          return Web3Pure.fromWei(poolBalance, transitToken.decimals);
-        } catch (error) {
-          return new BigNumber(0);
-        }
-      })
-    ).pipe(
-      map(poolBalances => {
-        return poolBalances.reduce((prev, curr) => {
-          return prev.plus(curr);
-        }, new BigNumber(0));
-      }),
-      tap(tvlMultichain => {
-        this._tvlMultichain$.next(tvlMultichain);
-      })
+    return forkJoin([
+      this.httpClient.get<number>(defiLamaTvlApiUrl),
+      from(
+        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+          this.activeLpContract.address,
+          this.activeLpContract.abi,
+          'poolUSDC'
+        )
+      )
+    ]).pipe(
+      map(([tvlMultichain, lpPoolBalance]) => Web3Pure.fromWei(lpPoolBalance).plus(tvlMultichain)),
+      tap(tvl => this._tvlMultichain$.next(tvl))
     );
   }
 

@@ -34,7 +34,6 @@ import {
     TuiDropdownModule,
     TuiLoaderModule
   ],
-  exports: [],
   providers: [StakingLpService]
 })
 export class StakingLpModule {}

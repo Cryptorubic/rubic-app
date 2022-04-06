@@ -6,6 +6,7 @@ export interface TokenLp {
   deadline: string;
   isStaked: boolean;
   isWhitelisted: boolean;
+  canWithdraw: boolean;
   lastRewardGrowth: string;
   tokenId: string;
   startTime: string;
@@ -19,8 +20,8 @@ export interface TokenLpParsed {
   deadline: string;
   isStaked: boolean;
   isWhitelisted: boolean;
+  canWithdraw: boolean;
   lastRewardGrowth: string;
   tokenId: string;
   start: Date;
-  period: number;
 }

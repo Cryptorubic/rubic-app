@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -13,7 +13,7 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class LpLandingComponent {
+export class LpLandingComponent implements OnInit {
   public readonly needLogin$ = this.lpService.needLogin$;
 
   public readonly isWhitelistInProgress$ = this.lpService.isWhitelistInProgress$;

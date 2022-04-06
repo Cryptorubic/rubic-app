@@ -47,7 +47,7 @@ export class LpPageComponent implements OnInit, OnDestroy {
     private readonly themeService: ThemeService
   ) {}
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
