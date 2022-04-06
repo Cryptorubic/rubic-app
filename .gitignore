@@ -52,3 +52,4 @@ Thumbs.db
 /src/.env
 /documentation/
 /src/test/enviroment.true.test.json
+/src/app/timestamp.ts

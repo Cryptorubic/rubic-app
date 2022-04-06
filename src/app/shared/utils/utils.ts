@@ -100,3 +100,23 @@ export function notNull<T>(value: T | null): value is T {
 export function isNull<T>(value: T | null): value is null {
   return value === null;
 }
+
+/**
+ * Removes all nullable elements from array.
+ * @param elements Array of elements.
+ */
+export function shakeUndefiledItem<T>(elements: T[]): NonNullable<T>[] {
+  return elements.filter(element => element != null) as NonNullable<T>[];
+}
+
+/**
+ * Resolve all promises in array and apply map lambda to each element.
+ * @param elements Array of transactions.
+ * @param mapFn Lambda function which applies to eah element.
+ */
+export async function asyncMap<T, U>(
+  elements: T[],
+  mapFn: (element: T, index: number) => U
+): Promise<U[]> {
+  return await Promise.all(elements.map(async (element, idx) => await mapFn(element, idx)));
+}
