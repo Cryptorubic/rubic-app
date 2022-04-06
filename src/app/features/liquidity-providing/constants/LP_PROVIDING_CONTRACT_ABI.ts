@@ -233,5 +233,18 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'poolUSDC',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
   }
 ] as AbiItem[];
