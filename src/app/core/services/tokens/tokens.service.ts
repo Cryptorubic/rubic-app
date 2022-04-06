@@ -549,7 +549,25 @@ export class TokensService {
     query: string,
     network: PAGINATED_BLOCKCHAIN_NAME
   ): Observable<List<Token>> {
-    const isAddress = query.includes('0x');
+    const isAddress = query.length >= 42;
+
+    if (network === 'NEAR') {
+      const fetchQueryTokensByAddress$ = this.tokensApiService.fetchQueryTokens({
+        network,
+        address: query
+      });
+      const fetchQueryTokensBySymbol$ = this.tokensApiService.fetchQueryTokens({
+        network,
+        symbol: query
+      });
+
+      return forkJoin([fetchQueryTokensByAddress$, fetchQueryTokensBySymbol$]).pipe(
+        map(([foundTokensByAddress, foundTokensBySymbol]) => {
+          return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
+        })
+      );
+    }
+
     const params: TokensRequestQueryOptions = {
       network,
       ...(!isAddress && { symbol: query }),
