@@ -66,16 +66,6 @@ export class EthLikeContractExecutorService {
             this.sendDataToNear(trade, transactionHash, targetAddress);
           }
         }
-      },
-      err => {
-        const includesErrCode = err?.message?.includes('-32000');
-        const allowedErrors = [
-          'insufficient funds for transfer',
-          'insufficient funds for gas * price+ value',
-          'insufficient funds for gas * price + value'
-        ];
-        const includesPhrase = Boolean(allowedErrors.find(error => err?.message?.includes(error)));
-        return includesErrCode && includesPhrase;
       }
     );
 

@@ -762,7 +762,7 @@ export class CrossChainRoutingService {
           if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }
-          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+          if (errMessage?.includes('insufficient funds for')) {
             throw new InsufficientFundsGasPriceValueError(
               this.currentCrossChainTrade.tokenIn.symbol
             );

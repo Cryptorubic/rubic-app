@@ -22,7 +22,8 @@
     "prepare": "husky install",
     "unused-css": "ngx-unused-css",
     "compodoc": "compodoc -p tsconfig.doc.json -s",
-    "compile": "tsc"
+    "precompile": "node scripts/build-timestamp.js",
+    "compile": "npm run precompile && tsc"
   },
   "private": true,
   "dependencies": {
