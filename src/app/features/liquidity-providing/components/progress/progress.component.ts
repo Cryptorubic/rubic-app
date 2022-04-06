@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-progress',
@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
   styleUrls: ['./progress.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgressComponent implements OnInit {
+export class ProgressComponent {
   @Input() size: number;
 
   @Input() label: string;
@@ -16,10 +16,4 @@ export class ProgressComponent implements OnInit {
   @Input() loading: boolean = true;
 
   @Input() needLogin: boolean = false;
-
-  constructor() {}
-
-  ngOnInit(): void {
-    return undefined;
-  }
 }

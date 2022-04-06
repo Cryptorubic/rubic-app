@@ -22,9 +22,7 @@ import BigNumber from 'bignumber.js';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Router } from '@angular/router';
-import { LiquidityProvidingNotificationsService } from '../../services/liquidity-providing-notifications.service';
-import { LiquidityProvidingModalsService } from '../../services/liquidity-providing-modals.service';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { PoolToken } from '../../models/pool-token.enum';
 import { DepositType } from '../../models/deposit-type.enum';
@@ -48,13 +46,13 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public readonly rbcAmountUsdPrice$ = this._rbcAmountUsdPrice$.asObservable();
 
-  private readonly _usdcAmountUsdPrice$ = new BehaviorSubject<BigNumber>(undefined);
+  private readonly _usdcAmountUsdPrice$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   public readonly usdcAmountUsdPrice$ = this._usdcAmountUsdPrice$.asObservable();
 
-  public readonly usdcBalance$ = this.service.usdcBalance$;
+  public readonly usdcBalance$ = this.lpService.usdcBalance$;
 
-  public readonly brbcBalance$ = this.service.brbcBalance$;
+  public readonly brbcBalance$ = this.lpService.brbcBalance$;
 
   private readonly _buttonLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -66,17 +64,17 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public readonly brbcAmount$ = this.brbcAmountCtrl.valueChanges.pipe(
     startWith(this.brbcAmountCtrl.value),
-    map(value => this.service.parseInputValue(value)),
-    tap(async () => {
-      // const amountUsdPrice = await this.service.calculateUsdPrice(new BigNumber(amount), 'brbc');
-      this._rbcAmountUsdPrice$.next(new BigNumber(1231.323));
+    map(value => this.lpService.parseInputValue(value)),
+    tap(async amount => {
+      const amountUsdPrice = await this.lpService.calculateBrbcUsdPrice(new BigNumber(amount));
+      this._rbcAmountUsdPrice$.next(amountUsdPrice);
     }),
     takeUntil(this.destroy$)
   );
 
   public readonly usdcAmount$ = this.usdcAmountCtrl.valueChanges.pipe(
     startWith(this.usdcAmountCtrl.value),
-    map(value => this.service.parseInputValue(value)),
+    map(value => this.lpService.parseInputValue(value)),
     takeUntil(this.destroy$)
   );
 
@@ -85,19 +83,17 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   constructor(
-    private readonly service: LiquidityProvidingService,
-    private readonly notificationService: LiquidityProvidingNotificationsService,
+    private readonly lpService: LiquidityProvidingService,
+    private readonly notificationService: LiquidityProvidingNotificationService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
-    private readonly lpProvidingModalService: LiquidityProvidingModalsService,
     private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly themeService: ThemeService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
-    this.brbcAmount$.pipe(skip(1), debounceTime(500)).subscribe(value => {
+    this.brbcAmount$.pipe(skip(1), debounceTime(300)).subscribe(value => {
       if (!value.isFinite()) {
         this.usdcAmountCtrl.reset();
         this._usdcDepositOpened$.next(false);
@@ -107,26 +103,27 @@ export class DepositFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.service.userAddress$
+    this.lpService.userAddress$
       .pipe(
         filter(user => Boolean(user?.address)),
         switchMap(() => {
           return forkJoin([
-            this.service.getAndUpdatePoolTokensBalances(),
-            this.service.getNeedTokensApprove()
+            this.lpService.getAndUpdatePoolTokensBalances(),
+            this.lpService.getNeedTokensApprove()
           ]);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
 
   public createDeposit(): void {
-    const amount = this.service.parseInputValue(this.usdcAmountCtrl.value);
+    const amount = this.lpService.parseInputValue(this.usdcAmountCtrl.value);
     const depositInProgressNotification$ =
       this.notificationService.showDepositInProgressNotification();
     this._buttonLoading$.next(true);
 
-    this.service
+    this.lpService
       .createDeposit(amount)
       .pipe(finalize(() => this._buttonLoading$.next(false)))
       .subscribe(() => {
@@ -140,10 +137,10 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     const approveInProgressNotification$ =
       this.notificationService.showApproveInProgressNotification();
 
-    this.service
+    this.lpService
       .approvePoolToken(token)
       .pipe(
-        switchMap(() => this.service.getNeedTokensApprove()),
+        switchMap(() => this.lpService.getNeedTokensApprove()),
         finalize(() => this._buttonLoading$.next(false))
       )
       .subscribe(() => {
@@ -163,7 +160,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   }
 
   public async switchNetwork(): Promise<void> {
-    await this.service.switchNetwork();
+    await this.lpService.switchNetwork();
   }
 
   public login(): void {
@@ -171,6 +168,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.service.stopWatchWhitelist();
+    this.lpService.stopWatchWhitelist();
   }
 }

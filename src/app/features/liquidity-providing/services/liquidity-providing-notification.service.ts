@@ -5,7 +5,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { Subscription } from 'rxjs';
 
 @Injectable()
-export class LiquidityProvidingNotificationsService {
+export class LiquidityProvidingNotificationService {
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly translate: TranslateService

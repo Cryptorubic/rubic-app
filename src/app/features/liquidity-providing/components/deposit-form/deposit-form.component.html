@@ -34,11 +34,16 @@
     </div>
     <div class="asset__balance-usd-price">
       <div class="asset__balance" *ngLet="brbcBalance$ | async as brbcBalance">
-        You have {{ brbcBalance ? (brbcBalance | bigNumberFormat: 3) : 0 }}
+        You have
+        {{
+          brbcBalance
+            ? (brbcBalance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : 0
+        }}
         <span class="asset__balance-max" (click)="setMaxTokenAmount(brbcBalance)"> MAX </span>
       </div>
       <div class="asset__usd-price" *ngIf="rbcAmountUsdPrice$ | async as usdPrice">
-        {{ usdPrice }}$
+        {{ !usdPrice.isFinite() || !usdPrice ? 0 : (usdPrice | bigNumberFormat: 2) }}$
       </div>
     </div>
   </div>
@@ -63,7 +68,12 @@
       </div>
       <div class="asset__balance-usd-price">
         <div class="asset__balance" *ngLet="usdcBalance$ | async as usdcBalance">
-          You have {{ usdcBalance ? (usdcBalance | bigNumberFormat: 3) : 0 }}
+          You have
+          {{
+            usdcBalance
+              ? (usdcBalance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+              : 0
+          }}
         </div>
       </div>
     </div>

@@ -21,11 +21,15 @@
       <div class="deposit-card__stats">
         <div class="stat">
           <span class="stat__name">RBC: </span>
-          <span class="stat__data">{{ deposit.BRBCAmount | bigNumberFormat: 2:true }}</span>
+          <span class="stat__data">{{
+            deposit.BRBCAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+          }}</span>
         </div>
         <div class="stat">
           <span class="stat__name">USDC: </span>
-          <span class="stat__data">{{ deposit.USDCAmount | bigNumberFormat: 2:true }}</span>
+          <span class="stat__data">{{
+            deposit.USDCAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+          }}</span>
         </div>
         <div class="stat">
           <span class="stat__name">ID: </span>
@@ -41,13 +45,19 @@
         <div class="deposit-card__amount">
           <div class="deposit-card__amount-name">Collect now</div>
           <div class="deposit-card__amount-value">
-            {{ deposit.rewardsToCollect | bigNumberFormat: 2:true }} USDC
+            {{
+              deposit.rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+            }}
+            USDC
           </div>
         </div>
         <div class="deposit-card__amount">
           <div class="deposit-card__amount-name">Total collected</div>
           <div class="deposit-card__amount-value">
-            {{ deposit.collectedRewards | bigNumberFormat: 2:true }} USDC
+            {{
+              deposit.collectedRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+            }}
+            USDC
           </div>
         </div>
       </div>

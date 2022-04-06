@@ -42,33 +42,33 @@ export class DepositButtonComponent implements OnInit {
 
   public readonly errors = LpFormError;
 
-  public readonly needUsdcApprove$ = this.service.needUsdcApprove$;
+  public readonly needUsdcApprove$ = this.lpService.needUsdcApprove$;
 
-  public readonly needBrbcApprove$ = this.service.needBrbcApprove$;
+  public readonly needBrbcApprove$ = this.lpService.needBrbcApprove$;
 
-  public readonly needSwitchNetwork$ = this.service.needSwitchNetwork$;
+  public readonly needSwitchNetwork$ = this.lpService.needSwitchNetwork$;
 
-  public readonly needLogin$ = this.service.needLogin$;
+  public readonly needLogin$ = this.lpService.needLogin$;
 
-  public readonly currentMaxLimit = this.service.currentMaxLimit;
+  public readonly currentMaxLimit = this.lpService.currentMaxLimit;
 
-  public readonly minLimit = this.service.minEnterAmount;
+  public readonly minLimit = this.lpService.minEnterAmount;
 
-  constructor(private readonly service: LiquidityProvidingService) {}
+  constructor(private readonly lpService: LiquidityProvidingService) {}
 
   ngOnInit(): void {
-    combineLatest([this.brbcAmount$, this.service.brbcBalance$])
+    combineLatest([this.brbcAmount$, this.lpService.brbcBalance$])
       .pipe(
         tap(([brbcAmount, brbcBalance]) => {
-          this._error$.next(this.service.checkDepositErrors(brbcAmount, brbcBalance));
+          this._error$.next(this.lpService.checkDepositErrors(brbcAmount, brbcBalance));
         })
       )
       .subscribe();
 
-    combineLatest([this.usdcAmount$, this.service.usdcBalance$])
+    combineLatest([this.usdcAmount$, this.lpService.usdcBalance$])
       .pipe(
         tap(([usdcAmount, usdcBalance]) => {
-          this._error$.next(this.service.checkDepositErrors(usdcAmount, usdcBalance));
+          this._error$.next(this.lpService.checkDepositErrors(usdcAmount, usdcBalance));
         })
       )
       .subscribe();

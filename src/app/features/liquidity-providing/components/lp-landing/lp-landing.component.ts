@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
@@ -8,28 +10,30 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   selector: 'app-lp-landing',
   templateUrl: './lp-landing.component.html',
   styleUrls: ['./lp-landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class LpLandingComponent {
-  public readonly needLogin$ = this.service.needLogin$;
+  public readonly needLogin$ = this.lpService.needLogin$;
 
-  public readonly isWhitelistInProgress$ = this.service.isWhitelistInProgress$;
+  public readonly isWhitelistInProgress$ = this.lpService.isWhitelistInProgress$;
 
-  public readonly isWhitelistUser$ = this.service.isWhitelistUser$;
+  public readonly isWhitelistUser$ = this.lpService.isWhitelistUser$;
 
-  public readonly whitelistTimer$ = this.service.whitelistTimer$;
+  public readonly whitelistTimer$ = this.lpService.whitelistTimer$;
 
   public readonly depositType = DepositType;
 
   constructor(
-    private readonly service: LiquidityProvidingService,
+    private readonly lpService: LiquidityProvidingService,
     private readonly walletsModalService: WalletsModalService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
-    this.walletConnectorService.addressChange$.subscribe(() => {
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.cdr.detectChanges();
     });
   }
@@ -39,7 +43,6 @@ export class LpLandingComponent {
   }
 
   public navigateToDepositForm(depositType: DepositType): void {
-    alert('deposit type - ' + depositType);
-    this.service.navigateToDepositForm(depositType);
+    this.lpService.navigateToDepositForm(depositType);
   }
 }

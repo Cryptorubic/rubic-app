@@ -12,28 +12,28 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   providers: [TuiDestroyService]
 })
 export class LpStatisticsComponent implements OnInit {
-  public readonly poolSize = this.service.poolSize;
+  public readonly poolSize = this.lpService.poolSize;
 
-  public readonly maxEnterAmount = this.service.maxEnterAmount;
+  public readonly maxEnterAmount = this.lpService.maxEnterAmount;
 
-  public readonly totalStaked$ = this.service.totalStaked$;
+  public readonly totalStaked$ = this.lpService.totalStaked$;
 
-  public readonly usersTotalStaked$ = this.service.userTotalStaked$;
+  public readonly usersTotalStaked$ = this.lpService.userTotalStaked$;
 
-  public readonly apr$ = this.service.apr$;
+  public readonly apr$ = this.lpService.apr$;
 
-  public readonly balance$ = this.service.balance$;
+  public readonly balance$ = this.lpService.balance$;
 
-  public readonly rewardsToCollect$ = this.service.rewardsToCollect$;
+  public readonly rewardsToCollect$ = this.lpService.rewardsToCollect$;
 
-  public readonly collectedRewards$ = this.service.totalCollectedRewards$;
+  public readonly collectedRewards$ = this.lpService.totalCollectedRewards$;
 
-  public readonly needLogin$ = this.service.needLogin$;
+  public readonly needLogin$ = this.lpService.needLogin$;
 
-  public readonly statisticsLoading$ = this.service.statisticsLoading$;
+  public readonly statisticsLoading$ = this.lpService.statisticsLoading$;
 
   constructor(
-    private readonly service: LiquidityProvidingService,
+    private readonly lpService: LiquidityProvidingService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService
@@ -44,25 +44,27 @@ export class LpStatisticsComponent implements OnInit {
       .pipe(
         startWith(undefined),
         switchMap(() =>
-          this.service.getAprAndTotalStaked().pipe(switchMap(() => this.service.getStatistics()))
+          this.lpService
+            .getAprAndTotalStaked()
+            .pipe(switchMap(() => this.lpService.getStatistics()))
         ),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.service.setStatisticsLoading(false);
+        this.lpService.setStatisticsLoading(false);
         this.cdr.detectChanges();
       });
   }
 
   public refreshStatistics(): void {
-    this.service
+    this.lpService
       .getAprAndTotalStaked()
       .pipe(
-        switchMap(() => this.service.getStatistics()),
+        switchMap(() => this.lpService.getStatistics()),
         take(1)
       )
       .subscribe(() => {
-        this.service.setStatisticsLoading(false);
+        this.lpService.setStatisticsLoading(false);
         this.cdr.detectChanges();
       });
   }

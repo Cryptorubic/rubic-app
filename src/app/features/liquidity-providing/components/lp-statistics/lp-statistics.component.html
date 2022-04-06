@@ -29,7 +29,12 @@
     <div class="statistics__param">
       <div class="statistics__param-label">Total Collected</div>
       <div class="statistics__param-value" *ngLet="collectedRewards$ | async as collectedRewards">
-        {{ collectedRewards ? (collectedRewards | bigNumberFormat: 2) : '--.--' }} USDC
+        {{
+          collectedRewards
+            ? (collectedRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : '--.--'
+        }}
+        USDC
       </div>
     </div>
   </div>
@@ -37,7 +42,12 @@
     <div class="statistics__param">
       <div class="statistics__param-label">Collect Now</div>
       <div class="statistics__param-value" *ngLet="rewardsToCollect$ | async as rewardsToCollect">
-        {{ rewardsToCollect ? (rewardsToCollect | bigNumberFormat: 2) : '--.--' }} USDC
+        {{
+          rewardsToCollect
+            ? (rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : '--.--'
+        }}
+        USDC
       </div>
     </div>
     <div class="statistics__param">

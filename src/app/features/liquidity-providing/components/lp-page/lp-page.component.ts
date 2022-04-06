@@ -25,21 +25,21 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
 export class LpPageComponent implements OnInit, OnDestroy {
   public readonly showDeposits$ = combineLatest([
     this.authService.getCurrentUser(),
-    this.service.deposits$
+    this.lpService.deposits$
   ]).pipe(
     map(([user, deposits]) => {
       return !(user?.address && Boolean(deposits?.length));
     })
   );
 
-  public readonly depositsLoading$ = this.service.depositsLoading$;
+  public readonly depositsLoading$ = this.lpService.depositsLoading$;
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   constructor(
     private readonly walletsModalService: WalletsModalService,
     private readonly authService: AuthService,
-    private readonly service: LiquidityProvidingService,
+    private readonly lpService: LiquidityProvidingService,
     private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
@@ -51,11 +51,11 @@ export class LpPageComponent implements OnInit, OnDestroy {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
-        switchMap(() => this.service.getDeposits()),
+        switchMap(() => this.lpService.getDeposits()),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.service.setDepositsLoading(false);
+        this.lpService.setDepositsLoading(false);
         this.cdr.detectChanges();
       });
   }
@@ -69,6 +69,6 @@ export class LpPageComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.service.stopWatchWhitelist();
+    this.lpService.stopWatchWhitelist();
   }
 }

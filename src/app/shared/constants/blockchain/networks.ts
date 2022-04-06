@@ -114,7 +114,8 @@ const networks: ReadonlyArray<Network> = [
     label: 'Avalanche',
     scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet',
-    additionalRpcLink: '',
+    additionalRpcLink:
+      'https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/avalanche.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE,

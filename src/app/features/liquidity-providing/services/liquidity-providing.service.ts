@@ -561,9 +561,9 @@ export class LiquidityProvidingService {
     return null;
   }
 
-  public async calculateUsdPrice(value: BigNumber, token: 'brbc' | 'usdc'): Promise<BigNumber> {
+  public async calculateBrbcUsdPrice(value: BigNumber): Promise<BigNumber> {
     const usdPrice = await this.tokensService.getAndUpdateTokenPrice({
-      address: token === 'brbc' ? this.brbcAddress : this.usdcAddress,
+      address: this.brbcAddress,
       blockchain: this.blockchain
     });
 

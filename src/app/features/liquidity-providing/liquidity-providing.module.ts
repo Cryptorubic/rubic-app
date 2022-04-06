@@ -12,13 +12,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LpPageComponent } from './components/lp-page/lp-page.component';
 import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
 import { DepositsComponent } from './components/deposits/deposits.component';
-import { LiquidityProvidingNotificationsService } from './services/liquidity-providing-notifications.service';
-import { LiquidityProvidingModalsService } from './services/liquidity-providing-modals.service';
+import { LiquidityProvidingNotificationService } from './services/liquidity-providing-notification.service';
+import { LiquidityProvidingModalService } from './services/liquidity-providing-modals.service';
 import { DepositModalComponent } from './components/deposit-modal/deposit-modal.component';
 import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
 import { LpStatisticsComponent } from './components/lp-statistics/lp-statistics.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
+import { RequestWithdrawModalComponent } from './components/request-withdraw-modal/request-withdraw-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
     DepositModalComponent,
     WithdrawModalComponent,
     LpStatisticsComponent,
-    ProgressComponent
+    ProgressComponent,
+    RequestWithdrawModalComponent
   ],
   imports: [
     CommonModule,
@@ -48,8 +50,8 @@ import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
   exports: [],
   providers: [
     LiquidityProvidingService,
-    LiquidityProvidingNotificationsService,
-    LiquidityProvidingModalsService,
+    LiquidityProvidingNotificationService,
+    LiquidityProvidingModalService,
     UntilTimeGuard
   ]
 })
