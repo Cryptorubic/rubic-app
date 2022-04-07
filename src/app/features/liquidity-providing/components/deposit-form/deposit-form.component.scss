@@ -4,12 +4,12 @@
 
   position: relative;
 
-  max-width: 612px;
+  max-width: 490px;
   margin: 40px auto 0;
-  padding: 40px 36px;
+  padding: 26px;
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 24px;
 
   @include b($tablet) {
     padding: 20px;
@@ -19,53 +19,32 @@
 
   &__back {
     position: absolute;
-    top: 46px;
-    left: 37px;
+    top: 28px;
+    left: 26px;
 
-    width: 22px;
+    width: 18px;
 
     cursor: pointer;
-
-    @include b($tablet) {
-      top: 25px;
-      left: 28px;
-
-      width: 19px;
-    }
   }
 
   &__header {
+
+    @include font(18px, 22px, 600, var(--rubic-base-02));
     position: relative;
 
     display: flex;
     align-items: center;
     width: fit-content;
-    margin: 0 auto 46px;
-
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 30px;
-
-    @include b($tablet) {
-      margin-bottom: 56px;
-
-      font-size: 18px;
-      line-height: 22px;
-    }
+    margin: 0 auto 34px;
 
     img {
-      width: 34px;
-      height: 34px;
+      width: 26px;
+      height: 26px;
 
       border-radius: 100%;
 
-      @include b($tablet) {
-        width: 26px;
-        height: 26px;
-      }
-
       &:first-child {
-        margin-right: 32px;
+        margin-right: 20px;
 
         border: 2px solid transparent;
 
@@ -76,7 +55,7 @@
 
       &:last-child {
         position: absolute;
-        left: 20px;
+        left: 15px;
 
         border: 2px solid var(--rubic-base-22);
         border-radius: 100%;
@@ -104,7 +83,7 @@
 }
 
 .asset {
-  padding-bottom: 38px;
+  padding-bottom: 36px;
 
   @include b($tablet) {
     padding-bottom: 32px;
@@ -114,53 +93,34 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
-
-    @include b($tablet) {
-      margin-bottom: 12px;
-    }
+    margin-bottom: 12px;
   }
 
   &__symbol {
     display: flex;
     align-items: center;
-    padding: 10px 20px;
+    padding: 8px 16px;
 
-    font-size: 24px;
-    line-height: 29px;
+    font-size: 20px;
+    line-height: 24px;
 
     background: var(--rubic-base-23);
     border-radius: 100px;
 
-    @include b($tablet) {
-      padding: 10px 16px;
-    
-      font-size: 16px;
-      line-height: 19px;
-    
-      img {
-        width: 24.63px;
-        height: 24.63px;
-      }
-    }
-
     img {
-      width: 36px;
-      height: 36px;
+      width: 26px;
+      height: 26px;
       margin-right: 12px;
     }
   }
 
   &__amount {
+    @include font(32px, 38px, 400, var(--form-bright-text-color), 00.06em);
     width: 100%;
-    height: 48px;
-    padding-left: 16px;
+    height: 38px;
+    padding-left: 8px;
 
     color: var(--form-bright-text-color);
-    font-weight: 400;
-    font-size: 40px;
-    line-height: 48px;
-    letter-spacing: 0.06em;
     text-align: right;
 
     background-color: transparent;
@@ -174,13 +134,11 @@
   }
 
   &__balance-usd-price {
+
+    @include font(15px, 18px, 500, var(--rubic-base-25));
     display: flex;
     justify-content: space-between;
-    height: 22px;
-
-    color: var(--rubic-base-25);
-    font-size: 18px;
-    line-height: 22px;
+    height: 18px;
 
     @include b($tablet) {
       font-size: 14px;
@@ -208,8 +166,8 @@
   }
 
   .asset {
-    padding-top: 38px;
-    padding-bottom: 46px;
+    padding-top: 36px;
+    padding-bottom: 36px;
 
     border-top: 1px solid #3e413f;
 
@@ -224,24 +182,16 @@
 }
 
 .hint {
-  display: flex;
-  margin-bottom: 22px;
-  padding: 15px;
 
-  color: #f3ba2f;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 21px;
+  @include font(14px, 16px, 500, #f3ba2f);
+  display: flex;
+  margin-bottom: 14px;
+  padding: 12px;
 
   background: rgba(243, 186, 47, 0.15);
   border-radius: 12px;
 
   @include b($tablet) {
-    margin-bottom: 16px;
-    padding: 12px;
-
-    font-size: 14px;
-    line-height: 16.66px;
 
     border-radius: 14px;
 
@@ -251,7 +201,7 @@
   }
 
   &__icon {
-    margin-right: 14px;
+    margin-right: 12px;
   }
 }
 

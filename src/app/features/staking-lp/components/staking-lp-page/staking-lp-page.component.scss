@@ -42,13 +42,13 @@
   border-radius: 24px;
   
   &__title {
-    @include font(24px, 29px, 600, var(--rubic-base-02));
+    @include font(20px, 24px, 600, var(--rubic-base-02));
     margin-bottom: 31px;  
   }
 
   &__card:not(:last-child) {
     display: block;
-    margin-bottom: 26px;
+    margin-bottom: 12px;
   }
 }
 

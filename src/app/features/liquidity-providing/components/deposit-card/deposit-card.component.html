@@ -1,19 +1,30 @@
 <tui-loader [showLoader]="loading" [overlay]="true">
-  <div class="deposit-card">
+  <div class="deposit-card" *ngLet="isMobile$ | async as isMobile">
     <div class="deposit-card__statuses">
-      <div class="status status_active" *ngIf="deposit.isWhitelisted">Whitelist</div>
-      <div
+      <app-status-badge
         class="status"
-        [ngClass]="{ status_active: deposit.isStaked, status_processing: !deposit.isStaked }"
-      >
-        {{ deposit.isStaked ? 'Active' : 'Processing' }}
-      </div>
+        *ngIf="deposit.isWhitelisted"
+        type="active"
+        [text]="'Whitelist'"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
+        *ngIf="!deposit.isStaked"
+        type="warning"
+        [text]="'Processing'"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
+        *ngIf="deposit.isStaked"
+        type="active"
+        [text]="'Active'"
+      ></app-status-badge>
     </div>
     <div class="deposit-card__front">
       <div class="deposit-card__title">
         <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
         <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
-        BRBC / USDC
+        BRBC-USDC
         <div class="deposit-card__title-start">
           {{ deposit.start | date: 'dd LLLL' }} at {{ deposit.start | date: 'shortTime' }}
         </div>

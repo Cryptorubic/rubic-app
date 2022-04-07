@@ -8,7 +8,7 @@
 
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 15px;
 
   @include b($tablet) {
     flex-direction: column;
@@ -31,7 +31,7 @@
     flex-direction: column;
     width: 33%;
     padding-top: 35px;
-    padding-bottom: 58px;
+    padding-bottom: 47px;
 
     border: 2px solid transparent;
 
@@ -71,17 +71,17 @@
     }
     
     &:first-child {
-      min-width: 340px;
+      min-width: 260px;
       margin-right: 50px;
-      padding-right: 50px;
-      padding-left: 50px;
+      padding-right: 33px;
+      padding-left: 33px;
     
       border-color: $rubic-primary;
-      border-radius: 18px;
+      border-radius: 15px;
     }
     
     .statistics__param:first-child {
-      margin-bottom: 50px;
+      margin-bottom: 32px;
     
       @include b($tablet) {
         margin-bottom: 0;
@@ -95,10 +95,10 @@
     }
 
     &-label {
-      @include font(18px, 22px, 500, var(--rubic-base-24));
+      @include font(16px, 19px, 500, var(--rubic-base-24));
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 7px;
 
       @include b($tablet) {
         margin-bottom: 4px;
@@ -120,7 +120,7 @@
     }
 
     &-value {
-      @include font(26px, 31px, 600, var(--rubic-base-02));
+      @include font(22px, 26px, 500, var(--rubic-base-02));
       transition: 0.4s opacity ease-in-out;
 
       @include b($tablet) {
@@ -147,7 +147,7 @@
   }
 
   &__end {
-    @include font(18px, 22px, 500, var(--rubic-base-02));
+    @include font(16px, 19px, 500, var(--rubic-base-02));
     position: absolute;
     right: 0;
     bottom: 0;

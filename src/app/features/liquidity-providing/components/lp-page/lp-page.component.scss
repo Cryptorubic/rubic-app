@@ -7,12 +7,12 @@
 
 .wrapper {
   display: block;
-  max-width: 1003px;
+  max-width: 802px;
   margin: 0 auto;
-  padding: 32px 22px 42px;
+  padding: 24px 18px 32px;
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 24px;
 
   @include b($tablet) {
     padding: 25px 20px 20px;
@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
 
   @include b($tablet) {
     position: relative;
@@ -55,20 +55,17 @@
 
     cursor: pointer;
     
-    @include b($tablet) {
-      img {
-        width: 19px;
-        height: 15.32px;
-      }
+    img {
+      width: 18px;
     }
   }
 
   &__round {
-    @include font(20px, 24px, 600, var(--rubic-base-02));
+    @include font(18px, 22px, 600, var(--rubic-base-02));
   }
 }
 
 .statistics {
   display: block;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }

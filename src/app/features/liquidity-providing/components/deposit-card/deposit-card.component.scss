@@ -3,11 +3,11 @@
 .deposit-card {
   position: relative;
 
-  height: 134px;
-  padding: 32px;
+  height: 112px;
+  padding: 25px;
 
   background: var(--rubic-base-23);
-  border-radius: 20px;
+  border-radius: 16px;
   transform-style: preserve-3d;
   cursor: pointer;
 
@@ -45,9 +45,9 @@
     justify-content: space-between;
     width: 100%;
     height: 100%;
-    padding: 32px;
+    padding: 25px;
 
-    border-radius: 32px;
+    border-radius: 16px;
     transform: rotateX(180deg);
     backface-visibility: hidden;
 
@@ -69,107 +69,78 @@
   }
 
   &__amount {
-    color: #000;
-    font-weight: 800;
+    color: var(--rubic-base-02);
+    font-weight: 500;
 
     &:first-child {
-      margin-right: 40px;
+      margin-right: 37px;
     }
 
     &-name {
       margin-bottom: 6px;
 
-      font-size: 18px;
-      line-height: 22px;
+      font-size: 16px;
+      line-height: 19px;
     }
 
     &-value {
-      margin-bottom: 6px;
 
-      font-size: 24px;
-      line-height: 29px;
+      font-size: 22px;
+      line-height: 26px;
     }
   }
 
   &__statuses {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 9px;
+    right: 9px;
 
     display: flex;
     align-items: center;
 
     .status {
-      padding: 4px 8px;
-
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 20px;
-
-      border-radius: 50px;
-
       transition: display 0.3s ease-in-out;
 
       &:not(:first-child) {
         margin-left: 10px;
       }
-
-      &_active {
-        color: rgba(74, 169, 86, 0.85);
-
-        background: rgba(74, 169, 86, 0.2);
-      }
-
-      &_processing {
-        color: #f3ba2f;
-
-        background: rgba(243, 186, 47, 0.15);
-      }
     }
   }
 
   &__title {
+
+    @include font(18px, 22px, 600, var(--rubic-base-02));
     position: relative;
 
     display: flex;
     align-items: center;
     margin-bottom: 14px;
 
-    color: var(--rubic-base-02);
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 120%;
-
     &-start {
-      margin-left: 12px;
-      padding: 4px 8px;
 
-      color: rgba(255, 255, 255, 0.85);
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 20px;
+      @include font(15px, 20px, 500, rgba(255, 255, 255, 0.85));
+      margin-left: 10px;
+      padding: 3px 6px;
 
       background: rgba(255, 255, 255, 0.15);
-      border-radius: 50px;
+      border-radius: 5px;
     }
 
     img {
-      width: 34px;
-      height: 34px;
+      width: 26px;
+      height: 26px;
 
       border-radius: 100%;
 
       &:first-child {
-        margin-right: 32px;
+        margin-right: 20px;
 
         border: 2px solid transparent;
       }
 
       &:nth-child(2) {
         position: absolute;
-        left: 20px;
-
-        margin-right: 22px;
+        left: 15px;
 
         border: 2px solid var(--rubic-base-23);
       }
@@ -180,32 +151,26 @@
     display: flex;
 
     .stat {
-      color: var(--rubic-base-25);
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 22px;
+      @include font(15px, 18px, 500, var(--rubic-base-25));
 
       &__data {
         color: var(--rubic-base-02);
       }
 
       &:not(:last-child) {
-        margin-right: 26px;
+        margin-right: 32px;
       }
     }
   }
 
   app-rubic-button {
-    color: #fff;
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 21px;
+    @include font(16px, 19px, 500, #fff);
 
     background: #000;
     border-radius: 100px;
 
     &:first-child {
-      margin-right: 22px;
+      margin-right: 12px;
     }
   }
 }
