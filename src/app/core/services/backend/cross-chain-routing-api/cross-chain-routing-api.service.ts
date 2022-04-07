@@ -40,6 +40,8 @@ export class CrossChainRoutingApiService {
   static parseTradeApiToTableTrade(tradeApi: CrossChainTradeApi): TableTrade {
     const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
+    // change date format for safari
+    const date = tradeApi.statusUpdatedAt.replace(/-/g, '/').slice(0, 19) + ' GMT+0000';
     return {
       fromTransactionHash: tradeApi.fromTransactionHash,
       toTransactionHash: tradeApi.toTransactionHash,
@@ -48,7 +50,7 @@ export class CrossChainRoutingApiService {
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',
       fromToken: CrossChainRoutingApiService.getTableToken(tradeApi.fromToken, tradeApi.fromAmount),
       toToken: CrossChainRoutingApiService.getTableToken(tradeApi.toToken, tradeApi.toAmount),
-      date: new Date(tradeApi.statusUpdatedAt)
+      date: new Date(date)
     };
   }
 
