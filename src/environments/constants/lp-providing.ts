@@ -16,7 +16,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0x338448F789702d27e56D9Ec1A6A7B23d08fFEF26',
+  contractAddress: '0xA4e28c8eB196ca99e622F1aAb74129696018343A',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   minEnterAmount: 5,
@@ -28,6 +28,7 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
   whitelist: [
     '0xcc513c5e4f396e68c15282cfa02d3e9c615cd714',
     '0x186915891222add6e2108061a554a1f400a25cbd',
-    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b'
+    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b',
+    '0x3483ed7d3444a311a7585f0e59c9a74d6c111218'
   ]
 };
