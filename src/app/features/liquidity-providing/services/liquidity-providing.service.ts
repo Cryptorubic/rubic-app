@@ -47,13 +47,13 @@ import { DepositsResponse } from '../models/deposits-response.interface';
 
 @Injectable()
 export class LiquidityProvidingService {
+  private readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+
   private readonly lpContractAddress = ENVIRONMENT.lpProviding.contractAddress;
 
-  private readonly blockchain = ENVIRONMENT.lpProviding.blockchain;
+  private readonly brbcAddress = ENVIRONMENT.lpProviding.brbcAddress;
 
-  private readonly brbcAddress = ENVIRONMENT.lpProviding.poolTokens[PoolToken.BRBC].address;
-
-  private readonly usdcAddress = ENVIRONMENT.lpProviding.poolTokens[PoolToken.USDC].address;
+  private readonly usdcAddress = ENVIRONMENT.lpProviding.usdcAddress;
 
   private readonly whitelist = ENVIRONMENT.lpProviding.whitelist;
 
@@ -191,7 +191,7 @@ export class LiquidityProvidingService {
 
   public whitelistTimer$: Observable<unknown>;
 
-  private waitForReceipt$ = (hash: string) => {
+  private waitForReceipt = (hash: string) => {
     return interval(3000).pipe(
       switchMap(async () => {
         const tx = await this.web3PublicService[this.blockchain].getTransactionReceipt(hash);
@@ -454,7 +454,7 @@ export class LiquidityProvidingService {
       tap(() => {
         const updatedDeposits = this.deposits.map(deposit => {
           if (deposit.tokenId === tokenId) {
-            return { ...deposit, isStaked: false };
+            return { ...deposit, isStaked: false, canWithdraw: false };
           } else {
             return deposit;
           }
@@ -485,7 +485,7 @@ export class LiquidityProvidingService {
       }),
       switchMap((hash: string | boolean) => {
         if (hash !== false) {
-          return this.waitForReceipt$(hash as string);
+          return this.waitForReceipt(hash as string);
         } else {
           return EMPTY;
         }
@@ -509,7 +509,7 @@ export class LiquidityProvidingService {
       }),
       switchMap((hash: string | boolean) => {
         if (hash !== false) {
-          return this.waitForReceipt$(hash as string);
+          return this.waitForReceipt(hash as string);
         } else {
           return EMPTY;
         }
@@ -529,10 +529,14 @@ export class LiquidityProvidingService {
     ).pipe(
       catchError((error: unknown) => {
         this.errorService.catchAnyError(error as Error);
-        return EMPTY;
+        return of(false);
       }),
-      switchMap((hash: string) => {
-        return this.waitForReceipt$(hash);
+      switchMap((hash: string | boolean) => {
+        if (hash !== false) {
+          return this.waitForReceipt(hash as string);
+        } else {
+          return EMPTY;
+        }
       }),
       switchMap(() => this.getDeposits()),
       take(1)
