@@ -69,8 +69,12 @@
   }
 
   &__amount {
-    color: var(--rubic-base-02);
+    color: #fff;
     font-weight: 500;
+
+    @include dark {
+      color: #000;
+    }
 
     &:first-child {
       margin-right: 37px;
