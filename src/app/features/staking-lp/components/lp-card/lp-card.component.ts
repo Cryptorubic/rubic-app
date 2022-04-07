@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RoundStatus } from '../../models/round-status.enum';
 
@@ -27,7 +20,7 @@ const STATUS_BADGE_TEXT = {
   styleUrls: ['./lp-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LpCardComponent implements OnInit {
+export class LpCardComponent {
   @Input() round: number;
 
   @Input() apr: number;
@@ -51,10 +44,6 @@ export class LpCardComponent implements OnInit {
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(private readonly headerStore: HeaderStore) {}
-
-  ngOnInit(): void {
-    return undefined;
-  }
 
   public isInPast(date: string): boolean {
     const start = new Date(date);

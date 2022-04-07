@@ -150,6 +150,18 @@ export class StakingLpService {
 
   public readonly lpRoundStarted$ = this._lpRoundStarted$.asObservable();
 
+  public get lpRoundStarted(): boolean {
+    return this._lpRoundStarted$.getValue();
+  }
+
+  private readonly _lpRoundEnded$ = new BehaviorSubject<boolean>(undefined);
+
+  public readonly lpRoundEnded$ = this._lpRoundEnded$.asObservable();
+
+  public get lpRoundEnded(): boolean {
+    return this._lpRoundEnded$.getValue();
+  }
+
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
     private readonly volumeApiService: VolumeApiService,
@@ -328,17 +340,28 @@ export class StakingLpService {
     );
   }
 
-  public checkIsLpRoundStarted(): Observable<boolean> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        this.activeLpContract.address,
-        this.activeLpContract.abi,
-        'startTime'
+  public checkIsLpRoundStartedOrEnded(): Observable<boolean> {
+    return forkJoin([
+      from(
+        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+          this.activeLpContract.address,
+          this.activeLpContract.abi,
+          'startTime'
+        )
+      ),
+      from(
+        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+          this.activeLpContract.address,
+          this.activeLpContract.abi,
+          'endTime'
+        )
       )
-    ).pipe(
-      map(startTime => {
+    ]).pipe(
+      map(([startTime, endTime]) => {
         const isStarted = Number(startTime) !== 0;
+        const isEnded = new Date() > new Date(Number(endTime) * 1000);
         this._lpRoundStarted$.next(isStarted);
+        this._lpRoundEnded$.next(isEnded);
         return isStarted;
       })
     );
@@ -366,7 +389,7 @@ export class StakingLpService {
     return this.user$.pipe(
       take(1),
       switchMap(user => {
-        return forkJoin([of(user), this.checkIsLpRoundStarted()]);
+        return forkJoin([of(user), this.checkIsLpRoundStartedOrEnded()]);
       }),
       switchMap(([user, isLpStarted]) => {
         if (isLpStarted) {

@@ -25,6 +25,8 @@ export class StakingLpPageComponent implements OnInit {
 
   public readonly lpRoundStarted$ = this.stakingLpService.lpRoundStarted$;
 
+  public readonly lpRoundEnded$ = this.stakingLpService.lpRoundEnded$;
+
   constructor(
     private readonly router: Router,
     private readonly stakingLpService: StakingLpService,
@@ -62,5 +64,16 @@ export class StakingLpPageComponent implements OnInit {
 
   public navigateToLp(): void {
     this.router.navigate(['liquidity-providing']);
+  }
+
+  public getLpStatuses(isStarted: boolean): RoundStatus[] {
+    const isEnded = this.stakingLpService.lpRoundEnded;
+    if (isEnded) {
+      return [RoundStatus.CLOSED];
+    }
+
+    if (isStarted) {
+      return [RoundStatus.ACTIVE];
+    }
   }
 }

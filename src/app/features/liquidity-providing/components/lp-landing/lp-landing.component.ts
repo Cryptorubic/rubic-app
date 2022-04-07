@@ -27,6 +27,8 @@ export class LpLandingComponent implements OnInit {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
+  public readonly isLpEnded = this.lpService.isLpEneded;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly walletsModalService: WalletsModalService,

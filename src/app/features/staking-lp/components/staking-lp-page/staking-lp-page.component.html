@@ -35,7 +35,7 @@
     [poolLimit]="800000"
     [balance]="lpAprAndBalances.balance.roundOne"
     [startTime]="'04.01.2022'"
-    [statuses]="lpRoundStarted ? [roundStatus.ACTIVE] : undefined"
+    [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
     (onNavigate)="navigateToLp()"
   ></app-lp-card>
 </div>

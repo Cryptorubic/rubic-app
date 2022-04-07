@@ -65,5 +65,5 @@
     [rotating]="loading"
     (iconClick)="refreshStatistics()"
   ></app-rotating-icon>
-  <div class="statistics__end"><span>End of Round: </span>{{ endDate | date: 'long' }}</div>
+  <div class="statistics__end"><span>End of Round: </span>{{ endDate | date: 'long':'UTC' }}</div>
 </div>

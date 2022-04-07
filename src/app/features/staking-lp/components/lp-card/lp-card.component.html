@@ -39,6 +39,6 @@
     class="join"
     *ngIf="!(startTime | functionCall: isInPast:this)"
     (onClick)="onNavigate.emit(round)"
-    >Join Round</app-rubic-button
+    >{{ statuses.includes(roundStatus.CLOSED) ? 'Check' : 'Join round' }}</app-rubic-button
   >
 </div>

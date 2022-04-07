@@ -20,7 +20,7 @@
         <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
       </div>
     </div>
-    <div class="whitelist-info">
+    <div class="whitelist-info" *ngIf="!isLpEnded">
       <div class="whitelist-info__icon">
         <img src="assets/images/icons/info-blue.svg" alt="Info" />
       </div>
@@ -65,7 +65,7 @@
         appearance="secondary"
         (onClick)="navigateToDepositForm(depositType.REGULAR)"
       >
-        Create Deposit
+        {{ isLpEnded ? 'Calculate deposit' : 'CreateDeposit' }}
       </app-rubic-button>
     </ng-container>
   </ng-template>

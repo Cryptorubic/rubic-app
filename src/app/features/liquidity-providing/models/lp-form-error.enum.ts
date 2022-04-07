@@ -4,5 +4,6 @@ export enum LpFormError {
   LIMIT_GT_MAX = 'LIMIT_GT_MAX',
   LIMIT_LT_MIN = 'LIMIT_LT_MIN',
   NOT_WHITELIST_USER = 'NOT_WHITELIST_USER',
+  LP_ENDED = 'LP_ENDED',
   NULL = 'NULL'
 }

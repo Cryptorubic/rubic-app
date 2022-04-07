@@ -69,6 +69,8 @@ export class LiquidityProvidingService {
 
   public endDate: Date;
 
+  public isLpEneded: boolean;
+
   public readonly userAddress$ = this.authService.getCurrentUser().pipe(
     distinctUntilChanged((x, y) => {
       return x?.address === y?.address;
@@ -377,8 +379,13 @@ export class LiquidityProvidingService {
         )
       ),
       tap(isWhitelistInProgress => {
+        const isWhitelistUser = this.whitelist.includes(this?.userAddress?.toLowerCase());
         this._isWhitelistInProgress$.next(isWhitelistInProgress);
-        this._isWhitelistUser$.next(this.whitelist.includes(this?.userAddress?.toLowerCase()));
+        this._isWhitelistUser$.next(isWhitelistUser);
+
+        if (!isWhitelistUser && isWhitelistInProgress && this.router.url.includes('deposit')) {
+          this.router.navigate(['liquidity-providing']);
+        }
       }),
       takeUntil(this._stopWhitelistWatch$)
     );
@@ -561,9 +568,14 @@ export class LiquidityProvidingService {
 
   public getEndDate(startTime: number): void {
     this.endDate = new Date((this.duration + startTime) * 1000);
+    this.isLpEneded = new Date() > this.endDate;
   }
 
   public checkDepositErrors(amount: BigNumber, balance: BigNumber): LpFormError | null {
+    if (this.isLpEneded) {
+      return LpFormError.LP_ENDED;
+    }
+
     if (amount.gt(this.currentMaxLimit)) {
       return LpFormError.LIMIT_GT_MAX;
     }
