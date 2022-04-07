@@ -38,29 +38,30 @@
     @include b($tablet) {
       flex-direction: row;
       padding: 26px 22px;
-
+    
       &:first-child {
         width: 100%;
         min-width: 100%;
         margin-right: 0;
         margin-bottom: 30px;
         // order: 3;
-        padding: 26px 22px;
+        padding: 27px 22px;
       }
-
+    
       &:nth-child(2) {
         // order: 1;
-        margin-bottom: 52px;
+        width: 100%;
+        margin-bottom: 32px;
         padding: 0 10px;
-
+    
         border: 0;
       }
-
+    
       &:nth-child(3) {
         // order: 2;
         width: 100%;
         padding: 0 10px;
-
+    
         border: 0;
       }
     }

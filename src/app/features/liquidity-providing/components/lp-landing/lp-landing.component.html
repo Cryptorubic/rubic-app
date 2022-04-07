@@ -4,37 +4,40 @@
     isWhitelistInProgress: isWhitelistInProgress$ | async
   } as whitelist"
 >
-  <div class="landing">
-    <div class="landing__step">
-      <div class="landing__step-icon">
-        <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+  <hr *ngIf="isMobile$ | async" />
+  <ng-container *ngLet="whitelistTimer$ | async as timer">
+    <div class="landing">
+      <div class="landing__step">
+        <div class="landing__step-icon">
+          <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+        </div>
+        <div class="landing__step-text">Buy RBC to get profit and participate in our staking</div>
       </div>
-      <div class="landing__step-text">Buy RBC to get profit and participate in our staking</div>
-    </div>
-    <div class="landing__step">
-      <div class="landing__step-icon">
-        <img src="assets/images/icons/lp-providing/lp-step-1.png" />
-      </div>
-      <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
-    </div>
-  </div>
-  <div class="whitelist-info">
-    <div class="whitelist-info__icon">
-      <img src="assets/images/icons/info-blue.svg" alt="Info" />
-    </div>
-    <div class="whitelist-info__text">
-      <div class="whitelist-info__text-paragraph">
-        If you participated in the 1st round of Staking, then you have the option to allocate of
-        500&5,000 USDC will be available during 24 hours
-      </div>
-      <div class="whitelist-info__text-paragraph">
-        If you did not participate, you will be able to enter the round after
-        <span class="whitelist-info__timer" *ngLet="whitelistTimer$ | async as timer">{{
-          timer ? (timer | date: 'h:mm:ss') : '--:--'
-        }}</span>
+      <div class="landing__step">
+        <div class="landing__step-icon">
+          <img src="assets/images/icons/lp-providing/lp-step-1.png" />
+        </div>
+        <div class="landing__step-text">Stake RBC/BRBC/wRBC to get a rewards in BRBC</div>
       </div>
     </div>
-  </div>
+    <div class="whitelist-info">
+      <div class="whitelist-info__icon">
+        <img src="assets/images/icons/info-blue.svg" alt="Info" />
+      </div>
+      <div class="whitelist-info__text">
+        <div class="whitelist-info__text-paragraph">
+          If you participated in the 1st round of Staking, then you have the option to allocate of
+          500&5,000 USDC will be available during 24 hours
+        </div>
+        <div class="whitelist-info__text-paragraph">
+          If you did not participate, you will be able to enter the round after
+          <span class="whitelist-info__timer">{{
+            timer ? (timer | date: 'h:mm:ss') : '--:--'
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
   <ng-container *ngIf="needLogin$ | async; else createDeposit">
     <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
       Connect wallet

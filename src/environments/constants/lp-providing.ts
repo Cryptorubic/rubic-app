@@ -8,6 +8,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
   maxEnterAmount: 10,
   poolSize: 90,
   duration: 5270400, // 61 days
+  whitelistDuration: 86400, // 1 day
   poolTokens: {
     [PoolToken.BRBC]: {
       name: 'Rubic',
@@ -39,7 +40,8 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
   maxEnterAmount: 50,
   poolSize: 80,
   maxEnterAmountWhitelist: 8,
-  duration: 5270400,
+  duration: 1500,
+  whitelistDuration: 60,
   poolTokens: {
     [PoolToken.BRBC]: {
       name: 'Rubic',
@@ -57,9 +59,8 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
     }
   },
   whitelist: [
-    '0x449ab89a9c1dee7822580dad3cb6c0852210793a',
+    '0xcc513c5e4f396e68c15282cfa02d3e9c615cd714',
     '0x186915891222add6e2108061a554a1f400a25cbd',
-    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b',
-    '0x856a00601f2527f50cc9b3aa6d76f05f3f5f294a'
+    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b'
   ]
 };

@@ -1,5 +1,24 @@
 @use 'src/scss/core' as *;
 
+:host {
+  @include b($tablet) {
+    position: relative;
+
+    display: block;
+    margin-top: 32px;
+  }
+}
+
+hr {
+  position: absolute;
+  top: -32px;
+  left: -20px;
+
+  width: calc(100% + 40px);
+
+  background: #262927;
+}
+
 .landing {
   display: flex;
   justify-content: space-between;
@@ -68,12 +87,25 @@
   background: rgba(98, 126, 234, 0.15);
   border-radius: 14px;
 
+  @include b($tablet) {
+    padding: 12px;
+  }
+
   &__icon {
     margin-right: 14px;
+
+    @include b($tablet) {
+      margin-right: 9px;
+    }
   }
 
   &__text {
     @include font(18px, 21px, 500, #627EEA);
+
+    @include b($tablet) {
+      font-size: 14px;
+      line-height: 16px;
+    }
 
     &-paragraph:first-child {
       margin-bottom: 20px;

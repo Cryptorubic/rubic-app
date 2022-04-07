@@ -29,7 +29,9 @@ import {
   switchMap,
   take,
   takeUntil,
-  tap
+  takeWhile,
+  tap,
+  withLatestFrom
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
@@ -42,7 +44,6 @@ import { Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
-import { WHITELIST_PERIOD } from '../constants/WHITELIST_PERIOD';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -63,6 +64,8 @@ export class LiquidityProvidingService {
   public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
 
   private readonly duration = ENVIRONMENT.lpProviding.duration;
+
+  private readonly whitelistDuration = ENVIRONMENT.lpProviding.whitelistDuration;
 
   public endDate: Date;
 
@@ -538,12 +541,19 @@ export class LiquidityProvidingService {
       )
     ).pipe(
       tap(startTime => {
-        const currentTimestamp = +new Date();
-        const whitelistEndTimestamp = +startTime + WHITELIST_PERIOD;
-        const diff = whitelistEndTimestamp - currentTimestamp;
+        const whitelistEndTimestamp = +startTime + this.whitelistDuration;
+
         this.whitelistTimer$ = interval(1000).pipe(
-          scan(acc => --acc, diff),
-          map(ts => new Date(ts * 1000))
+          scan(acc => --acc, whitelistEndTimestamp),
+          withLatestFrom(of(+startTime)),
+          map(([ts, start]) => {
+            if (ts === start) {
+              return 0;
+            } else {
+              return new Date(ts * 1000);
+            }
+          }),
+          takeWhile(v => v !== 0)
         );
       })
     );

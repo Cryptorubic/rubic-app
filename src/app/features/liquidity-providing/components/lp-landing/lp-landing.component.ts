@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -24,12 +25,15 @@ export class LpLandingComponent implements OnInit {
 
   public readonly depositType = DepositType;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly walletsModalService: WalletsModalService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   ngOnInit(): void {
