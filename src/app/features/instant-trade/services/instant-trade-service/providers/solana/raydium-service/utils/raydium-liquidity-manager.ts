@@ -224,7 +224,7 @@ export class RaydiumLiquidityManager {
 
   @Cacheable({ maxAge: 13_000 })
   private fetchSolanaBackendTokens(): Observable<{ [key: string]: SolanaTokenInfo }> {
-    return this.httpClient.get<BackendToken[]>(`${ENDPOINTS.TOKKENS}?network=solana`).pipe(
+    return this.httpClient.get<BackendToken[]>(`${ENDPOINTS.TOKENS}?network=solana`).pipe(
       map(tokens => {
         return Object.fromEntries(
           tokens.map(el => [

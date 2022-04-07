@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainItem } from '@features/swaps/models/blockchain-item';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BLOCKCHAINS_LIST } from '@features/swaps/constants/blockchains-list';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
@@ -11,13 +11,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsHeaderComponent {
-  @Input() public set fromBlockchain(blockchain: BLOCKCHAIN_NAME) {
+  @Input() public set fromBlockchain(blockchain: BlockchainName) {
     if (blockchain) {
       this.fromBlockchainItem = BLOCKCHAINS_LIST.find(el => el.symbol === blockchain);
     }
   }
 
-  @Input() public set toBlockchain(blockchain: BLOCKCHAIN_NAME) {
+  @Input() public set toBlockchain(blockchain: BlockchainName) {
     if (blockchain) {
       this.toBlockchainItem = BLOCKCHAINS_LIST.find(el => el.symbol === blockchain);
     }

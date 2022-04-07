@@ -67,7 +67,7 @@ export class MyTradesService {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens$.pipe(
-        filter(tokens => !!tokens.size),
+        filter(tokens => !!tokens),
         first()
       )
     ]).pipe(

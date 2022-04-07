@@ -1,10 +1,10 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
-import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 export enum ENDPOINTS {
-  TOKKENS = 'tokens/',
+  TOKENS = 'tokens/',
   IFRAME_TOKENS = 'tokens/iframe/',
   FAVORITE_TOKENS = 'tokens/favorite/'
 }
@@ -37,13 +37,13 @@ export interface TokensBackendResponse {
 }
 
 export interface TokensRequestQueryOptions {
-  readonly network: PAGINATED_BLOCKCHAIN_NAME;
+  readonly network: BlockchainName;
   readonly address?: string;
   readonly symbol?: string;
 }
 
 export interface TokensRequestNetworkOptions {
-  readonly network: PAGINATED_BLOCKCHAIN_NAME;
+  readonly network: BlockchainName;
   readonly page: number;
 }
 

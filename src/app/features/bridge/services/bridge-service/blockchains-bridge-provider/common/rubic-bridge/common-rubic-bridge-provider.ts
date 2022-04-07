@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
@@ -20,10 +18,6 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
-import {
-  RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE,
-  RUBIC_TOKEN_ADDRESSES_NET_MODE
-} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
 import rubicBridgeContractAbi from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/rubic-bridge-contract-abi';
 import {
   RubicBridgeConfig,
@@ -33,6 +27,10 @@ import {
   FromBackendBlockchain,
   TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
+import {
+  RUBIC_BRIDGE_CONTRACT_ADDRESS,
+  RUBIC_TOKEN_ADDRESS
+} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses';
 
 interface RubicConfig {
   maxAmount: number;
@@ -75,16 +73,9 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private readonly bridgeApiService = inject(BridgeApiService);
 
-  private readonly useTestingMode = inject(UseTestingModeService);
-
   private readonly walletConnectorService = inject(WalletConnectorService);
 
-  private rubicConfig: Partial<
-    Record<
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN | BLOCKCHAIN_NAME.ETHEREUM | BLOCKCHAIN_NAME.POLYGON,
-      RubicConfig
-    >
-  >;
+  private rubicConfig: Partial<Record<RubicBridgeSupportedBlockchains, RubicConfig>>;
 
   private readonly contracts: Record<RubicBridgeSupportedBlockchains, number> = {
     [BLOCKCHAIN_NAME.ETHEREUM]: 2,
@@ -94,18 +85,8 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   protected constructor(private readonly defaultConfig: RubicBridgeConfig) {
     super();
-    this.setRubicConfig(defaultConfig, 'mainnet');
+    this.setRubicConfig(defaultConfig);
     this.loadRubicTokenInfo();
-    this.initTestingMode();
-  }
-
-  private initTestingMode(): void {
-    this.useTestingMode.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.setRubicConfig(this.defaultConfig, 'testnet');
-        this.loadRubicTokenInfo();
-      }
-    });
   }
 
   private async loadRubicTokenInfo(): Promise<void> {
@@ -181,7 +162,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
     if (toBlockchain === this.defaultConfig.from.blockchainName) {
       return of(tokenPair.fromEthFee);
     }
@@ -213,9 +194,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[
-      bridgeTrade.fromBlockchain
-    ] as EthLikeWeb3Public;
+    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     return from(
@@ -257,7 +236,10 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private async createRubicTrade(bridgeTrade: BridgeTrade): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    const blockchainAdapter =
+      this.publicBlockchainAdapterService[
+        bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains
+      ];
 
     const fromDecimals = token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals;
 
@@ -274,11 +256,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     };
 
     const onApprove = bridgeTrade.onTransactionHash;
-
-    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    await this.provideAllowance(trade, blockchainAdapter as EthLikeWeb3Public, onApprove);
+    await this.provideAllowance(trade, blockchainAdapter, onApprove);
 
     const blockchain = this.contracts[bridgeTrade.toBlockchain as RubicBridgeSupportedBlockchains];
 
@@ -328,20 +306,18 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     }
   }
 
-  private setRubicConfig(config: RubicBridgeConfig, type: 'testnet' | 'mainnet'): void {
+  private setRubicConfig(config: RubicBridgeConfig): void {
     this.rubicConfig = {
       [config.from.blockchainName]: {
         maxAmount: config.from.maxAmount,
-        swapContractAddress:
-          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.from.blockchainName],
-        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.from.blockchainName],
+        swapContractAddress: RUBIC_BRIDGE_CONTRACT_ADDRESS[config.from.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESS[config.from.blockchainName],
         ...config.from.token
       },
       [config.to.blockchainName]: {
         maxAmount: config.to.maxAmount,
-        swapContractAddress:
-          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.to.blockchainName],
-        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.to.blockchainName],
+        swapContractAddress: RUBIC_BRIDGE_CONTRACT_ADDRESS[config.to.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESS[config.to.blockchainName],
         ...config.to.token
       }
     };

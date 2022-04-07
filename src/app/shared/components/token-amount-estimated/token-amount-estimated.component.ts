@@ -7,7 +7,7 @@ import {
   Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -44,7 +44,7 @@ export class AmountEstimatedComponent implements OnInit {
 
   public tokenAmount: BigNumber;
 
-  public blockchain: BLOCKCHAIN_NAME;
+  public blockchain: BlockchainName;
 
   public hidden: boolean;
 

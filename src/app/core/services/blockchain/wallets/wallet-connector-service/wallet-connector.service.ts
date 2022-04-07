@@ -4,7 +4,6 @@ import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
@@ -17,7 +16,6 @@ import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
-import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
 import { Near } from 'near-api-js';
@@ -27,7 +25,11 @@ import { AccountError } from '@core/errors/models/provider/account-error';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  ETH_LIKE_BLOCKCHAIN_NAMES
+} from '@shared/models/blockchain/blockchain-name';
 import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { Token } from '@shared/models/tokens/token';
@@ -67,7 +69,7 @@ export class WalletConnectorService {
     return this.provider?.network;
   }
 
-  public get networkName(): BLOCKCHAIN_NAME {
+  public get networkName(): BlockchainName {
     return this.provider?.networkName;
   }
 
@@ -120,7 +122,6 @@ export class WalletConnectorService {
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: RubicWindow,
@@ -163,12 +164,12 @@ export class WalletConnectorService {
     return this.connectProvider(provider);
   }
 
-  public getBlockchainsBasedOnWallet(): BLOCKCHAIN_NAME[] {
+  public getBlockchainsBasedOnWallet(): BlockchainName[] {
     if (this.provider.walletType === 'solana') {
       return [BLOCKCHAIN_NAME.SOLANA];
     }
     if (this.provider.walletType === 'ethLike') {
-      return [...WEB3_SUPPORTED_BLOCKCHAINS];
+      return [...ETH_LIKE_BLOCKCHAIN_NAMES];
     }
     if (this.provider.walletType === 'near') {
       return [BLOCKCHAIN_NAME.NEAR];
@@ -275,7 +276,7 @@ export class WalletConnectorService {
     return walletAdapters[walletName]();
   }
 
-  public checkSettings(selectedBlockchain: BLOCKCHAIN_NAME): void {
+  public checkSettings(selectedBlockchain: BlockchainName): void {
     if (!this.isProviderActive) {
       throw new WalletError();
     }
@@ -283,11 +284,7 @@ export class WalletConnectorService {
       throw new AccountError();
     }
 
-    const isTestingMode = this.useTestingModeService.isTestingMode.getValue();
-    if (
-      this.networkName !== selectedBlockchain &&
-      (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
-    ) {
+    if (this.networkName !== selectedBlockchain) {
       if (this.provider.walletName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
       } else if (!this.provider.isMultiChainWallet) {
@@ -296,7 +293,7 @@ export class WalletConnectorService {
     }
   }
 
-  public async addChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
+  public async addChain(networkName: BlockchainName): Promise<void> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
     const defaultData = {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
@@ -352,7 +349,7 @@ export class WalletConnectorService {
    * @param networkName chain to switch to.
    * @return was the network switch successful.
    */
-  public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<boolean> {
+  public async switchChain(networkName: BlockchainName): Promise<boolean> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
     const chainId = `0x${network.id.toString(16)}`;
     try {

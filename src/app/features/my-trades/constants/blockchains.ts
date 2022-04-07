@@ -1,10 +1,7 @@
-import {
-  BLOCKCHAIN_NAME,
-  DEPRECATED_BLOCKCHAIN_NAME
-} from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 interface Blockchain {
-  key: BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME;
+  key: BlockchainName;
   name: string;
   img: string;
 }
@@ -14,32 +11,16 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Blockchain;
   [BLOCKCHAIN_NAME.POLYGON]: Blockchain;
   [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
-  [BLOCKCHAIN_NAME.XDAI]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
   [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
   [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
   [BLOCKCHAIN_NAME.ARBITRUM]: Blockchain;
   [BLOCKCHAIN_NAME.AURORA]: Blockchain;
-  [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
-  [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
-  [BLOCKCHAIN_NAME.AURORA_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
   [BLOCKCHAIN_NAME.NEAR]: Blockchain;
 };
 
-type DeprecatedBlockchains = {
-  [DEPRECATED_BLOCKCHAIN_NAME.TRON]: Blockchain;
-};
-
 const imageBaseSrc = 'assets/images/icons/coins/';
-
-export const DEPRECATED_BLOCKCHAINS: DeprecatedBlockchains = {
-  [DEPRECATED_BLOCKCHAIN_NAME.TRON]: {
-    key: DEPRECATED_BLOCKCHAIN_NAME.TRON,
-    name: 'Tron',
-    img: `${imageBaseSrc}tron.svg`
-  }
-};
 
 export const BLOCKCHAINS: Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -67,11 +48,6 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'Moonriver',
     img: `${imageBaseSrc}moonriver.webp`
   },
-  [BLOCKCHAIN_NAME.XDAI]: {
-    key: BLOCKCHAIN_NAME.XDAI,
-    name: 'XDAI',
-    img: `${imageBaseSrc}xdai.svg`
-  },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
     key: BLOCKCHAIN_NAME.AVALANCHE,
     name: 'Avalanche',
@@ -91,21 +67,6 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.AURORA,
     name: 'Aurora',
     img: `${imageBaseSrc}aurora.svg`
-  },
-  [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
-    key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-    name: 'Kovan',
-    img: `${imageBaseSrc}kovan.png`
-  },
-  [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: {
-    key: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
-    name: 'Avalanche',
-    img: `${imageBaseSrc}avalanche-testnet.svg`
-  },
-  [BLOCKCHAIN_NAME.AURORA_TESTNET]: {
-    key: BLOCKCHAIN_NAME.AURORA_TESTNET,
-    name: 'Aurora',
-    img: `${imageBaseSrc}aurora-testnet.svg`
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
     key: BLOCKCHAIN_NAME.SOLANA,

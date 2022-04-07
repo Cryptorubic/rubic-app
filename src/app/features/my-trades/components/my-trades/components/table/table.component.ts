@@ -9,7 +9,7 @@ import {
 import { TableRowsData } from '@features/my-trades/components/my-trades/models/table-row-trade';
 import { Observable } from 'rxjs';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
+import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
@@ -34,7 +34,7 @@ export class TableComponent extends AbstractTableDataComponent {
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
-  public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
+  public BLOCKCHAINS = BLOCKCHAINS;
 
   public readonly TRADES_PROVIDERS = TRADES_PROVIDERS;
 

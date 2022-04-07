@@ -8,7 +8,6 @@ import { SolarBeamMoonRiverService } from '@features/instant-trade/services/inst
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
-import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
@@ -20,7 +19,12 @@ import { SushiSwapPolygonService } from '@features/instant-trade/services/instan
 import { SushiSwapAvalancheService } from '@features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
 import { SushiSwapMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  EthLikeBlockchainName,
+  NearBlockchainName,
+  SolanaBlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { OneInchPolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
 import { OneInchEthService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
@@ -40,7 +44,12 @@ import { RefFinanceService } from '@features/instant-trade/services/instant-trad
   providedIn: 'root'
 })
 export class ContractsDataService {
-  public readonly contracts: Readonly<Record<SupportedCrossChainBlockchain, ContractData>>;
+  public readonly contracts: Record<
+    SupportedCrossChainBlockchain & EthLikeBlockchainName,
+    EthLikeContractData
+  > &
+    Record<SupportedCrossChainBlockchain & SolanaBlockchainName, SolanaContractData> &
+    Record<SupportedCrossChainBlockchain & NearBlockchainName, NearContractData>;
 
   constructor(
     // providers start
@@ -260,7 +269,6 @@ export class ContractsDataService {
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
-        BLOCKCHAIN_NAME.SOLANA,
         [
           {
             provider: this.raydiumService,
@@ -271,7 +279,6 @@ export class ContractsDataService {
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.NEAR]: new NearContractData(
-        BLOCKCHAIN_NAME.NEAR,
         [
           {
             provider: this.refFinanceService,
