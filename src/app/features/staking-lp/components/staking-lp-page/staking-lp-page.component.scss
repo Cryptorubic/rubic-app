@@ -2,7 +2,7 @@
 
 :host {
   display: block;
-  max-width: 1003px;
+  max-width: 802px;
   margin: 0 auto;
   padding-top: 38px;
 
@@ -13,20 +13,20 @@
 
 .statistics {
   display: block;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 
 .staking {
-  margin-bottom: 22px;
-  padding: 32px;
+  margin-bottom: 12px;
+  padding: 26px;
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 24px;
 
 
   &__title {
-    @include font(24px, 29px, 600, var(--rubic-base-02));
-    margin-bottom: 31px;  
+    @include font(20px, 24px, 600, var(--rubic-base-02));
+    margin-bottom: 26px;  
   }
 
   &__card:not(:last-child) {
@@ -36,10 +36,10 @@
 }
 
 .lp {
-  padding: 32px;
+  padding: 26px;
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 24px;
   
   &__title {
     @include font(24px, 29px, 600, var(--rubic-base-02));
@@ -48,7 +48,7 @@
 
   &__card:not(:last-child) {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 26px;
   }
 }
 

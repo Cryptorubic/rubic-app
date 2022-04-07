@@ -6,10 +6,10 @@
   display: flex;
   justify-content: space-between;
 
-  padding: 22px;
+  padding: 18px;
 
   background: var(--rubic-base-22);
-  border-radius: 30px;
+  border-radius: 24px;
 
   @include b($tablet) {
     flex-direction: column;
@@ -32,7 +32,7 @@
   &__col {
     display: flex;
     flex-direction: column;
-    padding: 35px 60px;
+    padding: 28px 45px;
 
     @include b($tablet) {
       flex-direction: row;
@@ -69,11 +69,11 @@
       justify-content: center;
 
       border: 2px solid $rubic-primary;
-      border-radius: 18px;
+      border-radius: 15px;
     }
 
     .statistics__param:first-child {
-      margin-bottom: 50px;
+      margin-bottom: 40px;
 
       @include b($tablet) {
         margin-bottom: 0;
@@ -87,10 +87,10 @@
     }
 
     &-label {
-      @include font(18px, 22px, 500, var(--rubic-base-24));
+      @include font(16px, 19px, 500, var(--rubic-base-24));
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 7px;
 
       @include b($tablet) {
         margin-bottom: 4px;
@@ -106,13 +106,13 @@
         img {
           width: 15px;
           height: 9px;
-          margin-left: 10px;
+          margin-left: 6px;
         }
       }
     }
 
     &-value {
-      @include font(26px, 31px, 600, var(--rubic-base-02));
+      @include font(22px, 26px, 600, var(--rubic-base-02));
       transition: 0.4s opacity ease-in-out;
 
       @include b($tablet) {
@@ -147,7 +147,7 @@
   padding: 16px;
 
   &__filter {
-    @include font(18px, 21px, 500, white);
+    @include font(16px, 19px, 500, white);
     cursor: pointer;
 
     &:not(:last-child) {

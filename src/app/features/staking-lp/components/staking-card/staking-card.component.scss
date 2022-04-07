@@ -3,10 +3,10 @@
 .staking-card {
   position: relative;
 
-  padding: 32px;
+  padding: 25px;
 
   background: var(--rubic-base-23);
-  border-radius: 20px;
+  border-radius: 16px;
 
   @include b($tablet) {
     padding: 16px;
@@ -36,12 +36,12 @@
 }
 
 .title {
-  @include font(22px, 26px, 600, var(--rubic-base-02));
+  @include font(18px, 222x, 600, var(--rubic-base-02));
   position: relative;
 
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 
   @include b($tablet) {
     margin-bottom: 18px;
@@ -51,8 +51,8 @@
   }
 
   img {
-    width: 34px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
 
     @include b($tablet) {
       width: 28px;
@@ -61,16 +61,16 @@
   }
 
   img:first-child {
-    margin-right: 32px;
+    margin-right: 28px;
 
-    border: 3px solid transparent;
+    border: 2px solid transparent;
   }
 
   img:nth-child(2) {
     position: absolute;
-    left: 20px;
+    left: 16px;
 
-    border: 3px solid var(--rubic-base-23);
+    border: 2px solid var(--rubic-base-23);
     border-radius: 100px;
   }
 }
@@ -79,7 +79,7 @@
   display: flex;
 
   &__param {
-    @include font(18px, 22px, 500, var(--rubic-base-02), 0.03em);
+    @include font(15px, 18px, 500, var(--rubic-base-02), 0.03em);
 
     @include b($tablet) {
       display: flex;
@@ -94,7 +94,7 @@
     }
 
     &:not(:last-child) {
-      margin-right: 38px;
+      margin-right: 32px;
 
       @include b($tablet) {
         margin-right: 30px;
@@ -124,7 +124,7 @@
     }
 
     .wrapper {
-      padding: 8px 18px;
+      padding: 6px 14px;
     }
   }
 }

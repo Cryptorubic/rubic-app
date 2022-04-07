@@ -7,12 +7,12 @@
 
 .status-badge {
 
-  @include font(18px, 20px, 500, #ffffff);
-  padding: 4px 8px;
+  @include font(15px, 20px, 500, #ffffff);
+  padding: 3px 6px;
 
   text-align: center;
 
-  border-radius: 6px;
+  border-radius: 5px;
 
   @include b($tablet) {
     padding: 3px 7px;
