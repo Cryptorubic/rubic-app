@@ -7,7 +7,7 @@ import {
   Self
 } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -32,7 +32,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public toBlockchain: BLOCKCHAIN_NAME;
+  public toBlockchain: BlockchainName;
 
   public toWalletAddress: string;
 

@@ -1,10 +1,9 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
-export const BLOCKCHAIN_LABEL: Partial<Record<BLOCKCHAIN_NAME, string>> = {
+export const BLOCKCHAIN_LABEL: Partial<Record<BlockchainName, string>> = {
   ETH: 'Ethereum',
   BSC: 'Binance',
   POLYGON: 'Polygon',
-  XDAI: 'XDai',
   HARMONY: 'Harmony',
   AVALANCHE: 'Avalanche',
   MOONRIVER: 'Moonriver',

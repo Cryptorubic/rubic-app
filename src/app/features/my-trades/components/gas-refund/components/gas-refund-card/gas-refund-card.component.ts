@@ -7,7 +7,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { Promotion } from '@features/my-trades/models/promotion';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { WINDOW } from '@ng-web-apis/common';
@@ -32,7 +32,7 @@ export class GasRefundCardComponent {
 
   public readonly isButtonDisabled = (refundDate: Date): boolean => refundDate > new Date();
 
-  public openInExplorer(hash: string, blockchain: BLOCKCHAIN_NAME): void {
+  public openInExplorer(hash: string, blockchain: BlockchainName): void {
     const link = this.scannerLinkPipe.transform(hash, blockchain, ADDRESS_TYPE.TRANSACTION);
     this.window.open(link, '_blank').focus();
   }

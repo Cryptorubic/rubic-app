@@ -1,11 +1,5 @@
 import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
-import {
-  Account,
-  AccountMeta,
-  PublicKey,
-  Transaction,
-  TransactionInstruction
-} from '@solana/web3.js';
+import { AccountMeta, PublicKey, TransactionInstruction } from '@solana/web3.js';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   NATIVE_SOL,
@@ -22,7 +16,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Buffer } from 'buffer';
 import { Injectable } from '@angular/core';
 import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
@@ -35,6 +28,10 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { CROSS_CHAIN_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -45,6 +42,13 @@ enum TransferDataType {
   providedIn: 'root'
 })
 export class SolanaContractExecutorService {
+  private readonly contracts = this.contractsDataService.contracts;
+
+  @tuiPure
+  private get contract(): SolanaContractData {
+    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
+  }
+
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -154,18 +158,13 @@ export class SolanaContractExecutorService {
     return averageTPS >= minimumTPSLimit;
   }
 
-  private readonly contracts = this.contractsDataService.contracts;
-
-  @tuiPure
-  private get contract(): SolanaContractData {
-    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
-  }
-
   constructor(
     private readonly contractsDataService: ContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumRoutingService: RaydiumRoutingService
+    private readonly raydiumService: RaydiumService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   // eslint-disable-next-line complexity
@@ -174,12 +173,11 @@ export class SolanaContractExecutorService {
     address: string,
     targetAddress: string,
     isToNative: boolean
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(address);
+  ): Promise<string> {
+    const { owner, signers, setupInstructions, tradeInstructions } =
+      SolanaWeb3Public.createBaseSwapInformation(address);
+
     const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
-    const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
 
@@ -209,7 +207,7 @@ export class SolanaContractExecutorService {
     const fromFinalAmount = parseInt(tokenInAmountAbsolute);
     const middleFinalAmount = parseInt(fromTransitTokenAmountMinAbsolute);
 
-    const poolInfo = this.raydiumRoutingService.currentPoolInfo;
+    const poolInfo = this.raydiumService.routerManager.currentPoolInfo;
 
     const isTransfer = trade.tokenIn.address === this.contract.transitToken.address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
@@ -247,18 +245,17 @@ export class SolanaContractExecutorService {
     const { from: fromAccount } =
       transferType !== TransferDataType.NATIVE
         ? await privateBlockchainAdapter.getOrCreatesTokensAccounts(
-            mintAccountsAddresses,
             fromMint,
             middleMint,
             owner,
             fromFinalAmount,
-            transaction,
+            setupInstructions,
             signers
           )
         : { from: { key: PublicKey.default } };
 
     // @TODO Solana. Fix keys order.
-    transaction.add(
+    setupInstructions.push(
       SolanaContractExecutorService.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
         new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContractNumber]),
@@ -289,6 +286,10 @@ export class SolanaContractExecutorService {
       )
     );
 
-    return { transaction, signers };
+    const data = SolanaWeb3Public.createTransactions(setupInstructions, tradeInstructions, signers);
+
+    return this.publicBlockchainAdapterService[
+      BLOCKCHAIN_NAME.SOLANA
+    ].signAndSendRaydiumTransaction(data, this.walletConnectorService);
   }
 }

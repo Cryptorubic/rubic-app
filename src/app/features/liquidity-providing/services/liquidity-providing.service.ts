@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import {
-  PublicBlockchainAdapterService,
-  Web3SupportedBlockchains
-} from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
@@ -51,7 +48,7 @@ import { WHITELIST_PERIOD } from '../constants/WHITELIST_PERIOD';
 export class LiquidityProvidingService {
   private readonly lpContractAddress = ENVIRONMENT.lpProviding.contractAddress;
 
-  private readonly blockchain = ENVIRONMENT.lpProviding.blockchain as Web3SupportedBlockchains;
+  private readonly blockchain = ENVIRONMENT.lpProviding.blockchain;
 
   private readonly brbcAddress = ENVIRONMENT.lpProviding.poolTokens[PoolToken.BRBC].address;
 

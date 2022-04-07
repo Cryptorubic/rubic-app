@@ -7,7 +7,7 @@ interface InstantTradesBlockchainNetwork {
 }
 
 interface InstantTradesEthLikeContract {
-  name: INSTANT_TRADES_PROVIDERS | 'pancakeswap_old';
+  name: INSTANT_TRADES_PROVIDERS;
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }

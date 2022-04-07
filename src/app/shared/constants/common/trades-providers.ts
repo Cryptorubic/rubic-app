@@ -1,6 +1,6 @@
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
-import { DEPRECATED_PROVIDER, TableProvider } from '@shared/models/my-trades/table-trade';
+import { TableProvider } from '@shared/models/my-trades/table-trade';
 
 type Provider = {
   name: string;
@@ -14,14 +14,6 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
-  },
-  [BRIDGE_PROVIDER.POLYGON]: {
-    name: 'Polygon',
-    image: `${imageBasePath}polygon.svg`
-  },
-  [BRIDGE_PROVIDER.XDAI]: {
-    name: 'XDai',
-    image: `${imageBasePath}xdai.svg`
   }
 };
 
@@ -132,21 +124,9 @@ const GAS_REFUND_PROVIDER: Provider = {
   image: `${imageBasePath}gas-refund.svg`
 };
 
-const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
-  [DEPRECATED_PROVIDER.PANAMA]: {
-    name: 'Panama',
-    image: `${imageBasePath}panama.svg`
-  },
-  [DEPRECATED_PROVIDER.EVO]: {
-    name: 'Evo',
-    image: `${imageBasePath}evo.svg`
-  }
-};
-
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
-  ...DEPRECATED_PROVIDERS,
   CROSS_CHAIN_ROUTING_PROVIDER,
   GAS_REFUND_PROVIDER
 };

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { StakingService } from '@features/staking/services/staking.service';
 
 /**
@@ -30,7 +30,7 @@ export class SwapModalComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
-      { amount: BigNumber; blockchain: BLOCKCHAIN_NAME }
+      { amount: BigNumber; blockchain: BlockchainName }
     >,
     private readonly router: Router,
     private readonly stakingService: StakingService,

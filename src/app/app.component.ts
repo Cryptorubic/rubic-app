@@ -9,6 +9,7 @@ import { HealthcheckService } from '@core/services/backend/healthcheck/healthche
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 
 @Component({
   selector: 'app-root',
@@ -78,11 +79,8 @@ export class AppComponent implements AfterViewInit {
   }
 
   private setupLanguage(): void {
-    const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'es', 'tr'];
     let userRegionLanguage = navigator.language?.split('-')[0];
-    userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
-      ? userRegionLanguage
-      : 'en';
+    userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
     const lng = this.cookieService.get('lng') || userRegionLanguage;
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);

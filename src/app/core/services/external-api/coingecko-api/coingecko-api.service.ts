@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Cacheable } from 'ts-cacheable';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
@@ -11,7 +11,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
-  BLOCKCHAIN_NAME.XDAI,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.FANTOM,
@@ -40,7 +39,6 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binancecoin',
       [BLOCKCHAIN_NAME.POLYGON]: 'matic-network',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
-      [BLOCKCHAIN_NAME.XDAI]: 'xdai',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
@@ -53,7 +51,6 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon-pos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony-shard-0',
-      [BLOCKCHAIN_NAME.XDAI]: 'xdai',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
@@ -62,7 +59,7 @@ export class CoingeckoApiService {
     };
   }
 
-  private isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): blockchain is SupportedBlockchain {
+  private isSupportedBlockchain(blockchain: BlockchainName): blockchain is SupportedBlockchain {
     return supportedBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
   }
 
@@ -74,7 +71,7 @@ export class CoingeckoApiService {
     maxAge: 13_000,
     maxCacheCount: supportedBlockchains.length
   })
-  public getNativeCoinPrice(blockchain: BLOCKCHAIN_NAME): Observable<number | undefined> {
+  public getNativeCoinPrice(blockchain: BlockchainName): Observable<number | undefined> {
     if (!this.isSupportedBlockchain(blockchain)) {
       return of(undefined);
     }
@@ -106,7 +103,7 @@ export class CoingeckoApiService {
     maxCacheCount: 4
   })
   public getCommonTokenPrice(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     tokenAddress: string
   ): Observable<number | undefined> {
     if (!this.isSupportedBlockchain(blockchain)) {
@@ -134,7 +131,7 @@ export class CoingeckoApiService {
    */
   public getCommonTokenOrNativeCoinPrice(token: {
     address: string;
-    blockchain: BLOCKCHAIN_NAME;
+    blockchain: BlockchainName;
   }): Observable<number | undefined> {
     const blockchainAdapter = this.blockchainAdapterService[token.blockchain];
     if (blockchainAdapter.isNativeAddress(token.address)) {

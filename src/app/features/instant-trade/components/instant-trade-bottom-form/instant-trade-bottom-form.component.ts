@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/instant-trade/constants/providers';
@@ -101,7 +101,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private _selectedProvider: ProviderControllerData;
 
-  private currentBlockchain: BLOCKCHAIN_NAME;
+  private currentBlockchain: BlockchainName;
 
   private fromToken: TokenAmount;
 
@@ -278,7 +278,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BLOCKCHAIN_NAME): void {
+  private initiateProviders(blockchain: BlockchainName): void {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
       return;

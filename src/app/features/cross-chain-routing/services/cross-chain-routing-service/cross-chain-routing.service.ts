@@ -1,9 +1,8 @@
 import { PCacheable } from 'ts-cacheable';
-import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import InsufficientFundsGasPriceValueError from '@core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -65,7 +64,7 @@ const CACHEABLE_MAX_AGE = 15_000;
 })
 export class CrossChainRoutingService {
   public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BlockchainName
   ): blockchain is SupportedCrossChainBlockchain {
     return !!SUPPORTED_CROSS_CHAIN_BLOCKCHAINS.find(
       supportedBlockchain => supportedBlockchain === blockchain
@@ -688,7 +687,7 @@ export class CrossChainRoutingService {
       return;
     }
 
-    const maxGasPrice = await (this.contracts[toBlockchain] as EthLikeContractData).maxGasPrice();
+    const maxGasPrice = await this.contracts[toBlockchain].maxGasPrice();
 
     const currentGasPrice = Web3Pure.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
@@ -727,15 +726,32 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
       this.checkContractBalance(),
-      blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
+      this.checkUserBalance()
     ]);
+  }
+
+  private async checkUserBalance(): Promise<void> {
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+
+    if (
+      !blockchainAdapter.isNativeAddress(tokenIn.address) ||
+      fromBlockchain === BLOCKCHAIN_NAME.NEAR
+    ) {
+      return blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress);
+    }
+
+    const inAmount = this.currentCrossChainTrade.cryptoFee.plus(tokenInAmount);
+    try {
+      await blockchainAdapter.checkBalance(tokenIn, inAmount, this.authService.userAddress);
+    } catch (_err) {
+      throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
+    }
   }
 
   public createTrade(options: TransactionOptions = {}): Observable<void> {
@@ -763,7 +779,7 @@ export class CrossChainRoutingService {
           if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }
-          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+          if (errMessage?.includes('insufficient funds for')) {
             throw new InsufficientFundsGasPriceValueError(
               this.currentCrossChainTrade.tokenIn.symbol
             );

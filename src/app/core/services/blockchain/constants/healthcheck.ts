@@ -14,12 +14,6 @@ export const HEALTHCHECK = {
     method: 'symbol',
     expected: 'BUSD'
   },
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: {
-    contractAddress: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-    contractAbi: ERC20_ABI,
-    method: 'symbol',
-    expected: 'BUSD'
-  },
   [BLOCKCHAIN_NAME.POLYGON]: {
     contractAddress: '0x7FFB3d637014488b63fb9858E279385685AFc1e2',
     contractAbi: ERC20_ABI,

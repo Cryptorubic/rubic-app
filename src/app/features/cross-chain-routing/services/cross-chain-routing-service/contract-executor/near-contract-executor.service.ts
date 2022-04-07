@@ -15,7 +15,8 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import {
   DEFAULT_CCR_CALL_GAS,
   ONE_YOCTO_NEAR,
-  WRAP_NEAR_CONTRACT
+  WRAP_NEAR_CONTRACT,
+  WRAP_NEAR_DECIMALS
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -51,7 +52,8 @@ export class NearContractExecutorService {
 
     const secondPath = this.contracts[trade.toBlockchain].getSecondPath(
       trade.toTrade,
-      trade.toProviderIndex
+      trade.toProviderIndex,
+      trade.fromBlockchain
     );
 
     const fromTransitTokenAmountMin =
@@ -85,6 +87,7 @@ export class NearContractExecutorService {
     };
 
     const routes = this.refFinanceService.refRoutes;
+    const routeEstimate = Web3Pure.toWei(routes[0].estimate, WRAP_NEAR_DECIMALS);
     const tokenInActions: RefFiFunctionCallOptions[] = [
       {
         methodName: 'ft_transfer_call',
@@ -103,12 +106,12 @@ export class NearContractExecutorService {
                               token_in: fromTokenAddress,
                               amount_in: tokenInAmountAbsolute,
                               token_out: WRAP_NEAR_CONTRACT,
-                              min_amount_out: routes[0].estimate
+                              min_amount_out: routeEstimate
                             },
                             {
                               pool_id: routes[1].pool.id,
                               token_in: WRAP_NEAR_CONTRACT,
-                              amount_in: routes[0].estimate,
+                              amount_in: routeEstimate,
                               token_out: this.contract.transitToken.address,
                               min_amount_out: fromTransitTokenAmountMinAbsolute
                             }

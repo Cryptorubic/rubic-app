@@ -6,7 +6,7 @@ import { filter, first, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BridgeToken, BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
@@ -75,8 +75,8 @@ export class SwapsService {
 
   private subscribeOnTokens(): void {
     combineLatest([
-      this.bridgeService.tokens$.pipe(filter(tokens => !!tokens.length)),
-      this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size)),
+      this.bridgeService.tokens$.pipe(filter(tokens => !!tokens)),
+      this.tokensService.tokens$.pipe(filter(tokens => !!tokens)),
       this.tokensService.favoriteTokens$
     ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts, favoriteTokenAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
@@ -234,7 +234,7 @@ export class SwapsService {
    * @return BridgeToken Updated token.
    */
   private getUpdatedBridgeToken(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     bridgeTokenPair: BridgeTokenPair,
     tokenAmounts: List<TokenAmount>,
     updatedTokenAmounts: TokenAmount[]
@@ -266,7 +266,8 @@ export class SwapsService {
         price: 0,
         usedInIframe: false,
         amount: new BigNumber(0),
-        favorite: false
+        favorite: false,
+        hasDirectPair: true
       });
     }
 

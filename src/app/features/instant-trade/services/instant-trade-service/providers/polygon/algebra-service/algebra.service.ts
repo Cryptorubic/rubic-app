@@ -31,12 +31,6 @@ export class AlgebraService extends CommonUniswapV3AlgebraService {
     super(algebraConstants);
 
     this.quoterController = new AlgebraQuoterController(this.blockchainAdapter, quoterContract);
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.quoterController.setTestingMode();
-      }
-    });
   }
 
   public async calculateTrade(

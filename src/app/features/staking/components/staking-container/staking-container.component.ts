@@ -91,7 +91,8 @@ export class StakingContainerComponent implements OnInit {
       rank: 0,
       price: 0,
       usedInIframe: false,
-      name: 'Rubic Staking Token'
+      name: 'Rubic Staking Token',
+      hasDirectPair: true
     };
     await this.walletConnectorService.addToken(xBRBC);
   }

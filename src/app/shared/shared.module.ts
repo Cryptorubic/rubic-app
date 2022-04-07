@@ -70,6 +70,7 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ChipsComponent } from './components/chips/chips.component';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,7 @@ import { ChipsComponent } from './components/chips/chips.component';
     IframeBlockchainIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
+    ProgressTrxNotificationComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -203,6 +205,6 @@ import { ChipsComponent } from './components/chips/chips.component';
     ChipsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
-  entryComponents: [SuccessTrxNotificationComponent]
+  entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}

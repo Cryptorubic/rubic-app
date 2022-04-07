@@ -107,8 +107,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     switch (linkType) {
       case 'swaps':
         this.swapClick.emit();
-      case 'bridge':
-        this.bridgeClick.emit();
       case 'cross-chain':
         this.crossChainClick.emit();
     }

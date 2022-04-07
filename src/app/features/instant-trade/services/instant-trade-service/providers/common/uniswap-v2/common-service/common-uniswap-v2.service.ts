@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -35,7 +35,6 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
@@ -46,7 +45,6 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
 import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
@@ -91,7 +89,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   protected blockchainAdapter: EthLikeWeb3Public;
 
   // Uniswap constants
-  private blockchain: BLOCKCHAIN_NAME;
+  private blockchain: EthLikeBlockchainName;
 
   private wethAddress: string;
 
@@ -117,8 +115,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly settingsService = inject(SettingsService);
 
   private readonly tokensService = inject(TokensService);
-
-  private readonly useTestingModeService = inject(UseTestingModeService);
 
   private readonly gasService = inject(GasService);
 
@@ -149,27 +145,12 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
 
-    BlockchainsInfo.checkIsEthLike(this.blockchain);
-    this.blockchainAdapter = this.publicBlockchainAdapterService[
-      this.blockchain
-    ] as EthLikeWeb3Public;
+    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
 
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this._contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
-    this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
-    this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.blockchainAdapter = this.publicBlockchainAdapterService[
-          this.blockchain
-        ] as EthLikeWeb3Public;
-
-        this._contractAddress = uniswapConstants.contractAddressNetMode.testnet;
-        this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
-        this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
-      }
-    });
+    this._contractAddress = uniswapConstants.contractAddress;
+    this.wethAddress = uniswapConstants.wethAddress;
+    this.routingProviders = uniswapConstants.routingProviders;
   }
 
   /**

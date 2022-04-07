@@ -14,11 +14,13 @@ export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
   signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>;
   sendTransaction(
     transaction: Transaction,
-    connection: Connection,
-    options: {}
+    connection?: Connection,
+    options?: {}
   ): Promise<TransactionSignature>;
+  request<T>(args: { method: string; params: { message: string } }): Promise<T>;
   connect(): Promise<boolean>;
   disconnect(): Promise<boolean>;
+  signAndSendTransaction(transaction: Transaction): Promise<{ signature: string }>;
   on: (event: string, callback: () => void) => unknown;
   off: (event: string, callback: () => void) => unknown;
 }

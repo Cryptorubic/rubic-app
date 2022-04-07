@@ -1,6 +1,6 @@
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 
@@ -40,7 +40,7 @@ export interface Store {
    */
   targetAddress: {
     address: string;
-    blockchain: BLOCKCHAIN_NAME;
+    blockchain: BlockchainName;
   };
 
   [SWAP_PROVIDER_TYPE.BRIDGE]: FormSteps;

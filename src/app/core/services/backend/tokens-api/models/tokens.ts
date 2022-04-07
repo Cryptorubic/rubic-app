@@ -1,10 +1,10 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
-import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 export enum ENDPOINTS {
-  TOKKENS = 'tokens/',
+  TOKENS = 'tokens/',
   IFRAME_TOKENS = 'tokens/iframe/',
   FAVORITE_TOKENS = 'tokens/favorite/'
 }
@@ -19,13 +19,14 @@ export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchain_network: FromBackendBlockchain;
+  blockchainNetwork: FromBackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
-  coingecko_id: string;
-  usd_price: number;
-  used_in_iframe: boolean;
+  coingeckoId: string;
+  usdPrice: number;
+  usedInIframe: boolean;
+  hasDirectPair: boolean;
 }
 
 export interface TokensBackendResponse {
@@ -36,13 +37,13 @@ export interface TokensBackendResponse {
 }
 
 export interface TokensRequestQueryOptions {
-  readonly network: PAGINATED_BLOCKCHAIN_NAME;
+  readonly network: BlockchainName;
   readonly address?: string;
   readonly symbol?: string;
 }
 
 export interface TokensRequestNetworkOptions {
-  readonly network: PAGINATED_BLOCKCHAIN_NAME;
+  readonly network: BlockchainName;
   readonly page: number;
 }
 

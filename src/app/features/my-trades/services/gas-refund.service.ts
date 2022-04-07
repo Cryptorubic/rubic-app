@@ -13,14 +13,9 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { REFUND_ABI } from '@features/my-trades/constants/refund-abi';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
-import {
-  REFUND_ADDRESS,
-  REFUND_ADDRESS_TESTNET
-} from '@features/my-trades/constants/refund-address';
+import { REFUND_ADDRESS } from '@features/my-trades/constants/refund-address';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
 
@@ -45,8 +40,7 @@ export class GasRefundService {
     private readonly authService: AuthService,
     private readonly web3Private: EthLikeWeb3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly testingModeService: UseTestingModeService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();
     this.setUpdatePromotionsSubscription();
@@ -79,19 +73,6 @@ export class GasRefundService {
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))
       .subscribe(() => this.updateUserPromotions());
-    this.setupTestingMode();
-  }
-
-  /**
-   * Changes contract address after enabling the testing mode.
-   */
-  private setupTestingMode(): void {
-    this.testingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.refundBlockchain = REFUND_ADDRESS_TESTNET.blockchain;
-        this.refundContractAddress = REFUND_ADDRESS_TESTNET.address;
-      }
-    });
   }
 
   /**
@@ -170,9 +151,7 @@ export class GasRefundService {
     if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[
-      this.refundBlockchain
-    ] as EthLikeWeb3Public;
+    const blockchainAdapter = this.publicBlockchainAdapterService[this.refundBlockchain];
     const hexRootFromContract = await blockchainAdapter.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,

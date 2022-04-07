@@ -9,7 +9,7 @@ export type TableRowKeyValue = {
   value: TableRowKey;
 };
 
-export interface TableRow {
+export interface TableRowTrade {
   Status: TRANSACTION_STATUS;
   FromTo: string;
   Provider: TableProvider;
@@ -18,4 +18,9 @@ export interface TableRow {
   Date: Date;
 
   inProgress: boolean;
+}
+
+export interface TableRowsData {
+  totalCount: number;
+  rowTrades: TableRowTrade[];
 }
