@@ -79,7 +79,7 @@
         <ng-template #withdraw>
           <app-rubic-button
             appearance="primary"
-            [disabled]="deposit.canWithdraw"
+            [disabled]="!deposit.canWithdraw"
             (onClick)="onWithdraw.emit()"
           >
             Withdraw

@@ -630,7 +630,7 @@ export class LiquidityProvidingService {
         BRBCAmount: Web3Pure.fromWei(tokenInfo.BRBCAmount),
         collectedRewards: Web3Pure.fromWei(collectedRewards[i]),
         rewardsToCollect: Web3Pure.fromWei(rewardsToCollect[i]),
-        canWithdraw: isWithdrawable[i],
+        canWithdraw: Boolean(isWithdrawable[i]),
         start,
         period
       };

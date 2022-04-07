@@ -297,5 +297,18 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     ],
     stateMutability: 'view',
     type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'requestWithdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as AbiItem[];
