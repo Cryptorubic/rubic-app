@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
@@ -25,6 +25,12 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { InstantTradeProvidersService } from '@features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
 import { EthWethSwapProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { TuiNotification } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +44,20 @@ export class InstantTradeService {
 
   private readonly providers = this.instantTradeProvidersService.providers;
 
+  public showTrxInProgressTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(ProgressTrxNotificationComponent), {
+      status: TuiNotification.Info,
+      autoClose: 15000
+    });
+  };
+
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+      status: TuiNotification.Success,
+      autoClose: 15000
+    });
+  };
+
   constructor(
     private readonly instantTradeProvidersService: InstantTradeProvidersService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -47,7 +67,8 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly web3PrivateService: EthLikeWeb3PrivateService
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   public getTargetContractAddress(
@@ -161,6 +182,7 @@ export class InstantTradeService {
 
         this.notifyGtmAfterSignTx(transactionHash);
         this.gtmService.checkGtm();
+        this.notifyTradeInProgress(hash, trade.blockchain);
 
         this.successTxModalService.open(transactionHash, trade.blockchain);
 
@@ -175,6 +197,7 @@ export class InstantTradeService {
       } else {
         receipt = await this.checkFeeAndCreateTrade(providerName, trade, options);
       }
+      this.showSuccessTrxNotification();
 
       this.updateTrade(transactionHash, true);
 
@@ -273,8 +296,11 @@ export class InstantTradeService {
    * @param err Error thrown during creating transaction.
    */
   private isNotMinedError(err: Error): boolean {
-    return err.message.includes(
-      'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+    return (
+      Boolean(err?.message?.includes) &&
+      err.message.includes(
+        'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+      )
     );
   }
 
@@ -287,6 +313,17 @@ export class InstantTradeService {
     return this.instantTradesApiService.patchTrade(hash, success).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
+  }
+
+  private notifyTradeInProgress(txHash: string, blockchain: BlockchainName): void {
+    if (this.window.location.pathname === '/') {
+      this.successTxModalService.open(
+        txHash,
+        blockchain,
+        'default',
+        this.showTrxInProgressTrxNotification
+      );
+    }
   }
 
   private notifyGtmAfterSignTx(transactionHash: string): void {

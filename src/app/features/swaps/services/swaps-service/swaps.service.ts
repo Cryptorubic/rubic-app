@@ -266,7 +266,8 @@ export class SwapsService {
         price: 0,
         usedInIframe: false,
         amount: new BigNumber(0),
-        favorite: false
+        favorite: false,
+        hasDirectPair: true
       });
     }
 

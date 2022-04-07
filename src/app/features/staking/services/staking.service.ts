@@ -326,6 +326,7 @@ export class StakingService {
   /**
    * Enter stake with provided amount of tokens as regular user or as whitelisted user.
    * @param amount Amount of tokens that user wants to stake.
+   * @param viaWhitelist Enter method.
    * @return Observable<TransactionReceipt | unknown>
    */
   public enterStake(
@@ -381,6 +382,7 @@ export class StakingService {
     const amountInWei = Web3Pure.toWei(amount);
     const stakingContractAddress =
       this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
+
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         stakingContractAddress,

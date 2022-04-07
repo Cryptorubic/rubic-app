@@ -704,6 +704,15 @@ export const TOKENS: Tokens = {
 };
 
 export const LP_TOKENS: lpTokens = {
+  'USDT-USDC-V4': {
+    symbol: 'USDT-USDC',
+    name: 'USDT-USDC LP',
+    coin: { ...TOKENS.USDT },
+    pc: { ...TOKENS.USDC },
+
+    mintAddress: 'As3EGgLtUVpdNpE6WCKauyNRrCCwcQ57trWQ3wyRXDa6',
+    decimals: TOKENS.USDT.decimals
+  },
   'RAY-WUSDT': {
     symbol: 'RAY-WUSDT',
     name: 'RAY-WUSDT V2 LP',
