@@ -36,6 +36,8 @@ export class LpPageComponent implements OnInit, OnDestroy {
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
+  public readonly endDate = this.lpService.endDate;
+
   constructor(
     private readonly walletsModalService: WalletsModalService,
     private readonly authService: AuthService,
@@ -70,5 +72,9 @@ export class LpPageComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.lpService.stopWatchWhitelist();
+  }
+
+  public isInPast(date: Date): boolean {
+    return new Date() > date;
   }
 }

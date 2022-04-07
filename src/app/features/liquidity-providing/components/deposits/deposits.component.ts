@@ -43,18 +43,20 @@ export class DepositsComponent {
     this._processingTokenId$.next(tokenId);
     this.lpService
       .requestWithdraw(tokenId)
-      .pipe(
-        finalize(() => {
-          this._processingTokenId$.next(undefined);
-        })
-      )
+      .pipe(finalize(() => this._processingTokenId$.next(undefined)))
       .subscribe(() => {
         this.notificationsService.showSuccessWithdrawRequestNotification();
       });
   }
 
   public withdraw(tokenId: string): void {
-    console.log(tokenId);
+    this._processingTokenId$.next(tokenId);
+    this.lpService
+      .withdraw(tokenId)
+      .pipe(finalize(() => this._processingTokenId$.next(undefined)))
+      .subscribe(() => {
+        this.notificationsService.showSuccessWithdrawNotification();
+      });
   }
 
   public navigateToDepositForm(asWhitelist: boolean): void {

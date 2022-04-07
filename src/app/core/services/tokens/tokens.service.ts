@@ -379,7 +379,7 @@ export class TokensService {
         }),
         tap(tokenPrice => {
           if (tokenPrice) {
-            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+            const foundToken = this.tokens?.find(t => TokensService.areTokensEqual(t, token));
             if (foundToken && tokenPrice !== foundToken.price) {
               const newToken = {
                 ...foundToken,

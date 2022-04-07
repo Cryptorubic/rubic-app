@@ -57,4 +57,11 @@ export class LiquidityProvidingNotificationService {
       }
     );
   }
+
+  public showSuccessWithdrawNotification(): void {
+    this.notificationsService.show('Success withdraw', {
+      status: TuiNotification.Success,
+      autoClose: 5000
+    });
+  }
 }

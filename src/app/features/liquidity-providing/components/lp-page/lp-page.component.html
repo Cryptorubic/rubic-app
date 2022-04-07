@@ -11,7 +11,11 @@
       />
     </div>
     <div class="title__round">LP Round 1</div>
-    <app-status-badge [text]="'Active'" type="active"></app-status-badge>
+    <app-status-badge
+      *ngLet="endDate | functionCall: isInPast:this as isEnded"
+      [text]="isInded ? 'Closed' : 'Active'"
+      [type]="isEnded ? 'error' : 'active'"
+    ></app-status-badge>
   </div>
   <app-lp-statistics class="statistics"></app-lp-statistics>
   <tui-loader
