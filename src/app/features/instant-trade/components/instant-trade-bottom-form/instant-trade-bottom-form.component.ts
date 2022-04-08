@@ -631,14 +631,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
-      await this.instantTradeService.approve(
-        this.selectedProvider.name,
-        this.selectedProvider.trade
-      );
+      const trade = this.selectedProvider.trade;
+      await this.instantTradeService.approve(this.selectedProvider.name, trade);
 
       this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED, false);
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
+
+      await this.tokensService.updateNativeTokenBalance(trade.blockchain);
     } catch (err) {
       this.errorService.catch(err);
 
@@ -674,6 +674,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.cdr.detectChanges();
 
         this.conditionalCalculate('hidden');
+      });
+
+      await this.tokensService.updateTokenBalanceAfterSwap({
+        address: providerTrade.from.token.address,
+        blockchain: providerTrade.blockchain
       });
     } catch (err) {
       this.errorService.catch(err);

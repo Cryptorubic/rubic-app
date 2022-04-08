@@ -85,6 +85,8 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     );
   }
 
+  public readonly nativeTokenAddress = NATIVE_SOLANA_MINT_ADDRESS;
+
   /**
    * RPC Solana connection.
    */
@@ -137,14 +139,6 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
       return false;
     }
   }
-
-  /**
-   * Checks if address is Solana native address.
-   * @param address Address to check.
-   */
-  public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_SOLANA_MINT_ADDRESS;
-  };
 
   /**
    * Gets information about token from blockchain.
