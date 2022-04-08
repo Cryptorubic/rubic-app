@@ -61,7 +61,9 @@
       <div class="statistics__param-value" *ngLet="tvlMultichain$ | async as tvlMultichain">
         $
         {{
-          tvlMultichain && tvlMultichain.isFinite() ? (tvlMultichain | bigNumberFormat: 0) : '--.--'
+          tvlMultichain && tvlMultichain?.isFinite()
+            ? (tvlMultichain | bigNumberFormat: 0)
+            : '--.--'
         }}
       </div>
     </div>
@@ -74,7 +76,7 @@
         *ngLet="tvlStaking$ | async as tvlStaking"
         [class.statistics__param-value_loading]="tvlAndTtvLoading$ | async"
       >
-        $ {{ tvlStaking && tvlStaking.isFinite() ? (tvlStaking | bigNumberFormat: 0) : '--.--' }}
+        $ {{ tvlStaking && tvlStaking?.isFinite() ? (tvlStaking | bigNumberFormat: 0) : '--.--' }}
       </div>
     </div>
     <div class="statistics__param">

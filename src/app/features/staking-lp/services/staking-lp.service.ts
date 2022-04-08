@@ -456,6 +456,7 @@ export class StakingLpService {
         )
       )
     ]).pipe(
+      take(1),
       map(([tvlMultichain, lpPoolBalance]) => {
         const lpPoolTokenAmount = Web3Pure.fromWei(lpPoolBalance);
         return lpPoolTokenAmount
