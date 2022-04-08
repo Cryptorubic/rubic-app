@@ -43,6 +43,7 @@ import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/
 import { SwapInfoContainerComponent } from './components/swap-info/components/swap-info-container/swap-info-container.component';
 import { InstantTradeSwapInfoComponent } from './components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
 import { BridgeSwapInfoComponent } from './components/swap-info/components/cross-chain-bridge-swap-info/components/bridge-swap-info/bridge-swap-info.component';
+import { SwapsSwitcherComponent } from '@features/swaps/components/swaps-switcher/swaps-switcher.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { BridgeSwapInfoComponent } from './components/swap-info/components/cross
     InstantTradeSwapInfoComponent,
     BridgeSwapInfoComponent,
     CrossChainBridgeSwapInfoComponent,
-    PriceImpactInfoLineComponent
+    PriceImpactInfoLineComponent,
+    SwapsSwitcherComponent
   ],
   exports: [],
   imports: [

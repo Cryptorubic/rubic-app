@@ -2,7 +2,7 @@
   *noFrame
   (opened)="getDropdownStatus($event)"
   [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+  [dropdownOptionsTemplates]="items"
 ></app-dropdown-selector>
 
 <ng-template #dropdownButtonTemplate>
@@ -26,6 +26,23 @@
 <ng-template #dropdownOptionTemplate>
   <a class="user-profile__dropdown-item" routerLink="promotion">
     {{ 'navigation.promotion' | translate }}
+  </a>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
+  <a
+    *noFrame
+    class="rubic-header__profile-trades button-link"
+    routerLink="my-trades"
+    routerLinkActive="button-link_active"
+  >
+    {{ 'navigation.myTrades' | translate }}
+    <app-notification-badge
+      class="notification-counter"
+      *ngIf="(countNotifications$ | async) && (currentUser$ | async)"
+      size="s"
+      [value]="countNotifications$ | async"
+    ></app-notification-badge>
   </a>
 </ng-template>
 

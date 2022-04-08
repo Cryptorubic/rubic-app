@@ -25,34 +25,36 @@
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
           </div>
-          <div
-            class="tokens__clear"
-            *ngIf="!(disabled || iframeForceDisabled)"
-            (mouseenter)="buttonHovered = false"
-            (mouseleave)="buttonHovered = true"
-            (click)="clearToken(); $event.stopPropagation()"
-          >
-            <div class="tokens__clear-icon"></div>
-          </div>
+          <!-- Clear tokens button -->
+          <!--          <div-->
+          <!--            class="tokens__clear"-->
+          <!--            *ngIf="!(disabled || iframeForceDisabled)"-->
+          <!--            (mouseenter)="buttonHovered = false"-->
+          <!--            (mouseleave)="buttonHovered = true"-->
+          <!--            (click)="clearToken(); $event.stopPropagation()"-->
+          <!--          >-->
+          <!--            <div class="tokens__clear-icon"></div>-->
+          <!--          </div>-->
         </div>
       </ng-container>
       <span class="tokens__inner-text" *ngIf="!selectedToken">{{
         'common.chooseToken' | translate
       }}</span>
     </app-rubic-button>
-    <a
-      *noFrame
-      [hidden]="!selectedToken"
-      [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"
-      [tuiHint]="'common.checkOnScanner' | translate"
-      rel="noopener"
-      target="_blank"
-    >
-      <img
-        [src]="'assets/images/icons/scanner.svg'"
-        alt="{{ 'common.checkOnScanner' | translate }}"
-      />
-    </a>
+    <!-- Scanner link -->
+    <!--    <a-->
+    <!--      *noFrame-->
+    <!--      [hidden]="!selectedToken"-->
+    <!--      [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"-->
+    <!--      [tuiHint]="'common.checkOnScanner' | translate"-->
+    <!--      rel="noopener"-->
+    <!--      target="_blank"-->
+    <!--    >-->
+    <!--      <img-->
+    <!--        [src]="'assets/images/icons/scanner.svg'"-->
+    <!--        alt="{{ 'common.checkOnScanner' | translate }}"-->
+    <!--      />-->
+    <!--    </a>-->
   </div>
   <button
     class="tokens__clear-mobile"

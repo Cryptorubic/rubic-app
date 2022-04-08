@@ -6,6 +6,7 @@
         *noFrame
         [fromBlockchain]="fromBlockchain"
         [toBlockchain]="toBlockchain"
+        [selectedToken]="selectedToken"
       ></app-swaps-header>
       <div class="swaps-form__settings-wrapper">
         <app-rubic-refresh-button
@@ -59,7 +60,7 @@
       </div>
 
       <div class="swaps-form__delimiter">
-        <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
+        <app-swaps-switcher (switcherClick)="revert()"></app-swaps-switcher>
       </div>
 
       <div class="swaps-form__block">

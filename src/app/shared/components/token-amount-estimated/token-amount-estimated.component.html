@@ -20,16 +20,16 @@
             'bottom-amount__output_error-text': errorText
           }"
         >
-          <ng-container *ngIf="errorText; else tokenAmountTpl">
+          <ng-container *ngIf="errorText">
             {{ 'tradePage.tradingNotAvailable' | translate }}
           </ng-container>
-          <ng-template *ngIf="tokenAmount?.gt(0)" #tokenAmountTpl>
+          <ng-container *ngIf="tokenAmount?.isZero() === false">
             {{
               tokenAmount
                 | bigNumberFormat
                 | withRound: 'toClosestValue':{ decimals: tokenDecimals }
             }}
-          </ng-template>
+          </ng-container>
         </div>
         <div
           *ngIf="errorText"

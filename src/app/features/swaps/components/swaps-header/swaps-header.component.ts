@@ -5,6 +5,8 @@ import { BLOCKCHAINS_LIST } from '@features/swaps/constants/blockchains-list';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
 import { map } from 'rxjs/operators';
+import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { SelectedToken } from '@features/swaps/components/swaps-form/swaps-form.component';
 
 @Component({
   selector: 'app-swaps-header',
@@ -24,6 +26,12 @@ export class SwapsHeaderComponent {
       this.toBlockchainItem = BLOCKCHAINS_LIST.find(el => el.symbol === blockchain);
     }
   }
+
+  @Input() public set selectedToken(token: SelectedToken) {
+    this.showBlockchains = Boolean(token.from && token.to);
+  }
+
+  public showBlockchains = false;
 
   public readonly swapType$ = this.swapsService.swapMode$.pipe(
     map(mode => {
@@ -46,7 +54,10 @@ export class SwapsHeaderComponent {
 
   public tradeType: string;
 
-  constructor(private readonly swapsService: SwapsService) {
+  constructor(
+    private readonly swapsService: SwapsService,
+    private readonly swapFormService: SwapFormService
+  ) {
     const ethBlockchain = BLOCKCHAINS_LIST.find(el => el.symbol === BLOCKCHAIN_NAME.ETHEREUM);
     this.fromBlockchainItem = ethBlockchain;
     this.toBlockchainItem = ethBlockchain;

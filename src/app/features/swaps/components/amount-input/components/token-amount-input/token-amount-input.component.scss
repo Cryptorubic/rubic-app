@@ -1,13 +1,16 @@
 @use 'src/scss/core' as *;
 
+@keyframes jump {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.07); }
+}
+
 .token-amount-input-container {
   display: flex;
   justify-content: space-between;
   min-height: 60px;
 
   margin-bottom: 20px;
-
-  overflow: hidden;
 
   font-family: $sf-pro-font;
 
@@ -23,6 +26,12 @@
 
   @include light-iframe {
     background-color: var(--rubic-base-14);
+  }
+
+  &__token-button {
+    &_attractive {
+      animation: 0.4s jump ease 5s infinite alternate;
+    }
   }
 
   &__wrapper {

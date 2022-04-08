@@ -1,4 +1,4 @@
-<div class="swaps-header">
+<div *ngIf="showBlockchains; else text" class="swaps-header">
   <div class="swaps-header__icons">
     <div class="swaps-header__icon-wrapper">
       <img
@@ -26,3 +26,7 @@
     </div>
   </div>
 </div>
+
+<ng-template #text>
+  <h3 class="swaps-header__placeholder">The future of blockchain is here!</h3>
+</ng-template>

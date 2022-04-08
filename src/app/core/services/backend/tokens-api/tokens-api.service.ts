@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
+  FromBackendBlockchain,
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
 } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
-import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
@@ -19,7 +20,10 @@ import {
   TokensRequestNetworkOptions,
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
-import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
+import {
+  PAGINATED_BLOCKCHAIN_NAME,
+  TokensNetworkState
+} from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
@@ -61,13 +65,19 @@ export class TokensApiService {
   /**
    * Fetch specific tokens from backend.
    * @param params Request params.
+   * @param tokensNetworkState$ Tokens pagination state.
    * @return Observable<List<Token>> Tokens list.
    */
-  public getTokensList(params: { [p: string]: unknown }): Observable<List<Token>> {
+  public getTokensList(
+    params: { [p: string]: unknown },
+    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
+  ): Observable<List<Token>> {
     return this.iframeService.isIframe$.pipe(
       debounceTime(50),
       switchMap(isIframe => {
-        return isIframe ? this.fetchIframeTokens(params) : this.fetchBasicTokens();
+        return isIframe
+          ? this.fetchIframeTokens(params)
+          : this.fetchBasicTokens(tokensNetworkState$);
       })
     );
   }
@@ -148,7 +158,9 @@ export class TokensApiService {
   /**
    * Fetches basic tokens from backend.
    */
-  private fetchBasicTokens(): Observable<List<Token>> {
+  private fetchBasicTokens(
+    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
+  ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
     const blockchainsToFetch = [
       BLOCKCHAIN_NAME.ETHEREUM,
@@ -164,8 +176,22 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.NEAR
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
-    const requests$ = blockchainsToFetch.map(network =>
-      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
+    const requests$ = blockchainsToFetch.map((network: FromBackendBlockchain) =>
+      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network }).pipe(
+        tap(networkTokens => {
+          const blockchain = FROM_BACKEND_BLOCKCHAINS[network] as PAGINATED_BLOCKCHAIN_NAME;
+          if (networkTokens?.results) {
+            tokensNetworkState$.next({
+              ...tokensNetworkState$.value,
+              [blockchain]: {
+                ...tokensNetworkState$.value[blockchain],
+                page: options.page,
+                maxPage: Math.ceil(networkTokens.count / options.pageSize)
+              }
+            });
+          }
+        })
+      )
     );
     return forkJoin(requests$).pipe(
       map(results => {

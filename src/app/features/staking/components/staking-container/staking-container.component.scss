@@ -5,7 +5,7 @@
   padding: 26px;
 
   background: var(--main-form-background);
-  border-radius: 36px;
+  border-radius: vars.$border-radius-2;
 
   @include mixins.b(vars.$tablet) {
     padding: 0;
@@ -15,12 +15,11 @@
 }
 
 .staking-container {
-  --background-color: var(--form-header-color-1);
   padding: 8px;
 
-  background: var(--main-background);
+  background: var(--main-form-background);
+
   border-radius: vars.$border-radius-2;
-  box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
 
   @include mixins.dark {
     --background-color: #2e322f;
@@ -28,18 +27,18 @@
 
   &__footer {
     padding-bottom: 8px;
-
-    background-color: var(--background-color);
-    border-bottom-right-radius: 22px;
-    border-bottom-left-radius: 22px;
   }
 
   &__tabs {
+
+    padding: 6px;
+
     color: rgba(0, 0, 0, 0.6);
     font-weight: 700;
     font-size: 20px;
 
     background: var(--main-background);
+    border-radius: 100px;
     box-shadow: none;
 
     @include mixins.dark {
@@ -60,48 +59,37 @@
     justify-content: center;
     margin-right: 0 !important; // @TODO Remove important.
 
-    font-weight: 800;
+    font-weight: 400;
     text-align: center;
 
-    background-color: var(--main-background);
-    border-radius: vars.$border-radius-2;
+    border-radius: 100px;
 
     transition: 0.1s color;
 
     &._active {
-      --tui-text-01: var(--main-green);
-
-      background-color: var(--background-color);
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
+      --tui-text-01: white;
+      background-color: var(--main-green);
     }
 
     &_first {
-      border-bottom-left-radius: 0;
-
       @include mixins.b(vars.$tablet) {
-        font-weight: 600;
+        font-weight: 400;
         font-size: 14px;
         line-height: 17px;
       }
     }
 
     &_last {
-      border-top-left-radius: 0;
-      border-bottom-right-radius: 0;
-
       @include mixins.b(vars.$tablet) {
-        font-weight: 600;
+        font-weight: 400;
         font-size: 14px;
         line-height: 17px;
-      }
-
-      &._active {
-        border-top-left-radius: 22px;
       }
     }
 
     &:hover {
+      color: inherit;
+
       box-shadow: none !important; // @TODO Remove important.
     }
   }
@@ -109,9 +97,6 @@
   &__stake,
   &__withdraw {
     display: block;
-
-    background-color: var(--background-color);
-    border-radius: vars.$border-radius-2 vars.$border-radius-2 0 0;
   }
 
   &__stake {

@@ -19,7 +19,6 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
@@ -85,7 +84,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly storeService: StoreService,
     private readonly router: Router,
     private readonly errorService: ErrorsService,
-    private readonly counterNotificationsService: CounterNotificationsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
@@ -111,7 +109,6 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-    this.countNotifications$ = this.counterNotificationsService.unread$;
     this.swapType$ = this.swapsService.swapMode$;
   }
 

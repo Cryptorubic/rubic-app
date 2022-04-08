@@ -90,6 +90,7 @@ export class AppComponent implements AfterViewInit {
    */
   private printTimestamp(): void {
     if (isDevMode()) {
+      // @ts-ignore
       import('@app/timestamp')
         .then(data => console.debug(`It's a development build, timestamp: ${data.timestamp}`))
         .catch(() => {

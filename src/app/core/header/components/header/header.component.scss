@@ -113,7 +113,7 @@
 
   &__logo {
     display: block;
-    margin-right: 54px;
+    margin-right: 40px;
 
     @include iframe-vertical {
       margin-right: auto;
@@ -164,19 +164,18 @@
 
 @include b(1650) {
   .rubic-header__nav {
-    width: 610px;
+    left: 271px;
+
+    transform: none;
   }
-
-
 }
 
 @include b(1460) {
   .rubic-header__nav {
-    position: static;
+    left: 266px;
 
     grid-gap: 10px;
     width: auto;
-    margin-right: auto;
 
     transform: initial;
 

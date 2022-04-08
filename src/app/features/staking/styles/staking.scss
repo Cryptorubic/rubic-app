@@ -7,16 +7,4 @@
 
 app-rubic-button[appearance='secondary'] {
   display: block;
-
-  ::ng-deep {
-    [tuiButton]._disabled {
-      tui-wrapper {
-        background-color: #fff;
-
-        @include mixins.dark {
-          background-color: #232824;
-        }
-      }
-    }
-  }
 }

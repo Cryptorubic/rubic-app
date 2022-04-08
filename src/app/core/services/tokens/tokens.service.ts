@@ -11,7 +11,7 @@ import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
   NATIVE_TOKEN_ADDRESS,
@@ -137,11 +137,11 @@ export class TokensService {
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
       .pipe(
-        switchMap(params => this.tokensApiService.getTokensList(params)),
+        switchMap(params => this.tokensApiService.getTokensList(params, this._tokensNetworkState$)),
         switchMap(tokens => {
           if (!this.isTestingMode) {
-            const newTokens = this.setDefaultTokensParams(tokens, false);
-            return this.calculateTokensBalancesByType('default', newTokens);
+            const zeroAmountTokens = this.setDefaultTokensParams(tokens, false);
+            return this.calculateTokensBalancesByType('default', zeroAmountTokens);
           }
           return of();
         }),
@@ -211,7 +211,6 @@ export class TokensService {
   ): Promise<void> {
     const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
     const tokens = oldTokens || subject$.value;
-
     if (type === 'default') {
       if (!tokens.size) {
         return;
@@ -226,12 +225,11 @@ export class TokensService {
     }
 
     const newTokens = this.setDefaultTokensParams(tokens, type === 'favorite');
-    const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
-
+    const tokensWithBalance = await this.getTokensWithBalance(newTokens);
     if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
       const updatedTokens = tokens.map(token => {
         const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
-        const balance = tokensWithBalance.find(tWithBalance =>
+        const balance = tokensWithBalance?.find(tWithBalance =>
           TokensService.areTokensEqual(token, tWithBalance)
         )?.amount;
         return {
@@ -250,39 +248,48 @@ export class TokensService {
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
   private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
-    const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
+    try {
+      const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
 
-    const balances$ = blockchains.map(blockchain => {
-      const tokensAddresses = tokens
-        .filter(token => token.blockchain === blockchain)
-        .map(token => token.address)
-        .toArray();
-
-      return this.publicBlockchainAdapterService[blockchain].getTokensBalances(
-        this.userAddress,
-        tokensAddresses
+      const tokensWithBlockchain: { [p: string]: TokenAmount[] } = Object.fromEntries(
+        blockchains.map(blockchain => [blockchain, []])
       );
-    });
+      tokens.forEach(tokenAmount =>
+        tokensWithBlockchain?.[tokenAmount?.blockchain]?.push(tokenAmount)
+      );
 
-    const balancesSettled = await Promise.allSettled(balances$);
+      const balances$: Observable<BigNumber[]>[] = blockchains.map(blockchain => {
+        const tokensAddresses = tokensWithBlockchain[blockchain].map(el => el.address);
 
-    return blockchains
-      .map((blockchain, blockchainIndex) => {
-        if (balancesSettled[blockchainIndex].status === 'fulfilled') {
-          const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
-            .value;
+        return from(
+          this.publicBlockchainAdapterService[blockchain].getTokensBalances(
+            this.userAddress,
+            tokensAddresses
+          )
+        ).pipe(
+          timeout(3000),
+          catchError(() => [])
+        );
+      });
+
+      const balancesSettled = await Promise.all(balances$.map(el$ => el$.toPromise()));
+
+      return blockchains
+        .map((blockchain, blockchainIndex) => {
+          const balances = balancesSettled[blockchainIndex];
           return tokens
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: Web3Pure.fromWei(balances[tokenIndex], token.decimals) || undefined
+              amount: Web3Pure.fromWei(balances?.[tokenIndex] || 0, token.decimals) || undefined
             }))
             .toArray();
-        }
-        return null;
-      })
-      .filter(t => t !== null)
-      .flat();
+        })
+        .filter(t => t !== null)
+        .flat();
+    } catch (err: unknown) {
+      console.debug(err);
+    }
   }
 
   /**
@@ -498,14 +505,13 @@ export class TokensService {
    * @param network Blockchain name.
    * @param next Have next page or not.
    */
-  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME, next: string): void {
+  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME): void {
     const oldState = this._tokensNetworkState$.value;
     const newState = {
       ...oldState,
       [network]: {
         ...oldState[network],
-        page: oldState[network].page + 1,
-        maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
+        page: oldState[network].page + 1
       }
     };
     this._tokensNetworkState$.next(newState);
@@ -519,10 +525,10 @@ export class TokensService {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network,
-        page: this._tokensNetworkState$.value[network].page
+        page: this._tokensNetworkState$.value[network].page + 1
       })
       .pipe(
-        tap(tokensResponse => this.updateNetworkPage(network, tokensResponse.next)),
+        tap(() => this.updateNetworkPage(network)),
         map(tokensResponse => ({
           ...tokensResponse,
           result: tokensResponse.result.map(token => ({
@@ -532,7 +538,14 @@ export class TokensService {
           }))
         })),
         switchMap(tokens => {
-          return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
+          return this.userAddress
+            ? from(this.getTokensWithBalance(tokens.result)).pipe(
+                catchError(() => []),
+                map(tokensWithBalance =>
+                  tokensWithBalance?.length ? tokensWithBalance : tokens.result.toArray()
+                )
+              )
+            : of(tokens.result.toArray());
         })
       )
       .subscribe((tokens: TokenAmount[]) => {

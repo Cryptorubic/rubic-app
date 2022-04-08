@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
+import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -28,6 +29,10 @@ import { HeaderStore } from '../../../../services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileComponent implements AfterViewInit, OnDestroy {
+  @ViewChildren('dropdownOptionTemplate') public readonly items: QueryList<TemplateRef<unknown>>;
+
+  public readonly countNotifications$: Observable<number>;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -37,8 +42,10 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
+    this.countNotifications$ = this.counterNotificationsService.unread$;
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
     this.router.events.subscribe(event => {

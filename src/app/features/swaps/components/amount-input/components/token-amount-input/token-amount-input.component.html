@@ -1,6 +1,10 @@
 <div class="token-amount-input-container">
   <div class="token-amount-input-container__wrapper">
     <app-rubic-tokens
+      class="token-amount-input-container__token-button"
+      [ngClass]="{
+        'token-amount-input-container__token-button_attractive': !(selectedToken || loading)
+      }"
       [loading]="loading"
       formType="from"
       [tokens]="tokens"
@@ -25,6 +29,7 @@
   <div class="token-amount-input-container__wrapper">
     <label class="token-amount-input-container__input-label">
       <input
+        #tokenAmount
         autocomplete="off"
         class="token-amount-input-container__input"
         name="token-amount"
@@ -33,6 +38,7 @@
         [formControl]="amount"
         [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
         (amountChange)="onAmountChange($event)"
+        inputmode="decimal"
       />
     </label>
 

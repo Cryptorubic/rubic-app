@@ -1,9 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -20,17 +23,23 @@ import { SwapFormService } from '@features/swaps/services/swaps-form-service/swa
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit {
+export class TokenAmountInputComponent implements OnInit, AfterViewInit {
+  @ViewChild('tokenAmount') public readonly tokenAmountInput: ElementRef<HTMLInputElement>;
+
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Input() placeholder = '0.0';
+  @Input() placeholder = 0.0;
 
   private get formattedAmount(): string {
-    return this.amount.value.split(',').join('');
+    try {
+      return this.amount.value.split(',').join('');
+    } catch (err: unknown) {
+      console.debug(err);
+    }
   }
 
   get usdPrice(): BigNumber {
@@ -70,6 +79,10 @@ export class TokenAmountInputComponent implements OnInit {
         this.selectedToken = fromToken;
         this.cdr.markForCheck();
       });
+  }
+
+  public ngAfterViewInit() {
+    this.tokenAmountInput.nativeElement.focus();
   }
 
   public onUserBalanceMaxButtonClick(): void {

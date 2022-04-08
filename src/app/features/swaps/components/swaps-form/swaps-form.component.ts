@@ -35,7 +35,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 
 type TokenType = 'from' | 'to';
 
-type SelectedToken = {
+export type SelectedToken = {
   [tokenType in TokenType]: TokenAmount;
 };
 
