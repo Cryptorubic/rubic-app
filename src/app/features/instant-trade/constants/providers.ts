@@ -15,8 +15,8 @@ function getDefaultStateByProviders(
   providers: INSTANT_TRADE_PROVIDER[]
 ): InstantTradeProviderData[] {
   return providers.map(provider => ({
-    name: provider,
     ...defaultState,
+    name: provider,
     label: instantTradesLabels[provider]
   }));
 }

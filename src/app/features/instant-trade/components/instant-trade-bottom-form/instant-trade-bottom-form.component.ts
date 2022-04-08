@@ -110,7 +110,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public isIframe: boolean;
 
-  private isTradeSelectedByUser: boolean;
+  /**
+   * True, if user clicked on provider.
+   */
+  private isTradeSelectedByUser = false;
 
   private readonly onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
 
@@ -184,7 +187,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.isTradeSelectedByUser = false;
     this.isIframe = this.iframeService.isIframe;
   }
 

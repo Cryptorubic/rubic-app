@@ -1,6 +1,7 @@
 import InputToken from '@shared/models/tokens/input-token';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
@@ -21,7 +22,7 @@ interface SolanaITContract {
 }
 
 interface InstantTradesTokenApi extends InputToken {
-  blockchain_network: string;
+  blockchain_network: FromBackendBlockchain;
   coingecko_id: string;
   usd_price: number;
 }

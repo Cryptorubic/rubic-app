@@ -3,8 +3,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchain
+  TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
@@ -77,7 +76,7 @@ export class InstantTradesApiService {
   ): Observable<InstantTradesResponseApi> {
     const hashObject = InstantTradesApiService.getHashObject(trade.blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
-      network: TO_BACKEND_BLOCKCHAINS[trade.blockchain as ToBackendBlockchain],
+      network: TO_BACKEND_BLOCKCHAINS[trade.blockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,
@@ -140,10 +139,7 @@ export class InstantTradesApiService {
       const token = tradeApi[`${type}_token` as const];
       const amount = tradeApi[`${type}_amount` as const];
       return {
-        blockchain:
-          FROM_BACKEND_BLOCKCHAINS[
-            token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
-          ],
+        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
         symbol: token.symbol,
         amount: Web3Pure.fromWei(amount, token.decimals).toFixed(),
         image: token.image
