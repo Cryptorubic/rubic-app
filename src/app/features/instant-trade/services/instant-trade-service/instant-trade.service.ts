@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
@@ -29,8 +29,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
-import { WINDOW } from '@ng-web-apis/common';
-import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -67,8 +65,7 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly web3PrivateService: EthLikeWeb3PrivateService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    private readonly web3PrivateService: EthLikeWeb3PrivateService
   ) {}
 
   public getTargetContractAddress(
@@ -182,9 +179,8 @@ export class InstantTradeService {
 
         this.notifyGtmAfterSignTx(transactionHash);
         this.gtmService.checkGtm();
-        this.notifyTradeInProgress(hash, trade.blockchain);
 
-        this.successTxModalService.open(transactionHash, trade.blockchain);
+        this.notifyTradeInProgress(hash, trade.blockchain);
 
         await this.postTrade(hash, providerName, trade);
       }
@@ -315,15 +311,13 @@ export class InstantTradeService {
     });
   }
 
-  private notifyTradeInProgress(txHash: string, blockchain: BlockchainName): void {
-    if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(
-        txHash,
-        blockchain,
-        'default',
-        this.showTrxInProgressTrxNotification
-      );
-    }
+  private notifyTradeInProgress(transactionHash: string, blockchain: BlockchainName): void {
+    this.successTxModalService.open(
+      transactionHash,
+      blockchain,
+      'default',
+      this.showTrxInProgressTrxNotification
+    );
   }
 
   private notifyGtmAfterSignTx(transactionHash: string): void {
