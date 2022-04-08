@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
-import { catchError, map, mapTo } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
@@ -96,9 +96,8 @@ export class CrossChainRoutingApiService {
       .pipe(
         catchError((err: unknown) => {
           console.error(err);
-          return undefined;
-        }),
-        mapTo(undefined)
+          return of(undefined);
+        })
       )
       .toPromise();
   }
