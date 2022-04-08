@@ -358,10 +358,13 @@ export class StakingLpService {
       )
     ]).pipe(
       map(([startTime, endTime]) => {
-        const isStarted = Number(startTime) !== 0;
-        const isEnded = new Date() > new Date(Number(endTime) * 1000);
+        const isStarted = +startTime !== 0;
+        const endTimeMs = +endTime * 1000;
+        const isEnded = new Date().getTime() > endTimeMs;
+
         this._lpRoundStarted$.next(isStarted);
         this._lpRoundEnded$.next(isEnded);
+
         return isStarted;
       })
     );
@@ -428,9 +431,9 @@ export class StakingLpService {
       case TtvFilters.ALL_TIME:
         return ttv.totalValue;
       case TtvFilters.ONE_DAY:
-        return ttv.totalValueBy1Day;
+        return ttv.totalValueBy1day;
       case TtvFilters.ONE_MONTH:
-        return ttv.totalValueBy1Month;
+        return ttv.totalValueBy1month;
       case TtvFilters.SIX_MONTH:
         return ttv.totalValueByHalfYear;
       default:
@@ -453,7 +456,12 @@ export class StakingLpService {
         )
       )
     ]).pipe(
-      map(([tvlMultichain, lpPoolBalance]) => Web3Pure.fromWei(lpPoolBalance).plus(tvlMultichain)),
+      map(([tvlMultichain, lpPoolBalance]) => {
+        const lpPoolTokenAmount = Web3Pure.fromWei(lpPoolBalance);
+        return lpPoolTokenAmount
+          .plus(lpPoolTokenAmount.multipliedBy(this._stakingTokenUsdPrice$.getValue()))
+          .plus(tvlMultichain);
+      }),
       tap(tvl => this._tvlMultichain$.next(tvl))
     );
   }

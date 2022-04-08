@@ -54,6 +54,8 @@ export class DepositButtonComponent implements OnInit {
 
   public readonly minLimit = this.lpService.minEnterAmount;
 
+  public readonly isLpEnded = this.lpService.isLpEneded;
+
   constructor(private readonly lpService: LiquidityProvidingService) {}
 
   ngOnInit(): void {

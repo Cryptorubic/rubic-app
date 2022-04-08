@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
@@ -21,11 +22,13 @@ export class LpLandingComponent implements OnInit {
 
   public readonly isWhitelistUser$ = this.lpService.isWhitelistUser$;
 
-  public readonly whitelistTimer$ = this.lpService.whitelistTimer$;
+  public readonly whitelistEndTime = this.lpService.whitelistEndTime;
 
   public readonly depositType = DepositType;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  public readonly isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   public readonly isLpEnded = this.lpService.isLpEneded;
 
@@ -35,7 +38,8 @@ export class LpLandingComponent implements OnInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly themeService: ThemeService
   ) {}
 
   ngOnInit(): void {

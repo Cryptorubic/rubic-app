@@ -1,6 +1,6 @@
 export interface TradeVolumeByPeriod {
   totalValue: number;
-  totalValueBy1Day: number;
-  totalValueBy1Month: number;
+  totalValueBy1day: number;
+  totalValueBy1month: number;
   totalValueByHalfYear: number;
 }

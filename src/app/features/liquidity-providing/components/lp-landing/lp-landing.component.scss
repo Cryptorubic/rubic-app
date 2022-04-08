@@ -49,17 +49,7 @@ hr {
     }
 
     &-icon {
-      width: 76px;
-      height: 76px;
       margin-right: 18px;
-
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.16) 0%, #000 100%);
-
-      @include b($tablet) {
-        width: 56px;
-        height: 56px;
-        margin-right: 18px;
-      }
 
       img {
         width: 100%;

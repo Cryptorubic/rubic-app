@@ -24,14 +24,11 @@ import {
   filter,
   map,
   retry,
-  scan,
   startWith,
   switchMap,
   take,
   takeUntil,
-  takeWhile,
-  tap,
-  withLatestFrom
+  tap
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
@@ -143,7 +140,7 @@ export class LiquidityProvidingService {
 
   public readonly apr$ = this._apr$.asObservable();
 
-  private readonly _balance$ = new BehaviorSubject<number>(0);
+  private readonly _balance$ = new BehaviorSubject<BigNumber>(undefined);
 
   public readonly balance$ = this._balance$.asObservable();
 
@@ -189,7 +186,7 @@ export class LiquidityProvidingService {
 
   private readonly _stopWhitelistWatch$ = new Subject<void>();
 
-  public whitelistTimer$: Observable<unknown>;
+  public whitelistEndTime: Date;
 
   private waitForReceipt = (hash: string) => {
     return interval(3000).pipe(
@@ -276,11 +273,14 @@ export class LiquidityProvidingService {
       )
     ).pipe(
       map(response => Web3Pure.fromWei(response)),
-      tap(userTotalStaked => {
-        const totalStaked = this._totalStaked$.getValue();
-
+      tap(async userTotalStaked => {
+        const brbcUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
+          address: this.brbcAddress,
+          blockchain: this.blockchain
+        });
+        const balance = userTotalStaked.plus(userTotalStaked.multipliedBy(brbcUsdcPrice));
         this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
-        this._balance$.next(+userTotalStaked.dividedBy(totalStaked).multipliedBy(100).toFixed(2));
+        this._balance$.next(balance);
       })
     );
   }
@@ -543,29 +543,28 @@ export class LiquidityProvidingService {
     );
   }
 
-  public getStartTime(): Observable<string> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'startTime'
+  public getStartAndEndTime(): Observable<string[]> {
+    return forkJoin([
+      from(
+        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+          this.lpContractAddress,
+          LP_PROVIDING_CONTRACT_ABI,
+          'startTime'
+        )
+      ),
+      from(
+        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+          this.lpContractAddress,
+          LP_PROVIDING_CONTRACT_ABI,
+          'endTime'
+        )
       )
-    ).pipe(
-      tap(startTime => {
+    ]).pipe(
+      tap(([startTime, endTime]) => {
         const whitelistEndTimestamp = +startTime + this.whitelistDuration;
-
-        this.whitelistTimer$ = interval(1000).pipe(
-          scan(acc => --acc, whitelistEndTimestamp),
-          withLatestFrom(of(+startTime)),
-          map(([ts, start]) => {
-            if (ts === start) {
-              return 0;
-            } else {
-              return new Date(ts * 1000);
-            }
-          }),
-          takeWhile(v => v !== 0)
-        );
+        this.endDate = new Date(+endTime * 1000);
+        this.isLpEneded = new Date() > this.endDate;
+        this.whitelistEndTime = new Date(whitelistEndTimestamp * 1000);
       })
     );
   }

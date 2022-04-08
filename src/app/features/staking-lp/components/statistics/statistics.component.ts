@@ -128,18 +128,6 @@ export class StatisticsComponent implements OnInit {
       });
   }
 
-  public toggleHintDesktop(hintType: 'balance' | 'rewards'): void {
-    if (!this.headerStore.isMobile) {
-      if (hintType === 'balance') {
-        this.balanceHintShown = !this.balanceHintShown;
-      }
-
-      if (hintType === 'rewards') {
-        this.rewardsHintShow = !this.rewardsHintShow;
-      }
-    }
-  }
-
   public toggleHintsMobile(): void {
     if (this.headerStore.isMobile) {
       this.balanceHintShown = !this.balanceHintShown;

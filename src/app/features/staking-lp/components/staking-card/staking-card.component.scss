@@ -53,25 +53,7 @@
   img {
     width: 26px;
     height: 26px;
-
-    @include b($tablet) {
-      width: 28px;
-      height: 28px;
-    }
-  }
-
-  img:first-child {
-    margin-right: 28px;
-
-    border: 2px solid transparent;
-  }
-
-  img:nth-child(2) {
-    position: absolute;
-    left: 16px;
-
-    border: 2px solid var(--rubic-base-23);
-    border-radius: 100px;
+    margin-right: 10px;
   }
 }
 
@@ -105,8 +87,8 @@
 
 .join {
   position: absolute;
-  right: 18px;
-  bottom: 18px;
+  right: 12px;
+  bottom: 12px;
 
   @include b($tablet) {
     position: relative;

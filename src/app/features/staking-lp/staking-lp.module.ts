@@ -11,6 +11,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiDropdownControllerModule,
   TuiDropdownModule,
+  TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiManualHintModule
@@ -32,7 +33,8 @@ import {
     TuiHostedDropdownModule,
     TuiDropdownControllerModule,
     TuiDropdownModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiHintModule
   ],
   providers: [StakingLpService]
 })

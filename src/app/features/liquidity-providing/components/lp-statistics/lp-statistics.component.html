@@ -7,7 +7,7 @@
     <div class="statistics__param">
       <div class="statistics__param-label">APR</div>
       <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-        {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }}%
+        {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }} %
       </div>
     </div>
     <div class="statistics__param">
@@ -21,12 +21,6 @@
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">Balance</div>
-      <div class="statistics__param-value" *ngLet="balance$ | async as balance">
-        {{ balance ? balance : '--.--' }}%
-      </div>
-    </div>
-    <div class="statistics__param">
       <div class="statistics__param-label">Total Collected</div>
       <div class="statistics__param-value" *ngLet="collectedRewards$ | async as collectedRewards">
         {{
@@ -35,6 +29,15 @@
             : '--.--'
         }}
         USDC
+      </div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">Balance</div>
+      <div class="statistics__param-value" *ngLet="balance$ | async as balance">
+        {{
+          balance ? (balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) : '--.--'
+        }}
+        $
       </div>
     </div>
   </div>
@@ -65,5 +68,8 @@
     [rotating]="loading"
     (iconClick)="refreshStatistics()"
   ></app-rotating-icon>
-  <div class="statistics__end"><span>End of Round: </span>{{ endDate | date: 'long':'UTC' }}</div>
+  <div class="statistics__end">
+    <span>End of Round: </span>{{ endDate | date: 'longDate' }} at
+    {{ endDate | date: 'shortTime':'UTC' }} UTC
+  </div>
 </div>

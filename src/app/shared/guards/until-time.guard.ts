@@ -6,7 +6,6 @@ import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { Observable, of } from 'rxjs';
 import { ActivationResult } from '@shared/guards/models/types';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { switchMap } from 'rxjs/operators';
 import { LiquidityProvidingService } from '@app/features/liquidity-providing/services/liquidity-providing.service';
 
 @Injectable()
@@ -32,18 +31,6 @@ export class UntilTimeGuard implements CanActivate {
   }
 
   private redirectIfExpired(): Observable<Boolean> {
-    return this.lpService.getStartTime().pipe(
-      switchMap(startTime => {
-        // if LP contract has start time === 0 - round didnt started
-        const isStarted = +startTime !== 0;
-
-        if (!isStarted) {
-          this.window.location.href = this.redirectUrl;
-        }
-
-        this.lpService.getEndDate(+startTime);
-        return of(isStarted);
-      })
-    );
+    return of(true);
   }
 }
