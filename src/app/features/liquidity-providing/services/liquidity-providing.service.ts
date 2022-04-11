@@ -395,6 +395,10 @@ export class LiquidityProvidingService {
     this._stopWhitelistWatch$.next();
   }
 
+  public checkIsWhitelistUser(userAddress: string): boolean {
+    return this.whitelist.includes(userAddress?.toLowerCase());
+  }
+
   public getNeedTokensApprove(): Observable<BigNumber[]> {
     return forkJoin([
       from(
@@ -538,8 +542,7 @@ export class LiquidityProvidingService {
           return EMPTY;
         }
       }),
-      switchMap(() => this.getDeposits()),
-      take(1)
+      switchMap(() => this.getDeposits().pipe(take(1)))
     );
   }
 
@@ -569,14 +572,15 @@ export class LiquidityProvidingService {
     );
   }
 
-  public getEndDate(startTime: number): void {
-    this.endDate = new Date((this.duration + startTime) * 1000);
-    this.isLpEneded = new Date() > this.endDate;
-  }
-
   public checkDepositErrors(amount: BigNumber, balance: BigNumber): LpFormError | null {
+    const totalStaked = this._totalStaked$.getValue();
+
     if (this.isLpEneded) {
       return LpFormError.LP_ENDED;
+    }
+
+    if (this.poolSize - totalStaked < this.minEnterAmount) {
+      return LpFormError.POOL_FULL;
     }
 
     if (amount.gt(this.currentMaxLimit)) {

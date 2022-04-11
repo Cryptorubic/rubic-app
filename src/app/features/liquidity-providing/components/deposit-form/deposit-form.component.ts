@@ -19,7 +19,7 @@ import {
 } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Router } from '@angular/router';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
@@ -27,6 +27,8 @@ import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.se
 import { PoolToken } from '../../models/pool-token.enum';
 import { DepositType } from '../../models/deposit-type.enum';
 import { ThemeService } from '@app/core/services/theme/theme.service';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 
 @Component({
   selector: 'app-deposit-form',
@@ -84,12 +86,14 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly lpService: LiquidityProvidingService,
+    private readonly lpModalService: LiquidityProvidingModalService,
     private readonly notificationService: LiquidityProvidingNotificationService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
     private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   ngOnInit(): void {
@@ -115,20 +119,40 @@ export class DepositFormComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe();
+
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
+      if (!this.lpService.checkIsWhitelistUser(address) && this.lpService.isWhitelistInProgress) {
+        this.router.navigate(['liquidity-providing']);
+      }
+    });
   }
 
   public createDeposit(): void {
     const amount = this.lpService.parseInputValue(this.usdcAmountCtrl.value);
-    const depositInProgressNotification$ =
-      this.notificationService.showDepositInProgressNotification();
-    this._buttonLoading$.next(true);
+    let depositInProgressNotification$: Subscription;
 
-    this.lpService
-      .createDeposit(amount)
-      .pipe(finalize(() => this._buttonLoading$.next(false)))
-      .subscribe(() => {
-        depositInProgressNotification$.unsubscribe();
-        this.notificationService.showSuccessDepositNotification();
+    this.lpModalService
+      .showDepositModal(amount)
+      .pipe(
+        switchMap(result => {
+          if (result) {
+            depositInProgressNotification$ =
+              this.notificationService.showDepositInProgressNotification();
+            this._buttonLoading$.next(true);
+            return this.lpService
+              .createDeposit(amount)
+              .pipe(finalize(() => this._buttonLoading$.next(false)));
+          } else {
+            return of(false);
+          }
+        })
+      )
+      .subscribe(makeDeposit => {
+        if (makeDeposit) {
+          depositInProgressNotification$?.unsubscribe();
+          this.notificationService.showSuccessDepositNotification();
+          this.router.navigate(['liquidity-providing']);
+        }
       });
   }
 

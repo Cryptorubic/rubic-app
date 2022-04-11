@@ -61,6 +61,7 @@
     >
       <ng-container [ngSwitch]="error">
         <ng-container *ngSwitchCase="errors.LP_ENDED"> LP ended </ng-container>
+        <ng-container *ngSwitchCase="errors.POOL_FULL"> Pool Fool </ng-container>
         <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE">
           Insufficient balance
         </ng-container>

@@ -3,7 +3,7 @@
     <div class="deposit-card__statuses">
       <app-status-badge
         class="status"
-        type="info"
+        type="inactive"
         [text]="deposit.start | functionCall: getStartTime:this"
       ></app-status-badge>
       <app-status-badge
@@ -53,9 +53,9 @@
     </div>
     <div class="deposit-card__actions">
       <app-rubic-button
-        [disabled]="deposit.rewardsToCollect.isZero()"
+        [disabled]="!deposit.isStaked || deposit.rewardsToCollect.isZero()"
         (onClick)="onCollectRewards.emit()"
-        appearance="primary"
+        appearance="secondary"
       >
         Collect rewards
         {{
@@ -74,7 +74,7 @@
       </app-rubic-button>
       <ng-template #withdraw>
         <app-rubic-button
-          appearance="primary"
+          appearance="outline"
           [disabled]="!deposit.canWithdraw"
           (onClick)="onWithdraw.emit()"
         >

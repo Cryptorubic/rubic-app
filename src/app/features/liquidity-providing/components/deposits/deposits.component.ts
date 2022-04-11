@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import BigNumber from 'bignumber.js';
+import { BehaviorSubject, of } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
+import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
@@ -24,14 +26,18 @@ export class DepositsComponent {
 
   constructor(
     private readonly lpService: LiquidityProvidingService,
-    private readonly notificationsService: LiquidityProvidingNotificationService
+    private readonly notificationsService: LiquidityProvidingNotificationService,
+    private readonly modalService: LiquidityProvidingModalService
   ) {}
 
   public collectReward(tokenId: string): void {
     this._processingTokenId$.next(tokenId);
     this.lpService
       .collectRewards(tokenId)
-      .pipe(switchMap(() => this.lpService.getStatistics()))
+      .pipe(
+        switchMap(() => this.lpService.getStatistics()),
+        finalize(() => this._processingTokenId$.next(undefined))
+      )
       .subscribe(() => {
         this._processingTokenId$.next(undefined);
         this.lpService.setDepositsLoading(false);
@@ -39,14 +45,37 @@ export class DepositsComponent {
       });
   }
 
-  public requestWithdraw(tokenId: string): void {
-    this._processingTokenId$.next(tokenId);
-    this.lpService
-      .requestWithdraw(tokenId)
-      .pipe(finalize(() => this._processingTokenId$.next(undefined)))
-      .subscribe(() => {
-        this.notificationsService.showSuccessWithdrawRequestNotification();
-      });
+  public requestWithdraw(tokenId: string, amount: BigNumber): void {
+    of(this.lpService.isLpEneded)
+      .pipe(
+        switchMap(isLpEnded => {
+          if (isLpEnded) {
+            return this.lpService.requestWithdraw(tokenId).pipe(
+              finalize(() => {
+                this.notificationsService.showSuccessWithdrawRequestNotification();
+                this._processingTokenId$.next(undefined);
+              })
+            );
+          } else {
+            return this.modalService.showRequestWithdrawModal(amount).pipe(
+              switchMap(result => {
+                if (result) {
+                  this._processingTokenId$.next(tokenId);
+                  return this.lpService.requestWithdraw(tokenId).pipe(
+                    finalize(() => {
+                      this.notificationsService.showSuccessWithdrawRequestNotification();
+                      this._processingTokenId$.next(undefined);
+                    })
+                  );
+                } else {
+                  return of(result);
+                }
+              })
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   public withdraw(tokenId: string): void {

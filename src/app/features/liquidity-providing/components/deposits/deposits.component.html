@@ -19,7 +19,7 @@
           [deposit]="deposit"
           [loading]="(processingTokenId$ | async) === deposit.tokenId"
           (onCollectRewards)="collectReward(deposit.tokenId)"
-          (onRequestWithdraw)="requestWithdraw(deposit.tokenId)"
+          (onRequestWithdraw)="requestWithdraw(deposit.tokenId, deposit.USDCAmount)"
           (onWithdraw)="withdraw(deposit.tokenId)"
         ></app-deposit-card>
       </ng-container>

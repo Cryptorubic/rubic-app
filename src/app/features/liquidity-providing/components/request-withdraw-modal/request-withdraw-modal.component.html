@@ -1,0 +1,18 @@
+<div class="request-withdraw-modal">
+  <div class="request-withdraw-modal__title">Request withdraw</div>
+  <div class="request-withdraw-modal__content">
+    Are you sure you want to withdraw the deposit? Attention, for the early removal of liquidity,
+    10% percent of the penalties will be taken from the initial deposit {{ amount }} RBC and
+    {{ amount }} USDC. By confirming you leave a request, which will be processed within a day. This
+    time is needed to aggregate the liquidity you provided from all the blockchains into the BSC.
+    After 24 hours you can collect your deposit.
+  </div>
+  <div class="request-withdraw-modal__actions">
+    <app-rubic-button appearance="secondary" (click)="context.completeWith(true)"
+      >OK</app-rubic-button
+    >
+    <app-rubic-button appearance="outline" (click)="context.completeWith(false)"
+      >NO</app-rubic-button
+    >
+  </div>
+</div>
