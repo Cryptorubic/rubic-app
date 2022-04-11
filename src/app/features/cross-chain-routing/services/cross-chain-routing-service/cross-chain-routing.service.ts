@@ -144,6 +144,16 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    // @TODO Solana. Remove after blockchain stabilization.
+    if (
+      this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
+      this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
+    ) {
+      throw new CustomError(
+        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
+      );
+    }
+
     this._smartRoutingLoading$.next(true);
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
