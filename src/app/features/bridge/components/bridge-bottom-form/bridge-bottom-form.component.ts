@@ -431,9 +431,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
-        'bridge',
         txHash,
         this.fromBlockchain,
+        'bridge',
         this.showSuccessTrxNotification
       );
     }

@@ -1,19 +1,20 @@
 import InputToken from '@shared/models/tokens/input-token';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
 }
 
 interface InstantTradesEthLikeContract {
-  name: INSTANT_TRADES_PROVIDERS;
+  name: INSTANT_TRADE_PROVIDER;
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }
 
 interface SolanaITContract {
-  name: INSTANT_TRADES_PROVIDERS;
+  name: INSTANT_TRADE_PROVIDER;
   address: string;
   blockchain_network: {
     title: 'solana';
@@ -21,7 +22,7 @@ interface SolanaITContract {
 }
 
 interface InstantTradesTokenApi extends InputToken {
-  blockchain_network: string;
+  blockchain_network: FromBackendBlockchain;
   coingecko_id: string;
   usd_price: number;
 }

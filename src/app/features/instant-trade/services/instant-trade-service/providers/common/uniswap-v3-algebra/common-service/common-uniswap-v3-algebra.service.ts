@@ -1,19 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
-import {
-  ItSettingsForm,
-  SettingsService
-} from '@features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { startWith } from 'rxjs/operators';
-import { AuthService } from '@core/services/auth/auth.service';
-import {
-  ItOptions,
-  ItProvider
-} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
 import { subtractPercent } from '@shared/utils/utils';
 import {
@@ -25,101 +14,38 @@ import { UniswapV3AlgebraConstants } from '@features/instant-trade/services/inst
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { MethodData } from '@shared/models/blockchain/method-data';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/is-eth-from-or-to';
 
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { RequiredField } from '@shared/models/utility-types/required-field';
+import { EthLikeInstantTradeProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
 
 @Injectable()
-export abstract class CommonUniswapV3AlgebraService implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
+export abstract class CommonUniswapV3AlgebraService extends EthLikeInstantTradeProviderService {
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
   protected abstract readonly unwrapWethMethodName: 'unwrapWETH9' | 'unwrapWNativeToken';
 
-  protected readonly blockchain: EthLikeBlockchainName;
+  public readonly contractAddress: string;
 
-  protected blockchainAdapter: EthLikeWeb3Public;
+  protected readonly gasMargin = 1.2;
 
   private readonly wethAddress: string;
 
   protected readonly swapRouterContract: ContractData;
 
-  protected settings: ItSettingsForm;
-
-  protected walletAddress: string;
-
-  public get contractAddress(): string {
-    return this.swapRouterContract.address;
+  private get slippageTolerance(): number {
+    return this.settings.slippageTolerance / 100;
   }
 
-  // Injected services
-  private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
-
-  private readonly web3PrivateService = inject(EthLikeWeb3PrivateService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
-
-  private readonly authService = inject(AuthService);
-
-  private readonly settingsService = inject(SettingsService);
-
   protected constructor(uniswapV3Constants: UniswapV3AlgebraConstants) {
-    this.blockchain = uniswapV3Constants.blockchain;
-
-    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
+    super(uniswapV3Constants.blockchain);
 
     this.wethAddress = uniswapV3Constants.wethAddress;
     this.swapRouterContract = uniswapV3Constants.swapRouterContract;
-
-    this.settingsService.instantTradeValueChanges
-      .pipe(startWith(this.settingsService.instantTradeValue))
-      .subscribe(settingsForm => {
-        this.settings = {
-          ...settingsForm,
-          slippageTolerance: settingsForm.slippageTolerance / 100
-        };
-      });
-
-    this.authService.getCurrentUser().subscribe(user => {
-      this.walletAddress = user?.address;
-    });
-  }
-
-  public getAllowance(
-    tokenAddress: string,
-    targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-
-    return from(
-      this.blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
-  }
-
-  public async approve(
-    tokenAddress: string,
-    options: TransactionOptions,
-    targetContractAddress = this.contractAddress
-  ): Promise<void> {
-    this.walletConnectorService.checkSettings(this.blockchain);
-    await this.web3PrivateService.approveTokens(
-      tokenAddress,
-      targetContractAddress,
-      'infinity',
-      options
-    );
+    this.contractAddress = this.swapRouterContract.address;
   }
 
   public abstract calculateTrade(
@@ -146,11 +72,11 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
     const toTokenWrapped = { ...toToken };
     const isEth: IsEthFromOrTo = {} as IsEthFromOrTo;
 
-    if (this.blockchainAdapter.isNativeAddress(fromToken.address)) {
+    if (this.web3Public.isNativeAddress(fromToken.address)) {
       fromTokenWrapped.address = this.wethAddress;
       isEth.from = true;
     }
-    if (this.blockchainAdapter.isNativeAddress(toToken.address)) {
+    if (this.web3Public.isNativeAddress(toToken.address)) {
       toTokenWrapped.address = this.wethAddress;
       isEth.to = true;
     }
@@ -211,11 +137,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
     transactionOptions?: TransactionOptions;
   }> {
     this.walletConnectorService.checkSettings(this.blockchain);
-    await this.blockchainAdapter.checkBalance(
-      trade.from.token,
-      trade.from.amount,
-      this.walletAddress
-    );
+    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const fromToken = trade.from.token;
     const toToken = trade.to.token;
@@ -302,7 +224,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
   }
 
   protected getAmountOutMin(route: UniswapV3AlgebraRoute): string {
-    return subtractPercent(route.outputAbsoluteAmount, this.settings.slippageTolerance).toFixed(0);
+    return subtractPercent(route.outputAbsoluteAmount, this.slippageTolerance).toFixed(0);
   }
 
   /**

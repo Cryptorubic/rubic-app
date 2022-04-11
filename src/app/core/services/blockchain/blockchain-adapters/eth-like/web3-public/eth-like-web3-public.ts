@@ -54,20 +54,6 @@ type TokenField = typeof supportedTokenFields[number];
 type TokenFields = Partial<Record<TokenField, string>>;
 
 export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> {
-  private readonly multicallAddress = MULTICALL_ADDRESS[this.blockchain.name];
-
-  constructor(
-    private readonly web3: Web3,
-    public readonly blockchain: BlockchainData<EthLikeBlockchainName>,
-    private readonly httpClient: HttpClient
-  ) {
-    super();
-  }
-
-  static get nativeTokenAddress(): string {
-    return NATIVE_TOKEN_ADDRESS;
-  }
-
   static addressToBytes32(address: string): string {
     if (address.slice(0, 2) !== '0x' || address.length !== 42) {
       console.error('Wrong address format');
@@ -81,6 +67,18 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     return toChecksumAddress(address);
   }
 
+  public readonly nativeTokenAddress = NATIVE_TOKEN_ADDRESS;
+
+  private readonly multicallAddress = MULTICALL_ADDRESS[this.blockchain.name];
+
+  constructor(
+    private readonly web3: Web3,
+    public readonly blockchain: BlockchainData<EthLikeBlockchainName>,
+    private readonly httpClient: HttpClient
+  ) {
+    super();
+  }
+
   /**
    * Checks if a given address is a valid Ethereum address.
    * @param address The address to check validity.
@@ -88,14 +86,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   public isAddressCorrect(address: string): boolean {
     return isAddress(address);
   }
-
-  /**
-   * Checks if address is Ether native address.
-   * @param address Address to check.
-   */
-  public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_TOKEN_ADDRESS;
-  };
 
   /**
    * Sets new provider.
@@ -249,6 +239,10 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getAllowance(params: AllowanceParams): Promise<BigNumber> {
     const { tokenAddress, ownerAddress, spenderAddress } = params;
+    if (this.isNativeAddress(tokenAddress)) {
+      return new BigNumber(Infinity);
+    }
+
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const allowance = await contract.methods
@@ -423,7 +417,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokensAddresses[0]);
-    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress.bind(this));
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {

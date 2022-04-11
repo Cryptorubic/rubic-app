@@ -1,28 +1,27 @@
-<div class="provider-panel" [class.provider-panel_loading]="providerData.loading">
+<div class="provider-panel" [class.provider-panel_loading]="providerPanelData.loading">
   <div
-    (click)="!providerData.hasError && activateProvider()"
     class="provider-panel__content"
     [ngClass]="{
-      'provider-panel__content_best-rate': isBestRate,
-      'provider-panel__content_selected': providerData.isActive,
-      'provider-panel__content_small': providerData.appearance === 'small'
+      'provider-panel__content_best-rate': isBestProvider,
+      'provider-panel__content_selected': providerPanelData.isSelected,
+      'provider-panel__content_small': providerPanelData.appearance === 'small'
     }"
+    (click)="selectProvider()"
   >
     <div class="provider-panel__provider-name">
-      {{ 'common.via' | translate }} {{ providerData.name }}
+      {{ 'common.via' | translate }} {{ providerPanelData.label }}
     </div>
 
-    <!-- Provider content -->
     <app-panel-content
-      *ngIf="!providerData.hasError"
-      [providerData]="providerData"
-      [tradeData]="tradeData"
-      [isBestRate]="isBestRate"
+      *ngIf="!providerPanelData.hasError"
+      [providerPanelData]="providerPanelData"
+      [tradePanelData]="tradePanelData"
+      [isBestProvider]="isBestProvider"
     ></app-panel-content>
-    <!-- Error content -->
+
     <app-panel-error-content
-      *ngIf="providerData.hasError"
-      [providerData]="providerData"
+      *ngIf="providerPanelData.hasError"
+      [providerPanelData]="providerPanelData"
       [errorTranslateKey]="errorTranslateKey"
     ></app-panel-error-content>
   </div>

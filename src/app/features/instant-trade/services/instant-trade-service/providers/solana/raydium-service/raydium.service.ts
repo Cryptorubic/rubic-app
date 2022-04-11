@@ -3,7 +3,6 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Connection, SignatureResult, TransactionError } from '@solana/web3.js';
 import {
@@ -23,7 +22,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { TokensService } from '@core/services/tokens/tokens.service';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { ROUTE_SWAP_PROGRAM_ID } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumWrapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-wrap-manager';
@@ -38,7 +37,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
-  public readonly providerType = INSTANT_TRADES_PROVIDERS.RAYDIUM;
+  public readonly providerType = INSTANT_TRADE_PROVIDER.RAYDIUM;
 
   public readonly contractAddress = ROUTE_SWAP_PROGRAM_ID;
 
@@ -232,8 +231,8 @@ export class RaydiumService implements ItProvider {
     };
   }
 
-  public getAllowance(_tokenAddress: string): Observable<BigNumber> {
-    return of(new BigNumber(NaN));
+  public async getAllowance(_tokenAddress: string): Promise<BigNumber> {
+    return new BigNumber(NaN);
   }
 
   private async getTrade(trade: InstantTrade): Promise<BaseTransaction> {

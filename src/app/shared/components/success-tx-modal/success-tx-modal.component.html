@@ -21,9 +21,9 @@
           *noFrame
           class="modal__footer-text"
           [innerHTML]="
-            (type === 'default'
-              ? 'modals.successTxModal.seeDetailsItBridge'
-              : 'modals.successTxModal.seeDetailsCCR'
+            (type === 'cross-chain-routing'
+              ? 'modals.successTxModal.seeDetailsCCR'
+              : 'modals.successTxModal.seeDetailsItBridge'
             )
               | translate
                 : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
@@ -32,8 +32,10 @@
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{
-          (type === 'default' ? 'modals.successTxModal.title' : 'modals.successTxModal.ccrTitle')
-            | translate
+          (type === 'cross-chain-routing'
+            ? 'modals.successTxModal.ccrTitle'
+            : 'modals.successTxModal.title'
+          ) | translate
         }}
       </h3>
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
