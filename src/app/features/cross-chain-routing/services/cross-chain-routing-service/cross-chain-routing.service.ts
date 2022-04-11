@@ -144,20 +144,18 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+    const fromBlockchain = fromToken.blockchain;
+    const toBlockchain = toToken.blockchain;
+
     // @TODO Solana. Remove after blockchain stabilization.
-    if (
-      this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
-      this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-    ) {
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       throw new CustomError(
         'Multi-Chain swaps are temporarily unavailable for the Solana network.'
       );
     }
 
     this._smartRoutingLoading$.next(true);
-    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-    const fromBlockchain = fromToken.blockchain;
-    const toBlockchain = toToken.blockchain;
     if (
       !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
       !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
@@ -212,6 +210,7 @@ export class CrossChainRoutingService {
     );
 
     // @TODO fix excluded providers
+    /* @TODO return after SOLANA is returned
     const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
       provider =>
         !(
@@ -219,11 +218,12 @@ export class CrossChainRoutingService {
           this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
         )
     );
+    */
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = filteredTargetBlockchainProviders[0];
+    } = targetBlockchainProviders[0];
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -248,7 +248,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      filteredTargetBlockchainProviders,
+      targetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
