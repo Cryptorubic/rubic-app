@@ -417,7 +417,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokensAddresses[0]);
-    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress.bind(this));
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {
