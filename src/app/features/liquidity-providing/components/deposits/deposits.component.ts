@@ -30,8 +30,8 @@ export class DepositsComponent {
 
   constructor(
     private readonly lpService: LiquidityProvidingService,
-    private readonly notificationsService: LiquidityProvidingNotificationService,
-    private readonly modalService: LiquidityProvidingModalService
+    private readonly lpNotificationService: LiquidityProvidingNotificationService,
+    private readonly lpModalService: LiquidityProvidingModalService
   ) {}
 
   public collectReward(tokenId: string): void {
@@ -45,7 +45,7 @@ export class DepositsComponent {
       .subscribe(() => {
         this._processingTokenId$.next(undefined);
         this.lpService.setDepositsLoading(false);
-        this.notificationsService.showSuccessRewardsClaimNotification();
+        this.lpNotificationService.showSuccessRewardsClaimNotification();
       });
   }
 
@@ -56,12 +56,12 @@ export class DepositsComponent {
           if (isLpEnded) {
             return this.lpService.requestWithdraw(tokenId).pipe(
               finalize(() => {
-                this.notificationsService.showSuccessWithdrawRequestNotification();
+                this.lpNotificationService.showSuccessWithdrawRequestNotification();
                 this._processingTokenId$.next(undefined);
               })
             );
           } else {
-            return this.modalService.showRequestWithdrawModal(amount).pipe(
+            return this.lpModalService.showRequestWithdrawModal(amount).pipe(
               switchMap(result => {
                 if (result) {
                   this._processingTokenId$.next(tokenId);
@@ -87,7 +87,7 @@ export class DepositsComponent {
       .withdraw(tokenId)
       .pipe(finalize(() => this._processingTokenId$.next(undefined)))
       .subscribe(() => {
-        this.notificationsService.showSuccessWithdrawNotification();
+        this.lpNotificationService.showSuccessWithdrawNotification();
         this.lpService.setDepositsLoading(false);
       });
   }

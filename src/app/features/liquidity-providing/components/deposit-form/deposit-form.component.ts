@@ -87,7 +87,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly lpModalService: LiquidityProvidingModalService,
-    private readonly notificationService: LiquidityProvidingNotificationService,
+    private readonly lpNotificationService: LiquidityProvidingNotificationService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
     private readonly destroy$: TuiDestroyService,
@@ -146,7 +146,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(makeDeposit => {
         if (makeDeposit) {
-          this.notificationService.showSuccessDepositNotification();
+          this.lpNotificationService.showSuccessDepositNotification();
           this.router.navigate(['liquidity-providing']);
         }
       });
@@ -162,7 +162,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
         finalize(() => this._buttonLoading$.next(false))
       )
       .subscribe(() => {
-        this.notificationService.showSuccessApproveNotification();
+        this.lpNotificationService.showSuccessApproveNotification();
         this.cdr.detectChanges();
       });
   }

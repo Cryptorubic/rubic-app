@@ -14,6 +14,7 @@
       <app-progress
         [label]="'Total Staked (BRBC)'"
         [value]="totalStaked$ | async | bigNumberFormat: 2"
+        [initialValue]="5"
         [size]="poolSize"
         [loading]="loading"
       ></app-progress>
@@ -57,6 +58,7 @@
       <app-progress
         [label]="'You Staked (BRBC)'"
         [value]="usersTotalStaked$ | async | bigNumberFormat: 2"
+        [initialValue]="5"
         [size]="maxEnterAmount"
         [needLogin]="needLogin$ | async"
         [loading]="loading"

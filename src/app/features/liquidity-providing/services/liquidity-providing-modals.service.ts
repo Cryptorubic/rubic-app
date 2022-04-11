@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js';
 import { Observable } from 'rxjs';
 import { DepositModalComponent } from '../components/deposit-modal/deposit-modal.component';
 import { RequestWithdrawModalComponent } from '../components/request-withdraw-modal/request-withdraw-modal.component';
-import { WithdrawModalComponent } from '../components/withdraw-modal/withdraw-modal.component';
 
 @Injectable()
 export class LiquidityProvidingModalService {
@@ -28,9 +27,5 @@ export class LiquidityProvidingModalService {
         }
       }
     );
-  }
-
-  showWithdrawModal(): Observable<boolean> {
-    return this.dialogService.open<boolean>(new PolymorpheusComponent(WithdrawModalComponent));
   }
 }

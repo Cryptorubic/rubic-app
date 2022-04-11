@@ -63,7 +63,10 @@ export class DepositButtonComponent implements OnInit {
       .pipe(
         tap(([brbcAmount, brbcBalance]) => {
           this._error$.next(
-            this.lpService.checkDepositErrors(brbcAmount, { balance: brbcBalance, symbol: 'BRBC' })
+            this.lpService.checkDepositErrors(brbcAmount, {
+              balance: brbcBalance,
+              symbol: PoolToken.BRBC
+            })
           );
         })
       )
@@ -73,7 +76,10 @@ export class DepositButtonComponent implements OnInit {
       .pipe(
         tap(([usdcAmount, usdcBalance]) => {
           this._error$.next(
-            this.lpService.checkDepositErrors(usdcAmount, { balance: usdcBalance, symbol: 'USDC' })
+            this.lpService.checkDepositErrors(usdcAmount, {
+              balance: usdcBalance,
+              symbol: PoolToken.USDC
+            })
           );
         })
       )

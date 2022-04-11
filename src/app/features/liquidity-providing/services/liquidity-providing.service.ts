@@ -199,7 +199,7 @@ export class LiquidityProvidingService {
       filter<TransactionReceipt>(Boolean),
       tap(receipt => {
         if (receipt.status === false) {
-          this.notificationService.showErrorNotification(receipt.transactionHash);
+          this.lpNotificationService.showErrorNotification(receipt.transactionHash);
         }
       }),
       take(1)
@@ -214,7 +214,7 @@ export class LiquidityProvidingService {
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
     private readonly router: Router,
-    private readonly notificationService: LiquidityProvidingNotificationService
+    private readonly lpNotificationService: LiquidityProvidingNotificationService
   ) {
     this.watchWhitelist().subscribe();
   }
@@ -242,88 +242,12 @@ export class LiquidityProvidingService {
     );
   }
 
-  private getTotalRewards(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'viewRewardsTotal',
-        { methodArguments: [this.userAddress] }
-      )
-    ).pipe(
-      map(response => Web3Pure.fromWei(response)),
-      tap(rewards => this._rewardsToCollect$.next(rewards))
-    );
-  }
-
-  private getTotalCollectedRewards(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'viewCollectedRewardsTotal',
-        { methodArguments: [this.userAddress] }
-      )
-    ).pipe(
-      map(response => Web3Pure.fromWei(response)),
-      tap(rewards => this._totalCollectedRewards$.next(rewards))
-    );
-  }
-
-  private getUserTotalStaked(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'viewUSDCAmountOf',
-        { methodArguments: [this.userAddress] }
-      )
-    ).pipe(
-      map(response => Web3Pure.fromWei(response)),
-      tap(async userTotalStaked => {
-        const brbcUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
-          address: this.brbcAddress,
-          blockchain: this.blockchain
-        });
-        const balance = userTotalStaked.plus(userTotalStaked.multipliedBy(brbcUsdcPrice));
-        this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
-        this._balance$.next(balance);
-      })
-    );
-  }
-
   public getAprAndTotalStaked(): Observable<[string, BigNumber]> {
     this.setStatisticsLoading(true);
     return forkJoin([this.getApr(), this.getTotalStaked()]).pipe(
       catchError((error: unknown) => {
         this.errorService.catchAnyError(error as Error);
         return EMPTY;
-      })
-    );
-  }
-
-  private getApr(): Observable<string> {
-    return from(
-      this.web3PublicService[this.blockchain].callContractMethod<string>(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'apr'
-      )
-    ).pipe(tap(apr => this._apr$.next(this.parseApr(apr))));
-  }
-
-  private getTotalStaked(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
-        this.lpContractAddress,
-        LP_PROVIDING_CONTRACT_ABI,
-        'poolUSDC'
-      )
-    ).pipe(
-      map(response => Web3Pure.fromWei(response)),
-      tap(totalStaked => {
-        this.checkIsPoolFull(totalStaked.toNumber());
-        this._totalStaked$.next(totalStaked.toNumber());
       })
     );
   }
@@ -473,7 +397,7 @@ export class LiquidityProvidingService {
             return deposit;
           }
         });
-        this.notificationService.showSuccessWithdrawRequestNotification();
+        this.lpNotificationService.showSuccessWithdrawRequestNotification();
         this._deposits$.next(updatedDeposits);
       })
     );
@@ -513,10 +437,6 @@ export class LiquidityProvidingService {
         [tokenId]
       )
     ).pipe(
-      // catchError((error: unknown) => {
-      //   this.errorService.catchAnyError(error as Error);
-      //   return of(false);
-      // }),
       switchMap((hash: string) => this.waitForReceipt(hash as string)),
       switchMap(receipt => {
         if (receipt.status === false) {
@@ -537,10 +457,6 @@ export class LiquidityProvidingService {
         [tokenId]
       )
     ).pipe(
-      // catchError((error: unknown) => {
-      //   this.errorService.catchAnyError(error as Error);
-      //   return of(false);
-      // }),
       switchMap((hash: string) => this.waitForReceipt(hash as string)),
       switchMap(receipt => {
         if (receipt.status === false) {
@@ -580,7 +496,7 @@ export class LiquidityProvidingService {
 
   public checkDepositErrors(
     amount: BigNumber,
-    token: { balance: BigNumber; symbol: 'BRBC' | 'USDC' }
+    token: { balance: BigNumber; symbol: PoolToken }
   ): LpFormError | null {
     const totalStaked = this._totalStaked$.getValue();
 
@@ -601,7 +517,7 @@ export class LiquidityProvidingService {
     }
 
     if (token.balance && amount.gt(token.balance)) {
-      if (token.symbol === 'BRBC') {
+      if (token.symbol === PoolToken.BRBC) {
         return LpFormError.INSUFFICIENT_BALANCE_BRBC;
       } else {
         return LpFormError.INSUFFICIENT_BALANCE_USDC;
@@ -637,6 +553,86 @@ export class LiquidityProvidingService {
     this.router.navigate(['liquidity-providing', 'deposit']);
   }
 
+  public async switchNetwork(): Promise<boolean> {
+    return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+  }
+
+  private getTotalRewards(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewRewardsTotal',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(rewards => this._rewardsToCollect$.next(rewards))
+    );
+  }
+
+  private getTotalCollectedRewards(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewCollectedRewardsTotal',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(rewards => this._totalCollectedRewards$.next(rewards))
+    );
+  }
+
+  private getUserTotalStaked(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'viewUSDCAmountOf',
+        { methodArguments: [this.userAddress] }
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(async userTotalStaked => {
+        const brbcUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
+          address: this.brbcAddress,
+          blockchain: this.blockchain
+        });
+        const balance = userTotalStaked.plus(userTotalStaked.multipliedBy(brbcUsdcPrice));
+        this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
+        this._balance$.next(balance);
+      })
+    );
+  }
+
+  private getApr(): Observable<string> {
+    return from(
+      this.web3PublicService[this.blockchain].callContractMethod<string>(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'apr'
+      )
+    ).pipe(tap(apr => this._apr$.next(this.parseApr(apr))));
+  }
+
+  private getTotalStaked(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'poolUSDC'
+      )
+    ).pipe(
+      map(response => Web3Pure.fromWei(response)),
+      tap(totalStaked => {
+        this.checkIsPoolFull(totalStaked.toNumber());
+        this._totalStaked$.next(totalStaked.toNumber());
+      })
+    );
+  }
+
   private parseDeposits(deposits: DepositsResponse): TokenLpParsed[] {
     const { parsedArrayOfTokens, collectedRewards, rewardsToCollect, isWithdrawable } = deposits;
 
@@ -655,10 +651,6 @@ export class LiquidityProvidingService {
         period
       };
     });
-  }
-
-  public async switchNetwork(): Promise<boolean> {
-    return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
   private checkIsPoolFull(totalStaked: number): boolean {

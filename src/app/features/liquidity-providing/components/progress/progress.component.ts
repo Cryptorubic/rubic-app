@@ -13,6 +13,8 @@ export class ProgressComponent {
 
   @Input() value: number;
 
+  @Input() initialValue: number;
+
   @Input() loading: boolean = true;
 
   @Input() needLogin: boolean = false;
