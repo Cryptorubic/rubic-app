@@ -62,7 +62,9 @@ export class DepositButtonComponent implements OnInit {
     combineLatest([this.brbcAmount$, this.lpService.brbcBalance$])
       .pipe(
         tap(([brbcAmount, brbcBalance]) => {
-          this._error$.next(this.lpService.checkDepositErrors(brbcAmount, brbcBalance));
+          this._error$.next(
+            this.lpService.checkDepositErrors(brbcAmount, { balance: brbcBalance, symbol: 'BRBC' })
+          );
         })
       )
       .subscribe();
@@ -70,7 +72,9 @@ export class DepositButtonComponent implements OnInit {
     combineLatest([this.usdcAmount$, this.lpService.usdcBalance$])
       .pipe(
         tap(([usdcAmount, usdcBalance]) => {
-          this._error$.next(this.lpService.checkDepositErrors(usdcAmount, usdcBalance));
+          this._error$.next(
+            this.lpService.checkDepositErrors(usdcAmount, { balance: usdcBalance, symbol: 'USDC' })
+          );
         })
       )
       .subscribe();

@@ -26,23 +26,32 @@
   <ng-container
     *ngLet="{
       needBrbcApprove: needBrbcApprove$ | async,
-      needUsdcApprove: needUsdcApprove$ | async
-    } as approves"
+      needUsdcApprove: needUsdcApprove$ | async,
+      error: error$ | async
+    } as depositButtonValidation"
   >
-    <ng-container *ngIf="approves.needBrbcApprove || approves.needUsdcApprove; else stakeButton">
+    <ng-container
+      *ngIf="
+        (depositButtonValidation.needBrbcApprove || depositButtonValidation.needUsdcApprove) &&
+          depositButtonValidation.error === null;
+        else stakeButton
+      "
+    >
       <div class="approves">
         <app-rubic-button
           appearance="secondary"
+          [class.loading]="loading"
           (click)="onApprove.emit(poolToken.BRBC)"
-          [disabled]="!approves.needBrbcApprove"
+          [disabled]="loading || !depositButtonValidation.needBrbcApprove"
           [loading]="loading"
         >
           Approve BRBC
         </app-rubic-button>
         <app-rubic-button
           appearance="secondary"
+          [class.loading]="loading"
           (click)="onApprove.emit(poolToken.USDC)"
-          [disabled]="!approves.needUsdcApprove"
+          [disabled]="loading || !depositButtonValidation.needUsdcApprove"
           [loading]="loading"
         >
           Approve USDC
@@ -62,8 +71,11 @@
       <ng-container [ngSwitch]="error">
         <ng-container *ngSwitchCase="errors.LP_ENDED"> LP ended </ng-container>
         <ng-container *ngSwitchCase="errors.POOL_FULL"> Pool Fool </ng-container>
-        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE">
-          Insufficient balance
+        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_USDC">
+          Insufficient balance USDC
+        </ng-container>
+        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_BRBC">
+          Insufficient balance BRBC
         </ng-container>
         <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT">Empty amount</ng-container>
         <ng-container *ngSwitchCase="errors.LIMIT_GT_MAX">

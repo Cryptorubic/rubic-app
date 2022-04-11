@@ -572,7 +572,10 @@ export class LiquidityProvidingService {
     );
   }
 
-  public checkDepositErrors(amount: BigNumber, balance: BigNumber): LpFormError | null {
+  public checkDepositErrors(
+    amount: BigNumber,
+    token: { balance: BigNumber; symbol: 'BRBC' | 'USDC' }
+  ): LpFormError | null {
     const totalStaked = this._totalStaked$.getValue();
 
     if (this.isLpEneded) {
@@ -591,8 +594,12 @@ export class LiquidityProvidingService {
       return LpFormError.LIMIT_LT_MIN;
     }
 
-    if (balance && amount.gt(balance)) {
-      return LpFormError.INSUFFICIENT_BALANCE;
+    if (token.balance && amount.gt(token.balance)) {
+      if (token.symbol === 'BRBC') {
+        return LpFormError.INSUFFICIENT_BALANCE_BRBC;
+      } else {
+        return LpFormError.INSUFFICIENT_BALANCE_USDC;
+      }
     }
 
     if (!amount.isFinite()) {

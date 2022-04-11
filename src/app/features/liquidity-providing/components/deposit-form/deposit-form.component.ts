@@ -97,7 +97,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.brbcAmount$.pipe(skip(1), debounceTime(300)).subscribe(value => {
+    this.brbcAmount$.pipe(skip(1), debounceTime(150)).subscribe(value => {
       if (!value.isFinite()) {
         this.usdcAmountCtrl.reset();
         this._usdcDepositOpened$.next(false);
