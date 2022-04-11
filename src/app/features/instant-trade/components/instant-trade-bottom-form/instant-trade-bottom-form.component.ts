@@ -450,7 +450,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   private calculateTradeProfit(trade: InstantTrade): BigNumber {
     if (!trade) {
-      return new BigNumber(0);
+      return new BigNumber(-Infinity);
     }
 
     const { gasFeeInUsd, to } = trade;

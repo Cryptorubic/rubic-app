@@ -30,9 +30,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InstantTradeService {
   private static readonly unsupportedItNetworks: BlockchainName[] = [];
 

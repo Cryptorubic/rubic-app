@@ -31,11 +31,11 @@
       <ng-container
         *ngIf="providerPanelData.appearance !== 'small' && tradePanelData.gasFeeInEth?.isFinite()"
       >
-        {{ tradePanelData.gasFeeInEth.toFixed(5) }} ETH
+        {{ tradePanelData.gasFeeInEth | bigNumberFormat: 5 }} ETH
       </ng-container>
 
       <ng-container *ngIf="tradePanelData.gasFeeInUsd?.isFinite()">
-        ≈ ${{ tradePanelData.gasFeeInUsd.toFixed(2) }}
+        ≈ ${{ tradePanelData.gasFeeInUsd | bigNumberFormat: 2:true }}
       </ng-container>
 
       <div

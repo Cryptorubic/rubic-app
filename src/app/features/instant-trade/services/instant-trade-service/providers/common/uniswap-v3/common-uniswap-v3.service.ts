@@ -211,16 +211,18 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       isEth,
       deadline
     );
-    const estimatedGas = await this.web3Public
-      .getEstimatedGas(
-        this.swapRouterContract.abi,
-        this.swapRouterContract.address,
-        estimateGasParams.callData.contractMethod,
-        estimateGasParams.callData.params,
-        this.walletAddress,
-        estimateGasParams.callData.value
-      )
-      .catch(() => estimateGasParams.defaultGasLimit);
+    const estimatedGas = this.walletAddress
+      ? await this.web3Public
+          .getEstimatedGas(
+            this.swapRouterContract.abi,
+            this.swapRouterContract.address,
+            estimateGasParams.callData.contractMethod,
+            estimateGasParams.callData.params,
+            this.walletAddress,
+            estimateGasParams.callData.value
+          )
+          .catch(() => estimateGasParams.defaultGasLimit)
+      : estimateGasParams.defaultGasLimit;
     return {
       route,
       estimatedGas
@@ -245,6 +247,13 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
     const defaultEstimatedGas = swapEstimatedGas[route.poolsPath.length - 1].plus(
       isEth.to ? wethToEthEstimatedGas : 0
     );
+
+    if (!this.walletAddress) {
+      return {
+        callData: null,
+        defaultGasLimit: defaultEstimatedGas
+      };
+    }
 
     const { methodName, methodArguments } = this.getSwapRouterMethodData(
       route,

@@ -36,6 +36,10 @@ export abstract class ZrxService extends EthLikeInstantTradeProviderService {
   private readonly httpService = inject(HttpService);
   // Injected services end
 
+  private get slippageTolerance(): number {
+    return this.settings.slippageTolerance / 100;
+  }
+
   protected constructor(protected readonly blockchain: SupportedZrxBlockchain) {
     super(blockchain);
 
@@ -62,7 +66,7 @@ export abstract class ZrxService extends EthLikeInstantTradeProviderService {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
       sellAmount: Web3Pure.toWei(fromAmount, fromToken.decimals),
-      slippagePercentage: this.settings.slippageTolerance.toString()
+      slippagePercentage: this.slippageTolerance.toString()
     };
     if (AFFILIATE_ADDRESS) {
       params.affiliateAddress = AFFILIATE_ADDRESS;

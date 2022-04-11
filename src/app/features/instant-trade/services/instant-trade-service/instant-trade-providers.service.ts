@@ -33,9 +33,7 @@ import { RefFinanceService } from '@features/instant-trade/services/instant-trad
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { ZrxEthService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/zrx-eth-service/zrx-eth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InstantTradeProvidersService {
   public readonly providers: Partial<
     Record<BlockchainName, Partial<Record<INSTANT_TRADE_PROVIDER, ItProvider>>>

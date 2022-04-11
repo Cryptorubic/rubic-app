@@ -14,6 +14,10 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class NotificationsService {
+  private readonly LONG_DELAY = 15000;
+
+  private readonly SHORT_DELAY = 5000;
+
   constructor(
     @Inject(TuiNotificationsService)
     private readonly tuiNotificationsService: TuiNotificationsService,
@@ -40,14 +44,14 @@ export class NotificationsService {
   public showApproveSuccessful(options?: TuiNotificationOptions): Subscription {
     return this.show(this.translateService.instant('notifications.successApprove'), {
       status: options?.status ?? TuiNotification.Success,
-      autoClose: options?.autoClose ?? 15000
+      autoClose: options?.autoClose ?? this.LONG_DELAY
     });
   }
 
   public showOpenMobileWallet(options?: TuiNotificationOptions): Subscription {
     return this.show(this.translateService.instant('notifications.openMobileWallet'), {
       status: options?.status ?? TuiNotification.Info,
-      autoClose: options?.autoClose ?? 5000
+      autoClose: options?.autoClose ?? this.SHORT_DELAY
     });
   }
 }

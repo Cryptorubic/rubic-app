@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  OnDestroy,
   ViewChildren,
   QueryList,
   TemplateRef,
@@ -12,7 +11,7 @@ import {
   Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -22,6 +21,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile',
@@ -30,7 +30,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit, OnDestroy {
+export class UserProfileComponent implements AfterViewInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -66,26 +66,17 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public dropdownIsOpened = false;
 
-  private _onNetworkChanges$: Subscription;
-
-  private _onAddressChanges$: Subscription;
-
   public dropdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
 
   ngAfterViewInit(): void {
-    this._onNetworkChanges$ = this.walletConnectorService.networkChange$.subscribe(network => {
+    this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(network => {
       this.currentBlockchain = network;
       this.cdr.markForCheck();
     });
-    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(address => {
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
       this.authService.setCurrentUser(address);
       this.cdr.markForCheck();
     });
-  }
-
-  ngOnDestroy(): void {
-    this._onNetworkChanges$.unsubscribe();
-    this._onAddressChanges$.unsubscribe();
   }
 
   public logout(): void {

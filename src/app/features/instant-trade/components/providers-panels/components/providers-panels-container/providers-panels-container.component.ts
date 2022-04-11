@@ -13,4 +13,8 @@ export class ProvidersPanelsContainerComponent {
   @Output() public onSelectProvider = new EventEmitter<InstantTradeProviderData>();
 
   public showAllProviders = false;
+
+  public trackByFn(_index: number, item: InstantTradeProviderData): string {
+    return item.name + item.tradeStatus + item.isSelected + item.trade?.to.amount;
+  }
 }
