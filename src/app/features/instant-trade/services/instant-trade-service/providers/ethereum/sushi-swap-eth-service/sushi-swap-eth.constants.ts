@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 
 const sushiSwapContractAddress = '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F';
 

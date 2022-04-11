@@ -2,6 +2,11 @@ import { AbiItem } from 'web3-utils';
 
 export const IT_PROXY_FEE_CONTRACT_ADDRESS = '0x90A23d6d6A857C9749d57c5a6d2935AA17C19C19';
 
+/**
+ * Amount of fee for iframe referral program.
+ */
+export const IT_PROXY_FEE = 0.003;
+
 export enum IT_PROXY_FEE_CONTRACT_METHOD {
   SWAP = 'swap',
   SWAP_WITH_PROMOTER = 'swapWithPromoter'

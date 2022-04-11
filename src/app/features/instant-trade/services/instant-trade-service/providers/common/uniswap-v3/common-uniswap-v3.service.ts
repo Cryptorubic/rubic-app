@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { compareAddresses } from '@shared/utils/utils';
 import { MethodData } from '@shared/models/blockchain/method-data';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/is-eth-from-or-to';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
 import {
@@ -21,30 +21,22 @@ import {
   swapEstimatedGas,
   wethToEthEstimatedGas
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/constants/estimated-gas';
-import { GasService } from '@core/services/gas-service/gas.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 import { MAX_TRANSIT_POOL } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.constants';
 import { UniswapV3Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-constants';
 import { UNISWAP_V3_SWAP_ROUTER_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/constants/swap-router-contract-data';
 import { UNISWAP_V3_QUOTER_CONTRACT } from './constants/quoter-contract-data';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
 @Injectable()
 export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraService {
-  public readonly providerType = INSTANT_TRADES_PROVIDERS.UNISWAP_V3;
+  public readonly providerType = INSTANT_TRADE_PROVIDER.UNISWAP_V3;
 
   protected readonly unwrapWethMethodName = 'unwrapWETH9';
 
-  private readonly gasMargin = 1.2;
-
   private readonly quoterController: UniSwapV3QuoterController;
-
-  private readonly gasService = inject(GasService);
-
-  private readonly tokensService = inject(TokensService);
 
   protected constructor(uniswapV3Constants: UniswapV3Constants) {
     super({
@@ -53,7 +45,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
     });
 
     this.quoterController = new UniSwapV3QuoterController(
-      this.blockchainAdapter,
+      this.web3Public,
       UNISWAP_V3_QUOTER_CONTRACT,
       uniswapV3Constants.routerTokens,
       uniswapV3Constants.routerLiquidityPools
@@ -182,7 +174,7 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
+        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
           this.swapRouterContract.abi,
           this.swapRouterContract.address,
           this.walletAddress,
@@ -219,16 +211,18 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
       isEth,
       deadline
     );
-    const estimatedGas = await this.blockchainAdapter
-      .getEstimatedGas(
-        this.swapRouterContract.abi,
-        this.swapRouterContract.address,
-        estimateGasParams.callData.contractMethod,
-        estimateGasParams.callData.params,
-        this.walletAddress,
-        estimateGasParams.callData.value
-      )
-      .catch(() => estimateGasParams.defaultGasLimit);
+    const estimatedGas = this.walletAddress
+      ? await this.web3Public
+          .getEstimatedGas(
+            this.swapRouterContract.abi,
+            this.swapRouterContract.address,
+            estimateGasParams.callData.contractMethod,
+            estimateGasParams.callData.params,
+            this.walletAddress,
+            estimateGasParams.callData.value
+          )
+          .catch(() => estimateGasParams.defaultGasLimit)
+      : estimateGasParams.defaultGasLimit;
     return {
       route,
       estimatedGas
@@ -253,6 +247,13 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
     const defaultEstimatedGas = swapEstimatedGas[route.poolsPath.length - 1].plus(
       isEth.to ? wethToEthEstimatedGas : 0
     );
+
+    if (!this.walletAddress) {
+      return {
+        callData: null,
+        defaultGasLimit: defaultEstimatedGas
+      };
+    }
 
     const { methodName, methodArguments } = this.getSwapRouterMethodData(
       route,

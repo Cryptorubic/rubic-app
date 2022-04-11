@@ -44,7 +44,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
-import { INSTANT_TRADES_PROVIDERS } from '@app/shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SmartRouting } from './models/smart-routing.interface';
 
 interface TradeAndToAmount {
@@ -910,7 +910,7 @@ export class CrossChainRoutingService {
   private getProviderType(
     blockchain: SupportedCrossChainBlockchain,
     providerIndex: number
-  ): INSTANT_TRADES_PROVIDERS {
+  ): INSTANT_TRADE_PROVIDER {
     return this.contracts[blockchain].getProvider(providerIndex).providerType;
   }
 }

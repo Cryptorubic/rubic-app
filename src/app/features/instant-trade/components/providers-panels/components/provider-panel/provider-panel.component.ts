@@ -1,10 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
-import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
-import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
+import { INSTANT_TRADE_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
+import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
+import { TradePanelData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-panel-data';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { ProviderPanelData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 
 @Component({
   selector: 'app-provider-panel',
@@ -12,112 +20,64 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
   styleUrls: ['./provider-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderPanelComponent {
-  @Input() public providerIndex: number;
+export class ProviderPanelComponent implements OnInit {
+  @Input() public providerData: InstantTradeProviderData;
 
-  /**
-   * Setup provider data.
-   * @param data provider controller data.
-   */
-  @Input() public set providerControllerData(data: ProviderControllerData) {
-    this.calculateProviderState(data);
-  }
+  @Input() public isBestProvider = false;
 
-  /**
-   * Provider selection event.
-   */
-  @Output() public selectProvider: EventEmitter<void>;
+  @Output() private onSelectProvider = new EventEmitter<void>();
 
-  /**
-   * Trade data.
-   */
-  public tradeData: TradeData;
+  public tradePanelData: TradePanelData;
 
-  /**
-   * Provider data.
-   */
-  public providerData: ProviderData;
+  public providerPanelData: ProviderPanelData;
 
-  /**
-   * Error translate key.
-   */
   public errorTranslateKey: string;
 
-  public get isBestRate(): boolean {
-    return this.providerIndex === 0;
+  ngOnInit() {
+    this.setupProviderPanelData();
   }
 
-  constructor() {
-    this.selectProvider = new EventEmitter<void>();
-  }
-
-  /**
-   * Emit provider selection event to parent component.
-   */
-  public activateProvider(): void {
-    if (!this.providerData.loading) {
-      this.selectProvider.emit();
-    }
-  }
-
-  /**
-   * @desc Calculate provider state based on controller status.
-   * @param data Provider controller data.
-   */
-  private calculateProviderState(data: ProviderControllerData): void {
-    const hasError = data.tradeState === INSTANT_TRADES_STATUS.ERROR;
-    this.providerData = {
-      name: data.tradeProviderInfo.label,
-      isActive: data.isSelected,
+  private setupProviderPanelData(): void {
+    const data = this.providerData;
+    const hasError = data.tradeStatus === INSTANT_TRADE_STATUS.ERROR;
+    this.providerPanelData = {
+      label: data.label,
+      isSelected: data.isSelected,
       hasError,
-      loading: this.calculateLoadingStatus(data.tradeState),
-      appearance: this.providerIndex === 0 ? 'normal' : 'small'
+      loading:
+        data.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION ||
+        data.tradeStatus === INSTANT_TRADE_STATUS.TX_IN_PROGRESS,
+      appearance: this.isBestProvider ? 'normal' : 'small'
     };
 
     if (hasError) {
       this.setupError(data.error);
-    } else {
-      this.setupProviderData(data);
+    } else if (data.trade) {
+      this.setupTradePanelData(data.trade);
     }
   }
 
-  /**
-   * Calculates loading state.
-   * @param tradeState Instant trade status.
-   * @return isLoading Is instant trade currently loading.
-   */
-  private calculateLoadingStatus(tradeState: INSTANT_TRADES_STATUS): boolean {
-    switch (tradeState) {
-      case INSTANT_TRADES_STATUS.CALCULATION:
-      case INSTANT_TRADES_STATUS.TX_IN_PROGRESS: {
-        return true;
-      }
-      default: {
-        return false;
-      }
-    }
-  }
-
-  /**
-   * Transform input controller data to comfortable.
-   * @param data Provider controller data.
-   */
-  private setupProviderData(data: ProviderControllerData): void {
-    this.tradeData = {
-      blockchain: data?.trade?.blockchain,
-      amount: data?.trade?.to?.amount,
-      gasLimit: data?.trade?.gasLimit,
-      gasFeeInUsd: data?.trade?.gasFeeInUsd,
-      gasFeeInEth: data?.trade?.gasFeeInEth
+  private setupTradePanelData(trade: InstantTrade): void {
+    this.tradePanelData = {
+      blockchain: trade.blockchain,
+      amount: trade.to.amount,
+      gasLimit: trade.gasLimit,
+      gasFeeInUsd: trade.gasFeeInUsd,
+      gasFeeInEth: trade.gasFeeInEth
     };
   }
 
-  /**
-   * Setup errors in current instant trade.
-   * @param error Provider error.
-   */
   private setupError(error: RubicError<ERROR_TYPE>): void {
     this.errorTranslateKey =
       error?.type === ERROR_TYPE.TEXT ? error.translateKey || error.message : 'errors.rubicError';
+  }
+
+  /**
+   * Emits provider selection event to parent component.
+   */
+  public selectProvider(): void {
+    if (!this.providerPanelData.hasError && !this.providerPanelData.loading) {
+      this.onSelectProvider.emit();
+    }
   }
 }
