@@ -32,6 +32,8 @@ export class LpLandingComponent implements OnInit {
 
   public readonly isLpEnded = this.lpService.isLpEneded;
 
+  public readonly isPoolFull = this.lpService.isPoolFull;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly walletsModalService: WalletsModalService,

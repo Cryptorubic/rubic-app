@@ -188,6 +188,8 @@ export class LiquidityProvidingService {
 
   public whitelistEndTime: Date;
 
+  public isPoolFull: boolean = false;
+
   private waitForReceipt = (hash: string) => {
     return interval(3000).pipe(
       switchMap(async () => {
@@ -314,7 +316,10 @@ export class LiquidityProvidingService {
       )
     ).pipe(
       map(response => Web3Pure.fromWei(response)),
-      tap(totalStaked => this._totalStaked$.next(totalStaked.toNumber()))
+      tap(totalStaked => {
+        this.checkIsPoolFull(totalStaked.toNumber());
+        this._totalStaked$.next(totalStaked.toNumber());
+      })
     );
   }
 
@@ -653,6 +658,10 @@ export class LiquidityProvidingService {
 
   public async switchNetwork(): Promise<boolean> {
     return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+  }
+
+  private checkIsPoolFull(totalStaked: number): boolean {
+    return this.poolSize - totalStaked > this.minEnterAmount;
   }
 
   private parseApr(apr: string): number {

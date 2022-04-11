@@ -24,6 +24,10 @@ export class DepositsComponent {
 
   public readonly processingTokenId$ = this._processingTokenId$.asObservable();
 
+  public readonly isPoolFull = this.lpService.isPoolFull;
+
+  public readonly isLpEnded = this.lpService.isLpEneded;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly notificationsService: LiquidityProvidingNotificationService,

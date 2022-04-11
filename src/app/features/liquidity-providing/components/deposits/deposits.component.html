@@ -8,8 +8,11 @@
           appearance="secondary"
           (click)="navigateToDepositForm(false)"
           size="s"
+          [disabled]="isPoolFull || isLpEnded"
         >
-          Create deposit
+          <ng-container *ngIf="isPoolFull"> Pool Is Full </ng-container>
+          <ng-container *ngIf="isLpEnded"> LP Round Ended </ng-container>
+          <ng-container *ngIf="!isPoolFull && !isLpEnded"> Create deposit </ng-container>
         </app-rubic-button>
       </div>
     </div>

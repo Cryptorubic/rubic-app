@@ -74,8 +74,11 @@
         class="lp-steps__create"
         appearance="secondary"
         (onClick)="navigateToDepositForm(depositType.REGULAR)"
+        [disabled]="isLpEnded || isPoolFull"
       >
-        {{ isLpEnded ? 'Calculate deposit' : 'CreateDeposit' }}
+        <ng-container *ngIf="isLpEnded"> LP Round Ended </ng-container>
+        <ng-container *ngIf="isPoolFull">Pool Is Full</ng-container>
+        <ng-container *ngIf="!isLpEnded && !isPoolFull">Create deposit</ng-container>
       </app-rubic-button>
     </ng-container>
   </ng-template>

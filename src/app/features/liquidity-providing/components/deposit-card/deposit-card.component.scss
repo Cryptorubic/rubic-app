@@ -10,12 +10,24 @@
   border-radius: 16px;
   cursor: pointer;
 
+  @include b($tablet) {
+    height: auto;
+
+    &__content {
+      margin-bottom: 20px;
+    }
+  }
+
   &__actions {
     position: absolute;
     right: 18px;
     bottom: 18px;
 
     display: flex;
+
+    @include b($tablet) {
+      position: initial;
+    }
 
     ::ng-deep app-rubic-button {
       @include font(16px, 19px, 500, var(--rubic-base-02));
