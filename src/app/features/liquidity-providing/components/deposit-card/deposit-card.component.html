@@ -3,6 +3,11 @@
     <div class="deposit-card__statuses">
       <app-status-badge
         class="status"
+        type="info"
+        [text]="deposit.start | functionCall: getStartTime:this"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
         *ngIf="deposit.isWhitelisted"
         type="active"
         [text]="'Whitelist'"
@@ -13,6 +18,7 @@
         type="warning"
         [text]="'Processing'"
       ></app-status-badge>
+      <!-- (deposit.start | date: 'dd LLLL') + 'at' + deposit.start | date: 'shortTime' -->
       <app-status-badge
         class="status"
         *ngIf="deposit.isStaked"
@@ -20,14 +26,11 @@
         [text]="'Active'"
       ></app-status-badge>
     </div>
-    <div class="deposit-card__front">
+    <div class="deposit-card__content">
       <div class="deposit-card__title">
         <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
         <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
         BRBC-USDC
-        <div class="deposit-card__title-start">
-          {{ deposit.start | date: 'dd LLLL' }} at {{ deposit.start | date: 'shortTime' }}
-        </div>
       </div>
       <div class="deposit-card__stats">
         <div class="stat">
@@ -48,55 +51,36 @@
         </div>
       </div>
     </div>
-    <div
-      class="deposit-card__back"
-      [ngClass]="{ 'deposit-card__back_active': true, 'deposit-card__back_closed': false }"
-    >
-      <div class="deposit-card__back-amounts">
-        <div class="deposit-card__amount">
-          <div class="deposit-card__amount-name">Collect now</div>
-          <div class="deposit-card__amount-value">
-            {{
-              deposit.rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
-            }}
-            USDC
-          </div>
-        </div>
-        <div class="deposit-card__amount">
-          <div class="deposit-card__amount-name">Total collected</div>
-          <div class="deposit-card__amount-value">
-            {{
-              deposit.collectedRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
-            }}
-            USDC
-          </div>
-        </div>
-      </div>
-      <div class="deposit-card__back-actions">
+    <div class="deposit-card__actions">
+      <app-rubic-button
+        [disabled]="deposit.rewardsToCollect.isZero()"
+        (onClick)="onCollectRewards.emit()"
+        appearance="primary"
+      >
+        Collect rewards
+        {{
+          deposit.rewardsToCollect
+            ? (deposit.rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : '--.--'
+        }}
+        $
+      </app-rubic-button>
+      <app-rubic-button
+        *ngIf="deposit.isStaked; else withdraw"
+        (onClick)="onRequestWithdraw.emit()"
+        appearance="outline"
+      >
+        Request withdraw
+      </app-rubic-button>
+      <ng-template #withdraw>
         <app-rubic-button
-          [disabled]="deposit.rewardsToCollect.isZero()"
-          (onClick)="onCollectRewards.emit()"
           appearance="primary"
+          [disabled]="!deposit.canWithdraw"
+          (onClick)="onWithdraw.emit()"
         >
-          Collect rewards
+          Withdraw
         </app-rubic-button>
-        <app-rubic-button
-          *ngIf="deposit.isStaked; else withdraw"
-          (onClick)="onRequestWithdraw.emit()"
-          appearance="primary"
-        >
-          Request withdraw
-        </app-rubic-button>
-        <ng-template #withdraw>
-          <app-rubic-button
-            appearance="primary"
-            [disabled]="!deposit.canWithdraw"
-            (onClick)="onWithdraw.emit()"
-          >
-            Withdraw
-          </app-rubic-button>
-        </ng-template>
-      </div>
+      </ng-template>
     </div>
   </div>
 </tui-loader>
