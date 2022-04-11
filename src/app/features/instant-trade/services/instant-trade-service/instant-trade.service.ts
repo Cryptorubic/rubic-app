@@ -67,6 +67,9 @@ import { TrisolarisAuroraService } from '@features/instant-trade/services/instan
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { SushiSwapTelosService } from '@features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
+import { ZappyService } from '@features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
+import { OmnidexService } from '@features/instant-trade/services/instant-trade-service/providers/telos/omnidex-service/omnidex.service';
 
 @Injectable({
   providedIn: 'root'
@@ -142,6 +145,10 @@ export class InstantTradeService {
     private readonly raydiumService: RaydiumService,
     // Near.
     private readonly refFinanceService: RefFinanceService,
+    // Telos.
+    private readonly sushiSwapTelosService: SushiSwapTelosService,
+    private readonly zappyService: ZappyService,
+    private readonly omnidexService: OmnidexService,
     // Providers end.
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
@@ -214,6 +221,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.NEAR]: {
         [INSTANT_TRADES_PROVIDERS.REF]: this.refFinanceService
+      },
+      [BLOCKCHAIN_NAME.TELOS]: {
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapTelosService,
+        [INSTANT_TRADES_PROVIDERS.ZAPPY]: this.zappyService,
+        [INSTANT_TRADES_PROVIDERS.OMNIDEX]: this.omnidexService
       }
     };
   }

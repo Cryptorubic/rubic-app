@@ -532,7 +532,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',
-      [BLOCKCHAIN_NAME.AURORA]: 'aurora'
+      [BLOCKCHAIN_NAME.AURORA]: 'aurora',
+      [BLOCKCHAIN_NAME.TELOS]: 'telos'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]

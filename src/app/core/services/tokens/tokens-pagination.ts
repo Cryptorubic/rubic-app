@@ -12,5 +12,6 @@ export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.ARBITRUM]: { page: 1, maxPage: 1 },
   [BLOCKCHAIN_NAME.AURORA]: { page: 1, maxPage: 1 },
   [BLOCKCHAIN_NAME.SOLANA]: { page: 1, maxPage: 2 },
-  [BLOCKCHAIN_NAME.NEAR]: { page: 1, maxPage: 1 }
+  [BLOCKCHAIN_NAME.NEAR]: { page: 1, maxPage: 1 },
+  [BLOCKCHAIN_NAME.TELOS]: { page: 1, maxPage: 1 }
 };

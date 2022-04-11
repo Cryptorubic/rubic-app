@@ -39,6 +39,9 @@ import { TrisolarisAuroraService } from '@features/instant-trade/services/instan
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { NearContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { SushiSwapTelosService } from '@features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
+import { ZappyService } from '@features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
+import { OmnidexService } from '@features/instant-trade/services/instant-trade-service/providers/telos/omnidex-service/omnidex.service';
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +96,10 @@ export class ContractsDataService {
     private readonly raydiumService: RaydiumService,
     // Near.
     private readonly refFinanceService: RefFinanceService,
+    // Telos.
+    private readonly sushiSwapTelosService: SushiSwapTelosService,
+    private readonly zappyService: ZappyService,
+    private readonly omnidexService: OmnidexService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
@@ -286,6 +293,26 @@ export class ContractsDataService {
           }
         ],
         9,
+        this.publicBlockchainAdapterService
+      ),
+      // @TODO Telos.
+      [BLOCKCHAIN_NAME.TELOS]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.TELOS,
+        [
+          {
+            provider: this.sushiSwapTelosService,
+            methodSuffix: '1'
+          },
+          {
+            provider: this.zappyService,
+            methodSuffix: 'Z'
+          },
+          {
+            provider: this.omnidexService,
+            methodSuffix: 'Omni'
+          }
+        ],
+        12,
         this.publicBlockchainAdapterService
       )
     };
