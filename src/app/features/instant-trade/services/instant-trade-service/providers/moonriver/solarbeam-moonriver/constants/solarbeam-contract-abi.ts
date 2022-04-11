@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-const SolarBeamContractAbi = [
+export const SOLARBEAM_CONTRACT_ABI = [
   {
     type: 'function',
     stateMutability: 'view',
@@ -100,5 +100,3 @@ const SolarBeamContractAbi = [
     ]
   }
 ] as AbiItem[];
-
-export default SolarBeamContractAbi;

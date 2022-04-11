@@ -1,96 +1,52 @@
-import { Injectable } from '@angular/core';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  EthLikeBlockchainName
-} from '@shared/models/blockchain/blockchain-name';
+import { inject, Injectable } from '@angular/core';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { catchError, map, startWith } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { from, Observable, of } from 'rxjs';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import networks from 'src/app/shared/constants/blockchain/networks';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import {
-  ItSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TransactionReceipt } from 'web3-eth';
 import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { OneinchSwapResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-swap-response';
-import { OneinchQuoteResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-quote-response';
-import { OneinchTokensResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-tokens-response';
-import { OneinchQuoteRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-quote-request';
-import { OneinchSwapRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-swap-request';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { OneinchSwapResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-swap-response';
+import { OneinchQuoteResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-quote-response';
+import { OneinchTokensResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-tokens-response';
+import { OneinchQuoteRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-quote-request';
+import { OneinchSwapRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-swap-request';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { OneinchQuoteError } from '@core/errors/models/provider/oneinch-quote-error';
-import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
+import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { RequiredField } from '@shared/models/utility-types/required-field';
+import { EthLikeInstantTradeProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
-interface SupportedTokens {
-  [BLOCKCHAIN_NAME.ETHEREUM]: string[];
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: string[];
-  [BLOCKCHAIN_NAME.POLYGON]: string[];
-  [BLOCKCHAIN_NAME.ARBITRUM]: string[];
-}
+@Injectable()
+export abstract class CommonOneinchService extends EthLikeInstantTradeProviderService {
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CommonOneinchService {
-  public readonly contractAddress: string;
+  public readonly contractAddress = '0x1111111254fb6c44bac0bed2854e76f90643097d';
 
-  private readonly oneInchNativeAddress: string;
+  public readonly gasMargin = 1; // 100%
 
-  private readonly apiBaseUrl: string;
+  private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
-  private readonly supportedTokens: SupportedTokens;
+  private readonly apiBaseUrl = 'https://api.1inch.exchange/v4.0/';
 
-  private walletAddress: string;
+  private supportedTokens: string[] = [];
 
-  private settings: ItSettingsForm;
+  // Injected services start
+  private readonly httpClient = inject(HttpClient);
+  // Injected services end
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3Private: EthLikeWeb3PrivateService,
-    private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService,
-    private readonly tokensService: TokensService
-  ) {
-    this.contractAddress = '0x1111111254fb6c44bac0bed2854e76f90643097d';
-    this.oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-    this.apiBaseUrl = 'https://api.1inch.exchange/v4.0/';
-
-    this.supportedTokens = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: [],
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [],
-      [BLOCKCHAIN_NAME.POLYGON]: [],
-      [BLOCKCHAIN_NAME.ARBITRUM]: []
-    };
-
-    this.authService.getCurrentUser().subscribe(user => {
-      this.walletAddress = user?.address;
-    });
-
-    this.settingsService.instantTradeValueChanges
-      .pipe(startWith(this.settingsService.instantTradeValue))
-      .subscribe(settingsForm => {
-        this.settings = settingsForm;
-      });
+  protected constructor(blockchain: EthLikeBlockchainName) {
+    super(blockchain);
   }
 
   private getOneInchTokenSpecificAddresses(
@@ -106,13 +62,12 @@ export class CommonOneinchService {
     return { fromTokenAddress, toTokenAddress };
   }
 
-  private async getSupportedTokensByBlockchain(blockchain: BlockchainName): Promise<string[]> {
-    blockchain = blockchain as keyof SupportedTokens;
-    if (this.supportedTokens[blockchain].length) {
-      return this.supportedTokens[blockchain];
+  private async getSupportedTokensByBlockchain(): Promise<string[]> {
+    if (this.supportedTokens.length) {
+      return this.supportedTokens;
     }
 
-    const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
+    const blockchainId = BlockchainsInfo.getBlockchainByName(this.blockchain).id;
     const supportedTokensByBlockchain = await this.httpClient
       .get(`${this.apiBaseUrl}${blockchainId}/tokens`)
       .pipe(
@@ -121,46 +76,12 @@ export class CommonOneinchService {
         )
       )
       .toPromise();
-    this.supportedTokens[blockchain] = supportedTokensByBlockchain;
+    this.supportedTokens = supportedTokensByBlockchain;
 
     return supportedTokensByBlockchain;
   }
 
-  public getAllowance(
-    blockchain: EthLikeBlockchainName,
-    tokenAddress: string,
-    targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
-    if (blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-
-    return from(
-      blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
-  }
-
-  public async approve(
-    blockchain: EthLikeBlockchainName,
-    tokenAddress: string,
-    options: TransactionOptions,
-    targetContractAddress = this.contractAddress
-  ): Promise<void> {
-    this.walletConnectorService.checkSettings(blockchain);
-
-    await this.web3Private.approveTokens(tokenAddress, targetContractAddress, 'infinity', options);
-  }
-
   public async calculateTrade(
-    blockchain: EthLikeBlockchainName,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
@@ -172,7 +93,7 @@ export class CommonOneinchService {
       toToken.address
     );
 
-    const supportedTokensAddresses = await this.getSupportedTokensByBlockchain(blockchain);
+    const supportedTokensAddresses = await this.getSupportedTokensByBlockchain();
     if (
       !supportedTokensAddresses.includes(fromTokenAddress.toLowerCase()) ||
       !supportedTokensAddresses.includes(toTokenAddress.toLowerCase())
@@ -182,7 +103,6 @@ export class CommonOneinchService {
 
     const amountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
     const { estimatedGas, toTokenAmount, path, data } = await this.getTradeInfo(
-      blockchain,
       fromTokenAddress,
       toTokenAddress,
       amountAbsolute,
@@ -191,7 +111,7 @@ export class CommonOneinchService {
     );
 
     const instantTrade: OneinchInstantTrade = {
-      blockchain,
+      blockchain: this.blockchain,
       from: {
         token: fromToken,
         amount: fromAmount
@@ -207,27 +127,21 @@ export class CommonOneinchService {
       return instantTrade;
     }
 
-    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
-    const gasPrice = await blockchainAdapter.getGasPrice();
-    const gasPriceInEth = Web3Pure.fromWei(gasPrice);
+    const gasPriceInEth = await this.gasService.getGasPriceInEthUnits(this.blockchain);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
-    const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+    const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return {
       ...instantTrade,
       gasLimit: estimatedGas.toFixed(0),
-      gasPrice,
+      gasPrice: Web3Pure.toWei(gasPriceInEth),
       gasFeeInUsd,
       gasFeeInEth
     };
   }
 
   private async getTradeInfo(
-    blockchain: EthLikeBlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string,
     amountAbsolute: string,
@@ -239,7 +153,7 @@ export class CommonOneinchService {
     path: SymbolToken[];
     data: string | null;
   }> {
-    const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
+    const blockchainId = BlockchainsInfo.getBlockchainByName(this.blockchain).id;
     const quoteTradeParams: OneinchQuoteRequest = {
       params: {
         fromTokenAddress,
@@ -262,7 +176,7 @@ export class CommonOneinchService {
 
       if (shouldCalculateGas) {
         if (fromTokenAddress !== this.oneInchNativeAddress) {
-          const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
+          const allowance = await this.getAllowance(fromTokenAddress);
           if (new BigNumber(amountAbsolute).gt(allowance)) {
             throw new CustomError('User have no allowance');
           }
@@ -296,7 +210,7 @@ export class CommonOneinchService {
       toTokenAmount = oneInchTrade.toTokenAmount;
     }
 
-    const path = await this.extractPath(blockchain, fromTokenAddress, toTokenAddress, oneInchTrade);
+    const path = await this.extractPath(fromTokenAddress, toTokenAddress, oneInchTrade);
 
     return { estimatedGas, toTokenAmount, path, data };
   }
@@ -306,7 +220,6 @@ export class CommonOneinchService {
    * @return Promise<SymbolToken[]> Tokens array, used in the route.
    */
   private async extractPath(
-    blockchain: EthLikeBlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string,
     oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse
@@ -321,7 +234,7 @@ export class CommonOneinchService {
         wrappedTokenAddress === this.oneInchNativeAddress
           ? NATIVE_TOKEN_ADDRESS
           : wrappedTokenAddress;
-      let symbol = await this.tokensService.getTokenSymbol(blockchain, tokenAddress);
+      let symbol = await this.tokensService.getTokenSymbol(this.blockchain, tokenAddress);
       if (
         index !== 0 &&
         index !== addressesPath.length - 1 &&
@@ -349,7 +262,7 @@ export class CommonOneinchService {
   ): Promise<TransactionReceipt> {
     const transactionOptions = await this.checkAndGetTradeData(trade, options);
 
-    return this.web3Private.trySendTransaction(
+    return this.web3PrivateService.trySendTransaction(
       transactionOptions.to,
       transactionOptions.value,
       transactionOptions
@@ -372,8 +285,7 @@ export class CommonOneinchService {
     const { blockchain } = trade;
     this.walletConnectorService.checkSettings(blockchain);
 
-    const web3Public = this.publicBlockchainAdapterService[trade.blockchain];
-    await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
+    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       trade.from.token.address,
