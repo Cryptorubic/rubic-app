@@ -67,7 +67,6 @@ export class DepositsComponent {
                   this._processingTokenId$.next(tokenId);
                   return this.lpService.requestWithdraw(tokenId).pipe(
                     finalize(() => {
-                      this.notificationsService.showSuccessWithdrawRequestNotification();
                       this._processingTokenId$.next(undefined);
                     })
                   );
@@ -89,6 +88,7 @@ export class DepositsComponent {
       .pipe(finalize(() => this._processingTokenId$.next(undefined)))
       .subscribe(() => {
         this.notificationsService.showSuccessWithdrawNotification();
+        this.lpService.setDepositsLoading(false);
       });
   }
 

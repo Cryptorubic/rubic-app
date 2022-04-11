@@ -19,7 +19,7 @@ import {
 } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Router } from '@angular/router';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
@@ -129,15 +129,12 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public createDeposit(): void {
     const amount = this.lpService.parseInputValue(this.usdcAmountCtrl.value);
-    let depositInProgressNotification$: Subscription;
 
     this.lpModalService
       .showDepositModal(amount)
       .pipe(
         switchMap(result => {
           if (result) {
-            depositInProgressNotification$ =
-              this.notificationService.showDepositInProgressNotification();
             this._buttonLoading$.next(true);
             return this.lpService
               .createDeposit(amount)
@@ -149,7 +146,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(makeDeposit => {
         if (makeDeposit) {
-          depositInProgressNotification$?.unsubscribe();
           this.notificationService.showSuccessDepositNotification();
           this.router.navigate(['liquidity-providing']);
         }
@@ -158,8 +154,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public approveTokens(token: PoolToken): void {
     this._buttonLoading$.next(true);
-    const approveInProgressNotification$ =
-      this.notificationService.showApproveInProgressNotification();
 
     this.lpService
       .approvePoolToken(token)
@@ -168,7 +162,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
         finalize(() => this._buttonLoading$.next(false))
       )
       .subscribe(() => {
-        approveInProgressNotification$.unsubscribe();
         this.notificationService.showSuccessApproveNotification();
         this.cdr.detectChanges();
       });

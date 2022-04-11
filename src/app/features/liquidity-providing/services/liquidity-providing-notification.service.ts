@@ -1,35 +1,21 @@
 import { Injectable } from '@angular/core';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { UnknownError } from '@app/core/errors/models/unknown.error';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiNotification } from '@taiga-ui/core';
-import { Subscription } from 'rxjs';
 
 @Injectable()
 export class LiquidityProvidingNotificationService {
   constructor(
     private readonly notificationsService: NotificationsService,
+    private readonly errorService: ErrorsService,
     private readonly translate: TranslateService
   ) {}
-
-  public showApproveInProgressNotification(): Subscription {
-    return this.notificationsService.show(
-      this.translate.instant('notifications.approveInProgress'),
-      {
-        status: TuiNotification.Info
-      }
-    );
-  }
 
   public showSuccessApproveNotification(): void {
     this.notificationsService.show(this.translate.instant('notifications.successApprove'), {
       status: TuiNotification.Success,
-      autoClose: 5000
-    });
-  }
-
-  public showDepositInProgressNotification(): Subscription {
-    return this.notificationsService.show(this.translate.instant('notifications.stakeInProgress'), {
-      status: TuiNotification.Info,
       autoClose: 5000
     });
   }
@@ -59,9 +45,13 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showSuccessWithdrawNotification(): void {
-    this.notificationsService.show('Success withdraw', {
+    this.notificationsService.show('notifications.successfulWithdraw', {
       status: TuiNotification.Success,
       autoClose: 5000
     });
+  }
+
+  public showErrorNotification(txHash: string): void {
+    this.errorService.catch(new UnknownError(`'Transaction hash ${txHash}`));
   }
 }

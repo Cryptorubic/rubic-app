@@ -15,7 +15,6 @@ import {
   from,
   interval,
   Observable,
-  of,
   Subject
 } from 'rxjs';
 import {
@@ -41,6 +40,7 @@ import { Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
+import { LiquidityProvidingNotificationService } from './liquidity-providing-notification.service';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -190,14 +190,18 @@ export class LiquidityProvidingService {
 
   public isPoolFull: boolean = false;
 
-  private waitForReceipt = (hash: string) => {
+  private waitForReceipt = (hash: string): Observable<TransactionReceipt> => {
     return interval(3000).pipe(
       switchMap(async () => {
         const tx = await this.web3PublicService[this.blockchain].getTransactionReceipt(hash);
-        console.log(tx);
         return tx;
       }),
-      filter(Boolean),
+      filter<TransactionReceipt>(Boolean),
+      tap(receipt => {
+        if (receipt.status === false) {
+          this.notificationService.showErrorNotification(receipt.transactionHash);
+        }
+      }),
       take(1)
     );
   };
@@ -209,7 +213,8 @@ export class LiquidityProvidingService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly notificationService: LiquidityProvidingNotificationService
   ) {
     this.watchWhitelist().subscribe();
   }
@@ -468,7 +473,7 @@ export class LiquidityProvidingService {
             return deposit;
           }
         });
-
+        this.notificationService.showSuccessWithdrawRequestNotification();
         this._deposits$.next(updatedDeposits);
       })
     );
@@ -488,18 +493,14 @@ export class LiquidityProvidingService {
         [Web3Pure.toWei(amount)]
       )
     ).pipe(
-      catchError((error: unknown) => {
-        this.errorService.catchAnyError(error as Error);
-        return of(false);
-      }),
-      switchMap((hash: string | boolean) => {
-        if (hash !== false) {
-          return this.waitForReceipt(hash as string);
-        } else {
+      switchMap((hash: string) => this.waitForReceipt(hash)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
           return EMPTY;
+        } else {
+          return this.getAndUpdatePoolTokensBalances();
         }
-      }),
-      switchMap(() => this.getAndUpdatePoolTokensBalances())
+      })
     );
   }
 
@@ -512,18 +513,18 @@ export class LiquidityProvidingService {
         [tokenId]
       )
     ).pipe(
-      catchError((error: unknown) => {
-        this.errorService.catchAnyError(error as Error);
-        return of(false);
-      }),
-      switchMap((hash: string | boolean) => {
-        if (hash !== false) {
-          return this.waitForReceipt(hash as string);
-        } else {
+      // catchError((error: unknown) => {
+      //   this.errorService.catchAnyError(error as Error);
+      //   return of(false);
+      // }),
+      switchMap((hash: string) => this.waitForReceipt(hash as string)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
           return EMPTY;
+        } else {
+          return this.getDeposits().pipe(take(1));
         }
-      }),
-      switchMap(() => this.getDeposits().pipe(take(1)))
+      })
     );
   }
 
@@ -536,18 +537,18 @@ export class LiquidityProvidingService {
         [tokenId]
       )
     ).pipe(
-      catchError((error: unknown) => {
-        this.errorService.catchAnyError(error as Error);
-        return of(false);
-      }),
-      switchMap((hash: string | boolean) => {
-        if (hash !== false) {
-          return this.waitForReceipt(hash as string);
-        } else {
+      // catchError((error: unknown) => {
+      //   this.errorService.catchAnyError(error as Error);
+      //   return of(false);
+      // }),
+      switchMap((hash: string) => this.waitForReceipt(hash as string)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
           return EMPTY;
+        } else {
+          return this.getDeposits().pipe(take(1));
         }
-      }),
-      switchMap(() => this.getDeposits().pipe(take(1)))
+      })
     );
   }
 
