@@ -172,10 +172,10 @@ export class CrossChainRoutingService {
     // @TODO Fix tokens with fee slippage.
     if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
       if (fromToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
-        fromSlippage = 0.85; // 20%
+        fromSlippage = 0.8; // 20%
       }
       if (toToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
-        toSlippage = 0.8; // 20%
+        toSlippage = 0.85; // 15%
       }
     }
 
