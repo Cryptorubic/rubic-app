@@ -144,20 +144,18 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+    const fromBlockchain = fromToken.blockchain;
+    const toBlockchain = toToken.blockchain;
+
     // @TODO Solana. Remove after blockchain stabilization.
-    if (
-      this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
-      this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-    ) {
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       throw new CustomError(
         'Multi-Chain swaps are temporarily unavailable for the Solana network.'
       );
     }
 
     this._smartRoutingLoading$.next(true);
-    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-    const fromBlockchain = fromToken.blockchain;
-    const toBlockchain = toToken.blockchain;
     if (
       !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
       !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
@@ -168,8 +166,18 @@ export class CrossChainRoutingService {
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
     const toTransitToken = this.contracts[toBlockchain].transitToken;
 
-    const fromSlippage = 1 - this.slippageTolerance / 2;
-    const toSlippage = 1 - this.slippageTolerance / 2;
+    let fromSlippage = 1 - this.slippageTolerance / 2;
+    let toSlippage = 1 - this.slippageTolerance / 2;
+
+    // @TODO Fix tokens with fee slippage.
+    if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+      if (fromToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        fromSlippage = 0.85; // 20%
+      }
+      if (toToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        toSlippage = 0.8; // 20%
+      }
+    }
 
     const sourceBlockchainProviders = await this.getSortedProvidersList(
       fromBlockchain,
@@ -212,6 +220,7 @@ export class CrossChainRoutingService {
     );
 
     // @TODO fix excluded providers
+    /* @TODO return after SOLANA is returned
     const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
       provider =>
         !(
@@ -219,11 +228,12 @@ export class CrossChainRoutingService {
           this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
         )
     );
+    */
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = filteredTargetBlockchainProviders[0];
+    } = targetBlockchainProviders[0];
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -248,7 +258,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      filteredTargetBlockchainProviders,
+      targetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
