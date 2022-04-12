@@ -1,7 +1,7 @@
 <ng-container>
   <tui-scrollbar class="tokens-container">
     <!--standard mode -->
-    <tui-loader [showLoader]="loading" [overlay]="true">
+    <tui-loader *noFrame [showLoader]="loading" [overlay]="true">
       <div class="nothing-to-show-message" *ngIf="!tokens?.length">
         <ng-container *ngIf="hasSearchQuery || listType === 'default'; else noFavoriteTokens">
           {{ 'modals.tokensListModal.noSearchData' | translate }}
@@ -24,7 +24,7 @@
         </ng-template>
       </div>
 
-      <ul class="tokens-list" *noFrame [@listAnimation]="listAnimationState">
+      <ul class="tokens-list" [@listAnimation]="listAnimationState">
         <cdk-virtual-scroll-viewport
           tuiScrollable
           itemSize="63"
