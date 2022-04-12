@@ -21,6 +21,8 @@
       @include font(16px, 19px, 500, #fff);
       width: 131px;
 
+      white-space: nowrap;
+
       border-radius: 100px;
 
       &:not(:first-child) {
