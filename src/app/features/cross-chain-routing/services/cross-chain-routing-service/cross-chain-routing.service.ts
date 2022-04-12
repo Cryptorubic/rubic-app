@@ -166,8 +166,18 @@ export class CrossChainRoutingService {
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
     const toTransitToken = this.contracts[toBlockchain].transitToken;
 
-    const fromSlippage = 1 - this.slippageTolerance / 2;
-    const toSlippage = 1 - this.slippageTolerance / 2;
+    let fromSlippage = 1 - this.slippageTolerance / 2;
+    let toSlippage = 1 - this.slippageTolerance / 2;
+
+    // @TODO Fix tokens with fee slippage.
+    if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+      if (fromToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        fromSlippage = 0.85; // 20%
+      }
+      if (toToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        toSlippage = 0.8; // 20%
+      }
+    }
 
     const sourceBlockchainProviders = await this.getSortedProvidersList(
       fromBlockchain,
