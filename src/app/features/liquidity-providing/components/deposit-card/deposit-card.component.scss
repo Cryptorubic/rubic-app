@@ -3,6 +3,8 @@
 .deposit-card {
   position: relative;
 
+  height: 112px;
+
   padding: 25px;
 
   background: var(--rubic-base-23);
@@ -10,6 +12,7 @@
 
   @include b($tablet) {
     height: auto;
+    padding: 16px;
 
     &__content {
       margin-bottom: 20px;
@@ -17,18 +20,40 @@
   }
 
   &__actions {
-    position: relative;
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
     
 
     display: flex;
 
     @include b($tablet) {
       position: initial;
+
+      flex-direction: column;
+
+      ::ng-deep app-rubic-button tui-loader {
+        width: 100%;
+      }
+
     }
 
-    &-add-token {
-      position: absolute;
-      right: 0;
+    &-collect-rewards {
+      margin-right: 12px;
+
+      @include b($tablet) {
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+    }
+
+    &-withdraw {
+      display: flex;
+      align-items: center;
+
+      app-rubic-button {
+        margin-right: 12px;
+      }
     }
 
     ::ng-deep app-rubic-button {
@@ -86,6 +111,12 @@
       &:not(:first-child) {
         margin-left: 10px;
       }
+
+      &_start-date {
+        @include b($tablet) {
+          display: none;
+        }
+      }
     }
   }
 
@@ -93,6 +124,7 @@
 
     @include font(18px, 22px, 600, var(--rubic-base-02));
     position: relative;
+    left: -2px;
 
     display: flex;
     align-items: center;
@@ -131,7 +163,6 @@
 
   &__stats {
     display: flex;
-    margin-bottom: 24px;
 
     .stat {
       @include font(15px, 18px, 500, var(--rubic-base-25));
@@ -151,9 +182,5 @@
 
     background: #000;
     border-radius: 100px;
-
-    &:first-child {
-      margin-right: 12px;
-    }
   }
 }

@@ -6,11 +6,21 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 21px;
+
+    @include b($tablet) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   &__title {
     @include font(20px, 24px, 500, var(--rubic-base-02));
     margin-right: 20px;
+
+    @include b($tablet) {
+      margin-right: 0;
+      margin-bottom: 14px;
+    }
   }
 
   &__actions {
@@ -18,6 +28,10 @@
     flex-grow: 1;
     align-items: center;
     justify-content: space-between;
+
+    @include b($tablet) {
+      width: 100%;
+    }
 
     &-create {
 
@@ -28,8 +42,9 @@
 
       border-radius: 100px;
 
-      &:not(:first-child) {
-        margin-left: 20px;
+      @include b($tablet) {
+        width: 100%;
+        margin-right: 10px;
       }
 
       ::ng-deep button {
@@ -39,6 +54,10 @@
     
     &-transfer {
       @include font(16px, 19px, 500, #fff);
+
+      @include b($tablet) {
+        width: 100%;
+      }
 
       ::ng-deep {
         button {

@@ -2,7 +2,7 @@
   <div class="deposit-card" *ngLet="isMobile$ | async as isMobile">
     <div class="deposit-card__statuses">
       <app-status-badge
-        class="status"
+        class="status status_start-date"
         type="inactive"
         [text]="deposit.start | functionCall: getStartTime:this"
       ></app-status-badge>
@@ -53,6 +53,7 @@
     <div class="deposit-card__actions">
       <app-rubic-button
         *ngIf="deposit.isStaked"
+        class="deposit-card__actions-collect-rewards"
         [disabled]="!deposit.isStaked || deposit.rewardsToCollect.isZero()"
         (onClick)="onCollectRewards.emit()"
         appearance="secondary"
@@ -76,30 +77,27 @@
       >
         {{ 'lp.requestWithdraw' | translate }}
       </app-rubic-button>
-      <app-rubic-button
-        class="deposit-card__actions-add-token"
-        appearance="outline"
-        (onClick)="addToMetamask()"
-        *ngIf="deposit.isStaked"
-        >Add to MetaMask</app-rubic-button
-      >
       <ng-template #withdraw>
-        <app-rubic-button
-          [appearance]="deposit.isStaked ? 'outline' : 'secondary'"
-          [disabled]="!deposit.canWithdraw"
-          (onClick)="onWithdraw.emit()"
-        >
-          {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}
-        </app-rubic-button>
-        <div
-          [inlineSVG]="'assets/images/icons/hint.svg'"
-          [tuiHint]="withdrawHintTpl"
-          [tuiHintShowDelay]="100"
-        ></div>
-        <ng-template #withdrawHintTpl>
-          <div>Вам нужно подождать 24 часа потому что потому</div>
-        </ng-template>
+        <div class="deposit-card__actions-withdraw">
+          <app-rubic-button
+            [appearance]="deposit.isStaked ? 'outline' : 'secondary'"
+            [disabled]="!deposit.canWithdraw"
+            (onClick)="onWithdraw.emit()"
+          >
+            {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}
+          </app-rubic-button>
+          <img
+            src="assets/images/icons/hint.svg"
+            [tuiHint]="withdrawHintTpl"
+            [tuiHintShowDelay]="100"
+            alt="Hint"
+          />
+        </div>
       </ng-template>
     </div>
   </div>
 </tui-loader>
+
+<ng-template #withdrawHintTpl>
+  <div>Вам нужно подождать 24 часа потому что потому</div>
+</ng-template>
