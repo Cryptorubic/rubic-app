@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
 import { Observable } from 'rxjs';
 import { DepositModalComponent } from '../components/deposit-modal/deposit-modal.component';
 import { RequestWithdrawModalComponent } from '../components/request-withdraw-modal/request-withdraw-modal.component';
+import { TransferModalComponent } from '../components/transfer-modal/transfer-modal.component';
 
 @Injectable()
 export class LiquidityProvidingModalService {
-  constructor(private readonly dialogService: TuiDialogService) {}
+  constructor(
+    private readonly dialogService: TuiDialogService,
+    private readonly injector: Injector
+  ) {}
 
   showDepositModal(amount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {
@@ -26,6 +30,12 @@ export class LiquidityProvidingModalService {
           amount
         }
       }
+    );
+  }
+
+  showTransferModal(): Observable<unknown> {
+    return this.dialogService.open(
+      new PolymorpheusComponent(TransferModalComponent, this.injector)
     );
   }
 }

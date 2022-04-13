@@ -54,4 +54,11 @@ export class LiquidityProvidingNotificationService {
   public showErrorNotification(txHash: string): void {
     this.errorService.catch(new UnknownError(`'Transaction hash ${txHash}`));
   }
+
+  public showSuccessTransferNotification(): void {
+    this.notificationsService.show('Successful transfer', {
+      status: TuiNotification.Success,
+      autoClose: 5000
+    });
+  }
 }

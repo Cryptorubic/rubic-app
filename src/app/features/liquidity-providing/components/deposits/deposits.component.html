@@ -12,8 +12,11 @@
         >
           <ng-container *ngIf="isPoolFull"> Pool Is Full </ng-container>
           <ng-container *ngIf="isLpEnded"> LP Round Ended </ng-container>
-          <ng-container *ngIf="!isPoolFull && !isLpEnded"> Create deposit </ng-container>
+          <ng-container *ngIf="!isPoolFull && !isLpEnded"> + Create New deposit </ng-container>
         </app-rubic-button>
+        <app-rubic-button appearance="outline" (onClick)="showTransferModal()"
+          >Transfer LP Token</app-rubic-button
+        >
       </div>
     </div>
     <div class="deposits__list">

@@ -310,5 +310,23 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_to',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: '_tokenId',
+        type: 'uint256'
+      }
+    ],
+    name: 'transfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as AbiItem[];

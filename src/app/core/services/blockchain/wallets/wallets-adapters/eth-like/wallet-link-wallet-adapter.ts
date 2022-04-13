@@ -141,6 +141,10 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     });
   }
 
+  public addNftToken(): Promise<void> {
+    return;
+  }
+
   public async switchChain(chainId: string): Promise<null | never> {
     return this.wallet.request({
       method: 'wallet_switchEthereumChain',

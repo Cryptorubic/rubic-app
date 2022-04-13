@@ -72,6 +72,10 @@ export abstract class CommonSolanaWalletAdapter<
     // });
   }
 
+  public async addNftToken(): Promise<void> {
+    return;
+  }
+
   public async switchChain(/* chainId: string */): Promise<null | never> {
     return null;
     // return this.core.request({

@@ -41,6 +41,9 @@ import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
 import { LiquidityProvidingNotificationService } from './liquidity-providing-notification.service';
+import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -205,6 +208,10 @@ export class LiquidityProvidingService {
       take(1)
     );
   };
+
+  get blockchainAdapter(): EthLikeWeb3Public {
+    return this.web3PublicService[this.blockchain];
+  }
 
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
@@ -491,6 +498,23 @@ export class LiquidityProvidingService {
         this.isLpEneded = new Date() > this.endDate;
         this.whitelistEndTime = new Date(whitelistEndTimestamp * 1000);
       })
+    );
+  }
+
+  public transfer(tokenId: string, address: string): Observable<unknown> {
+    return from(
+      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'transfer',
+        [address, tokenId]
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return EMPTY;
+      }),
+      switchMap(() => this.getDeposits().pipe(take(1)))
     );
   }
 

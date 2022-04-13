@@ -1,6 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
+import { Token } from '@app/shared/models/tokens/token';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { TokenLpParsed } from '../../models/token-lp.interface';
 
 @Component({
@@ -23,7 +27,11 @@ export class DepositCardComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  constructor(private readonly headerStore: HeaderStore, private readonly datePipe: DatePipe) {}
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private readonly datePipe: DatePipe,
+    private readonly walletConnectorService: WalletConnectorService
+  ) {}
 
   public getStartTime(startTime: Date): string {
     if (this.headerStore.isMobile) {
@@ -34,5 +42,22 @@ export class DepositCardComponent {
         'shortTime'
       )}`;
     }
+  }
+
+  public async addToMetamask(): Promise<void> {
+    const lpToken: Token = {
+      symbol: 'LP',
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      address: ENVIRONMENT.lpProviding.contractAddress,
+      decimals: 18,
+      image: '',
+      rank: 0,
+      price: 0,
+      usedInIframe: false,
+      name: 'LP token',
+      hasDirectPair: false
+    };
+
+    await this.walletConnectorService.addNftToken(lpToken);
   }
 }

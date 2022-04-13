@@ -52,6 +52,7 @@
     </div>
     <div class="deposit-card__actions">
       <app-rubic-button
+        *ngIf="deposit.isStaked"
         [disabled]="!deposit.isStaked || deposit.rewardsToCollect.isZero()"
         (onClick)="onCollectRewards.emit()"
         appearance="secondary"
@@ -71,14 +72,29 @@
       >
         Request withdraw
       </app-rubic-button>
+      <app-rubic-button
+        class="deposit-card__actions-add-token"
+        appearance="outline"
+        (onClick)="addToMetamask()"
+        *ngIf="deposit.isStaked"
+        >Add to MetaMask</app-rubic-button
+      >
       <ng-template #withdraw>
         <app-rubic-button
-          appearance="outline"
+          [appearance]="deposit.canWithdraw ? 'outline' : 'secondary'"
           [disabled]="!deposit.canWithdraw"
           (onClick)="onWithdraw.emit()"
         >
-          Withdraw
+          {{ deposit.canWithdraw ? 'Witdraw' : 'Return after 24H' }}
         </app-rubic-button>
+        <div
+          [inlineSVG]="'assets/images/icons/hint.svg'"
+          [tuiHint]="withdrawHintTpl"
+          [tuiHintShowDelay]="100"
+        ></div>
+        <ng-template #withdrawHintTpl>
+          <div>Вам нужно подождать 24 часа потому что потому</div>
+        </ng-template>
       </ng-template>
     </div>
   </div>

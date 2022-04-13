@@ -95,4 +95,8 @@ export class DepositsComponent {
   public navigateToDepositForm(asWhitelist: boolean): void {
     this.lpService.navigateToDepositForm(asWhitelist ? DepositType.WHITELIST : DepositType.REGULAR);
   }
+
+  public showTransferModal(): void {
+    this.lpModalService.showTransferModal().subscribe();
+  }
 }

@@ -199,6 +199,10 @@ export class WalletConnectorService {
     return this.provider.addToken(token);
   }
 
+  public addNftToken(token: unknown): Promise<void> {
+    return this.provider.addNftToken(token);
+  }
+
   public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
       this.provider = await this.createWalletAdapter(walletName, chainId);

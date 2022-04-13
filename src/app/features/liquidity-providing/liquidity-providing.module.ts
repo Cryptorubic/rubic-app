@@ -6,8 +6,15 @@ import { DepositButtonComponent } from './components/deposit-button/deposit-butt
 import { DepositCardComponent } from './components/deposit-card/deposit-card.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
-import { TuiProgressModule, TuiSliderModule, TuiTagModule } from '@taiga-ui/kit';
-import { TuiLoaderModule } from '@taiga-ui/core';
+import {
+  TuiDataListWrapperModule,
+  TuiInputModule,
+  TuiProgressModule,
+  TuiSelectModule,
+  TuiSliderModule,
+  TuiTagModule
+} from '@taiga-ui/kit';
+import { TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LpPageComponent } from './components/lp-page/lp-page.component';
 import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
@@ -19,6 +26,7 @@ import { LpStatisticsComponent } from './components/lp-statistics/lp-statistics.
 import { ProgressComponent } from './components/progress/progress.component';
 import { RequestWithdrawModalComponent } from './components/request-withdraw-modal/request-withdraw-modal.component';
 import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
+import { TransferModalComponent } from './components/transfer-modal/transfer-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +39,8 @@ import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
     DepositModalComponent,
     LpStatisticsComponent,
     ProgressComponent,
-    RequestWithdrawModalComponent
+    RequestWithdrawModalComponent,
+    TransferModalComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +52,12 @@ import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
     TuiLoaderModule,
     TuiSliderModule,
     TuiProgressModule,
-    TuiTagModule
+    TuiTagModule,
+    TuiHintModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiSelectModule,
+    TuiDataListWrapperModule
   ],
   exports: [],
   providers: [

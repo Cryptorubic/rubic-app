@@ -3,12 +3,10 @@
 .deposit-card {
   position: relative;
 
-  height: 112px;
   padding: 25px;
 
   background: var(--rubic-base-23);
   border-radius: 16px;
-  cursor: pointer;
 
   @include b($tablet) {
     height: auto;
@@ -19,14 +17,18 @@
   }
 
   &__actions {
-    position: absolute;
-    right: 18px;
-    bottom: 18px;
+    position: relative;
+    
 
     display: flex;
 
     @include b($tablet) {
       position: initial;
+    }
+
+    &-add-token {
+      position: absolute;
+      right: 0;
     }
 
     ::ng-deep app-rubic-button {
@@ -129,6 +131,7 @@
 
   &__stats {
     display: flex;
+    margin-bottom: 24px;
 
     .stat {
       @include font(15px, 18px, 500, var(--rubic-base-25));
