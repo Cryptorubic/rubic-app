@@ -117,23 +117,5 @@ html.dark {
     .swaps-header .swaps-header__icon {
       filter: invert(1) opacity(0.7) hue-rotate(180deg);
     }
-
-
-    .gradient {
-      position: absolute;
-      top: -50px;
-      left: calc(50% - 400px);
-      z-index: -99;
-
-      display: block;
-      width: 800px;
-      height: 800px;
-
-      background-image: radial-gradient(var(--primary-color) 0%, $backgrond-black 70%, $backgrond-black 100%);
-
-      filter: blur(50px);
-
-      content: '';
-    }
   }
 }

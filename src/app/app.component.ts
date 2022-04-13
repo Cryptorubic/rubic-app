@@ -46,8 +46,6 @@ export class AppComponent implements AfterViewInit {
   private setupIframeSettings(): void {
     if (this.iframeService.isIframe) {
       this.removeLiveChatInIframe();
-      this.document.getElementById('gradient')?.remove();
-      this.document.getElementById('wave').hidden = true;
     }
   }
 

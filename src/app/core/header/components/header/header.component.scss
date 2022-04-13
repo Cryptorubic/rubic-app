@@ -12,8 +12,6 @@
 
   cursor: pointer;
 
-  transition: 0.3s all ease-in-out;
-
   &:hover,
   &_active {
     text-decoration: none;
@@ -23,6 +21,8 @@
 
   &:hover {
     box-shadow: var(--rubic-shadow-button-hover-dim);
+
+    transition: 0.3s ease-in-out;
   }
 
   &:active,
