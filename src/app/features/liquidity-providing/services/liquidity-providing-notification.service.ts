@@ -45,7 +45,7 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showSuccessWithdrawNotification(): void {
-    this.notificationsService.show('notifications.successfulWithdraw', {
+    this.notificationsService.show(this.translate.instant('notifications.successfulWithdraw'), {
       status: TuiNotification.Success,
       autoClose: 5000
     });
