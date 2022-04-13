@@ -175,9 +175,15 @@ export class SwapButtonContainerComponent implements OnInit {
       }
       // @TODO Solana. Remove after blockchain stabilization.
       case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
-        translateParams = {
-          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
-        };
+        if (this.iframeService.iframeAppearance === 'horizontal') {
+          translateParams = {
+            key: 'Unavailable'
+          };
+        } else {
+          translateParams = {
+            key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+          };
+        }
         break;
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
