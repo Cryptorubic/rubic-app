@@ -14,7 +14,7 @@ import { transitTokens } from '@app/features/cross-chain-routing/services/cross-
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of, zip } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
@@ -449,29 +449,29 @@ export class StakingLpService {
 
     const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
 
-    return forkJoin([
-      this.httpClient.get<number>(defiLamaTvlApiUrl),
-      from(
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-          this.activeLpContract.address,
-          this.activeLpContract.abi,
-          'poolUSDC'
-        )
-      )
-    ]).pipe(
-      map(([tvlMultichain, lpPoolBalance]) => {
-        const lpPoolTokenAmount = Web3Pure.fromWei(lpPoolBalance);
+    return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
+      switchMap(tvlMultichain => {
+        return zip(
+          from(
+            this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+              this.activeLpContract.address,
+              this.activeLpContract.abi,
+              'poolUSDC'
+            )
+          ),
+          of(tvlMultichain)
+        );
+      }),
+      map(([lpPoolBalance, tvlMultichain]) => {
+        const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
         const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
         return new BigNumber(
-          lpPoolTokenAmount.toNumber() +
-            lpPoolTokenAmount.toNumber() * stakingTokenUsdPrice +
+          lpPoolBalanceInTokens.toNumber() +
+            lpPoolBalanceInTokens.toNumber() * stakingTokenUsdPrice +
             tvlMultichain
         );
       }),
-      tap(tvl => {
-        this._tvlMultichain$.next(tvl);
-      }),
-      take(1)
+      tap(tvl => this._tvlMultichain$.next(tvl))
     );
   }
 
