@@ -44,6 +44,8 @@ import { SwapInfoContainerComponent } from './components/swap-info/components/sw
 import { InstantTradeSwapInfoComponent } from './components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
 import { BridgeSwapInfoComponent } from './components/swap-info/components/cross-chain-bridge-swap-info/components/bridge-swap-info/bridge-swap-info.component';
 import { SwapsSwitcherComponent } from '@features/swaps/components/swaps-switcher/swaps-switcher.component';
+import { PlatformTokensAmountComponent } from './components/platform-tokens-amount/platform-tokens-amount.component';
+import { SwapsHeaderComponent } from '@features/swaps/components/swaps-header/swaps-header.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import { SwapsSwitcherComponent } from '@features/swaps/components/swaps-switche
     BridgeSwapInfoComponent,
     CrossChainBridgeSwapInfoComponent,
     PriceImpactInfoLineComponent,
-    SwapsSwitcherComponent
+    SwapsSwitcherComponent,
+    PlatformTokensAmountComponent,
+    SwapsHeaderComponent
   ],
   exports: [],
   imports: [

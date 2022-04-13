@@ -34,7 +34,12 @@
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Detalles de la transacción"
+    "transactionDetails": "Detalles de la transacción",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",

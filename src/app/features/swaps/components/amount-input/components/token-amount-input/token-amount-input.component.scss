@@ -30,7 +30,7 @@
 
   &__token-button {
     &_attractive {
-      animation: 0.4s jump ease 5s infinite alternate;
+      animation: 0.4s jump ease 60s infinite alternate;
     }
   }
 
@@ -38,6 +38,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-width: 300px;
     height: 100%;
 
     @include iframe-horizontal {
@@ -68,8 +69,12 @@
 
   &__input-label {
     width: 100%;
-    height: 40px;
+    height: 35px;
     margin-bottom: 5px;
+
+    ::placeholder {
+      letter-spacing: 0.6px;
+    }
   }
 
   &__input {
@@ -80,7 +85,7 @@
 
     color: var(--form-bright-text-color);
     font-weight: 400;
-    font-size: 30px;
+    font-size: 22px;
     letter-spacing: 0.1em;
     text-align: right;
 

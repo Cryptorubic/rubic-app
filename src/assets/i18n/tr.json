@@ -34,7 +34,12 @@
     "switchTo": " {{ networkName }} ağına geç",
     "tradeVia": "Trade Via ",
     "bridge": "Köprü",
-    "transactionDetails": "Transaction details"
+    "transactionDetails": "Transaction details",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın",

@@ -107,10 +107,6 @@
     }
   }
 
-  &__nav {
-    grid-gap: 15px;
-  }
-
   &__logo {
     display: block;
     margin-right: 40px;
@@ -132,6 +128,8 @@
   &__nav {
     position: absolute;
     left: 50%;
+
+    width: 565px;
 
     transform: translateX(-50%);
   }
@@ -162,30 +160,7 @@
   }
 }
 
-@include b(1650) {
-  .rubic-header__nav {
-    left: 271px;
-
-    transform: none;
-  }
-}
-
-@include b(1460) {
-  .rubic-header__nav {
-    left: 266px;
-
-    grid-gap: 10px;
-    width: auto;
-
-    transform: initial;
-
-    .button-link {
-      padding: 14px;
-    }
-  }
-}
-
-@include b($desktop) {
+@include b($laptop-plus) {
   .rubic-header {
     padding: 21px 20px 19px;
 

@@ -34,7 +34,12 @@
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Transaction details"
+    "transactionDetails": "Transaction details",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",

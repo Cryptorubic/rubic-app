@@ -34,7 +34,12 @@
     "switchTo": "Переключиться на сеть {{ networkName }}",
     "tradeVia": "Торговать через ",
     "bridge": "Bridge",
-    "transactionDetails": "Детали транзакции"
+    "transactionDetails": "Детали транзакции",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",

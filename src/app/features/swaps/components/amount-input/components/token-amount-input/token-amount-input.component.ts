@@ -32,7 +32,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Input() placeholder = 0.0;
+  @Input() placeholder = 'Enter amount';
 
   private get formattedAmount(): string {
     try {

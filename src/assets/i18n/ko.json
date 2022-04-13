@@ -34,7 +34,12 @@
     "switchTo": "{{ networkName }} 네트워크로 전환",
     "tradeVia": "무역을 통해 ",
     "bridge": "Bridge",
-    "transactionDetails": "상세 거래 내역"
+    "transactionDetails": "상세 거래 내역",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
