@@ -366,7 +366,7 @@ export class TokensService {
           if (tokenPrice) {
             return tokenPrice;
           }
-          const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+          const foundToken = this.tokens?.find(t => TokensService.areTokensEqual(t, token));
           return foundToken?.price;
         }),
         switchMap(tokenPrice => {

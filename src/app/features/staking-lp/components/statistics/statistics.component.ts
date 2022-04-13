@@ -99,11 +99,10 @@ export class StatisticsComponent implements OnInit {
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
         switchMap(() => this.stakingLpService.getTtv()),
-        takeUntil(this.destroy$)
+        take(1)
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
-        this.cdr.detectChanges();
       });
   }
 

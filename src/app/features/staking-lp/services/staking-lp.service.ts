@@ -171,10 +171,13 @@ export class StakingLpService {
     private readonly httpClient: HttpClient
   ) {
     this.tokensService
-      .getAndUpdateTokenPrice({
-        address: this.stakingToken.address,
-        blockchain: this.stakingToken.blockchain
-      })
+      .getAndUpdateTokenPrice(
+        {
+          address: this.stakingToken.address,
+          blockchain: this.stakingToken.blockchain
+        },
+        true
+      )
       .then(price => this._stakingTokenUsdPrice$.next(price));
   }
 
@@ -431,9 +434,9 @@ export class StakingLpService {
       case TtvFilters.ALL_TIME:
         return ttv.totalValue;
       case TtvFilters.ONE_DAY:
-        return ttv.totalValueBy1day;
+        return ttv.totalValueByday;
       case TtvFilters.ONE_MONTH:
-        return ttv.totalValueBy1month;
+        return ttv.totalValueBymonth;
       case TtvFilters.SIX_MONTH:
         return ttv.totalValueByHalfYear;
       default:
@@ -456,14 +459,19 @@ export class StakingLpService {
         )
       )
     ]).pipe(
-      take(1),
       map(([tvlMultichain, lpPoolBalance]) => {
         const lpPoolTokenAmount = Web3Pure.fromWei(lpPoolBalance);
-        return lpPoolTokenAmount
-          .plus(lpPoolTokenAmount.multipliedBy(this._stakingTokenUsdPrice$.getValue()))
-          .plus(tvlMultichain);
+        const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
+        return new BigNumber(
+          lpPoolTokenAmount.toNumber() +
+            lpPoolTokenAmount.toNumber() * stakingTokenUsdPrice +
+            tvlMultichain
+        );
       }),
-      tap(tvl => this._tvlMultichain$.next(tvl))
+      tap(tvl => {
+        this._tvlMultichain$.next(tvl);
+      }),
+      take(1)
     );
   }
 
