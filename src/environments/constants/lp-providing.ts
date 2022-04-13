@@ -16,7 +16,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0x709287090db3eE668Ccbb18BED1554A62129F7eD',
+  contractAddress: '0xB4a0d6bf6bCA802fCaA99903f2Cd644d6b233931',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   minEnterAmount: 5,
@@ -26,13 +26,7 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
   duration: 1500,
   whitelistDuration: 60,
   whitelist: [
-    '0x3483ed7d3444a311a7585f0e59c9a74d6c111218',
-    '0xcc513c5e4f396e68c15282cfa02d3e9c615cd714',
     '0x186915891222add6e2108061a554a1f400a25cbd',
-    '0xfc2cd0f2ccfcb3221f092733842d6250d3effb3b',
-    '0x8796e04d35ba0251fa71d9bc89937bed766970e3',
-    '0x3e8cefa0472a7b06d165be6ad1040dfddd9021fd',
-    '0x856a00601f2527f50cc9b3aa6d76f05f3f5f294a',
     '0x60a4dae96386e8c6d8535f2463a00b4a40fae6ef'
   ]
 };
