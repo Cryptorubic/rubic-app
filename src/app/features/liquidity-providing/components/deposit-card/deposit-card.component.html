@@ -88,6 +88,7 @@
             {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}
           </app-rubic-button>
           <img
+            *ngIf="!deposit.canWithdraw"
             src="assets/images/icons/hint.svg"
             [tuiHint]="withdrawHintTpl"
             [tuiHintShowDelay]="100"

@@ -15,6 +15,7 @@ import {
   from,
   interval,
   Observable,
+  of,
   Subject
 } from 'rxjs';
 import {
@@ -449,8 +450,14 @@ export class LiquidityProvidingService {
         if (receipt.status === false) {
           return EMPTY;
         } else {
-          return this.getDeposits().pipe(take(1));
+          return of(receipt.status);
         }
+      }),
+      tap(() => {
+        this.setDepositsLoading(true);
+
+        const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
+        this._deposits$.next(updatedDeposits);
       })
     );
   }
@@ -515,7 +522,12 @@ export class LiquidityProvidingService {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      switchMap(() => this.getDeposits().pipe(take(1)))
+      tap(() => {
+        this.setDepositsLoading(true);
+
+        const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
+        this._deposits$.next(updatedDeposits);
+      })
     );
   }
 

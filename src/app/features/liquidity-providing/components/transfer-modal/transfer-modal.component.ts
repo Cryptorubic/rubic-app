@@ -59,7 +59,9 @@ export class TransferModalComponent implements OnInit {
       .pipe(finalize(() => this._buttonLoading$.next(false)))
       .subscribe(() => {
         this.notificationService.showSuccessTransferNotification();
+
         this.lpService.setDepositsLoading(false);
+
         this.context.completeWith(undefined);
       });
   }
