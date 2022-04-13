@@ -155,23 +155,6 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     });
   }
 
-  public addNftToken(): Promise<void> {
-    return;
-    // if (!this.isActive) {
-    //   throw new MetamaskError();
-    // }
-    // if (this.getNetwork().name !== token.blockchain) {
-    //   throw new NetworkError(token.blockchain);
-    // }
-
-    // return this.wallet.request({
-    //   method: 'wallet_watchAsset',
-    //   params: {
-    //     type: 'ERC721'
-    //   }
-    // });
-  }
-
   public async switchChain(chainId: string): Promise<null | never> {
     return this.wallet.request({
       method: 'wallet_switchEthereumChain',

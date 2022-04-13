@@ -125,12 +125,6 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    */
   public abstract addToken(token: Token): Promise<void>;
 
-  /**
-   * opens a window with suggestion to add token to user's wallet
-   * @param token token to add
-   */
-  public abstract addNftToken(token: unknown): Promise<void>;
-
   public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return [{ parentCapability: 'eth_accounts' }];
   }

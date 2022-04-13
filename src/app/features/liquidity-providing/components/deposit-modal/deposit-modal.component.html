@@ -1,18 +1,18 @@
 <div class="deposit-modal">
-  <div class="deposit-modal__title">Create deposit</div>
+  <div class="deposit-modal__title">{{ 'lp.initiateDeposit' | translate }}</div>
   <div class="deposit-modal__content">
-    Attention, you make a deposit for
-    {{ amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} RBC and
-    {{ amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} USDC, for a period of 2
-    months. In case of early withdrawal of the deposit, a penalty of 10% will be imposed on RBC and
-    USDC
+    {{
+      'lp.initiateDepositModalText'
+        | translate
+          : { amount: (amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) }
+    }}
   </div>
   <div class="deposit-modal__actions">
     <app-rubic-button appearance="secondary" (click)="context.completeWith(true)"
-      >OK</app-rubic-button
+      >Ok</app-rubic-button
     >
     <app-rubic-button appearance="outline" (click)="context.completeWith(false)"
-      >NO</app-rubic-button
+      >Cancel</app-rubic-button
     >
   </div>
 </div>

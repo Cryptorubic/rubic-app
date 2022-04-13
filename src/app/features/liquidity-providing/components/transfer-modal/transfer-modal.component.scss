@@ -30,21 +30,24 @@
     &-select {
       ::ng-deep {
         .input {
+          @include font(16px, 16px, 400, var(--rubic-base-02));
           padding: 14px 18px;
         }
-            
-        // tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
-        //   border: 0;
-        //   border-radius: 21.5px;
-        // }
       }
     }
 
     &-button {
-      display: flex;
-      justify-content: center;
+      display: block;
       width: 213px;
-      margin-top: 52px;
+      margin: 32px auto 0;
     }
   }
+}
+
+
+.option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 8px;
 }

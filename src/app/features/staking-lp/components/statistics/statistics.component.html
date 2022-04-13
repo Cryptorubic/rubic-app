@@ -47,7 +47,7 @@
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">TVL</div>
+      <div class="statistics__param-label">{{ 'earn.tvl' | translate }}</div>
       <div
         class="statistics__param-value"
         *ngLet="tvlTotal$ | async as tvlTotal"
@@ -57,7 +57,7 @@
       </div>
     </div>
     <div class="statistics__param">
-      <div class="statistics__param-label">TVL Multi-Chain</div>
+      <div class="statistics__param-label">{{ 'earn.multichainTvl' | translate }}</div>
       <div class="statistics__param-value" *ngLet="tvlMultichain$ | async as tvlMultichain">
         $
         {{
@@ -70,7 +70,7 @@
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">TVL Staking</div>
+      <div class="statistics__param-label">{{ 'earn.stakingTvl' | translate }}</div>
       <div
         class="statistics__param-value"
         *ngLet="tvlStaking$ | async as tvlStaking"
@@ -86,7 +86,8 @@
         [tuiDropdownContent]="ttvFiltersTpl"
         (click)="toggleFilters()"
       >
-        Total Trading Volume <img src="assets/images/icons/arrow/arrow-down-grey.svg" />
+        Total Trading Volume
+        <img src="assets/images/icons/arrow/arrow-down-grey.svg" />
       </div>
       <div class="statistics__param-value" *ngLet="ttv$ | async as ttv">
         $ {{ ttv ? (ttv | bigNumberFormat: 0:true) : '--.--' }}

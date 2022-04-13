@@ -38,10 +38,7 @@ export class DepositsComponent {
     this._processingTokenId$.next(tokenId);
     this.lpService
       .collectRewards(tokenId)
-      .pipe(
-        switchMap(() => this.lpService.getStatistics()),
-        finalize(() => this._processingTokenId$.next(undefined))
-      )
+      .pipe(finalize(() => this._processingTokenId$.next(undefined)))
       .subscribe(() => {
         this._processingTokenId$.next(undefined);
         this.lpService.setDepositsLoading(false);

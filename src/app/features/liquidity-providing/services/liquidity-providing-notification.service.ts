@@ -52,7 +52,7 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showErrorNotification(txHash: string): void {
-    this.errorService.catch(new UnknownError(`'Transaction hash ${txHash}`));
+    this.errorService.catch(new UnknownError(`Transaction hash ${txHash}`));
   }
 
   public showSuccessTransferNotification(): void {

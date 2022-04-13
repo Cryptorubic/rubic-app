@@ -34,7 +34,7 @@
     </div>
     <div class="asset__balance-usd-price">
       <div class="asset__balance" *ngLet="brbcBalance$ | async as brbcBalance">
-        You have
+        {{ 'common.have' | translate }}
         {{
           brbcBalance
             ? (brbcBalance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
@@ -82,8 +82,7 @@
         <img src="assets/images/icons/info-warning.svg" alt="Info" />
       </div>
       <div class="hint__text">
-        If you take the Deposit early, you will be fined to a penalty of 10% of the original amount
-        of BRBC and USDC
+        {{ 'lp.earlyWithdrawHint' | translate }}
       </div>
     </div>
   </div>

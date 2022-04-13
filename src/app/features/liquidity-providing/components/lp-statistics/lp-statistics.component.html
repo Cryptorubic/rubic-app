@@ -12,7 +12,7 @@
     </div>
     <div class="statistics__param">
       <app-progress
-        [label]="'Total Staked (BRBC)'"
+        [label]="'lp.totalProvided' | translate"
         [value]="totalStaked$ | async | bigNumberFormat: 2"
         [initialValue]="5"
         [size]="poolSize"
@@ -22,7 +22,7 @@
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">Total Collected</div>
+      <div class="statistics__param-label">{{ 'lp.totalCollectedRewards' | translate }}</div>
       <div class="statistics__param-value" *ngLet="collectedRewards$ | async as collectedRewards">
         {{
           collectedRewards
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="statistics__param">
-      <div class="statistics__param-label">Balance</div>
+      <div class="statistics__param-label">{{ 'lp.balance' | translate }}</div>
       <div class="statistics__param-value" *ngLet="balance$ | async as balance">
         {{
           balance ? (balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) : '--.--'
@@ -44,7 +44,7 @@
   </div>
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">Collect Now</div>
+      <div class="statistics__param-label">{{ 'lp.collectRewardsNow' | translate }}</div>
       <div class="statistics__param-value" *ngLet="rewardsToCollect$ | async as rewardsToCollect">
         {{
           rewardsToCollect
@@ -56,7 +56,7 @@
     </div>
     <div class="statistics__param">
       <app-progress
-        [label]="'You Staked (BRBC)'"
+        [label]="'lp.youProvided' | translate"
         [value]="usersTotalStaked$ | async | bigNumberFormat: 2"
         [initialValue]="5"
         [size]="maxEnterAmount"
@@ -71,7 +71,7 @@
     (iconClick)="refreshStatistics()"
   ></app-rotating-icon>
   <div class="statistics__end">
-    <span>End of Round: </span>{{ endDate | date: 'longDate' }} at
+    <span>{{ 'lp.endOfRound' | translate }}: </span>{{ endDate | date: 'longDate' }} at
     {{ endDate | date: 'shortTime':'UTC' }} UTC
   </div>
 </div>

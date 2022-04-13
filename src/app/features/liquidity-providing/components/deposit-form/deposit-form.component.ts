@@ -6,17 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-  debounceTime,
-  filter,
-  finalize,
-  map,
-  skip,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { filter, finalize, map, skip, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
@@ -40,7 +30,7 @@ import { LiquidityProvidingModalService } from '../../services/liquidity-providi
 export class DepositFormComponent implements OnInit, OnDestroy {
   public readonly poolToken = PoolToken;
 
-  public readonly brbcAmountCtrl = new FormControl(0);
+  public readonly brbcAmountCtrl = new FormControl(null);
 
   public readonly usdcAmountCtrl = new FormControl({ value: 0, disabled: true });
 
@@ -97,7 +87,7 @@ export class DepositFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.brbcAmount$.pipe(skip(1), debounceTime(150)).subscribe(value => {
+    this.brbcAmount$.pipe(skip(1)).subscribe(value => {
       if (!value.isFinite()) {
         this.usdcAmountCtrl.reset();
         this._usdcDepositOpened$.next(false);

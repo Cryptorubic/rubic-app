@@ -10,7 +10,7 @@
         alt="Back"
       />
     </div>
-    <div class="title__round">LP Round 1</div>
+    <div class="title__round">{{ 'lp.lpRoundTitle' | translate: { round: 1 } }}</div>
     <app-status-badge
       [text]="isLpEnded ? 'Closed' : 'Active'"
       [type]="isLpEnded ? 'error' : 'active'"

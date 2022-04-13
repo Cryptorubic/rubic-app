@@ -14,7 +14,12 @@ import {
   TuiSliderModule,
   TuiTagModule
 } from '@taiga-ui/kit';
-import { TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiDataListModule,
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LpPageComponent } from './components/lp-page/lp-page.component';
 import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
@@ -57,7 +62,8 @@ import { TransferModalComponent } from './components/transfer-modal/transfer-mod
     TuiInputModule,
     TuiTextfieldControllerModule,
     TuiSelectModule,
-    TuiDataListWrapperModule
+    TuiDataListWrapperModule,
+    TuiDataListModule
   ],
   exports: [],
   providers: [

@@ -4,6 +4,8 @@ import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adap
 import { FormControl } from '@ngneat/reactive-forms';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { BehaviorSubject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
@@ -21,14 +23,20 @@ function correctAddressValidator(blockchainAdapter: EthLikeWeb3Public): Validato
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransferModalComponent implements OnInit {
-  public readonly deposits = this.lpService.deposits.map(deposit => deposit.tokenId);
+  public readonly deposits = this.lpService.deposits
+    .filter(deposits => deposits.isStaked)
+    .map(deposit => deposit.tokenId);
 
   public readonly address = new FormControl(null, [
     Validators.required,
     correctAddressValidator(this.lpService.blockchainAdapter)
   ]);
 
-  public readonly token = new FormControl(this.deposits[0]);
+  public readonly token = new FormControl(this.deposits[0] || null, [Validators.required]);
+
+  private readonly _buttonLoading$ = new BehaviorSubject(false);
+
+  public readonly buttonLoading$ = this._buttonLoading$.asObservable();
 
   constructor(
     private readonly lpService: LiquidityProvidingService,
@@ -44,11 +52,14 @@ export class TransferModalComponent implements OnInit {
     const tokenId = this.token.value;
     const address = this.address.value;
 
+    this._buttonLoading$.next(true);
+
     this.lpService
       .transfer(tokenId, address)
-      .pipe()
+      .pipe(finalize(() => this._buttonLoading$.next(false)))
       .subscribe(() => {
         this.notificationService.showSuccessTransferNotification();
+        this.lpService.setDepositsLoading(false);
         this.context.completeWith(undefined);
       });
   }

@@ -57,20 +57,24 @@
         (onClick)="onCollectRewards.emit()"
         appearance="secondary"
       >
-        Collect rewards
         {{
-          deposit.rewardsToCollect
-            ? (deposit.rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
-            : '--.--'
+          'lp.collectRewards'
+            | translate
+              : {
+                  amount: deposit.rewardsToCollect
+                    ? (deposit.rewardsToCollect
+                      | bigNumberFormat
+                      | withRound: 'fixedValue':{ decimals: 2 })
+                    : '--.--'
+                }
         }}
-        $
       </app-rubic-button>
       <app-rubic-button
         *ngIf="deposit.isStaked; else withdraw"
         (onClick)="onRequestWithdraw.emit()"
         appearance="outline"
       >
-        Request withdraw
+        {{ 'lp.requestWithdraw' | translate }}
       </app-rubic-button>
       <app-rubic-button
         class="deposit-card__actions-add-token"
@@ -81,11 +85,11 @@
       >
       <ng-template #withdraw>
         <app-rubic-button
-          [appearance]="deposit.canWithdraw ? 'outline' : 'secondary'"
+          [appearance]="deposit.isStaked ? 'outline' : 'secondary'"
           [disabled]="!deposit.canWithdraw"
           (onClick)="onWithdraw.emit()"
         >
-          {{ deposit.canWithdraw ? 'Witdraw' : 'Return after 24H' }}
+          {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}
         </app-rubic-button>
         <div
           [inlineSVG]="'assets/images/icons/hint.svg'"

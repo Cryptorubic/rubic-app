@@ -17,7 +17,7 @@
             "
           />
         </div>
-        <div class="landing__step-text">Acquire BRBC Tokens and USDC</div>
+        <div class="landing__step-text">{{ 'lp.acquireBoth' | translate }}</div>
       </div>
       <div class="landing__step">
         <div class="landing__step-icon">
@@ -29,7 +29,7 @@
             "
           />
         </div>
-        <div class="landing__step-text">Provide liquidity by locking your BRBC and USDC</div>
+        <div class="landing__step-text">{{ 'lp.provideLiquidity' | translate }}</div>
       </div>
     </div>
     <div class="whitelist-info" *ngIf="whitelist.isWhitelistInProgress">
@@ -38,11 +38,10 @@
       </div>
       <div class="whitelist-info__text">
         <div class="whitelist-info__text-paragraph">
-          If you participated in the 1st round of Staking, then you have the option to allocate of
-          500&5,000 USDC will be available during 24 hours
+          {{ 'lp.whitelistInfo' | translate }}
         </div>
         <div class="whitelist-info__text-paragraph">
-          If you did not participate, you will be able to enter the round after
+          {{ 'lp.ifDidNotParticipate' | translate }}
           <span class="whitelist-info__timer">{{ whitelistEndTime | date: 'medium':'UTC' }}</span>
         </div>
       </div>
@@ -50,14 +49,14 @@
   </ng-container>
   <ng-container *ngIf="needLogin$ | async; else createDeposit">
     <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="login()">
-      Connect wallet
+      {{ 'lp.connectWalletToView' | translate }}
     </app-rubic-button>
   </ng-container>
 
   <ng-template #createDeposit>
     <ng-container *ngIf="whitelist.isWhitelistInProgress && !whitelist.isWhitelistUser">
       <app-rubic-button class="lp-steps__create" appearance="secondary" [disabled]="true">
-        Your address is not Whitelist
+        {{ 'lp.notWhitelistUser' | translate }}
       </app-rubic-button>
     </ng-container>
     <ng-container *ngIf="whitelist.isWhitelistInProgress && whitelist.isWhitelistUser">
@@ -66,7 +65,7 @@
         appearance="secondary"
         (onClick)="navigateToDepositForm(depositType.WHITELIST)"
       >
-        Create Deposit with Whitelist
+        {{ 'lp.initiateDepositWithWhitelist' | translate }}
       </app-rubic-button>
     </ng-container>
     <ng-container *ngIf="!whitelist.isWhitelistInProgress">
@@ -76,9 +75,11 @@
         (onClick)="navigateToDepositForm(depositType.REGULAR)"
         [disabled]="isLpEnded || isPoolFull"
       >
-        <ng-container *ngIf="isLpEnded"> LP Round Ended </ng-container>
-        <ng-container *ngIf="isPoolFull">Pool Is Full</ng-container>
-        <ng-container *ngIf="!isLpEnded && !isPoolFull">Create deposit</ng-container>
+        <ng-container *ngIf="isLpEnded"> {{ 'lp.lpRoundEnded' | translate }} </ng-container>
+        <ng-container *ngIf="isPoolFull">{{ 'lp.poolIsFull' | translate }}</ng-container>
+        <ng-container *ngIf="!isLpEnded && !isPoolFull">{{
+          'lp.initiateDeposit' | translate
+        }}</ng-container>
       </app-rubic-button>
     </ng-container>
   </ng-template>

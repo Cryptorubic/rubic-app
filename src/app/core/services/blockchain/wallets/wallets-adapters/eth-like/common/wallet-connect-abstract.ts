@@ -137,10 +137,6 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     });
   }
 
-  public addNftToken(): Promise<void> {
-    return;
-  }
-
   public async switchChain(chainId: string): Promise<null | never> {
     return this.wallet.request({
       method: 'wallet_switchEthereumChain',

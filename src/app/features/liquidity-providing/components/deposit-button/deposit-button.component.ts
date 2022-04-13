@@ -56,6 +56,8 @@ export class DepositButtonComponent implements OnInit {
 
   public readonly isLpEnded = this.lpService.isLpEneded;
 
+  public readonly blockchain = this.lpService.blockchain;
+
   constructor(private readonly lpService: LiquidityProvidingService) {}
 
   ngOnInit(): void {

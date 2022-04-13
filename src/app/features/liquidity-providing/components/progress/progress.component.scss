@@ -2,7 +2,7 @@
 
 .progress {
   &__label {
-    @include font(18px, 22px, 500, var(--rubic-base-24));
+    @include font(16px, 19px, 500, var(--rubic-base-24));
     margin-bottom: 7px;
 
     @include b($tablet) {
@@ -14,7 +14,7 @@
   }
 
   &__value {
-    @include font(18px, 22px, 500, var(--rubic-base-02));
+    @include font(16px, 22px, 500, var(--rubic-base-02));
     margin-bottom: 10px;
 
     transition: 0.4s opacity ease-in-out;

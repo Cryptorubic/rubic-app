@@ -108,10 +108,6 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
     return;
   }
 
-  public async addNftToken(): Promise<void> {
-    return;
-  }
-
   private async requestSignIn(options: SignInOptions): Promise<boolean> {
     const currentUrl = new URL(this.window.location.href);
     const newUrl = new URL(`${NEAR_MAINNET_CONFIG.walletUrl}/login/`);

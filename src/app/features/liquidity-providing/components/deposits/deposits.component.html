@@ -1,7 +1,7 @@
 <tui-loader [showLoader]="depositsLoading$ | async" [overlay]="true">
   <div class="deposits">
     <div class="deposits__head">
-      <div class="deposits__title">Your Deposits</div>
+      <div class="deposits__title">{{ 'lp.yourDeposits' | translate }}</div>
       <div class="deposits__actions">
         <app-rubic-button
           class="deposits__actions-create"
@@ -10,12 +10,17 @@
           size="s"
           [disabled]="isPoolFull || isLpEnded"
         >
-          <ng-container *ngIf="isPoolFull"> Pool Is Full </ng-container>
-          <ng-container *ngIf="isLpEnded"> LP Round Ended </ng-container>
-          <ng-container *ngIf="!isPoolFull && !isLpEnded"> + Create New deposit </ng-container>
+          <ng-container *ngIf="isPoolFull"> {{ 'lp.poolIsFull' | translate }} </ng-container>
+          <ng-container *ngIf="isLpEnded"> {{ 'lp.lpRoundEnded' | translate }} </ng-container>
+          <ng-container *ngIf="!isPoolFull && !isLpEnded">
+            {{ 'lp.newDeposit' | translate }}
+          </ng-container>
         </app-rubic-button>
-        <app-rubic-button appearance="outline" (onClick)="showTransferModal()"
-          >Transfer LP Token</app-rubic-button
+        <app-rubic-button
+          appearance="outline"
+          class="deposits__actions-transfer"
+          (onClick)="showTransferModal()"
+          >{{ 'lp.transferToken' | translate }}</app-rubic-button
         >
       </div>
     </div>

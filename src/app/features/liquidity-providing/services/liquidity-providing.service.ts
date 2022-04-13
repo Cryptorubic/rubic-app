@@ -47,7 +47,7 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 
 @Injectable()
 export class LiquidityProvidingService {
-  private readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+  public readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
   private readonly lpContractAddress = ENVIRONMENT.lpProviding.contractAddress;
 
@@ -471,7 +471,8 @@ export class LiquidityProvidingService {
         } else {
           return this.getDeposits().pipe(take(1));
         }
-      })
+      }),
+      switchMap(() => this.getStatistics().pipe(take(1)))
     );
   }
 
