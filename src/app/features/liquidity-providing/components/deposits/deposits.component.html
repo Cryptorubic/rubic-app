@@ -29,6 +29,7 @@
         <app-deposit-card
           [deposit]="deposit"
           [loading]="(processingTokenId$ | async) === deposit.tokenId"
+          [needSwitchNetwork]="needSwitchNetwork"
           (onCollectRewards)="collectReward(deposit.tokenId)"
           (onRequestWithdraw)="requestWithdraw(deposit.tokenId, deposit.USDCAmount)"
           (onWithdraw)="withdraw(deposit.tokenId)"

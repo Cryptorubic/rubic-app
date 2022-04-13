@@ -54,7 +54,7 @@
       <app-rubic-button
         *ngIf="deposit.isStaked"
         class="deposit-card__actions-collect-rewards"
-        [disabled]="!deposit.isStaked || deposit.rewardsToCollect.isZero()"
+        [disabled]="!deposit.isStaked || deposit.rewardsToCollect.isZero() || needSwitchNetwork"
         (onClick)="onCollectRewards.emit()"
         appearance="secondary"
       >
@@ -72,6 +72,7 @@
       </app-rubic-button>
       <app-rubic-button
         *ngIf="deposit.isStaked; else withdraw"
+        [disabled]="needSwitchNetwork"
         (onClick)="onRequestWithdraw.emit()"
         appearance="outline"
       >
@@ -81,7 +82,7 @@
         <div class="deposit-card__actions-withdraw">
           <app-rubic-button
             [appearance]="deposit.isStaked ? 'outline' : 'secondary'"
-            [disabled]="!deposit.canWithdraw"
+            [disabled]="!deposit.canWithdraw || needSwitchNetwork"
             (onClick)="onWithdraw.emit()"
           >
             {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}

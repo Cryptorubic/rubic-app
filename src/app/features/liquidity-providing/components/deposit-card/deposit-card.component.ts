@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TokenLpParsed } from '../../models/token-lp.interface';
 
 @Component({
@@ -16,6 +15,8 @@ export class DepositCardComponent {
 
   @Input() loading: boolean;
 
+  @Input() needSwitchNetwork: boolean;
+
   @Output() onCollectRewards = new EventEmitter<void>();
 
   @Output() onRequestWithdraw = new EventEmitter<void>();
@@ -24,11 +25,7 @@ export class DepositCardComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  constructor(
-    private readonly headerStore: HeaderStore,
-    private readonly datePipe: DatePipe,
-    private readonly walletConnectorService: WalletConnectorService
-  ) {}
+  constructor(private readonly headerStore: HeaderStore, private readonly datePipe: DatePipe) {}
 
   public getStartTime(startTime: Date): string {
     if (this.headerStore.isMobile) {

@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, of } from 'rxjs';
-import { finalize, switchMap } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
 import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
@@ -11,9 +14,10 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   selector: 'app-deposits',
   templateUrl: './deposits.component.html',
   styleUrls: ['./deposits.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class DepositsComponent {
+export class DepositsComponent implements OnInit {
   public readonly isWhitelistUser$ = this.lpService.isWhitelistUser$;
 
   public readonly deposits$ = this.lpService.deposits$;
@@ -28,11 +32,25 @@ export class DepositsComponent {
 
   public readonly isLpEnded = this.lpService.isLpEneded;
 
+  public needSwitchNetwork: boolean;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
     private readonly lpNotificationService: LiquidityProvidingNotificationService,
-    private readonly lpModalService: LiquidityProvidingModalService
+    private readonly lpModalService: LiquidityProvidingModalService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService
   ) {}
+
+  ngOnInit(): void {
+    this.walletConnectorService.networkChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((network: BlockchainData) => {
+        this.needSwitchNetwork = network.name !== this.lpService.blockchain;
+        this.cdr.detectChanges();
+      });
+  }
 
   public collectReward(tokenId: string): void {
     this._processingTokenId$.next(tokenId);
