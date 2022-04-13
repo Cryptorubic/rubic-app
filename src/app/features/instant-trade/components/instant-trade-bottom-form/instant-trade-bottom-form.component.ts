@@ -174,9 +174,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   constructor(
+    private readonly cdr: ChangeDetectorRef,
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
-    private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
@@ -571,7 +571,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Updates trade data with stored hidden data, after user clicked on update button.
    */
-  public onSelectHiddenData(): void {
+  public onSetHiddenData(): void {
     this.setupProviders(this.hiddenProvidersTrades);
   }
 
@@ -674,9 +674,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
         this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED);
         this.cdr.detectChanges();
-
-        this.conditionalCalculate('hidden');
       });
+
+      this.conditionalCalculate('hidden');
 
       await this.tokensService.updateTokenBalanceAfterSwap({
         address: providerTrade.from.token.address,

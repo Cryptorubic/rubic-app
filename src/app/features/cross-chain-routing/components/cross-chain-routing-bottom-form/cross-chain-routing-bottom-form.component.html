@@ -21,8 +21,8 @@
 
     <ng-container *ngIf="smartRouting$ | async as smartRoutingInfo">
       <app-smart-routing
-        [class.smart-routing-loading]="smartRoutingLoading$ | async"
         *noFrame
+        [class.smart-routing-loading]="smartRoutingLoading$ | async"
         [fromProvider]="smartRoutingInfo.fromProvider"
         [toProvider]="smartRoutingInfo.toProvider"
         [fromHasTrade]="smartRoutingInfo.fromHasTrade"
@@ -43,7 +43,7 @@
         [maxAmount]="maxError"
         (swapClick)="createTrade()"
         (approveClick)="approveTrade()"
-        (updateRatesClick)="setHiddenData()"
+        (updateRatesClick)="onSetHiddenData()"
       ></app-swap-button-container>
     </div>
   </div>

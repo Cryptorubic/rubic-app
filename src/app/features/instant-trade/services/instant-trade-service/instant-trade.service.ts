@@ -96,26 +96,22 @@ export class InstantTradeService {
   public async approve(providerName: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
 
-    try {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
 
-      let subscription$: Subscription;
-      await this.providers[trade.blockchain][providerName].approve(
-        trade.from.token.address,
-        {
-          onTransactionHash: () => {
-            subscription$ = this.notificationsService.showApproveInProgress();
-          }
-        },
-        targetContractAddress
-      );
-      subscription$?.unsubscribe();
+    let subscription$: Subscription;
+    await this.providers[trade.blockchain][providerName].approve(
+      trade.from.token.address,
+      {
+        onTransactionHash: () => {
+          subscription$ = this.notificationsService.showApproveInProgress();
+        }
+      },
+      targetContractAddress
+    );
+    subscription$?.unsubscribe();
 
-      this.notificationsService.showApproveSuccessful();
-    } catch (err) {
-      throw err;
-    }
+    this.notificationsService.showApproveSuccessful();
   }
 
   public getEthWethTrade(): InstantTrade | null {
