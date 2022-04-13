@@ -40,7 +40,7 @@
     *ngIf="!statuses?.includes(roundStatus.CLOSED)"
     (onClick)="onNavigate.emit(round)"
     >{{
-      statuses && statuses.includes(roundStatus.CLOSED) ? 'Check' : 'Join round'
+      statuses && statuses.includes(roundStatus.CLOSED) ? 'Check' : 'Join Round'
     }}</app-rubic-button
   >
 </div>
