@@ -7,7 +7,7 @@ export interface ISwapMethods {
   TOKENS_TO_ETH_SUPPORTING_FEE: string;
 }
 
-export const DEFAULT_SWAP_METHODS: ISwapMethods = {
+export const DEFAULT_SWAP_METHOD: ISwapMethods = {
   TOKENS_TO_TOKENS: 'swapExactTokensForTokens',
   ETH_TO_TOKENS: 'swapExactETHForTokens',
   TOKENS_TO_ETH: 'swapExactTokensForETH',

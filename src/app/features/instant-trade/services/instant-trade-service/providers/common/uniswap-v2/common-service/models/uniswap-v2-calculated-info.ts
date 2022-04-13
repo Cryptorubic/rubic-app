@@ -1,4 +1,4 @@
-import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
+import { UniswapV2Route } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-route';
 import BigNumber from 'bignumber.js';
 
 export interface UniswapV2CalculatedInfo {

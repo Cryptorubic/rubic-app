@@ -1,55 +1,31 @@
 import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import {
-  ItSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { startWith } from 'rxjs/operators';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import {
-  ItOptions,
-  ItProvider
-} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import {
-  DEFAULT_ESTIMATED_GAS,
-  DefaultEstimatedGas
-} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
-import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeData';
-import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
-import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
-import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
-import {
-  DEFAULT_SWAP_METHODS,
-  ISwapMethods
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
+import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { DEFAULT_ESTIMATED_GAS } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
+import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/get-trade-data';
+import { GasCalculationMethod } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/gas-calculation-method';
+import { UniswapV2Route } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-route';
+import { UniswapV2Trade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-trade';
+import { DEFAULT_SWAP_METHOD } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/swap-method';
 import {
   UniswapV2CalculatedInfo,
   UniswapV2CalculatedInfoWithProfit
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-calculated-info';
 import { TransactionReceipt } from 'web3-eth';
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
-import { AbiItem } from 'web3-utils';
-import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
-import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
-import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
+import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/get-trade-supporting-fee-data';
+import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/trade-contract-data';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation-error';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { RequiredField } from '@shared/models/utility-types/required-field';
@@ -57,8 +33,9 @@ import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
-} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { EthLikeInstantTradeProviderService } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -71,84 +48,42 @@ interface RecGraphVisitorOptions {
 }
 
 @Injectable()
-export abstract class CommonUniswapV2Service implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
+export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProviderService {
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
-  protected contractAbi: AbiItem[];
+  public readonly contractAddress: string;
 
-  protected swapsMethod: ISwapMethods;
+  protected readonly contractAbi = DEFAULT_UNISWAP_V2_ABI;
 
-  private readonly defaultEstimateGas: DefaultEstimatedGas;
+  protected readonly swapsMethod = DEFAULT_SWAP_METHOD;
 
-  private readonly gasMargin: number;
+  private readonly defaultEstimateGas = DEFAULT_ESTIMATED_GAS;
 
-  private walletAddress: string;
+  protected readonly gasMargin = 1.2; // 120%
 
-  private settings: ItSettingsForm;
+  private readonly wethAddress: string;
 
-  protected blockchainAdapter: EthLikeWeb3Public;
+  private readonly routingProviders: SymbolToken[];
 
-  // Uniswap constants
-  private blockchain: EthLikeBlockchainName;
+  private readonly maxTransitTokens: number;
 
-  private wethAddress: string;
+  // Injected services start
+  private readonly iframeService = inject(IframeService);
+  // Injected services end
 
-  private _contractAddress: string;
-
-  private routingProviders: SymbolToken[];
-
-  private maxTransitTokens: number;
-
-  public get contractAddress(): string {
-    return this._contractAddress;
+  private get deadline(): number {
+    return Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
   }
 
-  // Injected services
-  private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
-
-  private readonly web3PrivateService = inject(EthLikeWeb3PrivateService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
-
-  private readonly authService = inject(AuthService);
-
-  private readonly settingsService = inject(SettingsService);
-
-  private readonly tokensService = inject(TokensService);
-
-  private readonly gasService = inject(GasService);
-
-  private readonly iframeService = inject(IframeService);
+  private get slippageTolerance(): number {
+    return this.settings.slippageTolerance / 100;
+  }
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    this.contractAbi = DEFAULT_UNISWAP_V2_ABI;
-    this.swapsMethod = DEFAULT_SWAP_METHODS;
-    this.defaultEstimateGas = DEFAULT_ESTIMATED_GAS;
-    this.gasMargin = 1.2; // 120%
+    super(uniswapConstants.blockchain);
 
-    this.setUniswapConstants(uniswapConstants);
-
-    this.authService.getCurrentUser().subscribe(user => {
-      this.walletAddress = user?.address;
-    });
-
-    this.settingsService.instantTradeValueChanges
-      .pipe(startWith(this.settingsService.instantTradeValue))
-      .subscribe(settingsForm => {
-        this.settings = {
-          ...settingsForm,
-          slippageTolerance: settingsForm.slippageTolerance / 100
-        };
-      });
-  }
-
-  private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
-    this.blockchain = uniswapConstants.blockchain;
-
-    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
-
+    this.contractAddress = uniswapConstants.contractAddress;
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this._contractAddress = uniswapConstants.contractAddress;
     this.wethAddress = uniswapConstants.wethAddress;
     this.routingProviders = uniswapConstants.routingProviders;
   }
@@ -160,43 +95,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    * @return Promise<Multicall[]>
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
-    return this.blockchainAdapter.multicallContractMethods<{ amounts: string[] }>(
+    return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
       this.contractAddress,
       this.contractAbi,
       routesMethodArguments.map((methodArguments: string[]) => ({
         methodName,
         methodArguments
       }))
-    );
-  }
-
-  public getAllowance(
-    tokenAddress: string,
-    targetContractAddress = this.contractAddress
-  ): Observable<BigNumber> {
-    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return from(
-      this.blockchainAdapter.getAllowance({
-        tokenAddress,
-        ownerAddress: this.walletAddress,
-        spenderAddress: targetContractAddress
-      })
-    );
-  }
-
-  public async approve(
-    tokenAddress: string,
-    options: TransactionOptions,
-    targetContractAddress = this.contractAddress
-  ): Promise<void> {
-    this.walletConnectorService.checkSettings(this.blockchain);
-    await this.web3PrivateService.approveTokens(
-      tokenAddress,
-      targetContractAddress,
-      'infinity',
-      options
     );
   }
 
@@ -348,14 +253,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
-
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
 
-    if (this.blockchainAdapter.isNativeAddress(fromTokenClone.address)) {
+    if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
     }
-    if (this.blockchainAdapter.isNativeAddress(toTokenClone.address)) {
+    if (this.web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
@@ -418,7 +322,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasPriceInUsd?: BigNumber
   ): Promise<UniswapV2CalculatedInfo> {
     const routes = (await this.getAllRoutes(fromToken, toToken, fromAmountAbsolute)).sort((a, b) =>
-      b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
+      b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount)
     );
     if (routes.length === 0) {
       throw new InsufficientLiquidityError();
@@ -430,30 +334,27 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       };
     }
 
-    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
-    const { slippageTolerance } = this.settings;
-
     if (this.settings.rubicOptimisation && toToken.price) {
       const gasRequests = routes.map(route =>
         gasCalculationMethodName(
           fromAmountAbsolute,
-          subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
+          subtractPercent(route.outputAbsoluteAmount, this.slippageTolerance).toFixed(0),
           route.path.map(token => token.address),
-          deadline
+          this.deadline
         )
       );
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
+        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
           this.contractAbi,
           this.contractAddress,
           this.walletAddress,
           gasRequests.map(item => item.callData)
         );
-        estimatedGasLimits.forEach((elem, index) => {
-          if (elem?.isFinite()) {
-            gasLimits[index] = elem;
+        estimatedGasLimits.forEach((gas, index) => {
+          if (gas?.isFinite()) {
+            gasLimits[index] = gas;
           }
         });
       }
@@ -473,7 +374,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       });
 
       const sortedRoutes = routesWithProfit
-        .filter(el => el.route.outputAbsoluteAmount.gt(0))
+        .filter(info => info.route.outputAbsoluteAmount.gt(0))
         .sort((a, b) => b.profit.comparedTo(a.profit));
 
       if (!sortedRoutes.length) {
@@ -486,11 +387,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const route = routes[0];
     const estimateGasParams = gasCalculationMethodName(
       fromAmountAbsolute,
-      subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
+      subtractPercent(route.outputAbsoluteAmount, this.slippageTolerance).toFixed(0),
       route.path.map(token => token.address),
-      deadline
+      this.deadline
     );
-    const estimatedGas = await this.blockchainAdapter
+    const estimatedGas = await this.web3Public
       .getEstimatedGas(
         this.contractAbi,
         this.contractAddress,
@@ -512,9 +413,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     amountAbsolute: string
   ): Promise<UniswapV2Route[]> {
     const vertexes: SymbolToken[] = this.routingProviders.filter(
-      elem =>
-        !compareAddresses(elem.address, toToken.address) &&
-        !compareAddresses(elem.address, fromToken.address)
+      routerAddress =>
+        !compareAddresses(routerAddress.address, toToken.address) &&
+        !compareAddresses(routerAddress.address, fromToken.address)
     );
     const initialPath: SymbolToken[] = [
       {
@@ -539,7 +440,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const routes: UniswapV2Route[] = [];
-
     try {
       const responses = await this.getRoutes(routesMethodArguments, 'getAmountsOut');
       responses.forEach((response, index) => {
@@ -636,32 +536,28 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     transactionOptions?: TransactionOptions;
   }> {
     this.walletConnectorService.checkSettings(trade.blockchain);
-    await this.blockchainAdapter.checkBalance(
-      trade.from.token,
-      trade.from.amount,
-      this.walletAddress
-    );
+    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const uniswapV2Trade: UniswapV2Trade = {
       tokenIn: trade.from.token.address,
       tokenOut: trade.to.token.address,
       amountIn: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       amountOutMin: Web3Pure.toWei(
-        subtractPercent(trade.to.amount, this.settings.slippageTolerance),
+        subtractPercent(trade.to.amount, this.slippageTolerance),
         trade.to.token.decimals
       ),
       path: trade.path.map(token => token.address),
       to: receiverAddress,
-      deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
+      deadline: this.deadline
     };
 
     let getTradeDataMethod = this.getTokensToTokensTradeData;
     let getTradeSupportingFeeDataMethod = this.getTokensToTokensTradeSupportingFeeData;
-    if (this.blockchainAdapter.isNativeAddress(trade.from.token.address)) {
+    if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       getTradeDataMethod = this.getEthToTokensTradeData;
       getTradeSupportingFeeDataMethod = this.getEthToTokensTradeSupportingFeeData;
     }
-    if (this.blockchainAdapter.isNativeAddress(trade.to.token.address)) {
+    if (this.web3Public.isNativeAddress(trade.to.token.address)) {
       getTradeDataMethod = this.getTokensToEthTradeData;
       getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
@@ -703,7 +599,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }): Promise<boolean> => {
       try {
         if (receiverAddress === this.walletAddress) {
-          await this.blockchainAdapter.tryExecuteContractMethod(
+          await this.web3Public.tryExecuteContractMethod(
             this.contractAddress,
             this.contractAbi,
             methodData.methodName,
@@ -728,7 +624,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
             [fee, feeData.feeTarget]
           ];
 
-          await this.blockchainAdapter.tryExecuteContractMethod(
+          await this.web3Public.tryExecuteContractMethod(
             IT_PROXY_FEE_CONTRACT_ADDRESS,
             IT_PROXY_FEE_CONTRACT_ABI,
             IT_PROXY_FEE_CONTRACT_METHOD.SWAP,

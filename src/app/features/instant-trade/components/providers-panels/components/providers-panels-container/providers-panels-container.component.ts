@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
+import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
 
 @Component({
   selector: 'app-providers-panels-container',
@@ -8,13 +8,13 @@ import { ProviderControllerData } from '@features/instant-trade/models/providers
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProvidersPanelsContainerComponent {
-  @Input() public providers: ProviderControllerData[];
+  @Input() public providersData: InstantTradeProviderData[];
 
-  @Output() public onSelectProvider = new EventEmitter<ProviderControllerData>();
+  @Output() public onSelectProvider = new EventEmitter<InstantTradeProviderData>();
 
-  public allProvidersShown: boolean;
+  public showAllProviders = false;
 
-  constructor() {
-    this.allProvidersShown = false;
+  public trackByFn(_index: number, item: InstantTradeProviderData): string {
+    return item.name + item.tradeStatus + item.isSelected + item.trade?.to.amount;
   }
 }

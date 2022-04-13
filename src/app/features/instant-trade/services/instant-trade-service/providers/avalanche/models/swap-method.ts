@@ -1,4 +1,4 @@
-import { ISwapMethods } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
+import { ISwapMethods } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/swap-method';
 
 export const AVAX_SWAP_METHOD: ISwapMethods = {
   TOKENS_TO_TOKENS: 'swapExactTokensForTokens',

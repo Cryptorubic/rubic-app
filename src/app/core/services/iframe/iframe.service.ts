@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
 
 @Injectable({
@@ -126,7 +126,7 @@ export class IframeService implements OnDestroy {
 
   public isIframeWithFee(
     blockchain: BlockchainName,
-    providerType: INSTANT_TRADES_PROVIDERS
+    providerType: INSTANT_TRADE_PROVIDER
   ): boolean {
     if (!this.isIframe || !this.iframeParameters.fee) {
       return false;

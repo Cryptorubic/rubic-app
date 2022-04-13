@@ -1,4 +1,4 @@
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const pancakeSwapContractAddress = '0x10ED43C718714eb63d5aA57B78B54704E256024E';

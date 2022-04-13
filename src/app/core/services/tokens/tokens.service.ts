@@ -440,6 +440,32 @@ export class TokensService {
     }
   }
 
+  public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
+    await this.getAndUpdateTokenBalance({
+      address: web3Public.nativeTokenAddress,
+      blockchain
+    });
+  }
+
+  public async updateTokenBalanceAfterSwap(token: {
+    address: string;
+    blockchain: BlockchainName;
+  }): Promise<void> {
+    const web3Public = this.publicBlockchainAdapterService[token.blockchain];
+    if (web3Public.isNativeAddress(token.address)) {
+      await this.getAndUpdateTokenBalance(token);
+    } else {
+      await Promise.all([
+        this.getAndUpdateTokenBalance(token),
+        this.getAndUpdateTokenBalance({
+          address: web3Public.nativeTokenAddress,
+          blockchain: token.blockchain
+        })
+      ]);
+    }
+  }
+
   /**
    * Gets token by address.
    * @param token Tokens's data to find it by.

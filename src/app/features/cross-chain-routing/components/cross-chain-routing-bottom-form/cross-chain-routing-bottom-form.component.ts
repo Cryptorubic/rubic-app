@@ -28,7 +28,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  NEAR_BLOCKCHAIN_NAME
+} from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -443,11 +447,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
+    const { fromBlockchain } = this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      if (fromBlockchain !== NEAR_BLOCKCHAIN_NAME) {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
 
-      this.notifyGtmAfterSignTx(txHash);
-      this.notifyTradeInProgress(txHash);
+        this.notifyGtmAfterSignTx(txHash);
+        this.notifyTradeInProgress(txHash);
+      }
     };
 
     this.crossChainRoutingService
@@ -480,9 +487,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
-        'cross-chain-routing',
         txHash,
         fromBlockchain,
+        'cross-chain-routing',
         this.showSuccessTrxNotification
       );
     }
