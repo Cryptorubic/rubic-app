@@ -3,15 +3,14 @@ import { Observable, of } from 'rxjs';
 import { catchError, delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchain
+  TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -45,7 +44,7 @@ export class InstantTradesApiService {
   ) {}
 
   public notifyInstantTradesBot(body: {
-    provider: INSTANT_TRADES_PROVIDERS;
+    provider: INSTANT_TRADE_PROVIDER;
     blockchain: BlockchainName;
     walletAddress: string;
     trade: InstantTrade;
@@ -70,15 +69,14 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: INSTANT_TRADES_PROVIDERS,
+    provider: INSTANT_TRADE_PROVIDER,
     trade: InstantTrade,
-    blockchain: BlockchainName,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
-    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
+    const hashObject = InstantTradesApiService.getHashObject(trade.blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
+      network: TO_BACKEND_BLOCKCHAINS[trade.blockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,
@@ -141,10 +139,7 @@ export class InstantTradesApiService {
       const token = tradeApi[`${type}_token` as const];
       const amount = tradeApi[`${type}_amount` as const];
       return {
-        blockchain:
-          FROM_BACKEND_BLOCKCHAINS[
-            token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
-          ],
+        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
         symbol: token.symbol,
         amount: Web3Pure.fromWei(amount, token.decimals).toFixed(),
         image: token.image

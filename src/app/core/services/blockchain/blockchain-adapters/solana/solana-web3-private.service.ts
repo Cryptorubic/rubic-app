@@ -442,13 +442,13 @@ export class SolanaWeb3PrivateService {
       keys.push(tempKeys);
     }
 
-    const resArray: AccountInfo<Buffer | ParsedAccountData>[][] = await Promise.all(
+    const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = await Promise.all(
       keys.map(key => {
         return this._connection.getMultipleAccountsInfo(key, commitment || 'finalized');
       })
     );
 
-    const accounts: AccountInfo<Buffer | ParsedAccountData>[] = Object.keys(resArray)
+    const accounts: Array<null | AccountInfo<Buffer | null>> = Object.keys(resArray)
       .sort((a, b) => parseInt(a) - parseInt(b))
       .map(itemIndex => resArray[parseInt(itemIndex)])
       .flat();

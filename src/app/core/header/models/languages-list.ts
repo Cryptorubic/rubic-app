@@ -7,6 +7,11 @@ export const LANGUAGES_LIST: LanguageListElement[] = [
     imgSrc: 'assets/images/icons/languages/en.svg'
   },
   {
+    lng: 'de',
+    title: 'Deutsch',
+    imgSrc: 'assets/images/icons/languages/de.svg'
+  },
+  {
     lng: 'ko',
     title: '한국어',
     imgSrc: 'assets/images/icons/languages/ko.svg'

@@ -1,4 +1,4 @@
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const pangolinAvalancheContractAddress = '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106';

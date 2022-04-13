@@ -98,7 +98,8 @@
     "logoutMessage": "Voulez vous vraiment vous déconnecter ?",
     "notAvailable": "En construction - refonte UX.",
     "merch": "Boutique",
-    "stakingLp": "Earn",
+    "stakingLp": "Earn RBC",
+    "staking": "Staking",
     "promotion": "Promotion"
   },
   "aboutPage": {
