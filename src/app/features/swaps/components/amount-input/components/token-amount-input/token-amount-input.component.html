@@ -33,7 +33,7 @@
         autocomplete="off"
         class="token-amount-input-container__input"
         name="token-amount"
-        [placeholder]="placeholder"
+        [placeholder]="placeholder$ | async"
         appTokenAmount
         [formControl]="amount"
         [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"

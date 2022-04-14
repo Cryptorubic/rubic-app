@@ -44,7 +44,6 @@ export class RubicLanguageSelectComponent {
    * @param language New current language.
    */
   public setLanguage(language: string): void {
-    this.cdr.markForCheck();
     this.translateService.use(language);
     this.cookieService.set('lng', language, null, null, null, null, null);
     this.context$.next({

@@ -15,6 +15,7 @@ import { FormControl } from '@ngneat/reactive-forms';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -32,7 +33,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Input() placeholder = 'Enter amount';
+  public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');
 
   private get formattedAmount(): string {
     return this.amount?.value.split(',').join('');
@@ -57,7 +58,8 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit() {

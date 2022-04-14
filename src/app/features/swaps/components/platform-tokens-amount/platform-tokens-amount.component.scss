@@ -21,8 +21,8 @@ $block-height: 18px;
   }
 
   &_inner-container {
-
     display: flex;
+    align-items: baseline;
 
     color: var(--main-green);
 
@@ -45,7 +45,7 @@ $block-height: 18px;
 
 @keyframes slide {
   from {
-    transform: translateY(calc(-100% + 20px));
+    transform: translateY(-100%);
   }
 
   to {

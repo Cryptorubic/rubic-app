@@ -2,9 +2,7 @@
   {{ 'common.tagline.firstText' | translate }}
   <div class="platform-tokens-amount__container">
     <div class="platform-tokens-amount_inner-container">
-      <span *ngFor="let digits of amountsArray">
-        <span *ngFor="let digit of digits">{{ digit }}</span>
-      </span>
+      <span *ngFor="let digits of amountsArray">{{ digits }}</span>
       <span>+</span>
     </div>
   </div>
