@@ -34,6 +34,6 @@ export class RewardsHistoryComponent implements OnInit {
   }
 
   public adjustTxHash(hash: string): string {
-    return '0×' + hash.slice(2, 7) + '...' + hash.slice(-5);
+    return '0×' + hash.slice(2);
   }
 }

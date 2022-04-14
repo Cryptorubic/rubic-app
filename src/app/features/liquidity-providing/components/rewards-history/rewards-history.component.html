@@ -27,7 +27,7 @@
           </td>
           <td *tuiCell="'txHash'" tuiTd>
             <a [href]="item.scannerLink" target="_blank">
-              {{ item.txHash | functionCall: adjustTxHash:this }}
+              <span>{{ item.txHash | functionCall: adjustTxHash:this }}</span>
               <img src="assets/images/icons/external-link-arrow.svg" alt="Scanner" />
             </a>
           </td>
