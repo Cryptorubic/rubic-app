@@ -1,0 +1,41 @@
+<ng-container *ngLet="rewardsHistory$ | async as rewardsHistory">
+  <ng-container *ngIf="rewardsHistory.length">
+    <div class="title">
+      <div class="title__text">History of Rewards</div>
+      <app-rotating-icon
+        [rotating]="loading$ | async"
+        (iconClick)="loadRewards()"
+      ></app-rotating-icon>
+    </div>
+    <table
+      *ngLet="rewardsHistory$ | async as rewardsHistory"
+      tuiTable
+      [columns]="columns"
+      class="rewards"
+    >
+      <thead>
+        <tr tuiThGroup>
+          <th *tuiHead="'date'">Date</th>
+          <th *tuiHead="'txHash'">Tx Hash</th>
+          <th *tuiHead="'rewards'">Rewards</th>
+        </tr>
+      </thead>
+      <tbody tuiTbody [data]="rewardsHistory">
+        <tr *tuiRow="let item of rewardsHistory; let index = index" tuiTr>
+          <td *tuiCell="'date'" tuiTd>
+            {{ item.date | date: 'LLLL dd, hh:mm' }}
+          </td>
+          <td *tuiCell="'txHash'" tuiTd>
+            <a [href]="item.scannerLink" target="_blank">
+              {{ item.txHash | functionCall: adjustTxHash:this }}
+              <img src="assets/images/icons/external-link-arrow.svg" alt="Scanner" />
+            </a>
+          </td>
+          <td *tuiCell="'rewards'" tuiTd>
+            {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</ng-container>

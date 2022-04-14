@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
@@ -45,6 +46,9 @@ import { LiquidityProvidingNotificationService } from './liquidity-providing-not
 import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
+import { LpReward, LpRewardParsed } from '@app/core/services/backend/volume-api/models/lp-rewards';
+import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -123,6 +127,10 @@ export class LiquidityProvidingService {
   }
 
   public readonly deposits$ = this._deposits$.asObservable();
+
+  private readonly _rewardsHistory$ = new BehaviorSubject<LpRewardParsed[]>(undefined);
+
+  public readonly rewardsHistory$ = this._rewardsHistory$.asObservable();
 
   private readonly _totalCollectedRewards$ = new BehaviorSubject<BigNumber>(undefined);
 
@@ -222,7 +230,9 @@ export class LiquidityProvidingService {
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
     private readonly router: Router,
-    private readonly lpNotificationService: LiquidityProvidingNotificationService
+    private readonly lpNotificationService: LiquidityProvidingNotificationService,
+    private readonly volumeApiService: VolumeApiService,
+    private readonly scannerLinkPipe: ScannerLinkPipe
   ) {
     this.watchWhitelist().subscribe();
   }
@@ -503,7 +513,7 @@ export class LiquidityProvidingService {
       tap(([startTime, endTime]) => {
         const whitelistEndTimestamp = +startTime + this.whitelistDuration;
         this.endDate = new Date(+endTime * 1000);
-        this.isLpEneded = new Date() > this.endDate;
+        this.isLpEneded = new Date().getTime() > +endTime * 1000;
         this.whitelistEndTime = new Date(whitelistEndTimestamp * 1000);
       })
     );
@@ -592,6 +602,13 @@ export class LiquidityProvidingService {
 
   public async switchNetwork(): Promise<boolean> {
     return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+  }
+
+  public getLpRewardsHistory(): Observable<LpRewardParsed[]> {
+    return this.volumeApiService.fetchLpRewards().pipe(
+      map(rewards => this.parseRewards(rewards)),
+      tap(rewards => this._rewardsHistory$.next(rewards))
+    );
   }
 
   private getTotalRewards(): Observable<BigNumber> {
@@ -692,6 +709,20 @@ export class LiquidityProvidingService {
 
   private checkIsPoolFull(totalStaked: number): boolean {
     return this.poolSize - totalStaked > this.minEnterAmount;
+  }
+
+  private parseRewards(rewards: LpReward[]): LpRewardParsed[] {
+    return rewards.map(reward => ({
+      date: new Date(reward.created_at),
+      txHash: reward.hash.toLocaleLowerCase(),
+      scannerLink: this.scannerLinkPipe.transform(
+        reward.hash,
+        this.blockchain,
+        ADDRESS_TYPE.TRANSACTION
+      ),
+      rewards: reward.amount,
+      balance: 10
+    }));
   }
 
   private parseApr(apr: string): number {

@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { Router } from '@angular/router';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { EMPTY, of } from 'rxjs';
-import { startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { RoundStatus } from '../../models/round-status.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
 
@@ -39,15 +38,23 @@ export class StakingLpPageComponent implements OnInit {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
-        switchMap(address => {
+        tap(address => {
+          console.log(address);
           if (address === null) {
+            debugger;
             this.stakingLpService.resetStakingBalances();
             this.stakingLpService.resetLpBalances();
-            return EMPTY;
-          } else {
-            return of(null);
           }
         }),
+        // switchMap(address => {
+        //   if (address === null) {
+        //     this.stakingLpService.resetStakingBalances();
+        //     this.stakingLpService.resetLpBalances();
+        //     return EMPTY;
+        //   } else {
+        //     return of(null);
+        //   }
+        // }),
         switchMap(() => this.stakingLpService.getStakingBalanceByRound()),
         switchMap(() => this.stakingLpService.getLpBalanceAndAprByRound()),
         takeUntil(this.destroy$)

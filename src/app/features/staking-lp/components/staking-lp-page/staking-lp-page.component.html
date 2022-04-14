@@ -14,6 +14,7 @@
     [balance]="lpAprAndBalances.balance.roundOne"
     [startTime]="'04.01.2022'"
     [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
+    [isStarted]="lpRoundStarted"
     (onNavigate)="navigateToLp()"
   ></app-lp-card>
 </div>

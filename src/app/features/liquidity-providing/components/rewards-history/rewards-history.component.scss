@@ -1,0 +1,54 @@
+@use 'src/scss/core'as *;
+
+:host {
+  display: block;
+  padding: 0 8px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  &__text {
+    @include font(20px, 20px, 500, var(--rubic-base-02));
+  }
+}
+
+.rewards {
+  width: 100%;
+
+  tbody tr:first-child td {
+    padding-top: 12px;
+  }
+    
+  td {
+    @include font(16px, 22px, 500, var(--rubic-base-02));
+    height: 22px;
+    padding: 6px 0;
+
+    background: transparent;
+    border: 0;
+
+    a {
+      display: flex;
+      align-items: center;
+
+      color: inherit;
+      text-decoration: none;
+
+      img {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  thead tr th {
+    @include font(16px, 19px, 500, rgba(255, 255, 255, 0.6));
+    padding-bottom: 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #292c2a;
+  }
+}

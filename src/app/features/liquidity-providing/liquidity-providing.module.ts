@@ -32,6 +32,8 @@ import { ProgressComponent } from './components/progress/progress.component';
 import { RequestWithdrawModalComponent } from './components/request-withdraw-modal/request-withdraw-modal.component';
 import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
 import { TransferModalComponent } from './components/transfer-modal/transfer-modal.component';
+import { TuiTableModule } from '@taiga-ui/addon-table';
+import { RewardsHistoryComponent } from './components/rewards-history/rewards-history.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { TransferModalComponent } from './components/transfer-modal/transfer-mod
     LpStatisticsComponent,
     ProgressComponent,
     RequestWithdrawModalComponent,
-    TransferModalComponent
+    TransferModalComponent,
+    RewardsHistoryComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +66,8 @@ import { TransferModalComponent } from './components/transfer-modal/transfer-mod
     TuiTextfieldControllerModule,
     TuiSelectModule,
     TuiDataListWrapperModule,
-    TuiDataListModule
+    TuiDataListModule,
+    TuiTableModule
   ],
   exports: [],
   providers: [
