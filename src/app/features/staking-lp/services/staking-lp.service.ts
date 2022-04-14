@@ -327,7 +327,7 @@ export class StakingLpService {
         ).pipe(
           catchError((error: unknown) => {
             this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-            return of(undefined);
+            return EMPTY;
           }),
           map(balance => Web3Pure.fromWei(balance))
         );
@@ -343,7 +343,7 @@ export class StakingLpService {
     );
   }
 
-  public checkIsLpRoundStartedOrEnded(): Observable<boolean> {
+  private checkIsLpRoundStartedOrEnded(): Observable<boolean> {
     return forkJoin([
       from(
         this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
@@ -373,47 +373,52 @@ export class StakingLpService {
     );
   }
 
-  public getLpBalanceAndAprByRound(): Observable<string[][]> {
-    const balanceAndAprRequests = (userAddress: string) => {
+  public getLpBalanceByRound(): Observable<BigNumber[]> {
+    const balanceRequests$ = (userAddress: string): Array<Promise<string>> => {
       return this.lpContracts.map(contract => {
-        return forkJoin([
-          this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-            contract.address,
-            contract.abi,
-            'viewUSDCAmountOf',
-            { methodArguments: [userAddress] }
-          ),
-          this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-            contract.address,
-            contract.abi,
-            'apr'
-          )
-        ]);
+        return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+          contract.address,
+          contract.abi,
+          'viewUSDCAmountOf',
+          { methodArguments: [userAddress] }
+        );
       });
     };
 
-    return this.user$.pipe(
-      take(1),
-      switchMap(user => {
-        return forkJoin([of(user), this.checkIsLpRoundStartedOrEnded()]);
-      }),
-      switchMap(([user, isLpStarted]) => {
+    return this.checkIsLpRoundStartedOrEnded().pipe(
+      switchMap(isLpStarted => {
         if (isLpStarted) {
-          return forkJoin(balanceAndAprRequests(user.address));
+          return this.user$.pipe(
+            take(1),
+            switchMap(user => forkJoin(balanceRequests$(user.address))),
+            map(lpBalanceByRound => lpBalanceByRound.map(balance => Web3Pure.fromWei(balance))),
+            tap(lpBalanceByRound => {
+              const [roundOneBalance] = lpBalanceByRound;
+
+              this._lpBalanceByRound$.next({ roundOne: roundOneBalance });
+            })
+          );
         } else {
           return EMPTY;
         }
-      }),
-      tap(response => {
-        const [roundOne] = response;
-        const [balance, apr] = roundOne;
-        const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
-        const parsedApr = +apr / Math.pow(10, 29);
-        this._lpAprByRound$.next({ roundOne: parsedApr.toFixed(0) });
+      })
+    );
+  }
 
-        this._lpBalanceByRound$.next({
-          roundOne: Web3Pure.fromWei(balance, bscUSDCToken.decimals)
-        });
+  public getLpAprByRound(): Observable<number[]> {
+    const aprRequests$ = this.lpContracts.map(contract => {
+      return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        contract.address,
+        contract.abi,
+        'apr'
+      );
+    });
+
+    return forkJoin(aprRequests$).pipe(
+      map(aprByRound => aprByRound.map(this.parseApr)),
+      tap(aprByRound => {
+        const [roundOneApr] = aprByRound;
+        this._lpAprByRound$.next({ roundOne: roundOneApr.toFixed(0) });
       })
     );
   }
@@ -503,5 +508,9 @@ export class StakingLpService {
     const tvlMultichain = this._tvlMultichain$.getValue();
 
     this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
+  }
+
+  private parseApr(apr: string): number {
+    return Number(apr) / Math.pow(10, 29);
   }
 }

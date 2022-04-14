@@ -1,86 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { RoundStatus } from '../../models/round-status.enum';
-import { StakingLpService } from '../../services/staking-lp.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-staking-lp-page',
   templateUrl: './staking-lp-page.component.html',
   styleUrls: ['./staking-lp-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingLpPageComponent implements OnInit {
-  public readonly roundStatus = RoundStatus;
-
-  public readonly stakingBalanceByRound$ = this.stakingLpService.stakingBalanceByRound$;
-
-  public readonly lpAprByRound$ = this.stakingLpService.lpAprByRound$;
-
-  public readonly lpBalanceByRound$ = this.stakingLpService.lpBalanceByRound$;
-
-  public readonly lpRoundStarted$ = this.stakingLpService.lpRoundStarted$;
-
-  public readonly lpRoundEnded$ = this.stakingLpService.lpRoundEnded$;
-
-  constructor(
-    private readonly router: Router,
-    private readonly stakingLpService: StakingLpService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
-  ) {}
-
-  ngOnInit(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        startWith(undefined),
-        tap(address => {
-          console.log(address);
-          if (address === null) {
-            debugger;
-            this.stakingLpService.resetStakingBalances();
-            this.stakingLpService.resetLpBalances();
-          }
-        }),
-        // switchMap(address => {
-        //   if (address === null) {
-        //     this.stakingLpService.resetStakingBalances();
-        //     this.stakingLpService.resetLpBalances();
-        //     return EMPTY;
-        //   } else {
-        //     return of(null);
-        //   }
-        // }),
-        switchMap(() => this.stakingLpService.getStakingBalanceByRound()),
-        switchMap(() => this.stakingLpService.getLpBalanceAndAprByRound()),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.cdr.detectChanges();
-      });
-  }
-
-  public navigateToStaking(round: number): void {
-    const roundRoutePath = round === 1 ? 'round-one' : 'round-two';
-    this.router.navigate(['staking', roundRoutePath]);
-  }
-
-  public navigateToLp(): void {
-    this.router.navigate(['liquidity-providing']);
-  }
-
-  public getLpStatuses(isStarted: boolean): RoundStatus[] {
-    const isEnded = this.stakingLpService.lpRoundEnded;
-    if (isEnded) {
-      return [RoundStatus.CLOSED];
-    }
-
-    if (isStarted) {
-      return [RoundStatus.ACTIVE];
-    }
-  }
+export class StakingLpPageComponent {
+  constructor() {}
 }

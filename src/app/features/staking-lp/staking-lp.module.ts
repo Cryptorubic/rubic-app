@@ -16,13 +16,17 @@ import {
   TuiLoaderModule,
   TuiManualHintModule
 } from '@taiga-ui/core';
+import { StakingRoundsComponent } from './components/staking-rounds/staking-rounds.component';
+import { LpRoundsComponent } from './components/lp-rounds/lp-rounds.component';
 
 @NgModule({
   declarations: [
     StakingLpPageComponent,
     StatisticsComponent,
     StakingCardComponent,
-    LpCardComponent
+    LpCardComponent,
+    StakingRoundsComponent,
+    LpRoundsComponent
   ],
   imports: [
     CommonModule,

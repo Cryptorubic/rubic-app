@@ -1,0 +1,15 @@
+<ng-container
+  *ngLet="{ balance: lpBalanceByRound$ | async, apr: lpAprByRound$ | async } as lpAprAndBalances"
+>
+  <app-lp-card
+    *ngLet="lpRoundStarted$ | async as lpRoundStarted"
+    [round]="1"
+    [apr]="lpAprAndBalances.apr.roundOne"
+    [poolLimit]="800000"
+    [balance]="lpAprAndBalances.balance.roundOne"
+    [startTime]="'04.01.2022'"
+    [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
+    [isStarted]="lpRoundStarted"
+    (onNavigate)="navigateToLp()"
+  ></app-lp-card>
+</ng-container>

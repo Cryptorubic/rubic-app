@@ -1,42 +1,11 @@
 <app-statistics class="statistics"></app-statistics>
 
-<div
-  class="lp"
-  *ngLet="{ balance: lpBalanceByRound$ | async, apr: lpAprByRound$ | async } as lpAprAndBalances"
->
+<div class="lp">
   <div class="lp__title">Rubic Liquidity Providing</div>
-  <app-lp-card
-    *ngLet="lpRoundStarted$ | async as lpRoundStarted"
-    class="lp__card"
-    [round]="1"
-    [apr]="lpAprAndBalances.apr.roundOne"
-    [poolLimit]="800000"
-    [balance]="lpAprAndBalances.balance.roundOne"
-    [startTime]="'04.01.2022'"
-    [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
-    [isStarted]="lpRoundStarted"
-    (onNavigate)="navigateToLp()"
-  ></app-lp-card>
+  <app-lp-rounds></app-lp-rounds>
 </div>
 
-<div class="staking" *ngLet="stakingBalanceByRound$ | async as stakingBalances">
+<div class="staking">
   <div class="staking__title">Rubic Staking</div>
-  <app-staking-card
-    class="staking__card"
-    [round]="2"
-    [apr]="30"
-    [poolLimit]="7000000"
-    [balance]="stakingBalances.roundTwo"
-    [statuses]="[roundStatus.FULL, roundStatus.ACTIVE]"
-    (onNavigate)="navigateToStaking($event)"
-  ></app-staking-card>
-  <app-staking-card
-    class="staking__card"
-    [round]="1"
-    [apr]="82"
-    [poolLimit]="7000000"
-    [balance]="stakingBalances.roundOne"
-    [statuses]="[roundStatus.CLOSED]"
-    (onNavigate)="navigateToStaking($event)"
-  ></app-staking-card>
+  <app-staking-rounds></app-staking-rounds>
 </div>

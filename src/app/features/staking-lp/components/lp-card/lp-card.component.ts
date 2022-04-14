@@ -33,6 +33,8 @@ export class LpCardComponent {
 
   @Input() statuses: RoundStatus[];
 
+  @Input() isStarted: boolean;
+
   @Output() onNavigate = new EventEmitter<number>();
 
   public readonly statusBadgeType = STATUS_BADGE_TYPE;
