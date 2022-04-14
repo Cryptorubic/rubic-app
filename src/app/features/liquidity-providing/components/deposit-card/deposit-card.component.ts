@@ -17,11 +17,11 @@ export class DepositCardComponent {
 
   @Input() needSwitchNetwork: boolean;
 
-  @Output() onCollectRewards = new EventEmitter<void>();
+  @Output() readonly onCollectRewards = new EventEmitter<void>();
 
-  @Output() onRequestWithdraw = new EventEmitter<void>();
+  @Output() readonly onRequestWithdraw = new EventEmitter<void>();
 
-  @Output() onWithdraw = new EventEmitter<void>();
+  @Output() readonly onWithdraw = new EventEmitter<void>();
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 

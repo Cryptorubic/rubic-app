@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { STAKING_CONTRACT_ABI_ROUND_ONE } from '@app/core/constants/staking/STAKING_CONTRACT_ABI_ROUND_ONE';
-import { STAKING_CONTRACT_ABI_ROUND_TWO } from '@app/core/constants/staking/STAKING_CONTRACT_ABI_ROUND_TWO';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -24,42 +22,30 @@ import {
   take,
   tap
 } from 'rxjs/operators';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { AbiItem } from 'web3-utils';
-import { LP_PROVIDING_CONTRACT_ABI } from '@app/features/liquidity-providing/constants/LP_PROVIDING_CONTRACT_ABI';
 import { TradeVolumeByPeriod } from '@app/core/services/backend/volume-api/models/trade-volume-by-period';
 import { TtvFilters } from '../models/ttv-filters.enum';
 import { HttpClient } from '@angular/common/http';
+import { STAKING_CONTRACTS } from '../constants/STAKING_CONTRACTS';
+import { LP_CONTRACTS } from '../constants/LP_CONTRACTS';
+
+interface RoundContract {
+  address: string;
+  abi: AbiItem[];
+  active?: boolean;
+}
 
 @Injectable()
 export class StakingLpService {
-  private readonly stakingContracts: { address: string; abi: AbiItem[]; active?: boolean }[] = [
-    {
-      address: ENVIRONMENT.staking.roundOneContractAddress,
-      abi: STAKING_CONTRACT_ABI_ROUND_ONE
-    },
-    {
-      address: ENVIRONMENT.staking.roundTwoContractAddress,
-      abi: STAKING_CONTRACT_ABI_ROUND_TWO,
-      active: true
-    }
-  ];
+  private readonly stakingContracts: RoundContract[] = STAKING_CONTRACTS;
 
-  private readonly lpContracts: { address: string; abi: AbiItem[]; active?: boolean }[] = [
-    {
-      address: ENVIRONMENT.lpProviding.contractAddress,
-      abi: LP_PROVIDING_CONTRACT_ABI,
-      active: true
-    }
-  ];
+  private readonly lpContracts: RoundContract[] = LP_CONTRACTS;
 
-  private readonly crosschainContracts = ENVIRONMENT.crossChain.contractAddresses;
-
-  get activeStakingContract(): { address: string; abi: AbiItem[]; active?: boolean } {
+  get activeStakingContract(): RoundContract {
     return this.stakingContracts.find(contract => contract.active);
   }
 
-  get activeLpContract(): { address: string; abi: AbiItem[]; active?: boolean } {
+  get activeLpContract(): RoundContract {
     return this.lpContracts.find(contract => contract.active);
   }
 
@@ -170,15 +156,7 @@ export class StakingLpService {
     private readonly errorService: ErrorsService,
     private readonly httpClient: HttpClient
   ) {
-    this.tokensService
-      .getAndUpdateTokenPrice(
-        {
-          address: this.stakingToken.address,
-          blockchain: this.stakingToken.blockchain
-        },
-        true
-      )
-      .then(price => this._stakingTokenUsdPrice$.next(price));
+    this.getStakingTokenPrice();
   }
 
   public getTotalBalanceAndRewards(): Observable<BigNumber[]> {
@@ -512,5 +490,17 @@ export class StakingLpService {
 
   private parseApr(apr: string): number {
     return Number(apr) / Math.pow(10, 29);
+  }
+
+  private getStakingTokenPrice(): void {
+    this.tokensService
+      .getAndUpdateTokenPrice(
+        {
+          address: this.stakingToken.address,
+          blockchain: this.stakingToken.blockchain
+        },
+        true
+      )
+      .then(price => this._stakingTokenUsdPrice$.next(price));
   }
 }

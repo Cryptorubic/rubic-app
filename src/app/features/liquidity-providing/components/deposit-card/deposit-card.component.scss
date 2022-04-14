@@ -72,12 +72,8 @@
   }
 
   &__amount {
-    color: #fff;
+    color: var(--form-bright-reversed-text-color);
     font-weight: 500;
-
-    @include dark {
-      color: #000;
-    }
 
     &:first-child {
       margin-right: 37px;

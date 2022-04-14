@@ -16,9 +16,9 @@ export class ChipsComponent {
   @Input() chips: Chip[];
 
   @Input('value')
-  set initialValue(value: Chip) {
-    if (value) {
-      this.selectedValue = value.value;
+  set initialValue(chip: Chip) {
+    if (chip) {
+      this.selectedValue = chip.value;
     }
   }
 

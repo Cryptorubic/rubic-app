@@ -61,6 +61,11 @@ export class DepositButtonComponent implements OnInit {
   constructor(private readonly lpService: LiquidityProvidingService) {}
 
   ngOnInit(): void {
+    this.checkBrbcAmount();
+    this.checkUsdcAmount();
+  }
+
+  private checkBrbcAmount(): void {
     combineLatest([this.brbcAmount$, this.lpService.brbcBalance$])
       .pipe(
         tap(([brbcAmount, brbcBalance]) => {
@@ -73,7 +78,9 @@ export class DepositButtonComponent implements OnInit {
         })
       )
       .subscribe();
+  }
 
+  private checkUsdcAmount(): void {
     combineLatest([this.usdcAmount$, this.lpService.usdcBalance$])
       .pipe(
         tap(([usdcAmount, usdcBalance]) => {
