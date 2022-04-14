@@ -15,8 +15,8 @@ $block-height: 18px;
   }
 
   &__container {
-    display: inline-block;
-    max-height: calc(#{$block-height} - 2px);
+    display: inline-flex;
+    max-height: $block-height;
     overflow: hidden;
   }
 
@@ -31,6 +31,10 @@ $block-height: 18px;
       flex-direction: column;
       align-items: center;
       width: 11px;
+
+      &:first-child {
+        width: 6px; /* Temporary fix for tight first digit (1) */
+      }
     }
 
     > span:nth-child(2n) {

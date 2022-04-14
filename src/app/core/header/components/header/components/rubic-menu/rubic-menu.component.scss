@@ -14,13 +14,10 @@
     background-color: #4b604fff;
     border-radius: 5px;
 
+    transition: 0.3s ease-in-out;
+
     transition-property: opacity, transform;
 
-    &:hover,
-    &:focus,
-    &:active {
-      transition: 0.3s ease-in-out;
-    }
 
     :host-context(html.dark) & {
       background-color: $rubic-primary;
