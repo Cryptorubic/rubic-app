@@ -13,10 +13,11 @@
           <ng-container *ngIf="isPoolFull"> {{ 'lp.poolIsFull' | translate }} </ng-container>
           <ng-container *ngIf="isLpEnded"> {{ 'lp.lpRoundEnded' | translate }} </ng-container>
           <ng-container *ngIf="!isPoolFull && !isLpEnded">
-            {{ 'lp.newDeposit' | translate }}
+            {{ 'lp.depositFunds' | translate }}
           </ng-container>
         </app-rubic-button>
         <app-rubic-button
+          *ngIf="false"
           appearance="outline"
           class="deposits__actions-transfer"
           (onClick)="showTransferModal()"

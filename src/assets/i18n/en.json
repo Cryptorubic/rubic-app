@@ -99,7 +99,7 @@
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
     "merch": "Merch shop",
-    "stakingLp": "Earn RBC",
+    "stakingLp": "Earn",
     "promotion": "Promotion"
   },
   "faqPage": {
@@ -330,6 +330,7 @@
     "acquireBoth": "Acquire both BRBC and USDC tokens",
     "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
     "earlyWithdrawHint": " If you Withdraw early, You will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
+    "depositFunds": "Deposit funds",
     "initiateDeposit": "Initiate Deposit",
     "initiateDepositModalText": "Attention: You are depositing {{amount}} RBC and {{amount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your RBC and USDC deposit.",
     "requestWithdraw": "Request Withdraw",
@@ -340,7 +341,7 @@
     "transferToken": "Transfer LP Token",
     "collectRewards": "Collect rewards {{amount}} $",
     "balance": "Balance",
-    "endOfRound": "End of Round",
+    "endOfRound": "End of Round {{round}}",
     "poolIsFull": "Pool is Full",
     "lpRoundEnded": "LP Round Ended",
     "returnAfterDay": "Return after 24H",

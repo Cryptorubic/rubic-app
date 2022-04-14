@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { LpFormError } from '../../models/lp-form-error.enum';
 import { PoolToken } from '../../models/pool-token.enum';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
@@ -26,13 +26,13 @@ export class DepositButtonComponent implements OnInit {
 
   @Input() loading: boolean;
 
-  @Output() onLogin = new EventEmitter<void>();
+  @Output() readonly onLogin = new EventEmitter<void>();
 
-  @Output() onSwitchNetwork = new EventEmitter<void>();
+  @Output() readonly onSwitchNetwork = new EventEmitter<void>();
 
-  @Output() onApprove = new EventEmitter<PoolToken>();
+  @Output() readonly onApprove = new EventEmitter<PoolToken>();
 
-  @Output() onCreateDeposit = new EventEmitter<void>();
+  @Output() readonly onCreateDeposit = new EventEmitter<void>();
 
   public readonly poolToken = PoolToken;
 
@@ -61,37 +61,18 @@ export class DepositButtonComponent implements OnInit {
   constructor(private readonly lpService: LiquidityProvidingService) {}
 
   ngOnInit(): void {
-    this.checkBrbcAmount();
-    this.checkUsdcAmount();
+    this.checkAmountAndBalance();
   }
 
-  private checkBrbcAmount(): void {
-    combineLatest([this.brbcAmount$, this.lpService.brbcBalance$])
+  public checkAmountAndBalance(): void {
+    combineLatest([this.brbcAmount$, this.lpService.usdcBalance$, this.lpService.brbcBalance$])
       .pipe(
-        tap(([brbcAmount, brbcBalance]) => {
-          this._error$.next(
-            this.lpService.checkDepositErrors(brbcAmount, {
-              balance: brbcBalance,
-              symbol: PoolToken.BRBC
-            })
-          );
+        map(([brbcAmount, usdcBalance, brbcBalance]) => {
+          return this.lpService.checkDepositErrors(brbcAmount, usdcBalance, brbcBalance);
         })
       )
-      .subscribe();
-  }
-
-  private checkUsdcAmount(): void {
-    combineLatest([this.usdcAmount$, this.lpService.usdcBalance$])
-      .pipe(
-        tap(([usdcAmount, usdcBalance]) => {
-          this._error$.next(
-            this.lpService.checkDepositErrors(usdcAmount, {
-              balance: usdcBalance,
-              symbol: PoolToken.USDC
-            })
-          );
-        })
-      )
-      .subscribe();
+      .subscribe(error => {
+        this._error$.next(error);
+      });
   }
 }

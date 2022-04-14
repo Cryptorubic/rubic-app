@@ -5,7 +5,7 @@
 >
   <div class="statistics__col">
     <div class="statistics__param">
-      <div class="statistics__param-label">APR</div>
+      <div class="statistics__param-label">Current APR</div>
       <div class="statistics__param-value" *ngLet="apr$ | async as apr">
         <!-- {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }} % -->
         27%
@@ -72,7 +72,7 @@
     (iconClick)="refreshStatistics()"
   ></app-rotating-icon>
   <div class="statistics__end">
-    <span>{{ 'lp.endOfRound' | translate }}: </span>{{ endDate | date: 'longDate' }} at
-    {{ endDate | date: 'shortTime':'UTC' }} UTC
+    <span>{{ 'lp.endOfRound' | translate: { round: 1 } }}: </span
+    >{{ endDate | date: 'longDate' }} at {{ endDate | date: 'shortTime':'UTC' }} UTC
   </div>
 </div>

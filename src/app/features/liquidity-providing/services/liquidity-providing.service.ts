@@ -543,7 +543,8 @@ export class LiquidityProvidingService {
 
   public checkDepositErrors(
     amount: BigNumber,
-    token: { balance: BigNumber; symbol: PoolToken }
+    usdcBalance: BigNumber,
+    brbcBalance: BigNumber
   ): LpFormError | null {
     const totalStaked = this._totalStaked$.getValue();
 
@@ -555,20 +556,20 @@ export class LiquidityProvidingService {
       return LpFormError.POOL_FULL;
     }
 
+    if (usdcBalance && amount.gt(usdcBalance)) {
+      return LpFormError.INSUFFICIENT_BALANCE_USDC;
+    }
+
+    if (brbcBalance && amount.gt(brbcBalance)) {
+      return LpFormError.INSUFFICIENT_BALANCE_BRBC;
+    }
+
     if (amount.gt(this.currentMaxLimit)) {
       return LpFormError.LIMIT_GT_MAX;
     }
 
     if (amount.lt(this.minEnterAmount)) {
       return LpFormError.LIMIT_LT_MIN;
-    }
-
-    if (token.balance && amount.gt(token.balance)) {
-      if (token.symbol === PoolToken.BRBC) {
-        return LpFormError.INSUFFICIENT_BALANCE_BRBC;
-      } else {
-        return LpFormError.INSUFFICIENT_BALANCE_USDC;
-      }
     }
 
     if (!amount.isFinite()) {
