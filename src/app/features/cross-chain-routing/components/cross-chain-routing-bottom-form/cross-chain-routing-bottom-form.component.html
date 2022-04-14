@@ -19,15 +19,15 @@
       [targetBlockchain]="toBlockchain"
     ></app-target-network-address>
 
-    <ng-container *ngIf="smartRouting$ | async as smartRoutingInfo">
+    <ng-container *ngIf="smartRouting">
       <app-smart-routing
         *noFrame
-        [class.smart-routing-loading]="smartRoutingLoading$ | async"
-        [fromProvider]="smartRoutingInfo.fromProvider"
-        [toProvider]="smartRoutingInfo.toProvider"
-        [fromHasTrade]="smartRoutingInfo.fromHasTrade"
-        [toHasTrade]="smartRoutingInfo.toHasTrade"
-        [savings]="smartRoutingInfo.savings"
+        [class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"
+        [fromProvider]="smartRouting.fromProvider"
+        [toProvider]="smartRouting.toProvider"
+        [fromHasTrade]="smartRouting.fromHasTrade"
+        [toHasTrade]="smartRouting.toHasTrade"
+        [savings]="smartRouting.savings"
       ></app-smart-routing>
     </ng-container>
   </div>

@@ -77,9 +77,9 @@ export class CrossChainRoutingService {
 
   public readonly smartRouting$ = this._smartRouting$.asObservable();
 
-  private readonly _smartRoutingLoading$ = new BehaviorSubject<boolean>(false);
-
-  public readonly smartRoutingLoading$ = this._smartRoutingLoading$.asObservable();
+  public get smartRouting(): SmartRouting {
+    return this._smartRouting$.getValue();
+  }
 
   private readonly contracts = this.contractsDataService.contracts;
 
@@ -176,7 +176,6 @@ export class CrossChainRoutingService {
       );
     }
 
-    this._smartRoutingLoading$.next(true);
     if (
       !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
       !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
@@ -955,11 +954,6 @@ export class CrossChainRoutingService {
     }
 
     this._smartRouting$.next(smartRouting);
-    this._smartRoutingLoading$.next(false);
-  }
-
-  public resetSmartRouting(): void {
-    this._smartRouting$.next(null);
   }
 
   private getProviderType(

@@ -40,6 +40,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import { SmartRouting } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -94,9 +95,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
-  public readonly smartRouting$ = this.crossChainRoutingService.smartRouting$;
-
-  public readonly smartRoutingLoading$ = this.crossChainRoutingService.smartRoutingLoading$;
+  public smartRouting: SmartRouting = null;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -148,9 +147,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
-        if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
-          this.crossChainRoutingService.resetSmartRouting();
-        }
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -178,6 +174,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
+
+    if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
+      this.smartRouting = null;
+    }
 
     this.conditionalCalculate('normal');
   }
@@ -253,6 +253,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.swapFormService.output.patchValue({
                 toAmount
               });
+              this.smartRouting = this.crossChainRoutingService.smartRouting;
               this.hiddenTradeData = null;
 
               if (this.minError || this.maxError || !toAmount?.gt(0)) {
@@ -343,13 +344,18 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     if (this.toAmount?.isFinite()) {
       this.errorText = '';
+
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
       });
+      this.smartRouting = this.crossChainRoutingService.smartRouting;
+
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
     } else {
+      this.smartRouting = null;
+
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
   }
