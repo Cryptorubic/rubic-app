@@ -69,7 +69,6 @@ import { RefFinanceService } from '@features/instant-trade/services/instant-trad
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { SushiSwapTelosService } from '@features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
 import { ZappyService } from '@features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
-import { OmnidexService } from '@features/instant-trade/services/instant-trade-service/providers/telos/omnidex-service/omnidex.service';
 
 @Injectable({
   providedIn: 'root'
@@ -148,7 +147,6 @@ export class InstantTradeService {
     // Telos.
     private readonly sushiSwapTelosService: SushiSwapTelosService,
     private readonly zappyService: ZappyService,
-    private readonly omnidexService: OmnidexService,
     // Providers end.
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
@@ -224,8 +222,7 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.TELOS]: {
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapTelosService,
-        [INSTANT_TRADES_PROVIDERS.ZAPPY]: this.zappyService,
-        [INSTANT_TRADES_PROVIDERS.OMNIDEX]: this.omnidexService
+        [INSTANT_TRADES_PROVIDERS.ZAPPY]: this.zappyService
       }
     };
   }

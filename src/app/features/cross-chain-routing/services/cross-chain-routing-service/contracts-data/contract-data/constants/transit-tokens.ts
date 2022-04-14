@@ -61,7 +61,6 @@ export const transitTokens: TransitTokens = {
     decimals: 6,
     symbol: 'USDT'
   },
-  // @TODO Telos.
   [BLOCKCHAIN_NAME.TELOS]: {
     address: '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b',
     decimals: 6,

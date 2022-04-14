@@ -594,12 +594,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+    debugger;
     const {
       methodName,
       methodArguments,
       transactionOptions: transactionOptions
     } = await this.checkAndGetTradeData(trade, options);
-
+    debugger;
     return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,

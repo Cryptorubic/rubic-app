@@ -18,6 +18,5 @@ export enum INSTANT_TRADES_PROVIDERS {
   TRISOLARIS = 'trisolaris',
   WANNASWAP = 'wannaswap',
   REF = 'ref_finance',
-  ZAPPY = 'zappy',
-  OMNIDEX = 'omnidex'
+  ZAPPY = 'zappy'
 }

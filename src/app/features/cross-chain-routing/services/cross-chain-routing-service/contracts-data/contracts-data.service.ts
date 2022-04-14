@@ -41,7 +41,6 @@ import { NearContractData } from '@features/cross-chain-routing/services/cross-c
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { SushiSwapTelosService } from '@features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
 import { ZappyService } from '@features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
-import { OmnidexService } from '@features/instant-trade/services/instant-trade-service/providers/telos/omnidex-service/omnidex.service';
 
 @Injectable({
   providedIn: 'root'
@@ -99,7 +98,6 @@ export class ContractsDataService {
     // Telos.
     private readonly sushiSwapTelosService: SushiSwapTelosService,
     private readonly zappyService: ZappyService,
-    private readonly omnidexService: OmnidexService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
@@ -295,7 +293,6 @@ export class ContractsDataService {
         9,
         this.publicBlockchainAdapterService
       ),
-      // @TODO Telos.
       [BLOCKCHAIN_NAME.TELOS]: new EthLikeContractData(
         BLOCKCHAIN_NAME.TELOS,
         [
@@ -305,11 +302,7 @@ export class ContractsDataService {
           },
           {
             provider: this.zappyService,
-            methodSuffix: 'Z'
-          },
-          {
-            provider: this.omnidexService,
-            methodSuffix: 'Omni'
+            methodSuffix: ''
           }
         ],
         12,

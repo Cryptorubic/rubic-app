@@ -116,11 +116,6 @@ const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
     name: 'Zappy',
     image: `${imageBasePath}zappy.svg`,
     color: '#00e7e7'
-  },
-  [INSTANT_TRADES_PROVIDERS.OMNIDEX]: {
-    name: 'Omnidex',
-    image: `${imageBasePath}omnidex.svg`,
-    color: '#e9981b'
   }
 };
 
