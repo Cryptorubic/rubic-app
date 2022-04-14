@@ -12,7 +12,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -52,7 +52,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formService: FormService;
 
-  @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+  @Input() allowedBlockchains: BlockchainName[] | undefined;
 
   @Input() disabled = false;
 
@@ -70,13 +70,9 @@ export class RubicTokensComponent implements OnInit {
     AvailableTokenAmount[]
   >([]);
 
-  public readonly tokensSubject$ = this._tokens$.asObservable();
-
   private readonly _favoriteTokens$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject<
     AvailableTokenAmount[]
   >([]);
-
-  public readonly favoriteTokensSubject$ = this._favoriteTokens$.asObservable();
 
   constructor(
     private readonly cdr: ChangeDetectorRef,

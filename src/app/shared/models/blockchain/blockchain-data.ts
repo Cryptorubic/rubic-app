@@ -1,9 +1,9 @@
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
-export interface BlockchainData {
+export interface BlockchainData<T = BlockchainName> {
   id: number;
-  name: BLOCKCHAIN_NAME;
+  name: T;
   label: string;
   scannerUrl: string;
   rpcLink: string;

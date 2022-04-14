@@ -15,7 +15,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -51,9 +51,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
-  private fromProvider: INSTANT_TRADES_PROVIDERS;
+  private fromProvider: INSTANT_TRADE_PROVIDER;
 
-  private toProvider: INSTANT_TRADES_PROVIDERS;
+  private toProvider: INSTANT_TRADE_PROVIDER;
 
   public fromPath: string[] | null;
 

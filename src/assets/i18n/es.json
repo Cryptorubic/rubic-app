@@ -1,39 +1,39 @@
 {
   "common": {
-    "from": "From",
-    "to": "To",
+    "from": "Desde",
+    "to": "Para",
     "yes": "Sí",
     "no": "No",
-    "any": "Cualquiera",
+    "any": "Ninguna",
     "error": "Error",
-    "have": "Tienes",
+    "have": "Usted tiene",
     "get": "Usted obtiene",
-    "want": "Quieres recibir",
+    "want": "Quieres obtener",
     "confirm": "Confirmar",
-    "copy": "Dupdo",
+    "copy": "Copiar",
     "accept": "Aceptar",
     "copyright": "Derechos de autor",
     "privacyPolicy": "Política de privacidad",
     "close": "Cerrar",
-    "send": "Send",
-    "left": "Left",
-    "checkOnScanner": "Check on scanner",
-    "cancel": "Cancel",
-    "add": "Add",
-    "via": "Via",
-    "address": "dirección de",
-    "chooseToken": "Elija token",
-    "clearToken": "Token claro",
+    "send": "Enviar",
+    "left": "Izquierda",
+    "checkOnScanner": "Comprobar en el explorador",
+    "cancel": "Cancelar",
+    "add": "Agregar",
+    "via": "Vía",
+    "address": "dirección",
+    "chooseToken": "Seleccionar token",
+    "clearToken": "Borrar token",
     "warning": "Advertencia",
-    "customerSupport": "customer support",
+    "customerSupport": "Atención al cliente",
     "OK": "OK",
-    "analytics": "Analítica",
+    "analytics": "Estadísticas",
     "minutes": "minutos",
     "swap": "Intercambio",
     "approve": "Aprobar",
-    "switchTo": "Switch to {{ networkName }} network",
-    "tradeVia": "Trade Via ",
-    "bridge": "Bridge",
+    "switchTo": "Cambiar a {{ networkName }} red",
+    "tradeVia": "Comercio Vía ",
+    "bridge": "Puente",
     "transactionDetails": "Detalles de la transacción",
     "tagline": {
       "firstText": "Multi-chain swaps for ",
@@ -42,259 +42,259 @@
     }
   },
   "errors": {
-    "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
-    "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
-    "removeCoinbaseExtension": "La extensión del navegador Coinbase entra en conflicto con la extensión Metamask. Desactive o elimine la extensión Conibase para continuar, o elija otra billetera para conectarse.",
-    "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
-    "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del puente Binance de 3 operaciones como máximo en 30 minutos. Espere y vuelva a intentarlo más tarde. Si aún tiene problemas, comuníquese con nuestro",
-    "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
-    "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
-    "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
-    "insufficientFunds1inch": "No tienes suficiente cantidad de {{{ nativeToken }} para la transferencia y la tarifa de gas. Para la transacción, ingrese una cantidad menor o recargue su saldo de {{ nativeToken }}.",
-    "noQrCode": "Asegúrese de haber escaneado qrCode",
-    "walletlinkWrongNetwork": "Asegúrese de que la red {{networkToChoose}} esté seleccionada en la aplicación Coinbase. Para cambiar la red en la aplicación coinbase, vaya a la configuración en el panel inferior y seleccione la pestaña \"Active Network\".",
-    "noWallet": "No has conectado ninguna billetera",
+    "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
+    "noMetamaskInstalled": "Por favor, asegúrese de que tiene instalado y desbloqueado la extensión de metamask.\nSe puede descargar en",
+    "removeCoinbaseExtension": "La extensión de navegador de Coinbase entra en conflicto con la extensión de Metamask. Desactive o elimine la extensión de Coinbase para continuar, o elija otra billetera para conectarse.",
+    "wrongNetwork": "Ha seleccionado la red equivocada. Por favor, elija {{ networkToChoose }} desde MetaMask.",
+    "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del Binance bridge de un máximo de 3 operaciones en 30 minutos.\nPor favor, espere e inténtelo nuevamente más tarde, si aún tiene problemas, comuníquese con nosotros",
+    "userReject": "Rechazaste la ejecución de la transacción. Por favor, confírme primero para completar el intercambio.",
+    "rubicError": "Por favor, inténtelo nuevamente más tarde o intente usar otro dispositivo. Si aún tiene problemas, comuníquese con nosotros",
+    "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su saldo es {{balance}} {{tokenSymbol}} pero {{requiredBalance}} {{tokenSymbol}} es necesario.",
+    "insufficientFunds1inch": "No tiene suficiente cantidad de {{ nativeToken }} para la transferencia y la tarifa de comisión. Para la transacción, ingrese una cantidad menor o recargue su saldo {{ nativeToken }}.",
+    "noQrCode": "Por favor, asegúrese de haber escaneado el código QR.",
+    "walletlinkWrongNetwork": "Asegúrese de que la red {{ networkToChoose }} esté seleccionada en la aplicación Coinbase. Para cambiar la red en la aplicación coinbase, vaya a la configuración en el panel inferior y seleccione la pestaña \"Red activa\".",
+    "noWallet": "No has conectado ninguna billetera. Conecte su billetera para poder usar la funcionalidad del sitio.",
     "retrievingTokensError": "Error al recuperar tokens",
-    "wrongToken": "El puente de rubic solo admite token de rubic.",
-    "oneInchQuote": "1inch de cotización",
+    "wrongToken": "El puente Rubic solo admite el token rubic.",
+    "oneInchQuote": "1inch error de cotización",
     "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
-    "signReject": "Ha rechazado un inicio de sesión con su billetera. Confirme un inicio de sesión con su billetera para utilizar completamente nuestra aplicación.",
-    "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Intente aumentar el gas suministrado",
-    "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
-    "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
-    "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
+    "signReject": "Ha rechazado un inicio de sesión con su billetera. Por favor, confirme un inicio de sesión con su billetera, para utilizar completamente nuestra aplicación.",
+    "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Trate de aumentar el gas suministrado",
+    "noSelectedProvider": "Seleccionar proveedor de intercambio",
+    "notSupportedItNetwork": "La red elegida no es compatible con operaciones instantáneas",
+    "notSupportedBridge": "Este puente no está disponible actualmente. Seleccione un puente compatible.",
     "insufficientLiquidityCCR": "Liquidez insuficiente para esta operación",
     "insufficientLiquidityIT": "Liquidez insuficiente para esta operación.",
-    "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
-    "1inchNotSupportedToken": "1inch no es compatible con uno de los tokens seleccionados.",
-    "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
-    "chooseSupportedBridge": "Elija un puente compatible",
+    "oneinchRefreshError": "1inch actualmente no está disponible. Por favor, intente actualizar la operación.",
+    "1inchNotSupportedToken": "1inch no admite uno de los tokens seleccionados.",
+    "cancelDeadline": "Su transacción se ha revertido porque el tiempo límite de transacción ha expirado. Intente aumentar el tiempo de vencimiento de la transacción o la cantidad de la comisión.",
+    "chooseSupportedBridge": "Elegir puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
-    "noEnteredAmount": "Enter an amount",
-    "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
-    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
-    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again",
-    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Vaya, algo salió mal, intente volver a cargar la página. Póngase en contacto con nuestro soporte si aún tiene este problema después de la recarga.",
-    "rubicOptimisation": "Liquidez insuficiente para esta operación. Intente deshabilitar la optimización de Rubic.",
-    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
+    "noEnteredAmount": "Introduzca una cantidad",
+    "minimumAmount": "La cantidad mínima es ≈{{amount}} {{token}}",
+    "maximumAmount": "La cantidad máxima es ≈{{amount}} {{token}}",
+    "maxGasPriceOverflow": "El precio de la comisión en {{toBlockchain}} es demasiado alto. Por favor, espere e inténtelo más tarde.",
+    "crossChainIsUnavailable": "El Cross-Chain no está disponible actualmente. Por favor, espere e inténtelo más tarde.",
+    "multichainWallet": "Rubic aún no es compatible con billeteras de múltiples cadenas. Actualmente, solo puedes operar en la red de Ethereum",
+    "unknown": "Oops, algo salió mal, por favor, inténtalo de nuevo",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
+    "NoDataMyTradesError": "Oops, algo salió mal, por favor intente recargar la página. Póngase en contacto con nuestro soporte si sigue teniendo este problema después de recargar.",
+    "rubicOptimisation": "Liquidez insuficiente para este comercio. Intenta desactivar la optimización de rubic.",
+    "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Por favor, vuelva a cargar la página o póngase en contacto con soporte si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
-    "wrongWallet": "Please log in with wallet that supports {{network}} network",
-    "invalidTargetAddress": "Invalid target network address",
-    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
-    "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
-    "buttonLink": "Aprende más",
-    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
+    "wrongWallet": "Por favor, inicie sesión con una billetera que admita {{network}} network",
+    "invalidTargetAddress": "Dirección de red de destino no válida",
+    "solSwap": "Desenvuelva el token SOL para intercambiarlo. Elige SOL como segundo token.",
+    "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción.\nExiste la posibilidad de que esté tratando de vender un token que actualmente no es compatible con cadenas múltiples.",
+    "rpcError": "Se produjo un error, para saber qué hacer para resolverlo, siga el enlace a continuación.",
+    "buttonLink": "Más información",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
-    "about": "Información",
-    "faq": "Preguntas Frecuentes",
+    "about": "Sobre",
+    "faq": "Preguntas frecuentes",
     "features": "Funciones",
     "project": "Proyecto",
     "referral": "Programa de referencia",
     "setupWidget": "Widget de configuración",
     "sdk": "SDK",
     "team": "Equipo",
-    "login": "Conecta tu Billetera",
-    "myTrades": "Mis Intercambios",
+    "login": "Conectar Cartera",
+    "myTrades": "Mis comercios",
     "logout": "Cerrar sesión",
-    "logoutMessage": "¿Deseas Cerrar Sesión?",
+    "logoutMessage": "¿De verdad quieres cerrar sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
-    "merch": "Merch shop",
+    "merch": "Tienda de mercancía",
     "staking": "Staking",
-    "promotion": "Promocion"
+    "promotion": "Promoción"
   },
   "faqPage": {
-    "title": "Preguntas Frecuentes",
+    "title": "Preguntas frecuentes",
     "questions": [
       {
-        "title": "What is Rubic?",
-        "answer": "Rubic is a multichain DeFi ecosystem, which features multi-chain swaps, on-chain swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete multi-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as our unique multi-chain feature which gives the opportunity to swap all supported tokens on 1 click!"
+        "title": "¿Qué es Rubic?",
+        "answer": "Rubic es un ecosistema descentralizado multicadena, que cuenta con intercambios de múltiples cadenas, intercambios de una sola cadena y mucho más. Nuestro objetivo es ofrecer una plataforma de comercio descentralizada integral completa. La plataforma Rubic es un lugar donde los usuarios pueden completar intercambios de múltiples cadenas utilizando diferentes soluciones, donde los usuarios obtendrán las mejores tarifas de todos los protocolos de intercambio líderes (gracias a una implementación de agregador DEX), así como nuestra característica única de múltiples cadenas que brinda la oportunidad de intercambiar todos los tokens compatibles en 1 clic."
       },
       {
-        "title": "Who can use our service?",
-        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete multi-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at app.rubic.exchange"
+        "title": "¿Quién puede utilizar nuestro servicio?",
+        "answer": "Nuestro servicio puede ser utilizado en cualquier parte del mundo por usuarios de las criptomonedas que deseen completar operaciones en diferentes redes y completar intercambios de múltiples cadenas entre ellos. Nuestras funciones también incluyen servicios para otros proyectos: creación de puentes personalizados e integración del widget de Rubic, que permite a los usuarios completar operaciones directamente en el sitio web del servicio utilizando Rubic. \tKYC no es necesario para ninguna operación en la app.rubic.exchange"
       },
       {
-        "title": "How does Rubic unite different DEX platforms? ",
-        "answer": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices. Rubic always analyzes and compares all the variants, and comes up with the best rate. Please notice that while checking all the alternatives we consider the GAS fee. Rubic strives to provide users with the best exchange opportunities. "
+        "title": "¿Cómo une Rubic diferentes plataformas DEX? ",
+        "answer": "Los usuarios podrán elegir el protocolo DEX adecuado para obtener las mejores tarifas de tokens con los precios más bajos de tarifa de red. Rubic siempre analiza y compara todas las variantes, y obtiene la mejor tarifa. Tenga en cuenta que al revisar todas las alternativas, consideramos la tarifa de red. Rubic se esfuerza por ofrecer a los usuarios las mejores oportunidades de intercambio. "
       },
       {
-        "title": "Why do we need to make a choice between different providers?",
-        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to make better trading decisions.\n\nMoreover, Rubic created a routing solution that will allow users to trade any token on different networks. Our self-created routing system for Ethereum has several advantages over the Uniswap routing system. The main advantage is the ability to calculate gas prices and show users the best-optimized solution while paying the least amount of gas.\n\nOur routing system gives users lower prices on their swaps than most DEXs. Users will receive quotes for lower prices in situations where the price difference between different swap outcomes costs more than the ANTICIPATED price difference for the miner’s commission fees. When this difference in swap price is more than the difference in miner’s commission fees, the user will be presented with an option for a cheaper swap route. In situations where this occurs, users will also be given an option with a more expensive gas fee and a longer route to execute the swap, due to potential issues with liquidity."
+        "title": "¿Por qué tenemos que elegir entre diferentes proveedores?",
+        "answer": "Las tarifas de gas y los precios de estos protocolos son diferentes, por lo tanto, la oportunidad de tener más opciones permite a los usuarios tomar mejores decisiones comerciales.\n \nMás, Rubic creó una solución de enrutamiento que permitirá a los usuarios intercambiar cualquier token en diferentes redes. Nuestro sistema de enrutamiento de creación propia para Ethereum tiene varias ventajas sobre el sistema de enrutamiento Uniswap. La principal ventaja es la capacidad de calcular los precios del gas y mostrar a los usuarios la solución mejor optimizada mientras pagan la menor cantidad de gas.\n \n uestro sistema de enrutamiento ofrece a los usuarios precios más bajos en sus swaps que la mayoría de DEXs. Los usuarios recibirán cotizaciones para precios más bajos en situaciones en las que la diferencia de precio entre diferentes resultados de intercambio cuesta más que la diferencia de precio ANTICIPADA para las comisiones del minero. Cuando esta diferencia en el precio de intercambio es mayor que la diferencia en las comisiones de los mineros, se le presentará al usuario una opción para una ruta de intercambio más barata. En situaciones en las que esto ocurra, los usuarios también tendrán una opción con una tarifa de gas más cara y una ruta más larga para ejecutar el intercambio, debido a posibles problemas de liquidez."
       },
       {
-        "title": "How To Contact Support?",
-        "answer": "If you need assistance, feel free to contact our support team here by submitting a ticket on our website or on our Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>\n\n Live chat - Contact Rubic team for immediate assistance using chat. Available 24/7.\n\nEmail Support - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Message Rubic Support anytime with more complex or technical questions. We're here to help."
+        "title": "¿ Cómo Ponerse En Contacto Con El Soporte?",
+        "answer": "Si necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte aquí enviando un ticket en nuestro sitio web o en nuestro Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>\n\n Chat en vivo: Póngase en contacto con el equipo de Rubic para obtener asistencia inmediata mediante el chat. Disponible 24/7.\n \nEmail soporte - <a href='mailto:support@rubic.finanzas'>soporte@rubic.finanzas</a>. Envíe un mensaje al soporte de Rubic en cualquier momento con preguntas más complejas o técnicas. Estamos aquí para ayudar."
       },
       {
-        "title": "What is the Rubic Relay widget and how can we integrate it?",
-        "answer": "The Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well.\n\nHere is a detailed instructional guide for the Relay’s integration:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
+        "title": "¿Qué es el widget de relé Rubic y cómo podemos integrarlo?",
+        "answer": "El widget de Rubic es una gran solución para los problemas que enfrentan los proyectos con respecto a la baja rotación de usuarios.\neso mantiene a los usuarios en su sitio web, transformando las transacciones en una acción simple: el widget ofrece a los usuarios y propietarios de proyectos la función de comprar y vender tokens en la página web de su propio proyecto, lo que lleva a los usuarios a permanecer en su sitio web por más tiempo sin utilidad.\nEl widget también es escalable en diferentes dispositivos, y también es posible cambiar los colores y el tamaño del widget en sí.\n \nAquí hay una guía de instrucciones detallada para la integración del Relé:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
       },
       {
-        "title": "What should I do when I see the message “Trading is not available“?",
-        "answer": "If you get this message, try the following methods:\n1. Reload the page.\n2. Clear the website cache.\n\n If it didn’t help probably one of the tokens you try to swap doesn’t have enough liquidity for this trade."
+        "title": "¿Qué debo hacer cuando veo el mensaje \"Trading no está disponible\"?",
+        "answer": "Si recibe este mensaje, pruebe los siguientes métodos:\n1. Vuelve a cargar la página.\n2. Borra la caché del sitio web.\n \n Si no ayudó, probablemente uno de los tokens que intenta intercambiar no tenga suficiente liquidez para esta operación."
       },
       {
-        "title": "Why does my On-Chain swap have a long-lasting “Pending” status?",
-        "answer": "Reason:\nIt’s possible that the gas fee that was set is not enough to process your transaction.\n\n How to solve:\n If the transaction is “Pending”, it is best to accelerate the transaction manually, by changing to the desired value of gas, in order to force the completion of the transaction. It can be done via your wallet. You will be able to pay an additional gas fee.\n\nIf you still need assistance, feel free to contact our support team hereby submitting a ticket or on Telegram <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
+        "title": "¿Por qué mi intercambio en cadena tiene un estado \"Pendiente\" de larga duración?",
+        "answer": "Razón:\nEs posible que la tarifa de gas que se estableció no sea suficiente para procesar su transacción.\n \n Cómo resolver:\n Si la transacción está \"Pendiente\", lo mejor es acelerar la transacción manualmente, cambiando al valor deseado de gas, para forzar la finalización de la transacción. Se puede hacer a través de su billetera. Usted podrá pagar una tarifa de gas adicional.\n \nSi aún necesita ayuda, no dude en ponerse en contacto con nuestro equipo de soporte enviando un ticket o en Telegram <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>"
       },
       {
-        "title": "Why do I get the “Insufficient Balance” error?",
-        "answer": "If you swap a native token and you encounter this error it means that you are trying to send all of your transferable funds out, without leaving enough balance for the transaction fees. If you transfer a non-native token, a value exceeding the available balance has been entered in the “Amount” field. \nAlso, please check that you have connected the proper wallet and you have enough tokens for the swap.\nThe fee is shown on the transfer screen before you confirm the transfer. Deduct this amount from the total amount you're sending out, and your transfer will go through."
+        "title": "¿Por qué obtengo el error de \"Saldo insuficiente\"?",
+        "answer": "Si intercambia un token nativo y encuentra este error, significa que está tratando de enviar todos sus fondos transferibles, sin dejar saldo suficiente para las tarifas de transacción. Si transfiere un token no nativo, se ha introducido un valor que excede el saldo disponible en el campo \"Cantidad\". \nAdemás, compruebe que ha conectado la billetera adecuada y que tiene suficientes tokens para el intercambio.\nLa tarifa se muestra en la pantalla de transferencia antes de confirmar la transferencia. Deduzca esta cantidad de la cantidad total que está enviando y su transferencia se realizará."
       },
       {
-        "title": "What should I do if I get the “Price Impact Too High” error?",
-        "answer": "Reason:\n This error is caused by low liquidity.\n\nTry trading a smaller amount, or increase slippage tolerance via the settings icon and try again. If that did not help, then the token’s liquidity is too low to swap."
+        "title": "¿Qué debo hacer si recibo el error \"Impacto de precio Demasiado Alto\"?",
+        "answer": "Motivo:\n Este error se debe a la baja liquidez.\n\nTrate de operar una cantidad menor, o aumenta la tolerancia al deslizamiento a través del icono de configuración e inténtalo de nuevo. Si eso no ayudó, entonces la liquidez del token es demasiado baja para intercambiar."
       },
       {
-        "title": "What if my transaction has a “Dropped & Replaced” status on the scanner?",
-        "answer": "Dropped & Replaced\" means the transaction has been replaced by a new one.\n\n There are two possible reasons for that status:\n1. You have accelerated the transaction in your wallet and will receive the desired tokens, you can find out information about the transaction in the “Replaced by Txn Hash\" tab.\n2. You probably cancelled the transaction by mistake. The assets will not be debited from your address, but the gas fee will not be refunded back to you."
+        "title": "¿Qué pasa si mi transacción tiene un estado \"Eliminado y reemplazado\" en el explorador?",
+        "answer": "Eliminado y reemplazado\" significa que la transacción ha sido reemplazada por una nueva.\n \n Hay dos posibles razones para este estado:\n1. Ha acelerado la transacción en su billetera y recibirá los tokens deseados, puede encontrar información sobre la transacción en la pestaña \"Reemplazado por Txn Hash\".\n2. Probablemente canceló la transacción por error. Los activos no se cargarán en su dirección, pero la tarifa de red no se le reembolsará."
       },
       {
-        "title": "Why did I get the ”Expired” status on the scanner?",
-        "answer": "The transaction was not mined in the time period allotted for it.\n\nIn this scenario, the transaction should be sent again. Note that during the transaction, the gas spent on its execution is burned, but not completely. A gas fee is also charged for conducting the re-sent transaction."
+        "title": "¿Por qué obtuve el estado \"Caducado\" en el explorador?",
+        "answer": "La transacción no se extrajo en el período de tiempo asignado para ella.\n\nEn este escenario, la transacción debe enviarse de nuevo. Tenga en cuenta que durante la transacción, el gas gastado en su ejecución se quema, pero no por completo. También se cobra una tarifa de red por realizar la transacción reenviada."
       },
       {
-        "title": "Why do I get “Warning! Error Encountered During Contract Execution [Out of Gas]”?",
-        "answer": "Reason:\n There was not enough gas for the transaction.\n\n This scanner error means the gas limit you set was above the minimum but still not sufficient to get the transaction to execute. Please try again with a higher gas limit. Also, we recommend not to change the gas limit manually, your wallet will set the needed amount automatically."
+        "title": "¿Por qué obtuve la notificación \"Precaución! error encontrado durante La ejecución del contrato [Sin Gas]\"?",
+        "answer": "Razón:\n No había suficiente gas para la transacción.\n \n Este error de explorador significa que el límite de gas que estableció estaba por encima del mínimo, pero aún no era suficiente para que la transacción se ejecutara. Por favor, inténtelo de nuevo con un límite de gas más alto. Además, recomendamos no cambiar el límite de tarifa manualmente, su billetera establecerá la cantidad necesaria automáticamente."
       },
       {
-        "title": "Why do I have a long-lasting “Pending” status of a Multi-Chain transaction?",
-        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+        "title": "¿Por qué tengo un estado \"Pendiente\" de larga duración de una transacción de múltiples cadenas?",
+        "answer": "Presumiblemente, los precios de la tarifa de red aumentaron dramáticamente durante ese tiempo. \nSi los métodos anteriores no ayudaron, póngase en contacto con nuestro equipo de soporte a través del chat en el sitio web o Telegram: <a href='https://t.me/RubicSupportBot' target = '_blank'>https://t.me/RubicSupportBot</a>."
       },
       {
-        "title": "Why can't I do the multi-chain swap?",
-        "answer": "Unfortunately, we don’t support tokens with an included fee to sell via multi-chain routing. We are working on implementing this feature.\n For now we suggest you to sell these types of tokens for stable or native coins via on-chain swap and then do the multi-chain swap with the token you have bought.",
+        "title": "¿Por qué no puedo hacer el intercambio de cadenas múltiples?",
+        "answer": "Desafortunadamente, no admitimos tokens con una tarifa incluida para vender a través del enrutamiento de múltiples cadenas. Estamos trabajando en la implementación de esta característica.\n Por ahora, le sugerimos que venda estos tipos de tokens para monedas estables o nativas a través del intercambio en una sola cadena y luego haga el intercambio de cadenas múltiples con el token que ha comprado.",
         "id": "unsupportedTokenCCR"
       },
       {
-        "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
-        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
+        "title": "Por qué obtengo Error de ejecución del método: Error: Error interno JSON-RPC.",
+        "answer": "Mal funcionamiento temporal del RPC utilizado en la billetera para la red elegida. \nSi se produce este error, la transacción no se ha enviado y el dinero no se cargará de su billetera. ; \n Intente enviar su transacción de nuevo. Si el problema sigue existiendo, pruebe estos pasos:\n 1. Borrar caché;\n 2. Aumentar el deslizamiento;\n 3. Aumenta el límite de gas.",
         "id": "rpcError"
       },
       {
-        "title": "Rubic Autorefund Policy.",
-        "answer": "El equipo de rubic completará el reembolso en tokens USDC. El importe del reembolso será igual a la cantidad de tokens en USD en el momento en que se inició la operación. El reembolso se completará en la red objetivo.\n\nLa información detallada sobre el sistema de reembolso automático de Rubic se encuentra <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>en el enlace</a>. "
+        "title": "Política de reembolso de Rubic.",
+        "answer": "El equipo de Rubic completará el reembolso en tokens USDC. El importe del reembolso será igual a la cantidad de tokens en USD en el momento en que se inició la operación. el reembolso se realizará en la red de destino. \n \nPuede encontrar la información detallada sobre el sistema de reembolso automático de Rubic utilizando este enlace <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>link</a>."
       }
     ]
   },
   "promotionPage": {
     "common": {
-      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
+      "switchWallet": "Cambie a una billetera compatible con Ethereum"
     },
     "invitations": {
-      "invitedProjects": "Proyectos invitados",
-      "noProjects": "Todavía no has invitado a ningún proyecto",
+      "invitedProjects": "Proyectos Invitados",
+      "noProjects": "Aún no has invitado a ningún proyecto",
       "tableColumns": {
         "projectName": "Proyecto",
-        "invitationDate": "Invitado",
-        "tradingVolume": "Volumen de negociación",
+        "invitationDate": "Invitar",
+        "tradingVolume": "Volumen De Operaciones",
         "received": "Recibido",
-        "receivedTokens": "Fichas recibidas"
+        "receivedTokens": "Tokens recibidos"
       }
     },
     "statistics": {
-      "referralProgram": "Programa de referencias",
-      "invitedProjects": "Proyectos invitados",
+      "referralProgram": "Programa de Referidos",
+      "invitedProjects": "Proyectos Invitados",
       "totalRewards": "Recompensas ganadas",
-      "instantRewards": "Recompensas instantáneas",
-      "earnWithOurWidget": "Gana con nuestro widget",
-      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
-      "myPromoLink": "Mi enlace promocional",
+      "instantRewards": "Recompensas Inmediatas",
+      "earnWithOurWidget": "Gana con nuestro Widget",
+      "createAReferralLink": "Genera un enlace de referencia y empieza a ganar con nuestro Widget. Asegúrese de leer las Reglas del Programa!",
+      "myPromoLink": "Mi Enlace Promocional",
       "contactUs": "Contáctenos"
     }
   },
   "bridgePage": {
-    "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
-    "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
-    "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
-    "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando."
+    "progressMessage": "Usted aceptó la transacción y el intercambio ha comenzado. Por favor, espere hasta que se complete el intercambio.",
+    "successMessage": "El proceso de intercambio de cruzar redes ha comenzado. Espere hasta que ambas cadenas de bloques completen la operación.",
+    "approveProgressMessage": "Usted aceptó la transacción de aprobación y el intercambio ha comenzado. Por favor, espere hasta que se complete el intercambio.",
+    "approveSuccessMessage": "Has aprobado el uso de tus tokens. Presione el botón de intercambio para continuar con el comercio."
   },
   "crossChainPage": {
     "targetAddress": {
-      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or paste address"
+      "hint": "Ingrese la dirección de billetera que admite {{network}}. Recibirás tus tokens en esta billetera.",
+      "placeholder": "Introduzca o pegue la dirección"
     },
     "swapInfo": {
-      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
-      "maximumSent": "Maximum sent",
-      "maximumSentHint": "Maximum amount of tokens to be sent\n",
-      "minimumReceived": "Minimum received",
-      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
-      "platformFee": "Platform fee",
-      "platformFeeHint": "Platform commission charges in RBC token\n"
+      "title": "El tiempo estimado para recibir tokens en la Ethereum blockchain depende del precio de la tarifa de red y podría ser de hasta 10 min\n",
+      "maximumSent": "Máximo enviado",
+      "maximumSentHint": "Cantidad máxima de tokens a enviar\n",
+      "minimumReceived": "Mínimo recibido",
+      "minimumReceivedHint": "Cantidad mínima de tokens a recibir\n",
+      "platformFee": "Tarifa de plataforma",
+      "platformFeeHint": "Cargos de comisiones de plataforma en token RBC\n"
     },
     "smartRouting": {
-      "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec",
-      "estTimeMobile": "~ 80 sec"
+      "save": "Ahorra ${{amount}} con Enrutamiento inteligente",
+      "estTime": "Tiempo estimado ~ 80 segundos",
+      "estTimeMobile": "~ 80 segundos"
     }
   },
   "instantTrades": {
-    "title": "Swap assets in 1 click",
-    "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
-    "gasFee": "Costo de tarifas estimado:",
-    "useOptimization": "Utilice la optimización de Rubic",
-    "notAvailableBefore": "Negociando en ",
+    "title": "Intercambiar activos en 1 clic",
+    "gasFeeMessage": "Monto estimado de la tarifa de red. Será necesario proporcionar más gas en MetaMask para completar el comercio, la tarifa adicional se devolverá después de que se complete la transacción.",
+    "gasFee": "Tarifa de red estimada",
+    "useOptimization": "Usar optimización de Rubic",
+    "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " no está disponible."
   },
   "myTrades": {
-    "title": "Mis Intercambios"
+    "title": "Mis operaciones"
   },
   "gasRefund": {
-    "title": "Reembolso de gasolina",
+    "title": "Reembolso de Gas",
     "body": {
-      "refundAmount": "Cantidad de reembolso",
+      "refundAmount": "Importe del Reembolso",
       "transactions": "Transacciones",
       "more": "mas"
     },
     "button": {
-      "refundAfter": "Reclamar después de",
+      "refundAfter": "Reclamar despues",
       "refund": "Reclamar"
     },
     "promoActions": {
       "1": {
         "label": "CRYPTOLOVE",
-        "description": "¡Obtenga un reembolso de gasolina por completar el primer intercambio de cadenas múltiples en nuestra plataforma!"
+        "description": "¡Obtén un reembolso de gas por completar el primer intercambio de cadenas múltiples en nuestra plataforma!"
       },
       "2": {
-        "label": "Avalanche reembolso de la tarifa del gas",
-        "description": "¡Para celebrar el lanzamiento de la ruta Rubic Multi-Chain en la red Avalanche, nuestro proyecto está comenzando una nueva Campaña de Reembolso de Gas! A partir del 19 de octubre al 2 de noviembre, nuestros usuarios podrán completar el intercambio usando sus tokens favoritos. en la red Avalanche usando Rubic Multi-Chain Routing y obtenga un reembolso de GAS."
+        "label": "Reembolso de gas de Avalanche",
+        "description": "Para celebrar el lanzamiento del enrutamiento de Múltiples cadenas Rubic en la red de Avalanche, nuestro proyecto está iniciando una nueva Campaña de Reembolso de Gas. A partir del 19 de octubre al 2 de noviembre, nuestros usuarios podrán completar el intercambio utilizando sus tokens favoritos en la red Avalanche utilizando el Enrutamiento de Múltiples Cadenas Rubic y obtener un reembolso de la TARIFA DE RED."
       }
     },
     "notifications": {
       "progress": {
         "label": "El reembolso de gas está en curso",
-        "message": "Rubic está completando un reembolso de gasolina. Espere hasta que se complete."
+        "message": "Rubic está completando un reembolso de tarifa de red. Por favor, espere hasta que se complete."
       },
       "complete": {
-        "label": "¡Se completa el reembolso de gas!!",
-        "message": "¡Su reembolso de gasolina se completó! ¡Gracias por usar Rubic!"
+        "label": "El reembolso de gas se ha completado!",
+        "message": "Su reembolso de gas se ha completado! ¡Gracias por usar Rubic!"
       }
     }
   },
   "tradesTable": {
     "columns": {
-      "status": "Estado",
+      "status": "Estatus",
       "from": "De",
       "to": "A",
-      "get": "Recibir",
+      "get": "Obtener",
       "send": "Enviar",
-      "expiresIn": "Expira en",
+      "expiresIn": "Caduca en",
       "volume": "Volumen",
-      "network": "Red Principal",
-      "spent": "Spent",
-      "expected": "Expected",
+      "network": "Red",
+      "spent": "Gastar",
+      "expected": "Previsto",
       "date": "Fecha",
-      "provider": "Proveedora",
-      "explorerLink": "Enlace del explorador"
+      "provider": "Proveedor",
+      "explorerLink": "Enlace explorador"
     },
     "statuses": {
       "completed": "completado",
@@ -303,172 +303,172 @@
       "rejected": "rechazado",
       "depositInProgress": "depósito en curso",
       "withdrawInProgress": "retiro en curso",
-      "waitingForDeposit": "esperando depósito",
-      "waitingForReceiving": "esperando recibir",
-      "refunded": "reintegrada"
+      "waitingForDeposit": "esperando el depósito",
+      "waitingForReceiving": "esperando a recibir",
+      "refunded": "reembolsado"
     },
-    "noData": "Aún no tienes intercambios",
+    "noData": "Aún no tienes operaciones",
     "receive": "Recibir"
   },
   "tradePage": {
-    "getBefore": "You will get",
-    "getMiddle": "tokens to this address",
-    "getAfter": "after the trade is complete",
-    "providerFee": "Tarifa de proveedor",
-    "rbcLowFees": "Use RBC por tarifas bajas",
+    "getBefore": "Obtendrás",
+    "getMiddle": "tokens a esta dirección",
+    "getAfter": "después de completar el intercambio",
+    "providerFee": "Tarifa del proveedor",
+    "rbcLowFees": "Use RBC para tarifas bajas",
     "discountRBC": "descuento con RBC",
     "blockchainsHint": "Más blockchains",
-    "tradingNotAvailable": "El comercio no está disponible",
-    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
+    "tradingNotAvailable": "El trading no está disponible",
+    "rateIsUpdated": "La tarifa está actualizada, toque para obtener las últimas tarifas"
   },
   "staking": {
     "stake": {
       "stake": "Stake",
-      "withdraw": "Withdraw",
-      "balance": "You have {{amount}}",
-      "unstakeBalance": "Available to unstake {{amount}}",
-      "confirmStake": "Confirm stake",
-      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
+      "withdraw": "Retirar",
+      "balance": "Usted tiene {{amount}}",
+      "unstakeBalance": "Disponible para unstake {{amount}}",
+      "confirmStake": "Confirmar stake",
+      "confirmStakeViaWhitelist": "Confirmar stake con whitelist",
       "unstake": "Unstake",
-      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
-      "globalUpdate": "Global Update",
-      "globalUpdateHint": "about global update",
-      "getBrbc": "Get BRBC",
-      "calculateProfitability": "Calculate profitability",
-      "refillTime": "{{hours}} hours {{minutes}} minutes",
-      "addXbrbc": "Add xBRBC",
-      "canUnstake": "Can unstake {{amount}}"
+      "overLimit": "Límites del stake {{min}} - {{max}} BRBC",
+      "globalUpdate": "Actualización Global",
+      "globalUpdateHint": "acerca de la actualización global",
+      "getBrbc": "Obtener BRBC",
+      "calculateProfitability": "Calcular la rentabilidad",
+      "refillTime": "{{hours}} horas {{minutes}} minutos",
+      "addXbrbc": "Añadir xBRBC",
+      "canUnstake": "Puede unstake {{amount}}"
     },
     "stats": {
-      "profitTime": "Yesterday's APY",
-      "calc": "Calculate",
+      "profitTime": "APR de ayer",
+      "calc": "Calcular",
       "balance": "Balance",
-      "canReceive": "Amount with Rewards",
-      "rewards": "Earned Rewards",
+      "canReceive": "Cantidad con Recompensas",
+      "rewards": "Recompensas ganadas",
       "apr": "APR",
-      "usersTotal": "You total staked",
+      "usersTotal": "Total en stake",
       "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "connectWallet": "Conecte su billetera para recibir información"
     },
     "features": {
-      "highApr": "High APR",
-      "minimumApr": "Minimum APR ~ 80%.",
-      "brbcRewards": "BRBC rewards",
-      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
-      "teamBuybacks": "Team Buybacks",
-      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+      "highApr": "APR alto",
+      "minimumApr": "El APR previsto es del 80% o más para el período de 2 meses, basado en el precio de RBC/USDT y el volumen de múltiples cadenas\n",
+      "brbcRewards": "Recompensas BRBC",
+      "stakeTokens": "Stake de 1.000 a 100.000 RBC / BRBC / wRBC para obtener recompensas en BRBC",
+      "teamBuybacks": "Recompras del Equipos",
+      "chainFeeUsage": "el 0,5% de nuestra tarifa de cadena múltiple del 0,6% se utilizará para comprar y distribuir RBC al fondo de recompensas"
     }
   },
   "maintenance": {
-    "title": "The site is under maintenance",
-    "text": "Together, let’s change the world of crypto."
+    "title": "El sitio está en mantenimiento",
+    "text": "Juntos, cambiemos el mundo de las criptomonedas."
   },
   "modals": {
     "confirmImportModal": {
-      "title": "¡Confirme su importación!",
-      "text": "Este token no aparece en Rubic.exchange.\nAl agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
+      "title": "Por favor, confirme su importación!",
+      "text": "Este token no está listado en Rubic.intercambio.Al agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
     },
     "bridge": {
-      "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "receiveWarning": "Este puente consta de dos transacciones. Si inicia la transacción, no podrá cancelarla.",
+      "trackTrx": "Rastrea el estado de la transacción en <a target=\"_blank\" href=\"/my-trades\">Mis operaciones</a> y toca \"Recibir\" cuando aparezca para reclamar tokens en la red Ethereum."
     },
     "tokensListModal": {
-      "defaultTitle": "Tokens List",
-      "favoriteTokensTitle": "Favorite Tokens",
-      "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
-      "clearParamsHint": "Borrar otros parámetros de formulario para seleccionar este token",
+      "defaultTitle": "Lista de Tokens",
+      "favoriteTokensTitle": "Tokens favoritos",
+      "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione pares compatibles.",
+      "clearParamsHint": "Borrar otros parámetros del formulario para seleccionar este token",
       "searchPlaceholder": "Buscar nombre o pegar dirección",
       "noSearchData": "Nada que mostrar",
-      "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "noFavoriteData": "No tiene tokens favoritos en la red seleccionada, ",
+      "backToTokens": "volver a la lista completa de tokens",
+      "unauthorized": "El usuario no está autorizado. Por favor, inicie sesión para hacer que los tokens sean favoritos."
     },
     "walletsModal": {
       "title": "Conectar billetera",
       "new": "¿Nuevo en Ethereum?",
-      "learnMore": "Más información sobre carteras"
+      "learnMore": "Más información sobre billeteras"
     },
     "coinbaseSelectNetworkModal": {
       "title": "Elija la red de origen",
-      "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
+      "text": "Seleccione una red de origen de intercambios. Al conectar un monedero de Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar el monedero de Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente, o use un monedero diferente."
     },
     "successTxModal": {
       "see": "Ver ",
-      "transactionDetailsLink": "Detalles de la transacción",
+      "transactionDetailsLink": "detalles de la transacción",
       "itWillAppearsIn": ". Aparecerá en ",
       "myTradesLink": "Mis operaciones",
-      "pageSoon": " página pronto.",
-      "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
-      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
-      "link": "My Trades"
+      "pageSoon": "pronto.",
+      "title": "¡La transacción se envió con éxito!",
+      "ccrTitle": "Intercambio exitoso en la red de origen!",
+      "seeDetailsCCR": "Consulte transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>detalles</a>. Aparecerá en <a class='modal__footer-link' href='./mis operaciones' target='_blank'>Mi página de operaciones</a> pronto.",
+      "seeDetailsItBridge": "Consulte transaction <a class='modal__footer-link' href ='{{explorerLink}}' target='_blank'>detalles</a>.",
+      "link": "Mis operaciones"
     },
     "stakingSwapModal": {
-      "title": "For RBC staking, you need to swap in BRBC",
-      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes.",
-      "aboutSign": "You will need to sign two transactions: approve and swap.",
-      "aboutMyself": "But you can swap tokens yourself.",
-      "agree": "Ok, I agree",
-      "swapMyself": "I swap myself"
+      "title": "Para la apuesta de RBC, necesita intercambiar BRBC",
+      "aboutSwap": "<b>Haremos todo automáticamente</b> <br> La transacción tomará ~7 minutos.",
+      "aboutSign": "Tendrá que firmar dos transacciones: aprobar e intercambiar.",
+      "aboutMyself": "Pero puedes intercambiar tokens tú mismo.",
+      "agree": "Ok, estoy de acuerdo",
+      "swapMyself": "Intercabio por mi cuenta"
     }
   },
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolerancia al deslizamiento",
-      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
-      "multihopsTitle": "Desactivar tiendas múltiples",
-      "multihops": "Su intercambio se completará solo con pares directos.",
-      "rubicOptimisationTitle": "Utilice la optimización de Rubic",
-      "rubicOptimisation": "La optimización de rúbrica está habilitada de forma predeterminada. Sin embargo, puede deshabilitarlo para que se ejecute la ruta comercial óptima, sin tener en cuenta el costo del gas.",
-      "deadlineTitle": "Fecha límite de transacción",
+      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
+      "multihopsTitle": "Desactivar saltos múltiples",
+      "multihops": "Tu intercambio se completará solo con pares directos.",
+      "rubicOptimisationTitle": "Usar optimización de Rubic",
+      "rubicOptimisation": "La optimización de Rubic está habilitada de forma predeterminada. Sin embargo, puede desactivarlo para que se ejecute la ruta comercial óptima, sin tener en cuenta el costo de la tarifa.",
+      "deadlineTitle": "Tiempo límite de transacción",
       "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
-      "autoRefreshTitle": "Autorefrescar",
-      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos."
+      "autoRefreshTitle": "Actualización automática",
+      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos."
     },
     "bridge": {
-      "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
+      "walletAddress": "La dirección de la billetera en TRON blockchain, en la que se proporcionarán los tokens."
     },
     "crossChainRouting": {
-      "autoRefreshTitle": "Autorefrescar",
-      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos.",
+      "autoRefreshTitle": "Actualización automática",
+      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
       "slippageTitle": "Tolerancia al deslizamiento",
-      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
+      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
       "promoCodeTitle": "Código promocional",
-      "promoCodeHint": "Ingrese el código de promoción aquí para obtener un reembolso de gasolina por su operación",
-      "promoCodeLoginRequired": "Por favor, conecte su billetera para usar el código de promoción",
+      "promoCodeHint": "Ingrese el código de promoción aquí para obtener un reembolso de gas para el comercio.",
+      "promoCodeLoginRequired": "Para usar el código de promoción, debe conectar su billetera.",
       "promoCode": {
         "accepted": {
-          "usesLeft": "Se usa a la izquierda",
+          "usesLeft": "Uses left",
           "validUntil": "Válido hasta"
         },
         "rejected": {
-          "text": "Su código promocional ha sido rechazado",
+          "text": "Su código de promoción no es válido.",
           "reason": {
-            "4000": "El código de promoción ya se ha utilizado antes. Solo puede utilizar este código de promoción una vez.",
-            "4001": "Se ha alcanzado el número máximo de usos del código promocional."
+            "4000": "Ya has usado el código promocional antes. Solo puedes usar este código promocional una vez.",
+            "4001": "El código promocional ha alcanzado los números máximos de uso."
           }
         },
         "outdated": {
-          "text": "Este código de promoción ha caducado"
+          "text": "Este código promocional ha caducado."
         },
         "wrong": {
-          "text": "El código de promoción se ingresó incorrectamente o no existe."
+          "text": "El código de promoción se ha introducido incorrectamente o no existe."
         }
       }
     },
     "header": {
       "switchTheme": {
-        "title": "Cambiar tema",
+        "title": "Cambiar De Tema",
         "desc": "Tema para la web"
       },
       "language": {
         "title": "Idioma",
-        "desc": "Elige lengua"
+        "desc": "Elige un idioma"
       },
       "gasPrice": {
-        "title": "Gas price",
-        "desc": "In Ethereum chain"
+        "title": "Precio de tarifa",
+        "desc": "En la cadena Ethereum"
       },
       "tutorials": {
         "title": "Tutoriales",
@@ -478,43 +478,43 @@
   },
   "banner": {
     "trading": {
-      "defaultText": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 10,000 tokens en Ethereum, BSC, Polygon, Avalanche, MoonRiver y Fantom.",
-      "customText": "Fantom ahora está disponible para intercambios multicadena y en cadena.",
-      "link": "Pruébalo hoy!"
+      "defaultText": "Rubic es un protocolo de intercambio de cadena múltiple que le permite intercambiar cualquiera de los 10 000 tokens en Ethereum, BSC, Polygon, Avalanche, MoonRiver y Fantom.",
+      "customText": "Fantom ahora está disponible para intercambios multicadena y en una cadena.",
+      "link": "¡Pruébalo hoy!"
     },
     "external": {
-      "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Negocia ahora!"
+      "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Comercia ahora!"
     }
   },
   "referralBanner": {
-    "takePartInOur": "Participa en nuestra ",
-    "referralProgram": "¡Programa de recomendación y obtén recompensas!",
+    "takePartInOur": "Participa en nuestro ",
+    "referralProgram": "¡Programa de referencias y obtén recompensas!",
     "link": "Aprende más"
   },
   "volume": {
-    "title": "Volumen de transacciones acumuladas",
-    "instantTrades": "Swaps",
-    "bridges": "Bridges",
-    "crossChain": "Ntercambios entre plataformas",
+    "title": "Volumen de transacción acumulado",
+    "instantTrades": "Intercambios",
+    "bridges": "Puentes",
+    "crossChain": "Intercambios de redes cruzadas",
     "description": "Todo el tiempo"
   },
   "notifications": {
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
-    "successfulCCRTradeTitle": "Successful trade in source network",
-    "successfullySentTransaction": "¡La transacción fue enviada con éxito!",
+    "successfulCCRTradeTitle": "Comercio exitoso en la red de origen",
+    "successfullySentTransaction": "¡La transacción se envió con éxito!",
     "successfulCCRSwapTitle": "¡Intercambio exitoso en la red de origen!",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
-    "approveInProgress": "Aprobar en progreso",
+    "successfulTradeParagraph": "Verificar transacción en <a target=\"_blank\" href=\"/my-trades\">Mis transacciones</a>",
+    "approveInProgress": "Aprobación en curso",
     "successApprove": "Aprobación exitosa",
-    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
-    "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
-    "stakeInProgress": "Stake in progress",
-    "bridgeStakeInProgress": "Stake in progress. View transaction in <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
-    "successfulStake": "Successful stake",
-    "successfulWithdraw": "Successful withdraw",
-    "withdrawInProgress": "Withdraw in progress",
-    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
+    "minerFee": "1inch establece un aumento de los costos de tarifas de red. Para la transacción, ingrese menos {{ nativeToken }} o recargue su saldo {{ nativeToken }}.",
+    "solanaBeta": "Solana network está en fase beta ahora. Úselo bajo su propio riesgo.",
+    "stakeInProgress": "Stake en progreso",
+    "bridgeStakeInProgress": "Stake en progreso. Ver transacción en <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
+    "successfulStake": "Stake exitoso",
+    "successfulWithdraw": "Retiro exitoso",
+    "withdrawInProgress": "Retiro en curso",
+    "openMobileWallet": "Por favor, abra la aplicación de billetera móvil para firmar la transacción"
   },
   "buyTokens": {
     "default": "Comprar RBC",

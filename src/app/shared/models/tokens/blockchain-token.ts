@@ -1,7 +1,7 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 export interface BlockchainToken {
-  blockchain: BLOCKCHAIN_NAME;
+  blockchain: BlockchainName;
   address: string;
   name: string;
   symbol: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
-import { catchError, map, mapTo } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
@@ -13,7 +13,7 @@ import {
   CrossChainTradeApi,
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
@@ -40,6 +40,8 @@ export class CrossChainRoutingApiService {
   static parseTradeApiToTableTrade(tradeApi: CrossChainTradeApi): TableTrade {
     const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
+    // change date format for safari
+    const date = tradeApi.statusUpdatedAt.replace(/-/g, '/').slice(0, 19) + ' GMT+0000';
     return {
       fromTransactionHash: tradeApi.fromTransactionHash,
       toTransactionHash: tradeApi.toTransactionHash,
@@ -48,7 +50,7 @@ export class CrossChainRoutingApiService {
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',
       fromToken: CrossChainRoutingApiService.getTableToken(tradeApi.fromToken, tradeApi.fromAmount),
       toToken: CrossChainRoutingApiService.getTableToken(tradeApi.toToken, tradeApi.toAmount),
-      date: new Date(tradeApi.statusUpdatedAt)
+      date: new Date(date)
     };
   }
 
@@ -85,7 +87,7 @@ export class CrossChainRoutingApiService {
    */
   public postTrade(
     transactionHash: string,
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     promoCodeText?: string
   ): Promise<void> {
     const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
@@ -94,9 +96,8 @@ export class CrossChainRoutingApiService {
       .pipe(
         catchError((err: unknown) => {
           console.error(err);
-          return undefined;
-        }),
-        mapTo(undefined)
+          return of(undefined);
+        })
       )
       .toPromise();
   }

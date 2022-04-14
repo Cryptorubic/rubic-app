@@ -15,7 +15,10 @@ export interface RubicBridgeConfig {
   to: BlockchainConfig;
 }
 
-export type RubicBridgeSupportedBlockchains =
-  | BLOCKCHAIN_NAME.ETHEREUM
-  | BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-  | BLOCKCHAIN_NAME.POLYGON;
+const rubicBridgeSupportedBlockchains = [
+  BLOCKCHAIN_NAME.ETHEREUM,
+  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  BLOCKCHAIN_NAME.POLYGON
+] as const;
+
+export type RubicBridgeSupportedBlockchains = typeof rubicBridgeSupportedBlockchains[number];

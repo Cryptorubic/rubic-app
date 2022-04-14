@@ -20,12 +20,9 @@ export class WithRoundPipe implements PipeTransform {
       roundingMode?: BigNumber.RoundingMode;
     }
   ): string {
-    const decimals =
-      additionalArgs?.decimals !== undefined
-        ? additionalArgs?.decimals
-        : this.DEFAULT_DECIMAL_LENGTH;
-    const minRound = additionalArgs?.minRound !== undefined ? additionalArgs?.minRound : 5;
-    const maxRound = additionalArgs?.maxRound !== undefined ? additionalArgs?.maxRound : 6;
+    const decimals = additionalArgs?.decimals ?? this.DEFAULT_DECIMAL_LENGTH;
+    const minRound = additionalArgs?.minRound ?? 5;
+    const maxRound = additionalArgs?.maxRound ?? 6;
 
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;

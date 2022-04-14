@@ -7,7 +7,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -23,7 +23,7 @@ export class SuccessTxModalComponent {
 
   public txHash: string;
 
-  public blockchain: BLOCKCHAIN_NAME;
+  public blockchain: BlockchainName;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
@@ -32,7 +32,7 @@ export class SuccessTxModalComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
-      { idPrefix: string; type: SuccessTxModalType; txHash: string; blockchain: BLOCKCHAIN_NAME }
+      { idPrefix: string; type: SuccessTxModalType; txHash: string; blockchain: BlockchainName }
     >
   ) {
     this.idPrefix = context.data.idPrefix;

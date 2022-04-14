@@ -3,15 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  OnDestroy,
   ViewChildren,
   QueryList,
   TemplateRef,
   Inject,
-  Injector
+  Injector,
+  Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -20,19 +20,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
-import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit, OnDestroy {
-  @ViewChildren('dropdownOptionTemplate') public readonly items: QueryList<TemplateRef<unknown>>;
-
-  public readonly countNotifications$: Observable<number>;
-
+export class UserProfileComponent implements AfterViewInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -43,9 +41,8 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
     @Inject(WINDOW) private readonly window: Window,
-    private readonly counterNotificationsService: CounterNotificationsService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.countNotifications$ = this.counterNotificationsService.unread$;
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
     this.router.events.subscribe(event => {
@@ -59,8 +56,6 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
-  private clicks = 0;
-
   public readonly isConfirmModalOpened$: Observable<boolean>;
 
   public readonly isMobile$: Observable<boolean>;
@@ -71,36 +66,17 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public dropdownIsOpened = false;
 
-  private _onNetworkChanges$: Subscription;
-
-  private _onAddressChanges$: Subscription;
-
-  public drowdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
+  public dropdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.walletConnectorService.networkChange$.subscribe(network => {
+    this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(network => {
       this.currentBlockchain = network;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
-    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(address => {
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
       this.authService.setCurrentUser(address);
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
-  }
-
-  ngOnDestroy(): void {
-    this._onNetworkChanges$.unsubscribe();
-    this._onAddressChanges$.unsubscribe();
-  }
-
-  public useTestingMode(): void {
-    this.clicks++;
-    const neededClicksAmount = 5;
-    if (this.clicks >= neededClicksAmount) {
-      this.clicks = 0;
-      this.window.testingMode.use();
-    }
   }
 
   public logout(): void {

@@ -1,9 +1,8 @@
 import { PCacheable } from 'ts-cacheable';
-import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import InsufficientFundsGasPriceValueError from '@core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -45,7 +44,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
-import { INSTANT_TRADES_PROVIDERS } from '@app/shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SmartRouting } from './models/smart-routing.interface';
 
 interface TradeAndToAmount {
@@ -65,7 +64,7 @@ const CACHEABLE_MAX_AGE = 15_000;
 })
 export class CrossChainRoutingService {
   public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BlockchainName
   ): blockchain is SupportedCrossChainBlockchain {
     return !!SUPPORTED_CROSS_CHAIN_BLOCKCHAINS.find(
       supportedBlockchain => supportedBlockchain === blockchain
@@ -145,10 +144,18 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
-    this._smartRoutingLoading$.next(true);
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
+
+    // @TODO Solana. Remove after blockchain stabilization.
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      throw new CustomError(
+        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
+      );
+    }
+
+    this._smartRoutingLoading$.next(true);
     if (
       !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
       !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
@@ -159,8 +166,18 @@ export class CrossChainRoutingService {
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
     const toTransitToken = this.contracts[toBlockchain].transitToken;
 
-    const fromSlippage = 1 - this.slippageTolerance / 2;
-    const toSlippage = 1 - this.slippageTolerance / 2;
+    let fromSlippage = 1 - this.slippageTolerance / 2;
+    let toSlippage = 1 - this.slippageTolerance / 2;
+
+    // @TODO Fix tokens with fee slippage.
+    if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+      if (fromToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        fromSlippage = 0.8; // 20%
+      }
+      if (toToken.address === '0x8d546026012bf75073d8a586f24a5d5ff75b9716') {
+        toSlippage = 0.85; // 15%
+      }
+    }
 
     const sourceBlockchainProviders = await this.getSortedProvidersList(
       fromBlockchain,
@@ -203,6 +220,7 @@ export class CrossChainRoutingService {
     );
 
     // @TODO fix excluded providers
+    /* @TODO return after SOLANA is returned
     const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
       provider =>
         !(
@@ -210,11 +228,12 @@ export class CrossChainRoutingService {
           this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
         )
     );
+    */
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = filteredTargetBlockchainProviders[0];
+    } = targetBlockchainProviders[0];
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -239,7 +258,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      filteredTargetBlockchainProviders,
+      targetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
@@ -688,7 +707,7 @@ export class CrossChainRoutingService {
       return;
     }
 
-    const maxGasPrice = await (this.contracts[toBlockchain] as EthLikeContractData).maxGasPrice();
+    const maxGasPrice = await this.contracts[toBlockchain].maxGasPrice();
 
     const currentGasPrice = Web3Pure.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
@@ -727,15 +746,32 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
       this.checkContractBalance(),
-      blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
+      this.checkUserBalance()
     ]);
+  }
+
+  private async checkUserBalance(): Promise<void> {
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+
+    if (
+      !blockchainAdapter.isNativeAddress(tokenIn.address) ||
+      fromBlockchain === BLOCKCHAIN_NAME.NEAR
+    ) {
+      return blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress);
+    }
+
+    const inAmount = this.currentCrossChainTrade.cryptoFee.plus(tokenInAmount);
+    try {
+      await blockchainAdapter.checkBalance(tokenIn, inAmount, this.authService.userAddress);
+    } catch (_err) {
+      throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
+    }
   }
 
   public createTrade(options: TransactionOptions = {}): Observable<void> {
@@ -763,7 +799,7 @@ export class CrossChainRoutingService {
           if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }
-          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+          if (errMessage?.includes('insufficient funds for')) {
             throw new InsufficientFundsGasPriceValueError(
               this.currentCrossChainTrade.tokenIn.symbol
             );
@@ -894,7 +930,7 @@ export class CrossChainRoutingService {
   private getProviderType(
     blockchain: SupportedCrossChainBlockchain,
     providerIndex: number
-  ): INSTANT_TRADES_PROVIDERS {
+  ): INSTANT_TRADE_PROVIDER {
     return this.contracts[blockchain].getProvider(providerIndex).providerType;
   }
 }

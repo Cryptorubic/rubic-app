@@ -1,5 +1,6 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
+import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 
 export type AdditionalTokens =
   | 'eth_tokens'
@@ -13,8 +14,8 @@ export type AdditionalTokens =
 interface AllQueryParams {
   from: string;
   to: string;
-  fromChain: BLOCKCHAIN_NAME;
-  toChain: BLOCKCHAIN_NAME;
+  fromChain: BlockchainName;
+  toChain: BlockchainName;
   amount: string;
 
   // iframe
@@ -26,7 +27,7 @@ interface AllQueryParams {
   slippageCcr: string;
   background: string;
   theme: string;
-  language: 'en' | 'es' | 'ko' | 'ru' | 'zh' | 'tr';
+  language: SupportedLanguages;
   fee: string;
   feeTarget: string;
   promoCode: string;

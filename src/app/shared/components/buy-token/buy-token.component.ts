@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
@@ -15,7 +15,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { ThemeService } from '@core/services/theme/theme.service';
 
 export interface TokenInfo {
-  blockchain: BLOCKCHAIN_NAME;
+  blockchain: BlockchainName;
   address: string;
   symbol: string;
   amount?: BigNumber;

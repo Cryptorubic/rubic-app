@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
@@ -44,7 +44,7 @@ export class GasService {
   private readonly updateInterval: number;
 
   private static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BlockchainName
   ): blockchain is SupportedBlockchain {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
@@ -75,7 +75,7 @@ export class GasService {
    * Gas price in Gwei for selected blockchain as observable.
    * @param blockchain Blockchain to get gas price from.
    */
-  public getGasPrice$(blockchain: BLOCKCHAIN_NAME): Observable<number | null> {
+  public getGasPrice$(blockchain: BlockchainName): Observable<number | null> {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }
@@ -86,7 +86,7 @@ export class GasService {
    * Gas price in Eth units for selected blockchain.
    * @param blockchain Blockchain to get gas price from.
    */
-  public async getGasPriceInEthUnits(blockchain: BLOCKCHAIN_NAME): Promise<BigNumber> {
+  public async getGasPriceInEthUnits(blockchain: BlockchainName): Promise<BigNumber> {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }

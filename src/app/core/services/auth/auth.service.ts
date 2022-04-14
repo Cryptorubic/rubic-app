@@ -16,6 +16,7 @@ import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { CookieService } from 'ngx-cookie-service';
 import { BrowserService } from '../browser/browser.service';
 import { BROWSER } from '@app/shared/models/browser/browser';
+import { compareAddresses } from '@shared/utils/utils';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -105,7 +106,7 @@ export class AuthService {
   /**
    * Check if user already connected wallet.
    */
-  public async loadUser(walletAddress?: string): Promise<void> {
+  public async loadUser(): Promise<void> {
     this.isAuthProcess = true;
     if (!this.walletConnectorService.provider) {
       try {
@@ -121,11 +122,8 @@ export class AuthService {
       }
     }
 
-    let address = walletAddress;
-    if (!address) {
-      const cookieAddress = this.cookieService.get('address');
-      address = cookieAddress === 'null' ? null : cookieAddress;
-    }
+    const cookieAddress = this.cookieService.get('address');
+    const address = cookieAddress === 'null' ? null : cookieAddress;
 
     if (address) {
       this.activateProviderAndSignIn(address).subscribe();
@@ -136,6 +134,10 @@ export class AuthService {
   }
 
   public setCurrentUser(address: string): void {
+    if (compareAddresses(address, this.userAddress)) {
+      return;
+    }
+
     this.cookieService.set('address', address, 7, null, null, null, null);
     this.currentUser$.next({ address });
   }
@@ -143,7 +145,7 @@ export class AuthService {
   private activateProviderAndSignIn(address: string): Observable<void> {
     return from(this.walletConnectorService.activate()).pipe(
       switchMap(() => {
-        if (address.toLowerCase() === this.walletConnectorService.address.toLowerCase()) {
+        if (compareAddresses(address, this.walletConnectorService.address)) {
           this.currentUser$.next({ address: this.walletConnectorService.address });
           return of() as Observable<void>;
         }

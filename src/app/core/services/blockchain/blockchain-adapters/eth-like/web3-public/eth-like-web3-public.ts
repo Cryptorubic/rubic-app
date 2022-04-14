@@ -3,7 +3,6 @@ import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
 import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
@@ -12,7 +11,6 @@ import { UndefinedError } from '@core/errors/models/undefined.error';
 import { from, Observable, of } from 'rxjs';
 import { HEALTHCHECK } from '@core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
-import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { HttpClient } from '@angular/common/http';
 import { BatchCall } from '@core/services/blockchain/models/batch-call';
 import { RpcResponse } from '@core/services/blockchain/models/rpc-response';
@@ -21,14 +19,11 @@ import { MethodData } from '@shared/models/blockchain/method-data';
 import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
 import MULTICALL_ABI from '@core/services/blockchain/constants/multicall-abi';
 import { Call } from '@core/services/blockchain/models/call';
-import {
-  MULTICALL_ADDRESSES,
-  MULTICALL_ADDRESSES_TESTNET
-} from '@core/services/blockchain/constants/multicall-addresses';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
+import { MULTICALL_ADDRESS } from '@core/services/blockchain/constants/multicall-addresses';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 type AllowanceParams = {
   /**
@@ -59,28 +54,6 @@ type TokenField = typeof supportedTokenFields[number];
 type TokenFields = Partial<Record<TokenField, string>>;
 
 export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> {
-  private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
-
-  constructor(
-    private web3: Web3,
-    public blockchain: BlockchainData,
-    useTestingModeService: UseTestingModeService,
-    private readonly httpClient: HttpClient
-  ) {
-    super();
-    this.multicallAddresses = MULTICALL_ADDRESSES;
-
-    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.multicallAddresses = MULTICALL_ADDRESSES_TESTNET;
-      }
-    });
-  }
-
-  static get nativeTokenAddress(): string {
-    return NATIVE_TOKEN_ADDRESS;
-  }
-
   static addressToBytes32(address: string): string {
     if (address.slice(0, 2) !== '0x' || address.length !== 42) {
       console.error('Wrong address format');
@@ -94,6 +67,18 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     return toChecksumAddress(address);
   }
 
+  public readonly nativeTokenAddress = NATIVE_TOKEN_ADDRESS;
+
+  private readonly multicallAddress = MULTICALL_ADDRESS[this.blockchain.name];
+
+  constructor(
+    private readonly web3: Web3,
+    public readonly blockchain: BlockchainData<EthLikeBlockchainName>,
+    private readonly httpClient: HttpClient
+  ) {
+    super();
+  }
+
   /**
    * Checks if a given address is a valid Ethereum address.
    * @param address The address to check validity.
@@ -101,14 +86,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   public isAddressCorrect(address: string): boolean {
     return isAddress(address);
   }
-
-  /**
-   * Checks if address is Ether native address.
-   * @param address Address to check.
-   */
-  public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_TOKEN_ADDRESS;
-  };
 
   /**
    * Sets new provider.
@@ -124,7 +101,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    * @return null If Healthcheck is not defined for current blockchain, else is node works status.
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
+    const healthcheckData = HEALTHCHECK[this.blockchain.name];
     if (!healthcheckData) {
       return of(null);
     }
@@ -262,6 +239,10 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getAllowance(params: AllowanceParams): Promise<BigNumber> {
     const { tokenAddress, ownerAddress, spenderAddress } = params;
+    if (this.isNativeAddress(tokenAddress)) {
+      return new BigNumber(Infinity);
+    }
+
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const allowance = await contract.methods
@@ -436,7 +417,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokensAddresses[0]);
-    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress.bind(this));
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {
@@ -546,10 +527,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   private async multicall(calls: Call[]): Promise<MulticallResponse[]> {
-    const contract = new this.web3.eth.Contract(
-      MULTICALL_ABI,
-      this.multicallAddresses[this.blockchain.name]
-    );
+    const contract = new this.web3.eth.Contract(MULTICALL_ABI, this.multicallAddress);
     return contract.methods.tryAggregate(false, calls).call();
   }
 

@@ -1,5 +1,5 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 export interface InstantTradeBotRequest {
   txHash: string;
@@ -8,7 +8,7 @@ export interface InstantTradeBotRequest {
   toAmount: number;
   fromSymbol: string;
   toSymbol: string;
-  blockchain: BLOCKCHAIN_NAME;
+  blockchain: BlockchainName;
   price: number;
-  provider: INSTANT_TRADES_PROVIDERS;
+  provider: INSTANT_TRADE_PROVIDER;
 }

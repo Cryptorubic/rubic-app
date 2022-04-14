@@ -12,7 +12,6 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
@@ -43,7 +42,8 @@ enum ERROR_TYPE {
   NO_AMOUNT = 'From amount was not entered',
   WRONG_WALLET = 'Wrong wallet',
   INVALID_TARGET_ADDRESS = 'Invalid target network address',
-  SOL_SWAP = 'Wrap SOL firstly'
+  SOL_SWAP = 'Wrap SOL firstly',
+  SOLANA_UNAVAILABLE = 'Solana in unavailable'
 }
 
 @Component({
@@ -131,8 +131,6 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public readonly isMobile$: Observable<boolean>;
 
-  private isTestingMode: boolean;
-
   private _fromAmount: BigNumber;
 
   public tokensFilled: boolean;
@@ -175,6 +173,12 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       }
+      // @TODO Solana. Remove after blockchain stabilization.
+      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
+        translateParams = {
+          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+        };
+        break;
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
@@ -232,7 +236,6 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -293,19 +296,14 @@ export class SwapButtonContainerComponent implements OnInit {
         });
     }
 
-    this.useTestingModeService.isTestingMode
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(isTestingMode => {
-        this.isTestingMode = isTestingMode;
-        if (isTestingMode) {
-          this.checkErrors();
-        }
-      });
-
     this.formService.inputValueChanges
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
         const { fromToken, toToken } = form;
+        this.errorType[ERROR_TYPE.SOLANA_UNAVAILABLE] =
+          (form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
+            form.toBlockchain === BLOCKCHAIN_NAME.SOLANA) &&
+          form.fromBlockchain !== form.toBlockchain;
         this.errorType[ERROR_TYPE.SOL_SWAP] =
           fromToken &&
           toToken &&
@@ -370,9 +368,7 @@ export class SwapButtonContainerComponent implements OnInit {
         isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
 
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        fromBlockchain !== userBlockchain &&
-        !isMultiChainWallet &&
-        (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
+        fromBlockchain !== userBlockchain && !isMultiChainWallet;
 
       this.cdr.detectChanges();
       return (

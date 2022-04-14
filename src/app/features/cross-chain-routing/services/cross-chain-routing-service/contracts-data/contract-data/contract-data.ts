@@ -14,15 +14,15 @@ import { AlgebraService } from '@features/instant-trade/services/instant-trade-s
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
 import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
-import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
+import { CommonOneinchService } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/common-oneinch.service';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -83,7 +83,7 @@ export abstract class ContractData {
    * Returns true, if provider is of `1inch` type.
    */
   protected isProviderOneinch(providerIndex: number): boolean {
-    return this.getProvider(providerIndex) instanceof OneinchProviderAbstract;
+    return this.getProvider(providerIndex) instanceof CommonOneinchService;
   }
 
   /**
@@ -161,8 +161,8 @@ export abstract class ContractData {
    */
   public getSecondPath(
     instantTrade: InstantTrade,
-    providerIndex?: number,
-    fromBlockchain?: BLOCKCHAIN_NAME
+    providerIndex: number,
+    fromBlockchain: BlockchainName
   ): string[] {
     const toBlockchainAdapter =
       this.blockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
