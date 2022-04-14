@@ -44,7 +44,7 @@ export class BuyTokenComponent {
 
   private readonly defaultTokens: TokenPair;
 
-  public theme: string;
+  public readonly theme$ = this.themeService.theme$;
 
   public rubicIcon = {
     light: 'assets/images/icons/header/rubic.svg',
@@ -86,10 +86,6 @@ export class BuyTokenComponent {
         symbol: 'RBC'
       }
     };
-    this.themeService.theme$.subscribe(value => {
-      this.theme = value;
-      this.cdr.markForCheck();
-    });
   }
 
   /**

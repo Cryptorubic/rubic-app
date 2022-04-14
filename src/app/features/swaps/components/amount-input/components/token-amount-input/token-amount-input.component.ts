@@ -35,11 +35,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   @Input() placeholder = 'Enter amount';
 
   private get formattedAmount(): string {
-    try {
-      return this.amount.value.split(',').join('');
-    } catch (err: unknown) {
-      console.debug(err);
-    }
+    return this.amount?.value.split(',').join('');
   }
 
   get usdPrice(): BigNumber {

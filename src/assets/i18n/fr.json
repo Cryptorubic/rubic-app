@@ -92,6 +92,10 @@
     "faq": "FAQ",
     "features": "Fonctionnalités",
     "project": "Projet",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Connecter le portefeuille",
     "myTrades": "Mes échanges",
     "logout": "Déconnexion",
@@ -328,7 +332,8 @@
     },
     "smartRouting": {
       "save": "Économisez {{amount}}$ avec le routage intelligent Rubic",
-      "estTime": "Délai estimé ~ 80 sec"
+      "estTime": "Délai estimé ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -614,5 +619,8 @@
   "buyTokens": {
     "default": "Acheter RBC",
     "custom": "Acheter FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

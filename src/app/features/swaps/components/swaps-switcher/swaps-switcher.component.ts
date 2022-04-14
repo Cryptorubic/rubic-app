@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsSwitcherComponent {
-  @Output() public switcherClick: EventEmitter<MouseEvent> = new EventEmitter();
+  @Output() public readonly switcherClick: EventEmitter<MouseEvent> = new EventEmitter();
 }

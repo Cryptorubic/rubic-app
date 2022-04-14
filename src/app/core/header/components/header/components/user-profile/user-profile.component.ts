@@ -66,7 +66,7 @@ export class UserProfileComponent implements AfterViewInit {
 
   public dropdownIsOpened = false;
 
-  public dropdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
+  @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 
   ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(network => {

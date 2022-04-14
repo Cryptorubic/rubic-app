@@ -61,8 +61,6 @@ export class HeaderComponent implements AfterViewInit {
 
   public currentUser$: Observable<UserInterface>;
 
-  public countNotifications$: Observable<number>;
-
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
   public isSettingsOpened = false;
