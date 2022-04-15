@@ -256,9 +256,7 @@ export class RefFinanceService implements ItProvider {
       minAmountOut
     );
 
-    return new Promise(resolve => {
-      setTimeout(() => resolve(''), 5000);
-    });
+    return new Promise(() => {});
   }
 
   public async getAllowance(): Promise<BigNumber> {
