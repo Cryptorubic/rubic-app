@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { DOCUMENT } from '@angular/common';
 
-type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light';
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +27,6 @@ export class ThemeService {
       this.document.documentElement.classList.toggle('dark');
       this.document.documentElement.classList.toggle('light');
     } else {
-      document.getElementById('wave').classList.add('wave_no-transition');
-      document.getElementById('wave').classList.add('wave_active');
-      setTimeout(() => document.getElementById('wave').classList.remove('wave_no-transition'));
       document.getElementsByTagName('html')[0].classList.toggle('dark_colored');
     }
   }
@@ -37,22 +34,14 @@ export class ThemeService {
   public switchTheme(): void {
     const isCurrentThemeDark = this._theme$.value === 'dark';
     if (isCurrentThemeDark) {
-      if (document.getElementById('gradient')) {
-        document.getElementById('gradient').hidden = true;
-      }
-      document.getElementsByTagName('html')[0].classList.toggle('dark_colored');
       setTimeout(() => this.processSwitch(isCurrentThemeDark), 100);
     } else {
-      if (document.getElementById('gradient')) {
-        document.getElementById('gradient').hidden = false;
-      }
       setTimeout(() => this.processSwitch(isCurrentThemeDark), 100);
       setTimeout(
         () => document.getElementsByTagName('html')[0].classList.toggle('dark_colored'),
         450
       );
     }
-    document.getElementById('wave').classList.toggle('wave_active');
   }
 
   public setTheme(theme: Theme): void {

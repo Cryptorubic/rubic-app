@@ -34,7 +34,12 @@
     "switchTo": "Переключиться на сеть {{ networkName }}",
     "tradeVia": "Торговать через ",
     "bridge": "Bridge",
-    "transactionDetails": "Детали транзакции"
+    "transactionDetails": "Детали транзакции",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -92,6 +97,10 @@
     "faq": "FAQ",
     "features": "Функции",
     "project": "Проект",
+    "referral": "Реферальная Программа",
+    "setupWidget": "Установить Виджет",
+    "sdk": "SDK",
+    "team": "Команда",
     "login": "Подключить кошелек",
     "myTrades": "Мои Сделки",
     "logout": "Выйти",
@@ -224,7 +233,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -509,5 +519,8 @@
   "buyTokens": {
     "default": "Купить RBC",
     "custom": "Купить FTM"
+  },
+  "blockchainSwap": {
+    "to": "в"
   }
 }

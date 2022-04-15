@@ -1,69 +1,36 @@
 @use 'src/scss/core' as *;
 
 .rubic-volume {
-  display: block;
-  padding: 29px 43px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 
-  color: var(--rubic-base-17);
-  font-size: 22px;
+  font-size: 16px;
+
   font-family: $sf-pro-font;
 
-  background-color: var(--main-form-background);
-  background-image: url('/assets/images/total-values/graphic.png');
-  background-repeat: no-repeat;
-  background-position: right 0;
-  background-size: contain;
-
-  border-radius: 19px;
-
-  backdrop-filter: blur(20px);
-
-  @include b($tablet) {
-    background-image: url('/assets/images/total-values/graphic-mobile.png');
+  &__icon {
+    width: 18px;
+    margin-right: 10px;
   }
 
   &__title {
-    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
 
-    font-weight: 300;
-    font-size: $rubic-font-size-02;
+    color: var(--rubic-base-02);
   }
 
   &__value {
-    width: 55%;
-    min-height: 48px;
-    margin-bottom: 15px;
-
-    color: var(--rubic-base-02);
-    font-weight: 100;
-    font-size: 48px;
-    line-height: 48px;
-  }
-
-  &__time {
-    font-weight: 300;
-    font-size: 18px;
-  }
-}
-
-@include b($mobile-md) {
-  .rubic-volume {
-    padding: 30px 20px;
+    color: var(--main-green);
   }
 }
 
 @include b($mobile-sm) {
   .rubic-volume {
-    background-position: right -15px bottom;
-
-    &__title {
-      margin-bottom: 15px;
-
-      font-size: 16px;
-    }
-
-    &__value {
-      font-size: 42px;
-    }
+    flex-direction: column;
+    gap: 0;
   }
 }

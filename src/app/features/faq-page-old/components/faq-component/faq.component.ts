@@ -16,7 +16,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 export class FaqComponent implements AfterViewInit {
   public questions: Question[] = [];
 
-  private hash: string;
+  private anchor: string;
 
   constructor(
     private readonly translateService: TranslateService,
@@ -24,38 +24,44 @@ export class FaqComponent implements AfterViewInit {
     private readonly element: ElementRef,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
+    this.fetchQuestions();
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollToAnchorItem();
+  }
+
+  /**
+   * Fetches all questions from i18n file.
+   */
+  private fetchQuestions(): void {
     combineLatest([this.route.fragment, this.translateService.stream('faqPage.questions')])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hash, questions]) => {
-        this.hash = hash;
-        this.questions = questions.map(
-          (question: { title: string; answer: string; id: string }) => ({
-            ...question,
-            isActive: hash === question.id,
-            id: question.id
-          })
-        );
+        this.anchor = hash;
+        this.questions = questions.map((question: Question) => ({
+          ...question,
+          isActive: hash === question.id,
+          id: question.id
+        }));
       });
   }
 
-  public ngAfterViewInit(): void {
-    if (this.hash) {
-      const answerElement = this.element.nativeElement.querySelector(`#${this.hash}`);
+  /**
+   * Scrolls page to query params anchor.
+   */
+  private scrollToAnchorItem(): void {
+    setTimeout(() => {
+      if (this.anchor) {
+        const answerElement = this.element.nativeElement.querySelector(`#${this.anchor}`);
 
-      if (!answerElement) return;
+        if (!answerElement) {
+          return;
+        }
 
-      answerElement.scrollIntoView({
-        behavior: 'smooth'
-      });
-      fromEvent(document, 'scroll')
-        .pipe(debounceTime(50), takeUntil(this.destroy$))
-        .subscribe(() => {
-          answerElement.classList.add('questions-container__question_highlight');
-        });
-    }
-  }
-
-  public toggleQuestion(question: Question): void {
-    question.isActive = !question.isActive;
+        answerElement.scrollIntoView({ behavior: 'smooth' });
+        fromEvent(document, 'scroll').pipe(debounceTime(50), takeUntil(this.destroy$)).subscribe();
+      }
+    }, 200);
   }
 }

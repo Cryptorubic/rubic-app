@@ -34,7 +34,12 @@
     "switchTo": "{{ networkName }} 네트워크로 전환",
     "tradeVia": "무역을 통해 ",
     "bridge": "Bridge",
-    "transactionDetails": "상세 거래 내역"
+    "transactionDetails": "상세 거래 내역",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -92,6 +97,10 @@
     "features": "기능",
     "faq": "FAQ",
     "project": "프로젝트",
+    "referral": "추천 프로그램",
+    "setupWidget": "위젯 설정",
+    "sdk": "SDK",
+    "team": "팀",
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
     "logout": "로그 아웃",
@@ -224,7 +233,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -406,7 +416,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "미끄러짐 허용 오차",
-      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
+      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다 (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다).",
       "multihopsTitle": "멀티 홉 비활성화",
       "multihops": "스왑은 직접 쌍으로 만 완료됩니다.",
       "rubicOptimisationTitle": "Rubic 최적화 사용",
@@ -509,5 +519,8 @@
   "buyTokens": {
     "default": "RBC 구매",
     "custom": "FTM 구매"
+  },
+  "blockchainSwap": {
+    "to": "에"
   }
 }

@@ -1,9 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -12,6 +15,7 @@ import { FormControl } from '@ngneat/reactive-forms';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -20,17 +24,19 @@ import { SwapFormService } from '@features/swaps/services/swaps-form-service/swa
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit {
+export class TokenAmountInputComponent implements OnInit, AfterViewInit {
+  @ViewChild('tokenAmount') public readonly tokenAmountInput: ElementRef<HTMLInputElement>;
+
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Input() placeholder = '0.0';
+  public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');
 
   private get formattedAmount(): string {
-    return this.amount.value.split(',').join('');
+    return this.amount?.value.split(',').join('');
   }
 
   get usdPrice(): BigNumber {
@@ -52,7 +58,8 @@ export class TokenAmountInputComponent implements OnInit {
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -70,6 +77,10 @@ export class TokenAmountInputComponent implements OnInit {
         this.selectedToken = fromToken;
         this.cdr.markForCheck();
       });
+  }
+
+  public ngAfterViewInit() {
+    this.tokenAmountInput.nativeElement.focus();
   }
 
   public onUserBalanceMaxButtonClick(): void {

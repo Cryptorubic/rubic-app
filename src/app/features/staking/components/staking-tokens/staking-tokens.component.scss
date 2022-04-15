@@ -16,9 +16,14 @@
       padding-top: 0px !important;
     }
 
-    tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
-      border: 0;
-      border-radius: 21.5px;
+    tui-wrapper[data-appearance='textfield'][data-appearance='textfield'] {
+      background: var(--rubic-base-22);
+      box-shadow: none;
+
+      &::after {
+        border: 0;
+        border-radius: 21.5px;
+      }
     }
   }
 }
@@ -38,7 +43,7 @@
   }
 
   &__symbol {
-    font-weight: 600;
+    font-weight: 400;
     font-size: 20px;
     line-height: 24px;
 
@@ -67,13 +72,13 @@
   }
 
   &__symbol {
-    font-weight: 600;
+    font-weight: 400;
     font-size: 18px;
     line-height: 22px;
   }
 
   &__name {
-    font-weight: 600;
+    font-weight: 400;
     font-size: 16px;
     line-height: 19px;
   }

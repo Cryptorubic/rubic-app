@@ -34,7 +34,12 @@
     "switchTo": "切换到 {{networkName}} 网络",
     "tradeVia": "贸易途径 ",
     "bridge": "Bridge",
-    "transactionDetails": "交易明细"
+    "transactionDetails": "交易明细",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -92,6 +97,10 @@
     "faq": "常见问题解答",
     "features": "特点",
     "project": "項目",
+    "referral": "推薦計劃",
+    "setupWidget": "設置小部件",
+    "sdk": "SDK",
+    "team": "團隊",
     "login": "連接錢包",
     "myTrades": "我的行业",
     "logout": "注销",
@@ -224,7 +233,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -406,7 +416,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "滑點公差",
-      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消（較低的百分比會降低您的交易被搶先的機會）。",
       "multihopsTitle": "禁用多跳",
       "multihops": "您的交換將僅通過直接對完成。",
       "rubicOptimisationTitle": "使用 Rubic 優化",
@@ -509,5 +519,8 @@
   "buyTokens": {
     "default": "購買 RBC",
     "custom": "購買 FTM"
+  },
+  "blockchainSwap": {
+    "to": "至"
   }
 }
