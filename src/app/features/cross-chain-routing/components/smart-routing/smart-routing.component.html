@@ -1,14 +1,3 @@
-<div class="info" [class.info_transparent]="isMobile$ | async">
-  <div
-    class="info__chip info__chip_colored"
-    *ngIf="savings.gte(0.01) && (fromHasTrade || toHasTrade)"
-  >
-    {{ 'crossChainPage.smartRouting.save' | translate: { amount: savings | bigNumberFormat: 2 } }}
-  </div>
-  <div class="info__chip" [class.info__chip_colored]="isMobile$ | async">
-    {{ 'crossChainPage.smartRouting.estTime' | translate }}
-  </div>
-</div>
 <div class="route">
   <div class="dex" *ngIf="fromHasTrade; else rubicPool">
     <div class="dex__icon">

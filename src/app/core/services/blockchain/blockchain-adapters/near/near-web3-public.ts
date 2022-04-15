@@ -16,6 +16,8 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
     return EthLikeWeb3Pure.asciiToBytes32(address);
   }
 
+  public readonly nativeTokenAddress = NATIVE_NEAR_ADDRESS;
+
   /**
    * Gets pool address based on token address.
    * @param address Token address.
@@ -73,14 +75,6 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
     const regex = new RegExp('^(([a-z\\d]+[\\-_])*[a-z\\d]+\\.)*([a-z\\d]+[\\-_])*[a-z\\d]+$');
     return regex.test(address) && address?.length > 2 && address?.length <= 64;
   }
-
-  /**
-   * Checks if address is Near native token address.
-   * @param address address to check.
-   */
-  public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_NEAR_ADDRESS;
-  };
 
   /**
    * Gets information about token from blockchain.

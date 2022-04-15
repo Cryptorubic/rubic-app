@@ -20,7 +20,7 @@ import {
   Subscription
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
@@ -44,11 +44,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
-import {
-  PAGINATED_BLOCKCHAIN_NAME,
-  TokensNetworkState
-} from 'src/app/shared/models/tokens/paginated-tokens';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
 import { compareTokens } from '@shared/utils/utils';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
@@ -59,9 +55,9 @@ type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
   favoriteTokens$: Observable<AvailableTokenAmount[]>;
   formType: 'from' | 'to';
-  currentBlockchain: BLOCKCHAIN_NAME;
+  currentBlockchain: BlockchainName;
   form: FormGroup<ISwapFormInput>;
-  allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+  allowedBlockchains: BlockchainName[] | undefined;
   idPrefix: string;
 };
 
@@ -86,12 +82,12 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   private formType: 'from' | 'to';
 
-  public allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+  public allowedBlockchains: BlockchainName[] | undefined;
 
   /**
    * Current selected blockchain in modal.
    */
-  private _blockchain: BLOCKCHAIN_NAME;
+  private _blockchain: BlockchainName;
 
   /**
    * Defines whether default or favorite tokens are shown.
@@ -160,11 +156,11 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   private updateTokensByQuerySubscription$: Subscription;
 
-  get blockchain(): BLOCKCHAIN_NAME {
+  get blockchain(): BlockchainName {
     return this._blockchain;
   }
 
-  set blockchain(value: BLOCKCHAIN_NAME) {
+  set blockchain(value: BlockchainName) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
       if (this.tokensList?.scrollSubject$?.value) {
@@ -188,8 +184,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * @return boolean If token is allowed in cross-chain returns true, otherwise false.
    */
   static allowedInCrossChain(
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): boolean {
     return (
       CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) &&
@@ -204,7 +200,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly useTestingModeService: UseTestingModeService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.searchQueryLoading = false;
@@ -304,7 +299,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Sets new blockchain.
    * @param blockchain Current blockchain.
    */
-  private setNewBlockchain(blockchain: BLOCKCHAIN_NAME): void {
+  private setNewBlockchain(blockchain: BlockchainName): void {
     this._blockchain = blockchain;
 
     const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
@@ -399,7 +394,11 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
         ...token,
         favorite: favoriteTokens.some(favoriteToken => compareTokens(favoriteToken, token))
       }));
-      this._tokensToShow$.next(tokens);
+      this._tokensToShow$.next(
+        this.isCrossChainSwap()
+          ? tokens.filter(el => el.hasDirectPair === null || el.hasDirectPair === true)
+          : tokens
+      );
     });
   }
 
@@ -441,9 +440,11 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
-      const amountsDelta = b.amount
+      const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
+      const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
+      const amountsDelta = bAmount
         .multipliedBy(b.price)
-        .minus(a.amount.multipliedBy(a.price))
+        .minus(aAmount.multipliedBy(a.price))
         .toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
@@ -455,25 +456,23 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
     if (this.searchQuery) {
-      return this.tokensService
-        .fetchQueryTokens(this.searchQuery, this.blockchain as PAGINATED_BLOCKCHAIN_NAME)
-        .pipe(
-          map(backendTokens => {
-            if (backendTokens.size) {
-              return backendTokens
-                .map(el => {
-                  return {
-                    ...el,
-                    available: true,
-                    amount: new BigNumber(NaN),
-                    favorite: false
-                  };
-                })
-                .toArray();
-            }
-            return [];
-          })
-        );
+      return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
+        map(backendTokens => {
+          if (backendTokens.size) {
+            return backendTokens
+              .map(el => {
+                return {
+                  ...el,
+                  available: true,
+                  amount: new BigNumber(NaN),
+                  favorite: false
+                };
+              })
+              .toArray();
+          }
+          return [];
+        })
+      );
     }
     return null;
   }
@@ -514,7 +513,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
             ),
           favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
             compareTokens(favoriteToken, blockchainToken)
-          )
+          ),
+          hasDirectPair: true
         };
       }
     }
@@ -555,10 +555,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Fetches new tokens page.
    */
   public fetchNewPageTokens(): void {
-    if (!this.useTestingModeService.isTestingMode.getValue()) {
-      this.tokensListUpdating = true;
-      this.tokensService.fetchNetworkTokens(this.blockchain as PAGINATED_BLOCKCHAIN_NAME);
-    }
+    this.tokensListUpdating = true;
+    this.tokensService.fetchNetworkTokens(this.blockchain);
   }
 
   /**
@@ -588,11 +586,25 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
           }));
         const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
-        this._tokensToShow$.next(tokensWithFavorite);
+        this._tokensToShow$.next(
+          this.isCrossChainSwap()
+            ? tokensWithFavorite.filter(
+                el => el.hasDirectPair === null || el.hasDirectPair === true
+              )
+            : tokensWithFavorite
+        );
         this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
         this.tokensListUpdating = false;
         this.cdr.markForCheck();
       }
     );
+  }
+
+  public isCrossChainSwap(): boolean {
+    const secondBlockchain =
+      this.formType === 'from'
+        ? this.form.controls.toBlockchain.value
+        : this.form.controls.fromBlockchain.value;
+    return secondBlockchain !== this.blockchain;
   }
 }

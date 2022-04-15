@@ -12,77 +12,11 @@
   --tui-link-active: var(--rubic-secondary);
 }
 
-.sort-by-dropdown {
-  display: flex;
-  grid-gap: 15px;
-  align-items: center;
-
-  margin-bottom: 20px;
-
-  tui-hosted-dropdown {
-    .title {
-      display: flex;
-      flex-wrap: nowrap;
-      grid-gap: 5px;
-
-      .arrow-right {
-        ::ng-deep {
-          svg path {
-            fill: #{$rubic-primary};
-          }
-        }
-      }
-    }
-
-    ::ng-deep {
-      > .wrapper > button {
-        background: var(--main-background);
-      }
-    }
-  }
-
-  .icon {
-    @include transition(transform);
-
-    &_rotated {
-      transform: rotate(180deg);
-    }
-  }
-
-  &__sort-arrows {
-    display: flex;
-
-    .sort-arrow {
-      width: 15px;
-      height: 16px;
-
-      ::ng-deep {
-        svg {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
-  }
-}
-
-tui-dropdown-box {
-  ::ng-deep {
-    button {
-      color: $rubic-base-11;
-    }
-  }
-}
-
-tui-data-list {
-  .title {
-    display: flex;
-    flex-wrap: nowrap;
-    grid-gap: 5px;
-  }
-}
-
 .accordions {
+  &:first-child {
+    margin-top: 20px;
+  }
+
   &:not(:last-child) {
     margin-bottom: 20px;
   }

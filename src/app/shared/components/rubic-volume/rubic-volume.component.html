@@ -1,10 +1,9 @@
 <div class="rubic-volume" *ngLet="volume$ | async as volume">
-  <div class="rubic-volume__title">{{ 'volume.title' | translate }}</div>
+  <div class="rubic-volume__title">
+    <img class="rubic-volume__icon" [src]="icon[theme$ | async]" alt="Dollar" />
+    {{ 'volume.title' | translate }}:
+  </div>
   <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
     ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat: 0 }}
-  </div>
-
-  <div class="rubic-volume__time">
-    {{ 'volume.description' | translate }}
   </div>
 </div>

@@ -12,14 +12,14 @@
 
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-            {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
+            {{ 'common.tradeVia' | translate }} {{ selectedProvider.label }}
           </div>
         </ng-container>
       </div>
 
       <div
         class="instant-trade-bottom-form__amount"
-        *ngLet="allowTrade && ethAndWethTrade as wrapProvider"
+        *ngLet="allowTrade && ethWethTrade as wrapProvider"
       >
         <ng-container *onlyFrame="'vertical'">
           <app-iframe-blockchain-indicator
@@ -29,6 +29,7 @@
         </ng-container>
 
         <div
+          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
           class="instant-trade-bottom-form__token-amount"
           [ngClass]="{
             'instant-trade-bottom-form__token-amount_loading':
@@ -37,9 +38,8 @@
               selectedProvider || wrapProvider
             )
           }"
-          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
-          <ng-container *ngIf="selectedProvider || wrapProvider; else placeholder">
+          <ng-container *ngIf="(selectedProvider || wrapProvider) && toAmount">
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)
@@ -48,7 +48,6 @@
                   | withRound: 'toClosestValue':{ decimals: toToken?.decimals })
             }}
           </ng-container>
-          <ng-template #placeholder>0.0</ng-template>
         </div>
 
         <ng-template #iframeSkeleton>
@@ -60,14 +59,18 @@
         <ng-container *ngIf="selectedProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
             <app-usd-price-container
-              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+              [usdPrice]="
+                wrapProvider ? getUsdPriceOfToAmount(fromAmount) : getUsdPriceOfToAmount()
+              "
               [loading]="tradeStatus === TRADE_STATUS.LOADING"
             ></app-usd-price-container>
           </div>
 
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
             <app-usd-price-container
-              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+              [usdPrice]="
+                wrapProvider ? getUsdPriceOfToAmount(fromAmount) : getUsdPriceOfToAmount()
+              "
             ></app-usd-price-container>
 
             <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
@@ -80,10 +83,10 @@
 
     <ng-container *noFrame>
       <app-providers-panels-container
-        *ngIf="allowTrade && !ethAndWethTrade"
+        *ngIf="allowTrade && !ethWethTrade"
         class="instant-trade-bottom-form__providers"
-        [providers]="providerControllers"
-        (onSelectProvider)="selectProvider($event)"
+        [providersData]="providersData"
+        (onSelectProvider)="onSelectProvider($event)"
       >
       </app-providers-panels-container>
     </ng-container>
@@ -96,9 +99,9 @@
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
-    [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
-    (updateRatesClick)="onCalculateTrade$.next('normal')"
+    (updateRatesClick)="onSelectHiddenData()"
   ></app-swap-button-container>
 </div>

@@ -27,9 +27,7 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
-import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
-import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
@@ -39,7 +37,6 @@ import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
 import { PanelErrorContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
@@ -50,10 +47,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
-import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
@@ -67,26 +62,22 @@ import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @NgModule({
   declarations: [
     // Components.
-    SpinnerComponent,
     DropdownSelectorComponent,
     AmountEstimatedComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
-    RubicSwitcherComponent,
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     SwapButtonContainerComponent,
     RubicTokensComponent,
-    RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
-    SwapsHeaderComponent,
-    AnalyticsLinkComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -106,6 +97,7 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
+    ProgressTrxNotificationComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -114,7 +106,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     ShortenAmountPipe,
     ThemedIconPipe,
     FalsyPipe,
-    ThemedIconPipe,
     FunctionCallPipe,
     // Directives.
     SafetyLinkDirective,
@@ -152,7 +143,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     TuiManualHintModule
   ],
   exports: [
-    SpinnerComponent,
     BigNumberFormatPipe,
     ScannerLinkPipe,
     TranslateModule,
@@ -162,7 +152,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
-    RubicSwitcherComponent,
     IconButtonComponent,
     ShortenAmountPipe,
     RubicLanguageSelectComponent,
@@ -172,10 +161,7 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,
-    RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
-    AnalyticsLinkComponent,
-    SwapsHeaderComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,
@@ -195,6 +181,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     FunctionCallPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
-  entryComponents: [SuccessTrxNotificationComponent]
+  entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}

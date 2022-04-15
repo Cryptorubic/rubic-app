@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { Observable } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 
@@ -13,33 +12,31 @@ export interface ItOptions {
 }
 
 export interface ItProvider {
-  readonly providerType: INSTANT_TRADES_PROVIDERS;
+  readonly providerType: INSTANT_TRADE_PROVIDER;
 
-  get contractAddress(): string;
+  readonly contractAddress: string;
 
-  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Observable<BigNumber>;
+  getAllowance(tokenAddress: string, targetContractAddress?: string): Promise<BigNumber>;
 
-  approve: (
+  approve(
     tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    },
+    options: TransactionOptions,
     targetContractAddress?: string
-  ) => Promise<void>;
+  ): Promise<void>;
 
-  calculateTrade: (
+  calculateTrade(
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string
-  ) => Promise<InstantTrade>;
+  ): Promise<InstantTrade>;
 
-  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
+  createTrade(trade: InstantTrade, options: ItOptions): Promise<Partial<TransactionReceipt>>;
 
-  checkAndEncodeTrade?: (
+  checkAndEncodeTrade?(
     trade: InstantTrade,
     options: ItOptions,
     receiverAddress: string
-  ) => Promise<RequiredField<TransactionOptions, 'data'>>;
+  ): Promise<RequiredField<TransactionOptions, 'data'>>;
 }

@@ -9,9 +9,12 @@
   transition: 300ms;
 
   &__icon-wrapper {
-    display: flex;
-    align-items: center;
-    height: 50px;
+    ::ng-deep.menu-button {
+      img {
+        max-width: 24px !important;
+        max-height: 24px !important;
+      }
+    }
 
     img {
       cursor: pointer;

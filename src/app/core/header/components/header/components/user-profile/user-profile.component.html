@@ -2,14 +2,13 @@
   *noFrame
   (opened)="getDropdownStatus($event)"
   [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+  [dropdownOptionsTemplates]="dropdownItems"
 ></app-dropdown-selector>
 
 <ng-template #dropdownButtonTemplate>
   <div class="user-profile">
     <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
       <img
-        (click)="useTestingMode()"
         [src]="currentBlockchain?.imagePath"
         alt="($currentBlockchain | async)?.name"
         width="25"
@@ -30,6 +29,23 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
+  <a
+    *noFrame
+    class="rubic-header__profile-trades button-link"
+    routerLink="my-trades"
+    routerLinkActive="button-link_active"
+  >
+    {{ 'navigation.myTrades' | translate }}
+    <app-notification-badge
+      class="notification-counter"
+      *ngIf="(countNotifications$ | async) && (currentUser$ | async)"
+      size="s"
+      [value]="countNotifications$ | async"
+    ></app-notification-badge>
+  </a>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
   <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
     {{ 'navigation.logout' | translate }}
   </button>
@@ -38,13 +54,7 @@
 <ng-container *onlyFrame>
   <div class="user-profile">
     <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
-      <img
-        (click)="useTestingMode()"
-        [src]="currentBlockchain?.imagePath"
-        alt="Current blockchain"
-        width="25"
-        height="25"
-      />
+      <img [src]="currentBlockchain?.imagePath" alt="Current blockchain" width="25" height="25" />
     </div>
     <div class="user-profile__address">
       {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}

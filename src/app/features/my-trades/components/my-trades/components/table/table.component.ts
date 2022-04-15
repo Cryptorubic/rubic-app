@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
-import { TuiComparator } from '@taiga-ui/addon-table';
 import {
-  TableRow,
-  TableRowKey
-} from 'src/app/features/my-trades/components/my-trades/models/TableRow';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
-import { isPresent } from '@taiga-ui/cdk';
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  Output
+} from '@angular/core';
+import { TableRowsData } from '@features/my-trades/components/my-trades/models/table-row-trade';
+import { Observable } from 'rxjs';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
+import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
 
 @Component({
   selector: 'app-table',
@@ -20,151 +22,40 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent extends AbstractTableDataComponent implements OnInit {
+export class TableComponent extends AbstractTableDataComponent {
   @Input() loading: boolean;
 
   /**
    * [REQUIRED] Table data to display.
    */
-  @Input() tableData$: Observable<TableRow[]>;
+  @Input() tableData$: Observable<TableRowsData>;
+
+  @Output() onPageChange = new EventEmitter<PageData>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
-  public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
+  public BLOCKCHAINS = BLOCKCHAINS;
 
-  public readonly tradesProviders = TRADES_PROVIDERS;
+  public readonly TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  public readonly columns = COLUMNS;
+  public readonly COLUMNS = COLUMNS;
 
-  public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
+  public readonly TRANSLATION_STATUS_KEY = TRANSLATION_STATUS_KEY;
 
-  public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
-    Status: () => 0,
-    FromTo: () => 0,
-    Provider: () => 0,
-    Sent: () => 0,
-    Expected: () => 0,
-    Date: () => 0
-  };
+  private _page = 0;
 
-  private readonly _sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  public size = 10;
 
-  public readonly sorter$ = this._sorter$.asObservable();
-
-  public setSorter$(comparator: TuiComparator<TableRow>): void {
-    this._sorter$.next(comparator);
+  public get page(): number {
+    return this._page;
   }
 
-  private readonly _direction$ = new BehaviorSubject<-1 | 1>(-1);
-
-  public readonly direction$ = this._direction$.asObservable();
-
-  public setDirection$(direction: -1 | 1): void {
-    this._direction$.next(direction);
+  public set page(page: number) {
+    this._page = page;
+    this.onPageChange.emit({ page: this._page, pageSize: this.size });
   }
-
-  private readonly _page$ = new Subject<number>();
-
-  public readonly page$ = this._page$.asObservable();
-
-  public setPage$(page: number): void {
-    this._page$.next(page);
-  }
-
-  private readonly _size$ = new Subject<number>();
-
-  public readonly size$ = this._size$.asObservable();
-
-  public setSize$(size: number): void {
-    this._size$.next(size);
-  }
-
-  private request$: Observable<readonly TableRow[]>;
-
-  private isFirstView = true;
-
-  public visibleData$: Observable<readonly TableRow[]>;
-
-  public total$: Observable<number>;
 
   constructor(injector: Injector) {
     super(injector);
-  }
-
-  ngOnInit(): void {
-    this.initSubscriptions();
-  }
-
-  /**
-   * Inits component subscriptions and observables.
-   */
-  private initSubscriptions(): void {
-    this.request$ = combineLatest([
-      this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
-      this.direction$.pipe(
-        map((dir, index) => {
-          this.isFirstView = Boolean(index);
-          return dir;
-        })
-      ),
-      this.page$.pipe(startWith(0)),
-      this.size$.pipe(startWith(10)),
-      this.tableData$.pipe(filter(isPresent))
-    ]).pipe(
-      // zero time debounce for a case when both key and direction change
-      debounceTime(0),
-      map(query => query && this.getData(...query)),
-      share()
-    );
-
-    this.visibleData$ = this.request$.pipe(
-      filter(isPresent),
-      map(visibleTableData => visibleTableData.filter(isPresent)),
-      startWith([])
-    );
-    this.total$ = this.request$.pipe(
-      filter(isPresent),
-      map(({ length }) => length),
-      startWith(1)
-    );
-  }
-
-  private getTableRowKey(
-    sorter: TuiComparator<TableRow>,
-    dictionary: Record<TableRowKey, TuiComparator<TableRow>>
-  ): TableRowKey {
-    const pair = Object.entries(dictionary).find(
-      (item): item is [TableRowKey, TuiComparator<TableRow>] => item[1] === sorter
-    );
-    return pair ? pair[0] : 'Date';
-  }
-
-  private getData(
-    key: TableRowKey,
-    direction: -1 | 1,
-    page: number,
-    size: number,
-    tableData: TableRow[]
-  ): ReadonlyArray<TableRow | null> {
-    const start = page * size;
-    const end = start + size;
-
-    if (!this.isFirstView) {
-      this.isFirstView = false;
-      const waitingForReceivingTrades = tableData.filter(
-        el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-      );
-      const otherTrades = tableData
-        .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-        .sort(this.sortBy('Date', this._direction$.getValue()));
-
-      return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
-        index >= start && index < end ? user : null
-      );
-    }
-
-    return [...tableData]
-      .sort(this.sortBy(key, direction))
-      .map((user, index) => (index >= start && index < end ? user : null));
   }
 }

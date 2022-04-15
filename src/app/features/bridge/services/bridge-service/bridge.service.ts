@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCKCHAIN_NAMES,
+  BlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
@@ -14,8 +17,6 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { BRIDGE_TEST_TOKENS } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
@@ -30,10 +31,10 @@ import { NotificationsService } from '@core/services/notifications/notifications
 @Injectable()
 export class BridgeService {
   private blockchainsProviders: Partial<
-    Record<BLOCKCHAIN_NAME, Partial<Record<BLOCKCHAIN_NAME, BlockchainsBridgeProvider>>>
+    Record<BlockchainName, Partial<Record<BlockchainName, BlockchainsBridgeProvider>>>
   >;
 
-  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
+  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>(undefined);
 
   public get tokens$(): Observable<BridgeTokenPairsByBlockchains[]> {
     return this._tokens$.asObservable();
@@ -41,18 +42,14 @@ export class BridgeService {
 
   private bridgeProvider: BlockchainsBridgeProvider;
 
-  private isTestingMode = false;
-
   constructor(
     // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
-    private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private readonly binancePolygonBridgeProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
     private readonly translateService: TranslateService,
@@ -62,20 +59,12 @@ export class BridgeService {
     this.subscribeToFormChanges();
 
     this.setTokens();
-
-    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.isTestingMode = true;
-        this._tokens$.next(BRIDGE_TEST_TOKENS);
-      }
-    });
   }
 
   private setupBlockchainsProviders(): void {
     this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.ethereumBinanceBridgeProviderService,
-        [BLOCKCHAIN_NAME.XDAI]: this.ethereumXdaiBridgeProviderService
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.ethereumBinanceBridgeProviderService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService
@@ -93,12 +82,8 @@ export class BridgeService {
   private setTokens(): void {
     const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
 
-    Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
-      Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
-        if (fromBlockchain.includes('_TESTNET') || toBlockchain.includes('_TESTNET')) {
-          return;
-        }
-
+    BLOCKCHAIN_NAMES.forEach(fromBlockchain => {
+      BLOCKCHAIN_NAMES.forEach(toBlockchain => {
         const provider: BlockchainsBridgeProvider =
           this.blockchainsProviders[fromBlockchain]?.[toBlockchain];
 
@@ -119,9 +104,7 @@ export class BridgeService {
     zip(...tokensObservables)
       .pipe(first())
       .subscribe(tokens => {
-        if (!this.isTestingMode) {
-          this._tokens$.next(tokens);
-        }
+        this._tokens$.next(tokens);
       });
   }
 
@@ -259,7 +242,7 @@ export class BridgeService {
   }
 
   private async checkBalance(
-    fromBlockchain: BLOCKCHAIN_NAME,
+    fromBlockchain: BlockchainName,
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {

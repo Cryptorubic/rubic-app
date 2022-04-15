@@ -7,6 +7,11 @@ export const LANGUAGES_LIST: LanguageListElement[] = [
     imgSrc: 'assets/images/icons/languages/en.svg'
   },
   {
+    lng: 'de',
+    title: 'Deutsch',
+    imgSrc: 'assets/images/icons/languages/de.svg'
+  },
+  {
     lng: 'ko',
     title: '한국어',
     imgSrc: 'assets/images/icons/languages/ko.svg'
@@ -30,5 +35,10 @@ export const LANGUAGES_LIST: LanguageListElement[] = [
     lng: 'tr',
     title: 'Türkce',
     imgSrc: 'assets/images/icons/languages/tr.svg'
+  },
+  {
+    lng: 'fr',
+    title: 'Français',
+    imgSrc: 'assets/images/icons/languages/fr.svg'
   }
 ];

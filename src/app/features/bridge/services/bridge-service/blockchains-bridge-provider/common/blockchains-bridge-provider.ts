@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Observable, Subject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
@@ -31,7 +31,7 @@ export abstract class BlockchainsBridgeProvider {
    */
   public abstract getFee(
     tokenPair: BridgeTokenPair,
-    toBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BlockchainName,
     amount?: BigNumber
   ): Observable<number>;
 

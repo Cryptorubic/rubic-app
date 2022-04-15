@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { startWith } from 'rxjs/operators';
 
@@ -13,7 +13,10 @@ interface TargetAddress {
   providedIn: 'root'
 })
 export class TargetNetworkAddressService {
-  private readonly networksRequiresAddress = [BLOCKCHAIN_NAME.SOLANA, BLOCKCHAIN_NAME.NEAR];
+  private readonly networksRequiresAddress: BlockchainName[] = [
+    BLOCKCHAIN_NAME.SOLANA,
+    BLOCKCHAIN_NAME.NEAR
+  ];
 
   private readonly _targetNetworkAddress$ = new BehaviorSubject<TargetAddress | null>(null);
 
@@ -36,8 +39,9 @@ export class TargetNetworkAddressService {
       .pipe(startWith(this.formService.inputValue))
       .subscribe(form => {
         this._displayAddress$.next(
-          this.networksRequiresAddress.includes(form.fromBlockchain) ||
-            this.networksRequiresAddress.includes(form.toBlockchain)
+          (this.networksRequiresAddress.includes(form.fromBlockchain) ||
+            this.networksRequiresAddress.includes(form.toBlockchain)) &&
+            Boolean(form.fromToken && form.toToken)
         );
       });
   }

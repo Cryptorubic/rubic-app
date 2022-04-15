@@ -5,11 +5,11 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 
 export abstract class Web3Public<AllowanceParams, TransactionResponse> {
+  public abstract readonly nativeTokenAddress: string;
+
   public abstract getAllowance(...params: AllowanceParams[]): Promise<BigNumber>;
 
   public abstract isAddressCorrect(address: string): boolean;
-
-  public abstract isNativeAddress(address: string): boolean;
 
   public abstract getTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended>;
 
@@ -31,6 +31,10 @@ export abstract class Web3Public<AllowanceParams, TransactionResponse> {
     address: string,
     tokensAddresses: string[]
   ): Promise<BigNumber[]>;
+
+  public isNativeAddress(address: string): boolean {
+    return address === this.nativeTokenAddress;
+  }
 
   /**
    * Checks if the specified address contains the required amount of these tokens.

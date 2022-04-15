@@ -8,7 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import {
   debounceTime,
@@ -35,7 +35,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 
 type TokenType = 'from' | 'to';
 
-type SelectedToken = {
+export type SelectedToken = {
   [tokenType in TokenType]: TokenAmount;
 };
 
@@ -80,9 +80,9 @@ export class SwapsFormComponent implements OnInit {
 
   private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
-  public fromBlockchain: BLOCKCHAIN_NAME;
+  public fromBlockchain: BlockchainName;
 
-  public toBlockchain: BLOCKCHAIN_NAME;
+  public toBlockchain: BlockchainName;
 
   public swapType: SWAP_PROVIDER_TYPE;
 

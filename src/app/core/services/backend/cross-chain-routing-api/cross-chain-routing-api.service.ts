@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
-import { catchError, map, mapTo } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
+import { catchError, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
@@ -10,9 +10,10 @@ import {
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   CrossChainTokenApi,
+  CrossChainTradeApi,
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
@@ -36,9 +37,11 @@ export class CrossChainRoutingApiService {
     };
   }
 
-  static parseTradeApiToTableTrade(tradeApi: CrossChainTradesResponseApi): TableTrade {
+  static parseTradeApiToTableTrade(tradeApi: CrossChainTradeApi): TableTrade {
     const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
+    // change date format for safari
+    const date = tradeApi.statusUpdatedAt.replace(/-/g, '/').slice(0, 19) + ' GMT+0000';
     return {
       fromTransactionHash: tradeApi.fromTransactionHash,
       toTransactionHash: tradeApi.toTransactionHash,
@@ -47,22 +50,32 @@ export class CrossChainRoutingApiService {
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',
       fromToken: CrossChainRoutingApiService.getTableToken(tradeApi.fromToken, tradeApi.fromAmount),
       toToken: CrossChainRoutingApiService.getTableToken(tradeApi.toToken, tradeApi.toAmount),
-      date: new Date(tradeApi.statusUpdatedAt)
+      date: new Date(date)
     };
   }
 
   /**
-   * get list of user's cross chain trades
-   * @param walletAddress wallet address of user
-   * @return list of trades
+   * Gets list of user's cross chain trades.
+   * @param walletAddress Wallet address of user.
+   * @param page Page in pagination.
+   * @param pageSize Page size in pagination.
    */
-  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
+  public getUserTrades(
+    walletAddress: string,
+    page: number,
+    pageSize: number
+  ): Observable<TableData> {
     return this.httpService
-      .get('trades/', { user: walletAddress }, BASE_URL)
+      .get('trades/', { user: walletAddress, page: page + 1, page_size: pageSize }, BASE_URL)
       .pipe(
-        map((trades: CrossChainTradesResponseApi[]) =>
-          trades.map(trade => CrossChainRoutingApiService.parseTradeApiToTableTrade(trade))
-        )
+        map((trades: CrossChainTradesResponseApi) => {
+          return {
+            totalCount: trades.count,
+            trades: trades.results.map(trade =>
+              CrossChainRoutingApiService.parseTradeApiToTableTrade(trade)
+            )
+          };
+        })
       );
   }
 
@@ -74,7 +87,7 @@ export class CrossChainRoutingApiService {
    */
   public postTrade(
     transactionHash: string,
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: BlockchainName,
     promoCodeText?: string
   ): Promise<void> {
     const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
@@ -83,9 +96,8 @@ export class CrossChainRoutingApiService {
       .pipe(
         catchError((err: unknown) => {
           console.error(err);
-          return undefined;
-        }),
-        mapTo(undefined)
+          return of(undefined);
+        })
       )
       .toPromise();
   }
