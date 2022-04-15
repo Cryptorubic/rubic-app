@@ -4,7 +4,7 @@ import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, of } from 'rxjs';
-import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, switchMap, take, takeUntil } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
 import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
@@ -113,5 +113,12 @@ export class DepositsComponent implements OnInit {
 
   public showTransferModal(): void {
     this.lpModalService.showTransferModal().subscribe();
+  }
+
+  public reloadDeposits(): void {
+    this.lpService
+      .getDeposits()
+      .pipe(take(1))
+      .subscribe(() => this.lpService.setDepositsLoading(false));
   }
 }

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -21,9 +22,12 @@ export class RewardsHistoryComponent implements OnInit {
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly lpService: LiquidityProvidingService,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   ngOnInit(): void {

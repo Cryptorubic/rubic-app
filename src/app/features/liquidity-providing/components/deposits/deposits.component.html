@@ -18,13 +18,17 @@
             {{ 'lp.depositFunds' | translate }}
           </ng-container>
         </app-rubic-button>
-        <app-rubic-button
+        <app-rotating-icon
+          (iconClick)="reloadDeposits()"
+          [rotating]="depositsLoading$ | async"
+        ></app-rotating-icon>
+        <!-- <app-rubic-button
           *ngIf="false"
           appearance="outline"
           class="deposits__actions-transfer"
           (onClick)="showTransferModal()"
           >{{ 'lp.transferToken' | translate }}</app-rubic-button
-        >
+        > -->
       </div>
     </div>
     <div class="deposits__list">

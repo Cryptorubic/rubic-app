@@ -7,42 +7,82 @@
         (iconClick)="loadRewards()"
       ></app-rotating-icon>
     </div>
-    <table
-      *ngLet="rewardsHistory$ | async as rewardsHistory"
-      tuiTable
-      [columns]="columns"
-      class="rewards"
-    >
-      <thead>
-        <tr tuiThGroup>
-          <th *tuiHead="'date'">Date</th>
-          <th *tuiHead="'txHash'">Tx Hash</th>
-          <th *tuiHead="'rewards'">Rewards</th>
-        </tr>
-      </thead>
-      <tbody tuiTbody [data]="rewardsHistory">
-        <tr *tuiRow="let item of rewardsHistory; let index = index" tuiTr>
-          <td *tuiCell="'date'" tuiTd>
+    <ng-container *ngIf="!isMobile; else mobileRewardsHistoryTpl">
+      <table
+        *ngLet="rewardsHistory$ | async as rewardsHistory"
+        tuiTable
+        [columns]="columns"
+        class="rewards-history"
+      >
+        <thead>
+          <tr tuiThGroup>
+            <th *tuiHead="'date'">Date</th>
+            <th *tuiHead="'txHash'">Tx Hash</th>
+            <th *tuiHead="'rewards'">Rewards</th>
+          </tr>
+        </thead>
+        <tbody tuiTbody [data]="rewardsHistory">
+          <tr *tuiRow="let item of rewardsHistory; let index = index" tuiTr>
+            <td *tuiCell="'date'" tuiTd>
+              {{ item.date | date: 'LLLL dd, hh:mm' }}
+            </td>
+            <td *tuiCell="'txHash'" tuiTd>
+              <a [href]="item.scannerLink" target="_blank">
+                <span>{{ item.txHash | functionCall: adjustTxHash:this }}</span>
+                <img
+                  [src]="
+                    (isDarkTheme$ | async)
+                      ? 'assets/images/icons/external-link-arrow.svg'
+                      : 'assets/images/icons/external-link-arrow-dark.svg'
+                  "
+                  alt="Scanner"
+                />
+              </a>
+            </td>
+            <td *tuiCell="'rewards'" tuiTd>
+              {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} USDC
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #mobileRewardsHistoryTpl>
+      <tui-accordion class="rewards-history-mobile" [rounded]="false">
+        <tui-accordion-item
+          [showArrow]="true"
+          borders="top-bottom"
+          *ngFor="let item of rewardsHistory$ | async"
+        >
+          <div class="rewards-history-mobile__head">
+            <div>Date</div>
             {{ item.date | date: 'LLLL dd, hh:mm' }}
-          </td>
-          <td *tuiCell="'txHash'" tuiTd>
-            <a [href]="item.scannerLink" target="_blank">
-              <span>{{ item.txHash | functionCall: adjustTxHash:this }}</span>
-              <img
-                [src]="
-                  (isDarkTheme$ | async)
-                    ? 'assets/images/icons/external-link-arrow.svg'
-                    : 'assets/images/icons/external-link-arrow-dark.svg'
-                "
-                alt="Scanner"
-              />
-            </a>
-          </td>
-          <td *tuiCell="'rewards'" tuiTd>
-            {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} USDC
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+          <div tuiAccordionItemContent class="rewards-history-mobile__content">
+            <div class="rewards-history-mobile__content-row">
+              <div class="rewards-history-mobile__content-label">Tx Hash</div>
+              <div class="rewards-history-mobile__content-value">
+                <a [href]="item.scannerLink" target="_blank">
+                  <span>{{ item.txHash | functionCall: adjustTxHash:this }}</span>
+                  <img
+                    [src]="
+                      (isDarkTheme$ | async)
+                        ? 'assets/images/icons/external-link-arrow.svg'
+                        : 'assets/images/icons/external-link-arrow-dark.svg'
+                    "
+                    alt="Scanner"
+                  />
+                </a>
+              </div>
+            </div>
+            <div class="rewards-history-mobile__content-row">
+              <div class="rewards-history-mobile__content-label">Rewards</div>
+              <div class="rewards-history-mobile__content-value">
+                {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} USDC
+              </div>
+            </div>
+          </div>
+        </tui-accordion-item>
+      </tui-accordion>
+    </ng-template>
   </ng-container>
 </ng-container>

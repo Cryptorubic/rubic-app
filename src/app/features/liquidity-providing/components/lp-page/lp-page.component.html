@@ -22,10 +22,10 @@
     [showLoader]="depositsLoading$ | async"
     [overlay]="true"
   >
-    <app-lp-landing></app-lp-landing>
+    <app-lp-landing class="landing"></app-lp-landing>
   </tui-loader>
   <ng-template #deposits>
     <app-deposits class="deposits"></app-deposits>
-    <app-rewards-history></app-rewards-history>
   </ng-template>
+  <app-rewards-history></app-rewards-history>
 </div>

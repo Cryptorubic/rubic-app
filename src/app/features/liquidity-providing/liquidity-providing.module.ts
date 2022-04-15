@@ -7,6 +7,7 @@ import { DepositCardComponent } from './components/deposit-card/deposit-card.com
 import { SharedModule } from '@app/shared/shared.module';
 import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
 import {
+  TuiAccordionModule,
   TuiDataListWrapperModule,
   TuiInputModule,
   TuiProgressModule,
@@ -67,7 +68,8 @@ import { RewardsHistoryComponent } from './components/rewards-history/rewards-hi
     TuiSelectModule,
     TuiDataListWrapperModule,
     TuiDataListModule,
-    TuiTableModule
+    TuiTableModule,
+    TuiAccordionModule
   ],
   exports: [],
   providers: [

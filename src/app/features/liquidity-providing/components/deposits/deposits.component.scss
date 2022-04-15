@@ -28,6 +28,7 @@
     flex-grow: 1;
     align-items: center;
     justify-content: space-between;
+    padding-right: 8px;
 
     @include b($tablet) {
       width: 100%;
@@ -44,7 +45,6 @@
 
       @include b($tablet) {
         width: 100%;
-        margin-right: 10px;
       }
 
       ::ng-deep button {
