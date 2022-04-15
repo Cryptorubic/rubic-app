@@ -18,7 +18,6 @@ import {
   distinctUntilChanged,
   filter,
   map,
-  retry,
   switchMap,
   take,
   tap
@@ -104,7 +103,11 @@ export class StakingLpService {
 
   private readonly stakingToken = STAKING_TOKENS[0];
 
-  private readonly _stakingTokenUsdPrice$ = new BehaviorSubject<number>(undefined);
+  private readonly stakingTokenUsdPrice = this.tokensService.tokens.find(
+    token =>
+      token.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+      token.symbol === this.stakingToken.symbol
+  ).price;
 
   private readonly _lpAprByRound$ = new BehaviorSubject<{ roundOne: string }>({
     roundOne: undefined
@@ -157,9 +160,7 @@ export class StakingLpService {
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
     private readonly httpClient: HttpClient
-  ) {
-    this.getStakingTokenPrice();
-  }
+  ) {}
 
   public getTotalBalanceAndRewards(): Observable<BigNumber[]> {
     return this.user$.pipe(
@@ -173,7 +174,7 @@ export class StakingLpService {
         this._lpBalance$.next(lpBalance);
 
         this._totalBalanceInUsdc$.next(
-          stakingBalance.multipliedBy(this._stakingTokenUsdPrice$.getValue()).plus(lpBalance)
+          stakingBalance.multipliedBy(this.stakingTokenUsdPrice).plus(lpBalance)
         );
       }),
       switchMap(() => this.getTotalRewards())
@@ -220,7 +221,7 @@ export class StakingLpService {
         this._lpRewards$.next(lpRewards);
 
         this._totalRewardsInUsdc$.next(
-          stakingRewards.multipliedBy(this._stakingTokenUsdPrice$.getValue()).plus(lpRewards)
+          stakingRewards.multipliedBy(this.stakingTokenUsdPrice).plus(lpRewards)
         );
       })
     );
@@ -453,9 +454,8 @@ export class StakingLpService {
       }),
       map(([lpPoolBalance, tvlMultichain]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
-        const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
         const tvl = lpPoolBalanceInTokens
-          .plus(lpPoolBalanceInTokens.multipliedBy(stakingTokenUsdPrice))
+          .plus(lpPoolBalanceInTokens.multipliedBy(this.stakingTokenUsdPrice))
           .plus(tvlMultichain);
         return tvl;
       }),
@@ -479,8 +479,7 @@ export class StakingLpService {
       }),
       map(totalRbcEntered => {
         const totalRbcEnteredInTokens = Web3Pure.fromWei(totalRbcEntered);
-        const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
-        return totalRbcEnteredInTokens.multipliedBy(stakingTokenUsdPrice);
+        return totalRbcEnteredInTokens.multipliedBy(this.stakingTokenUsdPrice);
       }),
       tap(tvlStaking => {
         this._tvlStaking$.next(tvlStaking);
@@ -493,21 +492,5 @@ export class StakingLpService {
     const tvlMultichain = this._tvlMultichain$.getValue();
 
     this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
-  }
-
-  private getStakingTokenPrice(): void {
-    from(
-      this.tokensService.getAndUpdateTokenPrice(
-        {
-          address: this.stakingToken.address,
-          blockchain: this.stakingToken.blockchain
-        },
-        true
-      )
-    )
-      .pipe(retry(3))
-      .subscribe(price => {
-        this._stakingTokenUsdPrice$.next(price);
-      });
   }
 }
