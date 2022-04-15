@@ -183,7 +183,20 @@ export class TokensApiService {
             rank: 1,
             image: 'string',
             coingeckoId: 'string',
-            usdPrice: 0.8,
+            usdPrice: 1,
+            usedInIframe: false,
+            hasDirectPair: true
+          },
+          {
+            address: '0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73',
+            name: 'USDT',
+            symbol: 'USDT',
+            blockchainNetwork: 'telos',
+            decimals: 6,
+            rank: 1,
+            image: 'string',
+            coingeckoId: 'string',
+            usdPrice: 1,
             usedInIframe: false,
             hasDirectPair: true
           }
