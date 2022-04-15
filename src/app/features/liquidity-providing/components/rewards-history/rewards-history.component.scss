@@ -24,6 +24,7 @@
     
   td {
     @include font(16px, 22px, 500, var(--rubic-base-02));
+    width: 15%;
     height: 22px;
     padding: 6px 0;
 

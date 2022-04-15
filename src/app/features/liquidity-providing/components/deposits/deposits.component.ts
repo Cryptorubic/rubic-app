@@ -47,7 +47,7 @@ export class DepositsComponent implements OnInit {
     this.walletConnectorService.networkChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe((network: BlockchainData) => {
-        this.needSwitchNetwork = network.name !== this.lpService.blockchain;
+        this.needSwitchNetwork = network?.name !== this.lpService.blockchain;
         this.cdr.detectChanges();
       });
   }
