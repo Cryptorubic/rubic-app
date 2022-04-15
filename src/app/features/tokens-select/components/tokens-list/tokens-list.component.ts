@@ -162,8 +162,10 @@ export class TokensListComponent implements AfterViewInit {
         filter(value => Boolean(value)),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
-            debounceTime(300),
+            debounceTime(200),
             filter(renderedRange => {
+              const bigVirtualElementsAmount = 30;
+              const smallVirtualElementsAmount = 7;
               if (
                 this.loading ||
                 this.hasSearchQuery ||
@@ -174,7 +176,9 @@ export class TokensListComponent implements AfterViewInit {
               ) {
                 return false;
               }
-              return renderedRange.end > this.tokens.length - 30;
+              return this.tokens.length > bigVirtualElementsAmount
+                ? renderedRange.end > this.tokens.length - bigVirtualElementsAmount
+                : renderedRange.end > this.tokens.length - smallVirtualElementsAmount;
             })
           )
         ),

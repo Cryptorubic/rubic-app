@@ -1,16 +1,16 @@
 @use 'src/scss/vars';
 @use 'src/scss/mixins';
 
+$titleWeight: 400;
+
 :host {
   padding: 26px;
 
-  background: var(--rubic-base-20);
-  border-radius: 36px;
+  background: var(--main-form-background);
+  border-radius: 20px;
 
   @include mixins.b(vars.$tablet) {
     padding: 0;
-
-    background: none;
   }
 }
 
@@ -20,7 +20,6 @@
   margin-bottom: 12px;
   padding: 36px;
 
-  background: var(--rubic-base-19);
   border-radius: 22px;
 
   @include mixins.b(vars.$tablet) {
@@ -64,7 +63,7 @@
     margin-bottom: 7px;
 
     color: vars.$rubic-primary;
-    font-weight: 800;
+    font-weight: $titleWeight;
     font-size: 16px;
     line-height: 19px;
   }
@@ -97,7 +96,6 @@
 .features {
   padding: 25px 36px;
 
-  background: var(--rubic-base-19);
   border-radius: 22px;
 
   @include mixins.b(vars.$tablet) {
@@ -162,7 +160,7 @@
     &__title {
       margin-bottom: 4px;
 
-      font-weight: 800;
+      font-weight: $titleWeight;
       font-size: 18px;
       line-height: 21px;
 

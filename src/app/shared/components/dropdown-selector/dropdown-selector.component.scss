@@ -29,7 +29,7 @@
           filter: brightness(10);
         }
 
-        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):not(.user-profile__dropdown-item) {
           color: var(--rubic-base-01);
           text-decoration: none;
         }

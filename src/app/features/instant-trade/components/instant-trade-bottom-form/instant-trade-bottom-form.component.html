@@ -29,6 +29,7 @@
         </ng-container>
 
         <div
+          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
           class="instant-trade-bottom-form__token-amount"
           [ngClass]="{
             'instant-trade-bottom-form__token-amount_loading':
@@ -37,9 +38,8 @@
               selectedProvider || wrapProvider
             )
           }"
-          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
-          <ng-container *ngIf="selectedProvider || wrapProvider; else placeholder">
+          <ng-container *ngIf="(selectedProvider || wrapProvider) && toAmount">
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)
@@ -48,7 +48,6 @@
                   | withRound: 'toClosestValue':{ decimals: toToken?.decimals })
             }}
           </ng-container>
-          <ng-template #placeholder>0.0</ng-template>
         </div>
 
         <ng-template #iframeSkeleton>

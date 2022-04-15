@@ -1,63 +1,47 @@
 @use 'src/scss/core' as *;
 
-:host {
-  display: block;
-  padding: 5px;
-
-  background-color: var(--main-background);
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-}
-
 .swaps-header {
   position: relative;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
-  height: 50px;
-  padding: 10px;
+  &__icons {
+    display: flex;
 
-  background-image: linear-gradient(135deg,
-  var(--form-header-color-1) 0%,
-  var(--form-header-color-1) 50%,
-  var(--form-header-color-2) 50%,
-  var(--form-header-color-2) 100%);
-  border-radius: $border-radius-1;
+    img {
+      width: 30px;
+      height: 30px;
+    }
+  }
 
-  &__blockchain {
+  &__icon-wrapper {
     display: flex;
     align-items: center;
-
+    justify-content: center;
+    width: 35px;
     height: 35px;
-    padding: 7px 15px;
+
+    background: var(--main-form-background);
+    border-radius: 50%;
+
+    &:last-child {
+      margin-left: -15px;
+    }
+  }
+
+  &__title {
+    margin-left: 12px;
 
     color: var(--form-bright-text-color);
     font-weight: 500;
     font-size: 16px;
-
-    border-radius: 35px;
-
-    img {
-      width: auto;
-      height: 100%;
-      margin-right: 10px;
-    }
-
-    span {
-      position: relative;
-      top: 1px;
-    }
   }
 
-  &__icon {
-    position: absolute;
-    left: 50%;
-
-    border-radius: 100%;
-    box-shadow: 0 2px 10px rgba(#3a5f45, 0.2);
-
-    transform: translate(-50%);
+  &__name {
+    color: var(--secondary-color);
+    font-size: 14px;
   }
 }
+
+

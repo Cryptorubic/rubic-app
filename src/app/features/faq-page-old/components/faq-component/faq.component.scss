@@ -1,157 +1,20 @@
 @use 'src/scss/core' as *;
 
-:host {
-  display: block;
-  width: 100%;
-}
+.faq {
+  &__questions-list {
+    max-width: 70%;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 25px;
 
-.title-section {
-  display: block;
-  align-self: center;
-  width: 70%;
-  margin: 20px auto;
-}
-
-.faq-container {
-  height: 100%;
-  padding-top: 25px;
-}
-
-.questions-container {
-  &::after,
-  &::before {
-    display: table;
-    width: 100%;
-
-    content: '';
+    @include b($tablet) {
+      max-width: 100%;
+    }
   }
 
   &__question {
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: auto;
-    margin: 15px auto;
-    padding: 30px 20px 17px;
+    margin-bottom: 15px !important;
 
-    color: var(--form-bright-text-color);
-
-    background: var(--main-background);
-    border-left: 5px solid var(--main-green);
-    border-radius: 10px;
-    cursor: pointer;
-
-    &_highlight {
-      animation: 1s ease-in-out flicker;
-    }
-
-    &_active {
-      border-left: 5px solid var(--main-green);
-
-      .questions-container__arrow {
-        transform: rotate(45deg);
-      }
-
-      .questions-container__text {
-        max-height: 100%;
-        margin: 12px 0;
-
-        opacity: 1;
-      }
-    }
+    border-radius: 14px;
   }
-
-  &__question-head {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-
-    font-size: 20px;
-  }
-
-  &__title {
-    width: 86%;
-  }
-
-  &__text {
-    max-height: 0;
-    margin: 0;
-    overflow: hidden;
-
-    font-size: 16px;
-    line-height: 28px;
-    white-space: pre-line;
-
-    cursor: text;
-    opacity: 0;
-
-    transition: 0.5s ease;
-    transition-property: opacity, max-height, margin;
-  }
-
-  &__arrow {
-    position: relative;
-    top: 3px;
-
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-
-    border: solid var(--main-green);
-    border-width: 0 2px 2px 0;
-    transform: rotate(315deg);
-
-    transition: transform 0.5s ease;
-  }
-}
-
-@media (max-width: 768px) {
-  .questions-container {
-    &__question {
-      width: 85%;
-    }
-  }
-}
-
-::ng-deep .faq {
-  &__highlight {
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-
-  &__img {
-    max-width: 100%;
-  }
-
-  &__warning {
-    display: inline-block;
-
-    box-sizing: border-box;
-    height: auto;
-    margin-right: 2px;
-    padding: 5px 10px;
-
-    color: white;
-
-    background-color: $rubic-text-error;
-    border-radius: 3px;
-  }
-
-  &__warning-container {
-    display: inline-flex;
-    align-items: center;
-  }
-}
-
-@include b($mobile-md) {
-  .questions-container {
-    &__question {
-      width: 100%;
-    }
-  }
-}
-
-
-@keyframes flicker {
-  0% { background-color: rgba(255, 255, 255, 0.6); }
 }

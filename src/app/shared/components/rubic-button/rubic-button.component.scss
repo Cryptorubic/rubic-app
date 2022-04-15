@@ -3,7 +3,7 @@
 :host {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary: var(--rubic-base-01);
+  --tui-primary: var(--rubic-base-22);
   --tui-primary-hover: var(--rubic-base-01);
   --tui-focus: transparent;
   --tui-primary-text: #{$rubic-text-color-main};
@@ -13,7 +13,7 @@
     font-weight: 500;
     font-size: $rubic-font-size-01;
 
-    border: 1px solid transparent;
+    border: none;
 
     transition: 0.3s;
 
