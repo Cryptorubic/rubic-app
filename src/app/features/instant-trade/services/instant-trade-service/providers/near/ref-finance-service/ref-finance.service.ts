@@ -231,8 +231,8 @@ export class RefFinanceService implements ItProvider {
     const amountOutWithSlippage = trade.to.amount.multipliedBy(1 - this.settings.slippageTolerance);
     const minAmountOut = Web3Pure.toWei(amountOutWithSlippage, trade.to.token.decimals);
 
-    const fromTokenAddress = NearWeb3Public.getAddress(trade.from.token.address);
-    const toTokenAddress = NearWeb3Public.getAddress(trade.to.token.address);
+    const fromTokenAddress = NearWeb3Public.getFungibleTokenAddress(trade.from.token.address);
+    const toTokenAddress = NearWeb3Public.getFungibleTokenAddress(trade.to.token.address);
 
     const registerTokensTransactions =
       await this.refFinanceSwapService.createRegisterTokensTransactions(

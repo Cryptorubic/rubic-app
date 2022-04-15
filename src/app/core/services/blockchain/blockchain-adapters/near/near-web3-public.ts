@@ -19,10 +19,10 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   public readonly nativeTokenAddress = NATIVE_NEAR_ADDRESS;
 
   /**
-   * Gets pool address based on token address.
+   * Gets fungible token address.
    * @param address Token address.
    */
-  public static getAddress(address: string): string {
+  public static getFungibleTokenAddress(address: string): string {
     return address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : address;
   }
 
