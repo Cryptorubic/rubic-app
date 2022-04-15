@@ -34,7 +34,12 @@
     "switchTo": "Ağa {{ networkName }} geç",
     "tradeVia": "Ticaret Yoluyla",
     "bridge": "Köprü",
-    "transactionDetails": "Ödeme Detayları"
+    "transactionDetails": "Ödeme Detayları",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
@@ -92,6 +97,10 @@
     "faq": "FAQ",
     "features": "Özellikler",
     "project": "Proje",
+    "referral": "Yönlendirme Programı",
+    "setupWidget": "Kurulum Widget'ı",
+    "sdk": "SDK",
+    "team": "Takım",
     "login": "Cüzdan Bağla",
     "myTrades": "Ticaretlerim",
     "logout": "çıkıç yap",
@@ -398,7 +407,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -623,7 +633,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
+      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir (daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır).",
       "multihopsTitle": "Çoklu atlamaları devre dışı bırak",
       "multihops": "Takas işleminiz yalnızca doğrudan çiftlerle tamamlanacaktır.",
       "rubicOptimisationTitle": "Rubic optimizasyonunu kullanın",
@@ -727,5 +737,8 @@
   "buyTokens": {
     "default": "RBC al",
     "custom": "FTM al"
+  },
+  "blockchainSwap": {
+    "to": "kime"
   }
 }

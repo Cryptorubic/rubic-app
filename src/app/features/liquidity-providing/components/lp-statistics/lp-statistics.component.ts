@@ -60,9 +60,9 @@ export class LpStatisticsComponent implements OnInit {
 
   public refreshStatistics(): void {
     this.lpService
-      .getAprAndTotalStaked()
+      .getStatistics()
       .pipe(
-        switchMap(() => this.lpService.getStatistics()),
+        switchMap(() => this.lpService.getAprAndTotalStaked()),
         take(1)
       )
       .subscribe(() => {

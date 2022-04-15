@@ -28,11 +28,18 @@
           <td *tuiCell="'txHash'" tuiTd>
             <a [href]="item.scannerLink" target="_blank">
               <span>{{ item.txHash | functionCall: adjustTxHash:this }}</span>
-              <img src="assets/images/icons/external-link-arrow.svg" alt="Scanner" />
+              <img
+                [src]="
+                  (isDarkTheme$ | async)
+                    ? 'assets/images/icons/external-link-arrow.svg'
+                    : 'assets/images/icons/external-link-arrow-dark.svg'
+                "
+                alt="Scanner"
+              />
             </a>
           </td>
           <td *tuiCell="'rewards'" tuiTd>
-            {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }}
+            {{ item.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} USDC
           </td>
         </tr>
       </tbody>

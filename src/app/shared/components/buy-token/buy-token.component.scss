@@ -1,6 +1,19 @@
 @use 'src/scss/core' as *;
 
+/* 357 is the width when burger menu stop to open correctly */
+$badMobileWidth: 357;
+
 :host .button_buy-token {
+  ::ng-deep button[tuiButton][data-appearance='outline'] {
+    @include b($mobile-sm) {
+      border: none !important;
+    }
+
+    @include b($badMobileWidth) {
+      display: none;
+    }
+  }
+
   &__custom ::ng-deep {
     [tuiButton][data-appearance='outline'] {
       border: 1px solid $buy-custom-token;
@@ -18,6 +31,23 @@
           color: white;
         }
       }
+    }
+  }
+
+  ::ng-deep tui-wrapper {
+    padding: 0 20px !important;
+
+    @include b($mobile-sm) {
+      padding: 0 !important;
+    }
+  }
+
+  &-icon {
+    display: flex;
+    margin-right: 10px;
+
+    img {
+      height: 24px;
     }
   }
 }

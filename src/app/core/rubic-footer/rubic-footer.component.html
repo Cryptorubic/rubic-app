@@ -1,4 +1,5 @@
 <footer class="rubic-footer">
+  <app-rubic-volume *noFrame></app-rubic-volume>
   <nav class="rubic-footer__nav">
     <a
       *ngFor="let link of footerLinks"
@@ -7,7 +8,7 @@
       rel="noopener"
       target="_blank"
     >
-      <img [src]="link.imageUrl" width="22" height="20" [alt]="link.altText" />
+      <img [src]="link[theme$ | async]" width="22" height="20" [alt]="link.altText" />
     </a>
   </nav>
   <div class="rubic-footer__copyright">

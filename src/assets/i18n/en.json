@@ -35,7 +35,12 @@
     "tradeVia": "Trade Via ",
     "bridge": "Bridge",
     "transactionDetails": "Transaction details",
-    "approveToken": "Approve {{symbol}}"
+    "approveToken": "Approve {{symbol}}",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -93,6 +98,10 @@
     "faq": "FAQ",
     "features": "Features",
     "project": "Project",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Connect Wallet",
     "myTrades": "My Trades",
     "logout": "Logout",
@@ -225,7 +234,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -447,7 +457,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
       "multihopsTitle": "Disable multihops",
       "multihops": "Your swap will be completed only with direct pairs.",
       "rubicOptimisationTitle": "Use Rubic optimization",
@@ -464,7 +474,7 @@
       "autoRefreshTitle": "Auto refresh",
       "autoRefresh": "Updates trade parameters each 15 seconds.",
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
       "promoCodeTitle": "Promo Code",
       "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
       "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
@@ -552,5 +562,8 @@
   "buyTokens": {
     "default": "Buy RBC",
     "custom": "Buy FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

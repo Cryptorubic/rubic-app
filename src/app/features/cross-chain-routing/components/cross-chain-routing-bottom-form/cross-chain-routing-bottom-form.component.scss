@@ -47,10 +47,7 @@
 
   &__container {
     min-height: 110px;
-    padding: 15px 20px 30px;
-
-    background-color: var(--main-background);
-    border-radius: 0 0 14px 14px;
+    padding: 30px 0 15px;
 
     @include iframe-vertical {
       position: relative;
@@ -65,6 +62,8 @@
       height: 50px;
       min-height: unset;
       padding: 0 7px 0 16px;
+
+      background: var(--main-background);
 
       border-radius: 10px;
     }
@@ -87,6 +86,7 @@
 
     @include b($mobile-md) {
       height: auto;
+      padding: 30px 20px;
     }
 
     @include b($mobile-sm) {
@@ -108,7 +108,8 @@
     }
 
     @include b($mobile-md) {
-      padding: 15px 20px 0;
+      margin-top: 0;
+      padding: 0 20px;
     }
   }
 

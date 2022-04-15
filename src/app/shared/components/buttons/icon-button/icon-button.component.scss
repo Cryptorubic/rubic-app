@@ -20,7 +20,7 @@
     .content {
       flex-direction: column;
 
-      padding: 6px;
+      padding: 4px 6px;
 
       .label-container {
         overflow: hidden;
@@ -43,10 +43,15 @@
     }
 
     img {
-      max-width: 27px;
-      max-height: 27px;
+      width: 30px;
+      height: 30px;
 
       transition: 0.2s ease-in-out;
+
+      @include iframe {
+        width: 18px;
+        height: 18px;
+      }
     }
 
     /* stylelint-disable */

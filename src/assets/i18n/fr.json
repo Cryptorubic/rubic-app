@@ -34,7 +34,12 @@
     "switchTo": "Basculer sur le réseau {{ networkName }}",
     "tradeVia": "Échanger Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Détails de la transaction"
+    "transactionDetails": "Détails de la transaction",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
@@ -92,6 +97,10 @@
     "faq": "FAQ",
     "features": "Fonctionnalités",
     "project": "Projet",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Connecter le portefeuille",
     "myTrades": "Mes échanges",
     "logout": "Déconnexion",
@@ -329,7 +338,8 @@
     },
     "smartRouting": {
       "save": "Économisez {{amount}}$ avec le routage intelligent Rubic",
-      "estTime": "Délai estimé ~ 80 sec"
+      "estTime": "Délai estimé ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -551,7 +561,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolérance au glissement du prix",
-      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi. (Un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run)",
+      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi (un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run).",
       "multihopsTitle": "Désactiver les multisauts",
       "multihops": "Votre échange ne sera complété qu'avec des paires directes.",
       "rubicOptimisationTitle": "Activer le routage optimisé Rubic",
@@ -655,5 +665,8 @@
   "buyTokens": {
     "default": "Acheter RBC",
     "custom": "Acheter FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

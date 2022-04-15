@@ -48,7 +48,7 @@ html {
     padding: 0;
     overflow-x: hidden;
 
-    background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
+    background: var(--main-background);
 
     main,
     input,
@@ -181,55 +181,6 @@ tui-dropdown-box {
   }
 }
 
-.wave {
-  position: absolute;
-  top: 54px;
-  right: 54px;
-  z-index: -100;
-
-  display: block;
-  width: 2px;
-  height: 2px;
-
-  border-radius: 100%;
-  box-shadow: 0 0 0 0 #212121;
-
-  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-  @include b(1240) {
-    top: 45px;
-    right: 109px;
-  }
-
-  &::after {
-    position: absolute;
-
-    width: 2px;
-    height: 2px;
-
-    background-color: #ebf1ec;
-
-    transition-delay: 0.3s;
-    transition-property: background-color;
-
-    content: '';
-  }
-
-  &_active {
-    box-shadow: 0 0 0 calc(1.42 * max(100vw, 100vh)) rgb(14, 17, 14);
-
-    &::after {
-      background-color: rgb(14, 17, 14);
-
-      transition-delay: unset;
-    }
-  }
-
-  &_no-transition {
-    transition: none;
-  }
-}
-
 body.default-iframe-background {
   background: linear-gradient(45deg, #4aa956 20%, white);
 }
@@ -246,7 +197,7 @@ body.default-iframe-background {
   align-items: center;
   justify-content: center;
 
-  background-color: $background-black;
+  background-color: #181a19;
   opacity: 1;
 
   transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
@@ -255,15 +206,6 @@ body.default-iframe-background {
     z-index: -10000;
 
     opacity: 0;
-  }
-
-  &:not(.disabled) ~ * {
-    &.wave,
-    &.gradient {
-      @include ios {
-        position: static;
-      }
-    }
   }
 
   img {
@@ -301,8 +243,4 @@ html.dark {
   [id^='tui-hint_price-impact'] {
     background: rgb(56, 56, 56) !important;
   }
-}
-
-html.iframe body .gradient {
-  display: none;
 }

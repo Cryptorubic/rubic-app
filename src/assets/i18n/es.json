@@ -34,7 +34,12 @@
     "switchTo": "Cambiar a {{ networkName }} red",
     "tradeVia": "Comercio Vía ",
     "bridge": "Puente",
-    "transactionDetails": "Detalles de la transacción"
+    "transactionDetails": "Detalles de la transacción",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
@@ -92,6 +97,10 @@
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
     "project": "Proyecto",
+    "referral": "Programa de referencia",
+    "setupWidget": "Widget de configuración",
+    "sdk": "SDK",
+    "team": "Equipo",
     "login": "Conectar Cartera",
     "myTrades": "Mis comercios",
     "logout": "Cerrar sesión",
@@ -225,7 +234,8 @@
     },
     "smartRouting": {
       "save": "Ahorra ${{amount}} con Enrutamiento inteligente",
-      "estTime": "Tiempo estimado ~ 80 segundos"
+      "estTime": "Tiempo estimado ~ 80 segundos",
+      "estTimeMobile": "~ 80 segundos"
     }
   },
   "instantTrades": {
@@ -447,7 +457,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolerancia al deslizamiento",
-      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
+      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado (un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada).",
       "multihopsTitle": "Desactivar saltos múltiples",
       "multihops": "Tu intercambio se completará solo con pares directos.",
       "rubicOptimisationTitle": "Usar optimización de Rubic",
@@ -550,5 +560,8 @@
   "buyTokens": {
     "default": "Comprar RBC",
     "custom": "Comprar FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

@@ -9,10 +9,7 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  padding: 15px 20px 21px;
-
-  background-color: var(--main-background);
-  border-radius: 0 0 14px 14px;
+  padding: 30px 0 20px;
 
   @include iframe-horizontal {
     position: relative;
@@ -20,6 +17,8 @@ $green: rgb(74, 169, 86);
     width: $iframe-horizontal-input-width;
     height: 50px;
     padding: 0 7px 0 16px;
+
+    background: var(--main-background);
 
     border-radius: 10px;
   }
@@ -59,14 +58,11 @@ $green: rgb(74, 169, 86);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
-
-    background: var(--rubic-base-10);
-    border-radius: 3px;
   }
 
   &__providers {
     display: block;
-    margin-top: 30px;
+    margin-top: 50px;
   }
 
   &__body {
@@ -148,14 +144,13 @@ $green: rgb(74, 169, 86);
 
   &__token-amount {
     max-width: 300px;
-    margin-bottom: 13px;
-    padding: 1px 2px;
+    margin-bottom: 5px;
 
     overflow: auto;
 
     color: var(--form-bright-text-color);
     font-weight: 400;
-    font-size: 30px;
+    font-size: 22px;
     line-height: 40px;
     letter-spacing: 0.1em;
 
@@ -246,6 +241,8 @@ $green: rgb(74, 169, 86);
 
 @include b($mobile-md) {
   .instant-trade-bottom-form {
+    padding: 20px;
+
     &__swap {
       padding: 0 20px;
     }

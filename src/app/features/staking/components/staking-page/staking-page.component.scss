@@ -15,7 +15,7 @@
   justify-content: space-between;
   padding: 16px 62px;
 
-  background: var(--rubic-base-19);
+  background: var(--main-form-background);
   border-radius: 22px;
   box-shadow: var(--shadow-light);
 
@@ -35,13 +35,13 @@
   }
 
   &__title {
-    font-weight: 800;
+    font-weight: 400;
     font-size: 24px;
     line-height: 29px;
   }
 
   &__tabs {
-    --background-color: var(--form-header-color-1);
+    --background-color: var(--main-background);
 
     display: flex;
     width: 100%;
@@ -59,7 +59,7 @@
       width: 100%;
       padding: 10.5px 0px;
 
-      font-weight: 600;
+      font-weight: 400;
       font-size: 18px;
       line-height: 21px;
       text-align: center;
@@ -72,6 +72,8 @@
       }
 
       &_active {
+        color: white;
+
         background-color: $rubic-primary;
       }
     }

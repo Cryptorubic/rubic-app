@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { LpRewardParsed } from '@app/core/services/backend/volume-api/models/lp-rewards';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
 @Component({
@@ -12,15 +13,18 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
 export class RewardsHistoryComponent implements OnInit {
   public readonly columns = ['date', 'txHash', 'rewards'];
 
-  public data: LpRewardParsed[];
-
   public readonly rewardsHistory$ = this.lpService.rewardsHistory$;
 
   private readonly _loading$ = new BehaviorSubject<boolean>(true);
 
   public readonly loading$ = this._loading$.asObservable();
 
-  constructor(private readonly lpService: LiquidityProvidingService) {}
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+
+  constructor(
+    private readonly lpService: LiquidityProvidingService,
+    private readonly themeService: ThemeService
+  ) {}
 
   ngOnInit(): void {
     this.loadRewards();

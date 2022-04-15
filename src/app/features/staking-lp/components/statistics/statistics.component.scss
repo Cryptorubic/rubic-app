@@ -112,7 +112,7 @@
     }
 
     &-value {
-      @include font(22px, 26px, 600, var(--rubic-base-02));
+      @include font(22px, 26px, 500, var(--rubic-base-02));
       transition: 0.4s opacity ease-in-out;
 
       @include b($tablet) {

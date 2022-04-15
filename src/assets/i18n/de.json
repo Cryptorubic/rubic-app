@@ -34,7 +34,12 @@
     "switchTo": "Wechseln zum {{ Netzwerkname }} Netzwerk",
     "tradeVia": "Traden Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Transaktions details"
+    "transactionDetails": "Transaktions details",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Sie haben uns keinen Zugriff auf Ihr MetaMask-Konto gewährt. Um handeln zu können, wird Ihre Unterschrift benötigt. Bitte klicken Sie auf Signieren, wenn Sie fortfahren möchten.",
@@ -92,15 +97,19 @@
     "faq": "FAQ",
     "features": "Features",
     "projekt": "Projekt",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Wallet verbinden",
-    "meineTrades": "Meine Trades",
     "logout": "Logout",
     "logoutMessage": "Wollen Sie sich wirklich ausloggen?",
     "notAvailable": "Wartungsarbeiten - UX Redesign",
     "merch": "Merch shop",
     "stakingLp": "Earn",
     "staking": "Staking",
-    "promotion": "Promotion"
+    "promotion": "Promotion",
+    "myTrades": "Meine Trades"
   },
   "aboutPage": {
     "description": "Rubic ist ein Multichain-DeFi-Ecosystem, das Cross-Chain-, P2P-, Instant-Swaps und Limit-Orders über mehrere Blockchains hinweg bietet und darauf abzielt, eine vollständige dezentrale Plattform aus einer Hand bereitzustellen.",
@@ -401,7 +410,8 @@
     },
     "smartRouting": {
       "save": "Spare ${{amount}} mit Smart Routing",
-      "estTime": "Vorraussichtliche Dauer ~ 80 sec"
+      "estTime": "Vorraussichtliche Dauer ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -623,7 +633,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage toleranz",
-      "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert. (Ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird)",
+      "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert (ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird).",
       "multihopsTitle": "Multihops deaktivieren",
       "multihops": "Ihr Tausch wird nur mit direkten Paaren abgeschlossen.",
       "rubicOptimisationTitle": "Use Rubic optimization",
@@ -727,5 +737,8 @@
   "buyTokens": {
     "default": "RBC kaufen",
     "custom": "FTM kaufen"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }
