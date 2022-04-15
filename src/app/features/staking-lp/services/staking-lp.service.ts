@@ -12,7 +12,7 @@ import { transitTokens } from '@app/features/cross-chain-routing/services/cross-
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of, zip } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
@@ -434,7 +434,7 @@ export class StakingLpService {
 
     return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
       switchMap(tvlMultichain => {
-        return zip(
+        return forkJoin([
           from(
             this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
               this.activeLpContract.address,
@@ -443,7 +443,7 @@ export class StakingLpService {
             )
           ),
           of(tvlMultichain)
-        );
+        ]);
       }),
       map(([lpPoolBalance, tvlMultichain]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
