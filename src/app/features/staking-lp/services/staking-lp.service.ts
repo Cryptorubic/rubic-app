@@ -18,6 +18,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  retry,
   switchMap,
   take,
   tap
@@ -28,6 +29,7 @@ import { TtvFilters } from '../models/ttv-filters.enum';
 import { HttpClient } from '@angular/common/http';
 import { STAKING_CONTRACTS } from '../constants/STAKING_CONTRACTS';
 import { LP_CONTRACTS } from '../constants/LP_CONTRACTS';
+import { parseWeb3Percent } from '@app/shared/utils/utils';
 
 interface RoundContract {
   address: string;
@@ -253,6 +255,10 @@ export class StakingLpService {
         { methodArguments: [this.userAddress] }
       )
     ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return of(new BigNumber(0));
+      }),
       map(rewards => {
         const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
         return Web3Pure.fromWei(rewards, bscUSDCToken.decimals);
@@ -393,7 +399,7 @@ export class StakingLpService {
     });
 
     return forkJoin(aprRequests$).pipe(
-      map(aprByRound => aprByRound.map(this.parseApr)),
+      map(aprByRound => aprByRound.map(parseWeb3Percent)),
       tap(aprByRound => {
         const [roundOneApr] = aprByRound;
         this._lpAprByRound$.next({ roundOne: roundOneApr.toFixed(0) });
@@ -448,13 +454,14 @@ export class StakingLpService {
       map(([lpPoolBalance, tvlMultichain]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
         const stakingTokenUsdPrice = this._stakingTokenUsdPrice$.getValue();
-        return new BigNumber(
-          lpPoolBalanceInTokens.toNumber() +
-            lpPoolBalanceInTokens.toNumber() * stakingTokenUsdPrice +
-            tvlMultichain
-        );
+        const tvl = lpPoolBalanceInTokens
+          .plus(lpPoolBalanceInTokens.multipliedBy(stakingTokenUsdPrice))
+          .plus(tvlMultichain);
+        return tvl;
       }),
-      tap(tvl => this._tvlMultichain$.next(tvl))
+      tap(tvl => {
+        this._tvlMultichain$.next(tvl);
+      })
     );
   }
 
@@ -488,19 +495,19 @@ export class StakingLpService {
     this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
   }
 
-  private parseApr(apr: string): number {
-    return Number(apr) / Math.pow(10, 29);
-  }
-
   private getStakingTokenPrice(): void {
-    this.tokensService
-      .getAndUpdateTokenPrice(
+    from(
+      this.tokensService.getAndUpdateTokenPrice(
         {
           address: this.stakingToken.address,
           blockchain: this.stakingToken.blockchain
         },
         true
       )
-      .then(price => this._stakingTokenUsdPrice$.next(price));
+    )
+      .pipe(retry(3))
+      .subscribe(price => {
+        this._stakingTokenUsdPrice$.next(price);
+      });
   }
 }

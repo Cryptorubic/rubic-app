@@ -120,3 +120,11 @@ export async function asyncMap<T, U>(
 ): Promise<U[]> {
   return await Promise.all(elements.map(async (element, idx) => await mapFn(element, idx)));
 }
+
+/**
+ * Returns the human readable percentage value received from the contract.
+ * @param value percent value received from contract.
+ */
+export function parseWeb3Percent(value: string | number): number {
+  return Number(value) / Math.pow(10, 29);
+}

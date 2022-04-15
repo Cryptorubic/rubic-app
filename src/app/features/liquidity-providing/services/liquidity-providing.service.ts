@@ -49,6 +49,7 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
 import { LpReward, LpRewardParsed } from '@app/core/services/backend/volume-api/models/lp-rewards';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
+import { parseWeb3Percent } from '@app/shared/utils/utils';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -66,9 +67,9 @@ export class LiquidityProvidingService {
 
   public readonly maxEnterAmount = ENVIRONMENT.lpProviding.maxEnterAmount;
 
-  public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
+  public readonly maxEnterAmountWhitelist = ENVIRONMENT.lpProviding.maxEnterAmountWhitelist;
 
-  private readonly duration = ENVIRONMENT.lpProviding.duration;
+  public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
 
   private readonly whitelistDuration = ENVIRONMENT.lpProviding.whitelistDuration;
 
@@ -177,7 +178,10 @@ export class LiquidityProvidingService {
   }
 
   public get currentMaxLimit(): number {
-    return this.maxEnterAmount - this._userTotalStaked$.getValue();
+    const userTotalStaked = this._userTotalStaked$.getValue();
+    return this.isWhitelistInProgress
+      ? this.maxEnterAmountWhitelist - userTotalStaked
+      : this.maxEnterAmount - userTotalStaked;
   }
 
   private readonly _isWhitelistInProgress$ = new BehaviorSubject<boolean>(undefined);
@@ -331,7 +335,7 @@ export class LiquidityProvidingService {
         )
       ),
       tap(isWhitelistInProgress => {
-        const isWhitelistUser = this.whitelist.includes(this?.userAddress?.toLowerCase());
+        const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
         this._isWhitelistInProgress$.next(isWhitelistInProgress);
         this._isWhitelistUser$.next(isWhitelistUser);
 
@@ -382,15 +386,6 @@ export class LiquidityProvidingService {
         this.lpContractAddress,
         'infinity'
       )
-    );
-  }
-
-  public approveNftToken(spenderAddress: string, nftId: number): void {
-    this.web3PrivateService[this.blockchain].tryExecuteContractMethod(
-      this.lpContractAddress,
-      LP_PROVIDING_CONTRACT_ABI,
-      'approve',
-      [spenderAddress, nftId]
     );
   }
 
@@ -669,7 +664,7 @@ export class LiquidityProvidingService {
         LP_PROVIDING_CONTRACT_ABI,
         'apr'
       )
-    ).pipe(tap(apr => this._apr$.next(this.parseApr(apr))));
+    ).pipe(tap(apr => this._apr$.next(parseWeb3Percent(apr))));
   }
 
   private getTotalStaked(): Observable<BigNumber> {
@@ -682,10 +677,14 @@ export class LiquidityProvidingService {
     ).pipe(
       map(response => Web3Pure.fromWei(response)),
       tap(totalStaked => {
-        this.checkIsPoolFull(totalStaked.toNumber());
+        this.isPoolFull = this.checkIsPoolFull(totalStaked.toNumber());
         this._totalStaked$.next(totalStaked.toNumber());
       })
     );
+  }
+
+  private checkIsPoolFull(totalStaked: number): boolean {
+    return this.poolSize - totalStaked < this.minEnterAmount;
   }
 
   private parseDeposits(deposits: DepositsResponse): TokenLpParsed[] {
@@ -708,10 +707,6 @@ export class LiquidityProvidingService {
     });
   }
 
-  private checkIsPoolFull(totalStaked: number): boolean {
-    return this.poolSize - totalStaked > this.minEnterAmount;
-  }
-
   private parseRewards(rewards: LpReward[]): LpRewardParsed[] {
     return rewards.map(reward => ({
       date: new Date(reward.created_at),
@@ -724,9 +719,5 @@ export class LiquidityProvidingService {
       rewards: reward.amount,
       balance: 10
     }));
-  }
-
-  private parseApr(apr: string): number {
-    return Number(apr) / Math.pow(10, 29);
   }
 }

@@ -10,7 +10,9 @@
           size="s"
           [disabled]="isPoolFull || isLpEnded"
         >
-          <ng-container *ngIf="isPoolFull"> {{ 'lp.poolIsFull' | translate }} </ng-container>
+          <ng-container *ngIf="isPoolFull && !isLpEnded">
+            {{ 'lp.poolIsFull' | translate }}
+          </ng-container>
           <ng-container *ngIf="isLpEnded"> {{ 'lp.lpRoundEnded' | translate }} </ng-container>
           <ng-container *ngIf="!isPoolFull && !isLpEnded">
             {{ 'lp.depositFunds' | translate }}
