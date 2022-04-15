@@ -5,5 +5,8 @@
   [appearance]="appereance"
   (click)="buyToken()"
 >
+  <div class="button_buy-token-icon">
+    <img [src]="rubicIcon[theme$ | async]" alt="rubic" />
+  </div>
   {{ (tokensType === 'default' ? 'buyTokens.default' : 'buyTokens.custom') | translate }}
 </app-rubic-button>

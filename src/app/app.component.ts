@@ -9,7 +9,6 @@ import { HealthcheckService } from '@core/services/backend/healthcheck/healthche
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { timestamp } from '@app/timestamp';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 
 @Component({
@@ -26,46 +25,34 @@ export class AppComponent implements AfterViewInit {
     private readonly cookieService: CookieService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
-    healthcheckService: HealthcheckService,
-    queryParamsService: QueryParamsService,
-    activatedRoute: ActivatedRoute,
-    errorService: ErrorsService
+    private readonly healthCheckService: HealthcheckService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly errorService: ErrorsService
   ) {
-    if (isDevMode()) {
-      console.log(`It's a development build, timestamp: ${timestamp}`);
-    }
-    const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
-      (queryParams: QueryParams) => {
-        try {
-          queryParamsService.setupQueryParams(queryParams);
-        } catch (err) {
-          errorService.catch(err);
-        }
-      }
-    );
-    setTimeout(() => {
-      queryParamsSubscription$.unsubscribe();
-    });
-
+    this.printTimestamp();
+    this.initQueryParamsSubscription();
     this.setupLanguage();
-
-    healthcheckService.healthCheck().then(isAvailable => {
-      this.isBackendAvailable = isAvailable;
-      document.getElementById('loader')?.classList.add('disabled');
-      setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-    });
+    this.checkHealth();
   }
 
   ngAfterViewInit() {
     this.gtmService.addGtmToDom();
+    this.setupIframeSettings();
+  }
 
+  /**
+   * Setups settings for app in iframe.
+   */
+  private setupIframeSettings(): void {
     if (this.iframeService.isIframe) {
       this.removeLiveChatInIframe();
-      this.document.getElementById('gradient')?.remove();
-      this.document.getElementById('wave').hidden = true;
     }
   }
 
+  /**
+   * Removes carrot chat in iframe mode.
+   */
   private removeLiveChatInIframe(): void {
     const observer = new MutationObserver(() => {
       const liveChat = this.document.getElementsByClassName('carrotquest-css-reset')[0];
@@ -82,11 +69,58 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * Setups list of languages and current language.
+   */
   private setupLanguage(): void {
     let userRegionLanguage = navigator.language?.split('-')[0];
     userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
     const lng = this.cookieService.get('lng') || userRegionLanguage;
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
+  }
+
+  /**
+   * Log current dev build timestamp.
+   * @private
+   */
+  private printTimestamp(): void {
+    if (isDevMode()) {
+      // @ts-ignore
+      import('@app/timestamp')
+        .then(data => console.debug(`It's a development build, timestamp: ${data.timestamp}`))
+        .catch(() => {
+          console.debug('timestamp file is not found');
+        });
+    }
+  }
+
+  /**
+   * Inits site query params subscription.
+   */
+  private initQueryParamsSubscription(): void {
+    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
+      (queryParams: QueryParams) => {
+        try {
+          this.queryParamsService.setupQueryParams(queryParams);
+        } catch (err) {
+          this.errorService.catch(err);
+        }
+      }
+    );
+    setTimeout(() => {
+      queryParamsSubscription$.unsubscribe();
+    });
+  }
+
+  /**
+   * Checks health of backend server.
+   */
+  private checkHealth(): void {
+    this.healthCheckService.healthCheck().then(isAvailable => {
+      this.isBackendAvailable = isAvailable;
+      document.getElementById('loader')?.classList.add('disabled');
+      setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
+    });
   }
 }

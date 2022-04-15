@@ -1,8 +1,9 @@
 @use 'src/scss/vars' as *;
 
 html.dark {
-  --main-form-background: rgba(0, 0, 0, 0.6);
-  --main-background: rgba(50, 50, 50, 0.6);
+  --main-form-background: #181a19;
+  --main-background: #202622;
+  --menu-background: #000;
   --secondary-background: rgba(50, 50, 50, 0.6);
 
   --form-header-color-1: rgba(94, 94, 94, 0.7);
@@ -11,6 +12,10 @@ html.dark {
   --form-dim-text-color: rgba(255, 255, 255, 0.7);
 
   --rubic-secondary: rgba(106, 111, 107, 0.8);
+  --rubic-delimiter: rgba(106, 111, 107, 0.8);
+  --rubic-secondary-opacity: rgba(106, 111, 107, 0.2);
+  --rubic-token-clear: #2c2c2c;
+  --rubic-token-clear-icon: white;
   --secondary-color: rgba(255, 255, 255, 0.5);
 
   --form-bright-text-color: rgba(255, 255, 255, 0.9);
@@ -30,10 +35,11 @@ html.dark {
   --rubic-base-19: #202320;
   --rubic-base-20: rgba(0, 0, 0, 0.6);
   --rubic-base-21: #29582f;
+  --rubic-base-22: #2a302c;
   --plate-invert: rgb(41, 41, 41, 0.6);
   --bg-banner: rgba(51, 86, 51, 0.8);
 
-  --tui-base-01: rgba(0, 0, 0, 0.8);
+  --tui-base-01: #181a19;
   --tui-base-02: init;
   --tui-base-03: rgb(110, 110, 110);
   --tui-primary: rgba(0, 0, 0, 0.8);
@@ -41,12 +47,12 @@ html.dark {
   --tui-text-01: var(--form-bright-text-color);
   --tui-text-02: var(--form-dim-text-color);
   --tui-text-03: var(--form-dim-text-color);
-  --tui-elevation-01: rgba(0, 0, 0, 0.8);
+  --tui-elevation-01: rgba(0, 0, 0, 1);
 
   --selection-color: rgb(0, 0, 0, 0.5);
 
   --rubic-shadow-button-hover: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
-  --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-hover-dim: none;
   --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
   --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
 
@@ -64,7 +70,7 @@ html.dark {
   }
 
   body {
-    background: transparent;
+    background: var(--main-background);
 
     &.default-iframe-background {
       background: linear-gradient(45deg, black, #4aa956) !important;
@@ -99,35 +105,17 @@ html.dark {
 
     app-rubic-button {
       tui-wrapper {
-        --tui-primary: rgba(0, 0, 0, 0.35);
+        --tui-primary: var(--rubic-base-22);
         --tui-primary-text: var(--form-bright-text-color);
       }
     }
 
     .swaps-form__delimiter .switcher img {
-      filter: brightness(1.5);
+      filter: brightness(2.5);
     }
 
     .swaps-header .swaps-header__icon {
       filter: invert(1) opacity(0.7) hue-rotate(180deg);
-    }
-
-
-    .gradient {
-      position: absolute;
-      top: -50px;
-      left: calc(50% - 400px);
-      z-index: -99;
-
-      display: block;
-      width: 800px;
-      height: 800px;
-
-      background-image: radial-gradient(var(--primary-color) 0%, $backgrond-black 70%, $backgrond-black 100%);
-
-      filter: blur(50px);
-
-      content: '';
     }
   }
 }

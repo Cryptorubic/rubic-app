@@ -1,22 +1,17 @@
-<div class="faq-container">
-  <div class="questions-container">
-    <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
-    <div
-      *ngFor="let question of questions"
-      [ngClass]="{ 'questions-container__question_active': question.isActive }"
-      (click)="toggleQuestion(question)"
-      [id]="question.id"
-      class="questions-container__question"
-    >
-      <div class="questions-container__question-head">
-        <span class="questions-container__title" [innerHTML]="question.title | translate"> </span>
-        <div class="questions-container__arrow"></div>
-      </div>
-      <p
-        class="questions-container__text"
-        [innerHTML]="question.answer | translate"
-        (click)="$event.stopPropagation()"
-      ></p>
-    </div>
+<div class="faq">
+  <div class="faq__questions-list">
+    <h2 class="faq__title">{{ 'faqPage.title' | translate }}</h2>
+    <tui-accordion>
+      <tui-accordion-item
+        *ngFor="let question of questions"
+        class="faq__question"
+        [id]="question.id"
+        [borders]="null"
+        [open]="question.isActive"
+      >
+        {{ question.title | translate }}
+        <ng-template tuiAccordionItemContent>{{ question.answer | translate }}</ng-template>
+      </tui-accordion-item>
+    </tui-accordion>
   </div>
 </div>
