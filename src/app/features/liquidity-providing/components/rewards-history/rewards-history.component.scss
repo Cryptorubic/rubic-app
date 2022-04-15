@@ -52,7 +52,7 @@
   }
 
   thead tr th {
-    @include font(16px, 19px, 500, rgba(255, 255, 255, 0.6));
+    @include font(16px, 19px, 500, var(--rubic-base-24));
     padding-bottom: 12px;
 
     text-align: left;

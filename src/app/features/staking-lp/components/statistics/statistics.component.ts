@@ -90,7 +90,7 @@ export class StatisticsComponent implements OnInit {
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('balanceAndRewards', false);
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
 
     this.stakingLpService
@@ -103,6 +103,7 @@ export class StatisticsComponent implements OnInit {
       )
       .subscribe(() => {
         this.stakingLpService.toggleLoading('tvlAndTtv', false);
+        this.cdr.markForCheck();
       });
   }
 
