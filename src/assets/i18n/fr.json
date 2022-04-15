@@ -520,7 +520,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolérance au glissement du prix",
-      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi. (Un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run)",
+      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi (un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run).",
       "multihopsTitle": "Désactiver les multisauts",
       "multihops": "Votre échange ne sera complété qu'avec des paires directes.",
       "rubicOptimisationTitle": "Activer le routage optimisé Rubic",

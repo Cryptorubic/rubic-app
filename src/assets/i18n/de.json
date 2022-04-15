@@ -592,7 +592,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage toleranz",
-      "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert. (Ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird)",
+      "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert (ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird).",
       "multihopsTitle": "Multihops deaktivieren",
       "multihops": "Ihr Tausch wird nur mit direkten Paaren abgeschlossen.",
       "rubicOptimisationTitle": "Use Rubic optimization",

@@ -589,7 +589,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
+      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir (daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır).",
       "multihopsTitle": "Çoklu atlamaları devre dışı bırak",
       "multihops": "Takas işleminiz yalnızca doğrudan çiftlerle tamamlanacaktır.",
       "rubicOptimisationTitle": "Rubic optimizasyonunu kullanın",

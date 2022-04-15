@@ -416,7 +416,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "미끄러짐 허용 오차",
-      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
+      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다 (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다).",
       "multihopsTitle": "멀티 홉 비활성화",
       "multihops": "스왑은 직접 쌍으로 만 완료됩니다.",
       "rubicOptimisationTitle": "Rubic 최적화 사용",

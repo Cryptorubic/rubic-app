@@ -416,7 +416,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolerancia al deslizamiento",
-      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
+      "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado (un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada).",
       "multihopsTitle": "Desactivar saltos múltiples",
       "multihops": "Tu intercambio se completará solo con pares directos.",
       "rubicOptimisationTitle": "Usar optimización de Rubic",

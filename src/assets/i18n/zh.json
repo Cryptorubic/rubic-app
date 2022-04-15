@@ -416,7 +416,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "滑點公差",
-      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消（較低的百分比會降低您的交易被搶先的機會）。",
       "multihopsTitle": "禁用多跳",
       "multihops": "您的交換將僅通過直接對完成。",
       "rubicOptimisationTitle": "使用 Rubic 優化",
