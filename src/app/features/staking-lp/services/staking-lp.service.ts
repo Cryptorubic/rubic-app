@@ -18,6 +18,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  retry,
   switchMap,
   take,
   tap
@@ -103,7 +104,7 @@ export class StakingLpService {
 
   private readonly stakingToken = STAKING_TOKENS[0];
 
-  private readonly stakingTokenUsdPrice = this.tokensService.tokens.find(
+  private stakingTokenUsdPrice = this.tokensService.tokens?.find(
     token =>
       token.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
       token.symbol === this.stakingToken.symbol
@@ -160,7 +161,9 @@ export class StakingLpService {
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
     private readonly httpClient: HttpClient
-  ) {}
+  ) {
+    this.getStakingTokenPrice();
+  }
 
   public getTotalBalanceAndRewards(): Observable<BigNumber[]> {
     return this.user$.pipe(
@@ -492,5 +495,23 @@ export class StakingLpService {
     const tvlMultichain = this._tvlMultichain$.getValue();
 
     this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
+  }
+
+  public getStakingTokenPrice(): void {
+    from(
+      this.tokensService.getAndUpdateTokenPrice(
+        {
+          address: this.stakingToken.address,
+          blockchain: this.stakingToken.blockchain
+        },
+        true
+      )
+    )
+      .pipe(retry(3))
+      .subscribe(price => {
+        if (!Boolean(this.stakingTokenUsdPrice)) {
+          this.stakingTokenUsdPrice = price;
+        }
+      });
   }
 }
