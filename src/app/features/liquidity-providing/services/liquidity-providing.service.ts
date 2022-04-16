@@ -336,11 +336,17 @@ export class LiquidityProvidingService {
       ),
       tap(isWhitelistInProgress => {
         const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
+        const isOnDepositForm = this.router.url.includes('deposit');
+
         this._isWhitelistInProgress$.next(isWhitelistInProgress);
         this._isWhitelistUser$.next(isWhitelistUser);
 
-        if (!isWhitelistUser && isWhitelistInProgress && this.router.url.includes('deposit')) {
+        if (!isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
           this.router.navigate(['liquidity-providing']);
+        }
+
+        if (isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
+          this.setDepositType(DepositType.WHITELIST);
         }
       }),
       takeUntil(this._stopWhitelistWatch$)
@@ -592,8 +598,12 @@ export class LiquidityProvidingService {
   }
 
   public navigateToDepositForm(depositType: DepositType): void {
-    this._depositType$.next(depositType);
+    this.setDepositType(depositType);
     this.router.navigate(['liquidity-providing', 'deposit']);
+  }
+
+  public setDepositType(depositType: DepositType): void {
+    this._depositType$.next(depositType);
   }
 
   public async switchNetwork(): Promise<boolean> {

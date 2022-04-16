@@ -111,7 +111,9 @@ export class DepositFormComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
-      if (!this.lpService.checkIsWhitelistUser(address) && this.lpService.isWhitelistInProgress) {
+      const isWhitelistUser = this.lpService.checkIsWhitelistUser(address);
+      const isWhitelistInProgress = this.lpService.isWhitelistInProgress;
+      if (!isWhitelistUser && isWhitelistInProgress) {
         this.router.navigate(['liquidity-providing']);
       }
     });
