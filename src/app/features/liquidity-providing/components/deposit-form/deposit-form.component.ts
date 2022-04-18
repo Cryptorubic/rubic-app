@@ -19,6 +19,7 @@ import { DepositType } from '../../models/deposit-type.enum';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-deposit-form',
@@ -83,10 +84,13 @@ export class DepositFormComponent implements OnInit, OnDestroy {
     private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
     private readonly themeService: ThemeService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.getUserTotalStaked();
+
     this.brbcAmount$.pipe(skip(1)).subscribe(value => {
       if (!value.isFinite()) {
         this.usdcAmountCtrl.reset();
@@ -109,12 +113,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
-      if (!this.lpService.checkIsWhitelistUser(address) && this.lpService.isWhitelistInProgress) {
-        this.router.navigate(['liquidity-providing']);
-      }
-    });
   }
 
   public createDeposit(): void {
@@ -176,5 +174,16 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.lpService.stopWatchWhitelist();
+  }
+
+  private getUserTotalStaked(): void {
+    this.authService
+      .getCurrentUser()
+      .pipe(
+        filter(user => Boolean(user?.address)),
+        switchMap(() => this.lpService.getUserTotalStaked()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 }

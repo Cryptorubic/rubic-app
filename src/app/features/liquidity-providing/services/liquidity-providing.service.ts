@@ -342,6 +342,10 @@ export class LiquidityProvidingService {
         if (!isWhitelistUser && isWhitelistInProgress && this.router.url.includes('deposit')) {
           this.router.navigate(['liquidity-providing']);
         }
+
+        if (isWhitelistUser && isWhitelistInProgress && this.router.url.includes('deposit')) {
+          this._depositType$.next(DepositType.WHITELIST);
+        }
       }),
       takeUntil(this._stopWhitelistWatch$)
     );
@@ -551,12 +555,12 @@ export class LiquidityProvidingService {
       return LpFormError.POOL_FULL;
     }
 
-    if (usdcBalance && amount.gt(usdcBalance)) {
-      return LpFormError.INSUFFICIENT_BALANCE_USDC;
-    }
-
     if (brbcBalance && amount.gt(brbcBalance)) {
       return LpFormError.INSUFFICIENT_BALANCE_BRBC;
+    }
+
+    if (usdcBalance && amount.gt(usdcBalance)) {
+      return LpFormError.INSUFFICIENT_BALANCE_USDC;
     }
 
     if (amount.gt(this.currentMaxLimit)) {
@@ -635,7 +639,7 @@ export class LiquidityProvidingService {
     );
   }
 
-  private getUserTotalStaked(): Observable<BigNumber> {
+  public getUserTotalStaked(): Observable<BigNumber> {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.lpContractAddress,

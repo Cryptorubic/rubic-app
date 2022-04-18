@@ -19,7 +19,7 @@
   &__refresh {
     position: absolute;
     top: 22px;
-    right: 22px;
+    right: 8px;
 
     @include b($tablet) {
       display: none;
