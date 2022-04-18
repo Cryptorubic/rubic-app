@@ -465,8 +465,6 @@ export class LiquidityProvidingService {
         }
       }),
       tap(() => {
-        this.setDepositsLoading(true);
-
         const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
         this._deposits$.next(updatedDeposits);
       })

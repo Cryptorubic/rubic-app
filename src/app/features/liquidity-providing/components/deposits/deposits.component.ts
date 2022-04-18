@@ -103,7 +103,6 @@ export class DepositsComponent implements OnInit {
       .pipe(finalize(() => this._processingTokenId$.next(undefined)))
       .subscribe(() => {
         this.lpNotificationService.showSuccessWithdrawNotification();
-        this.lpService.setDepositsLoading(false);
       });
   }
 
