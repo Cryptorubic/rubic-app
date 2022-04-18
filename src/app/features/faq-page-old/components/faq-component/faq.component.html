@@ -10,7 +10,9 @@
         [open]="question.isActive"
       >
         {{ question.title | translate }}
-        <ng-template tuiAccordionItemContent>{{ question.answer | translate }}</ng-template>
+        <ng-template tuiAccordionItemContent>
+          <span [innerHTML]="question.answer | translate"></span>
+        </ng-template>
       </tui-accordion-item>
     </tui-accordion>
   </div>
