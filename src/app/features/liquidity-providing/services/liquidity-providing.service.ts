@@ -667,6 +667,13 @@ export class LiquidityProvidingService {
     );
   }
 
+  public resetStatistics(): void {
+    this._balance$.next(undefined);
+    this._totalCollectedRewards$.next(undefined);
+    this._rewardsToCollect$.next(undefined);
+    this._userTotalStaked$.next(10);
+  }
+
   private getApr(): Observable<string> {
     return from(
       this.web3PublicService[this.blockchain].callContractMethod<string>(

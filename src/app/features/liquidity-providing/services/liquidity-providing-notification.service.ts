@@ -35,13 +35,10 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showSuccessWithdrawRequestNotification(): void {
-    this.notificationsService.show(
-      this.translate.instant('notifications.successDepositWithdrawRequest'),
-      {
-        status: TuiNotification.Success,
-        autoClose: 5000
-      }
-    );
+    this.notificationsService.show('Deposit withdraw requested successful', {
+      status: TuiNotification.Success,
+      autoClose: 5000
+    });
   }
 
   public showSuccessWithdrawNotification(): void {
