@@ -100,18 +100,21 @@ export class InstantTradeService {
     const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
 
     let subscription$: Subscription;
-    await this.providers[trade.blockchain][providerName].approve(
-      trade.from.token.address,
-      {
-        onTransactionHash: () => {
-          subscription$ = this.notificationsService.showApproveInProgress();
-        }
-      },
-      targetContractAddress
-    );
-    subscription$?.unsubscribe();
+    try {
+      await this.providers[trade.blockchain][providerName].approve(
+        trade.from.token.address,
+        {
+          onTransactionHash: () => {
+            subscription$ = this.notificationsService.showApproveInProgress();
+          }
+        },
+        targetContractAddress
+      );
 
-    this.notificationsService.showApproveSuccessful();
+      this.notificationsService.showApproveSuccessful();
+    } finally {
+      subscription$?.unsubscribe();
+    }
   }
 
   public getEthWethTrade(): InstantTrade | null {

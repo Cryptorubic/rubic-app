@@ -151,12 +151,15 @@ export class CrossChainRoutingService {
       approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
     };
 
-    await this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', {
-      onTransactionHash
-    });
-    approveInProgressSubscription$?.unsubscribe();
+    try {
+      await this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', {
+        onTransactionHash
+      });
 
-    this.notificationsService.showApproveSuccessful();
+      this.notificationsService.showApproveSuccessful();
+    } finally {
+      approveInProgressSubscription$?.unsubscribe();
+    }
   }
 
   public async calculateTrade(calculateNeedApprove = false): Promise<{
@@ -820,39 +823,46 @@ export class CrossChainRoutingService {
 
       await this.postCrossChainTrade(transactionHash);
     } catch (err) {
-      if (err instanceof FailedToCheckForTransactionReceiptError) {
-        await this.postCrossChainTrade(transactionHash);
-        return;
-      }
-
-      const errMessage = err.message || err.toString?.();
-      if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
-        throw new CrossChainIsUnavailableWarning();
-      }
-      if (errMessage?.includes('insufficient funds for')) {
-        throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
-      }
-
-      const unsupportedTokenErrors = [
-        'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
-        'execution reverted: UniswapV2: K',
-        'execution reverted: UniswapV2:  TRANSFER_FAILED',
-        'execution reverted: Pancake: K',
-        'execution reverted: Pancake:  TRANSFER_FAILED',
-        'execution reverted: Solarbeam: K',
-        'execution reverted: Solarbeam:  TRANSFER_FAILED'
-      ];
-
-      if (
-        unsupportedTokenErrors.some(errText =>
-          errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
-        )
-      ) {
-        throw new UnsupportedTokenCCR();
-      }
-
-      throw err;
+      await this.handleCreateTradeError(err, transactionHash);
     }
+  }
+
+  /**
+   * Handles error, thrown during swap transaction.
+   */
+  private async handleCreateTradeError(err: Error, transactionHash: string): Promise<void | never> {
+    if (err instanceof FailedToCheckForTransactionReceiptError) {
+      await this.postCrossChainTrade(transactionHash);
+      return;
+    }
+
+    const errMessage = err.message || err.toString?.();
+    if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
+      throw new CrossChainIsUnavailableWarning();
+    }
+    if (errMessage?.includes('insufficient funds for')) {
+      throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
+    }
+
+    const unsupportedTokenErrors = [
+      'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
+      'execution reverted: UniswapV2: K',
+      'execution reverted: UniswapV2:  TRANSFER_FAILED',
+      'execution reverted: Pancake: K',
+      'execution reverted: Pancake:  TRANSFER_FAILED',
+      'execution reverted: Solarbeam: K',
+      'execution reverted: Solarbeam:  TRANSFER_FAILED'
+    ];
+
+    if (
+      unsupportedTokenErrors.some(errText =>
+        errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
+      )
+    ) {
+      throw new UnsupportedTokenCCR();
+    }
+
+    throw err;
   }
 
   private notifyTradeInProgress(txHash: string): void {
