@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
+import { ProviderPanelData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
 
 @Component({
   selector: 'app-panel-error-content',
@@ -8,12 +8,7 @@ import { ProviderData } from '@features/instant-trade/components/providers-panel
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PanelErrorContentComponent {
-  /**
-   * Does current provider loading.
-   */
-  @Input() public providerData: ProviderData;
+  @Input() public providerPanelData: ProviderPanelData;
 
   @Input() public errorTranslateKey: string;
-
-  constructor() {}
 }

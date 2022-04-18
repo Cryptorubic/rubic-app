@@ -1,80 +1,78 @@
+import { INSTANT_TRADE_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
-import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 
-const defaultState: ProviderControllerData = {
+const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,
-  tradeState: INSTANT_TRADES_STATUS.CALCULATION,
-  tradeProviderInfo: null,
+  tradeStatus: INSTANT_TRADE_STATUS.CALCULATION,
   isSelected: false,
-  needApprove: null
+  needApprove: false
 };
 
 function getDefaultStateByProviders(
-  providers: INSTANT_TRADES_PROVIDERS[]
-): ProviderControllerData[] {
+  providers: INSTANT_TRADE_PROVIDER[]
+): InstantTradeProviderData[] {
   return providers.map(provider => ({
     ...defaultState,
-    tradeProviderInfo: {
-      label: instantTradesLabels[provider],
-      value: provider
-    }
+    name: provider,
+    label: instantTradesLabels[provider]
   }));
 }
 
-export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, ProviderControllerData[]>> = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.UNISWAP_V3,
-    INSTANT_TRADES_PROVIDERS.ONEINCH,
-    INSTANT_TRADES_PROVIDERS.UNISWAP_V2,
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.ZRX
-  ]),
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.ONEINCH,
-    INSTANT_TRADES_PROVIDERS.PANCAKESWAP,
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP
-  ]),
-  [BLOCKCHAIN_NAME.POLYGON]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.UNISWAP_V3,
-    INSTANT_TRADES_PROVIDERS.ALGEBRA,
-    INSTANT_TRADES_PROVIDERS.ONEINCH,
-    INSTANT_TRADES_PROVIDERS.QUICKSWAP,
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP
-  ]),
-  [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.VIPER
-  ]),
-  [BLOCKCHAIN_NAME.AVALANCHE]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.PANGOLIN,
-    INSTANT_TRADES_PROVIDERS.JOE
-  ]),
-  [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.SOLARBEAM
-  ]),
-  [BLOCKCHAIN_NAME.FANTOM]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.SPOOKYSWAP,
-    INSTANT_TRADES_PROVIDERS.SPIRITSWAP,
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP
-  ]),
-  [BLOCKCHAIN_NAME.ARBITRUM]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.ONEINCH,
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.UNISWAP_V3
-  ]),
-  [BLOCKCHAIN_NAME.AURORA]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.TRISOLARIS,
-    INSTANT_TRADES_PROVIDERS.WANNASWAP
-  ]),
-  [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([INSTANT_TRADES_PROVIDERS.RAYDIUM]),
-  [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([INSTANT_TRADES_PROVIDERS.REF]),
-  [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
-    INSTANT_TRADES_PROVIDERS.SUSHISWAP,
-    INSTANT_TRADES_PROVIDERS.ZAPPY
-  ])
-};
+export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTradeProviderData[]>> =
+  {
+    [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.UNISWAP_V3,
+      INSTANT_TRADE_PROVIDER.ONEINCH,
+      INSTANT_TRADE_PROVIDER.UNISWAP_V2,
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.ZRX
+    ]),
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.ONEINCH,
+      INSTANT_TRADE_PROVIDER.PANCAKESWAP,
+      INSTANT_TRADE_PROVIDER.SUSHISWAP
+    ]),
+    [BLOCKCHAIN_NAME.POLYGON]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.UNISWAP_V3,
+      INSTANT_TRADE_PROVIDER.ALGEBRA,
+      INSTANT_TRADE_PROVIDER.ONEINCH,
+      INSTANT_TRADE_PROVIDER.QUICKSWAP,
+      INSTANT_TRADE_PROVIDER.SUSHISWAP
+    ]),
+    [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.VIPER
+    ]),
+    [BLOCKCHAIN_NAME.AVALANCHE]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.PANGOLIN,
+      INSTANT_TRADE_PROVIDER.JOE
+    ]),
+    [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.SOLARBEAM
+    ]),
+    [BLOCKCHAIN_NAME.FANTOM]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SPOOKYSWAP,
+      INSTANT_TRADE_PROVIDER.SPIRITSWAP,
+      INSTANT_TRADE_PROVIDER.SUSHISWAP
+    ]),
+    [BLOCKCHAIN_NAME.ARBITRUM]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.ONEINCH,
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.UNISWAP_V3
+    ]),
+    [BLOCKCHAIN_NAME.AURORA]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.TRISOLARIS,
+      INSTANT_TRADE_PROVIDER.WANNASWAP
+    ]),
+    [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.RAYDIUM]),
+    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.REF]),
+    [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.ZAPPY
+    ])
+  };

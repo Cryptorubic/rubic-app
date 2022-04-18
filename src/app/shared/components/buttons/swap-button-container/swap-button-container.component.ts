@@ -42,7 +42,8 @@ enum ERROR_TYPE {
   NO_AMOUNT = 'From amount was not entered',
   WRONG_WALLET = 'Wrong wallet',
   INVALID_TARGET_ADDRESS = 'Invalid target network address',
-  SOL_SWAP = 'Wrap SOL firstly'
+  SOL_SWAP = 'Wrap SOL firstly',
+  SOLANA_UNAVAILABLE = 'Solana in unavailable'
 }
 
 @Component({
@@ -172,6 +173,12 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       }
+      // @TODO Solana. Remove after blockchain stabilization.
+      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
+        translateParams = {
+          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+        };
+        break;
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
@@ -293,6 +300,10 @@ export class SwapButtonContainerComponent implements OnInit {
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
         const { fromToken, toToken } = form;
+        this.errorType[ERROR_TYPE.SOLANA_UNAVAILABLE] =
+          (form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
+            form.toBlockchain === BLOCKCHAIN_NAME.SOLANA) &&
+          form.fromBlockchain !== form.toBlockchain;
         this.errorType[ERROR_TYPE.SOL_SWAP] =
           fromToken &&
           toToken &&

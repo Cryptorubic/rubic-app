@@ -1,17 +1,19 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
+import { PaginatedPage, TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
+
+const defaultState: PaginatedPage = { page: null, maxPage: null };
 
 export const TOKENS_PAGINATION: TokensNetworkState = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: { page: 2, maxPage: 3 },
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: { page: 2, maxPage: 3 },
-  [BLOCKCHAIN_NAME.POLYGON]: { page: 2, maxPage: 3 },
-  [BLOCKCHAIN_NAME.HARMONY]: { page: 2, maxPage: 2 },
-  [BLOCKCHAIN_NAME.AVALANCHE]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.MOONRIVER]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.FANTOM]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.ARBITRUM]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.AURORA]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.SOLANA]: { page: 1, maxPage: 2 },
-  [BLOCKCHAIN_NAME.NEAR]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.TELOS]: { page: 1, maxPage: 1 }
+  [BLOCKCHAIN_NAME.ETHEREUM]: { ...defaultState },
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: { ...defaultState },
+  [BLOCKCHAIN_NAME.POLYGON]: { ...defaultState },
+  [BLOCKCHAIN_NAME.HARMONY]: { ...defaultState },
+  [BLOCKCHAIN_NAME.AVALANCHE]: { ...defaultState },
+  [BLOCKCHAIN_NAME.FANTOM]: { ...defaultState },
+  [BLOCKCHAIN_NAME.MOONRIVER]: { ...defaultState },
+  [BLOCKCHAIN_NAME.ARBITRUM]: { ...defaultState },
+  [BLOCKCHAIN_NAME.AURORA]: { ...defaultState },
+  [BLOCKCHAIN_NAME.SOLANA]: { ...defaultState },
+  [BLOCKCHAIN_NAME.NEAR]: { ...defaultState },
+  [BLOCKCHAIN_NAME.TELOS]: { ...defaultState }
 };

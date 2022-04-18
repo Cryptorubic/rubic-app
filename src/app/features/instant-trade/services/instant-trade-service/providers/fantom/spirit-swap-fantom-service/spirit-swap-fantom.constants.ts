@@ -1,4 +1,4 @@
-import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { UniswapV2Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/uniswap-v2-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const spiritSwapFantomContractAddress = '0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52';

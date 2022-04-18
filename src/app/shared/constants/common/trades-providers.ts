@@ -1,5 +1,5 @@
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
 
 type Provider = {
@@ -17,102 +17,102 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   }
 };
 
-const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
-  [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: {
+const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADE_PROVIDER, Provider> = {
+  [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: {
     name: 'Uniswap V3',
-    image: `${imageBasePath}uniswap-3.png`,
+    image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
-  [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: {
+  [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: {
     name: 'Uniswap V2',
     image: `${imageBasePath}uniswap-2.svg`,
     color: '#F9DBEA'
   },
-  [INSTANT_TRADES_PROVIDERS.ONEINCH]: {
+  [INSTANT_TRADE_PROVIDER.ONEINCH]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`,
     color: '#94A6C3'
   },
-  [INSTANT_TRADES_PROVIDERS.PANCAKESWAP]: {
+  [INSTANT_TRADE_PROVIDER.PANCAKESWAP]: {
     name: 'Pancakeswap',
     image: `${imageBasePath}pancakeswap.svg`,
     color: '#00ADE8'
   },
-  [INSTANT_TRADES_PROVIDERS.QUICKSWAP]: {
+  [INSTANT_TRADE_PROVIDER.QUICKSWAP]: {
     name: 'Quickswap',
     image: `${imageBasePath}quickswap.svg`,
     color: '#5389C5'
   },
-  [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: {
+  [INSTANT_TRADE_PROVIDER.SUSHISWAP]: {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
   },
-  [INSTANT_TRADES_PROVIDERS.PANGOLIN]: {
+  [INSTANT_TRADE_PROVIDER.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`,
     color: '#FC5408;'
   },
-  [INSTANT_TRADES_PROVIDERS.JOE]: {
+  [INSTANT_TRADE_PROVIDER.JOE]: {
     name: 'Joe',
     image: `${imageBasePath}joe.png`,
     color: '#6665DD'
   },
-  [INSTANT_TRADES_PROVIDERS.SPOOKYSWAP]: {
+  [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: {
     name: 'Spookyswap',
     image: `${imageBasePath}spookyswap.png`,
     color: '#59C3C8'
   },
-  [INSTANT_TRADES_PROVIDERS.SPIRITSWAP]: {
+  [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: {
     name: 'Spiritswap',
     image: `${imageBasePath}spiritswap.png`,
     color: '#59C3C8'
   },
-  [INSTANT_TRADES_PROVIDERS.WRAPPED]: {
+  [INSTANT_TRADE_PROVIDER.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`,
     color: '#FFFFFF'
   },
-  [INSTANT_TRADES_PROVIDERS.ZRX]: {
+  [INSTANT_TRADE_PROVIDER.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.png`,
     color: '#FFFFFF'
   },
-  [INSTANT_TRADES_PROVIDERS.SOLARBEAM]: {
+  [INSTANT_TRADE_PROVIDER.SOLARBEAM]: {
     name: 'Solarbeam',
     image: `${imageBasePath}solarbeam.png`,
     color: '#F2A272'
   },
-  [INSTANT_TRADES_PROVIDERS.RAYDIUM]: {
+  [INSTANT_TRADE_PROVIDER.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`,
     color: '#3875FD'
   },
-  [INSTANT_TRADES_PROVIDERS.REF]: {
+  [INSTANT_TRADE_PROVIDER.REF]: {
     name: 'Ref Finance',
     image: `${imageBasePath}ref-finance.svg`
   },
-  [INSTANT_TRADES_PROVIDERS.ALGEBRA]: {
+  [INSTANT_TRADE_PROVIDER.ALGEBRA]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.webp`,
     color: '#00CAB2'
   },
-  [INSTANT_TRADES_PROVIDERS.VIPER]: {
+  [INSTANT_TRADE_PROVIDER.VIPER]: {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`,
     color: '#00805C'
   },
-  [INSTANT_TRADES_PROVIDERS.TRISOLARIS]: {
+  [INSTANT_TRADE_PROVIDER.TRISOLARIS]: {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
     color: '#00F4FF'
   },
-  [INSTANT_TRADES_PROVIDERS.WANNASWAP]: {
+  [INSTANT_TRADE_PROVIDER.WANNASWAP]: {
     name: 'Wannaswap',
-    image: `${imageBasePath}wannaswap.png`,
+    image: `${imageBasePath}wannaswap.svg`,
     color: '#FACB5B'
   },
-  [INSTANT_TRADES_PROVIDERS.ZAPPY]: {
+  [INSTANT_TRADE_PROVIDER.ZAPPY]: {
     name: 'Zappy',
     image: `${imageBasePath}zappy.svg`,
     color: '#00e7e7'

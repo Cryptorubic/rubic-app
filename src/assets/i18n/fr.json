@@ -34,7 +34,12 @@
     "switchTo": "Basculer sur le réseau {{ networkName }}",
     "tradeVia": "Échanger Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Détails de la transaction"
+    "transactionDetails": "Détails de la transaction",
+    "tagline": {
+      "firstText": "Multi-chain swaps for ",
+      "numbers": "15000+ ",
+      "secondText": "assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
@@ -92,6 +97,10 @@
     "faq": "FAQ",
     "features": "Fonctionnalités",
     "project": "Projet",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Connecter le portefeuille",
     "myTrades": "Mes échanges",
     "logout": "Déconnexion",
@@ -328,7 +337,8 @@
     },
     "smartRouting": {
       "save": "Économisez {{amount}}$ avec le routage intelligent Rubic",
-      "estTime": "Délai estimé ~ 80 sec"
+      "estTime": "Délai estimé ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -431,7 +441,7 @@
       "calculateProfitability": "Calculer le profit",
       "refillTime": "{{hours}} heures {{minutes}} minutes",
       "addXbrbc": "Ajouter le jeton xBRBC",
-      "canUnstake": "{{amount}} peut être retiré\n"
+      "canUnstake": "{{amount}} peuvent être retiré\n"
     },
     "stats": {
       "profitTime": "APR d'hier",
@@ -448,7 +458,7 @@
       "highApr": "APR élevé",
       "minimumApr": "L'APR prévu est de 80% ou plus sur une période de deux mois, en se basant sur le taux du RBC/USDT et du volume multi-chaînes",
       "brbcRewards": "Récompenses en BRBC",
-      "stakeTokens": "Déposer 1000 - 100 000 RBC/BRBC/wRBC pour être récompensé en BRBC",
+      "stakeTokens": "Déposez 1000 - 100'000 RBC/BRBC/wRBC pour être récompensé en BRBC",
       "teamBuybacks": "Rachats de l'équipe",
       "chainFeeUsage": "0.5% de nos 0.6% de frais multi-chaînes seront utilisés pour les rachats de RBC à destination des pools de récompenses\n"
     }
@@ -471,7 +481,7 @@
       "favoriteTokensTitle": "Jetons favoris",
       "unsupportedPairsHint": "Ce token n'est pas disponible pour l'échange. Veuillez sélectionner les paires prises en charge.",
       "clearParamsHint": "Effacez les autres paramètres du formulaire pour sélectionner ce token",
-      "searchPlaceholder": "Rechercher le nom ou coller l'adresse",
+      "searchPlaceholder": "Rechercher le nom ou coller l'adresse du contrat",
       "noSearchData": "Rien à montrer",
       "noFavoriteData": "Vous l'avez pas de jetons favoris sur le réseau sélectionné, ",
       "backToTokens": "Retour à la liste des jetons",
@@ -614,5 +624,8 @@
   "buyTokens": {
     "default": "Acheter RBC",
     "custom": "Acheter FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

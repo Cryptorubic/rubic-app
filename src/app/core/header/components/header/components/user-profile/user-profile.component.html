@@ -2,7 +2,7 @@
   *noFrame
   (opened)="getDropdownStatus($event)"
   [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+  [dropdownOptionsTemplates]="dropdownItems"
 ></app-dropdown-selector>
 
 <ng-template #dropdownButtonTemplate>
@@ -25,6 +25,17 @@
 <ng-template #dropdownOptionTemplate>
   <a class="user-profile__dropdown-item" routerLink="promotion">
     {{ 'navigation.promotion' | translate }}
+  </a>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
+  <a
+    *noFrame
+    class="rubic-header__profile-trades button-link"
+    routerLink="my-trades"
+    routerLinkActive="button-link_active"
+  >
+    {{ 'navigation.myTrades' | translate }}
   </a>
 </ng-template>
 

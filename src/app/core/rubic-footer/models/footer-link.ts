@@ -1,5 +1,6 @@
 export interface FooterLink {
-  imageUrl: string;
+  dark: string;
+  light: string;
   altText: string;
   link: string;
 }
