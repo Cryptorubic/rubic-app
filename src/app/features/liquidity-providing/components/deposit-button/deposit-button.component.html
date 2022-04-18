@@ -77,10 +77,10 @@
         </ng-container>
         <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT">Empty amount</ng-container>
         <ng-container *ngSwitchCase="errors.LIMIT_GT_MAX">
-          {{ 'lp.depositLimits' | translate: { max: currentMaxLimit, min: minLimit } }}
+          {{ 'lp.depositLimitMax' | translate: { max: currentMaxLimit } }}
         </ng-container>
         <ng-container *ngSwitchCase="errors.LIMIT_LT_MIN">{{
-          'lp.depositLimits' | translate: { max: currentMaxLimit, min: minLimit }
+          'lp.depositLimitMin' | translate: { min: minLimit }
         }}</ng-container>
         <ng-container *ngSwitchCase="null"> {{ 'lp.initiateDeposit' | translate }} </ng-container>
       </ng-container>
