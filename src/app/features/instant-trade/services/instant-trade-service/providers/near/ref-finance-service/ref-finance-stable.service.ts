@@ -1,85 +1,96 @@
 import { Injectable } from '@angular/core';
 import { RefStablePool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
-import { STABLE_TOKENS_IDS } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/stable-tokens-ids';
+import {
+  STABLE_TOKENS_IDS,
+  StableTokensIds
+} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/stable-tokens-ids';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import BigNumber from 'bignumber.js';
+import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefFinanceStableService {
   /**
    * Stable tokens decimals.
    */
-  private static stableLpTokenDecimals = 18;
+  public static readonly stableLpTokenDecimals = 18;
 
   /**
    * Gets trade fee.
    * @param amount Amounts.
    * @param tradeFee Trade fee.
    */
-  private static getTradeFee(amount: number, tradeFee: number): number {
-    return (amount * tradeFee) / 10000;
+  private static getTradeFee(amount: BigNumber, tradeFee: number): BigNumber {
+    return amount.multipliedBy(tradeFee).dividedBy(RefFinanceSwapService.feeDivisor);
   }
 
   /**
    * Calculates D.
-   * @param amp AMP.
-   * @param coinsAmounts Coins amounts.
+   * @param amp Amplification coefficient.
+   * @param stableTokensAmounts Coins amounts.
    */
-  private static calcD(amp: number, coinsAmounts: number[]): number {
-    const tokenNumber = coinsAmounts.length;
-    const sumAmounts = coinsAmounts.reduce((sum, amount) => sum + amount, 0);
-    let dPrev = 0;
-    let d = sumAmounts;
+  private static calcD(amp: number, stableTokensAmounts: BigNumber[]): BigNumber {
+    const totalTokens = stableTokensAmounts.length;
+    const stableTokensTotalAmount = stableTokensAmounts.reduce(
+      (sum, amount) => sum.plus(amount),
+      new BigNumber(0)
+    );
+    let dPrev = new BigNumber(0);
+    let d = stableTokensTotalAmount;
     for (let i = 0; i < 256; i++) {
       let dProd = d;
-      for (let coinAmount of coinsAmounts) {
-        dProd = (dProd * d) / (coinAmount * tokenNumber);
+      for (let stableTokenAmount of stableTokensAmounts) {
+        const divider = stableTokenAmount.multipliedBy(totalTokens);
+        dProd = dProd.multipliedBy(d).dividedBy(divider);
       }
       dPrev = d;
-      const ann = amp * tokenNumber ** tokenNumber;
-      const numerator = dPrev * (dProd * tokenNumber + ann * sumAmounts);
-      const denominator = dPrev * (ann - 1) + dProd * (tokenNumber + 1);
-      d = numerator / denominator;
-      if (Math.abs(d - dPrev) <= 1) break;
+      const ann = amp * totalTokens ** totalTokens;
+      const numerator = dPrev.multipliedBy(
+        dProd.multipliedBy(totalTokens).plus(stableTokensTotalAmount.multipliedBy(ann))
+      );
+      const denominator = dPrev.multipliedBy(ann - 1).plus(dProd.multipliedBy(totalTokens + 1));
+      d = numerator.dividedBy(denominator);
+      if (d.minus(dPrev).abs().lte(1)) break;
     }
     return d;
   }
 
   /**
    * Cals Y.
-   * @param amp Amp.
+   * @param amplificationCoefficient Amplification coefficient.
    * @param XCAmount XC Amount.
-   * @param currentCoinAmounts Current coin amounts.
-   * @param indexX Index X.
-   * @param indexY Index Y.
+   * @param stableTokensAmounts Current pool tokens amounts.
+   * @param fromTokenId From token identifier.
+   * @param toTokenId To token identifier.
    */
   private static calcY(
-    amp: number,
-    XCAmount: number,
-    currentCoinAmounts: number[],
-    indexX: number,
-    indexY: number
-  ): number {
-    const tokenNUmber = currentCoinAmounts.length;
-    const ann = amp * tokenNUmber ** tokenNUmber;
-    const d = RefFinanceStableService.calcD(amp, currentCoinAmounts);
+    amplificationCoefficient: number,
+    XCAmount: BigNumber,
+    stableTokensAmounts: BigNumber[],
+    fromTokenId: number,
+    toTokenId: number
+  ): BigNumber {
+    const totalTokens = stableTokensAmounts.length;
+    const ann = amplificationCoefficient * totalTokens ** totalTokens;
+    const d = RefFinanceStableService.calcD(amplificationCoefficient, stableTokensAmounts);
     let s = XCAmount;
-    let c = (d * d) / XCAmount;
-    for (let i = 0; i < tokenNUmber; i++) {
-      if (i !== indexX && i !== indexY) {
-        s += currentCoinAmounts[i];
-        c = (c * d) / currentCoinAmounts[i];
+    let c = d.multipliedBy(d).dividedBy(XCAmount);
+    for (let tokenId = 0; tokenId < totalTokens; tokenId++) {
+      if (tokenId !== fromTokenId && tokenId !== toTokenId) {
+        s = stableTokensAmounts[tokenId].plus(s);
+        c = c.multipliedBy(d).dividedBy(stableTokensAmounts[tokenId]);
       }
     }
-    c = (c * d) / (ann * tokenNUmber ** tokenNUmber);
-    const b = d / ann + s;
-    let yPrev = 0;
+    c = c.multipliedBy(d).dividedBy(ann * totalTokens ** totalTokens);
+    const b = d.dividedBy(ann).plus(s);
+    let yPrev = new BigNumber(0);
     let y = d;
     for (let i = 0; i < 256; i++) {
       yPrev = y;
-      const yNumerator = y ** 2 + c;
-      const yDenominator = 2 * y + b - d;
-      y = yNumerator / yDenominator;
-      if (Math.abs(y - yPrev) <= 1) break;
+      const yNumerator = y.multipliedBy(y).plus(c);
+      const yDenominator = y.multipliedBy(2).plus(b).minus(d);
+      y = yNumerator.dividedBy(yDenominator);
+      if (y.minus(yPrev).abs().lte(1)) break;
     }
 
     return y;
@@ -87,32 +98,31 @@ export class RefFinanceStableService {
 
   /**
    * Calculates stable swap.
-   * @param amp Amp
-   * @param inTokenIdx From token identifier.
-   * @param inCoinAmount From tokens amount.
-   * @param outTokenIdx To token identifier.
-   * @param oldCoinAmounts Tokens amounts.
+   * @param amplificationCoefficient Amp
+   * @param fromTokenId From token identifier.
+   * @param fromAmount From tokens amount.
+   * @param toTokenId To token identifier.
+   * @param currentPoolAmounts Tokens amounts.
    * @param tradeFee Trade fee.
    */
   private static calcSwap(
-    amp: number,
-    inTokenIdx: number,
-    inCoinAmount: number,
-    outTokenIdx: number,
-    oldCoinAmounts: number[],
+    amplificationCoefficient: number,
+    fromTokenId: StableTokensIds,
+    fromAmount: string,
+    toTokenId: StableTokensIds,
+    currentPoolAmounts: BigNumber[],
     tradeFee: number
-  ): [number, number, number] {
+  ): BigNumber {
     const y = RefFinanceStableService.calcY(
-      amp,
-      inCoinAmount + oldCoinAmounts[inTokenIdx],
-      oldCoinAmounts,
-      inTokenIdx,
-      outTokenIdx
+      amplificationCoefficient,
+      currentPoolAmounts[fromTokenId].plus(fromAmount),
+      currentPoolAmounts,
+      fromTokenId,
+      toTokenId
     );
-    const dy = oldCoinAmounts[outTokenIdx] - y;
-    const fee = RefFinanceStableService.getTradeFee(dy, tradeFee);
-    const amountSwapped = dy - fee;
-    return [amountSwapped, fee, dy];
+    const amountOutWithoutFee = currentPoolAmounts[toTokenId].minus(y);
+    const fee = RefFinanceStableService.getTradeFee(amountOutWithoutFee, tradeFee);
+    return amountOutWithoutFee.minus(fee);
   }
 
   public static scientificNotationToString(strParam: string): string {
@@ -182,25 +192,23 @@ export class RefFinanceStableService {
   public static getSwappedAmount(
     fromAddress: string,
     toAddress: string,
-    amountIn: string,
+    amountIn: BigNumber,
     stablePool: RefStablePool
-  ): [number, number, number] {
+  ): BigNumber {
     const amp = stablePool.amp;
     const tradeFee = stablePool.total_fee;
 
-    const inTokenIdx = STABLE_TOKENS_IDS[fromAddress];
-    const outTokenIdx = STABLE_TOKENS_IDS[toAddress];
-    const oldCoinAmounts = stablePool.c_amounts.map(amount => Number(amount));
-    const inCoinAmount = Number(
-      Web3Pure.toWei(amountIn, RefFinanceStableService.stableLpTokenDecimals)
-    );
+    const fromTokenId = STABLE_TOKENS_IDS[fromAddress];
+    const toTokenId = STABLE_TOKENS_IDS[toAddress];
+    const currentPoolAmounts = stablePool.c_amounts.map(amount => new BigNumber(amount));
+    const fromAmount = Web3Pure.toWei(amountIn, RefFinanceStableService.stableLpTokenDecimals);
 
     return RefFinanceStableService.calcSwap(
       amp,
-      inTokenIdx,
-      inCoinAmount,
-      outTokenIdx,
-      oldCoinAmounts,
+      fromTokenId,
+      fromAmount,
+      toTokenId,
+      currentPoolAmounts,
       tradeFee
     );
   }

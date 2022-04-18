@@ -33,6 +33,11 @@ import { RefFinanceStableService } from '@features/instant-trade/services/instan
 })
 export class RefFinanceSwapService {
   /**
+   * Tokens fee divisor.
+   */
+  public static readonly feeDivisor = 10000;
+
+  /**
    * Can tokens be wrapped/unwrapped or not.
    * @param fromAddress From token address.
    * @param toAddress To token address.
@@ -245,7 +250,6 @@ export class RefFinanceSwapService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): Promise<RefFinanceRoute[]> {
-    const FEE_DIVISOR = 10000;
     const fromTokenAddress =
       fromToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : fromToken.address;
     const toTokenAddress =
@@ -257,21 +261,31 @@ export class RefFinanceSwapService {
         if (pool.tokenIds.length > 2) {
           const poolInfo = await this.getStablePool(pool.id);
 
-          const [swappedAmount] = RefFinanceStableService.getSwappedAmount(
+          const swappedAmount = RefFinanceStableService.getSwappedAmount(
             fromToken.address,
             toToken.address,
-            Web3Pure.toWei(fromAmount, fromToken.decimals),
+            fromAmount,
             poolInfo
           );
 
-          return { estimate: Web3Pure.fromWei(new BigNumber(swappedAmount), 24).toFixed(), pool };
+          return {
+            estimate: Web3Pure.fromWei(
+              new BigNumber(swappedAmount),
+              RefFinanceStableService.stableLpTokenDecimals
+            ).toFixed(),
+            pool
+          };
         }
-        const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
+        const amountWithFee = fromAmount.multipliedBy(RefFinanceSwapService.feeDivisor - pool.fee);
         const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
         const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
         const estimate = amountWithFee
           .multipliedBy(outBalance)
-          .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
+          .dividedBy(
+            new BigNumber(inBalance)
+              .multipliedBy(RefFinanceSwapService.feeDivisor)
+              .plus(amountWithFee)
+          )
           .toString();
         return { estimate, pool };
       })
