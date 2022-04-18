@@ -96,11 +96,11 @@ export class InstantTradeService {
   public async approve(providerName: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
 
-    try {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
 
-      let subscription$: Subscription;
+    let subscription$: Subscription;
+    try {
       await this.providers[trade.blockchain][providerName].approve(
         trade.from.token.address,
         {
@@ -110,11 +110,10 @@ export class InstantTradeService {
         },
         targetContractAddress
       );
-      subscription$?.unsubscribe();
 
       this.notificationsService.showApproveSuccessful();
-    } catch (err) {
-      throw err;
+    } finally {
+      subscription$?.unsubscribe();
     }
   }
 
