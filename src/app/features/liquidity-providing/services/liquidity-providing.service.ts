@@ -487,10 +487,18 @@ export class LiquidityProvidingService {
         if (receipt.status === false) {
           return EMPTY;
         } else {
-          return this.getDeposits().pipe(take(1));
+          const updatedDeposits = this._deposits$.getValue().map(deposit => {
+            if (deposit.tokenId === tokenId) {
+              return { ...deposit, rewardsToCollect: new BigNumber(0) };
+            } else {
+              return deposit;
+            }
+          });
+          this._deposits$.next(updatedDeposits);
+
+          return this.getStatistics().pipe(take(1));
         }
-      }),
-      switchMap(() => this.getStatistics().pipe(take(1)))
+      })
     );
   }
 

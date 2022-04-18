@@ -53,4 +53,17 @@ export class LpCardComponent {
 
     return now < start;
   }
+
+  public getButtonText(statuses: RoundStatus[]): string {
+    if (statuses && statuses.includes(this.roundStatus.CLOSED)) {
+      return 'Check';
+    }
+
+    if (this.balance > 0) {
+      debugger;
+      return 'Details';
+    } else {
+      return 'Join Round';
+    }
+  }
 }
