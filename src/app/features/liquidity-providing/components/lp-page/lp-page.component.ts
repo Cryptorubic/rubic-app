@@ -1,18 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatest } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
 @Component({
@@ -22,7 +16,7 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class LpPageComponent implements OnInit, OnDestroy {
+export class LpPageComponent implements OnInit {
   public readonly showDeposits$ = combineLatest([
     this.authService.getCurrentUser(),
     this.lpService.deposits$
@@ -50,6 +44,8 @@ export class LpPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.waitForStopWatchingWhitelist();
+
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
@@ -70,7 +66,16 @@ export class LpPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['staking-lp']);
   }
 
-  public ngOnDestroy(): void {
-    this.lpService.stopWatchWhitelist();
+  public waitForStopWatchingWhitelist(): void {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationStart),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationStart) => {
+        if (!event.url.includes('liquidity-providing')) {
+          this.lpService.stopWatchWhitelist();
+        }
+      });
   }
 }

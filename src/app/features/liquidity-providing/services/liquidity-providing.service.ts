@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -50,6 +50,7 @@ import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-a
 import { LpReward, LpRewardParsed } from '@app/core/services/backend/volume-api/models/lp-rewards';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { parseWeb3Percent } from '@app/shared/utils/utils';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -236,7 +237,8 @@ export class LiquidityProvidingService {
     private readonly router: Router,
     private readonly lpNotificationService: LiquidityProvidingNotificationService,
     private readonly volumeApiService: VolumeApiService,
-    private readonly scannerLinkPipe: ScannerLinkPipe
+    private readonly scannerLinkPipe: ScannerLinkPipe,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.watchWhitelist().subscribe();
   }
@@ -342,7 +344,7 @@ export class LiquidityProvidingService {
         this._isWhitelistUser$.next(isWhitelistUser);
 
         if (!isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
-          this.router.navigate(['liquidity-providing']);
+          this.window.location.assign(this.window.location.origin + '/liquidity-providing');
         }
 
         if (isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {

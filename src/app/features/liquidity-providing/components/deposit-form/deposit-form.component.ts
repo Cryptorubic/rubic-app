@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter, finalize, map, skip, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
@@ -28,7 +22,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DepositFormComponent implements OnInit, OnDestroy {
+export class DepositFormComponent implements OnInit {
   public readonly poolToken = PoolToken;
 
   public readonly brbcAmountCtrl = new FormControl(null);
@@ -170,10 +164,6 @@ export class DepositFormComponent implements OnInit, OnDestroy {
 
   public login(): void {
     this.walletsModalService.open().subscribe();
-  }
-
-  public ngOnDestroy(): void {
-    this.lpService.stopWatchWhitelist();
   }
 
   private getUserTotalStaked(): void {

@@ -28,7 +28,7 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showSuccessRewardsClaimNotification(): void {
-    this.notificationsService.show(this.translate.instant('notifications.successClaimRewards'), {
+    this.notificationsService.show('Rewards collected successful', {
       status: TuiNotification.Success,
       autoClose: 5000
     });
