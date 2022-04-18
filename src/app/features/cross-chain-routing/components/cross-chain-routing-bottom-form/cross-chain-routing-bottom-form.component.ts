@@ -3,59 +3,44 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnInit,
   Output,
   Self
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
-  first,
   map,
   startWith,
   switchMap,
   takeUntil
 } from 'rxjs/operators';
-import { TransactionReceipt } from 'web3-eth';
-import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  NEAR_BLOCKCHAIN_NAME
-} from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
-import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { WINDOW } from '@ng-web-apis/common';
-import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
-import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import { SmartRouting } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -82,39 +67,35 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
-  private readonly onCalculateTrade$ = new Subject<CalculateTradeType>();
-
-  private readonly hiddenTradeData$ = new BehaviorSubject<{ toAmount: BigNumber }>(undefined);
-
-  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
-
-  public readonly smartRouting$ = this.crossChainRoutingService.smartRouting$;
-
-  public readonly smartRoutingLoading$ = this.crossChainRoutingService.smartRoutingLoading$;
-
   public toBlockchain: BlockchainName;
 
   public toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
+  private toAmount: BigNumber;
+
+  private _tradeStatus: TRADE_STATUS;
+
+  public needApprove: boolean;
+
   public minError: false | BigNumber;
 
   public maxError: false | BigNumber;
 
-  public needApprove: boolean;
-
-  private _tradeStatus: TRADE_STATUS;
-
-  private toAmount: BigNumber;
-
   public errorText: string;
+
+  private readonly onCalculateTrade$ = new Subject<CalculateTradeType>();
+
+  private hiddenTradeData: { toAmount: BigNumber } = null;
 
   private calculateTradeSubscription$: Subscription;
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public isTargetNetworkValid: boolean;
+  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+
+  public smartRouting: SmartRouting = null;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -131,40 +112,24 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
-  public showSuccessTrxNotification = (): void => {
-    this.notificationsService.show<{ type: SuccessTxModalType }>(
-      new PolymorpheusComponent(SuccessTrxNotificationComponent),
-      {
-        status: TuiNotification.Success,
-        autoClose: 15000,
-        data: {
-          type: 'cross-chain-routing'
-        }
-      }
-    );
-  };
-
   constructor(
+    private readonly cdr: ChangeDetectorRef,
     public readonly swapFormService: SwapFormService,
     private readonly errorsService: ErrorsService,
     private readonly settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    @Self() private readonly destroy$: TuiDestroyService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly successTxModalService: SuccessTxModalService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
-    this.setupTradeCalculation();
-    this.setupHiddenCalculation();
+    this.setupNormalTradeCalculation();
+    this.setupHiddenTradeCalculation();
+
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.swapFormService.inputValueChanges
@@ -182,9 +147,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
-        if (!form.fromToken || !form.toToken || !form.fromAmount || !form.fromAmount.toNumber()) {
-          this.crossChainRoutingService.resetSmartRouting();
-        }
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -197,9 +159,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     this.authService
       .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(user => !!user?.address),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
-        this.conditionalCalculate();
+        this.conditionalCalculate('normal');
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
@@ -209,10 +174,20 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
+
+    if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
+      this.smartRouting = null;
+    }
+
     this.conditionalCalculate('normal');
   }
 
   private conditionalCalculate(type?: CalculateTradeType): void {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    if (fromBlockchain === toBlockchain) {
+      return;
+    }
+
     const { fromToken, toToken } = this.swapFormService.inputValue;
     if (!fromToken?.address || !toToken?.address) {
       this.maxError = false;
@@ -220,16 +195,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    if (fromBlockchain === toBlockchain) {
-      return;
-    }
-
     const { autoRefresh } = this.settingsService.crossChainRoutingValue;
     this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
   }
 
-  private setupTradeCalculation(): void {
+  private setupNormalTradeCalculation(): void {
     if (this.calculateTradeSubscription$) {
       return;
     }
@@ -249,12 +219,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
+
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-          const blockchainType = BlockchainsInfo.getBlockchainType(fromBlockchain);
           const calculateNeedApprove =
-            !!this.authService.userAddress && blockchainType === 'ethLike';
+            Boolean(this.authService.userAddress) && isEthLikeBlockchainName(fromBlockchain);
           const crossChainTrade$ = from(
             this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
           );
@@ -283,37 +253,31 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.swapFormService.output.patchValue({
                 toAmount
               });
+              this.smartRouting = this.crossChainRoutingService.smartRouting;
+              this.hiddenTradeData = null;
 
-              if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
+              if (this.minError || this.maxError || !toAmount?.gt(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
                   ? TRADE_STATUS.READY_TO_APPROVE
                   : TRADE_STATUS.READY_TO_SWAP;
               }
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => {
-              this.errorText = err.translateKey || err.message;
-              this.swapFormService.output.patchValue({
-                toAmount: new BigNumber(NaN)
-              });
-              this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-
-              return of(null);
-            })
+            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
           );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
         this.cdr.markForCheck();
       });
   }
 
-  public setupHiddenCalculation(): void {
+  public setupHiddenTradeCalculation(): void {
     if (this.hiddenCalculateTradeSubscription$) {
       return;
     }
@@ -328,18 +292,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromAmount } = this.swapFormService.inputValue;
+          const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
           const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
-          const balance$ = from(
-            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
-          );
 
-          return forkJoin([crossChainTrade$, balance$]).pipe(
+          return forkJoin([crossChainTrade$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
                 (minAmountError &&
                   fromAmount.gte(minAmountError) &&
-                  this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
+                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
               ) {
                 this.onCalculateTrade$.next('hidden');
@@ -348,46 +309,53 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.minError = minAmountError || false;
               this.maxError = maxAmountError || false;
 
-              this.hiddenTradeData$.next({ toAmount });
+              this.hiddenTradeData = { toAmount };
               if (!toAmount.eq(this.toAmount)) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
-
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => {
-              this.errorText = err.translateKey || err.message;
-              this.swapFormService.output.patchValue({
-                toAmount: new BigNumber(NaN)
-              });
-              this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-
-              return of(null);
-            })
+            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
           );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
         this.cdr.markForCheck();
       });
   }
 
-  public setHiddenData(): void {
-    const data = this.hiddenTradeData$.getValue();
-    this.toAmount = data.toAmount;
+  public onCalculateError(err: RubicError<ERROR_TYPE>): Observable<null> {
+    this.errorText = err.translateKey || err.message;
+
+    this.toAmount = new BigNumber(NaN);
+    this.swapFormService.output.patchValue({
+      toAmount: new BigNumber(NaN)
+    });
+    this.tradeStatus = TRADE_STATUS.DISABLED;
+
+    return of(null);
+  }
+
+  public onSetHiddenData(): void {
+    this.toAmount = this.hiddenTradeData.toAmount;
 
     if (this.toAmount?.isFinite()) {
       this.errorText = '';
+
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
       });
+      this.smartRouting = this.crossChainRoutingService.smartRouting;
+
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
     } else {
+      this.smartRouting = null;
+
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
   }
@@ -396,106 +364,53 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    let approveInProgressSubscription$: Subscription;
-    const onTransactionHash = () => {
-      approveInProgressSubscription$ = this.notificationsService.show(
-        this.translateService.instant('notifications.approveInProgress'),
-        {
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      );
-    };
+    try {
+      const { fromBlockchain } = this.swapFormService.inputValue;
+      await this.crossChainRoutingService.approve();
 
-    this.crossChainRoutingService
-      .approve({
-        onTransactionHash
-      })
-      .pipe(first())
-      .subscribe(
-        async (_: TransactionReceipt) => {
-          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
-          approveInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
-            this.translateService.instant('notifications.successApprove'),
-            {
-              status: TuiNotification.Success,
-              autoClose: 15000
-            }
-          );
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
 
-          await this.tokensService.calculateTokensBalances();
+      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+      await this.tokensService.updateNativeTokenBalance(fromBlockchain);
+    } catch (err) {
+      this.errorsService.catch(err);
 
-          this.cdr.markForCheck();
-        },
-        err => {
-          this.errorsService.catch(err);
+      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.cdr.detectChanges();
 
-          approveInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-
-          this.cdr.markForCheck();
-        }
-      );
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
   }
 
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    const onTransactionHash = (txHash: string) => {
-      if (fromBlockchain !== NEAR_BLOCKCHAIN_NAME) {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-
-        this.notifyGtmAfterSignTx(txHash);
-        this.notifyTradeInProgress(txHash);
-      }
-    };
-
-    this.crossChainRoutingService
-      .createTrade({
-        onTransactionHash
-      })
-      .pipe(first())
-      .subscribe(
-        async () => {
-          this.counterNotificationsService.updateUnread();
-
-          await this.tokensService.calculateTokensBalances();
-
+    try {
+      const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
+      await this.crossChainRoutingService.createTrade(() => {
+        if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          await this.conditionalCalculate();
-        },
-        err => {
-          this.errorsService.catch(err);
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-
-          this.cdr.markForCheck();
+          this.cdr.detectChanges();
         }
-      );
-  }
+      });
 
-  private notifyTradeInProgress(txHash: string): void {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+      this.conditionalCalculate('hidden');
 
-    if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(
-        txHash,
-        fromBlockchain,
-        'cross-chain-routing',
-        this.showSuccessTrxNotification
-      );
+      this.counterNotificationsService.updateUnread();
+
+      await this.tokensService.updateTokenBalanceAfterSwap({
+        address: fromToken.address,
+        blockchain: fromBlockchain
+      });
+    } catch (err) {
+      this.errorsService.catch(err);
+
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.cdr.detectChanges();
+
+      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }
-  }
-
-  private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, txHash);
   }
 }
