@@ -9,7 +9,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -82,6 +82,7 @@ export class SwapButtonContainerErrorsService {
 
         this.checkSolanaErrors();
         this.checkWalletSupportsFromBlockchain();
+        this.checkUserBlockchain();
         this.checkUserBalance();
 
         this.updateError();
@@ -89,8 +90,8 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnWalletNetwork(): void {
-    this.walletConnectorService.networkChange$.subscribe(blockchainData => {
-      this.checkUserBlockchain(blockchainData?.name);
+    this.walletConnectorService.networkChange$.subscribe(() => {
+      this.checkUserBlockchain();
 
       this.updateError();
     });
@@ -168,7 +169,8 @@ export class SwapButtonContainerErrorsService {
   /**
    * Checks that user's selected blockchain is equal to from blockchain.
    */
-  private checkUserBlockchain(userBlockchain: BlockchainName): void {
+  private checkUserBlockchain(): void {
+    const userBlockchain = this.walletConnectorService.network?.name;
     if (userBlockchain) {
       const { fromBlockchain } = this.swapFormService.inputValue;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromBlockchain !== userBlockchain;
