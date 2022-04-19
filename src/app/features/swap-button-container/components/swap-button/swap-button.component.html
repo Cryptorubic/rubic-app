@@ -1,19 +1,13 @@
 <app-rubic-button
   [class]="idPrefix + 'button-swap'"
   [ngClass]="{
-    'button-swap_warning-medium': warningMedium,
-    'button-swap_warning-high': warningHigh
+    'button-swap_warning-medium': warningMedium$ | async,
+    'button-swap_warning-high': warningHigh$ | async
   }"
   appearance="secondary"
-  [loading]="showLoader"
-  [disabled]="disabled"
+  [loading]="loading$ | async"
+  [disabled]="disabled$ | async"
   (onClick)="onSwapClick()"
 >
-  {{
-    status === TRADE_STATUS.DISABLED || !priceImpact || priceImpact < PRICE_IMPACT_RANGE.MEDIUM
-      ? buttonText
-      : priceImpact < PRICE_IMPACT_RANGE.HIGH_DISABLED
-      ? 'Swap Anyway'
-      : 'Price impact too high'
-  }}
+  {{ buttonText$ | async }}
 </app-rubic-button>

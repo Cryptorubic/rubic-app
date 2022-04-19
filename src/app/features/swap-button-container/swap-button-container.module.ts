@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ConnectWalletButtonComponent } from './components/connect-wallet-button/connect-wallet-button.component';
 import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
 import { UpdateRateButtonComponent } from '@features/swap-button-container/components/update-rate-button/update-rate-button.component';
+import { SwapButtonService } from '@features/swap-button-container/services/swap-button.service';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,6 @@ import { UpdateRateButtonComponent } from '@features/swap-button-container/compo
   ],
   imports: [CommonModule, SharedModule],
   exports: [SwapButtonContainerComponent],
-  providers: [SwapButtonContainerService, SwapButtonContainerErrorsService]
+  providers: [SwapButtonContainerService, SwapButtonContainerErrorsService, SwapButtonService]
 })
 export class SwapButtonContainerModule {}

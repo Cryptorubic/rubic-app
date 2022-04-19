@@ -30,6 +30,8 @@ export class SwapButtonContainerErrorsService {
    */
   private readonly _errorLoading$ = new BehaviorSubject<boolean>(false);
 
+  public readonly errorLoading$ = this._errorLoading$.asObservable();
+
   public readonly error$: Observable<{
     type: ERROR_TYPE | null;
     text: string;

@@ -14,7 +14,9 @@ import { IframeService } from '@core/services/iframe/iframe.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectWalletButtonComponent {
-  public tokensFilled$ = this.swapFormService.inputValueChanges.pipe(
+  public readonly idPrefix = this.swapButtonContainerService.idPrefix;
+
+  public readonly tokensFilled$ = this.swapFormService.inputValueChanges.pipe(
     startWith(this.swapFormService.inputValue),
     map(form => Boolean(form.fromToken && form.toToken))
   );
@@ -22,10 +24,6 @@ export class ConnectWalletButtonComponent {
   public readonly isIframe = this.iframeService.isIframe;
 
   public readonly user$ = this.authService.getCurrentUser();
-
-  public get idPrefix(): string {
-    return this.swapButtonContainerService.idPrefix;
-  }
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,

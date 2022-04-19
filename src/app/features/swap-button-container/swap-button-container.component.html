@@ -7,7 +7,7 @@
     <app-update-rate-button (onClick)="onUpdateRateClick.emit()"></app-update-rate-button>
   </ng-template>
 
-  <ng-container *ngIf="!isUpdateRateStatus; else updateRateButton">
+  <ng-container *ngIf="(isUpdateRateStatus$ | async) === false; else updateRateButton">
     <ng-container *ngLet="error$ | async as error">
       <ng-container *ngIf="!error.text || error.loading">
         <!-- with approve button -->
@@ -28,13 +28,7 @@
                 Approve
               </app-rubic-button>
 
-              <app-swap-button
-                [idPrefix]="idPrefix"
-                [status]="status"
-                [checkingOnErrors]="error.loading"
-                [buttonText]="buttonText"
-                (onClick)="swapClick.emit()"
-              ></app-swap-button>
+              <app-swap-button (onClick)="swapClick.emit()"></app-swap-button>
 
               <div class="buttons__timeline-container timeline">
                 <span class="timeline__connector"></span>
@@ -79,14 +73,7 @@
           </ng-container>
         </ng-container>
 
-        <app-swap-button
-          *ngIf="!needApprove"
-          [idPrefix]="idPrefix"
-          [status]="status"
-          [checkingOnErrors]="error.loading"
-          [buttonText]="buttonText"
-          (onClick)="swapClick.emit()"
-        ></app-swap-button>
+        <app-swap-button *ngIf="!needApprove" (onClick)="swapClick.emit()"></app-swap-button>
       </ng-container>
 
       <ng-container *ngLet="isMobile$ | async as isMobile">

@@ -1,133 +1,36 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  Self
-} from '@angular/core';
-import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
-import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { combineLatest } from 'rxjs';
-import { IframeService } from '@core/services/iframe/iframe.service';
+import { SwapButtonService } from '@features/swap-button-container/services/swap-button.service';
+import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
 
 @Component({
   selector: 'app-swap-button',
   templateUrl: './swap-button.component.html',
   styleUrls: ['./swap-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapButtonComponent implements OnInit {
-  @Input() idPrefix: string;
-
-  @Input() set status(status: TRADE_STATUS) {
-    if (
-      status === TRADE_STATUS.LOADING &&
-      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.BRIDGE &&
-      !this.iframeService.isIframe
-    ) {
-      this.priceImpact = undefined;
-    }
-    this._status = status;
-  }
-
-  get status(): TRADE_STATUS {
-    return this._status;
-  }
-
-  @Input() checkingOnErrors: boolean;
-
-  /**
-   * Text inside button.
-   */
-  @Input() buttonText: string;
-
+export class SwapButtonComponent {
   @Output() onClick = new EventEmitter<void>();
 
-  public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
+  public readonly idPrefix = this.swapButtonContainerService.idPrefix;
 
-  public readonly TRADE_STATUS = TRADE_STATUS;
+  public readonly loading$ = this.swapButtonService.loading$;
 
-  private _status: TRADE_STATUS;
+  public readonly disabled$ = this.swapButtonService.disabled$;
 
-  /**
-   * Price impact of trade in percents.
-   */
-  public priceImpact: number;
+  public readonly warningMedium$ = this.swapButtonService.warningMedium$;
 
-  public get showLoader(): boolean {
-    return (
-      this.checkingOnErrors ||
-      this.status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-      this.status === TRADE_STATUS.LOADING ||
-      (this.status === TRADE_STATUS.READY_TO_SWAP && this.priceImpact === undefined)
-    );
-  }
+  public readonly warningHigh$ = this.swapButtonService.warningHigh$;
 
-  public get disabled(): boolean {
-    return (
-      this.status !== TRADE_STATUS.READY_TO_SWAP ||
-      this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED ||
-      this.showLoader
-    );
-  }
-
-  /**
-   * Returns true, if button should be warned medium.
-   */
-  public get warningMedium(): boolean {
-    return (
-      this.status !== TRADE_STATUS.DISABLED &&
-      ((PRICE_IMPACT_RANGE.MEDIUM <= this.priceImpact &&
-        this.priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
-        this.priceImpact === null)
-    );
-  }
-
-  /**
-   * Returns true, if button should be warned high.
-   */
-  public get warningHigh(): boolean {
-    return this.status !== TRADE_STATUS.DISABLED && this.priceImpact >= PRICE_IMPACT_RANGE.HIGH;
-  }
+  public readonly buttonText$ = this.swapButtonService.buttonText$;
 
   constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly swapsService: SwapsService,
-    private readonly priceImpactService: PriceImpactService,
-    private readonly iframeService: IframeService,
-    @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    this.priceImpact = 0;
-  }
-
-  ngOnInit(): void {
-    combineLatest([this.swapsService.swapMode$, this.priceImpactService.priceImpact$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.setPriceImpact();
-        this.cdr.markForCheck();
-      });
-  }
-
-  private setPriceImpact(): void {
-    if (this.iframeService.isIframe || this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
-      this.priceImpact = 0;
-      return;
-    }
-    this.priceImpact = this.priceImpactService.priceImpact;
-  }
+    private readonly swapButtonContainerService: SwapButtonContainerService,
+    private readonly swapButtonService: SwapButtonService
+  ) {}
 
   public onSwapClick(): void {
-    if (this.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {
+    if (this.swapButtonService.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {
       if (
         // eslint-disable-next-line no-alert
         prompt(

@@ -21,6 +21,7 @@ import { SwapButtonContainerErrorsService } from '@features/swap-button-containe
 import { ERROR_TYPE } from '@features/swap-button-container/models/error-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
+import { SwapButtonService } from '@features/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-swap-button-container',
@@ -34,7 +35,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() set status(value: TRADE_STATUS) {
     this._status = value;
-    this.isUpdateRateStatus = value === TRADE_STATUS.OLD_TRADE_DATA;
+    this.swapButtonContainerService.tradeStatus = value;
   }
 
   get status(): TRADE_STATUS {
@@ -59,7 +60,9 @@ export class SwapButtonContainerComponent implements OnInit {
     this.swapButtonContainerErrorsService.setMaxAmount(value);
   }
 
-  @Input() buttonText = 'Swap';
+  @Input() set buttonText(value: string) {
+    this.swapButtonService.buttonText = value;
+  }
 
   @Output() approveClick = new EventEmitter<void>();
 
@@ -71,13 +74,13 @@ export class SwapButtonContainerComponent implements OnInit {
 
   private _status: TRADE_STATUS;
 
-  public isUpdateRateStatus: boolean;
-
   public fromBlockchain: BlockchainName;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly user$ = this.authService.getCurrentUser();
+
+  public readonly isUpdateRateStatus$ = this.swapButtonContainerService.isUpdateRateStatus$;
 
   public readonly error$ = this.swapButtonContainerErrorsService.error$;
 
@@ -85,6 +88,7 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapButtonContainerService: SwapButtonContainerService,
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
+    private readonly swapButtonService: SwapButtonService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
