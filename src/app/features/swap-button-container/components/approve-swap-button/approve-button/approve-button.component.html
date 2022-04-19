@@ -1,0 +1,9 @@
+<app-rubic-button
+  [id]="idPrefix + 'approve'"
+  appearance="secondary"
+  [loading]="approveButtonLoading$ | async"
+  [disabled]="approveButtonLoading$ | async"
+  (onClick)="onClick.emit()"
+>
+  Approve
+</app-rubic-button>

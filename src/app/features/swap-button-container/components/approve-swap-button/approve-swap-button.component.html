@@ -1,0 +1,18 @@
+<ng-container *noFrame>
+  <div class="buttons">
+    <app-approve-button (onClick)="onApproveClick.emit()"></app-approve-button>
+
+    <app-swap-button (onClick)="onSwapClick.emit()"></app-swap-button>
+
+    <div class="buttons__timeline-container timeline">
+      <span class="timeline__connector"></span>
+      <div class="timeline__point" [attr.disabled]="firstItemDisabled$ | async">1</div>
+
+      <div class="timeline__point" [attr.disabled]="secondItemDisabled$ | async">2</div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *onlyFrame>
+  <app-approve-button (onClick)="onApproveClick.emit()"></app-approve-button>
+</ng-container>

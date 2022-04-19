@@ -9,75 +9,21 @@
 
   <ng-container *ngIf="(isUpdateRateStatus$ | async) === false; else updateRateButton">
     <ng-container *ngLet="error$ | async as error">
-      <ng-container *ngIf="!error.text || error.loading">
-        <!-- with approve button -->
-        <ng-container *ngIf="needApprove">
-          <ng-container *noFrame>
-            <div class="buttons">
-              <app-rubic-button
-                [id]="idPrefix + 'approve'"
-                appearance="secondary"
-                [loading]="
-                  status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-                  status === TRADE_STATUS.LOADING ||
-                  error.loading
-                "
-                [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
-                (onClick)="onApproveClick.emit()"
-              >
-                Approve
-              </app-rubic-button>
-
-              <app-swap-button (onClick)="onSwapClick.emit()"></app-swap-button>
-
-              <div class="buttons__timeline-container timeline">
-                <span class="timeline__connector"></span>
-                <div
-                  class="timeline__point"
-                  [attr.disabled]="
-                    status === TRADE_STATUS.READY_TO_SWAP ||
-                    status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-                    status === TRADE_STATUS.DISABLED
-                  "
-                >
-                  1
-                </div>
-                <div
-                  class="timeline__point"
-                  [attr.disabled]="
-                    status === TRADE_STATUS.READY_TO_APPROVE ||
-                    status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-                    status === TRADE_STATUS.DISABLED
-                  "
-                >
-                  2
-                </div>
-              </div>
-            </div>
-          </ng-container>
-
-          <ng-container *onlyFrame>
-            <app-rubic-button
-              [id]="idPrefix + 'approve'"
-              appearance="secondary"
-              [loading]="
-                status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-                status === TRADE_STATUS.LOADING ||
-                error.loading
-              "
-              [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
-              (onClick)="onApproveClick.emit()"
-            >
-              {{ 'Approve' }}
-            </app-rubic-button>
-          </ng-container>
+      <ng-container *ngIf="!error.text || error.loading; else errorButton">
+        <ng-container *ngIf="needApprove; else swapButton">
+          <app-approve-swap-button
+            (onApproveClick)="onApproveClick.emit()"
+            (onSwapClick)="onSwapClick.emit()"
+          ></app-approve-swap-button>
         </ng-container>
 
-        <app-swap-button *ngIf="!needApprove" (onClick)="onSwapClick.emit()"></app-swap-button>
+        <ng-template #swapButton>
+          <app-swap-button (onClick)="onSwapClick.emit()"></app-swap-button
+        ></ng-template>
       </ng-container>
 
-      <ng-container *ngLet="isMobile$ | async as isMobile">
-        <ng-container *ngIf="error.text && !error.loading">
+      <ng-template #errorButton>
+        <ng-container *ngLet="isMobile$ | async as isMobile">
           <ng-container *ngLet="error.type | functionCall: allowChangeNetwork:this as allowChange">
             <!-- switch network button -->
             <ng-container *ngIf="allowChange && !isMobile">
@@ -105,7 +51,7 @@
             </ng-container>
           </ng-container>
         </ng-container>
-      </ng-container>
+      </ng-template>
     </ng-container>
   </ng-container>
 </ng-container>

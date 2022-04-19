@@ -8,16 +8,26 @@ import { ConnectWalletButtonComponent } from './components/connect-wallet-button
 import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
 import { UpdateRateButtonComponent } from '@features/swap-button-container/components/update-rate-button/update-rate-button.component';
 import { SwapButtonService } from '@features/swap-button-container/services/swap-button.service';
+import { ApproveSwapButtonComponent } from 'src/app/features/swap-button-container/components/approve-swap-button/approve-swap-button.component';
+import { ApproveSwapButtonService } from '@features/swap-button-container/services/approve-swap-button.service';
+import { ApproveButtonComponent } from './components/approve-swap-button/approve-button/approve-button.component';
 
 @NgModule({
   declarations: [
     SwapButtonContainerComponent,
     SwapButtonComponent,
     ConnectWalletButtonComponent,
-    UpdateRateButtonComponent
+    UpdateRateButtonComponent,
+    ApproveSwapButtonComponent,
+    ApproveButtonComponent
   ],
   imports: [CommonModule, SharedModule],
   exports: [SwapButtonContainerComponent],
-  providers: [SwapButtonContainerService, SwapButtonContainerErrorsService, SwapButtonService]
+  providers: [
+    SwapButtonContainerService,
+    SwapButtonContainerErrorsService,
+    SwapButtonService,
+    ApproveSwapButtonService
+  ]
 })
 export class SwapButtonContainerModule {}

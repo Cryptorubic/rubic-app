@@ -7,7 +7,7 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angul
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UpdateRateButtonComponent {
-  @Output() public onClick = new EventEmitter<void>();
+  @Output() onClick = new EventEmitter<void>();
 
   constructor() {}
 }
