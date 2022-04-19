@@ -32,7 +32,8 @@ $block-height: 18px;
       align-items: center;
       width: 11px;
 
-      &:first-child {
+      &:first-child,
+      &:nth-child(3) {
         width: 6px; /* Temporary fix for tight first digit (1) */
       }
     }
