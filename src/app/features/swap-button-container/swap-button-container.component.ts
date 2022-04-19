@@ -32,7 +32,14 @@ import { SwapButtonContainerService } from '@features/swap-button-container/serv
 export class SwapButtonContainerComponent implements OnInit {
   @Input() needApprove = false;
 
-  @Input() status: TRADE_STATUS;
+  @Input() set status(value: TRADE_STATUS) {
+    this._status = value;
+    this.isUpdateRateStatus = value === TRADE_STATUS.OLD_TRADE_DATA;
+  }
+
+  get status(): TRADE_STATUS {
+    return this._status;
+  }
 
   @Input() formService: SwapFormService;
 
@@ -58,9 +65,13 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Output() swapClick = new EventEmitter<void>();
 
-  @Output() updateRatesClick = new EventEmitter<void>();
+  @Output() onUpdateRateClick = new EventEmitter<void>();
 
   public TRADE_STATUS = TRADE_STATUS;
+
+  private _status: TRADE_STATUS;
+
+  public isUpdateRateStatus: boolean;
 
   public fromBlockchain: BlockchainName;
 

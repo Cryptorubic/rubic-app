@@ -6,9 +6,15 @@ import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { ConnectWalletButtonComponent } from './components/connect-wallet-button/connect-wallet-button.component';
 import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
+import { UpdateRateButtonComponent } from '@features/swap-button-container/components/update-rate-button/update-rate-button.component';
 
 @NgModule({
-  declarations: [SwapButtonContainerComponent, SwapButtonComponent, ConnectWalletButtonComponent],
+  declarations: [
+    SwapButtonContainerComponent,
+    SwapButtonComponent,
+    ConnectWalletButtonComponent,
+    UpdateRateButtonComponent
+  ],
   imports: [CommonModule, SharedModule],
   exports: [SwapButtonContainerComponent],
   providers: [SwapButtonContainerService, SwapButtonContainerErrorsService]

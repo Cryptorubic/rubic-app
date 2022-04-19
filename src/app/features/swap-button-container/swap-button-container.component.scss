@@ -80,12 +80,3 @@ app-rubic-button[error-min-max=true] {
     }
   }
 }
-
-app-rubic-button[rate-is-updated=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 13px;
-      line-height: 16px;
-    }
-  }
-}

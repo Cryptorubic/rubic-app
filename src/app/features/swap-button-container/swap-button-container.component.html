@@ -1,16 +1,13 @@
-<ng-container *ngIf="user$ | async; else connectWalletButton">
-  <!-- update rate button -->
-  <ng-container *ngIf="status === TRADE_STATUS.OLD_TRADE_DATA">
-    <app-rubic-button
-      [attr.rate-is-updated]="true"
-      (click)="updateRatesClick.emit()"
-      appearance="secondary"
-    >
-      {{ 'tradePage.rateIsUpdated' | translate }}
-    </app-rubic-button>
-  </ng-container>
+<ng-template #connectWalletButton>
+  <app-connect-wallet-button></app-connect-wallet-button>
+</ng-template>
 
-  <ng-container *ngIf="status !== TRADE_STATUS.OLD_TRADE_DATA">
+<ng-container *ngIf="user$ | async; else connectWalletButton">
+  <ng-template #updateRateButton>
+    <app-update-rate-button (onClick)="onUpdateRateClick.emit()"></app-update-rate-button>
+  </ng-template>
+
+  <ng-container *ngIf="!isUpdateRateStatus; else updateRateButton">
     <ng-container *ngLet="error$ | async as error">
       <ng-container *ngIf="!error.text || error.loading">
         <!-- with approve button -->
@@ -125,7 +122,3 @@
     </ng-container>
   </ng-container>
 </ng-container>
-
-<ng-template #connectWalletButton>
-  <app-connect-wallet-button></app-connect-wallet-button>
-</ng-template>
