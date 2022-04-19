@@ -6,9 +6,9 @@
 
     <div class="buttons__timeline-container timeline">
       <span class="timeline__connector"></span>
-      <div class="timeline__point" [attr.disabled]="firstItemDisabled$ | async">1</div>
+      <div class="timeline__point" [attr.disabled]="approveIndicatorDisabled$ | async">1</div>
 
-      <div class="timeline__point" [attr.disabled]="secondItemDisabled$ | async">2</div>
+      <div class="timeline__point" [attr.disabled]="swapIndicatorDisabled$ | async">2</div>
     </div>
   </div>
 </ng-container>

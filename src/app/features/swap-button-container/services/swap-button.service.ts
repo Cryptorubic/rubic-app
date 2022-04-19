@@ -105,6 +105,10 @@ export class SwapButtonService {
     private readonly swapsService: SwapsService,
     private readonly priceImpactService: PriceImpactService
   ) {
+    this.setupPriceImpactCalculation();
+  }
+
+  public setupPriceImpactCalculation(): void {
     this.swapButtonContainerService.tradeStatus$.subscribe(status => {
       if (status === TRADE_STATUS.LOADING) {
         this._priceImpactLoading$.next(true);

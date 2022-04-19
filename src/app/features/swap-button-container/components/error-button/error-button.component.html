@@ -1,30 +1,33 @@
-<ng-container *ngLet="error$ | async as error">
-  <ng-container *ngLet="isMobile$ | async as isMobile">
-    <ng-container *ngLet="error.type | functionCall: allowChangeNetwork:this as allowChange">
-      <ng-container *ngIf="allowChange && !isMobile; else errorInfo">
+<ng-container
+  *ngLet="{
+    error: error$ | async,
+    isMobile: isMobile$ | async
+  } as button"
+>
+  <ng-container *ngLet="button.error.type | functionCall: allowChangeNetwork:this as allowChange">
+    <ng-container *ngIf="allowChange && !button.isMobile; else errorInfo">
+      <app-rubic-button
+        [attr.error]="true"
+        appearance="secondary"
+        [loading]="loading"
+        (click)="changeNetwork()"
+      >
+        {{ 'common.switchTo' | translate: { networkName: (fromBlockchain$ | async) } }}
+      </app-rubic-button>
+    </ng-container>
+
+    <ng-template #errorInfo>
+      <ng-container *ngIf="!allowChange || button.isMobile">
         <app-rubic-button
+          class="error-button"
           [attr.error]="true"
+          [attr.error-min-max]="button.error.type | functionCall: isMinMaxError"
           appearance="secondary"
-          [loading]="loading"
-          (click)="changeNetwork()"
+          [disabled]="true"
         >
-          {{ 'common.switchTo' | translate: { networkName: (fromBlockchain$ | async) } }}
+          {{ button.error.text }}
         </app-rubic-button>
       </ng-container>
-
-      <ng-template #errorInfo>
-        <ng-container *ngIf="!allowChange || isMobile">
-          <app-rubic-button
-            class="error-button"
-            [attr.error]="true"
-            [attr.error-min-max]="error.type | functionCall: isMinMaxError"
-            appearance="secondary"
-            [disabled]="true"
-          >
-            {{ error.text }}
-          </app-rubic-button>
-        </ng-container>
-      </ng-template>
-    </ng-container>
+    </ng-template>
   </ng-container>
 </ng-container>

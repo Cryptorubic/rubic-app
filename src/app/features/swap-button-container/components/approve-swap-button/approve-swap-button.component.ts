@@ -8,13 +8,14 @@ import { ApproveSwapButtonService } from '@features/swap-button-container/servic
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApproveSwapButtonComponent {
-  @Output() onApproveClick = new EventEmitter<void>();
+  @Output() readonly onApproveClick = new EventEmitter<void>();
 
-  @Output() onSwapClick = new EventEmitter<void>();
+  @Output() readonly onSwapClick = new EventEmitter<void>();
 
-  public readonly firstItemDisabled$ = this.approveSwapButtonService.firstItemDisabled$;
+  public readonly approveIndicatorDisabled$ =
+    this.approveSwapButtonService.approveIndicatorDisabled$;
 
-  public readonly secondItemDisabled$ = this.approveSwapButtonService.secondItemDisabled$;
+  public readonly swapIndicatorDisabled$ = this.approveSwapButtonService.swapIndicatorDisabled$;
 
   constructor(private readonly approveSwapButtonService: ApproveSwapButtonService) {}
 }

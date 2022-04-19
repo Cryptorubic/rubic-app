@@ -9,7 +9,7 @@ import { ApproveSwapButtonService } from '@features/swap-button-container/servic
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApproveButtonComponent {
-  @Output() onClick = new EventEmitter<void>();
+  @Output() readonly onClick = new EventEmitter<void>();
 
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
 

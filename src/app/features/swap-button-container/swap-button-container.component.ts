@@ -39,11 +39,11 @@ export class SwapButtonContainerComponent {
     this.swapButtonService.buttonText = value;
   }
 
-  @Output() onApproveClick = new EventEmitter<void>();
+  @Output() readonly onApproveClick = new EventEmitter<void>();
 
-  @Output() onSwapClick = new EventEmitter<void>();
+  @Output() readonly onSwapClick = new EventEmitter<void>();
 
-  @Output() onUpdateRateClick = new EventEmitter<void>();
+  @Output() readonly onUpdateRateClick = new EventEmitter<void>();
 
   public readonly user$ = this.authService.getCurrentUser();
 

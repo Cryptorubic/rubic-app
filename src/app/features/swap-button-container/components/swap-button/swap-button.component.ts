@@ -10,7 +10,7 @@ import { SwapButtonContainerService } from '@features/swap-button-container/serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapButtonComponent {
-  @Output() onClick = new EventEmitter<void>();
+  @Output() readonly onClick = new EventEmitter<void>();
 
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
 

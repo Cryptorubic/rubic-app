@@ -23,7 +23,7 @@ export class ApproveSwapButtonService {
     map(tradeStatus => tradeStatus !== TRADE_STATUS.READY_TO_APPROVE)
   );
 
-  public readonly firstItemDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
+  public readonly approveIndicatorDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
     map(
       tradeStatus =>
         tradeStatus === TRADE_STATUS.READY_TO_SWAP ||
@@ -32,7 +32,7 @@ export class ApproveSwapButtonService {
     )
   );
 
-  public readonly secondItemDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
+  public readonly swapIndicatorDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
     map(
       tradeStatus =>
         tradeStatus === TRADE_STATUS.READY_TO_APPROVE ||
