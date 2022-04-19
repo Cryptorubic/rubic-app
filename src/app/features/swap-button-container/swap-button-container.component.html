@@ -23,34 +23,7 @@
       </ng-container>
 
       <ng-template #errorButton>
-        <ng-container *ngLet="isMobile$ | async as isMobile">
-          <ng-container *ngLet="error.type | functionCall: allowChangeNetwork:this as allowChange">
-            <!-- switch network button -->
-            <ng-container *ngIf="allowChange && !isMobile">
-              <app-rubic-button
-                [attr.error]="true"
-                appearance="secondary"
-                [loading]="status === TRADE_STATUS.LOADING"
-                (click)="changeNetwork()"
-              >
-                {{ 'common.switchTo' | translate: (fromBlockchain$ | async) }}
-              </app-rubic-button>
-            </ng-container>
-
-            <!-- error info -->
-            <ng-container *ngIf="!allowChange || isMobile">
-              <app-rubic-button
-                class="error-button"
-                [attr.error]="true"
-                [attr.error-min-max]="error.type | functionCall: isMinMaxError"
-                appearance="secondary"
-                [disabled]="true"
-              >
-                {{ error.text }}
-              </app-rubic-button>
-            </ng-container>
-          </ng-container>
-        </ng-container>
+        <app-error-button></app-error-button>
       </ng-template>
     </ng-container>
   </ng-container>
