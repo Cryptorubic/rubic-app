@@ -8,6 +8,7 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from './components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from './components/smart-routing/smart-routing.component';
+import { SwapButtonContainerModule } from '@features/swap-button-container/swap-button-container.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SmartRoutingComponent } from './components/smart-routing/smart-routing.
     TuiTextfieldControllerModule,
     TuiInputModule,
     InlineSVGModule,
-    TuiHintModule
+    TuiHintModule,
+    SwapButtonContainerModule
   ],
   exports: [CrossChainRoutingBottomFormComponent]
 })

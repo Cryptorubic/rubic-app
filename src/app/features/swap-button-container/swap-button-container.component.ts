@@ -8,19 +8,19 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { HeaderStore } from 'src/app/core/header/services/header.store';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { HeaderStore } from '@core/header/services/header.store';
+import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swap-button-container/services/swap-button-container-errors.service';
-import { ERROR_TYPE } from '@shared/components/buttons/swap-button-container/models/error-type';
+import { SwapButtonContainerErrorsService } from '@features/swap-button-container/services/swap-button-container-errors.service';
+import { ERROR_TYPE } from '@features/swap-button-container/models/error-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 @Component({

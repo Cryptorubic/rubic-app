@@ -33,7 +33,6 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
-import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/swap-button-container/swap-button-container.component';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
 import { PanelErrorContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
@@ -62,8 +61,6 @@ import { RubicContainerComponent } from './components/rubic-container/rubic-cont
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
-import { SwapButtonComponent } from '@shared/components/buttons/swap-button-container/components/swap-button/swap-button.component';
-import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swap-button-container/services/swap-button-container-errors.service';
 
 @NgModule({
   declarations: [
@@ -76,8 +73,6 @@ import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swa
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
-    SwapButtonContainerComponent,
-    SwapButtonComponent,
     RubicTokensComponent,
     RubicRefreshButtonComponent,
     SuccessTxModalComponent,
@@ -156,7 +151,6 @@ import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swa
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     FalsyPipe,
-    SwapButtonContainerComponent,
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,
@@ -179,12 +173,7 @@ import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swa
     CopyContainerComponent,
     FunctionCallPipe
   ],
-  providers: [
-    ScannerLinkPipe,
-    WithRoundPipe,
-    BigNumberFormatPipe,
-    SwapButtonContainerErrorsService
-  ],
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}
