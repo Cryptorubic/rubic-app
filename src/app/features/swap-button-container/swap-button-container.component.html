@@ -1,18 +1,6 @@
-<ng-container>
-  <!-- connect wallet button -->
-  <app-rubic-button
-    *ngIf="needLogin"
-    [id]="idPrefix + 'connect-wallet'"
-    [ngClass]="{ 'grey-background': !tokensFilled }"
-    [loading]="needLoginLoading"
-    [appearance]="tokensFilled ? 'secondary' : 'primary'"
-    (onClick)="onLogin()"
-  >
-    {{ 'navigation.login' | translate }}
-  </app-rubic-button>
-
+<ng-container *ngIf="user$ | async; else connectWalletButton">
   <!-- update rate button -->
-  <ng-container *ngIf="!needLogin && status === TRADE_STATUS.OLD_TRADE_DATA">
+  <ng-container *ngIf="status === TRADE_STATUS.OLD_TRADE_DATA">
     <app-rubic-button
       [attr.rate-is-updated]="true"
       (click)="updateRatesClick.emit()"
@@ -22,7 +10,7 @@
     </app-rubic-button>
   </ng-container>
 
-  <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
+  <ng-container *ngIf="status !== TRADE_STATUS.OLD_TRADE_DATA">
     <ng-container *ngLet="error$ | async as error">
       <ng-container *ngIf="!error.text || error.loading">
         <!-- with approve button -->
@@ -137,3 +125,7 @@
     </ng-container>
   </ng-container>
 </ng-container>
+
+<ng-template #connectWalletButton>
+  <app-connect-wallet-button></app-connect-wallet-button>
+</ng-template>

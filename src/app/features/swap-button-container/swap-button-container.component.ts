@@ -12,8 +12,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { IframeService } from '@core/services/iframe/iframe.service';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -22,6 +20,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swap-button-container/services/swap-button-container-errors.service';
 import { ERROR_TYPE } from '@features/swap-button-container/models/error-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { SwapButtonContainerService } from '@features/swap-button-container/services/swap-button-container.service';
 
 @Component({
   selector: 'app-swap-button-container',
@@ -37,7 +36,13 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() formService: SwapFormService;
 
-  @Input() idPrefix = '';
+  @Input() set idPrefix(value: string) {
+    this.swapButtonContainerService.idPrefix = value || '';
+  }
+
+  get idPrefix(): string {
+    return this.swapButtonContainerService.idPrefix;
+  }
 
   @Input() set minAmount(value: false | number | BigNumber) {
     this.swapButtonContainerErrorsService.setMinAmount(value);
@@ -59,24 +64,19 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public fromBlockchain: BlockchainName;
 
-  public needLogin: boolean;
-
-  public needLoginLoading: boolean;
-
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  public tokensFilled: boolean;
+  public readonly user$ = this.authService.getCurrentUser();
 
   public readonly error$ = this.swapButtonContainerErrorsService.error$;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly swapButtonContainerService: SwapButtonContainerService,
+    private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly walletsModalService: WalletsModalService,
-    private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
-    private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -85,44 +85,12 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private setupSubscriptions(): void {
-    if (this.iframeService.isIframe) {
-      this.needLoginLoading = false;
-      this.needLogin = true;
-
-      this.authService
-        .getCurrentUser()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(user => {
-          this.needLogin = !user?.address;
-          this.cdr.markForCheck();
-        });
-    } else {
-      this.needLoginLoading = true;
-      this.needLogin = true;
-
-      this.authService
-        .getCurrentUser()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(user => {
-          if (user !== undefined) {
-            this.needLoginLoading = false;
-            this.needLogin = !user?.address;
-          }
-          this.cdr.markForCheck();
-        });
-    }
-
     this.formService.inputValueChanges
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
         this.fromBlockchain = form.fromBlockchain;
-        this.tokensFilled = Boolean(form.fromToken && form.toToken);
         this.cdr.markForCheck();
       });
-  }
-
-  public onLogin(): void {
-    this.walletsModalService.open().subscribe();
   }
 
   public allowChangeNetwork(err: ERROR_TYPE): boolean {
