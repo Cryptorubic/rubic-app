@@ -53,7 +53,7 @@ export class SwapButtonService {
   );
 
   /**
-   * Return true, if warning is medium.
+   * Returns true, if warning is medium.
    */
   public readonly warningMedium$ = combineLatest([
     this.swapButtonContainerService.tradeStatus$,
@@ -68,7 +68,7 @@ export class SwapButtonService {
   );
 
   /**
-   * Return true, if warning is high.
+   * Returns true, if warning is high.
    */
   public readonly warningHigh$ = combineLatest([
     this.swapButtonContainerService.tradeStatus$,
