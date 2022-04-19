@@ -36,9 +36,9 @@
     "bridge": "Bridge",
     "transactionDetails": "Transaktions details",
     "tagline": {
-      "firstText": "Multi-Chain swaps for ",
+      "firstText": "Multi-Chain Swaps for ",
       "numbers": "15,000+ ",
-      "secondText": "assets"
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -595,18 +595,18 @@
       "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert (ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird).",
       "multihopsTitle": "Multihops deaktivieren",
       "multihops": "Ihr Tausch wird nur mit direkten Paaren abgeschlossen.",
-      "rubicOptimisationTitle": "Use Rubic optimization",
+      "rubicOptimisationTitle": "Use Rubic Optimization",
       "rubicOptimisation": "Die Rubic-Optimierung ist standardmäßig aktiviert. Sie können es jedoch deaktivieren, damit die optimale Handelsroute ausgeführt wird, ohne die Gaskosten zu berücksichtigen.",
       "deadlineTitle": "Transaction deadline",
       "deadline": "Ihre Transaktion wird zurückgesetzt, wenn sie länger als diesen Zeitraum aussteht.",
-      "autoRefreshTitle": "Auto refresh",
+      "autoRefreshTitle": "Auto-refresh",
       "autoRefresh": "Aktualisiert Handelsparameter alle 15 Sekunden."
     },
     "bridge": {
       "walletAddress": "Die Wallet-Adresse in der TRON-Blockchain, auf der die Token bereitgestellt werden."
     },
     "crossChainRouting": {
-      "autoRefreshTitle": "Auto refresh",
+      "autoRefreshTitle": "Auto-refresh",
       "autoRefresh": "Aktualisiert Handelsparameter alle 15 Sekunden.",
       "slippageTitle": "Slippage toleranz",
       "slippage": "Ihre Transaktion wird storniert, wenn sich der Preis um mehr als den eingegebenen Prozentsatz ungünstig ändert. (Ein niedrigerer Prozentsatz verringert die Wahrscheinlichkeit, dass Ihre Transaktion gefrontrunned wird)",
