@@ -36,10 +36,10 @@
     <div class="statistics__param">
       <div class="statistics__param-label">{{ 'lp.balance' | translate }}</div>
       <div class="statistics__param-value" *ngLet="balance$ | async as balance">
+        $
         {{
           balance ? (balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) : '--.--'
         }}
-        $
       </div>
     </div>
   </div>
