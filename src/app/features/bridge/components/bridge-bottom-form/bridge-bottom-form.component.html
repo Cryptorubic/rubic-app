@@ -15,11 +15,10 @@
       <app-swap-button-container
         [needApprove]="needApprove"
         [status]="tradeStatus"
-        [formService]="swapFormService"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="handleClick('swap')"
-        (approveClick)="handleClick('approve')"
+        (onSwapClick)="handleClick('swap')"
+        (onApproveClick)="handleClick('approve')"
       ></app-swap-button-container>
     </div>
   </div>

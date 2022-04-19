@@ -23,12 +23,12 @@
                   error.loading
                 "
                 [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
-                (onClick)="approveClick.emit()"
+                (onClick)="onApproveClick.emit()"
               >
                 Approve
               </app-rubic-button>
 
-              <app-swap-button (onClick)="swapClick.emit()"></app-swap-button>
+              <app-swap-button (onClick)="onSwapClick.emit()"></app-swap-button>
 
               <div class="buttons__timeline-container timeline">
                 <span class="timeline__connector"></span>
@@ -66,14 +66,14 @@
                 error.loading
               "
               [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
-              (onClick)="approveClick.emit()"
+              (onClick)="onApproveClick.emit()"
             >
               {{ 'Approve' }}
             </app-rubic-button>
           </ng-container>
         </ng-container>
 
-        <app-swap-button *ngIf="!needApprove" (onClick)="swapClick.emit()"></app-swap-button>
+        <app-swap-button *ngIf="!needApprove" (onClick)="onSwapClick.emit()"></app-swap-button>
       </ng-container>
 
       <ng-container *ngLet="isMobile$ | async as isMobile">
@@ -87,7 +87,7 @@
                 [loading]="status === TRADE_STATUS.LOADING"
                 (click)="changeNetwork()"
               >
-                {{ 'common.switchTo' | translate: fromBlockchain }}
+                {{ 'common.switchTo' | translate: (fromBlockchain$ | async) }}
               </app-rubic-button>
             </ng-container>
 

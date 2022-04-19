@@ -97,10 +97,9 @@
   <app-swap-button-container
     [needApprove]="needApprove"
     [status]="tradeStatus"
-    [formService]="swapFormService"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
-    (swapClick)="createTrade()"
-    (approveClick)="approveTrade()"
+    (onSwapClick)="createTrade()"
+    (onApproveClick)="approveTrade()"
     (onUpdateRateClick)="onSetHiddenData()"
   ></app-swap-button-container>
 </div>
