@@ -254,8 +254,7 @@ export class LiquidityProvidingService {
             this.getTotalStaked()
           ]);
         } else {
-          this.setStatisticsLoading(false);
-          return EMPTY;
+          return forkJoin([this.getTotalStaked(), this.getApr()]);
         }
       }),
       catchError((error: unknown) => {

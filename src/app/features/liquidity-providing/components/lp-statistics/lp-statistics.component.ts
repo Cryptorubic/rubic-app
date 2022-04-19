@@ -64,12 +64,10 @@ export class LpStatisticsComponent implements OnInit {
   }
 
   public refreshStatistics(): void {
+    this.lpService.setStatisticsLoading(true);
     this.lpService
       .getStatistics()
-      .pipe(
-        switchMap(() => this.lpService.getAprAndTotalStaked()),
-        take(1)
-      )
+      .pipe(take(1))
       .subscribe(() => {
         this.lpService.setStatisticsLoading(false);
         this.cdr.detectChanges();
