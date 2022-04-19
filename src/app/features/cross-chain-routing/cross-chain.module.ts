@@ -8,6 +8,8 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from './components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from './components/smart-routing/smart-routing.component';
+import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
+import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { SmartRoutingComponent } from './components/smart-routing/smart-routing.
     InlineSVGModule,
     TuiHintModule
   ],
-  exports: [CrossChainRoutingBottomFormComponent]
+  exports: [CrossChainRoutingBottomFormComponent],
+  providers: [CelerService, CelerApiService]
 })
 export class CrossChainModule {}
