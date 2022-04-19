@@ -23,8 +23,8 @@
   </ng-container>
 
   <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
-    <ng-container *ngLet="errorText$ | async as errorText">
-      <ng-container *ngIf="errorText === null || checkingOnErrors">
+    <ng-container *ngLet="error$ | async as error">
+      <ng-container *ngIf="!error.text || error.loading">
         <!-- with approve button -->
         <ng-container *ngIf="needApprove">
           <ng-container *noFrame>
@@ -35,7 +35,7 @@
                 [loading]="
                   status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
                   status === TRADE_STATUS.LOADING ||
-                  checkingOnErrors
+                  error.loading
                 "
                 [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
                 (onClick)="approveClick.emit()"
@@ -46,7 +46,7 @@
               <app-swap-button
                 [idPrefix]="idPrefix"
                 [status]="status"
-                [checkingOnErrors]="checkingOnErrors"
+                [checkingOnErrors]="error.loading"
                 [buttonText]="buttonText"
                 (onClick)="swapClick.emit()"
               ></app-swap-button>
@@ -84,7 +84,7 @@
               [loading]="
                 status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
                 status === TRADE_STATUS.LOADING ||
-                checkingOnErrors
+                error.loading
               "
               [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
               (onClick)="approveClick.emit()"
@@ -98,43 +98,39 @@
           *ngIf="!needApprove"
           [idPrefix]="idPrefix"
           [status]="status"
-          [checkingOnErrors]="checkingOnErrors"
+          [checkingOnErrors]="error.loading"
           [buttonText]="buttonText"
           (onClick)="swapClick.emit()"
         ></app-swap-button>
       </ng-container>
 
       <ng-container *ngLet="isMobile$ | async as isMobile">
-        <ng-container *ngIf="errorText && !checkingOnErrors">
-          <!-- switch network button -->
-          <ng-container
-            *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork && !isMobile"
-          >
-            <app-rubic-button
-              [attr.error]="true"
-              appearance="secondary"
-              [loading]="status === TRADE_STATUS.LOADING"
-              (click)="changeNetwork()"
-            >
-              {{ switchNetworkText }}
-            </app-rubic-button>
-          </ng-container>
+        <ng-container *ngIf="error.text && !error.loading">
+          <ng-container *ngLet="error.type | functionCall: allowChangeNetwork:this as allowChange">
+            <!-- switch network button -->
+            <ng-container *ngIf="allowChange && !isMobile">
+              <app-rubic-button
+                [attr.error]="true"
+                appearance="secondary"
+                [loading]="status === TRADE_STATUS.LOADING"
+                (click)="changeNetwork()"
+              >
+                {{ 'common.switchTo' | translate: fromBlockchain }}
+              </app-rubic-button>
+            </ng-container>
 
-          <!-- error info -->
-          <ng-container
-            *ngIf="!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || isMobile || !allowChangeNetwork"
-          >
-            <app-rubic-button
-              class="error-button"
-              [attr.error]="true"
-              [attr.error-min-max]="
-                errorType[ERROR_TYPE.LESS_THAN_MINIMUM] || errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]
-              "
-              appearance="secondary"
-              [disabled]="true"
-            >
-              {{ errorText }}
-            </app-rubic-button>
+            <!-- error info -->
+            <ng-container *ngIf="!allowChange || isMobile">
+              <app-rubic-button
+                class="error-button"
+                [attr.error]="true"
+                [attr.error-min-max]="error.type | functionCall: isMinMaxError"
+                appearance="secondary"
+                [disabled]="true"
+              >
+                {{ error.text }}
+              </app-rubic-button>
+            </ng-container>
           </ng-container>
         </ng-container>
       </ng-container>

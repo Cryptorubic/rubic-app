@@ -98,7 +98,6 @@
     [needApprove]="needApprove"
     [status]="tradeStatus"
     [formService]="swapFormService"
-    [fromAmount]="fromAmount"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"

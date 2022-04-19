@@ -53,7 +53,6 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
@@ -63,6 +62,8 @@ import { RubicContainerComponent } from './components/rubic-container/rubic-cont
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { SwapButtonComponent } from '@shared/components/buttons/swap-button-container/components/swap-button/swap-button.component';
+import { SwapButtonContainerErrorsService } from '@shared/components/buttons/swap-button-container/services/swap-button-container-errors.service';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     SwapButtonContainerComponent,
+    SwapButtonComponent,
     RubicTokensComponent,
     RubicRefreshButtonComponent,
     SuccessTxModalComponent,
@@ -84,16 +86,13 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
-    SwapButtonComponent,
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
     IframeBlockchainIndicatorComponent,
     RubicContainerComponent,
-    SwapButtonComponent,
     RotatingIconComponent,
     InfoHintComponent,
-    SwapButtonComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
@@ -180,7 +179,12 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     CopyContainerComponent,
     FunctionCallPipe
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
+  providers: [
+    ScannerLinkPipe,
+    WithRoundPipe,
+    BigNumberFormatPipe,
+    SwapButtonContainerErrorsService
+  ],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}
