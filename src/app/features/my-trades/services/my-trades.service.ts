@@ -1,6 +1,24 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, filter, first, map, switchMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  throwError
+} from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  defaultIfEmpty,
+  filter,
+  first,
+  map,
+  mergeMap,
+  switchMap
+} from 'rxjs/operators';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -16,6 +34,17 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TransactionReceipt } from 'web3-eth';
+import { EthereumPolygonBridgeService } from '@features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
+
+interface HashPair {
+  fromTransactionHash: string;
+  toTransactionHash: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +70,8 @@ export class MyTradesService {
     private readonly scannerLinkPipe: ScannerLinkPipe,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
   ) {
     this.initWarningSubscription();
   }
@@ -83,9 +113,12 @@ export class MyTradesService {
           return EMPTY;
         }
 
-        return forkJoin([this.getCrossChainTrades(page, pageSize)]).pipe(
-          map(([tableData]) => {
-            const adjustedData = tableData.trades.flat().map(trade => ({
+        return forkJoin([
+          this.getBridgeTransactions(),
+          this.getCrossChainTrades(page, pageSize)
+        ]).pipe(
+          map(([bridgeTrades, tableData]) => {
+            const adjustedData = bridgeTrades.concat(tableData.trades.flat()).map(trade => ({
               ...trade,
               transactionHashScanUrl: this.scannerLinkPipe.transform(
                 trade.fromTransactionHash || trade.toTransactionHash,
@@ -150,9 +183,100 @@ export class MyTradesService {
     );
   }
 
+  private getBridgeTransactions(): Observable<TableTrade[]> {
+    return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
+      switchMap(async trades =>
+        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
+      ),
+      mergeMap(bridgeTrades => {
+        const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
+          return of({
+            fromTransactionHash: trade.fromTransactionHash,
+            toTransactionHash: trade.toTransactionHash
+          });
+        });
+        return forkJoin(sources).pipe(
+          map((txHashes: HashPair[]) =>
+            txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
+              ...bridgeTrades[index],
+              fromTransactionHash,
+              toTransactionHash
+            }))
+          ),
+          defaultIfEmpty([])
+        );
+      }),
+      catchError((err: unknown) => {
+        console.debug(err);
+        this._warningHandler$.next();
+        return of([]);
+      })
+    );
+  }
+
+  private async prepareBridgeData(trade: TableTrade): Promise<TableTrade> {
+    let fromSymbol = trade.fromToken.symbol;
+    let toSymbol = trade.toToken.symbol;
+
+    if (trade.provider === 'polygon') {
+      [fromSymbol, toSymbol] = await Promise.all([
+        (
+          await this.tokensService.getTokenByAddress({
+            address: fromSymbol,
+            blockchain: trade.fromToken.blockchain
+          })
+        ).symbol,
+        (
+          await this.tokensService.getTokenByAddress({
+            address: toSymbol,
+            blockchain: trade.toToken.blockchain
+          })
+        ).symbol
+      ]);
+
+      if (!fromSymbol || !toSymbol) {
+        return null;
+      }
+    }
+
+    return {
+      ...trade,
+      fromToken: {
+        ...trade.fromToken,
+        symbol: fromSymbol
+      },
+      toToken: {
+        ...trade.toToken,
+        symbol: toSymbol
+      }
+    };
+  }
+
   public getTableTradeByDate(date: Date): TableTrade {
     return this._tableData$
       .getValue()
       ?.trades.find(trade => trade.date.getTime() === date.getTime());
+  }
+
+  public depositPolygonBridgeTradeAfterCheckpoint(
+    burnTransactionHash: string,
+    onTransactionHash: (hash: string) => void
+  ): Observable<TransactionReceipt> {
+    try {
+      this.walletConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+    } catch (err) {
+      return throwError(err);
+    }
+
+    return this.ethereumPolygonBridgeService
+      .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
+      .pipe(
+        catchError((err: unknown) => {
+          if ((err as RubicError<ERROR_TYPE>)?.code === 4001) {
+            return throwError(new UserRejectError());
+          }
+          return throwError(err);
+        })
+      );
   }
 }

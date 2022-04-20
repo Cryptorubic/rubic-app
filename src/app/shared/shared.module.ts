@@ -33,7 +33,6 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
-import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/swap-button-container/swap-button-container.component';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
 import { PanelErrorContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
@@ -53,7 +52,6 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
@@ -75,7 +73,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
-    SwapButtonContainerComponent,
     RubicTokensComponent,
     RubicRefreshButtonComponent,
     SuccessTxModalComponent,
@@ -84,16 +81,13 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
-    SwapButtonComponent,
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
     IframeBlockchainIndicatorComponent,
     RubicContainerComponent,
-    SwapButtonComponent,
     RotatingIconComponent,
     InfoHintComponent,
-    SwapButtonComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
@@ -157,7 +151,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     FalsyPipe,
-    SwapButtonContainerComponent,
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,

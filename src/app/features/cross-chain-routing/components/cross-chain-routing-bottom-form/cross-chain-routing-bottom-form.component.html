@@ -37,13 +37,11 @@
       <app-swap-button-container
         [needApprove]="needApprove"
         [status]="tradeStatus"
-        [formService]="swapFormService"
-        [fromAmount]="fromAmount"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="createTrade()"
-        (approveClick)="approveTrade()"
-        (updateRatesClick)="onSetHiddenData()"
+        (onSwapClick)="createTrade()"
+        (onApproveClick)="approveTrade()"
+        (onUpdateRateClick)="onSetHiddenData()"
       ></app-swap-button-container>
     </div>
   </div>

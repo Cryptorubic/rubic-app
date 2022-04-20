@@ -71,8 +71,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public toToken: TokenAmount;
 
-  public fromAmount: BigNumber;
-
   private toAmount: BigNumber;
 
   private _tradeStatus: TRADE_STATUS;
@@ -173,7 +171,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private setFormValues(form: SwapFormInput): void {
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
-    this.fromAmount = form.fromAmount;
 
     if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
       this.smartRouting = null;

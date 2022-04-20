@@ -46,7 +46,8 @@ export class BridgeSwapInfoComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.averageTimeInProvider = {
-      [BRIDGE_PROVIDER.SWAP_RBC]: '5m'
+      [BRIDGE_PROVIDER.SWAP_RBC]: '5m',
+      [BRIDGE_PROVIDER.POLYGON]: '30m'
     };
   }
 
