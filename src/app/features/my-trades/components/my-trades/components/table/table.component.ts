@@ -15,6 +15,7 @@ import { COLUMNS } from '@features/my-trades/components/my-trades/constants/colu
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 
 @Component({
   selector: 'app-table',
@@ -31,6 +32,8 @@ export class TableComponent extends AbstractTableDataComponent {
   @Input() tableData$: Observable<TableRowsData>;
 
   @Output() onPageChange = new EventEmitter<PageData>();
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
