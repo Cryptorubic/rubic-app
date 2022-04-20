@@ -35,8 +35,7 @@ export class HeaderStore {
 
   constructor() {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
-    const mobileWidth = 1024;
-    this.mobileWidth = mobileWidth;
+    this.mobileWidth = 1023;
     this.isConfirmModalOpened$ = new BehaviorSubject<boolean>(false);
     this.isMobileMenuOpened$ = new BehaviorSubject<boolean>(false);
     this.isMobile$ = new BehaviorSubject<boolean>(false);

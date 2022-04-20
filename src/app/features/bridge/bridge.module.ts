@@ -7,11 +7,12 @@ import { EthereumBinanceRubicBridgeProviderService } from 'src/app/features/brid
 import { BridgeBottomFormComponent } from './components/bridge-bottom-form/bridge-bottom-form.component';
 import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
+import { SwapButtonContainerModule } from '@features/swap-button-container/swap-button-container.module';
 
 @NgModule({
   declarations: [BridgeBottomFormComponent],
   exports: [BridgeBottomFormComponent],
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, SwapButtonContainerModule],
   providers: [
     BridgeService,
     EthereumBinanceBridgeProviderService,
