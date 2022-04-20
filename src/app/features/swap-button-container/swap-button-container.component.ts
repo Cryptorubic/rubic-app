@@ -28,11 +28,11 @@ export class SwapButtonContainerComponent {
   }
 
   @Input() set minAmount(value: false | number | BigNumber) {
-    this.swapButtonContainerErrorsService.setMinAmount(value);
+    this.swapButtonContainerErrorsService.setMinAmountError(value);
   }
 
   @Input() set maxAmount(value: false | number | BigNumber) {
-    this.swapButtonContainerErrorsService.setMaxAmount(value);
+    this.swapButtonContainerErrorsService.setMaxAmountError(value);
   }
 
   @Input() set buttonText(value: string) {

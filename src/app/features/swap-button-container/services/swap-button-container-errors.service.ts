@@ -14,6 +14,8 @@ import { TOKENS } from '@features/instant-trade/services/instant-trade-service/p
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -53,12 +55,17 @@ export class SwapButtonContainerErrorsService {
 
   private minAmount: string;
 
+  private minAmountTokenSymbol: string;
+
   private maxAmount: string;
+
+  private maxAmountTokenSymbol: string;
 
   private translateSub$: Subscription;
 
   constructor(
     private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -68,6 +75,7 @@ export class SwapButtonContainerErrorsService {
     private readonly ngZone: NgZone
   ) {
     this.subscribeOnSwapForm();
+    this.subscribeOnSwapMode();
     this.subscribeOnWalletNetwork();
     this.subscribeOnAuth();
     this.subscribeOnTargetNetworkAddress();
@@ -87,6 +95,15 @@ export class SwapButtonContainerErrorsService {
 
         this.updateError();
       });
+  }
+
+  private subscribeOnSwapMode(): void {
+    this.swapsService.swapMode$.subscribe(swapMode => {
+      if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.setMinAmountError(false);
+        this.setMaxAmountError(false);
+      }
+    });
   }
 
   private subscribeOnWalletNetwork(): void {
@@ -203,7 +220,7 @@ export class SwapButtonContainerErrorsService {
     let type: ERROR_TYPE | null = null;
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
-    const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain } = this.swapFormService.inputValue;
 
     switch (true) {
       // @TODO Solana. Remove after blockchain stabilization.
@@ -218,7 +235,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromToken?.blockchain)?.label || ''
+            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
           }
         };
         break;
@@ -232,7 +249,7 @@ export class SwapButtonContainerErrorsService {
         type = ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: fromBlockchain || fromToken?.blockchain }
+          interpolateParams: { blockchain: fromBlockchain }
         };
         break;
       }
@@ -248,14 +265,14 @@ export class SwapButtonContainerErrorsService {
         type = ERROR_TYPE.LESS_THAN_MINIMUM;
         translateParams = {
           key: 'errors.minimumAmount',
-          interpolateParams: { amount: this.minAmount, token: fromToken?.symbol }
+          interpolateParams: { amount: this.minAmount, token: this.minAmountTokenSymbol }
         };
         break;
       case err[ERROR_TYPE.MORE_THAN_MAXIMUM]:
         type = ERROR_TYPE.MORE_THAN_MAXIMUM;
         translateParams = {
           key: 'errors.maximumAmount',
-          interpolateParams: { amount: this.maxAmount, token: fromToken?.symbol }
+          interpolateParams: { amount: this.maxAmount, token: this.maxAmountTokenSymbol }
         };
         break;
       case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
@@ -296,19 +313,17 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
-  /**
-   * Sets minimum amount for swap.
-   */
-  public setMinAmount(value: false | number | BigNumber): void {
-    if (value) {
-      if (typeof value === 'number') {
-        this.minAmount = value.toString();
+  public setMinAmountError(minAmount: false | number | BigNumber): void {
+    if (minAmount) {
+      if (typeof minAmount === 'number') {
+        this.minAmount = minAmount.toString();
       } else {
         this.minAmount = this.withRoundPipe.transform(
-          value.toFormat(BIG_NUMBER_FORMAT),
+          minAmount.toFormat(BIG_NUMBER_FORMAT),
           'toClosestValue'
         );
       }
+      this.minAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
@@ -316,20 +331,18 @@ export class SwapButtonContainerErrorsService {
     this.updateError();
   }
 
-  /**
-   * Sets maximum amount for swap.
-   */
-  public setMaxAmount(value: false | number | BigNumber): void {
-    if (value) {
-      if (typeof value === 'number') {
-        this.maxAmount = value.toString();
+  public setMaxAmountError(maxAmount: false | number | BigNumber): void {
+    if (maxAmount) {
+      if (typeof maxAmount === 'number') {
+        this.maxAmount = maxAmount.toString();
       } else {
         this.maxAmount = this.withRoundPipe.transform(
-          value.toFormat(BIG_NUMBER_FORMAT),
+          maxAmount.toFormat(BIG_NUMBER_FORMAT),
           'toClosestValue',
           { roundingMode: BigNumber.ROUND_HALF_UP }
         );
       }
+      this.maxAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
