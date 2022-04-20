@@ -7,10 +7,20 @@ import networks from '@app/shared/constants/blockchain/networks';
 import { EthLikeBlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
+import { pluck } from 'rxjs/operators';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { SmartRouting } from '../models/smart-routing.interface';
 import { CelerApiService } from './celer-api.service';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
+import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
+import { ProviderType } from './models/provider-type.enum';
+import { SwapInfoDest } from './models/swap-info-dest.interface';
+
+const INTEGRATOR_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+const EMPTY_DATA = '0x';
+
+const CELER_SLIPPAGE_ADDITIONAL_VALUE = 1.01;
 
 @Injectable()
 export class CelerService {
@@ -60,7 +70,63 @@ export class CelerService {
   //   return;
   // }
 
-  private getBlockchainId(blockchain: EthLikeBlockchainName): number {
+  private getDstSwapObject(providerType: ProviderType): SwapInfoDest {
+    const version = this.getProviderIndex(providerType);
+    const dstSwap: SwapInfoDest = {
+      dex: '',
+      integrator: INTEGRATOR_ADDRESS,
+      version,
+      path: [''],
+      dataInchOrPathV3: EMPTY_DATA,
+      deadline: 999999999999999,
+      amountOutMinimum: 123
+    };
+    return dstSwap;
+  }
+
+  public async calculateTrade(
+    srcChainId: number,
+    dstChainId: number,
+    tokenSymbol: string,
+    slippageTolerance: number,
+    amt: string
+  ): Promise<EstimateAmtResponse> {
+    return await this.celerApiService
+      .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, slippageTolerance, amt)
+      .toPromise();
+  }
+
+  public async getCelerSlippage(
+    srcChainId: number,
+    dstChainId: number,
+    tokenSymbol: string,
+    amt: string
+  ): Promise<number> {
+    const bridgeRate = await this.celerApiService
+      .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, 0, amt)
+      .pipe(pluck('bridge_rate'))
+      .toPromise();
+
+    return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
+  }
+
+  public checkIsCelerContractsPaused(
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName
+  ): Promise<boolean[]> {
+    const checkContract = (blockchain: EthLikeBlockchainName): Promise<boolean> => {
+      const contractAddress = this.getCelerContractAddress(blockchain);
+      return this.publicBlockchainAdapterService[blockchain].callContractMethod<boolean>(
+        contractAddress,
+        [],
+        'isPaused'
+      );
+    };
+
+    return Promise.all([checkContract(toBlockchain), checkContract(fromBlockchain)]);
+  }
+
+  public getBlockchainId(blockchain: EthLikeBlockchainName): number {
     return networks.find(network => network.name === blockchain).id;
   }
 
@@ -78,5 +144,7 @@ export class CelerService {
     });
   }
 
-  public async calculateTrade(): Promise<void> {}
+  private getProviderIndex(providerType: ProviderType): number {
+    return Object.values(ProviderType).indexOf(providerType);
+  }
 }

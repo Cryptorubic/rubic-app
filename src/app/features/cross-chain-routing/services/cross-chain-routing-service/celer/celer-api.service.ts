@@ -18,7 +18,7 @@ export class CelerApiService {
     usr_addr?: string,
     is_pegged?: boolean
   ): Observable<EstimateAmtResponse> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .append('src_chain_id', src_chain_id)
       .append('dst_chain_id', dst_chain_id)
       .append('token_symbol', token_symbol)
@@ -26,11 +26,11 @@ export class CelerApiService {
       .append('amt', amt);
 
     if (usr_addr) {
-      params.append('usr_addr', usr_addr);
+      params = params.append('usr_addr', usr_addr);
     }
 
     if (is_pegged) {
-      params.append('is_pegged', is_pegged);
+      params = params.append('is_pegged', is_pegged);
     }
 
     return this.httpClient.get<EstimateAmtResponse>(`${this.celerApiBaseUrl}/v2/estimateAmt`, {
