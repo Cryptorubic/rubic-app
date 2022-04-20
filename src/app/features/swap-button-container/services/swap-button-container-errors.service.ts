@@ -206,6 +206,13 @@ export class SwapButtonContainerErrorsService {
     const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
 
     switch (true) {
+      // @TODO Solana. Remove after blockchain stabilization.
+      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
+        type = ERROR_TYPE.SOLANA_UNAVAILABLE;
+        translateParams = {
+          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+        };
+        break;
       case err[ERROR_TYPE.WRONG_WALLET]: {
         type = ERROR_TYPE.WRONG_WALLET;
         translateParams = {
@@ -216,21 +223,6 @@ export class SwapButtonContainerErrorsService {
         };
         break;
       }
-      // @TODO Solana. Remove after blockchain stabilization.
-      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
-        type = ERROR_TYPE.SOLANA_UNAVAILABLE;
-        translateParams = {
-          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
-        };
-        break;
-      case err[ERROR_TYPE.NO_AMOUNT]:
-        type = ERROR_TYPE.NO_AMOUNT;
-        translateParams = { key: 'errors.noEnteredAmount' };
-        break;
-      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
-        translateParams = { key: 'errors.InsufficientBalance' };
-        break;
       case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
         type = ERROR_TYPE.MULTICHAIN_WALLET;
         translateParams = { key: 'errors.multichainWallet' };
@@ -244,6 +236,14 @@ export class SwapButtonContainerErrorsService {
         };
         break;
       }
+      case err[ERROR_TYPE.NO_AMOUNT]:
+        type = ERROR_TYPE.NO_AMOUNT;
+        translateParams = { key: 'errors.noEnteredAmount' };
+        break;
+      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
+        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
+        translateParams = { key: 'errors.InsufficientBalance' };
+        break;
       case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
         type = ERROR_TYPE.LESS_THAN_MINIMUM;
         translateParams = {
