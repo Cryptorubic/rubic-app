@@ -30,6 +30,7 @@
         *ngIf="!isDesktop && data"
         [tableData$]="tableData$"
         (onPageChange)="onPageChange($event)"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
       ></app-accordion>
 
       <app-table
@@ -37,6 +38,7 @@
         [loading]="loading"
         [tableData$]="tableData$"
         (onPageChange)="onPageChange($event)"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
       ></app-table>
     </div>
   </tui-loader>
