@@ -37,7 +37,7 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
 
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
-  private readonly apiBaseUrl = 'https://api.1inch.exchange/v4.0/';
+  private readonly apiBaseUrl = 'https://api-rubic.1inch.io/v4.0/';
 
   private supportedTokens: string[] = [];
 
@@ -50,15 +50,12 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
   }
 
   private getOneInchTokenSpecificAddresses(
-    fromTokenAddress: string,
-    toTokenAddress: string
+    fromAddress: string,
+    toAddress: string
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    if (fromTokenAddress === NATIVE_TOKEN_ADDRESS) {
-      fromTokenAddress = this.oneInchNativeAddress;
-    }
-    if (toTokenAddress === NATIVE_TOKEN_ADDRESS) {
-      toTokenAddress = this.oneInchNativeAddress;
-    }
+    const nativeAddress = this.oneInchNativeAddress;
+    const fromTokenAddress = fromAddress === NATIVE_TOKEN_ADDRESS ? nativeAddress : fromAddress;
+    const toTokenAddress = toAddress === NATIVE_TOKEN_ADDRESS ? nativeAddress : toAddress;
     return { fromTokenAddress, toTokenAddress };
   }
 
@@ -69,9 +66,9 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(this.blockchain).id;
     const supportedTokensByBlockchain = await this.httpClient
-      .get(`${this.apiBaseUrl}${blockchainId}/tokens`)
+      .get<OneinchTokensResponse>(`${this.apiBaseUrl}${blockchainId}/tokens`)
       .pipe(
-        map((response: OneinchTokensResponse) =>
+        map(response =>
           Object.keys(response.tokens).map(tokenAddress => tokenAddress.toLowerCase())
         )
       )
@@ -310,10 +307,10 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
       swapTradeParams.params.mainRouteParts = '1';
     }
 
-    const oneInchTrade = (await this.httpClient
-      .get(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
+    const oneInchTrade = await this.httpClient
+      .get<OneinchSwapResponse>(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
       .pipe(catchError((err: unknown) => this.specifyError(err as HttpErrorResponse, blockchain)))
-      .toPromise()) as OneinchSwapResponse;
+      .toPromise();
 
     return {
       to: oneInchTrade.tx.to,
