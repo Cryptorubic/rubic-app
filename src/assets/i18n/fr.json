@@ -36,9 +36,9 @@
     "bridge": "Bridge",
     "transactionDetails": "Détails de la transaction",
     "tagline": {
-      "firstText": "Multi-Chain swaps for ",
+      "firstText": "Multi-Chain Swaps for ",
       "numbers": "15,000+ ",
-      "secondText": "assets"
+      "secondText": "Assets"
     }
   },
   "errors": {
