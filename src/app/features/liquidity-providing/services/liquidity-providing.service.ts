@@ -405,9 +405,13 @@ export class LiquidityProvidingService {
         [tokenId]
       )
     ).pipe(
-      catchError((error: unknown) => {
-        this.errorService.catchAnyError(error as Error);
-        return EMPTY;
+      switchMap((hash: string) => this.waitForReceipt(hash)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
+          return EMPTY;
+        } else {
+          return of(receipt.status);
+        }
       }),
       tap(() => {
         const updatedDeposits = this.deposits.map(deposit => {

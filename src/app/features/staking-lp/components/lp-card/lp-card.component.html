@@ -24,7 +24,7 @@
   </div>
   <div class="statuses">
     <app-status-badge
-      *ngIf="startTime | functionCall: isInPast:this"
+      *ngIf="start | functionCall: isInPast:this"
       type="inactive"
       [text]="'Start: ' + (start | date: (isMobile ? 'mediumDate' : 'LLL dd, HH:mm'))"
     ></app-status-badge>

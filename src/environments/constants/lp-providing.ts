@@ -15,7 +15,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0x7C40e7Ea7CD3311c08bBCb4CA279f585bb2eb70e',
+  contractAddress: '0x0862ea46C253a166acd48dB7FBd7C8FE26329484',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   minEnterAmount: 5,

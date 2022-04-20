@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
 
 @Component({
@@ -45,16 +46,17 @@ export class LpStatisticsComponent implements OnInit {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),
-        tap(address => {
+        switchMap(address => {
           if (address === null) {
             this.lpService.resetStatistics();
+            this.lpService.setStatisticsLoading(false);
+            return EMPTY;
+          } else {
+            return this.lpService
+              .getAprAndTotalStaked()
+              .pipe(switchMap(() => this.lpService.getStatistics()));
           }
         }),
-        switchMap(() =>
-          this.lpService
-            .getAprAndTotalStaked()
-            .pipe(switchMap(() => this.lpService.getStatistics()))
-        ),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
