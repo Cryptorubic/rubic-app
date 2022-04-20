@@ -7,7 +7,7 @@
     [apr]="27"
     [poolLimit]="800000"
     [balance]="lpAprAndBalances.balance.roundOne"
-    [startTime]="'04.01.2022'"
+    [start]="lpRoundStart$ | async"
     [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
     [isStarted]="lpRoundStarted"
     (onNavigate)="navigateToLp()"

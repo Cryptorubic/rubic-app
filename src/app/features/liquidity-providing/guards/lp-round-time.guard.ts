@@ -23,13 +23,13 @@ export class LpRoundTimeGuard implements CanActivate {
 
   private redirectIfNotStarted(): Observable<Boolean> {
     return this.lpService.getStartAndEndTime().pipe(
-      switchMap(startTime => {
-        // if LP contract has start time === 0 - round didnt started
-        const isStarted = +startTime !== 0;
+      switchMap(([startTime]) => {
+        const isStarted = new Date().getTime() > +startTime * 1000;
 
         if (!isStarted) {
           this.window.location.href = this.redirectUrl;
         }
+
         return of(isStarted);
       })
     );

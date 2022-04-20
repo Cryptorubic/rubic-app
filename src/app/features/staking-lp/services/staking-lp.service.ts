@@ -138,6 +138,10 @@ export class StakingLpService {
 
   public readonly ttv$ = this._ttv$.asObservable();
 
+  private readonly _lpRoundStart$ = new BehaviorSubject<Date>(undefined);
+
+  public readonly lpRoundStart$ = this._lpRoundStart$.asObservable();
+
   private readonly _lpRoundStarted$ = new BehaviorSubject<boolean>(undefined);
 
   public readonly lpRoundStarted$ = this._lpRoundStarted$.asObservable();
@@ -349,9 +353,10 @@ export class StakingLpService {
       )
     ]).pipe(
       map(([startTime, endTime]) => {
-        const isStarted = +startTime !== 0;
-        const endTimeMs = +endTime * 1000;
-        const isEnded = new Date().getTime() > endTimeMs;
+        const isStarted = new Date().getTime() > +startTime * 1000;
+        const isEnded = new Date().getTime() > +endTime * 1000;
+
+        this._lpRoundStart$.next(new Date(+startTime * 1000));
 
         this._lpRoundStarted$.next(isStarted);
         this._lpRoundEnded$.next(isEnded);

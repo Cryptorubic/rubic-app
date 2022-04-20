@@ -25,6 +25,8 @@ export class LpRoundsComponent implements OnInit {
 
   public readonly lpRoundEnded$ = this.stakingLpService.lpRoundEnded$;
 
+  public readonly lpRoundStart$ = this.stakingLpService.lpRoundStart$;
+
   constructor(
     private readonly stakingLpService: StakingLpService,
     private readonly walletConnectorService: WalletConnectorService,

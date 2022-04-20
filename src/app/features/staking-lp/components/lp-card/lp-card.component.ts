@@ -29,7 +29,7 @@ export class LpCardComponent {
 
   @Input() balance: number;
 
-  @Input() startTime: string;
+  @Input() start: Date;
 
   @Input() statuses: RoundStatus[];
 
@@ -47,8 +47,7 @@ export class LpCardComponent {
 
   constructor(private readonly headerStore: HeaderStore) {}
 
-  public isInPast(date: string): boolean {
-    const start = new Date(date);
+  public isInPast(start: Date): boolean {
     const now = new Date();
 
     return now < start;
@@ -60,7 +59,6 @@ export class LpCardComponent {
     }
 
     if (this.balance > 0) {
-      debugger;
       return 'Details';
     } else {
       return 'Join Round';

@@ -519,10 +519,10 @@ export class LiquidityProvidingService {
       )
     ]).pipe(
       tap(([startTime, endTime]) => {
-        const whitelistEndTimestamp = +startTime + this.whitelistDuration;
+        const whitelistEndTimestamp = +startTime * 1000 + this.whitelistDuration;
         this.endDate = new Date(+endTime * 1000);
         this.isLpEneded = new Date().getTime() > +endTime * 1000;
-        this.whitelistEndTime = new Date(whitelistEndTimestamp * 1000);
+        this.whitelistEndTime = new Date(whitelistEndTimestamp);
       })
     );
   }

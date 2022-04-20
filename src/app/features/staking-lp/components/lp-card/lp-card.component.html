@@ -26,7 +26,7 @@
     <app-status-badge
       *ngIf="startTime | functionCall: isInPast:this"
       type="inactive"
-      [text]="'Start: ' + (startTime | date: (isMobile ? 'mediumDate' : 'long'))"
+      [text]="'Start: ' + (start | date: (isMobile ? 'mediumDate' : 'LLL dd, HH:mm'))"
     ></app-status-badge>
     <app-status-badge
       *ngFor="let status of statuses"
