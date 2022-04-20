@@ -98,7 +98,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv()),
+        // switchMap(() => this.stakingLpService.getTtv()),
         take(1)
       )
       .subscribe(() => {
@@ -120,7 +120,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv()),
+        // switchMap(() => this.stakingLpService.getTtv()),
         take(1)
       )
       .subscribe(() => {

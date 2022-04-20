@@ -134,7 +134,12 @@ export class StakingLpService {
 
   public readonly tvlTotal$ = this._tvlTotal$.asObservable();
 
-  private readonly _ttv$ = new BehaviorSubject<TradeVolumeByPeriod>(undefined);
+  private readonly _ttv$ = new BehaviorSubject<TradeVolumeByPeriod>({
+    totalValue: 73651333,
+    totalValueByHalfYear: 72477921,
+    totalValueBymonth: 14662910,
+    totalValueByday: 4696397
+  });
 
   public readonly ttv$ = this._ttv$.asObservable();
 
@@ -457,13 +462,22 @@ export class StakingLpService {
               'poolUSDC'
             )
           ),
-          of(tvlMultichain)
+          of(tvlMultichain),
+          from(
+            this.tokensService.getAndUpdateTokenPrice(
+              {
+                address: this.stakingToken.address,
+                blockchain: this.stakingToken.blockchain
+              },
+              true
+            )
+          )
         ]);
       }),
-      map(([lpPoolBalance, tvlMultichain]) => {
+      map(([lpPoolBalance, tvlMultichain, stakingTokenUsdPrice]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
         const tvl = lpPoolBalanceInTokens
-          .plus(lpPoolBalanceInTokens.multipliedBy(this.stakingTokenUsdPrice))
+          .plus(lpPoolBalanceInTokens.multipliedBy(stakingTokenUsdPrice))
           .plus(tvlMultichain);
         return tvl;
       }),
