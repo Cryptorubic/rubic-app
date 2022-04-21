@@ -17,7 +17,7 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
   providers: [TuiDestroyService]
 })
 export class LpPageComponent implements OnInit {
-  public readonly showDeposits$ = combineLatest([
+  public readonly noDeposits$ = combineLatest([
     this.authService.getCurrentUser(),
     this.lpService.deposits$
   ]).pipe(

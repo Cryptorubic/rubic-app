@@ -14,8 +14,7 @@
     <div class="statistics__param">
       <app-progress
         [label]="'lp.totalProvided' | translate"
-        [value]="totalStaked$ | async | bigNumberFormat: 2"
-        [initialValue]="10000"
+        [value]="totalStaked$ | async"
         [size]="poolSize"
         [loading]="loading"
       ></app-progress>
@@ -58,8 +57,7 @@
     <div class="statistics__param">
       <app-progress
         [label]="'lp.youProvided' | translate"
-        [value]="usersTotalStaked$ | async | bigNumberFormat: 2"
-        [initialValue]="100"
+        [value]="usersTotalStaked$ | async"
         [size]="maxEnterAmount"
         [needLogin]="needLogin$ | async"
         [loading]="loading"

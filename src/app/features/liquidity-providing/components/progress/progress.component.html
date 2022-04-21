@@ -2,16 +2,11 @@
   <div class="progress__label">{{ label }}</div>
   <div class="progress__value" [class.progress__value_loading]="loading">
     <ng-container *ngIf="!needLogin; else connectWallet">
-      {{ value | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} /
+      {{ value | bigNumberFormat: 2 }} /
       {{ size | bigNumberFormat }}
     </ng-container>
   </div>
-  <progress
-    tuiProgressBar
-    class="progress__progress-bar"
-    [max]="size"
-    [value]="value || initialValue"
-  ></progress>
+  <progress tuiProgressBar class="progress__progress-bar" [max]="size" [value]="value"></progress>
 </div>
 
 <ng-template #connectWallet> {{ 'lp.connectWalletToView' | translate }}</ng-template>

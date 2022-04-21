@@ -17,13 +17,7 @@
     ></app-status-badge>
   </div>
   <app-lp-statistics class="statistics"></app-lp-statistics>
-  <tui-loader
-    *ngIf="showDeposits$ | async; else deposits"
-    [showLoader]="depositsLoading$ | async"
-    [overlay]="true"
-  >
-    <app-lp-landing class="landing"></app-lp-landing>
-  </tui-loader>
+  <app-lp-landing class="landing" *ngIf="noDeposits$ | async; else deposits"></app-lp-landing>
   <ng-template #deposits>
     <app-deposits class="deposits"></app-deposits>
   </ng-template>

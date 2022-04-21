@@ -680,7 +680,9 @@ export class LiquidityProvidingService {
           blockchain: this.blockchain
         });
         const balance = userTotalStaked.plus(userTotalStaked.multipliedBy(brbcUsdcPrice));
-        this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
+        this.zone.run(() => {
+          this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
+        });
         this._balance$.next(balance);
       })
     );
@@ -690,7 +692,7 @@ export class LiquidityProvidingService {
     this._balance$.next(undefined);
     this._totalCollectedRewards$.next(undefined);
     this._rewardsToCollect$.next(undefined);
-    this._userTotalStaked$.next(10);
+    this._userTotalStaked$.next(undefined);
   }
 
   private getApr(): Observable<string> {
