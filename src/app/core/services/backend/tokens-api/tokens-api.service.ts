@@ -25,7 +25,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -171,61 +170,7 @@ export class TokensApiService {
     return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
-        const staticTokens: BackendToken[] = [
-          {
-            address: '0xD102cE6A4dB07D247fcc28F366A623Df0938CA9E',
-            name: 'Wrapped TLOS',
-            symbol: 'WTLOS',
-            blockchainNetwork: 'telos-evm',
-            decimals: 18,
-            rank: 1,
-            image: 'string',
-            coingeckoId: 'string',
-            usdPrice: 0.8,
-            usedInIframe: false,
-            hasDirectPair: true
-          },
-          {
-            address: NATIVE_TOKEN_ADDRESS,
-            name: 'TLOS',
-            symbol: 'TLOS',
-            blockchainNetwork: 'telos-evm',
-            decimals: 18,
-            rank: 1,
-            image: 'string',
-            coingeckoId: 'string',
-            usdPrice: 0.8,
-            usedInIframe: false,
-            hasDirectPair: true
-          },
-          {
-            address: '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b',
-            name: 'USDC',
-            symbol: 'USDC',
-            blockchainNetwork: 'telos-evm',
-            decimals: 6,
-            rank: 1,
-            image: 'string',
-            coingeckoId: 'string',
-            usdPrice: 1,
-            usedInIframe: false,
-            hasDirectPair: true
-          },
-          {
-            address: '0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73',
-            name: 'USDT',
-            symbol: 'USDT',
-            blockchainNetwork: 'telos-evm',
-            decimals: 6,
-            rank: 1,
-            image: 'string',
-            coingeckoId: 'string',
-            usdPrice: 1,
-            usedInIframe: false,
-            hasDirectPair: true
-          }
-        ];
-        return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
+        return TokensApiService.prepareTokens(backendTokens);
       })
     );
   }
