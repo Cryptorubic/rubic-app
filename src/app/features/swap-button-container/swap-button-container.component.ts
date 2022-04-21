@@ -13,7 +13,7 @@ import { SwapButtonService } from '@features/swap-button-container/services/swap
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapButtonContainerComponent {
-  @Input() needApprove = false;
+  @Input() withApproveButton = false;
 
   @Input() set status(value: TRADE_STATUS) {
     this.swapButtonContainerService.tradeStatus = value;

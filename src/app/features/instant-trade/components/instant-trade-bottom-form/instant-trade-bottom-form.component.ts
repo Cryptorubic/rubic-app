@@ -108,6 +108,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
+  /**
+   * True, if 'approve' button should be shown near 'swap' button.
+   */
+  public withApproveButton: boolean;
+
   public isIframe: boolean;
 
   /**
@@ -365,6 +370,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.selectedProvider = null;
     this.isTradeSelectedByUser = false;
     this.needApprove = false;
+    this.withApproveButton = this.needApprove;
 
     this.swapFormService.output.patchValue({
       toAmount: this.fromAmount
@@ -423,6 +429,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
+      this.withApproveButton = this.needApprove;
 
       this.swapFormService.output.patchValue({
         toAmount: this.selectedProvider.trade.to.amount
@@ -546,6 +553,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
+      this.withApproveButton = this.needApprove;
     }
     this.swapFormService.output.patchValue({
       toAmount: this.selectedProvider.trade.to.amount

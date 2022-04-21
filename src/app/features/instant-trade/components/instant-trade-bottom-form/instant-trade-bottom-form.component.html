@@ -95,7 +95,7 @@
 
 <div class="instant-trade-bottom-form__swap">
   <app-swap-button-container
-    [needApprove]="needApprove"
+    [withApproveButton]="withApproveButton"
     [status]="tradeStatus"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (onSwapClick)="createTrade()"
