@@ -22,7 +22,7 @@
     "add": "Add",
     "via": "Via ",
     "address": "address",
-    "chooseToken": "Select token",
+    "chooseToken": "Select Token",
     "clearToken": "Clear token",
     "warning": "Warning",
     "customerSupport": "customer support",
@@ -36,9 +36,9 @@
     "bridge": "Bridge",
     "transactionDetails": "Transaction details",
     "tagline": {
-      "firstText": "Multi-Chain swaps for ",
+      "firstText": "Multi-Chain Swaps for ",
       "numbers": "15,000+ ",
-      "secondText": "assets"
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -71,7 +71,7 @@
     "chooseSupportedBridge": "Choose supported bridge",
     "InsufficientBalance": "Insufficient balance",
     "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -241,7 +241,7 @@
     "title": "Swap assets in 1 click",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "gasFee": "Est. gas fee",
-    "useOptimization": "Use Rubic optimization",
+    "useOptimization": "Use Rubic Optimization",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
   },
@@ -346,9 +346,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",
@@ -384,7 +384,7 @@
       "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
-      "title": "Connect wallet",
+      "title": "Connect Wallet",
       "new": "New to Ethereum?",
       "learnMore": "Learn more about wallets"
     },
@@ -416,21 +416,21 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being frontrun).",
       "multihopsTitle": "Disable multihops",
       "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisationTitle": "Use Rubic optimization",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "rubicOptimisationTitle": "Use Rubic Optimization",
+      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed without taking the cost of gas into account.",
       "deadlineTitle": "Transaction deadline",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefreshTitle": "Auto refresh",
-      "autoRefresh": "Updates trade parameters each 15 seconds."
+      "deadline": "Your transaction will revert if it remains pending for more than this period of time.",
+      "autoRefreshTitle": "Auto-refresh",
+      "autoRefresh": "Updates trade parameters every 15 seconds."
     },
     "bridge": {
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
     },
     "crossChainRouting": {
-      "autoRefreshTitle": "Auto refresh",
+      "autoRefreshTitle": "Auto-refresh",
       "autoRefresh": "Updates trade parameters each 15 seconds.",
       "slippageTitle": "Slippage tolerance",
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
