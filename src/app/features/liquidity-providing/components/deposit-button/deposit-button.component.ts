@@ -24,7 +24,11 @@ export class DepositButtonComponent implements OnInit {
 
   @Input() brbcAmount$: Observable<BigNumber>;
 
-  @Input() loading: boolean;
+  @Input() loadingDepositBtn: boolean;
+
+  @Input() loadingUsdcApproveBtn: boolean;
+
+  @Input() loadingBrbcApproveBtn: boolean;
 
   @Output() readonly onLogin = new EventEmitter<void>();
 

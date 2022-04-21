@@ -1,7 +1,10 @@
 <div class="progress">
   <div class="progress__label">{{ label }}</div>
   <div class="progress__value" [class.progress__value_loading]="loading">
-    <ng-container *ngIf="!needLogin; else connectWallet"> {{ value }} / {{ size }} </ng-container>
+    <ng-container *ngIf="!needLogin; else connectWallet">
+      {{ value | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} /
+      {{ size | bigNumberFormat }}
+    </ng-container>
   </div>
   <progress
     tuiProgressBar

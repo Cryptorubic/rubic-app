@@ -15,7 +15,7 @@
       <app-progress
         [label]="'lp.totalProvided' | translate"
         [value]="totalStaked$ | async | bigNumberFormat: 2"
-        [initialValue]="5"
+        [initialValue]="10000"
         [size]="poolSize"
         [loading]="loading"
       ></app-progress>
@@ -59,7 +59,7 @@
       <app-progress
         [label]="'lp.youProvided' | translate"
         [value]="usersTotalStaked$ | async | bigNumberFormat: 2"
-        [initialValue]="5"
+        [initialValue]="100"
         [size]="maxEnterAmount"
         [needLogin]="needLogin$ | async"
         [loading]="loading"

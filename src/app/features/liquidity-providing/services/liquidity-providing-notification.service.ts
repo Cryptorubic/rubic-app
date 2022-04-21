@@ -4,6 +4,7 @@ import { UnknownError } from '@app/core/errors/models/unknown.error';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiNotification } from '@taiga-ui/core';
+import { PoolToken } from '../models/pool-token.enum';
 
 @Injectable()
 export class LiquidityProvidingNotificationService {
@@ -13,11 +14,14 @@ export class LiquidityProvidingNotificationService {
     private readonly translate: TranslateService
   ) {}
 
-  public showSuccessApproveNotification(): void {
-    this.notificationsService.show(this.translate.instant('notifications.successApprove'), {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
+  public showSuccessApproveNotification(token: PoolToken): void {
+    this.notificationsService.show(
+      this.translate.instant('notifications.successApproveToken', { token }),
+      {
+        status: TuiNotification.Success,
+        autoClose: 3000
+      }
+    );
   }
 
   public showSuccessDepositNotification(): void {

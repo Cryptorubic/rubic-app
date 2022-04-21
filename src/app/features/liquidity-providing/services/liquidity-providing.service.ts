@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, NgZone } from '@angular/core';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -238,6 +238,7 @@ export class LiquidityProvidingService {
     private readonly lpNotificationService: LiquidityProvidingNotificationService,
     private readonly volumeApiService: VolumeApiService,
     private readonly scannerLinkPipe: ScannerLinkPipe,
+    private readonly zone: NgZone,
     @Inject(WINDOW) private readonly window: Window
   ) {
     this.watchWhitelist().subscribe();
@@ -313,7 +314,9 @@ export class LiquidityProvidingService {
           }),
           map(deposits => this.parseDeposits(deposits)),
           tap(deposits => {
-            this._deposits$.next(deposits);
+            this.zone.run(() => {
+              this._deposits$.next(deposits);
+            });
           })
         );
       })
@@ -393,6 +396,11 @@ export class LiquidityProvidingService {
         this.lpContractAddress,
         'infinity'
       )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return EMPTY;
+      })
     );
   }
 
@@ -523,7 +531,7 @@ export class LiquidityProvidingService {
       )
     ]).pipe(
       tap(([startTime, endTime]) => {
-        const whitelistEndTimestamp = +startTime * 1000 + this.whitelistDuration;
+        const whitelistEndTimestamp = +startTime * 1000 + this.whitelistDuration * 1000;
         this.endDate = new Date(+endTime * 1000);
         this.isLpEneded = new Date().getTime() > +endTime * 1000;
         this.whitelistEndTime = new Date(whitelistEndTimestamp);

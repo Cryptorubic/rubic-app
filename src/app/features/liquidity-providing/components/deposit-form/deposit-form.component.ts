@@ -41,9 +41,17 @@ export class DepositFormComponent implements OnInit {
 
   public readonly brbcBalance$ = this.lpService.brbcBalance$;
 
-  private readonly _buttonLoading$ = new BehaviorSubject<boolean>(false);
+  private readonly _loadingDepositBtn$ = new BehaviorSubject<boolean>(false);
 
-  public readonly buttonLoading$ = this._buttonLoading$.asObservable();
+  public readonly loadingDepositBtn$ = this._loadingDepositBtn$.asObservable();
+
+  private readonly _loadingBrbcApproveBtn$ = new BehaviorSubject<boolean>(false);
+
+  public readonly loadingBrbcApproveBtn$ = this._loadingBrbcApproveBtn$.asObservable();
+
+  private readonly _loadingUsdcApproveBtn$ = new BehaviorSubject<boolean>(false);
+
+  public readonly loadingUsdcApproveBtn$ = this._loadingUsdcApproveBtn$.asObservable();
 
   private readonly _usdcDepositOpened$ = new BehaviorSubject<boolean>(false);
 
@@ -117,10 +125,10 @@ export class DepositFormComponent implements OnInit {
       .pipe(
         switchMap(result => {
           if (result) {
-            this._buttonLoading$.next(true);
+            this._loadingDepositBtn$.next(true);
             return this.lpService
               .createDeposit(amount)
-              .pipe(finalize(() => this._buttonLoading$.next(false)));
+              .pipe(finalize(() => this._loadingDepositBtn$.next(false)));
           } else {
             return of(false);
           }
@@ -135,18 +143,26 @@ export class DepositFormComponent implements OnInit {
   }
 
   public approveTokens(token: PoolToken): void {
-    this._buttonLoading$.next(true);
+    this.setApproveBtnLoading(token, true);
 
     this.lpService
       .approvePoolToken(token)
       .pipe(
         switchMap(() => this.lpService.getNeedTokensApprove()),
-        finalize(() => this._buttonLoading$.next(false))
+        finalize(() => this.setApproveBtnLoading(token, false))
       )
       .subscribe(() => {
-        this.lpNotificationService.showSuccessApproveNotification();
+        this.lpNotificationService.showSuccessApproveNotification(token);
         this.cdr.detectChanges();
       });
+  }
+
+  private setApproveBtnLoading(token: PoolToken, value: boolean): void {
+    if (token === PoolToken.BRBC) {
+      this._loadingBrbcApproveBtn$.next(value);
+    } else {
+      this._loadingUsdcApproveBtn$.next(value);
+    }
   }
 
   public setMaxTokenAmount(amount: BigNumber): void {

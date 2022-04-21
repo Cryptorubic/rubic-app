@@ -38,19 +38,17 @@
       <div class="approves">
         <app-rubic-button
           appearance="secondary"
-          [class.loading]="loading"
           (click)="onApprove.emit(poolToken.BRBC)"
-          [disabled]="loading || !depositButtonValidation.needBrbcApprove"
-          [loading]="loading"
+          [disabled]="loadingBrbcApproveBtn || !depositButtonValidation.needBrbcApprove"
+          [loading]="loadingBrbcApproveBtn"
         >
           Approve BRBC
         </app-rubic-button>
         <app-rubic-button
           appearance="secondary"
-          [class.loading]="loading"
           (click)="onApprove.emit(poolToken.USDC)"
-          [disabled]="loading || !depositButtonValidation.needUsdcApprove"
-          [loading]="loading"
+          [disabled]="loadingUsdcApproveBtn || !depositButtonValidation.needUsdcApprove"
+          [loading]="loadingUsdcApproveBtn"
         >
           Approve USDC
         </app-rubic-button>
@@ -64,7 +62,7 @@
       [disabled]="error !== null"
       appearance="secondary"
       (onClick)="onCreateDeposit.emit()"
-      [loading]="loading"
+      [loading]="loadingDepositBtn"
     >
       <ng-container [ngSwitch]="error">
         <ng-container *ngSwitchCase="errors.LP_ENDED"> LP ended </ng-container>

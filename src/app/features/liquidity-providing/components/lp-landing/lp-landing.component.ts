@@ -57,4 +57,8 @@ export class LpLandingComponent implements OnInit {
   public navigateToDepositForm(depositType: DepositType): void {
     this.lpService.navigateToDepositForm(depositType);
   }
+
+  public isInPast(date: Date): boolean {
+    return new Date() < date;
+  }
 }

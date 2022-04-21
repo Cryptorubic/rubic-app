@@ -76,7 +76,7 @@
       <ng-template #withdraw>
         <div class="deposit-card__actions-withdraw">
           <app-rubic-button
-            [appearance]="deposit.isStaked ? 'outline' : 'secondary'"
+            appearance="outline"
             [disabled]="!deposit.canWithdraw || needSwitchNetwork"
             (onClick)="onWithdraw.emit()"
           >
