@@ -1,13 +1,3 @@
-<!-- Global site tag (gtag.js) - Google Analytics -->
-window.dataLayer = window.dataLayer || [];
-function gtag() {
-dataLayer.push(arguments);
-}
-gtag('js', new Date());
-gtag('config', 'UA-178155018-1');
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-
 <!-- Google Tag Manager -->
 (function (w, d, s, l, i) {
     w[l] = w[l] || [];

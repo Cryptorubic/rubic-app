@@ -314,8 +314,6 @@ export class RefFinanceService implements ItProvider {
         throw new CustomError('Cant parse transaction');
       }
 
-      this.gtmService.fireTxSignedEvent(provider, txHash);
-
       if (type === 'it' || type === 'ccr') {
         const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
 
@@ -325,7 +323,6 @@ export class RefFinanceService implements ItProvider {
             form,
             paramsObject.amount
           );
-
           await this.instantTradesApiService
             .createTrade(txHash, INSTANT_TRADE_PROVIDER.REF, trade)
             .toPromise();
@@ -338,6 +335,17 @@ export class RefFinanceService implements ItProvider {
               trade,
               txHash
             });
+
+            //@todo fix revenue near
+
+            this.gtmService.fireTxSignedEvent(
+              provider,
+              txHash,
+              form.fromToken.symbol,
+              form.toToken.symbol,
+              new BigNumber(0),
+              form.fromToken.amount.multipliedBy(form.fromToken.price)
+            );
           } catch {
             console.debug('Near transaction bot failed');
           }
