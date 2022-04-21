@@ -36,7 +36,7 @@ export class SwapButtonContainerComponent {
   }
 
   @Input() set buttonText(value: string) {
-    this.swapButtonService.buttonText = value;
+    this.swapButtonService.defaultButtonText = value;
   }
 
   @Output() readonly onApproveClick = new EventEmitter<void>();

@@ -39,7 +39,7 @@
             )
           }"
         >
-          <ng-container *ngIf="(selectedProvider || wrapProvider) && toAmount">
+          <ng-container *ngIf="(selectedProvider && toAmount) || (wrapProvider && fromAmount)">
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)
@@ -56,7 +56,7 @@
           </div>
         </ng-template>
 
-        <ng-container *ngIf="selectedProvider">
+        <ng-container *ngIf="selectedProvider || wrapProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
             <app-usd-price-container
               [usdPrice]="
