@@ -30,6 +30,10 @@ export class BridgeApiService {
     POL: BLOCKCHAIN_NAME.POLYGON
   };
 
+  private readonly whitelistedPolygonBridgeHashes = [
+    '0x8dc2ebcac1a3576711a1631b73d57ae233231dd4043e2a0a53d57af3eea5b8ea'
+  ];
+
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
 
   /**
@@ -42,7 +46,11 @@ export class BridgeApiService {
       .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
       .pipe(
         map((tradesApi: BridgeTableTradeApi[]) =>
-          tradesApi.map(trade => this.parseTradeApiToTableTrade(trade))
+          tradesApi
+            .filter(trade =>
+              this.whitelistedPolygonBridgeHashes.includes(trade.fromTransactionHash)
+            )
+            .map(trade => this.parseTradeApiToTableTrade(trade))
         )
       );
   }

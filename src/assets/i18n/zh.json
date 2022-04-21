@@ -36,9 +36,9 @@
     "bridge": "Bridge",
     "transactionDetails": "交易明细",
     "tagline": {
-      "firstText": "Multi-chain swaps for ",
-      "numbers": "15000+ ",
-      "secondText": "assets"
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -71,7 +71,7 @@
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
     "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -346,9 +346,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",

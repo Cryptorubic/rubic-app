@@ -36,9 +36,9 @@
     "bridge": "Puente",
     "transactionDetails": "Detalles de la transacción",
     "tagline": {
-      "firstText": "Multi-chain swaps for ",
-      "numbers": "15000+ ",
-      "secondText": "assets"
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -347,7 +347,7 @@
       "rewards": "Recompensas ganadas",
       "apr": "APR",
       "usersTotal": "Total en stake",
-      "total": "Total staked",
+      "total": "Total Staked",
       "connectWallet": "Conecte su billetera para recibir información"
     },
     "features": {

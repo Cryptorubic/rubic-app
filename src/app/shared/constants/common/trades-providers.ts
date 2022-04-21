@@ -14,6 +14,10 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
+  },
+  [BRIDGE_PROVIDER.POLYGON]: {
+    name: 'Polygon',
+    image: `${imageBasePath}polygon.svg`
   }
 };
 
