@@ -599,24 +599,23 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
+    providerName: INSTANT_TRADE_PROVIDER,
     tradeStatus: TRADE_STATUS,
     providerState?: INSTANT_TRADE_STATUS,
     needApprove?: boolean
   ): void {
     this.tradeStatus = tradeStatus;
 
-    if (this.selectedProvider) {
-      this.providersData = this.providersData.map(providerData => {
-        if (!providerData.isSelected) {
-          return providerData;
-        }
-        return {
-          ...providerData,
-          ...(providerState && { tradeStatus: providerState }),
-          ...(needApprove && { needApprove: needApprove })
-        };
-      });
-    }
+    this.providersData = this.providersData.map(providerData => {
+      if (providerData.name !== providerName) {
+        return providerData;
+      }
+      return {
+        ...providerData,
+        ...(providerState && { tradeStatus: providerState }),
+        ...(needApprove !== undefined && { needApprove: needApprove })
+      };
+    });
 
     if (needApprove !== undefined) {
       this.needApprove = needApprove;
@@ -628,23 +627,33 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.errorService.catch(new NoSelectedProviderError());
     }
 
-    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS);
+    this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
 
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
+    const provider = this.selectedProvider;
     try {
-      const trade = this.selectedProvider.trade;
-      await this.instantTradeService.approve(this.selectedProvider.name, trade);
+      await this.instantTradeService.approve(this.selectedProvider.name, provider.trade);
 
-      this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED, false);
+      this.setProviderState(
+        provider.name,
+        TRADE_STATUS.READY_TO_SWAP,
+        INSTANT_TRADE_STATUS.COMPLETED,
+        false
+      );
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
 
-      await this.tokensService.updateNativeTokenBalance(trade.blockchain);
+      await this.tokensService.updateNativeTokenBalance(provider.trade.blockchain);
     } catch (err) {
       this.errorService.catch(err);
 
-      this.setProviderState(TRADE_STATUS.READY_TO_APPROVE, INSTANT_TRADE_STATUS.APPROVAL, true);
+      this.setProviderState(
+        provider.name,
+        TRADE_STATUS.READY_TO_APPROVE,
+        INSTANT_TRADE_STATUS.APPROVAL,
+        true
+      );
     }
     this.cdr.detectChanges();
 
@@ -666,13 +675,21 @@ export class InstantTradeBottomFormComponent implements OnInit {
       providerTrade = this.ethWethTrade;
     }
 
-    this.setProviderState(TRADE_STATUS.SWAP_IN_PROGRESS, INSTANT_TRADE_STATUS.TX_IN_PROGRESS);
+    this.setProviderState(
+      providerName,
+      TRADE_STATUS.SWAP_IN_PROGRESS,
+      INSTANT_TRADE_STATUS.TX_IN_PROGRESS
+    );
 
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
-        this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED);
+        this.setProviderState(
+          providerName,
+          TRADE_STATUS.READY_TO_SWAP,
+          INSTANT_TRADE_STATUS.COMPLETED
+        );
         this.cdr.detectChanges();
       });
 
@@ -685,7 +702,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
     } catch (err) {
       this.errorService.catch(err);
 
-      this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED);
+      this.setProviderState(
+        providerName,
+        TRADE_STATUS.READY_TO_SWAP,
+        INSTANT_TRADE_STATUS.COMPLETED
+      );
       this.cdr.detectChanges();
 
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
