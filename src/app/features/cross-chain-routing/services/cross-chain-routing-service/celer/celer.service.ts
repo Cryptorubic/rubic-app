@@ -4,7 +4,10 @@ import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/bl
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { SettingsService } from '@app/features/swaps/services/settings-service/settings.service';
 import networks from '@app/shared/constants/blockchain/networks';
-import { EthLikeBlockchainName } from '@app/shared/models/blockchain/blockchain-name';
+import {
+  BlockchainName,
+  EthLikeBlockchainName
+} from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { pluck } from 'rxjs/operators';
@@ -12,6 +15,8 @@ import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { SmartRouting } from '../models/smart-routing.interface';
 import { CelerApiService } from './celer-api.service';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
+import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
+import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 import { ProviderType } from './models/provider-type.enum';
 import { SwapInfoDest } from './models/swap-info-dest.interface';
@@ -91,9 +96,17 @@ export class CelerService {
     slippageTolerance: number,
     amt: string
   ): Promise<EstimateAmtResponse> {
-    return await this.celerApiService
+    const estimatedData = await this.celerApiService
       .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, slippageTolerance, amt)
       .toPromise();
+
+    const toTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
+      address: '',
+      blockchain: 'ARBITRUM'
+    });
+    console.log(toTokenPrice);
+
+    return estimatedData;
   }
 
   public async getCelerSlippage(
@@ -110,7 +123,7 @@ export class CelerService {
     return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
   }
 
-  public checkIsCelerContractsPaused(
+  public checkIsCelerContractPaused(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName
   ): Promise<boolean[]> {
@@ -118,12 +131,12 @@ export class CelerService {
       const contractAddress = this.getCelerContractAddress(blockchain);
       return this.publicBlockchainAdapterService[blockchain].callContractMethod<boolean>(
         contractAddress,
-        [],
-        'isPaused'
+        CELER_CONTRACT_ABI,
+        'paused'
       );
     };
 
-    return Promise.all([checkContract(toBlockchain), checkContract(fromBlockchain)]);
+    return Promise.all([checkContract(fromBlockchain), checkContract(toBlockchain)]);
   }
 
   public getBlockchainId(blockchain: EthLikeBlockchainName): number {
@@ -132,6 +145,10 @@ export class CelerService {
 
   private getCelerContractAddress(blockchain: EthLikeBlockchainName): string {
     return CELER_CONTRACT[blockchain];
+  }
+
+  public isSupportedBlockchain(blockchain: BlockchainName): boolean {
+    return CELER_SUPPORTED_BLOCKCHAINS.includes(blockchain);
   }
 
   private isNativeToken(blockchain: EthLikeBlockchainName, token: TokenAmount): boolean {

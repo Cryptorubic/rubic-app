@@ -2,7 +2,11 @@ import { PCacheable } from 'ts-cacheable';
 import InsufficientFundsGasPriceValueError from '@core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  EthLikeBlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -48,6 +52,7 @@ import { SuccessTxModalService } from '@features/swaps/services/success-tx-modal
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { CelerService } from './celer/celer.service';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -122,7 +127,8 @@ export class CrossChainRoutingService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly iframeService: IframeService,
     private readonly notificationsService: NotificationsService,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly celerService: CelerService
   ) {}
 
   private async needApprove(
@@ -216,6 +222,14 @@ export class CrossChainRoutingService {
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
     let finalTransitAmount = fromTransitTokenAmount;
+
+    const shouldSwapViaCcr = await this.shouldSwapViaCcr(
+      fromBlockchain,
+      toBlockchain,
+      fromTransitTokenAmount
+    );
+
+    console.log(shouldSwapViaCcr);
 
     /**
      * @TODO Take crypto fee on contract.
@@ -900,6 +914,56 @@ export class CrossChainRoutingService {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.showOpenMobileWallet();
     }
+  }
+
+  private async shouldSwapViaCcr(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    fromTransitTokenAmount: BigNumber
+  ): Promise<boolean> {
+    const [srcCelerContractPaused, dstCelerContractPaused] =
+      await this.celerService.checkIsCelerContractPaused(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName
+      );
+
+    const [srcCcrContractPaused, dstCcrContractPaused] = await Promise.all([
+      this.contracts[fromBlockchain].isPaused(),
+      this.contracts[toBlockchain].isPaused()
+    ]);
+
+    const { maxAmount } = await this.getMinMaxTransitTokenAmounts(
+      fromBlockchain,
+      this.slippageTolerance / 2
+    );
+
+    const isSupportedByCelerBlockchains =
+      this.celerService.isSupportedBlockchain(fromBlockchain) &&
+      this.celerService.isSupportedBlockchain(toBlockchain);
+
+    let result;
+
+    if (fromTransitTokenAmount.gt(maxAmount)) {
+      console.log(maxAmount.toNumber(), fromTransitTokenAmount.toNumber());
+      if (isSupportedByCelerBlockchains) {
+        if (srcCelerContractPaused || dstCelerContractPaused) {
+          result = true;
+        } else {
+          result = false;
+        }
+      } else {
+        result = true;
+      }
+    } else {
+      if (srcCcrContractPaused || dstCcrContractPaused) {
+        result = false;
+      } else {
+        result = true;
+      }
+    }
+    debugger;
+
+    return result;
   }
 
   private async calculateSmartRouting(
