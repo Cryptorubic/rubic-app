@@ -25,7 +25,6 @@ import { asyncMap, shakeUndefiledItem } from '@shared/utils/utils';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { UnsignedTransactionAndSigners } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   /**
@@ -364,8 +363,7 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     let signedTransactions: Transaction[];
 
     try {
-      // @Todo replace Rubic Any by awaited.
-      const transactions = await asyncMap<UnsignedTransactionAndSigners, RubicAny>(
+      const transactions = await asyncMap<UnsignedTransactionAndSigners, Transaction>(
         [transactionInformation.setupTransaction, transactionInformation.tradeTransaction],
         merged => {
           if (!merged) return;
