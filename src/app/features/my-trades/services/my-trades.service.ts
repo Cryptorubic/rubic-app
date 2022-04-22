@@ -203,7 +203,7 @@ export class MyTradesService {
               toTransactionHash
             }))
           ),
-          defaultIfEmpty<TableTrade[]>([])
+          defaultIfEmpty([])
         );
       }),
       catchError((err: unknown) => {
