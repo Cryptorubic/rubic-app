@@ -5,5 +5,5 @@ export interface SwapInfoDest {
   path: string[];
   dataInchOrPathV3: string;
   deadline: number;
-  amountOutMinimum: number;
+  amountOutMinimum: string;
 }

@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { EthLikeWeb3Pure } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { OneinchInstantTrade } from '@app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { SettingsService } from '@app/features/swaps/services/settings-service/settings.service';
 import networks from '@app/shared/constants/blockchain/networks';
 import {
@@ -12,32 +15,41 @@ import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { pluck } from 'rxjs/operators';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
-import { SmartRouting } from '../models/smart-routing.interface';
+import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
 import { CelerApiService } from './celer-api.service';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
-import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
-import { ProviderType } from './models/provider-type.enum';
+import { MESSAGE_BUS_CONTRACT_ABI } from './constants/MESSAGE_BUS_CONTRACT_ABI';
+import { CelerSwapMethod } from './models/celer-swap-method.enum';
+import { SwapVersion } from './models/provider-type.enum';
 import { SwapInfoDest } from './models/swap-info-dest.interface';
+import { SwapInfoInch } from './models/swap-info-inch.interface';
+import { SwapInfoV2 } from './models/swap-info-v2.interface';
+import { SwapInfoV3 } from './models/swap-info-v3.interface';
 
-const INTEGRATOR_ADDRESS = '0x0000000000000000000000000000000000000000';
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const EMPTY_DATA = '0x';
 
 const CELER_SLIPPAGE_ADDITIONAL_VALUE = 1.01;
 
+const CELER_SLIPPAGE = 0.15;
+
+const DEADLINE = 999999999999999;
+
+export interface CelerTrade {
+  srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3;
+  dstSwap: SwapInfoDest;
+  estimatedTokenAmount: BigNumber;
+  estimatedTransitTokenAmount: BigNumber;
+  srcProvider: IndexedTradeAndToAmount;
+  maxSlippage: number;
+}
+
 @Injectable()
 export class CelerService {
-  private _smartRouting: SmartRouting;
-
-  set smartRouting(value: SmartRouting) {
-    this._smartRouting = value;
-  }
-
-  get smartRouting(): SmartRouting {
-    return this._smartRouting;
-  }
+  private celerTrade: CelerTrade;
 
   get userSlippage(): number {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -57,56 +69,229 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     fromToken: TokenAmount,
     toBlockchain: EthLikeBlockchainName,
-    toToken: TokenAmount
-  ): Promise<void> {
-    const nativeOut = this.isNativeToken(fromBlockchain, fromToken);
+    toToken: TokenAmount,
+    onTxHash: (hash: string) => void
+  ): Promise<string> {
+    const nativeOut = this.isNativeToken(toBlockchain, toToken);
+    const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const receiver = this.getCelerContractAddress(toBlockchain);
-    const amountIn = fromAmount;
-    console.log(nativeOut, dstChainId, receiver, amountIn, toToken);
+    const caller = this.getCelerContractAddress(fromBlockchain);
+    const amountIn = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
-    return undefined;
+    const preparedArgs = this.prepareArgs([
+      receiver,
+      amountIn,
+      dstChainId,
+      Object.values(this.celerTrade.srcSwap),
+      Object.values(this.celerTrade.dstSwap),
+      1000000,
+      nativeOut
+    ]);
+
+    const msgValue = await this.calculateMsgValue(
+      fromBlockchain,
+      toBlockchain,
+      preparedArgs,
+      nativeIn,
+      amountIn
+    );
+    const msgValueAdjusted = msgValue + 130000000000000;
+
+    let transactionHash: string;
+
+    await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
+      caller,
+      CELER_CONTRACT_ABI,
+      this.getSwapMethod(fromBlockchain, this.celerTrade.srcProvider.providerIndex, nativeIn),
+      preparedArgs,
+      {
+        value: String(msgValueAdjusted),
+        onTransactionHash: (hash: string) => {
+          if (onTxHash) {
+            onTxHash(hash);
+          }
+          transactionHash = hash;
+        }
+      }
+    );
+
+    return transactionHash;
   }
 
-  // private getSrcSwapObject(
-  //   srcProviderType: ProviderType,
-  //   fromBlockchain: EthLikeBlockchainName
-  // ): unknown {
-  //   return;
-  // }
+  private getSrcSwapObject(
+    srcProvider: IndexedTradeAndToAmount,
+    fromBlockchain: EthLikeBlockchainName,
+    fromTransitTokenAmount: BigNumber
+  ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 {
+    const dexes = this.contractsDataService.contracts[fromBlockchain];
+    const dexAddress = dexes.getProvider(srcProvider.providerIndex).contractAddress;
+    const amountOutMinimum = Web3Pure.toWei(
+      this.getAmountOutMinimum(fromTransitTokenAmount),
+      dexes.transitToken.decimals
+    );
 
-  private getDstSwapObject(providerType: ProviderType): SwapInfoDest {
-    const version = this.getProviderIndex(providerType);
+    if (dexes.isProviderOneinch(srcProvider.providerIndex)) {
+      const trade = srcProvider.tradeAndToAmount.trade as OneinchInstantTrade;
+      return {
+        dex: dexAddress,
+        path: trade?.path?.map(token => token.address),
+        data: trade.data,
+        amountOutMinimum
+      } as SwapInfoInch;
+    }
+
+    if (dexes.isProviderUniV2(srcProvider.providerIndex)) {
+      return {
+        dex: dexAddress,
+        path: srcProvider.tradeAndToAmount.trade?.path?.map(token => token.address),
+        deadline: DEADLINE,
+        amountOutMinimum
+      } as SwapInfoV2;
+    }
+
+    if (dexes.isProviderUniV3(srcProvider.providerIndex)) {
+      const pathV3 = EthLikeWeb3Pure.asciiToBytes32(
+        JSON.stringify(srcProvider.tradeAndToAmount.trade?.path?.map(token => token.address))
+      );
+      return {
+        dex: dexAddress,
+        path: pathV3,
+        deadline: DEADLINE,
+        amountOutMinimum
+      } as SwapInfoV3;
+    }
+  }
+
+  private getDstSwapObject(
+    dstProvider: IndexedTradeAndToAmount,
+    toBlockchain: EthLikeBlockchainName,
+    estimatedTransitTokenAmount: BigNumber
+  ): SwapInfoDest {
+    const swapVersion = this.getCelerSwapVersion(toBlockchain, dstProvider.providerIndex);
+    const dexes = this.contractsDataService.contracts[toBlockchain];
+    const dexAddress = dexes.getProvider(dstProvider.providerIndex).contractAddress;
+    const amountOutMinimum = this.getAmountOutMinimum(estimatedTransitTokenAmount);
+
     const dstSwap: SwapInfoDest = {
-      dex: '',
-      integrator: INTEGRATOR_ADDRESS,
-      version,
-      path: [''],
+      dex: dexAddress,
+      integrator: NULL_ADDRESS,
+      version: swapVersion,
+      path: [NULL_ADDRESS],
       dataInchOrPathV3: EMPTY_DATA,
-      deadline: 999999999999999,
-      amountOutMinimum: 123
+      deadline: DEADLINE,
+      amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
     };
+
+    if (dexes.isProviderUniV2(dstProvider.providerIndex)) {
+      dstSwap.path = dstProvider.tradeAndToAmount.trade.path.map(token => token.address);
+    }
+
+    if (dexes.isProviderUniV3(dstProvider.providerIndex)) {
+      const pathV3 = EthLikeWeb3Pure.asciiToBytes32(
+        JSON.stringify(dstProvider.tradeAndToAmount.trade?.path?.map(token => token.address))
+      );
+      dstSwap.dataInchOrPathV3 = pathV3;
+    }
+
     return dstSwap;
   }
 
   public async calculateTrade(
-    srcChainId: number,
-    dstChainId: number,
-    tokenSymbol: string,
-    slippageTolerance: number,
-    amt: string
-  ): Promise<EstimateAmtResponse> {
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName,
+    toToken: TokenAmount,
+    fromTransitTokenAmount: BigNumber,
+    srcProvider: IndexedTradeAndToAmount,
+    dstProvider: IndexedTradeAndToAmount
+  ): Promise<{
+    estimatedTransitTokenAmount: BigNumber;
+    estimatedTokenAmount: BigNumber;
+  }> {
+    const srcChainId = this.getBlockchainId(fromBlockchain);
+    const dstChainId = this.getBlockchainId(toBlockchain);
+    const celerSlippage = CELER_SLIPPAGE * 1000000;
+    const srcTransitTokenDecimals =
+      this.contractsDataService.contracts[fromBlockchain].transitToken.decimals;
+    const dstTransitTokenDecimals =
+      this.contractsDataService.contracts[toBlockchain].transitToken.decimals;
+
     const estimatedData = await this.celerApiService
-      .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, slippageTolerance, amt)
+      .getEstimateAmt(
+        srcChainId,
+        dstChainId,
+        'USDC',
+        celerSlippage,
+        Web3Pure.toWei(fromTransitTokenAmount, srcTransitTokenDecimals)
+      )
       .toPromise();
 
     const toTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
-      address: '',
-      blockchain: 'ARBITRUM'
+      address: toToken.address,
+      blockchain: toBlockchain
     });
-    console.log(toTokenPrice);
 
-    return estimatedData;
+    const estimatedTransitTokenAmount = Web3Pure.fromWei(
+      estimatedData.estimated_receive_amt,
+      dstTransitTokenDecimals
+    );
+    const estimatedTokenAmount = estimatedTransitTokenAmount.dividedBy(toTokenPrice);
+
+    const srcSwap = this.getSrcSwapObject(srcProvider, fromBlockchain, fromTransitTokenAmount);
+    const dstSwap = this.getDstSwapObject(dstProvider, toBlockchain, estimatedTransitTokenAmount);
+
+    this.celerTrade = {
+      srcSwap,
+      dstSwap,
+      estimatedTokenAmount,
+      estimatedTransitTokenAmount,
+      srcProvider,
+      maxSlippage: estimatedData.max_slippage
+    };
+
+    console.log(this.celerTrade);
+
+    return {
+      estimatedTransitTokenAmount,
+      estimatedTokenAmount
+    };
+  }
+
+  private async calculateMsgValue(
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName,
+    data: unknown,
+    nativeIn: boolean,
+    amountIn: string
+  ): Promise<number> {
+    const dstNetworkId = this.getBlockchainId(toBlockchain);
+    const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
+
+    const cryptoFee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      celerContractAddress,
+      CELER_CONTRACT_ABI,
+      'dstCryptoFee',
+      {
+        methodArguments: [String(dstNetworkId)]
+      }
+    );
+
+    const message = EthLikeWeb3Pure.asciiToBytes32(JSON.stringify(data));
+    const messageBusAddress = await this.publicBlockchainAdapterService[
+      fromBlockchain
+    ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
+
+    const feeBase = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      messageBusAddress,
+      MESSAGE_BUS_CONTRACT_ABI,
+      'calcFee',
+      { methodArguments: [message] }
+    );
+
+    if (nativeIn) {
+      return Number(amountIn) + Number(feeBase) + Number(cryptoFee);
+    }
+    return Number(feeBase) + Number(cryptoFee);
   }
 
   public async getCelerSlippage(
@@ -143,7 +328,43 @@ export class CelerService {
     return networks.find(network => network.name === blockchain).id;
   }
 
-  private getCelerContractAddress(blockchain: EthLikeBlockchainName): string {
+  private getAmountOutMinimum(amount: BigNumber): BigNumber {
+    const slippage = this.userSlippage / 2;
+
+    return amount.minus(amount.multipliedBy(slippage));
+  }
+
+  private getCelerSwapVersion(blockchain: EthLikeBlockchainName, providerIndex: number): number {
+    const ccrContract = this.contractsDataService.contracts[blockchain];
+
+    if (ccrContract.isProviderUniV3(providerIndex)) {
+      return SwapVersion.V3;
+    }
+
+    return SwapVersion.V2;
+  }
+
+  private getSwapMethod(
+    fromBlockchain: EthLikeBlockchainName,
+    srcProviderIndex: number,
+    nativeIn: boolean
+  ): CelerSwapMethod {
+    const ccrContract = this.contractsDataService.contracts[fromBlockchain];
+
+    if (ccrContract.isProviderOneinch(srcProviderIndex)) {
+      return nativeIn ? CelerSwapMethod.SWAP_INCH_NATIVE : CelerSwapMethod.SWAP_INCH;
+    }
+
+    if (ccrContract.isProviderUniV2(srcProviderIndex)) {
+      return nativeIn ? CelerSwapMethod.SWAP_V2_NATIVE : CelerSwapMethod.SWAP_V2;
+    }
+
+    if (ccrContract.isProviderUniV3(srcProviderIndex)) {
+      return nativeIn ? CelerSwapMethod.SWAP_V3_NATIVE : CelerSwapMethod.SWAP_V3;
+    }
+  }
+
+  public getCelerContractAddress(blockchain: EthLikeBlockchainName): string {
     return CELER_CONTRACT[blockchain];
   }
 
@@ -157,11 +378,15 @@ export class CelerService {
 
   private prepareArgs(args: unknown[]): unknown[] {
     return args.map(arg => {
-      return Array.isArray(arg) ? this.prepareArgs(arg) : String(arg);
-    });
-  }
+      if (Array.isArray(arg)) {
+        return this.prepareArgs(arg);
+      }
 
-  private getProviderIndex(providerType: ProviderType): number {
-    return Object.values(ProviderType).indexOf(providerType);
+      if (typeof arg === 'boolean') {
+        return arg;
+      } else {
+        return String(arg);
+      }
+    });
   }
 }

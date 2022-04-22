@@ -1,6 +1,6 @@
 export interface SwapInfoV2 {
-  path: string[];
   dex: string;
+  path: string[];
   deadline: number;
-  minRecvAmt: number;
+  amountOutMinimum: string;
 }

@@ -1,6 +1,5 @@
-export enum ProviderType {
-  INCH = 'inch',
-  V2 = 'v2',
-  V3 = 'v3',
-  BRIDGE = 'bridge'
+export enum SwapVersion {
+  V2 = 0,
+  V3 = 1,
+  BRIDGE = 2
 }

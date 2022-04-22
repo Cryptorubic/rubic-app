@@ -23,6 +23,7 @@ import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
 import { CommonOneinchService } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/common-oneinch.service';
+import { CommonUniswapV2Service } from '@app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -82,8 +83,12 @@ export abstract class ContractData {
   /**
    * Returns true, if provider is of `1inch` type.
    */
-  protected isProviderOneinch(providerIndex: number): boolean {
+  public isProviderOneinch(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonOneinchService;
+  }
+
+  public isProviderUniV2(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof CommonUniswapV2Service;
   }
 
   /**

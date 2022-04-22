@@ -5,7 +5,7 @@ import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 
 @Injectable()
 export class CelerApiService {
-  private readonly celerApiBaseUrl = 'https://cbridge-v2-test.celer.network';
+  private readonly celerApiBaseUrl = 'https://cbridge-prod2.celer.network';
 
   constructor(private readonly httpClient: HttpClient) {}
 
