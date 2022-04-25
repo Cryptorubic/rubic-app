@@ -92,7 +92,7 @@ export class CrossChainRoutingApiService {
   ): Promise<void> {
     const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
     return this.httpService
-      .patch('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
+      .patch<void>('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
       .pipe(
         catchError((err: unknown) => {
           console.error(err);
