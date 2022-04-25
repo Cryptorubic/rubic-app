@@ -13,3 +13,8 @@ html.iframe-vertical #walletconnect-wrapper .walletconnect-modal__header {
     display: none;
   }
 }
+
+.-walletlink-css-reset .-walletlink-extension-dialog-box-top-description-text,
+.-walletlink-css-reset .-walletlink-extension-dialog-box-bottom-description {
+  background: transparent;
+}
