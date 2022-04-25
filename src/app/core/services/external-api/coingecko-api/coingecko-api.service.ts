@@ -15,7 +15,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.FANTOM,
   BLOCKCHAIN_NAME.ARBITRUM,
-  BLOCKCHAIN_NAME.AURORA
+  BLOCKCHAIN_NAME.AURORA,
+  BLOCKCHAIN_NAME.TELOS
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -43,7 +44,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'ethereum',
-      [BLOCKCHAIN_NAME.AURORA]: 'ethereum'
+      [BLOCKCHAIN_NAME.AURORA]: 'ethereum',
+      [BLOCKCHAIN_NAME.TELOS]: 'telos'
     };
 
     this.tokenBlockchainId = {
@@ -55,7 +57,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum-one',
-      [BLOCKCHAIN_NAME.AURORA]: 'aurora'
+      [BLOCKCHAIN_NAME.AURORA]: 'aurora',
+      [BLOCKCHAIN_NAME.TELOS]: 'telos'
     };
   }
 

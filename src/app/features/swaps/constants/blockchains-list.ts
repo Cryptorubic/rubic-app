@@ -69,5 +69,11 @@ export const BLOCKCHAINS_LIST: BlockchainItem[] = [
     visibleName: 'Near',
     image: `${imageBaseSrc}near.svg`,
     id: NaN
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.TELOS,
+    visibleName: 'Telos EVM',
+    image: `${imageBaseSrc}telos.svg`,
+    id: 40
   }
 ];
