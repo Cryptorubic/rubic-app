@@ -77,6 +77,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
+  /**
+   * True, if 'approve' button should be shown near 'swap' button.
+   */
+  public withApproveButton: boolean;
+
   public minError: false | BigNumber;
 
   public maxError: false | BigNumber;
@@ -245,6 +250,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.errorText = '';
 
               this.needApprove = needApprove;
+              this.withApproveButton = this.needApprove;
 
               this.toAmount = toAmount;
               this.swapFormService.output.patchValue({
@@ -366,6 +372,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       await this.crossChainRoutingService.approve();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = false;
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 

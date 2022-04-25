@@ -153,7 +153,7 @@ export class PublicBlockchainAdapterService {
       );
 
     forkJoin([
-      ETH_LIKE_BLOCKCHAIN_NAMES.map(ethLikeBlockchainName =>
+      ...ETH_LIKE_BLOCKCHAIN_NAMES.map(ethLikeBlockchainName =>
         checkNode$(this[ethLikeBlockchainName])
       ),
       checkNode$(this[BLOCKCHAIN_NAME.SOLANA])

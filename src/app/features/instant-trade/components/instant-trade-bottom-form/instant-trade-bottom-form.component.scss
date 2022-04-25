@@ -144,6 +144,7 @@ $green: rgb(74, 169, 86);
 
   &__token-amount {
     max-width: 300px;
+    height: 35px;
     margin-bottom: 5px;
 
     overflow: auto;
@@ -151,7 +152,7 @@ $green: rgb(74, 169, 86);
     color: var(--form-bright-text-color);
     font-weight: 400;
     font-size: 22px;
-    line-height: 40px;
+    line-height: 35px;
     letter-spacing: 0.1em;
 
     scrollbar-width: none;
