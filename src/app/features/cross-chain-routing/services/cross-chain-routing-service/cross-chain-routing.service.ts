@@ -870,11 +870,11 @@ export class CrossChainRoutingService {
       txHash,
       this.currentCrossChainTrade.tokenIn.symbol,
       this.currentCrossChainTrade.tokenOut.symbol,
-      this.currentCrossChainTrade.toTransitTokenAmount.multipliedBy(
-        this.currentCrossChainTrade.transitTokenFee
-      ),
       this.currentCrossChainTrade.fromTransitTokenAmount.multipliedBy(
         this.currentCrossChainTrade.transitTokenFee / 100
+      ),
+      this.currentCrossChainTrade.tokenInAmount.multipliedBy(
+        this.currentCrossChainTrade.tokenIn.price
       )
     );
   }
