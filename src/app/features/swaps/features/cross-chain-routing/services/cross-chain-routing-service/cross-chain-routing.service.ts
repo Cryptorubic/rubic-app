@@ -38,16 +38,11 @@ import BigNumber from 'bignumber.js';
 import { CrossChainTradeInfo } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SmartRouting } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
-import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
-import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -64,7 +59,7 @@ const CACHEABLE_MAX_AGE = 15_000;
 @Injectable({
   providedIn: 'root'
 })
-export class CrossChainRoutingService {
+export class CrossChainRoutingService extends TradeService {
   public static isSupportedBlockchain(
     blockchain: BlockchainName
   ): blockchain is SupportedCrossChainBlockchain {
@@ -84,19 +79,6 @@ export class CrossChainRoutingService {
   private readonly contracts = this.contractsDataService.contracts;
 
   private currentCrossChainTrade: CrossChainTrade;
-
-  private readonly showSuccessTrxNotification = (): void => {
-    this.notificationsService.show<{ type: SuccessTxModalType }>(
-      new PolymorpheusComponent(SuccessTrxNotificationComponent),
-      {
-        status: TuiNotification.Success,
-        autoClose: 15000,
-        data: {
-          type: 'cross-chain-routing'
-        }
-      }
-    );
-  };
 
   /**
    * Gets slippage, selected in settings, divided by 100%.
@@ -120,10 +102,10 @@ export class CrossChainRoutingService {
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly iframeService: IframeService,
-    private readonly notificationsService: NotificationsService,
-    private readonly successTxModalService: SuccessTxModalService
-  ) {}
+    private readonly iframeService: IframeService
+  ) {
+    super('cross-chain-routing');
+  }
 
   private async needApprove(
     fromBlockchain: SupportedCrossChainBlockchain,
@@ -791,6 +773,7 @@ export class CrossChainRoutingService {
     this.checkDeviceAndShowNotification();
 
     let transactionHash;
+    let subscription$: Subscription;
     const { fromBlockchain } = this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
@@ -799,7 +782,8 @@ export class CrossChainRoutingService {
 
       if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
         this.notifyGtmAfterSignTx(txHash);
-        this.notifyTradeInProgress(txHash);
+
+        subscription$ = this.notifyTradeInProgress(txHash, fromBlockchain);
       }
     };
 
@@ -810,8 +794,13 @@ export class CrossChainRoutingService {
         this.authService.userAddress
       );
 
+      subscription$?.unsubscribe();
+      this.showSuccessTrxNotification();
+
       await this.postCrossChainTrade(transactionHash);
     } catch (err) {
+      subscription$?.unsubscribe();
+
       await this.handleCreateTradeError(err, transactionHash);
     }
   }
@@ -852,16 +841,6 @@ export class CrossChainRoutingService {
     }
 
     throw err;
-  }
-
-  private notifyTradeInProgress(txHash: string): void {
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    this.successTxModalService.open(
-      txHash,
-      fromBlockchain,
-      'cross-chain-routing',
-      this.showSuccessTrxNotification
-    );
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {

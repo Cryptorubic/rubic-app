@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, Observable, of, Subscription, throwError, zip } from 'rxjs';
 import {
   BLOCKCHAIN_NAME,
   BLOCKCHAIN_NAMES,
@@ -8,7 +8,7 @@ import {
 import { EthereumBinanceBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
-import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -26,10 +26,12 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TranslateService } from '@ngx-translate/core';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Injectable()
-export class BridgeService {
+export class BridgeService extends TradeService {
   private blockchainsProviders: Partial<
     Record<BlockchainName, Partial<Record<BlockchainName, BlockchainsBridgeProvider>>>
   >;
@@ -53,8 +55,10 @@ export class BridgeService {
     private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
     private readonly translateService: TranslateService,
-    private readonly notificationService: NotificationsService
+    private readonly gtmService: GoogleTagManagerService
   ) {
+    super('bridge');
+
     this.setupBlockchainsProviders();
     this.subscribeToFormChanges();
 
@@ -191,8 +195,24 @@ export class BridgeService {
           return bridgeTrade;
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
+          let subscription$: Subscription;
+          bridgeTrade = {
+            ...bridgeTrade,
+            onTransactionHash: (txHash: string) => {
+              this.notifyGtmAfterSignTx(txHash);
+
+              subscription$ = this.notifyTradeInProgress(txHash, bridgeTrade.fromBlockchain);
+            }
+          };
+
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
+            tap(() => {
+              subscription$?.unsubscribe();
+              this.showSuccessTrxNotification();
+            }),
             catchError((err: unknown) => {
+              subscription$?.unsubscribe();
+
               console.debug(err);
               const error = err instanceof RubicError ? err : new UndefinedError();
               return throwError(error);
@@ -252,7 +272,7 @@ export class BridgeService {
 
   private checkDeviceAndShowNotification(): void {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
-      this.notificationService.show(
+      this.notificationsService.show(
         this.translateService.instant('notifications.openMobileWallet'),
         {
           status: TuiNotification.Info,
@@ -260,5 +280,9 @@ export class BridgeService {
         }
       );
     }
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
   }
 }

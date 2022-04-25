@@ -38,11 +38,9 @@ import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/m
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -98,8 +96,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private calculateTradeSubscription$: Subscription;
 
-  private tradeInProgressSubscription$: Subscription;
-
   public get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
   }
@@ -108,13 +104,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this._tradeStatus = value;
     this.tradeStatusChange.emit(value);
   }
-
-  public showSuccessTrxNotification = (): void => {
-    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-      status: TuiNotification.Success,
-      autoClose: 15000
-    });
-  };
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -343,11 +332,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
-      toAddress: this.toWalletAddress,
-      onTransactionHash: (txHash: string) => {
-        this.notifyGtmAfterSignTx(txHash);
-        this.notifyTradeInProgress(txHash);
-      }
+      toAddress: this.toWalletAddress
     };
 
     this.bridgeService
@@ -355,7 +340,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         first(),
         tap(() => {
-          this.tradeInProgressSubscription$.unsubscribe();
           this.counterNotificationsService.updateUnread();
         }),
         switchMap(() => this.tokensService.calculateTokensBalances()),
@@ -363,7 +347,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         watch(this.cdr),
         switchMap(() => this.conditionalCalculate()),
         catchError((err: unknown) => {
-          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
@@ -409,29 +392,5 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     } else {
       this.approveTrade();
     }
-  }
-
-  private notifyTradeInProgress(txHash: string): void {
-    this.tradeInProgressSubscription$ = this.notificationsService.show(
-      this.translateService.instant('bridgePage.progressMessage'),
-      {
-        label: this.translateService.instant('notifications.tradeInProgress'),
-        status: TuiNotification.Info,
-        autoClose: false
-      }
-    );
-
-    if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(
-        txHash,
-        this.fromBlockchain,
-        'bridge',
-        this.showSuccessTrxNotification
-      );
-    }
-  }
-
-  private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
   }
 }

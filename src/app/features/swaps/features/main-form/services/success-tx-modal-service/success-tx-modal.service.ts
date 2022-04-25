@@ -5,6 +5,8 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -22,19 +24,18 @@ export class SuccessTxModalService {
    * @param callback Callback to be called after modal is closed.
    */
   public open(
-    transactionHash?: string,
-    blockchain?: BlockchainName,
-    type: SuccessTxModalType = 'default',
-    callback?: () => void
-  ): void {
+    transactionHash: string,
+    blockchain: BlockchainName,
+    type: SuccessTxModalType,
+    callback: () => Observable<void>
+  ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
-    this.dialogService
+    return this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
         data: { idPrefix: '', type, txHash: transactionHash, blockchain }
       })
-      .subscribe(() => {
-        callback?.();
-      });
+      .pipe(switchMap(() => callback?.()))
+      .subscribe();
   }
 }

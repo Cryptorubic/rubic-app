@@ -9,9 +9,7 @@ import {
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SHOULD_CALCULATE_GAS_BLOCKCHAIN } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
-import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -25,13 +23,10 @@ import {
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { InstantTradeProvidersService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
-import { TuiNotification } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Injectable()
-export class InstantTradeService {
+export class InstantTradeService extends TradeService {
   private static readonly unsupportedItNetworks: BlockchainName[] = [];
 
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -40,20 +35,6 @@ export class InstantTradeService {
 
   private readonly providers = this.instantTradeProvidersService.providers;
 
-  public showTrxInProgressTrxNotification = (): void => {
-    this.notificationsService.show(new PolymorpheusComponent(ProgressTrxNotificationComponent), {
-      status: TuiNotification.Info,
-      autoClose: 15000
-    });
-  };
-
-  public showSuccessTrxNotification = (): void => {
-    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-      status: TuiNotification.Success,
-      autoClose: 15000
-    });
-  };
-
   constructor(
     private readonly instantTradeProvidersService: InstantTradeProvidersService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -61,10 +42,10 @@ export class InstantTradeService {
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
-    private readonly notificationsService: NotificationsService,
-    private readonly successTxModalService: SuccessTxModalService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService
-  ) {}
+  ) {
+    super('default');
+  }
 
   public getTargetContractAddress(
     fromBlockchain: BlockchainName,
@@ -168,6 +149,7 @@ export class InstantTradeService {
     this.checkDeviceAndShowNotification();
 
     let transactionHash: string;
+    let subscription$: Subscription;
     const options = {
       onConfirm: async (hash: string) => {
         transactionHash = hash;
@@ -177,7 +159,7 @@ export class InstantTradeService {
         this.notifyGtmAfterSignTx(transactionHash);
         this.gtmService.checkGtm();
 
-        this.notifyTradeInProgress(hash, trade.blockchain);
+        subscription$ = this.notifyTradeInProgress(hash, trade.blockchain);
 
         await this.postTrade(hash, providerName, trade);
       }
@@ -190,6 +172,8 @@ export class InstantTradeService {
       } else {
         receipt = await this.checkFeeAndCreateTrade(providerName, trade, options);
       }
+
+      subscription$.unsubscribe();
       this.showSuccessTrxNotification();
 
       this.updateTrade(transactionHash, true);
@@ -204,6 +188,8 @@ export class InstantTradeService {
         })
         .catch(_err => {});
     } catch (err) {
+      subscription$?.unsubscribe();
+
       if (transactionHash && !this.isNotMinedError(err)) {
         this.updateTrade(transactionHash, false);
       }
@@ -306,15 +292,6 @@ export class InstantTradeService {
     return this.instantTradesApiService.patchTrade(hash, success).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
-  }
-
-  private notifyTradeInProgress(transactionHash: string, blockchain: BlockchainName): void {
-    this.successTxModalService.open(
-      transactionHash,
-      blockchain,
-      'default',
-      this.showTrxInProgressTrxNotification
-    );
   }
 
   private notifyGtmAfterSignTx(transactionHash: string): void {
