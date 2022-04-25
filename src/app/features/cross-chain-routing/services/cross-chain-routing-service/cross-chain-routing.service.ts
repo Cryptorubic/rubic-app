@@ -53,13 +53,14 @@ import { SuccessTxModalType } from '@shared/components/success-trx-notification/
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { CelerService } from './celer/celer.service';
+import { CELER_CONTRACT } from './celer/constants/CELER_CONTRACT';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
   toAmount: BigNumber;
 }
 
-interface IndexedTradeAndToAmount {
+export interface IndexedTradeAndToAmount {
   providerIndex: number;
   tradeAndToAmount: TradeAndToAmount;
 }
@@ -136,12 +137,13 @@ export class CrossChainRoutingService {
     fromToken: BlockchainToken
   ): Promise<boolean> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    const contractAddress = this.contracts[fromBlockchain].address;
+    // const contractAddress = this.contracts[fromBlockchain].address;
+    const celerContractAddress = CELER_CONTRACT[fromBlockchain as EthLikeBlockchainName];
     return blockchainAdapter
       .getAllowance({
         tokenAddress: fromToken.address,
         ownerAddress: this.authService.userAddress,
-        spenderAddress: contractAddress
+        spenderAddress: celerContractAddress
       })
       .then(allowance => allowance.eq(0));
   }
@@ -150,7 +152,8 @@ export class CrossChainRoutingService {
     this.checkDeviceAndShowNotification();
 
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
-    const contractAddress = this.contracts[fromBlockchain].address;
+    // const contractAddress = this.contracts[fromBlockchain].address;
+    const celerContractAddress = CELER_CONTRACT[fromBlockchain as EthLikeBlockchainName];
 
     let approveInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
@@ -158,9 +161,14 @@ export class CrossChainRoutingService {
     };
 
     try {
-      await this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', {
-        onTransactionHash
-      });
+      await this.web3PrivateService.approveTokens(
+        fromToken.address,
+        celerContractAddress,
+        'infinity',
+        {
+          onTransactionHash
+        }
+      );
 
       this.notificationsService.showApproveSuccessful();
     } finally {
@@ -223,13 +231,11 @@ export class CrossChainRoutingService {
 
     let finalTransitAmount = fromTransitTokenAmount;
 
-    const shouldSwapViaCcr = await this.shouldSwapViaCcr(
-      fromBlockchain,
-      toBlockchain,
-      fromTransitTokenAmount
-    );
-
-    console.log(shouldSwapViaCcr);
+    // const shouldSwapViaCcr = await this.shouldSwapViaCcr(
+    //   fromBlockchain,
+    //   toBlockchain,
+    //   fromTransitTokenAmount
+    // );
 
     /**
      * @TODO Take crypto fee on contract.
@@ -269,8 +275,18 @@ export class CrossChainRoutingService {
 
     const {
       providerIndex: toProviderIndex,
-      tradeAndToAmount: { trade: toTrade, toAmount }
+      tradeAndToAmount: { trade: toTrade }
     } = targetBlockchainProviders[0];
+
+    const celerTrade = await this.celerService.calculateTrade(
+      fromBlockchain as EthLikeBlockchainName,
+      toBlockchain as EthLikeBlockchainName,
+      toToken,
+      fromToken,
+      fromTransitTokenAmount,
+      sourceBlockchainProviders[0],
+      targetBlockchainProviders[0]
+    );
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -285,7 +301,7 @@ export class CrossChainRoutingService {
       toProviderIndex,
       toTransitTokenAmount,
       tokenOut: toToken,
-      tokenOutAmount: toAmount,
+      tokenOutAmount: celerTrade.estimatedTokenAmount,
       toSlippage,
       toTrade,
 
@@ -312,8 +328,8 @@ export class CrossChainRoutingService {
     };
 
     const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
-      ? toAmount
-      : toAmount.dividedBy(fromSlippage);
+      ? celerTrade.estimatedTokenAmount
+      : celerTrade.estimatedTokenAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
@@ -816,7 +832,8 @@ export class CrossChainRoutingService {
     this.checkDeviceAndShowNotification();
 
     let transactionHash;
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, fromAmount, fromToken, toToken, toBlockchain } =
+      this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
 
@@ -829,10 +846,13 @@ export class CrossChainRoutingService {
     };
 
     try {
-      transactionHash = await this.contractExecutorFacade.executeTrade(
-        this.currentCrossChainTrade,
-        { onTransactionHash },
-        this.authService.userAddress
+      transactionHash = await this.celerService.makeTransferWithSwap(
+        fromAmount,
+        fromBlockchain as EthLikeBlockchainName,
+        fromToken,
+        toBlockchain as EthLikeBlockchainName,
+        toToken,
+        onTransactionHash
       );
 
       await this.postCrossChainTrade(transactionHash);
@@ -944,7 +964,6 @@ export class CrossChainRoutingService {
     let result;
 
     if (fromTransitTokenAmount.gt(maxAmount)) {
-      console.log(maxAmount.toNumber(), fromTransitTokenAmount.toNumber());
       if (isSupportedByCelerBlockchains) {
         if (srcCelerContractPaused || dstCelerContractPaused) {
           result = true;
@@ -961,7 +980,6 @@ export class CrossChainRoutingService {
         result = true;
       }
     }
-    debugger;
 
     return result;
   }

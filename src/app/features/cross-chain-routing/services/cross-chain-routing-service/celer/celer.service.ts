@@ -20,9 +20,11 @@ import { CelerApiService } from './celer-api.service';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
+import { CELER_TRANSIT_TOKENS } from './constants/CELER_TRANSIT_TOKENS';
 import { MESSAGE_BUS_CONTRACT_ABI } from './constants/MESSAGE_BUS_CONTRACT_ABI';
 import { CelerSwapMethod } from './models/celer-swap-method.enum';
 import { SwapVersion } from './models/provider-type.enum';
+import { SwapInfoBridge } from './models/swap-info-bridge.interface';
 import { SwapInfoDest } from './models/swap-info-dest.interface';
 import { SwapInfoInch } from './models/swap-info-inch.interface';
 import { SwapInfoV2 } from './models/swap-info-v2.interface';
@@ -39,7 +41,7 @@ const CELER_SLIPPAGE = 0.15;
 const DEADLINE = 999999999999999;
 
 export interface CelerTrade {
-  srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3;
+  srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge;
   dstSwap: SwapInfoDest;
   estimatedTokenAmount: BigNumber;
   estimatedTransitTokenAmount: BigNumber;
@@ -83,7 +85,9 @@ export class CelerService {
       receiver,
       amountIn,
       dstChainId,
-      Object.values(this.celerTrade.srcSwap),
+      Object.values(this.celerTrade.srcSwap).length === 1
+        ? (this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken
+        : Object.values(this.celerTrade.srcSwap),
       Object.values(this.celerTrade.dstSwap),
       1000000,
       nativeOut
@@ -96,7 +100,16 @@ export class CelerService {
       nativeIn,
       amountIn
     );
-    const msgValueAdjusted = msgValue + 130000000000000;
+
+    // TODO investigate problem with Insufficient fee for bridge
+    const msgValueAdjusted =
+      msgValue +
+      (Boolean((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken)
+        ? 1300000000000000
+        : 130000000000000);
+
+    console.log(this.celerTrade);
+    console.log(preparedArgs);
 
     let transactionHash: string;
 
@@ -122,14 +135,20 @@ export class CelerService {
   private getSrcSwapObject(
     srcProvider: IndexedTradeAndToAmount,
     fromBlockchain: EthLikeBlockchainName,
-    fromTransitTokenAmount: BigNumber
-  ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 {
+    fromTransitTokenAmount: BigNumber,
+    fromToken: TokenAmount
+  ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge {
     const dexes = this.contractsDataService.contracts[fromBlockchain];
     const dexAddress = dexes.getProvider(srcProvider.providerIndex).contractAddress;
     const amountOutMinimum = Web3Pure.toWei(
       this.getAmountOutMinimum(fromTransitTokenAmount),
       dexes.transitToken.decimals
     );
+    const canBridgeInSourceNetwork = this.isTransitToken(fromToken);
+
+    if (canBridgeInSourceNetwork) {
+      return { srcBridgeToken: fromToken.address } as SwapInfoBridge;
+    }
 
     if (dexes.isProviderOneinch(srcProvider.providerIndex)) {
       const trade = srcProvider.tradeAndToAmount.trade as OneinchInstantTrade;
@@ -166,12 +185,14 @@ export class CelerService {
   private getDstSwapObject(
     dstProvider: IndexedTradeAndToAmount,
     toBlockchain: EthLikeBlockchainName,
-    estimatedTransitTokenAmount: BigNumber
+    estimatedTransitTokenAmount: BigNumber,
+    toToken: TokenAmount
   ): SwapInfoDest {
     const swapVersion = this.getCelerSwapVersion(toBlockchain, dstProvider.providerIndex);
     const dexes = this.contractsDataService.contracts[toBlockchain];
     const dexAddress = dexes.getProvider(dstProvider.providerIndex).contractAddress;
     const amountOutMinimum = this.getAmountOutMinimum(estimatedTransitTokenAmount);
+    const canBridgeInTargetNetwork = this.isTransitToken(toToken);
 
     const dstSwap: SwapInfoDest = {
       dex: dexAddress,
@@ -182,6 +203,18 @@ export class CelerService {
       deadline: DEADLINE,
       amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
     };
+
+    if (canBridgeInTargetNetwork) {
+      return {
+        dex: NULL_ADDRESS,
+        integrator: NULL_ADDRESS,
+        version: SwapVersion.BRIDGE,
+        path: [toToken.address],
+        dataInchOrPathV3: EMPTY_DATA,
+        deadline: 0,
+        amountOutMinimum: '0'
+      };
+    }
 
     if (dexes.isProviderUniV2(dstProvider.providerIndex)) {
       dstSwap.path = dstProvider.tradeAndToAmount.trade.path.map(token => token.address);
@@ -201,6 +234,7 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
+    fromToken: TokenAmount,
     fromTransitTokenAmount: BigNumber,
     srcProvider: IndexedTradeAndToAmount,
     dstProvider: IndexedTradeAndToAmount
@@ -237,8 +271,18 @@ export class CelerService {
     );
     const estimatedTokenAmount = estimatedTransitTokenAmount.dividedBy(toTokenPrice);
 
-    const srcSwap = this.getSrcSwapObject(srcProvider, fromBlockchain, fromTransitTokenAmount);
-    const dstSwap = this.getDstSwapObject(dstProvider, toBlockchain, estimatedTransitTokenAmount);
+    const srcSwap = this.getSrcSwapObject(
+      srcProvider,
+      fromBlockchain,
+      fromTransitTokenAmount,
+      fromToken
+    );
+    const dstSwap = this.getDstSwapObject(
+      dstProvider,
+      toBlockchain,
+      estimatedTransitTokenAmount,
+      toToken
+    );
 
     this.celerTrade = {
       srcSwap,
@@ -248,8 +292,6 @@ export class CelerService {
       srcProvider,
       maxSlippage: estimatedData.max_slippage
     };
-
-    console.log(this.celerTrade);
 
     return {
       estimatedTransitTokenAmount,
@@ -328,6 +370,10 @@ export class CelerService {
     return networks.find(network => network.name === blockchain).id;
   }
 
+  private isTransitToken(token: TokenAmount): boolean {
+    return CELER_TRANSIT_TOKENS[token.blockchain].includes(token.address);
+  }
+
   private getAmountOutMinimum(amount: BigNumber): BigNumber {
     const slippage = this.userSlippage / 2;
 
@@ -350,6 +396,10 @@ export class CelerService {
     nativeIn: boolean
   ): CelerSwapMethod {
     const ccrContract = this.contractsDataService.contracts[fromBlockchain];
+
+    if ((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken) {
+      return nativeIn ? CelerSwapMethod.SWAP_BRIDGE_NATIVE : CelerSwapMethod.SWAP_BRIDGE;
+    }
 
     if (ccrContract.isProviderOneinch(srcProviderIndex)) {
       return nativeIn ? CelerSwapMethod.SWAP_INCH_NATIVE : CelerSwapMethod.SWAP_INCH;
