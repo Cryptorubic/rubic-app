@@ -873,8 +873,8 @@ export class CrossChainRoutingService {
       this.currentCrossChainTrade.toTransitTokenAmount.multipliedBy(
         this.currentCrossChainTrade.transitTokenFee
       ),
-      this.currentCrossChainTrade.tokenInAmount.multipliedBy(
-        this.currentCrossChainTrade.tokenIn.price
+      this.currentCrossChainTrade.fromTransitTokenAmount.multipliedBy(
+        this.currentCrossChainTrade.transitTokenFee / 100
       )
     );
   }

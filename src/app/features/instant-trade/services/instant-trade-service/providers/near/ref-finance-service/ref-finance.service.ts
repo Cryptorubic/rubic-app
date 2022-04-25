@@ -323,6 +323,7 @@ export class RefFinanceService implements ItProvider {
             form,
             paramsObject.amount
           );
+
           await this.instantTradesApiService
             .createTrade(txHash, INSTANT_TRADE_PROVIDER.REF, trade)
             .toPromise();
@@ -336,8 +337,7 @@ export class RefFinanceService implements ItProvider {
               txHash
             });
 
-            //@todo fix revenue near
-
+            // @todo fix revenue near
             this.gtmService.fireTxSignedEvent(
               provider,
               txHash,

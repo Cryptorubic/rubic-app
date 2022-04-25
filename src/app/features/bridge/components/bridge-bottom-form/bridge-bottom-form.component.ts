@@ -434,23 +434,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private notifyGtmAfterSignTx(txHash: string, trade: BridgeTrade): void {
-    let revenue: BigNumber = new BigNumber(0);
-
     if (trade.provider === BRIDGE_PROVIDER.SWAP_RBC) {
-      const rubicFee = 100;
-      const rubicToken = this.tokensService.tokens.find(
-        value => value.symbol === trade.token.symbol
-      );
-
-      const price = new BigNumber(rubicFee * rubicToken.price);
-
       this.gtmService.fireTxSignedEvent(
         SWAP_PROVIDER_TYPE.BRIDGE,
         txHash,
         trade.token.symbol,
         trade.token.symbol,
-        revenue,
-        price
+        null,
+        null
       );
     }
   }
