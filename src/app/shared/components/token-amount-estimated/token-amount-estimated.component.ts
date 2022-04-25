@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 
 @Component({

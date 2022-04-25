@@ -9,7 +9,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/block
 import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
+import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';

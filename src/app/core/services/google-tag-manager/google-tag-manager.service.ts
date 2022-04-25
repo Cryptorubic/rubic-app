@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';

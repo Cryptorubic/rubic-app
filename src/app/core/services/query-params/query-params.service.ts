@@ -10,12 +10,12 @@ import {
 } from '@shared/models/blockchain/blockchain-name';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
-import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
+import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
+import { CrossChainRoutingService } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
-import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 
 type NearQueryParams =

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@a
 import { first, map, switchMap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
-import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
+import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';

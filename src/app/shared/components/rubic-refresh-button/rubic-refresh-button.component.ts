@@ -11,8 +11,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
-import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { SettingsService } from 'src/app/features/swaps/features/main-form/services/settings-service/settings.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 
 export enum REFRESH_BUTTON_STATUS {
   REFRESHING = 'refreshing',

@@ -12,19 +12,19 @@ import {
 } from '@solana/web3.js';
 import { Token } from '@solana/spl-token';
 import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
-import { ACCOUNT_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
+import { ACCOUNT_LAYOUT } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
   AT_PROGRAM_ID,
   RENT_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
-import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+} from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
+import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
 import { Injectable } from '@angular/core';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
+import { TokenAccounts } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
 import { HttpService } from '@core/services/http/http.service';
 import {
   AccountsRpcRequest,
