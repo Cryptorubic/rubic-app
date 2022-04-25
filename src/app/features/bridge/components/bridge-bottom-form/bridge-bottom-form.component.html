@@ -13,15 +13,12 @@
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
       <app-swap-button-container
-        [needApprove]="needApprove"
+        [withApproveButton]="needApprove"
         [status]="tradeStatus"
-        [formService]="swapFormService"
-        [fromAmount]="fromAmount"
-        [isBridgeNotSupported]="!isBridgeSupported"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="handleClick('swap')"
-        (approveClick)="handleClick('approve')"
+        (onSwapClick)="handleClick('swap')"
+        (onApproveClick)="handleClick('approve')"
       ></app-swap-button-container>
     </div>
   </div>

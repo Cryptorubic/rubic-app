@@ -71,13 +71,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public toToken: TokenAmount;
 
-  public fromAmount: BigNumber;
-
   private toAmount: BigNumber;
 
   private _tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
+
+  /**
+   * True, if 'approve' button should be shown near 'swap' button.
+   */
+  public withApproveButton: boolean;
 
   public minError: false | BigNumber;
 
@@ -173,7 +176,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private setFormValues(form: SwapFormInput): void {
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
-    this.fromAmount = form.fromAmount;
 
     if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
       this.smartRouting = null;
@@ -248,6 +250,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.errorText = '';
 
               this.needApprove = needApprove;
+              this.withApproveButton = this.needApprove;
 
               this.toAmount = toAmount;
               this.swapFormService.output.patchValue({
@@ -369,6 +372,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       await this.crossChainRoutingService.approve();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = false;
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 
