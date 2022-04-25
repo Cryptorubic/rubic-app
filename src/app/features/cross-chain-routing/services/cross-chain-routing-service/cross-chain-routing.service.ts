@@ -317,9 +317,8 @@ export class CrossChainRoutingService {
       toToken.address
     );
 
-    const [gasData, minMaxErrors, needApprove] = await Promise.all([
+    const [gasData, needApprove] = await Promise.all([
       this.getGasData(this.currentCrossChainTrade),
-      this.checkMinMaxErrors(this.currentCrossChainTrade),
       calculateNeedApprove ? this.needApprove(fromBlockchain, fromToken) : undefined
     ]);
     this.currentCrossChainTrade = {
@@ -333,7 +332,8 @@ export class CrossChainRoutingService {
 
     return {
       toAmount: toAmountWithoutSlippage,
-      ...minMaxErrors,
+      minAmountError: new BigNumber(0),
+      maxAmountError: new BigNumber(1000000000000000000),
       needApprove
     };
   }
