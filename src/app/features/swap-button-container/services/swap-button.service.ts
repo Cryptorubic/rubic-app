@@ -15,7 +15,11 @@ export class SwapButtonService {
   /**
    * Default text to display inside button.
    */
-  public buttonText = 'Swap';
+  private _defaultButtonText$ = new BehaviorSubject<string>(undefined);
+
+  public set defaultButtonText(value: string) {
+    this._defaultButtonText$.next(value);
+  }
 
   private readonly _priceImpact$ = new BehaviorSubject<number>(0);
 
@@ -84,14 +88,15 @@ export class SwapButtonService {
    * Returns text to display inside button.
    */
   public readonly buttonText$ = combineLatest([
+    this._defaultButtonText$,
     this.swapButtonContainerService.tradeStatus$,
     this._priceImpact$
   ]).pipe(
-    map(([tradeStatus, priceImpact]) =>
+    map(([defaultText, tradeStatus, priceImpact]) =>
       tradeStatus === TRADE_STATUS.DISABLED ||
       !priceImpact ||
       priceImpact < PRICE_IMPACT_RANGE.MEDIUM
-        ? this.buttonText
+        ? defaultText
         : priceImpact < PRICE_IMPACT_RANGE.HIGH_DISABLED
         ? 'Swap Anyway'
         : 'Price impact too high'

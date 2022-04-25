@@ -2,7 +2,7 @@
   [id]="idPrefix + 'approve'"
   appearance="secondary"
   [loading]="approveButtonLoading$ | async"
-  [disabled]="approveButtonLoading$ | async"
+  [disabled]="approveButtonDisabled$ | async"
   (onClick)="onClick.emit()"
 >
   Approve
