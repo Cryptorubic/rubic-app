@@ -306,8 +306,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 this.onCalculateTrade$.next('hidden');
                 return;
               }
-              this.minError = false;
-              this.maxError = false;
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
 
               this.hiddenTradeData = { toAmount };
               if (!toAmount.eq(this.toAmount)) {

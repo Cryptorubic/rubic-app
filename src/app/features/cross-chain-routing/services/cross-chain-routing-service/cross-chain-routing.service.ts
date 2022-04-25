@@ -317,23 +317,22 @@ export class CrossChainRoutingService {
       toToken.address
     );
 
-    const [gasData, needApprove] = await Promise.all([
+    const [gasData, minMaxErrors, needApprove] = await Promise.all([
       this.getGasData(this.currentCrossChainTrade),
+      this.checkMinMaxErrors(this.currentCrossChainTrade),
       calculateNeedApprove ? this.needApprove(fromBlockchain, fromToken) : undefined
     ]);
     this.currentCrossChainTrade = {
       ...this.currentCrossChainTrade,
       ...gasData
     };
-
+    console.log(minMaxErrors);
     const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
       ? celerTrade.estimatedTokenAmount
       : celerTrade.estimatedTokenAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
-      minAmountError: new BigNumber(0),
-      maxAmountError: new BigNumber(1000000000000000000),
       needApprove
     };
   }
