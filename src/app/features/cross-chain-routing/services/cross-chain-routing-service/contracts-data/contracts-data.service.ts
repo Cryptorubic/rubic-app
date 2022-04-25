@@ -298,11 +298,11 @@ export class ContractsDataService {
         [
           {
             provider: this.sushiSwapTelosService,
-            methodSuffix: '1'
+            methodSuffix: ''
           },
           {
             provider: this.zappyService,
-            methodSuffix: ''
+            methodSuffix: '1'
           }
         ],
         12,
