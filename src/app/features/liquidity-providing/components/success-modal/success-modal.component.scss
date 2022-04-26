@@ -5,6 +5,12 @@
 
   text-align: center;
 
+  &__icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
   &__title {
     @include font(26px, 31px, 700, var(--rubic-base-02));
     margin-bottom: 32px;

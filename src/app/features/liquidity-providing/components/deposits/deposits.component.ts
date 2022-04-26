@@ -57,7 +57,12 @@ export class DepositsComponent implements OnInit {
     this.lpService
       .collectRewards(tokenId)
       .pipe(
-        switchMap(() => this.lpModalService.showSuccessModal()),
+        switchMap(() =>
+          this.lpModalService.showSuccessModal(
+            'Rewards collected successful',
+            'You have successfully collected your rewards.'
+          )
+        ),
         finalize(() => this._processingTokenId$.next(undefined))
       )
       .subscribe(() => {
@@ -108,7 +113,12 @@ export class DepositsComponent implements OnInit {
           this.lpService.setStatisticsLoading(true);
           return this.lpService.getStatistics().pipe(take(1));
         }),
-        switchMap(() => this.lpModalService.showSuccessModal()),
+        switchMap(() =>
+          this.lpModalService.showSuccessModal(
+            'Successful withdrawal!',
+            'You have successfully withdrawn your rewards.'
+          )
+        ),
         finalize(() => this._processingTokenId$.next(undefined))
       )
       .subscribe(() => {

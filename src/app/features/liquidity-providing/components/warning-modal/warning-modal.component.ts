@@ -9,8 +9,15 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WarningModalComponent {
+  public title: string;
+
+  public text: string;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    public readonly context: TuiDialogContext<boolean>
-  ) {}
+    public readonly context: TuiDialogContext<boolean, { title: string; text: string }>
+  ) {
+    this.title = this.context.data.title;
+    this.text = this.context.data.text;
+  }
 }

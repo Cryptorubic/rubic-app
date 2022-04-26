@@ -42,16 +42,16 @@ export class LiquidityProvidingModalService {
     );
   }
 
-  showSuccessModal(): Observable<unknown> {
-    return this.dialogService.open(new PolymorpheusComponent(SuccessModalComponent), {
-      data: {},
+  showSuccessModal(title: string, text: string): Observable<boolean> {
+    return this.dialogService.open<boolean>(new PolymorpheusComponent(SuccessModalComponent), {
+      data: { title, text },
       closeable: true
     });
   }
 
-  showWarningModal(): Observable<unknown> {
-    return this.dialogService.open(new PolymorpheusComponent(WarningModalComponent), {
-      data: {},
+  showWarningModal(title: string, text: string): Observable<boolean> {
+    return this.dialogService.open<boolean>(new PolymorpheusComponent(WarningModalComponent), {
+      data: { title, text },
       closeable: true
     });
   }
