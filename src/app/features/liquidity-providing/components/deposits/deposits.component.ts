@@ -56,11 +56,14 @@ export class DepositsComponent implements OnInit {
     this._processingTokenId$.next(tokenId);
     this.lpService
       .collectRewards(tokenId)
-      .pipe(finalize(() => this._processingTokenId$.next(undefined)))
+      .pipe(
+        switchMap(() => this.lpModalService.showSuccessModal()),
+        finalize(() => this._processingTokenId$.next(undefined))
+      )
       .subscribe(() => {
         this._processingTokenId$.next(undefined);
         this.lpService.setDepositsLoading(false);
-        this.lpNotificationService.showSuccessRewardsClaimNotification();
+        // this.lpNotificationService.showSuccessRewardsClaimNotification();
       });
   }
 
@@ -105,10 +108,11 @@ export class DepositsComponent implements OnInit {
           this.lpService.setStatisticsLoading(true);
           return this.lpService.getStatistics().pipe(take(1));
         }),
+        switchMap(() => this.lpModalService.showSuccessModal()),
         finalize(() => this._processingTokenId$.next(undefined))
       )
       .subscribe(() => {
-        this.lpNotificationService.showSuccessWithdrawNotification();
+        // this.lpNotificationService.showSuccessWithdrawNotification();
         this.lpService.setStatisticsLoading(false);
       });
   }

@@ -14,6 +14,7 @@ import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
+import { DEPOSIT_RATIO } from '../../constants/DEPOSIT_RATIO';
 
 @Component({
   selector: 'app-deposit-form',
@@ -98,7 +99,8 @@ export class DepositFormComponent implements OnInit {
         this.usdcAmountCtrl.reset();
         this._usdcDepositOpened$.next(false);
       } else {
-        this.usdcAmountCtrl.patchValue(value);
+        const usdcAmount = value.multipliedBy(DEPOSIT_RATIO);
+        this.usdcAmountCtrl.patchValue(usdcAmount);
         this._usdcDepositOpened$.next(true);
       }
     });
@@ -118,16 +120,17 @@ export class DepositFormComponent implements OnInit {
   }
 
   public createDeposit(): void {
-    const amount = this.lpService.parseInputValue(this.usdcAmountCtrl.value);
+    const brbcAmount = this.lpService.parseInputValue(this.brbcAmountCtrl.value);
+    const usdcAmount = this.lpService.parseInputValue(this.usdcAmountCtrl.value);
 
     this.lpModalService
-      .showDepositModal(amount)
+      .showDepositModal(brbcAmount, usdcAmount)
       .pipe(
         switchMap(result => {
           if (result) {
             this._loadingDepositBtn$.next(true);
             return this.lpService
-              .createDeposit(amount)
+              .createDeposit(usdcAmount)
               .pipe(finalize(() => this._loadingDepositBtn$.next(false)));
           } else {
             return of(false);

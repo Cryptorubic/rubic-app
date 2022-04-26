@@ -51,6 +51,7 @@ import { LpReward, LpRewardParsed } from '@app/core/services/backend/volume-api/
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { WINDOW } from '@ng-web-apis/common';
+import { DEPOSIT_RATIO } from '../constants/DEPOSIT_RATIO';
 
 @Injectable()
 export class LiquidityProvidingService {
@@ -180,6 +181,7 @@ export class LiquidityProvidingService {
 
   public get currentMaxLimit(): number {
     const userTotalStaked = this._userTotalStaked$.getValue();
+
     return this.isWhitelistInProgress
       ? this.maxEnterAmountWhitelist - userTotalStaked
       : this.maxEnterAmount - userTotalStaked;
@@ -435,7 +437,7 @@ export class LiquidityProvidingService {
     );
   }
 
-  public createDeposit(amount: BigNumber): Observable<BigNumber[]> {
+  public createDeposit(usdcAmount: BigNumber): Observable<BigNumber[]> {
     const depositMethod =
       this.depositType === DepositType.WHITELIST && Boolean(this.isWhitelistUser)
         ? 'whitelistStake'
@@ -446,7 +448,7 @@ export class LiquidityProvidingService {
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         depositMethod,
-        [Web3Pure.toWei(amount)]
+        [Web3Pure.toWei(usdcAmount)]
       )
     ).pipe(
       switchMap((hash: string) => this.waitForReceipt(hash)),
@@ -562,7 +564,8 @@ export class LiquidityProvidingService {
   }
 
   public checkDepositErrors(
-    amount: BigNumber,
+    brbcAmount: BigNumber,
+    usdcAmount: BigNumber,
     usdcBalance: BigNumber,
     brbcBalance: BigNumber
   ): LpFormError | null {
@@ -576,23 +579,23 @@ export class LiquidityProvidingService {
       return LpFormError.POOL_FULL;
     }
 
-    if (brbcBalance && amount.gt(brbcBalance)) {
+    if (brbcBalance && brbcAmount.gt(brbcBalance)) {
       return LpFormError.INSUFFICIENT_BALANCE_BRBC;
     }
 
-    if (usdcBalance && amount.gt(usdcBalance)) {
+    if (usdcBalance && usdcAmount.gt(usdcBalance)) {
       return LpFormError.INSUFFICIENT_BALANCE_USDC;
     }
 
-    if (amount.gt(this.currentMaxLimit)) {
+    if (brbcAmount.gt(this.currentMaxLimit)) {
       return LpFormError.LIMIT_GT_MAX;
     }
 
-    if (amount.lt(this.minEnterAmount)) {
+    if (brbcAmount.lt(this.minEnterAmount)) {
       return LpFormError.LIMIT_LT_MIN;
     }
 
-    if (!amount.isFinite()) {
+    if (!brbcAmount.isFinite()) {
       return LpFormError.EMPTY_AMOUNT;
     }
 
@@ -674,14 +677,15 @@ export class LiquidityProvidingService {
       )
     ).pipe(
       map(response => Web3Pure.fromWei(response)),
-      tap(async userTotalStaked => {
+      tap(async userTotalStakedUsdc => {
         const brbcUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
           address: this.brbcAddress,
           blockchain: this.blockchain
         });
-        const balance = userTotalStaked.plus(userTotalStaked.multipliedBy(brbcUsdcPrice));
+        const userTotalStakedBrbc = userTotalStakedUsdc.multipliedBy(1 / DEPOSIT_RATIO);
+        const balance = userTotalStakedUsdc.plus(userTotalStakedBrbc.multipliedBy(brbcUsdcPrice));
         this.zone.run(() => {
-          this._userTotalStaked$.next(Number(userTotalStaked.toFixed(2)));
+          this._userTotalStaked$.next(Number(userTotalStakedBrbc.toFixed(2)));
         });
         this._balance$.next(balance);
       })
@@ -710,7 +714,7 @@ export class LiquidityProvidingService {
       this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
-        'poolUSDC'
+        'poolBRBC'
       )
     ).pipe(
       map(response => Web3Pure.fromWei(response)),
