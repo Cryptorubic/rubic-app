@@ -93,6 +93,10 @@
       width: 50%;
     }
 
+    &-hint {
+      margin-left: 8px;
+    }
+
     &-label {
       @include font(16px, 19px, 500, var(--rubic-base-24));
       display: flex;
@@ -120,6 +124,9 @@
 
     &-value {
       @include font(22px, 26px, 500, var(--rubic-base-02));
+      display: flex;
+      align-items: center;
+
       transition: 0.4s opacity ease-in-out;
 
       @include b($tablet) {
