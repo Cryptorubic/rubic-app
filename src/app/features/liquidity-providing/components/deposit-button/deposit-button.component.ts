@@ -9,6 +9,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { DEPOSIT_RATIO } from '../../constants/DEPOSIT_RATIO';
 import { LpFormError } from '../../models/lp-form-error.enum';
 import { PoolToken } from '../../models/pool-token.enum';
 import { LiquidityProvidingService } from '../../services/liquidity-providing.service';
@@ -54,7 +55,7 @@ export class DepositButtonComponent implements OnInit {
 
   public readonly needLogin$ = this.lpService.needLogin$;
 
-  public readonly currentMaxLimit = this.lpService.currentMaxLimit;
+  public currentMaxLimit = this.lpService.currentMaxLimit;
 
   public readonly minLimit = this.lpService.minEnterAmount;
 
@@ -72,10 +73,16 @@ export class DepositButtonComponent implements OnInit {
     combineLatest([this.brbcAmount$, this.lpService.usdcBalance$, this.lpService.brbcBalance$])
       .pipe(
         map(([brbcAmount, usdcBalance, brbcBalance]) => {
-          return this.lpService.checkDepositErrors(brbcAmount, usdcBalance, brbcBalance);
+          return this.lpService.checkDepositErrors(
+            brbcAmount,
+            brbcAmount.multipliedBy(DEPOSIT_RATIO),
+            usdcBalance,
+            brbcBalance
+          );
         })
       )
       .subscribe(error => {
+        this.currentMaxLimit = this.lpService.currentMaxLimit;
         this._error$.next(error);
       });
   }

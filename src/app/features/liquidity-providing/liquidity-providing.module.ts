@@ -35,6 +35,8 @@ import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
 import { TransferModalComponent } from './components/transfer-modal/transfer-modal.component';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { RewardsHistoryComponent } from './components/rewards-history/rewards-history.component';
+import { SuccessModalComponent } from './components/success-modal/success-modal.component';
+import { WarningModalComponent } from './components/warning-modal/warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { RewardsHistoryComponent } from './components/rewards-history/rewards-hi
     ProgressComponent,
     RequestWithdrawModalComponent,
     TransferModalComponent,
-    RewardsHistoryComponent
+    RewardsHistoryComponent,
+    SuccessModalComponent,
+    WarningModalComponent
   ],
   imports: [
     CommonModule,

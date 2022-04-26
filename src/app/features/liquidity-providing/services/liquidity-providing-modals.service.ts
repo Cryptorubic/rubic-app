@@ -5,7 +5,9 @@ import BigNumber from 'bignumber.js';
 import { Observable } from 'rxjs';
 import { DepositModalComponent } from '../components/deposit-modal/deposit-modal.component';
 import { RequestWithdrawModalComponent } from '../components/request-withdraw-modal/request-withdraw-modal.component';
+import { SuccessModalComponent } from '../components/success-modal/success-modal.component';
 import { TransferModalComponent } from '../components/transfer-modal/transfer-modal.component';
+import { WarningModalComponent } from '../components/warning-modal/warning-modal.component';
 
 @Injectable()
 export class LiquidityProvidingModalService {
@@ -14,20 +16,22 @@ export class LiquidityProvidingModalService {
     private readonly injector: Injector
   ) {}
 
-  showDepositModal(amount: BigNumber): Observable<boolean> {
+  showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {
       data: {
-        amount
+        brbcAmount,
+        usdcAmount
       }
     });
   }
 
-  showRequestWithdrawModal(amount: BigNumber): Observable<boolean> {
+  showRequestWithdrawModal(usdcAmount: BigNumber, brbcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(
       new PolymorpheusComponent(RequestWithdrawModalComponent),
       {
         data: {
-          amount
+          usdcAmount,
+          brbcAmount
         }
       }
     );
@@ -37,5 +41,19 @@ export class LiquidityProvidingModalService {
     return this.dialogService.open(
       new PolymorpheusComponent(TransferModalComponent, this.injector)
     );
+  }
+
+  showSuccessModal(title: string, text: string): Observable<boolean> {
+    return this.dialogService.open<boolean>(new PolymorpheusComponent(SuccessModalComponent), {
+      data: { title, text },
+      closeable: true
+    });
+  }
+
+  showWarningModal(title: string, text: string): Observable<boolean> {
+    return this.dialogService.open<boolean>(new PolymorpheusComponent(WarningModalComponent), {
+      data: { title, text },
+      closeable: true
+    });
   }
 }

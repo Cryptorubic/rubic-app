@@ -15,13 +15,10 @@ export class LiquidityProvidingNotificationService {
   ) {}
 
   public showSuccessApproveNotification(token: PoolToken): void {
-    this.notificationsService.show(
-      this.translate.instant('notifications.successApproveToken', { token }),
-      {
-        status: TuiNotification.Success,
-        autoClose: 3000
-      }
-    );
+    this.notificationsService.show(`Successful ${token} approve`, {
+      status: TuiNotification.Success,
+      autoClose: 3000
+    });
   }
 
   public showSuccessDepositNotification(): void {
@@ -39,7 +36,7 @@ export class LiquidityProvidingNotificationService {
   }
 
   public showSuccessWithdrawRequestNotification(): void {
-    this.notificationsService.show('Deposit withdraw requested successful', {
+    this.notificationsService.show('Withdrawal request successful', {
       status: TuiNotification.Success,
       autoClose: 5000
     });

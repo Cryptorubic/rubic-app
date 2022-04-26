@@ -1,10 +1,16 @@
 <div class="request-withdraw-modal">
+  <div class="request-withdraw-modal__icon">
+    <img src="assets/images/icons/modal-warning-icon.svg" alt="Warning" />
+  </div>
   <div class="request-withdraw-modal__title">{{ 'lp.requestWithdraw' | translate }}</div>
   <div class="request-withdraw-modal__content">
     {{
       'lp.requestWithdrawModalText'
         | translate
-          : { amount: (amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) }
+          : {
+              brbcAmount: (brbcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }),
+              usdcAmount: (usdcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            }
     }}
   </div>
   <div class="request-withdraw-modal__actions">

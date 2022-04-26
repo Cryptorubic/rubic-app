@@ -43,7 +43,10 @@
         <span class="asset__balance-max" (click)="setMaxTokenAmount(brbcBalance)"> MAX </span>
       </div>
       <div class="asset__usd-price" *ngIf="rbcAmountUsdPrice$ | async as usdPrice">
-        {{ !usdPrice.isFinite() || !usdPrice ? 0 : (usdPrice | bigNumberFormat: 2) }}$
+        <span class="asset__usd-price-value">{{
+          !usdPrice.isFinite() || !usdPrice ? 0 : (usdPrice | bigNumberFormat: 2)
+        }}</span>
+        $
       </div>
     </div>
   </div>

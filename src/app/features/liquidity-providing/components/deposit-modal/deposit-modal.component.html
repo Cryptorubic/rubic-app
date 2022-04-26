@@ -4,7 +4,10 @@
     {{
       'lp.initiateDepositModalText'
         | translate
-          : { amount: (amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) }
+          : {
+              usdcAmount: (usdcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }),
+              brbcAmount: (brbcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            }
     }}
   </div>
   <div class="deposit-modal__actions">

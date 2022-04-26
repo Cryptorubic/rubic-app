@@ -1,6 +1,6 @@
 @use 'src/scss/core'as *;
 
-.request-withdraw-modal {
+.success-modal {
   padding: 40px;
 
   text-align: center;
@@ -9,6 +9,11 @@
     display: flex;
     justify-content: center;
     margin-bottom: 32px;
+    
+    img {
+      width: 72px;
+      height: 72px;
+    }
   }
 
   &__title {

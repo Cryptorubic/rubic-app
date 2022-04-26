@@ -10,12 +10,18 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositModalComponent {
-  public amount: BigNumber;
+  public usdcAmount: BigNumber;
+
+  public brbcAmount: BigNumber;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    public readonly context: TuiDialogContext<boolean, { amount: BigNumber }>
+    public readonly context: TuiDialogContext<
+      boolean,
+      { usdcAmount: BigNumber; brbcAmount: BigNumber }
+    >
   ) {
-    this.amount = this.context.data.amount;
+    this.usdcAmount = this.context.data.usdcAmount;
+    this.brbcAmount = this.context.data.brbcAmount;
   }
 }

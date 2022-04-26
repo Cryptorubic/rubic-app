@@ -23,6 +23,8 @@ export class DepositCardComponent {
 
   @Output() readonly onWithdraw = new EventEmitter<void>();
 
+  @Output() readonly onSwitchNetwork = new EventEmitter<void>();
+
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(private readonly headerStore: HeaderStore, private readonly datePipe: DatePipe) {}

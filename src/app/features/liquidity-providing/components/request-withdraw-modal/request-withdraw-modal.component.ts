@@ -12,10 +12,18 @@ import BigNumber from 'bignumber.js';
 export class RequestWithdrawModalComponent {
   public amount: BigNumber;
 
+  public usdcAmount: BigNumber;
+
+  public brbcAmount: BigNumber;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    public readonly context: TuiDialogContext<boolean, { amount: BigNumber }>
+    public readonly context: TuiDialogContext<
+      boolean,
+      { brbcAmount: BigNumber; usdcAmount: BigNumber }
+    >
   ) {
-    this.amount = this.context.data.amount;
+    this.brbcAmount = this.context.data.brbcAmount;
+    this.usdcAmount = this.context.data.usdcAmount;
   }
 }

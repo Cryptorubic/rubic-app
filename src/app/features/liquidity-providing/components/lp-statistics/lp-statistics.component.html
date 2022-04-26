@@ -9,6 +9,13 @@
       <div class="statistics__param-value" *ngLet="apr$ | async as apr">
         <!-- {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }} % -->
         27%
+        <img
+          class="statistics__param-hint"
+          src="assets/images/icons/hint.svg"
+          [tuiHint]="aprHintTpl"
+          [tuiHintShowDelay]="100"
+          alt="Hint"
+        />
       </div>
     </div>
     <div class="statistics__param">
@@ -74,3 +81,8 @@
     >{{ endDate | date: 'longDate' }} at {{ endDate | date: 'shortTime':'UTC' }} UTC
   </div>
 </div>
+
+<ng-template #aprHintTpl>
+  The APR rate is flexible, and is recalculated every day. The APR charges in real-time depending on
+  rewards allocation, total liquidity provided and period.
+</ng-template>
