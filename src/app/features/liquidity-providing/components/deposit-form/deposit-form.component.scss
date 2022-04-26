@@ -96,6 +96,18 @@
     margin-bottom: 12px;
   }
 
+  &__usd-price {
+    display: flex;
+
+    &-value {
+      display: block;
+      max-width: 60px;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
+  }
+
   &__symbol {
     display: flex;
     align-items: center;
