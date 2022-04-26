@@ -18,6 +18,8 @@ import { LiquidityProvidingService } from '../../services/liquidity-providing.se
 export class LpLandingComponent implements OnInit {
   public readonly needLogin$ = this.lpService.needLogin$;
 
+  public readonly needSwitchNetwork$ = this.lpService.needSwitchNetwork$;
+
   public readonly isWhitelistInProgress$ = this.lpService.isWhitelistInProgress$;
 
   public readonly isWhitelistUser$ = this.lpService.isWhitelistUser$;

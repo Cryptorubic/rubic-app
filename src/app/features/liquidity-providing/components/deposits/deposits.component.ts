@@ -136,6 +136,11 @@ export class DepositsComponent implements OnInit {
     this.lpModalService.showTransferModal().subscribe();
   }
 
+  public async switchNetwork(): Promise<void> {
+    await this.lpService.switchNetwork();
+    this.cdr.detectChanges();
+  }
+
   public reloadDeposits(): void {
     this.lpService
       .getDeposits()

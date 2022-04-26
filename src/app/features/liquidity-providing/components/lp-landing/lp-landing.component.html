@@ -1,7 +1,8 @@
 <ng-container
   *ngLet="{
     isWhitelistUser: isWhitelistUser$ | async,
-    isWhitelistInProgress: isWhitelistInProgress$ | async
+    isWhitelistInProgress: isWhitelistInProgress$ | async,
+    needSwitchNetwork: needSwitchNetwork$ | async
   } as whitelist"
 >
   <hr *ngIf="isMobile$ | async" />
@@ -56,12 +57,27 @@
   </ng-container>
 
   <ng-template #createDeposit>
-    <ng-container *ngIf="whitelist.isWhitelistInProgress && !whitelist.isWhitelistUser">
+    <ng-container *ngIf="whitelist.needSwitchNetwork">
+      <app-rubic-button class="lp-steps__create" appearance="secondary" (click)="switchNetwork()">
+        Switch to BSC network
+      </app-rubic-button>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        whitelist.isWhitelistInProgress &&
+        !whitelist.isWhitelistUser &&
+        !whitelist.needSwitchNetwork
+      "
+    >
       <app-rubic-button class="lp-steps__create" appearance="secondary" [disabled]="true">
         {{ 'lp.notWhitelistUser' | translate }}
       </app-rubic-button>
     </ng-container>
-    <ng-container *ngIf="whitelist.isWhitelistInProgress && whitelist.isWhitelistUser">
+    <ng-container
+      *ngIf="
+        whitelist.isWhitelistInProgress && whitelist.isWhitelistUser && !whitelist.needSwitchNetwork
+      "
+    >
       <app-rubic-button
         class="lp-steps__create"
         appearance="secondary"
@@ -70,7 +86,7 @@
         {{ 'lp.initiateDepositWithWhitelist' | translate }}
       </app-rubic-button>
     </ng-container>
-    <ng-container *ngIf="!whitelist.isWhitelistInProgress">
+    <ng-container *ngIf="!whitelist.isWhitelistInProgress && !whitelist.needSwitchNetwork">
       <app-rubic-button
         class="lp-steps__create"
         appearance="secondary"
