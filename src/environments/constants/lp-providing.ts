@@ -24,7 +24,7 @@ export const LP_PROVIDING_CONFIG_DEVELOP = {
   poolUSDC: 100,
   poolBRBC: 400,
   maxEnterAmountWhitelist: 32,
-  whitelistDuration: 600,
+  whitelistDuration: 300,
   whitelist: [
     '0x3483ed7d3444a311a7585f0e59c9a74d6c111218',
     '0x186915891222add6e2108061a554a1f400a25cbd'
