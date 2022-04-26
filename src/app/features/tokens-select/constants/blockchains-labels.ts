@@ -11,5 +11,6 @@ export const BLOCKCHAIN_LABEL: Partial<Record<BlockchainName, string>> = {
   ARBITRUM: 'Arbitrum',
   AURORA: 'Aurora',
   SOLANA: 'Solana',
-  NEAR: 'Near'
+  NEAR: 'Near',
+  TELOS: 'Telos EVM'
 };

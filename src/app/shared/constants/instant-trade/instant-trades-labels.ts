@@ -19,5 +19,6 @@ export const instantTradesLabels: Record<INSTANT_TRADE_PROVIDER, string> = {
   [INSTANT_TRADE_PROVIDER.VIPER]: 'Viperswap',
   [INSTANT_TRADE_PROVIDER.TRISOLARIS]: 'Trisolaris',
   [INSTANT_TRADE_PROVIDER.WANNASWAP]: 'Wannaswap',
-  [INSTANT_TRADE_PROVIDER.REF]: 'Ref finance'
+  [INSTANT_TRADE_PROVIDER.REF]: 'Ref finance',
+  [INSTANT_TRADE_PROVIDER.ZAPPY]: 'Zappy'
 };
