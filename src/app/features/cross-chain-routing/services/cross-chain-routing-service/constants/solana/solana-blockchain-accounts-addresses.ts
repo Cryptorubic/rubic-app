@@ -11,5 +11,6 @@ export const BLOCKCHAIN_UUID: Partial<Record<BlockchainNumber, string>> = {
   8: null, // Solana.
   9: 'Cx7Xfmv9pY2FcbdNQW86dZMWiZZ4rYVwgT1XNqKDsQ6b',
   10: 'DHsqFC6KG3HzyTWcFUm5emNRN6267czoqE19ZYinC8Hg',
-  11: 'DmeJNiquohZQkrZ1E4bDsamKyBizWaLXQ93EFGH2tYRi'
+  11: 'DmeJNiquohZQkrZ1E4bDsamKyBizWaLXQ93EFGH2tYRi',
+  12: '@TODO'
 };

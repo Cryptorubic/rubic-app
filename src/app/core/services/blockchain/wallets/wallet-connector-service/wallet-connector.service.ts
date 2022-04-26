@@ -327,6 +327,10 @@ export class WalletConnectorService {
       [BLOCKCHAIN_NAME.AURORA]: {
         name: 'Aurora MainNet',
         rpc: 'https://mainnet.aurora.dev'
+      },
+      [BLOCKCHAIN_NAME.TELOS]: {
+        name: 'Telos EVM Mainnet',
+        rpc: 'https://mainnet.telos.net/evm'
       }
     };
     const params = {

@@ -9,4 +9,4 @@ type NumbersRange<
   Result extends unknown[] = []
 > = I extends TO ? [...Result, I][number] : NumbersRange<FROM, TO, Increase<I>, [...Result, I]>;
 
-export type BlockchainNumber = NumbersRange<1, 11>;
+export type BlockchainNumber = NumbersRange<1, 12>;

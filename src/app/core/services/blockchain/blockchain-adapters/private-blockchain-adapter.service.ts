@@ -33,6 +33,8 @@ export class PrivateBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3PrivateService;
 
+  public readonly [BLOCKCHAIN_NAME.TELOS]: EthLikeWeb3PrivateService;
+
   constructor(
     private readonly ethLikeWeb3PrivateService: EthLikeWeb3PrivateService,
     private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService,
