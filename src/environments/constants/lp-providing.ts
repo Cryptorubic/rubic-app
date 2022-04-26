@@ -15,18 +15,18 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0x7524713f9b1c4f01831285dF3C0FCC76Ac7Db5e0',
+  contractAddress: '0x3b44bF53d1f704D25048871C44d39A4f9a2d3108',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   minEnterAmount: 20,
   maxEnterAmount: 200,
-  poolSize: 3200000,
+  poolSize: 400,
   poolUSDC: 100,
   poolBRBC: 400,
   maxEnterAmountWhitelist: 32,
-  whitelistDuration: 300,
+  whitelistDuration: 10800,
   whitelist: [
-    '0x3483eD7d3444A311a7585F0e59C9A74d6C111218',
-    '0x8796e04d35bA0251Fa71d9bC89937bED766970E3'
+    '0x105a3ba3637a29d36f61c7f03f55da44b4591cd1',
+    '0x60a4dae96386e8c6d8535f2463a00b4a40fae6ef'
   ]
 };
