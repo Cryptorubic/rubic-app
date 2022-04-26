@@ -4,7 +4,10 @@
     {{
       'lp.requestWithdrawModalText'
         | translate
-          : { amount: (amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) }
+          : {
+              brbcAmount: (brbcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }),
+              usdcAmount: (usdcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            }
     }}
   </div>
   <div class="request-withdraw-modal__actions">

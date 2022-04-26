@@ -5,6 +5,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, of } from 'rxjs';
 import { finalize, switchMap, take, takeUntil } from 'rxjs/operators';
+import { DEPOSIT_RATIO } from '../../constants/DEPOSIT_RATIO';
 import { DepositType } from '../../models/deposit-type.enum';
 import { LiquidityProvidingModalService } from '../../services/liquidity-providing-modals.service';
 import { LiquidityProvidingNotificationService } from '../../services/liquidity-providing-notification.service';
@@ -68,11 +69,10 @@ export class DepositsComponent implements OnInit {
       .subscribe(() => {
         this._processingTokenId$.next(undefined);
         this.lpService.setDepositsLoading(false);
-        // this.lpNotificationService.showSuccessRewardsClaimNotification();
       });
   }
 
-  public requestWithdraw(tokenId: string, amount: BigNumber): void {
+  public requestWithdraw(tokenId: string, usdcAmount: BigNumber): void {
     of(this.lpService.isLpEneded)
       .pipe(
         switchMap(isLpEnded => {
@@ -84,20 +84,22 @@ export class DepositsComponent implements OnInit {
               })
             );
           } else {
-            return this.lpModalService.showRequestWithdrawModal(amount).pipe(
-              switchMap(result => {
-                if (result) {
-                  this._processingTokenId$.next(tokenId);
-                  return this.lpService.requestWithdraw(tokenId).pipe(
-                    finalize(() => {
-                      this._processingTokenId$.next(undefined);
-                    })
-                  );
-                } else {
-                  return of(result);
-                }
-              })
-            );
+            return this.lpModalService
+              .showRequestWithdrawModal(usdcAmount, usdcAmount.multipliedBy(1 / DEPOSIT_RATIO))
+              .pipe(
+                switchMap(result => {
+                  if (result) {
+                    this._processingTokenId$.next(tokenId);
+                    return this.lpService.requestWithdraw(tokenId).pipe(
+                      finalize(() => {
+                        this._processingTokenId$.next(undefined);
+                      })
+                    );
+                  } else {
+                    return of(result);
+                  }
+                })
+              );
           }
         })
       )
@@ -122,7 +124,6 @@ export class DepositsComponent implements OnInit {
         finalize(() => this._processingTokenId$.next(undefined))
       )
       .subscribe(() => {
-        // this.lpNotificationService.showSuccessWithdrawNotification();
         this.lpService.setStatisticsLoading(false);
       });
   }

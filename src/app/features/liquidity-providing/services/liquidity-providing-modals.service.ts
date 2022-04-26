@@ -25,12 +25,13 @@ export class LiquidityProvidingModalService {
     });
   }
 
-  showRequestWithdrawModal(amount: BigNumber): Observable<boolean> {
+  showRequestWithdrawModal(usdcAmount: BigNumber, brbcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(
       new PolymorpheusComponent(RequestWithdrawModalComponent),
       {
         data: {
-          amount
+          usdcAmount,
+          brbcAmount
         }
       }
     );
