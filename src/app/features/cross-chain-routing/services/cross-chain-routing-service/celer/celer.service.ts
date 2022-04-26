@@ -100,15 +100,15 @@ export class CelerService {
       nativeIn,
       amountIn
     );
-    const canBridgeInTargetNetwork = this.isTransitToken(toToken);
+    // const canBridgeInTargetNetwork = this.isTransitToken(toToken);
 
-    // TODO investigate problem with Insufficient fee for bridge
-    const msgValueAdjusted =
-      msgValue +
-      (Boolean((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken) ||
-      canBridgeInTargetNetwork
-        ? 1300000000000000
-        : 130000000000000);
+    // // TODO investigate problem with Insufficient fee for bridge
+    // const msgValueAdjusted =
+    //   msgValue +
+    //   (Boolean((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken) ||
+    //   canBridgeInTargetNetwork
+    //     ? 1300000000000000
+    //     : 130000000000000);
 
     console.log(this.celerTrade);
     console.log(preparedArgs);
@@ -121,7 +121,7 @@ export class CelerService {
       this.getSwapMethod(fromBlockchain, this.celerTrade.srcProvider.providerIndex, nativeIn),
       preparedArgs,
       {
-        value: String(msgValueAdjusted),
+        value: String(msgValue),
         onTransactionHash: (hash: string) => {
           if (onTxHash) {
             onTxHash(hash);
@@ -325,17 +325,23 @@ export class CelerService {
       fromBlockchain
     ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
 
-    const feeBase = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+    const fee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       messageBusAddress,
       MESSAGE_BUS_CONTRACT_ABI,
       'calcFee',
       { methodArguments: [message] }
     );
 
+    const feeBase = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      messageBusAddress,
+      MESSAGE_BUS_CONTRACT_ABI,
+      'feeBase'
+    );
+
     if (nativeIn) {
-      return Number(amountIn) + Number(feeBase) + Number(cryptoFee);
+      return Number(amountIn) + Number(fee) + Number(cryptoFee) + Number(feeBase);
     }
-    return Number(feeBase) + Number(cryptoFee);
+    return Number(fee) + Number(cryptoFee) + Number(feeBase);
   }
 
   public async getCelerSlippage(
