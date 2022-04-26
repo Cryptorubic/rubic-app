@@ -4,19 +4,19 @@ import {
   Component,
   HostListener,
   Inject,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { TableData } from '@shared/models/my-trades/table-trade';
+import { TableData, TableTrade } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
 import {
   TableRowsData,
   TableRowTrade
 } from '@features/my-trades/components/my-trades/models/table-row-trade';
-import { defaultSort } from '@taiga-ui/addon-table';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { catchError, filter, first, mergeMap, takeUntil } from 'rxjs/operators';
@@ -24,6 +24,9 @@ import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal
 import { WINDOW } from '@ng-web-apis/common';
 import { NoDataMyTradesError } from '@core/errors/models/my-trades/no-data-my-trades-error';
 import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -52,8 +55,10 @@ export class MyTradesComponent implements OnInit {
     private readonly errorsService: ErrorsService,
     private readonly walletsModalService: WalletsModalService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly destroy$: TuiDestroyService,
-    @Inject(WINDOW) private readonly window: Window
+    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -110,20 +115,18 @@ export class MyTradesComponent implements OnInit {
   }
 
   private updateTableData(tableData: TableData): void {
-    const tableRowsData = tableData.trades
-      .map(
-        trade =>
-          ({
-            Status: trade.status,
-            FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
-            Provider: trade.provider,
-            Sent: new BigNumber(trade.fromToken?.amount),
-            Expected: new BigNumber(trade.toToken.amount),
-            Date: trade.date,
-            inProgress: false
-          } as TableRowTrade)
-      )
-      .sort((a, b) => defaultSort(a.Date, b.Date) * -1);
+    const tableRowsData = tableData.trades.map(
+      trade =>
+        ({
+          Status: trade.status,
+          FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
+          Provider: trade.provider,
+          Sent: new BigNumber(trade.fromToken?.amount),
+          Expected: new BigNumber(trade.toToken.amount),
+          Date: trade.date,
+          inProgress: false
+        } as TableRowTrade)
+    );
 
     this.tableDataSubject$.next({
       totalCount: tableData.totalCount,
@@ -153,5 +156,65 @@ export class MyTradesComponent implements OnInit {
   @HostListener('window:resize')
   private onResize(): void {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
+  }
+
+  public receivePolygonBridgeTrade(trade: TableTrade): void {
+    let tableData = this.tableDataSubject$.getValue().rowTrades.map(tableTrade => {
+      if (tableTrade.Date.getTime() === trade.date.getTime()) {
+        return {
+          ...tableTrade,
+          inProgress: true
+        };
+      }
+      return tableTrade;
+    });
+    this.tableDataSubject$.next({
+      rowTrades: tableData,
+      totalCount: this.tableDataSubject$.getValue().totalCount
+    });
+
+    let tradeInProgressSubscription$: Subscription;
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    this.myTradesService
+      .depositPolygonBridgeTradeAfterCheckpoint(trade.fromTransactionHash, onTransactionHash)
+      .subscribe(
+        async _receipt => {
+          tradeInProgressSubscription$.unsubscribe();
+          this.notificationsService.show(
+            this.translateService.instant('bridgePage.successMessage'),
+            {
+              label: this.translateService.instant('notifications.successfulTradeTitle'),
+              status: TuiNotification.Success,
+              autoClose: 15000
+            }
+          );
+
+          this.refreshTable();
+        },
+        err => {
+          tradeInProgressSubscription$?.unsubscribe();
+
+          tableData = this.tableDataSubject$.getValue().rowTrades.map(tableTrade => ({
+            ...tableTrade,
+            inProgress: false
+          }));
+          this.tableDataSubject$.next({
+            rowTrades: tableData,
+            totalCount: this.tableDataSubject$.getValue().totalCount
+          });
+
+          this.errorsService.catch(err);
+        }
+      );
   }
 }

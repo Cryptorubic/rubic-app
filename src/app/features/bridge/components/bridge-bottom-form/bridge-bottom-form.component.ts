@@ -82,13 +82,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain: BlockchainName;
 
-  public isBridgeSupported: boolean;
-
   private fromToken: TokenAmount;
 
   private toToken: TokenAmount;
-
-  public fromAmount: BigNumber;
 
   public minError: false | number;
 
@@ -153,7 +149,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {
-    this.isBridgeSupported = true;
     this.onCalculateTrade$ = new Subject<void>();
   }
 
@@ -202,7 +197,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = form.toBlockchain;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
-    this.fromAmount = form.fromAmount;
     this.setToWalletAddress();
 
     this.cdr.detectChanges();
@@ -227,12 +221,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!(await this.bridgeService.isBridgeSupported())) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.isBridgeSupported = false;
       this.cdr.detectChanges();
       return;
     }
 
-    this.isBridgeSupported = true;
     this.cdr.detectChanges();
 
     this.checkMinMaxAmounts();

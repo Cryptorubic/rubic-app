@@ -49,6 +49,7 @@ export class EthLikeContractExecutorService {
     const privateAdapter = this.privateAdapter[trade.fromBlockchain];
     let transactionHash;
 
+    const skipChecks = trade.fromBlockchain === BLOCKCHAIN_NAME.TELOS;
     await privateAdapter.tryExecuteContractMethod(
       contractAddress,
       contractAbi,
@@ -66,7 +67,9 @@ export class EthLikeContractExecutorService {
             this.sendDataToNear(trade, transactionHash, targetAddress);
           }
         }
-      }
+      },
+      null,
+      skipChecks
     );
 
     return transactionHash;

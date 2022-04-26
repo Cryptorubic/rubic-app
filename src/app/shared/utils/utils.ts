@@ -116,8 +116,8 @@ export function shakeUndefiledItem<T>(elements: T[]): NonNullable<T>[] {
  */
 export async function asyncMap<T, U>(
   elements: T[],
-  mapFn: (element: T, index: number) => U
-): Promise<U[]> {
+  mapFn: (element: T, index: number) => U | Promise<U>
+): Promise<(Awaited<U> | undefined)[]> {
   return await Promise.all(elements.map(async (element, idx) => await mapFn(element, idx)));
 }
 

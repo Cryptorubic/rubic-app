@@ -14,5 +14,6 @@ export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.ARBITRUM]: { ...defaultState },
   [BLOCKCHAIN_NAME.AURORA]: { ...defaultState },
   [BLOCKCHAIN_NAME.SOLANA]: { ...defaultState },
-  [BLOCKCHAIN_NAME.NEAR]: { ...defaultState }
+  [BLOCKCHAIN_NAME.NEAR]: { ...defaultState },
+  [BLOCKCHAIN_NAME.TELOS]: { ...defaultState }
 };

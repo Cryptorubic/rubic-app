@@ -36,9 +36,9 @@
     "bridge": "Bridge",
     "transactionDetails": "Détails de la transaction",
     "tagline": {
-      "firstText": "Multi-chain swaps for ",
-      "numbers": "15000+ ",
-      "secondText": "assets"
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -483,7 +483,7 @@
       "calculateProfitability": "Calculer le profit",
       "refillTime": "{{hours}} heures {{minutes}} minutes",
       "addXbrbc": "Ajouter le jeton xBRBC",
-      "canUnstake": "{{amount}} peut être retiré\n"
+      "canUnstake": "{{amount}} peuvent être retiré\n"
     },
     "stats": {
       "profitTime": "APR d'hier",
@@ -500,7 +500,7 @@
       "highApr": "APR élevé",
       "minimumApr": "L'APR prévu est de 80% ou plus sur une période de deux mois, en se basant sur le taux du RBC/USDT et du volume multi-chaînes",
       "brbcRewards": "Récompenses en BRBC",
-      "stakeTokens": "Déposer 1000 - 100 000 RBC/BRBC/wRBC pour être récompensé en BRBC",
+      "stakeTokens": "Déposez 1000 - 100'000 RBC/BRBC/wRBC pour être récompensé en BRBC",
       "teamBuybacks": "Rachats de l'équipe",
       "chainFeeUsage": "0.5% de nos 0.6% de frais multi-chaînes seront utilisés pour les rachats de RBC à destination des pools de récompenses\n"
     }
@@ -523,7 +523,7 @@
       "favoriteTokensTitle": "Jetons favoris",
       "unsupportedPairsHint": "Ce token n'est pas disponible pour l'échange. Veuillez sélectionner les paires prises en charge.",
       "clearParamsHint": "Effacez les autres paramètres du formulaire pour sélectionner ce token",
-      "searchPlaceholder": "Rechercher le nom ou coller l'adresse",
+      "searchPlaceholder": "Rechercher le nom ou coller l'adresse du contrat",
       "noSearchData": "Rien à montrer",
       "noFavoriteData": "Vous l'avez pas de jetons favoris sur le réseau sélectionné, ",
       "backToTokens": "Retour à la liste des jetons",
@@ -562,7 +562,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Tolérance au glissement du prix",
-      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi (un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run).",
+      "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi. (Un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run)",
       "multihopsTitle": "Désactiver les multisauts",
       "multihops": "Votre échange ne sera complété qu'avec des paires directes.",
       "rubicOptimisationTitle": "Activer le routage optimisé Rubic",

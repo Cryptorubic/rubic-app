@@ -37,9 +37,9 @@
     "transactionDetails": "Детали транзакции",
     "approveToken": "Утвердить {{symbol}}",
     "tagline": {
-      "firstText": "Multi-chain swaps for ",
-      "numbers": "15000+ ",
-      "secondText": "assets"
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -72,7 +72,7 @@
     "chooseSupportedBridge": "Выберите поддерживаемый мост",
     "InsufficientBalance": "Баланс недостаточен",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -250,6 +250,17 @@
   "myTrades": {
     "title": "Мои Сделки"
   },
+  "tradePage": {
+    "getBefore": "You will get",
+    "getMiddle": "tokens to this address",
+    "getAfter": "after the trade is complete",
+    "providerFee": "Provider fee",
+    "rbcLowFees": "Use RBC for low fees",
+    "discountRBC": "discount with RBC",
+    "blockchainsHint": "More blockchains",
+    "tradingNotAvailable": "Trading is not available",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
+  },
   "gasRefund": {
     "title": "Кэшбэк на Газ",
     "body": {
@@ -378,9 +389,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",

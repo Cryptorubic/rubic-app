@@ -2,12 +2,6 @@
 
 $point-radius: 26px;
 
-:host {
-  @include iframe {
-    width: 180px;
-  }
-}
-
 .buttons {
   display: grid;
   grid-column-gap: 20px;
@@ -53,49 +47,6 @@ $point-radius: 26px;
       color: rgba(144, 144, 144, 0.6);
 
       background-color: var(--main-form-background);
-    }
-  }
-}
-
-.error-button {
-  ::ng-deep {
-    .content {
-      color: rgb(216, 120, 121);
-    }
-  }
-}
-
-app-rubic-button[error=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 14px;
-    }
-  }
-}
-
-app-rubic-button[error-min-max=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 12px;
-    }
-  }
-}
-
-app-rubic-button[rate-is-updated=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 13px;
-      line-height: 16px;
-    }
-  }
-}
-
-.grey-background {
-  @include light-iframe {
-    ::ng-deep tui-wrapper {
-      color: var(--rubic-base-02);
-
-      background-color: var(--rubic-base-14);
     }
   }
 }

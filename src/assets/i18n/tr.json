@@ -36,9 +36,9 @@
     "bridge": "Köprü",
     "transactionDetails": "Ödeme Detayları",
     "tagline": {
-      "firstText": "Multi-chain swaps for ",
-      "numbers": "15000+ ",
-      "secondText": "assets"
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
     }
   },
   "errors": {

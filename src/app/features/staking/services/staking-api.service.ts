@@ -17,7 +17,9 @@ export class StakingApiService {
    * @return Observable<number>
    */
   public getApr(): Observable<number> {
-    return this.httpService.get<number>('apr/', {}, this.stakingApiPath).pipe(pluck('value'));
+    return this.httpService
+      .get<{ value: number }>('apr/', {}, this.stakingApiPath)
+      .pipe(pluck('value'));
   }
 
   /**
@@ -26,7 +28,7 @@ export class StakingApiService {
    */
   public getRefillTime(): Observable<string> {
     return this.httpService
-      .get<string>('apr/refill-time', {}, this.stakingApiPath)
+      .get<{ value: string }>('apr/refill-time', {}, this.stakingApiPath)
       .pipe(pluck('value'));
   }
 
@@ -37,7 +39,7 @@ export class StakingApiService {
    */
   public getUsersDeposit(walletAddress: string): Observable<number> {
     return this.httpService
-      .get<number>('balance/', { walletAddress }, this.stakingApiPath)
+      .get<{ balance: number }>('balance/', { walletAddress }, this.stakingApiPath)
       .pipe(pluck('balance'));
   }
 
@@ -74,7 +76,7 @@ export class StakingApiService {
    */
   public getBridgeContractAddress(): Observable<string> {
     return this.httpService
-      .get<string>('transfer-crypto/wallet-address', {}, this.stakingApiPath)
+      .get<{ walletAddress: string }>('transfer-crypto/wallet-address', {}, this.stakingApiPath)
       .pipe(pluck('walletAddress'));
   }
 }
