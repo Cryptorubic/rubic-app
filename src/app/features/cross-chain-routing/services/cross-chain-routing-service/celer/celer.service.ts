@@ -100,11 +100,13 @@ export class CelerService {
       nativeIn,
       amountIn
     );
+    const canBridgeInTargetNetwork = this.isTransitToken(toToken);
 
     // TODO investigate problem with Insufficient fee for bridge
     const msgValueAdjusted =
       msgValue +
-      (Boolean((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken)
+      (Boolean((this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken) ||
+      canBridgeInTargetNetwork
         ? 1300000000000000
         : 130000000000000);
 
