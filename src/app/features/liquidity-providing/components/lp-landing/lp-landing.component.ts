@@ -63,4 +63,9 @@ export class LpLandingComponent implements OnInit {
   public isInPast(date: Date): boolean {
     return new Date() < date;
   }
+
+  public async switchNetwork(): Promise<void> {
+    await this.lpService.switchNetwork();
+    this.cdr.detectChanges();
+  }
 }

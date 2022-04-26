@@ -58,7 +58,7 @@
 
   <ng-template #createDeposit>
     <ng-container *ngIf="whitelist.needSwitchNetwork">
-      <app-rubic-button class="lp-steps__create" appearance="secondary" (click)="switchNetwork()">
+      <app-rubic-button class="lp-steps__create" appearance="secondary" (onClick)="switchNetwork()">
         Switch to BSC network
       </app-rubic-button>
     </ng-container>
