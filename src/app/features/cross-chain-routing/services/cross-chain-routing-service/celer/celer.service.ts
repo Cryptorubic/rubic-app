@@ -207,7 +207,7 @@ export class CelerService {
         amountOutMinimum: '0'
       };
     }
-
+    debugger;
     if (dexes.isProviderUniV2(dstProvider.providerIndex)) {
       dstSwap.path = dstProvider.tradeAndToAmount.trade.path.map(token => token.address);
     }
@@ -233,6 +233,7 @@ export class CelerService {
   ): Promise<{
     estimatedTransitTokenAmount: BigNumber;
     estimatedTokenAmount: BigNumber;
+    estimatedTokenAmountWithoutSlippage: BigNumber;
   }> {
     const srcChainId = this.getBlockchainId(fromBlockchain);
     const dstChainId = this.getBlockchainId(toBlockchain);
@@ -264,6 +265,9 @@ export class CelerService {
       dstTransitTokenDecimals
     );
     const estimatedTokenAmount = estimatedTransitTokenAmount.dividedBy(toTokenPrice);
+    const estimatedTokenAmountWithoutSlippage = estimatedTokenAmount.minus(
+      estimatedTokenAmount.multipliedBy(this.userSlippage / 2)
+    );
 
     const srcSwap = this.getSrcSwapObject(
       srcProvider,
@@ -289,8 +293,20 @@ export class CelerService {
 
     return {
       estimatedTransitTokenAmount,
-      estimatedTokenAmount
+      estimatedTokenAmount,
+      estimatedTokenAmountWithoutSlippage
     };
+  }
+
+  public async getMinSwapAmount(fromToken: TokenAmount): Promise<BigNumber> {
+    const fromBlockchain = fromToken.blockchain as EthLikeBlockchainName;
+    const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
+
+    return await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      celerContractAddress,
+      CELER_CONTRACT_ABI,
+      'minSwapAmount'
+    );
   }
 
   private async calculateMsgValue(

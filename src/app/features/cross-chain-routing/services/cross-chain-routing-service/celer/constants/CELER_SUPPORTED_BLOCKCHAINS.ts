@@ -2,5 +2,5 @@ import { BlockchainName, BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/b
 
 export const CELER_SUPPORTED_BLOCKCHAINS: BlockchainName[] = [
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.AVALANCHE
+  BLOCKCHAIN_NAME.POLYGON
 ];

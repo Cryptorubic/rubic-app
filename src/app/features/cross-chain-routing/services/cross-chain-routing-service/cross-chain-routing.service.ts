@@ -301,7 +301,7 @@ export class CrossChainRoutingService {
       toProviderIndex,
       toTransitTokenAmount,
       tokenOut: toToken,
-      tokenOutAmount: celerTrade.estimatedTokenAmount,
+      tokenOutAmount: celerTrade.estimatedTokenAmountWithoutSlippage,
       toSlippage,
       toTrade,
 
@@ -327,12 +327,12 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
-      ? celerTrade.estimatedTokenAmount
-      : celerTrade.estimatedTokenAmount.dividedBy(fromSlippage);
+    // const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
+    //   ? celerTrade.estimatedTokenAmount
+    //   : celerTrade.estimatedTokenAmount.dividedBy(fromSlippage);
 
     return {
-      toAmount: toAmountWithoutSlippage,
+      toAmount: celerTrade.estimatedTokenAmount,
       needApprove
     };
   }
@@ -937,50 +937,18 @@ export class CrossChainRoutingService {
 
   private async shouldSwapViaCcr(
     fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName,
-    fromTransitTokenAmount: BigNumber
+    toBlockchain: BlockchainName
   ): Promise<boolean> {
+    const celerSupportedBlockchainPair =
+      this.celerService.isSupportedBlockchain(fromBlockchain) &&
+      this.celerService.isSupportedBlockchain(toBlockchain);
     const [srcCelerContractPaused, dstCelerContractPaused] =
       await this.celerService.checkIsCelerContractPaused(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName
       );
 
-    const [srcCcrContractPaused, dstCcrContractPaused] = await Promise.all([
-      this.contracts[fromBlockchain].isPaused(),
-      this.contracts[toBlockchain].isPaused()
-    ]);
-
-    const { maxAmount } = await this.getMinMaxTransitTokenAmounts(
-      fromBlockchain,
-      this.slippageTolerance / 2
-    );
-
-    const isSupportedByCelerBlockchains =
-      this.celerService.isSupportedBlockchain(fromBlockchain) &&
-      this.celerService.isSupportedBlockchain(toBlockchain);
-
-    let result;
-
-    if (fromTransitTokenAmount.gt(maxAmount)) {
-      if (isSupportedByCelerBlockchains) {
-        if (srcCelerContractPaused || dstCelerContractPaused) {
-          result = true;
-        } else {
-          result = false;
-        }
-      } else {
-        result = true;
-      }
-    } else {
-      if (srcCcrContractPaused || dstCcrContractPaused) {
-        result = false;
-      } else {
-        result = true;
-      }
-    }
-
-    return result;
+    return celerSupportedBlockchainPair && !srcCelerContractPaused && !dstCelerContractPaused;
   }
 
   private async calculateSmartRouting(
