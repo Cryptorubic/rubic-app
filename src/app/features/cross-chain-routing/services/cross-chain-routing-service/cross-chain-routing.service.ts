@@ -263,20 +263,18 @@ export class CrossChainRoutingService {
     );
 
     // @TODO fix excluded providers
-    /* @TODO return after SOLANA is returned
     const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
       provider =>
         !(
-          fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
+          (fromBlockchain as BlockchainName) === BLOCKCHAIN_NAME.SOLANA &&
           this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
-        )
+        ) || !this.contracts[toBlockchain].isProviderOneinch(provider.providerIndex)
     );
-    */
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade }
-    } = targetBlockchainProviders[0];
+    } = filteredTargetBlockchainProviders[0];
 
     const celerTrade = await this.celerService.calculateTrade(
       fromBlockchain as EthLikeBlockchainName,
@@ -285,7 +283,7 @@ export class CrossChainRoutingService {
       fromToken,
       fromTransitTokenAmount,
       sourceBlockchainProviders[0],
-      targetBlockchainProviders[0]
+      filteredTargetBlockchainProviders[0]
     );
 
     this.currentCrossChainTrade = {
@@ -311,7 +309,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      targetBlockchainProviders,
+      filteredTargetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
