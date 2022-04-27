@@ -264,11 +264,7 @@ export class CrossChainRoutingService {
 
     // @TODO fix excluded providers
     const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
-      provider =>
-        !(
-          (fromBlockchain as BlockchainName) === BLOCKCHAIN_NAME.SOLANA &&
-          this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
-        ) || !this.contracts[toBlockchain].isProviderOneinch(provider.providerIndex)
+      provider => !this.contracts[toBlockchain].isProviderOneinch(provider.providerIndex)
     );
 
     const {
