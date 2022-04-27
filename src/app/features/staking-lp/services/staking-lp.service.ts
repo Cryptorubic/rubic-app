@@ -136,9 +136,9 @@ export class StakingLpService {
 
   private readonly _ttv$ = new BehaviorSubject<TradeVolumeByPeriod>({
     totalValue: 73651333,
-    totalValueByHalfYear: 72477921,
+    totalValueByHalfYear: 4696397,
     totalValueBymonth: 14662910,
-    totalValueByday: 4696397
+    totalValueByday: 72477921
   });
 
   public readonly ttv$ = this._ttv$.asObservable();
@@ -470,10 +470,11 @@ export class StakingLpService {
   public getTvlMultichain(): Observable<BigNumber> {
     this.toggleLoading('tvlAndTtv', true);
 
+    // TODO return on third day
     // const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
 
     // return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
-    return of(1022286.1916530099).pipe(
+    return of(1023975.2917326934).pipe(
       switchMap(tvlMultichain => {
         return forkJoin([
           from(
