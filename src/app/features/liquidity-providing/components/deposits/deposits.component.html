@@ -1,0 +1,46 @@
+<div class="deposits">
+  <div class="deposits__head">
+    <div class="deposits__title">{{ 'lp.yourDeposits' | translate }}</div>
+    <div class="deposits__actions">
+      <app-rubic-button
+        class="deposits__actions-create"
+        appearance="secondary"
+        (onClick)="navigateToDepositForm(false)"
+        size="s"
+        [disabled]="isPoolFull || isLpEnded"
+      >
+        <ng-container *ngIf="isPoolFull && !isLpEnded">
+          {{ 'lp.poolIsFull' | translate }}
+        </ng-container>
+        <ng-container *ngIf="isLpEnded"> {{ 'lp.lpRoundEnded' | translate }} </ng-container>
+        <ng-container *ngIf="!isPoolFull && !isLpEnded">
+          {{ 'lp.depositFunds' | translate }}
+        </ng-container>
+      </app-rubic-button>
+      <!-- <app-rotating-icon
+        (iconClick)="reloadDeposits()"
+        [rotating]="depositsLoading$ | async"
+      ></app-rotating-icon> -->
+      <!-- <app-rubic-button
+          *ngIf="false"
+          appearance="outline"
+          class="deposits__actions-transfer"
+          (onClick)="showTransferModal()"
+          >{{ 'lp.transferToken' | translate }}</app-rubic-button
+        > -->
+    </div>
+  </div>
+  <div class="deposits__list">
+    <ng-container *ngFor="let deposit of deposits$ | async">
+      <app-deposit-card
+        [deposit]="deposit"
+        [loading]="(processingTokenId$ | async) === deposit.tokenId"
+        [needSwitchNetwork]="needSwitchNetwork"
+        (onCollectRewards)="collectReward(deposit.tokenId)"
+        (onRequestWithdraw)="requestWithdraw(deposit.tokenId, deposit.USDCAmount)"
+        (onWithdraw)="withdraw(deposit.tokenId)"
+        (onSwitchNetwork)="switchNetwork()"
+      ></app-deposit-card>
+    </ng-container>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, pluck, switchMap } from 'rxjs/operators';
 import { TradeVolume } from '@core/services/backend/volume-api/models/trade-volume';
 import { TradeVolumeRequest } from '@core/services/backend/volume-api/models/trade-volume-request';
 import { BigNumber } from 'bignumber.js';
+import { TradeVolumeByPeriod } from './models/trade-volume-by-period';
+import { LpReward } from './models/lp-rewards';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,14 @@ export class VolumeApiService {
   }
 
   /**
+   * Makes request for trade volume mapped by period.
+   * @return Observable trade volume by period.
+   */
+  public fetchVolumesByPeriod(): Observable<TradeVolumeByPeriod> {
+    return this.httpService.get('total_values/stats/crosschain-lp');
+  }
+
+  /**
    * Makes request for trade volumes.
    * @return Observable trade volume.
    */
@@ -45,5 +55,15 @@ export class VolumeApiService {
         bridges: new BigNumber(volume.bridges_amount)
       }))
     );
+  }
+
+  /**
+   * Makes request for liquidity providing rewards.
+   * @return Observable LpReward[].
+   */
+  public fetchLpRewards(): Observable<LpReward[]> {
+    return this.httpService
+      .get<{ rewardsByDays: LpReward[] }>('total_values/stats/lp-rewards')
+      .pipe(pluck('rewardsByDays'));
   }
 }

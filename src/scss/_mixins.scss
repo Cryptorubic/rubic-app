@@ -176,3 +176,11 @@
     @content;
   }
 }
+
+@mixin font($fontSize, $lineHeight, $fontWeight, $color, $letterSpacing: normal) {
+  color: $color;
+  font-weight: $fontWeight;
+  font-size: $fontSize;
+  line-height: $lineHeight;
+  letter-spacing: $letterSpacing;
+}

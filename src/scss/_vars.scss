@@ -49,7 +49,11 @@
   --rubic-base-19: #fff;
   --rubic-base-20: rgba(255, 255, 255, 0.6);
   --rubic-base-21: #e4f2e6;
-  --rubic-base-22: #f4f4f4;
+  --rubic-base-22: #fff;
+  --rubic-base-23: #f5f7fb;
+  --rubic-base-24: var(--main-green);
+  --rubic-base-25: rgb(114, 131, 116);
+  --rubic-base-26: #f4f4f4;
   --plate-invert: rgb(250, 250, 250);
   --bg-banner: rgba(255, 255, 255, 0.8);
 
@@ -88,12 +92,12 @@ $rubic-primary: #4aa956;
 $rubic-disable: #e1e1e1;
 $rubic-warning: #dfcb5f;
 
-$backgrond-black: rgb(14, 17, 14);
+$background-black: rgb(14, 17, 14);
 $grey-background: #f4f4f4;
 
 $buy-custom-token: #1968ff;
 
-// ***** border raiuses *****
+// ***** border radiuses *****
 $border-radius-1: 14px;
 $border-radius-2: 20px;
 $border-radius-3: 100px;

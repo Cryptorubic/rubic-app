@@ -26,7 +26,7 @@ export function copyObject<T>(object: T): T {
  * @param address1 Second address.
  */
 export function compareAddresses(address0: string, address1: string): boolean {
-  return address0.toLowerCase() === address1.toLowerCase();
+  return address0?.toLowerCase() === address1?.toLowerCase();
 }
 
 /**
@@ -119,4 +119,12 @@ export async function asyncMap<T, U>(
   mapFn: (element: T, index: number) => U | Promise<U>
 ): Promise<(Awaited<U> | undefined)[]> {
   return await Promise.all(elements.map(async (element, idx) => await mapFn(element, idx)));
+}
+
+/**
+ * Returns the human readable percentage value received from the contract.
+ * @param value percent value received from contract.
+ */
+export function parseWeb3Percent(value: string | number): number {
+  return Number(value) / Math.pow(10, 29);
 }

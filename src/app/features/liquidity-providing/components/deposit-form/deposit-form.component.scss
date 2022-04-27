@@ -1,0 +1,217 @@
+@use 'src/scss/core' as *;
+
+.deposit-form {
+  position: relative;
+
+  max-width: 490px;
+  margin: 40px auto 0;
+  padding: 26px;
+
+  background: var(--rubic-base-22);
+  border-radius: 24px;
+
+  @include b($tablet) {
+    padding: 20px;
+
+    border-radius: 22px;
+  }
+
+  &__back {
+    position: absolute;
+    top: 28px;
+    left: 26px;
+
+    width: 18px;
+
+    cursor: pointer;
+  }
+
+  &__header {
+
+    @include font(18px, 22px, 600, var(--rubic-base-02));
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin: 0 auto 34px;
+
+    img {
+      width: 26px;
+      height: 26px;
+
+      border-radius: 100%;
+
+      &:first-child {
+        margin-right: 20px;
+
+        border: 2px solid transparent;
+
+        @include b($tablet) {
+          margin-right: 20px;
+        }
+      }
+
+      &:last-child {
+        position: absolute;
+        left: 15px;
+
+        border: 2px solid var(--rubic-base-22);
+        border-radius: 100%;
+
+        @include b($tablet) {
+          left: 15px;
+        }
+      }
+    }
+  }
+
+  &__header-divider { 
+    display: none;
+    @include b($tablet) {
+      position: absolute;
+      top: 64px;
+      left: 0;
+
+      display: block;
+      width: 100%;
+
+      background: #262927;
+    }
+  }
+}
+
+.asset {
+  padding-bottom: 36px;
+
+  @include b($tablet) {
+    padding-bottom: 32px;
+  }
+
+  &__symbol-amount {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__usd-price {
+    display: flex;
+
+    &-value {
+      display: block;
+      max-width: 60px;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__symbol {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+
+    font-size: 20px;
+    line-height: 24px;
+
+    background: var(--rubic-base-23);
+    border-radius: 100px;
+
+    img {
+      width: 26px;
+      height: 26px;
+      margin-right: 12px;
+    }
+  }
+
+  &__amount {
+    @include font(32px, 38px, 400, var(--form-bright-text-color), 00.06em);
+    width: 100%;
+    height: 38px;
+    padding-left: 8px;
+
+    color: var(--form-bright-text-color);
+    text-align: right;
+
+    background-color: transparent;
+
+    border: none;
+
+    @include b($tablet) {
+      font-size: 30px;
+      line-height: 36px;
+    }
+  }
+
+  &__balance-usd-price {
+
+    @include font(15px, 18px, 500, var(--rubic-base-25));
+    display: flex;
+    justify-content: space-between;
+    height: 18px;
+
+    @include b($tablet) {
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+
+  &__balance-max {
+    margin-left: 12px;
+
+    color: $rubic-primary;
+
+    cursor: pointer;
+  }
+}
+
+.asset-and-hint {
+  max-height: 0;
+  overflow: hidden;
+
+  transition: max-height 0.4s ease-in-out;
+
+  &_opened {
+    max-height: 300px;
+  }
+
+  .asset {
+    padding-top: 36px;
+    padding-bottom: 36px;
+
+    border-top: 1px solid #3e413f;
+
+    @include b($tablet) {
+      padding: 32px  0;
+    }
+
+    &__amount {
+      color: var(--form-bright-text-color);
+    }
+  }
+}
+
+.hint {
+  @include font(14px, 16px, 500, #f3ba2f);
+  display: flex;
+  margin-bottom: 14px;
+  padding: 12px;
+
+  background: rgba(243, 186, 47, 0.15);
+  border-radius: 12px;
+
+  @include b($tablet) {
+
+    border-radius: 14px;
+
+    &__icon {
+      margin-right: 9xp;
+    }
+  }
+
+  &__icon {
+    margin-right: 12px;
+  }
+}
+

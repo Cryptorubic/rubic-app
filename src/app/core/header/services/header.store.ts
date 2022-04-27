@@ -33,6 +33,13 @@ export class HeaderStore {
    */
   public readonly mobileWidth: number;
 
+  /**
+   * Returns true if current window width is similar to mobile synchronously.
+   */
+  public get isMobile(): boolean {
+    return this.isMobile$.getValue();
+  }
+
   constructor() {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
     this.mobileWidth = 1023;
