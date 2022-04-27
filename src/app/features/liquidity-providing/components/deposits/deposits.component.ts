@@ -133,10 +133,6 @@ export class DepositsComponent implements OnInit {
     this.lpService.navigateToDepositForm(asWhitelist ? DepositType.WHITELIST : DepositType.REGULAR);
   }
 
-  public showTransferModal(): void {
-    this.lpModalService.showTransferModal().subscribe();
-  }
-
   public async switchNetwork(): Promise<void> {
     await this.lpService.switchNetwork();
     this.cdr.detectChanges();
