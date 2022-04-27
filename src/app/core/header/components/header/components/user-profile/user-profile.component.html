@@ -36,12 +36,6 @@
     routerLinkActive="button-link_active"
   >
     {{ 'navigation.myTrades' | translate }}
-    <app-notification-badge
-      class="notification-counter"
-      *ngIf="(countNotifications$ | async) && (currentUser$ | async)"
-      size="s"
-      [value]="countNotifications$ | async"
-    ></app-notification-badge>
   </a>
 </ng-template>
 

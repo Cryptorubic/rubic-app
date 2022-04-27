@@ -32,6 +32,8 @@ import { WannaSwapAuroraService } from '@features/swaps/features/instant-trade/s
 import { RefFinanceService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { ItProvider } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { ZrxEthService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/zrx-eth-service/zrx-eth.service';
+import { SushiSwapTelosService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
+import { ZappyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
 
 @Injectable()
 export class InstantTradeProvidersService {
@@ -80,7 +82,10 @@ export class InstantTradeProvidersService {
     // Solana.
     private readonly raydiumService: RaydiumService,
     // Near.
-    private readonly refFinanceService: RefFinanceService
+    private readonly refFinanceService: RefFinanceService,
+    // Telos.
+    private readonly sushiSwapTelosService: SushiSwapTelosService,
+    private readonly zappyService: ZappyService
   ) {
     this.providers = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -134,6 +139,10 @@ export class InstantTradeProvidersService {
       },
       [BLOCKCHAIN_NAME.NEAR]: {
         [INSTANT_TRADE_PROVIDER.REF]: this.refFinanceService
+      },
+      [BLOCKCHAIN_NAME.TELOS]: {
+        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapTelosService,
+        [INSTANT_TRADE_PROVIDER.ZAPPY]: this.zappyService
       }
     };
   }

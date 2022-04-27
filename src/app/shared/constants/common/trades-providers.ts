@@ -115,6 +115,11 @@ const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADE_PROVIDER, Provider> = {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.svg`,
     color: '#FACB5B'
+  },
+  [INSTANT_TRADE_PROVIDER.ZAPPY]: {
+    name: 'Zappy',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
   }
 };
 

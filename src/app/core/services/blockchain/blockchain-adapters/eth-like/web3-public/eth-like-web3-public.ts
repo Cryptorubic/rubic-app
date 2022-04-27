@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import { Method } from 'web3-core-method';
+import { TransactionReceipt } from 'web3-eth';
 import BigNumber from 'bignumber.js';
 import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
@@ -305,6 +306,11 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
       );
     }
     return transaction;
+  }
+
+  public async getTransactionReceipt(hash: string): Promise<TransactionReceipt> {
+    const transactionReceipt = await this.web3.eth.getTransactionReceipt(hash);
+    return transactionReceipt;
   }
 
   /**

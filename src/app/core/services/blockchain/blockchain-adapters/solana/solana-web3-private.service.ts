@@ -3,6 +3,7 @@ import {
   AccountInfo,
   Commitment,
   Connection,
+  ParsedAccountData,
   PerfSample,
   PublicKey,
   Signer,
@@ -426,7 +427,7 @@ export class SolanaWeb3PrivateService {
   public async getMultipleAccounts(
     publicKeys: PublicKey[],
     commitment?: Commitment
-  ): Promise<Array<null | { publicKey: PublicKey; account: AccountInfo<Buffer> }>> {
+  ): Promise<{ publicKey: PublicKey; account: AccountInfo<Buffer | ParsedAccountData> }[]> {
     const keys: PublicKey[][] = [];
     let tempKeys: PublicKey[] = [];
 

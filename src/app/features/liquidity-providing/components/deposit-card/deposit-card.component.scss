@@ -1,0 +1,181 @@
+@use 'src/scss/core' as *;
+
+.deposit-card {
+  position: relative;
+
+  height: 112px;
+
+  padding: 25px;
+
+  background: var(--rubic-base-23);
+  border-radius: 16px;
+
+  @include b($tablet) {
+    height: auto;
+    padding: 16px;
+
+    &__content {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__actions {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    
+
+    display: flex;
+
+    @include b($tablet) {
+      position: initial;
+
+      flex-direction: column;
+
+      ::ng-deep app-rubic-button tui-loader {
+        width: 100%;
+      }
+
+    }
+
+    &-collect-rewards {
+      margin-right: 12px;
+
+      @include b($tablet) {
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+    }
+
+    &-withdraw {
+      display: flex;
+      align-items: center;
+
+      img {
+        margin-left: 12px;
+      }
+    }
+
+    ::ng-deep app-rubic-button {
+      @include font(16px, 19px, 500, var(--rubic-base-02));
+      display: flex;
+      height: 31px;
+
+      button {
+        height: 31px;
+
+        tui-wrapper.wrapper {
+          padding: 0 14px !important;
+        }
+      }
+    }
+  }
+
+  &__amount {
+    color: var(--form-bright-reversed-text-color);
+    font-weight: 500;
+
+    &:first-child {
+      margin-right: 37px;
+    }
+
+    &-name {
+      margin-bottom: 6px;
+
+      font-size: 16px;
+      line-height: 19px;
+    }
+
+    &-value {
+
+      font-size: 22px;
+      line-height: 26px;
+    }
+  }
+
+  &__statuses {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+
+    display: flex;
+    align-items: center;
+
+    .status {
+      transition: display 0.3s ease-in-out;
+
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+
+      &_start-date {
+        @include b($tablet) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__title {
+
+    @include font(18px, 22px, 600, var(--rubic-base-02));
+    position: relative;
+    left: -2px;
+
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    &-start {
+
+      @include font(15px, 20px, 500, rgba(255, 255, 255, 0.85));
+      margin-left: 10px;
+      padding: 3px 6px;
+
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+    }
+
+    img {
+      width: 26px;
+      height: 26px;
+
+      border-radius: 100%;
+
+      &:first-child {
+        margin-right: 20px;
+
+        border: 2px solid transparent;
+      }
+
+      &:nth-child(2) {
+        position: absolute;
+        left: 15px;
+
+        border: 2px solid var(--rubic-base-23);
+      }
+    }
+  }
+
+  &__stats {
+    display: flex;
+
+    .stat {
+      @include font(15px, 18px, 500, var(--rubic-base-25));
+
+      &__data {
+        color: var(--rubic-base-02);
+      }
+
+      &:not(:last-child) {
+        margin-right: 32px;
+      }
+    }
+  }
+
+  app-rubic-button {
+    @include font(16px, 19px, 500, #fff);
+
+    border-radius: 100px;
+  }
+}

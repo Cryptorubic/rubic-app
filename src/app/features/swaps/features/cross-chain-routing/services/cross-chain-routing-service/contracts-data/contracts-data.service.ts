@@ -39,6 +39,8 @@ import { TrisolarisAuroraService } from '@features/swaps/features/instant-trade/
 import { WannaSwapAuroraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { NearContractData } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
 import { RefFinanceService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { SushiSwapTelosService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
+import { ZappyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +95,9 @@ export class ContractsDataService {
     private readonly raydiumService: RaydiumService,
     // Near.
     private readonly refFinanceService: RefFinanceService,
+    // Telos.
+    private readonly sushiSwapTelosService: SushiSwapTelosService,
+    private readonly zappyService: ZappyService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
@@ -286,6 +291,21 @@ export class ContractsDataService {
           }
         ],
         9,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.TELOS]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.TELOS,
+        [
+          {
+            provider: this.sushiSwapTelosService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.zappyService,
+            methodSuffix: '1'
+          }
+        ],
+        12,
         this.publicBlockchainAdapterService
       )
     };

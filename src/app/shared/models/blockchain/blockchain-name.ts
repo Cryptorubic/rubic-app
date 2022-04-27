@@ -7,7 +7,8 @@ export const ETH_LIKE_BLOCKCHAIN_NAME = {
   MOONRIVER: 'MOONRIVER',
   FANTOM: 'FANTOM',
   ARBITRUM: 'ARBITRUM',
-  AURORA: 'AURORA'
+  AURORA: 'AURORA',
+  TELOS: 'TELOS'
 } as const;
 
 export const SOLANA_BLOCKCHAIN_NAME = 'SOLANA' as const;

@@ -35,7 +35,11 @@ html.dark {
   --rubic-base-19: #202320;
   --rubic-base-20: rgba(0, 0, 0, 0.6);
   --rubic-base-21: #29582f;
-  --rubic-base-22: #2a302c;
+  --rubic-base-22: #181a19;
+  --rubic-base-23: #202622;
+  --rubic-base-24: rgba(255, 255, 255, 0.6);
+  --rubic-base-25: rgb(166, 168, 167);
+  --rubic-base-26: #2a302c;
   --plate-invert: rgb(41, 41, 41, 0.6);
   --bg-banner: rgba(51, 86, 51, 0.8);
 
@@ -66,7 +70,7 @@ html.dark {
   --referral-banner-bg: linear-gradient(97.16deg, #1f2021 5.58%, #1c1c1d 53%, #252d33 94.42%);
 
   &_colored {
-    background-color: $backgrond-black;
+    background-color: $background-black;
   }
 
   body {
@@ -105,7 +109,7 @@ html.dark {
 
     app-rubic-button {
       tui-wrapper {
-        --tui-primary: var(--rubic-base-22);
+        --tui-primary: var(--rubic-base-26);
         --tui-primary-text: var(--form-bright-text-color);
       }
     }

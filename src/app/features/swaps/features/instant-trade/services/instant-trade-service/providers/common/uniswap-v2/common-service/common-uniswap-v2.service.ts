@@ -36,6 +36,7 @@ import {
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthLikeInstantTradeProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -494,18 +495,20 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+    const skipChecks = trade.blockchain === BLOCKCHAIN_NAME.TELOS;
     const {
       methodName,
       methodArguments,
       transactionOptions: transactionOptions
-    } = await this.checkAndGetTradeData(trade, options);
-
+    } = await this.checkAndGetTradeData(trade, options, skipChecks);
     return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
       methodName,
       methodArguments,
-      transactionOptions
+      transactionOptions,
+      null,
+      skipChecks
     );
   }
 
@@ -517,6 +520,7 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
     const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
       trade,
       options,
+      false,
       receiverAddress
     );
 
@@ -529,6 +533,7 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
   private async checkAndGetTradeData(
     trade: InstantTrade,
     options: ItOptions,
+    skipChecks = false,
     receiverAddress = this.walletAddress
   ): Promise<{
     methodName: string;
@@ -565,12 +570,14 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
     const tradeData = getTradeDataMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
     const tradeDataSupportingFee = getTradeSupportingFeeDataMethod(uniswapV2Trade);
 
-    const methodName = await this.tryExecuteTradeAndGetMethodName(
-      tradeData,
-      tradeDataSupportingFee,
-      uniswapV2Trade,
-      receiverAddress
-    );
+    const methodName = skipChecks
+      ? tradeData.methodName
+      : await this.tryExecuteTradeAndGetMethodName(
+          tradeData,
+          tradeDataSupportingFee,
+          uniswapV2Trade,
+          receiverAddress
+        );
 
     return {
       methodName,
@@ -592,65 +599,69 @@ export abstract class CommonUniswapV2Service extends EthLikeInstantTradeProvider
     uniswapV2Trade: UniswapV2Trade,
     receiverAddress: string
   ): Promise<string | never> {
-    const tryExecute = async (methodData: {
-      methodName: string;
-      methodArguments: unknown[];
-      options?: TransactionOptions;
-    }): Promise<boolean> => {
-      try {
-        if (receiverAddress === this.walletAddress) {
-          await this.web3Public.tryExecuteContractMethod(
-            this.contractAddress,
-            this.contractAbi,
-            methodData.methodName,
-            methodData.methodArguments,
-            receiverAddress,
-            methodData.options
-          );
-        } else {
-          const encodedData = EthLikeWeb3Pure.encodeFunctionCall(
-            this.contractAbi,
-            methodData.methodName,
-            methodData.methodArguments
-          );
-          const { feeData } = this.iframeService;
-          const fee = feeData.fee * 1000;
-          const methodArguments = [
-            uniswapV2Trade.tokenIn,
-            uniswapV2Trade.tokenOut,
-            uniswapV2Trade.amountIn,
-            this.contractAddress,
-            encodedData,
-            [fee, feeData.feeTarget]
-          ];
-
-          await this.web3Public.tryExecuteContractMethod(
-            IT_PROXY_FEE_CONTRACT_ADDRESS,
-            IT_PROXY_FEE_CONTRACT_ABI,
-            IT_PROXY_FEE_CONTRACT_METHOD.SWAP,
-            methodArguments,
-            this.walletAddress,
-            methodData.options
-          );
-        }
-        return true;
-      } catch (err) {
-        console.error(err);
-        return false;
-      }
-    };
-
     const [isTradeSuccessful, isTradeSupportingFeeSuccessful] = await Promise.all([
-      tryExecute(tradeData),
-      tryExecute(tradeDataSupportingFee)
+      this.tryExecute(tradeData, receiverAddress, uniswapV2Trade),
+      this.tryExecute(tradeDataSupportingFee, receiverAddress, uniswapV2Trade)
     ]);
 
-    if (isTradeSuccessful && isTradeSupportingFeeSuccessful) {
+    if (isTradeSuccessful) {
       return tradeData.methodName;
     }
     if (isTradeSupportingFeeSuccessful) {
       return tradeDataSupportingFee.methodName;
     }
     throw new TokenWithFeeError();
+  }
+
+  private async tryExecute(
+    methodData: {
+      methodName: string;
+      methodArguments: unknown[];
+      options?: TransactionOptions;
+    },
+    receiverAddress: string,
+    trade: UniswapV2Trade
+  ): Promise<boolean> {
+    try {
+      if (receiverAddress === this.walletAddress) {
+        await this.web3Public.tryExecuteContractMethod(
+          this.contractAddress,
+          this.contractAbi,
+          methodData.methodName,
+          methodData.methodArguments,
+          receiverAddress,
+          methodData.options
+        );
+      } else {
+        const encodedData = EthLikeWeb3Pure.encodeFunctionCall(
+          this.contractAbi,
+          methodData.methodName,
+          methodData.methodArguments
+        );
+        const { feeData } = this.iframeService;
+        const fee = feeData.fee * 1000;
+        const methodArguments = [
+          trade.tokenIn,
+          trade.tokenOut,
+          trade.amountIn,
+          this.contractAddress,
+          encodedData,
+          [fee, feeData.feeTarget]
+        ];
+
+        await this.web3Public.tryExecuteContractMethod(
+          IT_PROXY_FEE_CONTRACT_ADDRESS,
+          IT_PROXY_FEE_CONTRACT_ABI,
+          IT_PROXY_FEE_CONTRACT_METHOD.SWAP,
+          methodArguments,
+          this.walletAddress,
+          methodData.options
+        );
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   }
 }

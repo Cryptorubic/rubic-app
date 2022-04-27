@@ -70,5 +70,9 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
       INSTANT_TRADE_PROVIDER.WANNASWAP
     ]),
     [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.RAYDIUM]),
-    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.REF])
+    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.REF]),
+    [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
+      INSTANT_TRADE_PROVIDER.SUSHISWAP,
+      INSTANT_TRADE_PROVIDER.ZAPPY
+    ])
   };
