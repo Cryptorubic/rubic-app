@@ -1,0 +1,88 @@
+<div
+  class="statistics"
+  *ngLet="statisticsLoading$ | async as loading"
+  [class.statistics_loading]="loading"
+>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">Current APR</div>
+      <div class="statistics__param-value" *ngLet="apr$ | async as apr">
+        <!-- {{ apr ? (apr | bigNumberFormat: 2:true) : '--.--' }} % -->
+        27%
+        <img
+          class="statistics__param-hint"
+          src="assets/images/icons/hint.svg"
+          [tuiHint]="aprHintTpl"
+          [tuiHintShowDelay]="100"
+          alt="Hint"
+        />
+      </div>
+    </div>
+    <div class="statistics__param">
+      <app-progress
+        [label]="'lp.totalProvided' | translate"
+        [value]="totalStaked$ | async"
+        [size]="poolSize"
+        [loading]="loading"
+      ></app-progress>
+    </div>
+  </div>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">{{ 'lp.totalCollectedRewards' | translate }}</div>
+      <div class="statistics__param-value" *ngLet="collectedRewards$ | async as collectedRewards">
+        {{
+          collectedRewards
+            ? (collectedRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : '--.--'
+        }}
+        USDC
+      </div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">{{ 'lp.balance' | translate }}</div>
+      <div class="statistics__param-value" *ngLet="balance$ | async as balance">
+        $
+        {{
+          balance ? (balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }) : '--.--'
+        }}
+      </div>
+    </div>
+  </div>
+  <div class="statistics__col">
+    <div class="statistics__param">
+      <div class="statistics__param-label">{{ 'lp.collectRewardsNow' | translate }}</div>
+      <div class="statistics__param-value" *ngLet="rewardsToCollect$ | async as rewardsToCollect">
+        {{
+          rewardsToCollect
+            ? (rewardsToCollect | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            : '--.--'
+        }}
+        USDC
+      </div>
+    </div>
+    <div class="statistics__param">
+      <app-progress
+        [label]="'lp.youProvided' | translate"
+        [value]="usersTotalStaked$ | async"
+        [size]="maxEnterAmount"
+        [needLogin]="needLogin$ | async"
+        [loading]="loading"
+      ></app-progress>
+    </div>
+  </div>
+  <app-rotating-icon
+    class="statistics__refresh"
+    [rotating]="loading"
+    (iconClick)="refreshStatistics()"
+  ></app-rotating-icon>
+  <div class="statistics__end">
+    <span>{{ 'lp.endOfRound' | translate: { round: 1 } }}: </span
+    >{{ endDate | date: 'longDate' }} at {{ endDate | date: 'shortTime':'UTC' }} UTC
+  </div>
+</div>
+
+<ng-template #aprHintTpl>
+  The APR rate is flexible, and is recalculated every day. The APR charges in real-time depending on
+  rewards allocation, total liquidity provided and period.
+</ng-template>

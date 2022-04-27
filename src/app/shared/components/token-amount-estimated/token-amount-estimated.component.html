@@ -21,7 +21,7 @@
           }"
         >
           <ng-container *ngIf="errorText">
-            {{ 'tradePage.tradingNotAvailable' | translate }}
+            {{ 'errors.tradingIsNotAvailable' | translate }}
           </ng-container>
           <ng-container *ngIf="tokenAmount?.gt(0)">
             {{

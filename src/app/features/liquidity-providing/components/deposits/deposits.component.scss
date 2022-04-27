@@ -1,0 +1,83 @@
+@use 'src/scss/core' as *;
+
+.deposits {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 21px;
+
+    @include b($tablet) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__title {
+    @include font(20px, 24px, 500, var(--rubic-base-02));
+    margin-right: 20px;
+
+    @include b($tablet) {
+      margin-right: 0;
+      margin-bottom: 14px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 8px;
+
+    @include b($tablet) {
+      width: 100%;
+    }
+
+    &-create {
+
+      @include font(16px, 19px, 500, #fff);
+      width: 185px;
+
+      white-space: nowrap;
+
+      border-radius: 100px;
+
+      @include b($tablet) {
+        width: 100%;
+      }
+
+      ::ng-deep button {
+        height: 31px;
+      }
+    }
+    
+    &-transfer {
+      @include font(16px, 19px, 500, #fff);
+
+      @include b($tablet) {
+        width: 100%;
+      }
+
+      ::ng-deep {
+        button {
+          height: 31px;
+        }
+
+        tui-wrapper.wrapper {
+          padding: 0 14px !important;
+        }
+      }
+    }
+  }
+
+  &__list {
+    app-deposit-card {
+      display: block;
+
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
+    }
+  }
+}

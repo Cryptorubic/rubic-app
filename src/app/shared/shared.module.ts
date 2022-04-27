@@ -11,7 +11,8 @@ import {
   TuiTabsModule,
   TuiInputCountModule,
   TuiDataListWrapperModule,
-  TuiBadgeModule
+  TuiBadgeModule,
+  TuiTagModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -60,6 +61,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
+import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
+import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @NgModule({
@@ -91,6 +94,8 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
+    StatusBadgeComponent,
+    ChipsComponent,
     ProgressTrxNotificationComponent,
     // Pipes.
     BigNumberFormatPipe,
@@ -134,7 +139,8 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     TuiDataListWrapperModule,
     TuiLoaderModule,
     TuiBadgeModule,
-    TuiManualHintModule
+    TuiManualHintModule,
+    TuiTagModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -171,7 +177,9 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     NotificationBadgeComponent,
     RubicContainerComponent,
     CopyContainerComponent,
-    FunctionCallPipe
+    FunctionCallPipe,
+    StatusBadgeComponent,
+    ChipsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
