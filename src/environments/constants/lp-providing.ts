@@ -266,7 +266,8 @@ const WHITELIST = [
   '0x95c1cf98fb5aafcc3e47ac1e65fc56d5a8e8361d',
   '0xcc191123590b2362f6580e339960d07334a70b04',
   '0xb418b68fc2bdeec06858e9d81a3f9cef6bc8a8ae',
-  '0x0180a8688ca86e4048616c31271df6fd739dcddf'
+  '0x0180a8688ca86e4048616c31271df6fd739dcddf',
+  '0x18e45cf8a9c5ceec3252cb0a57b701cebb12aa61'
 ];
 
 export const LP_PROVIDING_CONFIG_DEVELOP: LpProvidingConfig = {
