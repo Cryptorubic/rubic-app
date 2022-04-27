@@ -383,7 +383,7 @@ export class RaydiumLiquidityManager {
       for (const item of modelAccountData) {
         if (item === null) continue;
         const lpMintList = modelAccount[item.publicKey.toString()];
-        const data = RaydiumStableManager.formatLayout(item.account.data);
+        const data = RaydiumStableManager.formatLayout(item.account.data as Buffer);
         for (const itemLp of lpMintList) {
           liquidityPools[itemLp].modelData = data;
         }
