@@ -207,7 +207,7 @@ export class CelerService {
         amountOutMinimum: '0'
       };
     }
-    debugger;
+
     if (dexes.isProviderUniV2(dstProvider.providerIndex)) {
       dstSwap.path = dstProvider.tradeAndToAmount.trade.path.map(token => token.address);
     }
