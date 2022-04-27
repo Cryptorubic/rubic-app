@@ -361,8 +361,8 @@
     "notWhitelistUser": "Your address is not whitelist",
     "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
     "emptyAmount": "Empty amount",
-    "depositLimitMax": "Current max limit is {{max}} BRBC/USDC",
-    "depositLimitMin": "Current min limit is {{min}} BRBC/USDC"
+    "depositLimitMax": "Current max limit is {{max}} BRBC",
+    "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
     "stake": {

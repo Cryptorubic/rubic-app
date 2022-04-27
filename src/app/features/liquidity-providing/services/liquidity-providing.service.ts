@@ -38,7 +38,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { TokenLp, TokenLpParsed } from '../models/token-lp.interface';
 import { DepositType } from '../models/deposit-type.enum';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
@@ -330,7 +330,11 @@ export class LiquidityProvidingService {
   }
 
   public watchWhitelist(): Observable<boolean> {
-    return combineLatest([this.walletConnectorService.addressChange$, this.userAddress$]).pipe(
+    return combineLatest([
+      this.walletConnectorService.addressChange$,
+      this.userAddress$,
+      this.router.events.pipe(filter(e => e instanceof NavigationEnd))
+    ]).pipe(
       switchMap(() =>
         from(
           this.web3PublicService[this.blockchain].callContractMethod<boolean>(
@@ -344,8 +348,10 @@ export class LiquidityProvidingService {
         const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
         const isOnDepositForm = this.router.url.includes('deposit');
 
-        this._isWhitelistInProgress$.next(isWhitelistInProgress);
-        this._isWhitelistUser$.next(isWhitelistUser);
+        this.zone.run(() => {
+          this._isWhitelistInProgress$.next(isWhitelistInProgress);
+          this._isWhitelistUser$.next(isWhitelistUser);
+        });
 
         if (!isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
           this.window.location.assign(this.window.location.origin + '/liquidity-providing');
@@ -385,8 +391,10 @@ export class LiquidityProvidingService {
       )
     ]).pipe(
       tap(([usdcAllowance, brbcAllowance]) => {
-        this._usdcAllowance$.next(usdcAllowance);
-        this._brbcAllowance$.next(brbcAllowance);
+        this.zone.run(() => {
+          this._usdcAllowance$.next(usdcAllowance);
+          this._brbcAllowance$.next(brbcAllowance);
+        });
       })
     );
   }
@@ -625,7 +633,9 @@ export class LiquidityProvidingService {
   }
 
   public setDepositType(depositType: DepositType): void {
-    this._depositType$.next(depositType);
+    this.zone.run(() => {
+      this._depositType$.next(depositType);
+    });
   }
 
   public async switchNetwork(): Promise<boolean> {
