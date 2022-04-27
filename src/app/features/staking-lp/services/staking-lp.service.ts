@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
@@ -169,7 +169,8 @@ export class StakingLpService {
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly zone: NgZone
   ) {
     this.getStakingTokenPrice();
   }
@@ -181,13 +182,15 @@ export class StakingLpService {
         return forkJoin([this.getActiveStakingRoundBalance(user.address), this.getLpBalance()]);
       }),
       tap(([stakingBalance, lpBalance]) => {
-        this._stakingBalance$.next(stakingBalance);
+        this.zone.run(() => {
+          this._stakingBalance$.next(stakingBalance);
 
-        this._lpBalance$.next(lpBalance);
+          this._lpBalance$.next(lpBalance);
 
-        this._totalBalanceInUsdc$.next(
-          stakingBalance.multipliedBy(this.stakingTokenUsdPrice).plus(lpBalance)
-        );
+          this._totalBalanceInUsdc$.next(
+            stakingBalance.multipliedBy(this.stakingTokenUsdPrice).plus(lpBalance)
+          );
+        });
       }),
       switchMap(() => this.getTotalRewards())
     );
@@ -228,13 +231,15 @@ export class StakingLpService {
   private getTotalRewards(): Observable<BigNumber[]> {
     return forkJoin([this.getStakingRewards(), this.getLpRewards()]).pipe(
       tap(([stakingRewards, lpRewards]) => {
-        this._stakingRewards$.next(stakingRewards);
+        this.zone.run(() => {
+          this._stakingRewards$.next(stakingRewards);
 
-        this._lpRewards$.next(lpRewards);
+          this._lpRewards$.next(lpRewards);
 
-        this._totalRewardsInUsdc$.next(
-          stakingRewards.multipliedBy(this.stakingTokenUsdPrice).plus(lpRewards)
-        );
+          this._totalRewardsInUsdc$.next(
+            stakingRewards.multipliedBy(this.stakingTokenUsdPrice).plus(lpRewards)
+          );
+        });
       })
     );
   }
@@ -280,34 +285,39 @@ export class StakingLpService {
   }
 
   public resetTotalBalanceAndRewards(): void {
-    this._lpBalance$.next(undefined);
-
-    this._stakingBalance$.next(undefined);
-
-    this._stakingRewards$.next(undefined);
-
-    this._lpRewards$.next(undefined);
-
-    this._totalBalanceInUsdc$.next(undefined);
-
-    this._totalRewardsInUsdc$.next(undefined);
+    this.zone.run(() => {
+      this._lpBalance$.next(undefined);
+      this._stakingBalance$.next(undefined);
+      this._stakingRewards$.next(undefined);
+      this._lpRewards$.next(undefined);
+      this._totalBalanceInUsdc$.next(undefined);
+      this._totalRewardsInUsdc$.next(undefined);
+    });
   }
 
   public resetStakingBalances(): void {
-    this._stakingBalanceByRound$.next({ roundOne: undefined, roundTwo: undefined });
+    this.zone.run(() => {
+      this._stakingBalanceByRound$.next({ roundOne: undefined, roundTwo: undefined });
+    });
   }
 
   public resetLpBalances(): void {
-    this._lpBalanceByRound$.next({ roundOne: undefined });
+    this.zone.run(() => {
+      this._lpBalanceByRound$.next({ roundOne: undefined });
+    });
   }
 
   public toggleLoading(dataType: 'balanceAndRewards' | 'tvlAndTtv', value: boolean): void {
     if (dataType === 'balanceAndRewards') {
-      this._balanceAndRewardsLoading$.next(value);
+      this.zone.run(() => {
+        this._balanceAndRewardsLoading$.next(value);
+      });
     }
 
     if (dataType === 'tvlAndTtv') {
-      this._tvlAndTtvLoading$.next(value);
+      this.zone.run(() => {
+        this._tvlAndTtvLoading$.next(value);
+      });
     }
   }
 
@@ -335,7 +345,9 @@ export class StakingLpService {
       switchMap(user => forkJoin(balanceRequests(user.address))),
       tap(balances => {
         const [roundOne, roundTwo] = balances;
-        this._stakingBalanceByRound$.next({ roundOne, roundTwo });
+        this.zone.run(() => {
+          this._stakingBalanceByRound$.next({ roundOne, roundTwo });
+        });
       })
     );
   }
@@ -361,10 +373,11 @@ export class StakingLpService {
         const isStarted = new Date().getTime() > +startTime * 1000;
         const isEnded = new Date().getTime() > +endTime * 1000;
 
-        this._lpRoundStart$.next(new Date(+startTime * 1000));
-
-        this._lpRoundStarted$.next(isStarted);
-        this._lpRoundEnded$.next(isEnded);
+        this.zone.run(() => {
+          this._lpRoundStart$.next(new Date(+startTime * 1000));
+          this._lpRoundStarted$.next(isStarted);
+          this._lpRoundEnded$.next(isEnded);
+        });
 
         return isStarted;
       })
@@ -392,8 +405,9 @@ export class StakingLpService {
             map(lpBalanceByRound => lpBalanceByRound.map(balance => Web3Pure.fromWei(balance))),
             tap(lpBalanceByRound => {
               const [roundOneBalance] = lpBalanceByRound;
-
-              this._lpBalanceByRound$.next({ roundOne: roundOneBalance });
+              this.zone.run(() => {
+                this._lpBalanceByRound$.next({ roundOne: roundOneBalance });
+              });
             })
           );
         } else {
@@ -416,7 +430,9 @@ export class StakingLpService {
       map(aprByRound => aprByRound.map(parseWeb3Percent)),
       tap(aprByRound => {
         const [roundOneApr] = aprByRound;
-        this._lpAprByRound$.next({ roundOne: roundOneApr.toFixed(0) });
+        this.zone.run(() => {
+          this._lpAprByRound$.next({ roundOne: roundOneApr.toFixed(0) });
+        });
       })
     );
   }
@@ -426,7 +442,11 @@ export class StakingLpService {
       catchError(() => {
         return EMPTY;
       }),
-      tap(response => this._ttv$.next(response))
+      tap(response => {
+        this.zone.run(() => {
+          this._ttv$.next(response);
+        });
+      })
     );
   }
 
@@ -450,9 +470,10 @@ export class StakingLpService {
   public getTvlMultichain(): Observable<BigNumber> {
     this.toggleLoading('tvlAndTtv', true);
 
-    const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
+    // const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
 
-    return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
+    // return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
+    return of(1022286.1916530099).pipe(
       switchMap(tvlMultichain => {
         return forkJoin([
           from(
@@ -482,7 +503,9 @@ export class StakingLpService {
         return tvl;
       }),
       tap(tvl => {
-        this._tvlMultichain$.next(tvl);
+        this.zone.run(() => {
+          this._tvlMultichain$.next(tvl);
+        });
       })
     );
   }
@@ -504,7 +527,9 @@ export class StakingLpService {
         return totalRbcEnteredInTokens.multipliedBy(this.stakingTokenUsdPrice);
       }),
       tap(tvlStaking => {
-        this._tvlStaking$.next(tvlStaking);
+        this.zone.run(() => {
+          this._tvlStaking$.next(tvlStaking);
+        });
       })
     );
   }
@@ -513,7 +538,9 @@ export class StakingLpService {
     const tvlStaking = this._tvlStaking$.getValue();
     const tvlMultichain = this._tvlMultichain$.getValue();
 
-    this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
+    this.zone.run(() => {
+      this._tvlTotal$.next(tvlMultichain.plus(tvlStaking));
+    });
   }
 
   public getStakingTokenPrice(): void {
