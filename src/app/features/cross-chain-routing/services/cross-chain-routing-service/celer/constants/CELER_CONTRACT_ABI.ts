@@ -2,6 +2,15 @@ import { AbiItem } from 'web3-utils';
 
 export const CELER_CONTRACT_ABI = [
   {
+    inputs: [
+      { internalType: 'address', name: '_messageBus', type: 'address' },
+      { internalType: 'address[]', name: '_supportedDEXes', type: 'address[]' },
+      { internalType: 'address', name: '_nativeWrap', type: 'address' }
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor'
+  },
+  {
     anonymous: false,
     inputs: [
       { indexed: false, internalType: 'bytes32', name: 'id', type: 'bytes32' },
@@ -142,9 +151,17 @@ export const CELER_CONTRACT_ABI = [
     name: 'Unpaused',
     type: 'event'
   },
+  { stateMutability: 'payable', type: 'fallback' },
   {
     inputs: [],
     name: 'DEFAULT_ADMIN_ROLE',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'EXECUTOR',
     outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
     stateMutability: 'view',
     type: 'function'
@@ -254,7 +271,7 @@ export const CELER_CONTRACT_ABI = [
       { internalType: 'uint256', name: '_amount', type: 'uint256' },
       { internalType: 'uint64', name: '_srcChainId', type: 'uint64' },
       { internalType: 'bytes', name: '_message', type: 'bytes' },
-      { internalType: 'address', name: '', type: 'address' }
+      { internalType: 'address', name: '_executor', type: 'address' }
     ],
     name: 'executeMessageWithTransfer',
     outputs: [
@@ -270,7 +287,7 @@ export const CELER_CONTRACT_ABI = [
       { internalType: 'uint256', name: '_amount', type: 'uint256' },
       { internalType: 'uint64', name: '_srcChainId', type: 'uint64' },
       { internalType: 'bytes', name: '_message', type: 'bytes' },
-      { internalType: 'address', name: '', type: 'address' }
+      { internalType: 'address', name: '_executor', type: 'address' }
     ],
     name: 'executeMessageWithTransferFallback',
     outputs: [
@@ -284,13 +301,20 @@ export const CELER_CONTRACT_ABI = [
       { internalType: 'address', name: '_token', type: 'address' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' },
       { internalType: 'bytes', name: '_message', type: 'bytes' },
-      { internalType: 'address', name: '', type: 'address' }
+      { internalType: 'address', name: '_executor', type: 'address' }
     ],
     name: 'executeMessageWithTransferRefund',
     outputs: [
       { internalType: 'enum IMessageReceiverApp.ExecutionStatus', name: '', type: 'uint8' }
     ],
     stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'executorAddr',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
     type: 'function'
   },
   {
@@ -332,17 +356,6 @@ export const CELER_CONTRACT_ABI = [
     name: 'hasRole',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_messageBus', type: 'address' },
-      { internalType: 'address[]', name: '_supportedDEXes', type: 'address[]' },
-      { internalType: 'address', name: '_nativeWrap', type: 'address' }
-    ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -510,7 +523,7 @@ export const CELER_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'contract IERC20Upgradeable', name: 'token', type: 'address' }],
+    inputs: [{ internalType: 'contract IERC20', name: 'token', type: 'address' }],
     name: 'sweepTokens',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -743,6 +756,5 @@ export const CELER_CONTRACT_ABI = [
     outputs: [],
     stateMutability: 'payable',
     type: 'function'
-  },
-  { stateMutability: 'payable', type: 'receive' }
+  }
 ] as AbiItem[];
