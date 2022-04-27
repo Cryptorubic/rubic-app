@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { FormControl } from '@ngneat/reactive-forms';
@@ -22,7 +22,7 @@ function correctAddressValidator(blockchainAdapter: EthLikeWeb3Public): Validato
   styleUrls: ['./transfer-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TransferModalComponent implements OnInit {
+export class TransferModalComponent {
   public readonly deposits = this.lpService.deposits
     .filter(deposits => deposits.isStaked)
     .map(deposit => deposit.tokenId);
@@ -43,10 +43,6 @@ export class TransferModalComponent implements OnInit {
     private readonly notificationService: LiquidityProvidingNotificationService,
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
   ) {}
-
-  ngOnInit(): void {
-    return undefined;
-  }
 
   public transfer(): void {
     const tokenId = this.token.value;

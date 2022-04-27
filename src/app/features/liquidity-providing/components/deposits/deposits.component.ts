@@ -49,6 +49,7 @@ export class DepositsComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((network: BlockchainData) => {
         this.needSwitchNetwork = network?.name !== this.lpService.blockchain;
+        // TODO replace with pipe operator "watch(this.cdr)"
         this.cdr.detectChanges();
       });
   }

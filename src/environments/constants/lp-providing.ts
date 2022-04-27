@@ -1,4 +1,18 @@
-export const LP_PROVIDING_CONFIG_PROD = {
+export interface LpProvidingConfig {
+  contractAddress: string;
+  brbcAddress: string;
+  usdcAddress: string;
+  minEnterAmount: number;
+  maxEnterAmount: number;
+  poolSize: number;
+  poolUSDC: number;
+  poolBRBC: number;
+  maxEnterAmountWhitelist: number;
+  whitelistDuration: number;
+  whitelist: string[];
+}
+
+export const LP_PROVIDING_CONFIG_PROD: LpProvidingConfig = {
   contractAddress: '0x3b44bF53d1f704D25048871C44d39A4f9a2d3108',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
@@ -15,7 +29,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
   ]
 };
 
-export const LP_PROVIDING_CONFIG_DEVELOP = {
+export const LP_PROVIDING_CONFIG_DEVELOP: LpProvidingConfig = {
   contractAddress: '0x66317Db99447B801410375A5D3f6F839aBe89Aec',
   brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
   usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',

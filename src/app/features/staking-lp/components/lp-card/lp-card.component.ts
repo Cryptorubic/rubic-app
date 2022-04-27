@@ -35,7 +35,7 @@ export class LpCardComponent {
 
   @Input() isStarted: boolean;
 
-  @Output() onNavigate = new EventEmitter<number>();
+  @Output() readonly onNavigate = new EventEmitter<number>();
 
   public readonly statusBadgeType = STATUS_BADGE_TYPE;
 

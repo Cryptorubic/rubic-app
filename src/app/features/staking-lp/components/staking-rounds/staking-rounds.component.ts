@@ -27,6 +27,10 @@ export class StakingRoundsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.watchCurrentUserStakingBalanceByRound();
+  }
+
+  private watchCurrentUserStakingBalanceByRound(): void {
     this.walletConnectorService.addressChange$
       .pipe(
         startWith(undefined),

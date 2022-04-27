@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 .deposit-form {
-
   position: relative;
 
   max-width: 490px;
@@ -194,7 +193,6 @@
 }
 
 .hint {
-
   @include font(14px, 16px, 500, #f3ba2f);
   display: flex;
   margin-bottom: 14px;

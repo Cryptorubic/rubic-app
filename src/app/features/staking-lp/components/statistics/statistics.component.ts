@@ -74,37 +74,9 @@ export class StatisticsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        startWith(undefined),
-        switchMap(address => {
-          if (address === null) {
-            this.stakingLpService.resetTotalBalanceAndRewards();
-            return EMPTY;
-          } else {
-            return of(null);
-          }
-        }),
-        switchMap(() => this.stakingLpService.getTotalBalanceAndRewards()),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.stakingLpService.toggleLoading('balanceAndRewards', false);
-        this.cdr.markForCheck();
-      });
+    this.watchBalanceAndRewardsForCurrentUser();
 
-    this.stakingLpService
-      .getTvlMultichain()
-      .pipe(
-        switchMap(() => this.stakingLpService.getTvlStaking()),
-        tap(() => this.stakingLpService.getTotalTvl()),
-        // switchMap(() => this.stakingLpService.getTtv()),
-        take(1)
-      )
-      .subscribe(() => {
-        this.stakingLpService.toggleLoading('tvlAndTtv', false);
-        this.cdr.markForCheck();
-      });
+    this.getStatisticsData();
   }
 
   public refreshStatistics(): void {
@@ -120,6 +92,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
+        // TODO enable on third day
         // switchMap(() => this.stakingLpService.getTtv()),
         take(1)
       )
@@ -142,5 +115,42 @@ export class StatisticsComponent implements OnInit {
   public onFilterSelect(period: TtvFilters): void {
     this.ttvFiltersOpen = false;
     this._selectedTtvFilter$.next(period);
+  }
+
+  private getStatisticsData(): void {
+    this.stakingLpService
+      .getTvlMultichain()
+      .pipe(
+        switchMap(() => this.stakingLpService.getTvlStaking()),
+        tap(() => this.stakingLpService.getTotalTvl()),
+        // TODO enable on third day
+        // switchMap(() => this.stakingLpService.getTtv()),
+        take(1)
+      )
+      .subscribe(() => {
+        this.stakingLpService.toggleLoading('tvlAndTtv', false);
+        this.cdr.markForCheck();
+      });
+  }
+
+  private watchBalanceAndRewardsForCurrentUser(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        startWith(undefined),
+        switchMap(address => {
+          if (address === null) {
+            this.stakingLpService.resetTotalBalanceAndRewards();
+            return EMPTY;
+          } else {
+            return of(null);
+          }
+        }),
+        switchMap(() => this.stakingLpService.getTotalBalanceAndRewards()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.stakingLpService.toggleLoading('balanceAndRewards', false);
+        this.cdr.markForCheck();
+      });
   }
 }

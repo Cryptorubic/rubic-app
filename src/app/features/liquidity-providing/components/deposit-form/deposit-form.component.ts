@@ -93,30 +93,8 @@ export class DepositFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserTotalStaked();
-
-    this.brbcAmount$.pipe(skip(1)).subscribe(value => {
-      if (!value.isFinite()) {
-        this.usdcAmountCtrl.reset();
-        this._usdcDepositOpened$.next(false);
-      } else {
-        const usdcAmount = value.multipliedBy(DEPOSIT_RATIO);
-        this.usdcAmountCtrl.patchValue(usdcAmount);
-        this._usdcDepositOpened$.next(true);
-      }
-    });
-
-    this.lpService.userAddress$
-      .pipe(
-        filter(user => Boolean(user?.address)),
-        switchMap(() => {
-          return forkJoin([
-            this.lpService.getAndUpdatePoolTokensBalances(),
-            this.lpService.getNeedTokensApprove()
-          ]);
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+    this.handleBrbcInput();
+    this.watchAddressApprove();
   }
 
   public createDeposit(): void {
@@ -194,5 +172,33 @@ export class DepositFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  private watchAddressApprove(): void {
+    this.lpService.userAddress$
+      .pipe(
+        filter(user => Boolean(user?.address)),
+        switchMap(() => {
+          return forkJoin([
+            this.lpService.getAndUpdatePoolTokensBalances(),
+            this.lpService.getNeedTokensApprove()
+          ]);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
+
+  private handleBrbcInput(): void {
+    this.brbcAmount$.pipe(skip(1)).subscribe(value => {
+      if (!value.isFinite()) {
+        this.usdcAmountCtrl.reset();
+        this._usdcDepositOpened$.next(false);
+      } else {
+        const usdcAmount = value.multipliedBy(DEPOSIT_RATIO);
+        this.usdcAmountCtrl.patchValue(usdcAmount);
+        this._usdcDepositOpened$.next(true);
+      }
+    });
   }
 }

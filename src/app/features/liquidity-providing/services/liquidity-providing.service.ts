@@ -52,28 +52,34 @@ import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { WINDOW } from '@ng-web-apis/common';
 import { DEPOSIT_RATIO } from '../constants/DEPOSIT_RATIO';
+import { LpProvidingConfig } from 'src/environments/constants/lp-providing';
 
+// TODO create env token
 @Injectable()
 export class LiquidityProvidingService {
   public readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
-  private readonly lpContractAddress = ENVIRONMENT.lpProviding.contractAddress;
+  get lpProviding(): LpProvidingConfig {
+    return ENVIRONMENT.lpProviding;
+  }
 
-  private readonly brbcAddress = ENVIRONMENT.lpProviding.brbcAddress;
+  private readonly lpContractAddress = this.lpProviding.contractAddress;
 
-  private readonly usdcAddress = ENVIRONMENT.lpProviding.usdcAddress;
+  private readonly brbcAddress = this.lpProviding.brbcAddress;
 
-  private readonly whitelist = ENVIRONMENT.lpProviding.whitelist;
+  private readonly usdcAddress = this.lpProviding.usdcAddress;
 
-  public readonly minEnterAmount = ENVIRONMENT.lpProviding.minEnterAmount;
+  private readonly whitelist = this.lpProviding.whitelist;
 
-  public readonly maxEnterAmount = ENVIRONMENT.lpProviding.maxEnterAmount;
+  public readonly minEnterAmount = this.lpProviding.minEnterAmount;
 
-  public readonly maxEnterAmountWhitelist = ENVIRONMENT.lpProviding.maxEnterAmountWhitelist;
+  public readonly maxEnterAmount = this.lpProviding.maxEnterAmount;
 
-  public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
+  public readonly maxEnterAmountWhitelist = this.lpProviding.maxEnterAmountWhitelist;
 
-  private readonly whitelistDuration = ENVIRONMENT.lpProviding.whitelistDuration;
+  public readonly poolSize = this.lpProviding.poolSize;
+
+  private readonly whitelistDuration = this.lpProviding.whitelistDuration;
 
   public endDate: Date;
 

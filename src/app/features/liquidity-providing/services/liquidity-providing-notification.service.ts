@@ -6,6 +6,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { TuiNotification } from '@taiga-ui/core';
 import { PoolToken } from '../models/pool-token.enum';
 
+const SUCCESS_NOTIFICATION_OPTIONS = {
+  status: TuiNotification.Success,
+  autoClose: 3000
+};
+
 @Injectable()
 export class LiquidityProvidingNotificationService {
   constructor(
@@ -15,48 +20,36 @@ export class LiquidityProvidingNotificationService {
   ) {}
 
   public showSuccessApproveNotification(token: PoolToken): void {
-    this.notificationsService.show(`Successful ${token} approve`, {
-      status: TuiNotification.Success,
-      autoClose: 3000
-    });
+    this.notificationsService.show(`Successful ${token} approve`, SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showSuccessDepositNotification(): void {
-    this.notificationsService.show(this.translate.instant('notifications.successfulStake'), {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
+    this.notificationsService.show(
+      this.translate.instant('notifications.successfulStake'),
+      SUCCESS_NOTIFICATION_OPTIONS
+    );
   }
 
   public showSuccessRewardsClaimNotification(): void {
-    this.notificationsService.show('Rewards collected successful', {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
+    this.notificationsService.show('Rewards collected successful', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showSuccessWithdrawRequestNotification(): void {
-    this.notificationsService.show('Withdrawal request successful', {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
+    this.notificationsService.show('Withdrawal request successful', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showSuccessWithdrawNotification(): void {
-    this.notificationsService.show(this.translate.instant('notifications.successfulWithdraw'), {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
+    this.notificationsService.show(
+      this.translate.instant('notifications.successfulWithdraw'),
+      SUCCESS_NOTIFICATION_OPTIONS
+    );
+  }
+
+  public showSuccessTransferNotification(): void {
+    this.notificationsService.show('Successful transfer', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showErrorNotification(txHash: string): void {
     this.errorService.catch(new UnknownError(`Transaction hash ${txHash}`));
-  }
-
-  public showSuccessTransferNotification(): void {
-    this.notificationsService.show('Successful transfer', {
-      status: TuiNotification.Success,
-      autoClose: 5000
-    });
   }
 }

@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { RoundStatus } from '../../models/round-status.enum';
 
 const STATUS_BADGE_TYPE = {
@@ -25,7 +18,7 @@ const STATUS_BADGE_TEXT = {
   styleUrls: ['./staking-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingCardComponent implements OnInit {
+export class StakingCardComponent {
   @Input() round: number;
 
   @Input() apr: number;
@@ -36,17 +29,13 @@ export class StakingCardComponent implements OnInit {
 
   @Input() statuses: RoundStatus[];
 
-  @Output() onNavigate = new EventEmitter<number>();
+  @Output() readonly onNavigate = new EventEmitter<number>();
 
   public readonly statusBadgeType = STATUS_BADGE_TYPE;
 
   public readonly statusBadgeText = STATUS_BADGE_TEXT;
 
   constructor() {}
-
-  ngOnInit(): void {
-    return undefined;
-  }
 
   public isActive(statuses: RoundStatus[]): boolean {
     return !statuses.includes(RoundStatus.CLOSED);

@@ -16,7 +16,7 @@ export class LiquidityProvidingModalService {
     private readonly injector: Injector
   ) {}
 
-  showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
+  public showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {
       data: {
         brbcAmount,
@@ -25,7 +25,10 @@ export class LiquidityProvidingModalService {
     });
   }
 
-  showRequestWithdrawModal(usdcAmount: BigNumber, brbcAmount: BigNumber): Observable<boolean> {
+  public showRequestWithdrawModal(
+    usdcAmount: BigNumber,
+    brbcAmount: BigNumber
+  ): Observable<boolean> {
     return this.dialogService.open<boolean>(
       new PolymorpheusComponent(RequestWithdrawModalComponent),
       {
@@ -37,20 +40,20 @@ export class LiquidityProvidingModalService {
     );
   }
 
-  showTransferModal(): Observable<unknown> {
+  public showTransferModal(): Observable<unknown> {
     return this.dialogService.open(
       new PolymorpheusComponent(TransferModalComponent, this.injector)
     );
   }
 
-  showSuccessModal(title: string, text: string): Observable<boolean> {
+  public showSuccessModal(title: string, text: string): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(SuccessModalComponent), {
       data: { title, text },
       closeable: true
     });
   }
 
-  showWarningModal(title: string, text: string): Observable<boolean> {
+  public showWarningModal(title: string, text: string): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(WarningModalComponent), {
       data: { title, text },
       closeable: true

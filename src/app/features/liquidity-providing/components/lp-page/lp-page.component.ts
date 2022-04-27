@@ -23,7 +23,8 @@ export class LpPageComponent implements OnInit {
   ]).pipe(
     map(([user, deposits]) => {
       return !(user?.address && Boolean(deposits?.length));
-    })
+    }),
+    takeUntil(this.destroy$)
   );
 
   public readonly depositsLoading$ = this.lpService.depositsLoading$;
@@ -46,16 +47,7 @@ export class LpPageComponent implements OnInit {
   ngOnInit(): void {
     this.waitForStopWatchingWhitelist();
 
-    this.walletConnectorService.addressChange$
-      .pipe(
-        startWith(undefined),
-        switchMap(() => this.lpService.getDeposits()),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.lpService.setDepositsLoading(false);
-        this.cdr.detectChanges();
-      });
+    this.getDepositsForCurrentUser();
   }
 
   public login(): void {
@@ -76,6 +68,19 @@ export class LpPageComponent implements OnInit {
         if (!event.url.includes('liquidity-providing')) {
           this.lpService.stopWatchWhitelist();
         }
+      });
+  }
+
+  private getDepositsForCurrentUser(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        startWith(undefined),
+        switchMap(() => this.lpService.getDeposits()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.lpService.setDepositsLoading(false);
+        this.cdr.detectChanges();
       });
   }
 }
