@@ -5,7 +5,7 @@
     *ngLet="lpRoundStarted$ | async as lpRoundStarted"
     [round]="1"
     [apr]="27"
-    [poolLimit]="3200000"
+    [poolLimit]="800000"
     [balance]="lpAprAndBalances.balance.roundOne"
     [start]="lpRoundStart$ | async"
     [statuses]="lpRoundStarted | functionCall: getLpStatuses:this"
