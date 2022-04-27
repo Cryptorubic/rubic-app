@@ -57,7 +57,7 @@ export class StatisticsComponent implements OnInit {
 
   public readonly ttvFiltersText = TTV_FILTERS_TEXT;
 
-  public readonly ttvFilters = Object.values(TtvFilters);
+  public readonly ttvFilters = Object.values<TtvFilters>(TtvFilters);
 
   public balanceHintShown = false;
 

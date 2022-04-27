@@ -32,7 +32,6 @@ import { LpStatisticsComponent } from './components/lp-statistics/lp-statistics.
 import { ProgressComponent } from './components/progress/progress.component';
 import { RequestWithdrawModalComponent } from './components/request-withdraw-modal/request-withdraw-modal.component';
 import { LpRoundTimeGuard } from './guards/lp-round-time.guard';
-import { TransferModalComponent } from './components/transfer-modal/transfer-modal.component';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { RewardsHistoryComponent } from './components/rewards-history/rewards-history.component';
 import { SuccessModalComponent } from './components/success-modal/success-modal.component';
@@ -50,7 +49,6 @@ import { WarningModalComponent } from './components/warning-modal/warning-modal.
     LpStatisticsComponent,
     ProgressComponent,
     RequestWithdrawModalComponent,
-    TransferModalComponent,
     RewardsHistoryComponent,
     SuccessModalComponent,
     WarningModalComponent
