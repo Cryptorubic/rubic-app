@@ -119,6 +119,7 @@ export class BuyTokenComponent {
    */
   public buyToken(searchedTokens?: { from: TokenInfo; to: TokenInfo }): void {
     this.gtmService.reloadGtmSession();
+    this.gtmService.fireClickEvent('click', 'buy_rbc');
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
