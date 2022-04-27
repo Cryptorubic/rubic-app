@@ -53,6 +53,8 @@ import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/models/swap-provider-type';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -344,8 +346,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
-      onTransactionHash: (txHash: string) => {
-        this.notifyGtmAfterSignTx(txHash);
+      onTransactionHash: (txHash: string, trade?: BridgeTrade) => {
+        this.notifyGtmAfterSignTx(txHash, trade);
         this.notifyTradeInProgress(txHash);
       }
     };
@@ -431,7 +433,16 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
+  private notifyGtmAfterSignTx(txHash: string, trade: BridgeTrade): void {
+    if (trade.provider === BRIDGE_PROVIDER.SWAP_RBC) {
+      this.gtmService.fireTxSignedEvent(
+        SWAP_PROVIDER_TYPE.BRIDGE,
+        txHash,
+        trade.token.symbol,
+        trade.token.symbol,
+        null,
+        null
+      );
+    }
   }
 }

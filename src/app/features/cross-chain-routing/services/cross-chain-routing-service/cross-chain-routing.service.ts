@@ -853,7 +853,18 @@ export class CrossChainRoutingService {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, txHash);
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      this.currentCrossChainTrade.tokenIn.symbol,
+      this.currentCrossChainTrade.tokenOut.symbol,
+      this.currentCrossChainTrade.fromTransitTokenAmount.multipliedBy(
+        this.currentCrossChainTrade.transitTokenFee / 100
+      ),
+      this.currentCrossChainTrade.tokenInAmount.multipliedBy(
+        this.currentCrossChainTrade.tokenIn.price
+      )
+    );
   }
 
   /**
