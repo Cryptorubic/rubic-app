@@ -10,5 +10,5 @@ export interface BridgeTrade {
   toBlockchain: BlockchainName;
   amount: BigNumber;
   toAddress: string;
-  onTransactionHash?: (hash: string) => void;
+  onTransactionHash?: (hash: string, tradeObject?: BridgeTrade) => void;
 }

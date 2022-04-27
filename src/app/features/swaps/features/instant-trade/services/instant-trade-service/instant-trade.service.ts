@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
+import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import {
   ItOptions,
@@ -153,10 +154,14 @@ export class InstantTradeService extends TradeService {
     const options = {
       onConfirm: async (hash: string) => {
         transactionHash = hash;
-
         confirmCallback?.();
 
-        this.notifyGtmAfterSignTx(transactionHash);
+        this.notifyGtmAfterSignTx(
+          transactionHash,
+          trade.from.token.symbol,
+          trade.to.token.symbol,
+          trade.from.amount.multipliedBy(trade.from.token.price)
+        );
         this.gtmService.checkGtm();
 
         subscription$ = this.notifyTradeInProgress(hash, trade.blockchain);
@@ -294,8 +299,20 @@ export class InstantTradeService extends TradeService {
     });
   }
 
-  private notifyGtmAfterSignTx(transactionHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, transactionHash);
+  private notifyGtmAfterSignTx(
+    transactionHash: string,
+    fromToken: string,
+    toToken: string,
+    price: BigNumber
+  ): void {
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      transactionHash,
+      fromToken,
+      toToken,
+      new BigNumber(0),
+      price
+    );
   }
 
   private checkDeviceAndShowNotification(): void {

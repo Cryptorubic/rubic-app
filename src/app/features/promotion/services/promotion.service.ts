@@ -10,6 +10,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
 import { comparators } from '@features/promotion/table-comporators';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable()
 export class PromotionService {
@@ -86,7 +87,8 @@ export class PromotionService {
   constructor(
     private readonly promotionApiService: PromotionApiService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.setWalletSubscriptions();
   }
@@ -169,6 +171,7 @@ export class PromotionService {
 
   private setPromoLinkLoading(): void {
     if (this.promoLink !== null) {
+      this.gtmService.fireClickEvent('partners', 'create_partner_link');
       this._statistics$.next(null);
     }
   }

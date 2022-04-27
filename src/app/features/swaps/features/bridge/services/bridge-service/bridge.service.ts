@@ -29,6 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 
 @Injectable()
 export class BridgeService extends TradeService {
@@ -199,7 +200,7 @@ export class BridgeService extends TradeService {
           bridgeTrade = {
             ...bridgeTrade,
             onTransactionHash: (txHash: string) => {
-              this.notifyGtmAfterSignTx(txHash);
+              this.notifyGtmAfterSignTx(txHash, bridgeTrade);
 
               subscription$ = this.notifyTradeInProgress(txHash, bridgeTrade.fromBlockchain);
             }
@@ -282,7 +283,16 @@ export class BridgeService extends TradeService {
     }
   }
 
-  private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
+  private notifyGtmAfterSignTx(txHash: string, trade: BridgeTrade): void {
+    if (trade.provider === BRIDGE_PROVIDER.SWAP_RBC) {
+      this.gtmService.fireTxSignedEvent(
+        SWAP_PROVIDER_TYPE.BRIDGE,
+        txHash,
+        trade.token.symbol,
+        trade.token.symbol,
+        null,
+        null
+      );
+    }
   }
 }
