@@ -168,9 +168,9 @@ export class DepositFormComponent implements OnInit {
     }
   }
 
-  public setMaxTokenAmount(amount: BigNumber): void {
-    this.brbcAmountCtrl.setValue(amount.toFixed(2));
-    this.usdcAmountCtrl.setValue(amount.toFixed(2));
+  public setMaxTokenAmount(brbcAmount: BigNumber): void {
+    this.usdcAmountCtrl.setValue(brbcAmount.multipliedBy(DEPOSIT_RATIO).toFixed(2));
+    this.brbcAmountCtrl.setValue(brbcAmount.toFixed(2));
   }
 
   public navigateBack(): void {
