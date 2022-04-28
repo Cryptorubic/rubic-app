@@ -45,7 +45,7 @@ export class InstantTradeService extends TradeService {
     private readonly swapFormService: SwapFormService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService
   ) {
-    super('default');
+    super('instant-trade');
   }
 
   public getTargetContractAddress(
