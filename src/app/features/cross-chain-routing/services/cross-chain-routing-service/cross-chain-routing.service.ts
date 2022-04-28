@@ -216,9 +216,12 @@ export class CrossChainRoutingService {
       fromAmount,
       fromTransitToken
     );
-    const sourceBlockchainProvidersFiltered = sourceBlockchainProviders.filter(provider => {
-      return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
-    });
+    const sourceBlockchainProvidersFiltered = this.shouldSwapViaCeler
+      ? sourceBlockchainProviders.filter(provider => {
+          return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
+        })
+      : sourceBlockchainProviders;
+
     const {
       providerIndex: fromProviderIndex,
       tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
@@ -269,9 +272,11 @@ export class CrossChainRoutingService {
       toToken,
       this.shouldSwapViaCeler
     );
-    const targetBlockchainProvidersFiltered = targetBlockchainProviders.filter(provider => {
-      return !this.contracts[toBlockchain].isProviderAlgebra(provider.providerIndex);
-    });
+    const targetBlockchainProvidersFiltered = this.shouldSwapViaCeler
+      ? targetBlockchainProviders.filter(provider => {
+          return !this.contracts[toBlockchain].isProviderAlgebra(provider.providerIndex);
+        })
+      : targetBlockchainProviders;
 
     const {
       providerIndex: toProviderIndex,

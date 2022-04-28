@@ -3,7 +3,7 @@ export interface SwapInfoDest {
   integrator: string;
   version: number;
   path: string[];
-  dataInchOrPathV3: string;
+  pathV3: string | string[];
   deadline: number;
   amountOutMinimum: string;
 }

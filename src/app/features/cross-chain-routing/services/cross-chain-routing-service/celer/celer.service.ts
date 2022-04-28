@@ -166,9 +166,11 @@ export class CelerService {
     }
 
     if (dexes.isProviderUniV3(srcProvider.providerIndex)) {
-      const pathV3 = EthLikeWeb3Pure.asciiToBytes32(
-        JSON.stringify(srcProvider.tradeAndToAmount.trade?.path?.map(token => token.address))
+      const pathV3 = this.contractsDataService.contracts[fromBlockchain].getFirstPath(
+        srcProvider.providerIndex,
+        srcProvider.tradeAndToAmount.trade
       );
+
       return {
         dex: dexAddress,
         path: pathV3,
@@ -195,7 +197,7 @@ export class CelerService {
       integrator: NULL_ADDRESS,
       version: swapVersion,
       path: [NULL_ADDRESS],
-      dataInchOrPathV3: EMPTY_DATA,
+      pathV3: EMPTY_DATA,
       deadline: DEADLINE,
       amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
     };
@@ -206,21 +208,23 @@ export class CelerService {
         integrator: NULL_ADDRESS,
         version: SwapVersion.BRIDGE,
         path: [toToken.address],
-        dataInchOrPathV3: EMPTY_DATA,
+        pathV3: EMPTY_DATA,
         deadline: 0,
         amountOutMinimum: '0'
       };
     }
 
     if (dexes.isProviderUniV2(dstProvider.providerIndex)) {
+      // TODO change to getSecondPath
       dstSwap.path = dstProvider.tradeAndToAmount.trade.path.map(token => token.address);
     }
 
     if (dexes.isProviderUniV3(dstProvider.providerIndex)) {
-      const pathV3 = EthLikeWeb3Pure.asciiToBytes32(
-        JSON.stringify(dstProvider.tradeAndToAmount.trade?.path?.map(token => token.address))
+      const pathV3 = this.contractsDataService.contracts[toBlockchain].getFirstPath(
+        dstProvider.providerIndex,
+        dstProvider.tradeAndToAmount.trade
       );
-      dstSwap.dataInchOrPathV3 = pathV3;
+      dstSwap.pathV3 = pathV3;
     }
 
     return dstSwap;
