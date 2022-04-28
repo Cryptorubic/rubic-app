@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { StatusBadgeType } from '@app/shared/components/status-badge/status-badge.component';
+import BigNumber from 'bignumber.js';
 import { RoundStatus } from '../../models/round-status.enum';
 
-const STATUS_BADGE_TYPE = {
+const STATUS_BADGE_TYPE: Partial<Record<RoundStatus, StatusBadgeType>> = {
   [RoundStatus.ACTIVE]: 'active',
   [RoundStatus.CLOSED]: 'error',
   [RoundStatus.FULL]: 'warning'
 };
 
-const STATUS_BADGE_TEXT = {
+const STATUS_BADGE_TEXT: Partial<Record<RoundStatus, string>> = {
   [RoundStatus.ACTIVE]: 'Active',
   [RoundStatus.CLOSED]: 'Closed',
   [RoundStatus.FULL]: 'Full'
@@ -25,7 +27,7 @@ export class StakingCardComponent {
 
   @Input() poolLimit: number;
 
-  @Input() balance: number;
+  @Input() balance: BigNumber;
 
   @Input() statuses: RoundStatus[];
 
