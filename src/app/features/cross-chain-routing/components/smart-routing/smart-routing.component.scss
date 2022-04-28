@@ -7,38 +7,18 @@
   width: fit-content;
   margin-bottom: 24px;
 
+  font-size: 14px;
+
   background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
   border-radius: vars.$border-radius-3;
 
-  @include mixins.b(vars.$tablet) {
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
-  &_transparent {
-    background-color: transparent;
-  }
-
   &__chip {
-    padding: 6px 10px;
+    padding: 6px 20px;
 
-    color: #fff;
-    font-size: 18px;
+    color: var(--rubic-base-02);
     line-height: 22px;
 
     border-radius: vars.$border-radius-3;
-
-    @include mixins.b(vars.$tablet) {
-      margin-bottom: 10px;
-      padding: 7px 11px;
-
-      font-size: 22px;
-      line-height: 26px;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
-    }
 
     &_colored {
       background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
@@ -47,6 +27,10 @@
     
     &:not(:last-child) {
       margin-right: 6px;
+    }
+
+    &:last-child {
+      padding-left: 14px;
     }
   }
 }
@@ -65,10 +49,6 @@
 
     border-style: dashed;
     border-width: 1px;
-
-    @include mixins.b(vars.$tablet) {
-      top: 15px;
-    }
 
     &_left {
       left: 65px;
@@ -90,19 +70,6 @@
     align-items: center;
     width: 100px;
 
-    @include mixins.b(vars.$tablet) {
-      width: 111px;
-      
-      &__icon {
-        width: 44px;
-        height: 44px;
-
-        img {
-          width: 44px;
-          height: 44px;
-        }
-      }}
-
     &__icon {
       position: relative;
 
@@ -117,29 +84,19 @@
     }
 
     &__name {
-      color: #fff;
+      color: var(--form-bright-text-color);
       font-weight: 500;
       font-size: 18px;
       line-height: 22px;
       text-align: center;
-
-      @include mixins.b(vars.$tablet) {
-        font-size: 20px;
-        line-height: 25px;
-      }
     }
 
     &__cap {
-      color: vars.$rubic-base-10;
+      color: var(--secondary-color);
       font-weight: 500;
       font-size: 16px;
       line-height: 19px;
       text-align: center;
-
-      @include mixins.b(vars.$tablet) {
-        font-size: 18px;
-        line-height: 22px;
-      }
     }
   }
 }

@@ -34,7 +34,13 @@
     "switchTo": "切换到 {{networkName}} 网络",
     "tradeVia": "贸易途径 ",
     "bridge": "Bridge",
-    "transactionDetails": "交易明细"
+    "transactionDetails": "交易明细",
+    "approveToken": "批准 {{symbol}}",
+    "tagline": {
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -66,7 +72,7 @@
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
     "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -92,12 +98,17 @@
     "faq": "常见问题解答",
     "features": "特点",
     "project": "項目",
+    "referral": "推薦計劃",
+    "setupWidget": "設置小部件",
+    "sdk": "SDK",
+    "team": "團隊",
     "login": "連接錢包",
     "myTrades": "我的行业",
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
     "merch": "Merch shop",
+    "stakingLp": "Earn",
     "staking": "Staking",
     "promotion": "促銷"
   },
@@ -224,7 +235,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -311,6 +323,47 @@
     "tradingNotAvailable": "交易不可用",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "earn": {
+    "tvl": "TVL",
+    "stakingTvl": "Staking TVL",
+    "multichainTvl": "Multi-Chain TVL",
+    "joinRound": "Join Round",
+    "totalTradingVolume": "Total Trading Volume"
+  },
+  "lp": {
+    "connectWalletToView": "Connect Wallet to View",
+    "currentlyAvailable": "Currently Available",
+    "lpRoundTitle": "Liquidity Providing: Round {{round}}",
+    "totalCollectedRewards": "Total Collected Rewards",
+    "collectRewardsNow": "Available Rewards",
+    "totalProvided": "Total Provided",
+    "youProvided": "You Provided (BRBC)",
+    "acquireBoth": "Acquire Both BRBC and USDC Tokens",
+    "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
+    "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
+    "depositFunds": "Deposit funds",
+    "initiateDeposit": "Initiate Deposit",
+    "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
+    "requestWithdraw": "Request Withdraw",
+    "withdraw": "Withdraw",
+    "requestWithdrawModalText": "Attention: Due to the early removal of your liquidity, a 10% percent penalty will be taken from your initial deposit of {{ brbcAmount }} BRBC and {{ usdcAmount }} USDC. By confirming, you leave a request which will be processed within a day. This period of time is needed to aggregate the liquidity you provided from all blockchains into the BNB Smart Chain network. After 24 hours, you will be able collect your deposit.",
+    "yourDeposits": "Your Deposits",
+    "newDeposit": "+ Initiate Deposit",
+    "transferToken": "Transfer LP Token",
+    "collectRewards": "Collect rewards $ {{amount}}",
+    "balance": "Balance",
+    "endOfRound": "End of Round {{round}}",
+    "poolIsFull": "Pool is Full",
+    "lpRoundEnded": "LP Round Ended",
+    "returnAfterDay": "Return after 24H",
+    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate of 800 USDC & 3200 BRBC will be available during 24 hours",
+    "ifDidNotParticipate": "If you did not participate, you will be able to enter the round after",
+    "notWhitelistUser": "Your address is not whitelist",
+    "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
+    "emptyAmount": "Empty amount",
+    "depositLimitMax": "Current max limit is {{max}} BRBC",
+    "depositLimitMin": "Current min limit is {{min}} BRBC"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",
@@ -336,9 +389,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",
@@ -406,7 +459,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "滑點公差",
-      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消（較低的百分比會降低您的交易被搶先的機會）。",
       "multihopsTitle": "禁用多跳",
       "multihops": "您的交換將僅通過直接對完成。",
       "rubicOptimisationTitle": "使用 Rubic 優化",
@@ -509,5 +562,8 @@
   "buyTokens": {
     "default": "購買 RBC",
     "custom": "購買 FTM"
+  },
+  "blockchainSwap": {
+    "to": "至"
   }
 }

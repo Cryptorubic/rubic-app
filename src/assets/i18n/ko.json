@@ -34,7 +34,13 @@
     "switchTo": "{{ networkName }} 네트워크로 전환",
     "tradeVia": "무역을 통해 ",
     "bridge": "Bridge",
-    "transactionDetails": "상세 거래 내역"
+    "transactionDetails": "상세 거래 내역",
+    "approveToken": "Approve {{symbol}}",
+    "tagline": {
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -66,7 +72,7 @@
     "chooseSupportedBridge": "지원되는 브리지 선택",
     "InsufficientBalance": "잔액 불충분",
     "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -92,12 +98,17 @@
     "features": "기능",
     "faq": "FAQ",
     "project": "프로젝트",
+    "referral": "추천 프로그램",
+    "setupWidget": "위젯 설정",
+    "sdk": "SDK",
+    "team": "팀",
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
     "logout": "로그 아웃",
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
     "merch": "Merch shop",
+    "stakingLp": "Earn",
     "staking": "Staking",
     "promotion": "프로모션"
   },
@@ -224,7 +235,8 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": "~ 80 sec"
     }
   },
   "instantTrades": {
@@ -311,6 +323,47 @@
     "tradingNotAvailable": "거래 불가",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "earn": {
+    "tvl": "TVL",
+    "stakingTvl": "Staking TVL",
+    "multichainTvl": "Multi-Chain TVL",
+    "joinRound": "Join Round",
+    "totalTradingVolume": "Total Trading Volume"
+  },
+  "lp": {
+    "connectWalletToView": "Connect Wallet to View",
+    "currentlyAvailable": "Currently Available",
+    "lpRoundTitle": "Liquidity Providing: Round {{round}}",
+    "totalCollectedRewards": "Total Collected Rewards",
+    "collectRewardsNow": "Available Rewards",
+    "totalProvided": "Total Provided",
+    "youProvided": "You Provided (BRBC)",
+    "acquireBoth": "Acquire Both BRBC and USDC Tokens",
+    "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
+    "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
+    "depositFunds": "Deposit funds",
+    "initiateDeposit": "Initiate Deposit",
+    "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
+    "requestWithdraw": "Request Withdraw",
+    "withdraw": "Withdraw",
+    "requestWithdrawModalText": "Attention: Due to the early removal of your liquidity, a 10% percent penalty will be taken from your initial deposit of {{ brbcAmount }} BRBC and {{ usdcAmount }} USDC. By confirming, you leave a request which will be processed within a day. This period of time is needed to aggregate the liquidity you provided from all blockchains into the BNB Smart Chain network. After 24 hours, you will be able collect your deposit.",
+    "yourDeposits": "Your Deposits",
+    "newDeposit": "+ Initiate Deposit",
+    "transferToken": "Transfer LP Token",
+    "collectRewards": "Collect rewards $ {{amount}}",
+    "balance": "Balance",
+    "endOfRound": "End of Round {{round}}",
+    "poolIsFull": "Pool is Full",
+    "lpRoundEnded": "LP Round Ended",
+    "returnAfterDay": "Return after 24H",
+    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate of 800 USDC & 3200 BRBC will be available during 24 hours",
+    "ifDidNotParticipate": "If you did not participate, you will be able to enter the round after",
+    "notWhitelistUser": "Your address is not whitelist",
+    "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
+    "emptyAmount": "Empty amount",
+    "depositLimitMax": "Current max limit is {{max}} BRBC",
+    "depositLimitMin": "Current min limit is {{min}} BRBC"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",
@@ -336,9 +389,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",
@@ -406,7 +459,7 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "미끄러짐 허용 오차",
-      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
+      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다 (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다).",
       "multihopsTitle": "멀티 홉 비활성화",
       "multihops": "스왑은 직접 쌍으로 만 완료됩니다.",
       "rubicOptimisationTitle": "Rubic 최적화 사용",
@@ -509,5 +562,8 @@
   "buyTokens": {
     "default": "RBC 구매",
     "custom": "FTM 구매"
+  },
+  "blockchainSwap": {
+    "to": "에"
   }
 }

@@ -131,8 +131,9 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.FANTOM,
     label: 'Fantom',
     scannerUrl: 'https://ftmscan.com',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
-    additionalRpcLink: '',
+    rpcLink: 'https://ftm.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    additionalRpcLink:
+      'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
     imagePath: 'assets/images/icons/coins/fantom.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.FANTOM,
@@ -206,6 +207,22 @@ const networks: ReadonlyArray<Network> = [
       name: 'NEAR',
       symbol: 'NEAR',
       decimals: 24
+    }
+  },
+  {
+    id: 40,
+    name: BLOCKCHAIN_NAME.TELOS,
+    label: 'Telos EVM',
+    scannerUrl: 'https://teloscan.io',
+    rpcLink: 'https://mainnet.telos.net/evm',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.TELOS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Telos EVM',
+      symbol: 'TLOS',
+      decimals: 18
     }
   }
 ];

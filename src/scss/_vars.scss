@@ -13,12 +13,17 @@
 
   --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
 
-  --main-form-background: rgba(255, 255, 255, 0.5);
-  --main-background: rgba(255, 255, 255, 1);
+  --main-form-background: rgba(255, 255, 255, 1);
+  --main-background: #ececec;
+  --menu-background: #fff;
   --secondary-background: rgba(250, 250, 250, 1);
 
   --rubic-base-03: rgba(250, 250, 250, 0.9);
   --rubic-secondary: rgb(244, 245, 244);
+  --rubic-delimiter: #ddd;
+  --rubic-secondary-opacity: #f4f5f4;
+  --rubic-token-clear: #ddd;
+  --rubic-token-clear-icon: #70796d;
   --border-color-secondary: rgba(255, 255, 255, 0.5);
 
   --form-header-color-1: rgb(235, 243, 236);
@@ -44,6 +49,11 @@
   --rubic-base-19: #fff;
   --rubic-base-20: rgba(255, 255, 255, 0.6);
   --rubic-base-21: #e4f2e6;
+  --rubic-base-22: #fff;
+  --rubic-base-23: #f5f7fb;
+  --rubic-base-24: var(--main-green);
+  --rubic-base-25: rgb(114, 131, 116);
+  --rubic-base-26: #f4f4f4;
   --plate-invert: rgb(250, 250, 250);
   --bg-banner: rgba(255, 255, 255, 0.8);
 
@@ -82,12 +92,12 @@ $rubic-primary: #4aa956;
 $rubic-disable: #e1e1e1;
 $rubic-warning: #dfcb5f;
 
-$backgrond-black: rgb(14, 17, 14);
+$background-black: rgb(14, 17, 14);
 $grey-background: #f4f4f4;
 
 $buy-custom-token: #1968ff;
 
-// ***** border raiuses *****
+// ***** border radiuses *****
 $border-radius-1: 14px;
 $border-radius-2: 20px;
 $border-radius-3: 100px;
@@ -97,6 +107,7 @@ $backdrop-blur-1: blur(5px);
 
 // ***** breakpoints *****
 $desktop: 1240;
+$laptop-plus: 1024;
 $laptop: 960;
 $tablet: 768;
 $mobile-md: 651;

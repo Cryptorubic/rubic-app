@@ -91,6 +91,14 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TOKEN]: 'accounts/',
     [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
     [ADDRESS_TYPE.BLOCK]: 'blocks/'
+  },
+  [BLOCKCHAIN_NAME.TELOS]: {
+    baseUrl: 'https://www.teloscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 

@@ -15,12 +15,15 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    margin-bottom: 5px;
+
+    @include b($mobile-sm-plus) {
+      max-width: 320px;
+    }
   }
 
   &__link {
     margin-right: 21px;
-    margin-bottom: 21px;
+    margin-bottom: 16px;
 
     transition: 0.1s ease-in-out;
 
@@ -36,7 +39,6 @@
   }
 
   &__copyright {
-    color: $rubic-base-07;
     font-size: $rubic-font-size-01;
     text-align: center;
   }
@@ -44,23 +46,5 @@
   &__policy {
     color: $rubic-primary;
     white-space: nowrap;
-  }
-}
-
-@include b($mobile-md) {
-  .rubic-footer {
-    &__nav {
-      width: 220px;
-    }
-
-    &__link {
-      &:nth-child(5) {
-        margin-right: 0;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
   }
 }

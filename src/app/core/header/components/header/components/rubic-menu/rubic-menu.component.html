@@ -40,33 +40,37 @@
             </button>
           </a>
         </ng-container>
+        <a
+          (click)="menuClickHandler('bridge')"
+          [class.data-list__link_active]="bridgeActive"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
+            <div
+              class="data-list__option-image"
+              [inlineSVG]="'assets/images/icons/swap-types/bridge.svg'"
+            ></div>
+            Rubic Bridge
+          </button>
+        </a>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">
         <a
-          (click)="menuClickHandler('swaps')"
-          [class.data-list__link_active]="swapActive"
+          (click)="menuClickHandler('cross-chain')"
+          [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
 
         <a
-          (click)="menuClickHandler('cross-chain')"
-          [class.data-list__link_active]="crossChainActive"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">Multi-Chain</button>
-        </a>
-
-        <a
-          routerLink="/staking"
+          routerLink="/staking-lp"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler('staking')"
         >
           <button tuiOption class="data-list__option">
-            {{ 'navigation.staking' | translate }}
+            {{ 'navigation.stakingLp' | translate }}
           </button>
         </a>
       </tui-opt-group>

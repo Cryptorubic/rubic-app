@@ -6,13 +6,15 @@
     (openChange)="backToSettings()"
   >
     <div class="header-settings__icon-wrapper">
-      <img
-        class="header-settings__icon"
-        src="assets/images/icons/settings.svg"
-        width="24"
-        height="24"
-        alt="Open settings"
-      />
+      <app-rubic-button-circle class="menu-button unfocused" [size]="'l'" appearance="flat">
+        <img
+          class="header-settings__icon"
+          src="assets/images/icons/settings.svg"
+          width="24"
+          height="24"
+          alt="Open settings"
+        />
+      </app-rubic-button-circle>
     </div>
   </tui-hosted-dropdown>
 

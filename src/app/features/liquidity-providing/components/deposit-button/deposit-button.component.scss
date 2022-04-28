@@ -1,0 +1,12 @@
+@use 'src/scss/core'as *;
+
+.approves {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  app-rubic-button.loading {
+    pointer-events: none;
+  }
+}

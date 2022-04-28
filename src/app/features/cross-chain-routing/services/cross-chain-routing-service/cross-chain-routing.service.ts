@@ -8,7 +8,7 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -27,7 +27,6 @@ import {
 import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
-import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import MaxGasPriceOverflowWarning from '@core/errors/models/common/max-gas-price-overflow-warning';
 import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { EthLikeContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
@@ -36,16 +35,19 @@ import { SettingsService } from '@features/swaps/services/settings-service/setti
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { compareAddresses } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SmartRouting } from './models/smart-routing.interface';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { SuccessTxModalService } from '@features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -66,7 +68,7 @@ export class CrossChainRoutingService {
   public static isSupportedBlockchain(
     blockchain: BlockchainName
   ): blockchain is SupportedCrossChainBlockchain {
-    return !!SUPPORTED_CROSS_CHAIN_BLOCKCHAINS.find(
+    return SUPPORTED_CROSS_CHAIN_BLOCKCHAINS.some(
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
@@ -75,13 +77,26 @@ export class CrossChainRoutingService {
 
   public readonly smartRouting$ = this._smartRouting$.asObservable();
 
-  private readonly _smartRoutingLoading$ = new BehaviorSubject<boolean>(false);
-
-  public readonly smartRoutingLoading$ = this._smartRoutingLoading$.asObservable();
+  public get smartRouting(): SmartRouting {
+    return this._smartRouting$.getValue();
+  }
 
   private readonly contracts = this.contractsDataService.contracts;
 
   private currentCrossChainTrade: CrossChainTrade;
+
+  private readonly showSuccessTrxNotification = (): void => {
+    this.notificationsService.show<{ type: SuccessTxModalType }>(
+      new PolymorpheusComponent(SuccessTrxNotificationComponent),
+      {
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: {
+          type: 'cross-chain-routing'
+        }
+      }
+    );
+  };
 
   /**
    * Gets slippage, selected in settings, divided by 100%.
@@ -107,7 +122,7 @@ export class CrossChainRoutingService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly iframeService: IframeService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly successTxModalService: SuccessTxModalService
   ) {}
 
   private async needApprove(
@@ -115,10 +130,6 @@ export class CrossChainRoutingService {
     fromToken: BlockchainToken
   ): Promise<boolean> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    if (blockchainAdapter.isNativeAddress(fromToken.address)) {
-      return false;
-    }
-
     const contractAddress = this.contracts[fromBlockchain].address;
     return blockchainAdapter
       .getAllowance({
@@ -129,13 +140,26 @@ export class CrossChainRoutingService {
       .then(allowance => allowance.eq(0));
   }
 
-  public approve(options: TransactionOptions = {}): Observable<TransactionReceipt> {
+  public async approve(): Promise<void> {
     this.checkDeviceAndShowNotification();
+
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
     const contractAddress = this.contracts[fromBlockchain].address;
-    return from(
-      this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', options)
-    );
+
+    let approveInProgressSubscription$: Subscription;
+    const onTransactionHash = () => {
+      approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+    };
+
+    try {
+      await this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', {
+        onTransactionHash
+      });
+
+      this.notificationsService.showApproveSuccessful();
+    } finally {
+      approveInProgressSubscription$?.unsubscribe();
+    }
   }
 
   public async calculateTrade(calculateNeedApprove = false): Promise<{
@@ -148,20 +172,7 @@ export class CrossChainRoutingService {
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
 
-    // @TODO Solana. Remove after blockchain stabilization.
-    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      throw new CustomError(
-        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
-      );
-    }
-
-    this._smartRoutingLoading$.next(true);
-    if (
-      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
-      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
-    ) {
-      throw Error('Not supported blockchains');
-    }
+    this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
     const toTransitToken = this.contracts[toBlockchain].transitToken;
@@ -218,17 +229,6 @@ export class CrossChainRoutingService {
       toTransitTokenAmount,
       toToken
     );
-
-    // @TODO fix excluded providers
-    /* @TODO return after SOLANA is returned
-    const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
-      provider =>
-        !(
-          fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
-          this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
-        )
-    );
-    */
 
     const {
       providerIndex: toProviderIndex,
@@ -319,7 +319,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Calculates uniswap course of {@param fromToken } to {@param toToken} and returns output amount of {@param toToken}.
+   * Calculates course of {@param fromToken } to {@param toToken} and returns output amount of {@param toToken}.
    * @param blockchain Tokens' blockchain.
    * @param providerIndex Index of provider to use.
    * @param fromToken From token.
@@ -774,58 +774,96 @@ export class CrossChainRoutingService {
     }
   }
 
-  public createTrade(options: TransactionOptions = {}): Observable<void> {
-    return from(
-      (async () => {
-        await this.checkTradeParameters();
-        this.checkDeviceAndShowNotification();
+  public async createTrade(confirmCallback?: () => void): Promise<void> {
+    await this.checkTradeParameters();
+    this.checkDeviceAndShowNotification();
 
-        let transactionHash;
-        try {
-          transactionHash = await this.contractExecutorFacade.executeTrade(
-            this.currentCrossChainTrade,
-            options,
-            this.authService.userAddress
-          );
+    let transactionHash;
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    const onTransactionHash = (txHash: string) => {
+      transactionHash = txHash;
 
-          await this.postCrossChainTradeAndNotifyGtm(transactionHash);
-        } catch (err) {
-          if (err instanceof FailedToCheckForTransactionReceiptError) {
-            await this.postCrossChainTradeAndNotifyGtm(transactionHash);
-            return;
-          }
+      confirmCallback?.();
 
-          const errMessage = err.message || err.toString?.();
-          if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
-            throw new CrossChainIsUnavailableWarning();
-          }
-          if (errMessage?.includes('insufficient funds for')) {
-            throw new InsufficientFundsGasPriceValueError(
-              this.currentCrossChainTrade.tokenIn.symbol
-            );
-          }
+      if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
+        this.notifyGtmAfterSignTx(txHash);
+        this.notifyTradeInProgress(txHash);
+      }
+    };
 
-          const unsupportedTokenErrors = [
-            'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
-            'execution reverted: UniswapV2: K',
-            'execution reverted: UniswapV2:  TRANSFER_FAILED',
-            'execution reverted: Pancake: K',
-            'execution reverted: Pancake:  TRANSFER_FAILED',
-            'execution reverted: Solarbeam: K',
-            'execution reverted: Solarbeam:  TRANSFER_FAILED'
-          ];
+    try {
+      transactionHash = await this.contractExecutorFacade.executeTrade(
+        this.currentCrossChainTrade,
+        { onTransactionHash },
+        this.authService.userAddress
+      );
 
-          if (
-            unsupportedTokenErrors.some(errText =>
-              errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
-            )
-          ) {
-            throw new UnsupportedTokenCCR();
-          }
+      await this.postCrossChainTrade(transactionHash);
+    } catch (err) {
+      await this.handleCreateTradeError(err, transactionHash);
+    }
+  }
 
-          throw err;
-        }
-      })()
+  /**
+   * Handles error, thrown during swap transaction.
+   */
+  private async handleCreateTradeError(err: Error, transactionHash: string): Promise<void | never> {
+    if (err instanceof FailedToCheckForTransactionReceiptError) {
+      await this.postCrossChainTrade(transactionHash);
+      return;
+    }
+
+    const errMessage = err.message || err.toString?.();
+    if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
+      throw new CrossChainIsUnavailableWarning();
+    }
+    if (errMessage?.includes('insufficient funds for')) {
+      throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
+    }
+
+    const unsupportedTokenErrors = [
+      'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
+      'execution reverted: UniswapV2: K',
+      'execution reverted: UniswapV2:  TRANSFER_FAILED',
+      'execution reverted: Pancake: K',
+      'execution reverted: Pancake:  TRANSFER_FAILED',
+      'execution reverted: Solarbeam: K',
+      'execution reverted: Solarbeam:  TRANSFER_FAILED'
+    ];
+
+    if (
+      unsupportedTokenErrors.some(errText =>
+        errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
+      )
+    ) {
+      throw new UnsupportedTokenCCR();
+    }
+
+    throw err;
+  }
+
+  private notifyTradeInProgress(txHash: string): void {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    this.successTxModalService.open(
+      txHash,
+      fromBlockchain,
+      'cross-chain-routing',
+      this.showSuccessTrxNotification
+    );
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      this.currentCrossChainTrade.tokenIn.symbol,
+      this.currentCrossChainTrade.tokenOut.symbol,
+      this.currentCrossChainTrade.fromTransitTokenAmount.multipliedBy(
+        this.currentCrossChainTrade.transitTokenFee / 100
+      ),
+      this.currentCrossChainTrade.tokenInAmount.multipliedBy(
+        this.currentCrossChainTrade.tokenIn.price
+      )
     );
   }
 
@@ -833,7 +871,7 @@ export class CrossChainRoutingService {
    * Posts trade data to log widget domain, or to apply promo code.
    * @param transactionHash Hash of checked transaction.
    */
-  private async postCrossChainTradeAndNotifyGtm(transactionHash: string): Promise<void> {
+  private async postCrossChainTrade(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
     await this.apiService.postTrade(
       transactionHash,
@@ -848,13 +886,7 @@ export class CrossChainRoutingService {
 
   private checkDeviceAndShowNotification(): void {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
-      this.notificationsService.show(
-        this.translateService.instant('notifications.openMobileWallet'),
-        {
-          status: TuiNotification.Info,
-          autoClose: 5000
-        }
-      );
+      this.notificationsService.showOpenMobileWallet();
     }
   }
 
@@ -920,11 +952,6 @@ export class CrossChainRoutingService {
     }
 
     this._smartRouting$.next(smartRouting);
-    this._smartRoutingLoading$.next(false);
-  }
-
-  public resetSmartRouting(): void {
-    this._smartRouting$.next(null);
   }
 
   private getProviderType(
@@ -932,5 +959,35 @@ export class CrossChainRoutingService {
     providerIndex: number
   ): INSTANT_TRADE_PROVIDER {
     return this.contracts[blockchain].getProvider(providerIndex).providerType;
+  }
+
+  private handleNotWorkingBlockchains(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): void {
+    if (
+      (fromBlockchain === BLOCKCHAIN_NAME.TELOS &&
+        (toBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.NEAR)) ||
+      (toBlockchain === BLOCKCHAIN_NAME.TELOS &&
+        (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || fromBlockchain === BLOCKCHAIN_NAME.NEAR))
+    ) {
+      throw new CustomError(
+        `Multi-Chain swaps are temporarily unavailable between ${fromBlockchain} and ${toBlockchain} networks.`
+      );
+    }
+
+    // @TODO Solana. Remove after blockchain stabilization.
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      throw new CustomError(
+        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
+      );
+    }
+
+    if (
+      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
+      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
+    ) {
+      throw Error('Not supported blockchains');
+    }
   }
 }

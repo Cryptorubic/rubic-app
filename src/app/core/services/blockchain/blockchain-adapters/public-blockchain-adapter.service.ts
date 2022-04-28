@@ -51,6 +51,8 @@ export class PublicBlockchainAdapterService {
 
   public [BLOCKCHAIN_NAME.NEAR]: NearWeb3Public;
 
+  public [BLOCKCHAIN_NAME.TELOS]: EthLikeWeb3Public;
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpClient: HttpClient
@@ -151,7 +153,7 @@ export class PublicBlockchainAdapterService {
       );
 
     forkJoin([
-      ETH_LIKE_BLOCKCHAIN_NAMES.map(ethLikeBlockchainName =>
+      ...ETH_LIKE_BLOCKCHAIN_NAMES.map(ethLikeBlockchainName =>
         checkNode$(this[ethLikeBlockchainName])
       ),
       checkNode$(this[BLOCKCHAIN_NAME.SOLANA])

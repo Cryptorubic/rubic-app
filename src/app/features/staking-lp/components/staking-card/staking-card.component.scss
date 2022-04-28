@@ -1,0 +1,112 @@
+@use 'src/scss/core' as *;
+
+.staking-card {
+  position: relative;
+
+  padding: 25px;
+
+  background: var(--rubic-base-23);
+  border-radius: 16px;
+
+  @include b($tablet) {
+    padding: 16px;
+  }
+}
+
+.statuses {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  display: flex;
+
+  @include b($tablet) {
+    top: 10px;
+    right: 10px;
+
+    app-status-badge:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+    
+  app-status-badge:not(:last-child) {
+    display: block;
+    margin-right: 8px;
+  }
+}
+
+.title {
+  @include font(18px, 222x, 600, var(--rubic-base-02));
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  @include b($tablet) {
+    margin-bottom: 18px;
+
+    font-size: 18px;
+    line-height: 21.6px;
+  }
+
+  img {
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+  }
+}
+
+.params {
+  display: flex;
+
+  &__param {
+    @include font(15px, 18px, 500, var(--rubic-base-02), 0.03em);
+
+    @include b($tablet) {
+      display: flex;
+      flex-direction: column;
+
+      font-size: 14px;
+      line-height: 24px;
+    }
+
+    &-label {
+      color: var(--rubic-base-25);
+    }
+
+    &:not(:last-child) {
+      margin-right: 32px;
+
+      @include b($tablet) {
+        margin-right: 30px;
+      }
+    }
+  }
+}
+
+.join {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+
+  @include b($tablet) {
+    position: relative;
+    right: unset;
+    bottom: unset;
+
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  ::ng-deep {
+    button {
+      height: 32px;
+    }
+
+    .wrapper {
+      padding: 6px 14px;
+    }
+  }
+}

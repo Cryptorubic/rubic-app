@@ -22,7 +22,7 @@
     "add": "Add",
     "via": "Via ",
     "address": "address",
-    "chooseToken": "Select token",
+    "chooseToken": "Select Token",
     "clearToken": "Clear token",
     "warning": "Warning",
     "customerSupport": "customer support",
@@ -34,7 +34,13 @@
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Transaction details"
+    "transactionDetails": "Transaction details",
+    "approveToken": "Approve {{symbol}}",
+    "tagline": {
+      "firstText": "Multi-Chain Swaps for ",
+      "numbers": "15,000+ ",
+      "secondText": "Assets"
+    }
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -66,7 +72,7 @@
     "chooseSupportedBridge": "Choose supported bridge",
     "InsufficientBalance": "Insufficient balance",
     "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
-    "noEnteredAmount": "Enter an amount",
+    "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
@@ -92,13 +98,17 @@
     "faq": "FAQ",
     "features": "Features",
     "project": "Project",
+    "referral": "Referral Program",
+    "setupWidget": "Setup Widget",
+    "sdk": "SDK",
+    "team": "Team",
     "login": "Connect Wallet",
     "myTrades": "My Trades",
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
     "merch": "Merch shop",
-    "staking": "Staking",
+    "stakingLp": "Earn",
     "promotion": "Promotion"
   },
   "faqPage": {
@@ -224,14 +234,15 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 80 sec"
+      "estTime": "Est. time ~ 80 sec",
+      "estTimeMobile": " ~ 80 sec"
     }
   },
   "instantTrades": {
     "title": "Swap assets in 1 click",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "gasFee": "Est. gas fee",
-    "useOptimization": "Use Rubic optimization",
+    "useOptimization": "Use Rubic Optimization",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
   },
@@ -311,6 +322,47 @@
     "tradingNotAvailable": "Trading is not available",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "earn": {
+    "tvl": "TVL",
+    "stakingTvl": "Staking TVL",
+    "multichainTvl": "Multi-Chain TVL",
+    "joinRound": "Join Round",
+    "totalTradingVolume": "Total Trading Volume"
+  },
+  "lp": {
+    "connectWalletToView": "Connect Wallet to View",
+    "currentlyAvailable": "Currently Available",
+    "lpRoundTitle": "Liquidity Providing: Round {{round}}",
+    "totalCollectedRewards": "Total Collected Rewards",
+    "collectRewardsNow": "Available Rewards",
+    "totalProvided": "Total Provided",
+    "youProvided": "You Provided (BRBC)",
+    "acquireBoth": "Acquire Both BRBC and USDC Tokens",
+    "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
+    "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
+    "depositFunds": "Deposit funds",
+    "initiateDeposit": "Initiate Deposit",
+    "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
+    "requestWithdraw": "Request Withdraw",
+    "withdraw": "Withdraw",
+    "requestWithdrawModalText": "Attention: Due to the early removal of your liquidity, a 10% percent penalty will be taken from your initial deposit of {{ brbcAmount }} BRBC and {{ usdcAmount }} USDC. By confirming, you leave a request which will be processed within a day. This period of time is needed to aggregate the liquidity you provided from all blockchains into the BNB Smart Chain network. After 24 hours, you will be able collect your deposit.",
+    "yourDeposits": "Your Deposits",
+    "newDeposit": "+ Initiate Deposit",
+    "transferToken": "Transfer LP Token",
+    "collectRewards": "Collect rewards $ {{amount}}",
+    "balance": "Balance",
+    "endOfRound": "End of Round {{round}}",
+    "poolIsFull": "Pool is Full",
+    "lpRoundEnded": "LP Round Ended",
+    "returnAfterDay": "Return after 24H",
+    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate of 800 USDC & 3200 BRBC will be available during 24 hours",
+    "ifDidNotParticipate": "If you did not participate, you will be able to enter the round after",
+    "notWhitelistUser": "Your address is not whitelist",
+    "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
+    "emptyAmount": "Empty amount",
+    "depositLimitMax": "Current max limit is {{max}} BRBC",
+    "depositLimitMin": "Current min limit is {{min}} BRBC"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",
@@ -336,9 +388,9 @@
       "canReceive": "Amount with Rewards",
       "rewards": "Earned Rewards",
       "apr": "APR",
-      "usersTotal": "You total staked",
-      "total": "Total staked",
-      "connectWallet": "Connect wallet to receive info"
+      "usersTotal": "You Total Staked",
+      "total": "Total Staked",
+      "connectWallet": "Connect Wallet to Receive Info"
     },
     "features": {
       "highApr": "High APR",
@@ -374,7 +426,7 @@
       "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
-      "title": "Connect wallet",
+      "title": "Connect Wallet",
       "new": "New to Ethereum?",
       "learnMore": "Learn more about wallets"
     },
@@ -406,24 +458,24 @@
   "settings": {
     "instantTrades": {
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being frontrun).",
       "multihopsTitle": "Disable multihops",
       "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisationTitle": "Use Rubic optimization",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "rubicOptimisationTitle": "Use Rubic Optimization",
+      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed without taking the cost of gas into account.",
       "deadlineTitle": "Transaction deadline",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefreshTitle": "Auto refresh",
-      "autoRefresh": "Updates trade parameters each 15 seconds."
+      "deadline": "Your transaction will revert if it remains pending for more than this period of time.",
+      "autoRefreshTitle": "Auto-refresh",
+      "autoRefresh": "Updates trade parameters every 15 seconds."
     },
     "bridge": {
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
     },
     "crossChainRouting": {
-      "autoRefreshTitle": "Auto refresh",
+      "autoRefreshTitle": "Auto-refresh",
       "autoRefresh": "Updates trade parameters each 15 seconds.",
       "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
       "promoCodeTitle": "Promo Code",
       "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
       "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
@@ -497,6 +549,7 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
+    "successApproveToken": "Successful {{token}} approve",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
     "stakeInProgress": "Stake in progress",
@@ -504,10 +557,15 @@
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",
-    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
+    "openMobileWallet": "Please, open mobile wallet application to sign transaction",
+    "successClaimRewards": "Rewards collected successful",
+    "successDepositWithdrawRequest": "Deposit withdraw requested successful"
   },
   "buyTokens": {
     "default": "Buy RBC",
     "custom": "Buy FTM"
+  },
+  "blockchainSwap": {
+    "to": "to"
   }
 }

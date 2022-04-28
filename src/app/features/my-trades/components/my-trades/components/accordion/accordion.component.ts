@@ -22,6 +22,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { PageData } from '@features/my-trades/components/my-trades/models/page-data';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 
 @Component({
   selector: 'app-accordion',
@@ -37,6 +38,8 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   @Input() tableData$: Observable<TableRowsData>;
 
   @Output() onPageChange = new EventEmitter<PageData>();
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -92,5 +95,10 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
         this.cdr.markForCheck();
       });
+  }
+
+  public onReceive(trade: TableTrade, event: Event): void {
+    event.stopPropagation();
+    this.onReceivePolygonBridgeTrade.emit(trade);
   }
 }

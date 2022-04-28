@@ -15,7 +15,9 @@
     border-radius: 5px;
 
     transition: 0.3s ease-in-out;
+
     transition-property: opacity, transform;
+
 
     :host-context(html.dark) & {
       background-color: $rubic-primary;
@@ -40,31 +42,48 @@
 }
 
 .data-list {
-  padding: 0;
+  min-width: 230px;
+  padding: 16px 0;
+
+  background: var(--menu-background);
 
   &__option {
     justify-content: flex-start;
     height: 45px;
     min-height: initial !important;
     margin: 0;
+    padding: 17px 28px;
 
     color: var(--form-bright-text-color);
+    font-weight: 400;
+
+    font-size: 18px;
 
     border: none;
     border-radius: 156px;
 
-    transition: all 0.35s ease;
-
     &:hover {
       color: var(--main-green);
 
-      background-color: var(--selection-color);
+      ::ng-deep svg {
+        path[fill='black'] {
+          fill: var(--main-green);
+        }
+
+        rect[fill='black'] {
+          fill: var(--main-green);
+        }
+      }
     }
 
     &:active {
       color: white;
 
       background-color: $rubic-primary;
+
+      a {
+        color: white;
+      }
 
       ::ng-deep {
         a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
@@ -119,8 +138,12 @@
         fill: var(--rubic-base-02);
       }
 
+      rect[fill='black'] {
+        fill: var(--rubic-base-02);
+      }
+
       path[fill='white'] {
-        fill: var(--rubic-base-11);
+        fill: var(--rubic-base-02);
       }
     }
   }
@@ -165,7 +188,6 @@
 
   tui-opt-group {
     margin: 0;
-    padding: 6px;
 
     &:last-child {
       padding-bottom: 0;
@@ -177,7 +199,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   &::after {
     top: 0;
 
-    background: rgba(225, 225, 225, 0.6);
+    background: #303030;
   }
 
   &::before {

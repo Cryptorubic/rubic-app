@@ -1,0 +1,110 @@
+<tui-loader [showLoader]="loading" [overlay]="true">
+  <div class="deposit-card" *ngLet="isMobile$ | async as isMobile">
+    <div class="deposit-card__statuses">
+      <app-status-badge
+        class="status status_start-date"
+        type="inactive"
+        [text]="deposit.start | functionCall: getStartTime:this"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
+        *ngIf="deposit.isWhitelisted"
+        type="active"
+        [text]="'Whitelist'"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
+        *ngIf="!deposit.isStaked"
+        type="warning"
+        [text]="'Processing'"
+      ></app-status-badge>
+      <app-status-badge
+        class="status"
+        *ngIf="deposit.isStaked"
+        type="active"
+        [text]="'Active'"
+      ></app-status-badge>
+    </div>
+    <div class="deposit-card__content">
+      <div class="deposit-card__title">
+        <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+        BRBC-USDC
+      </div>
+      <div class="deposit-card__stats">
+        <div class="stat">
+          <span class="stat__name">RBC: </span>
+          <span class="stat__data">{{
+            deposit.BRBCAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+          }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat__name">USDC: </span>
+          <span class="stat__data">{{
+            deposit.USDCAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+          }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="deposit-card__actions">
+      <app-rubic-button
+        *ngIf="needSwitchNetwork; else actions"
+        (onClick)="onSwitchNetwork.emit()"
+        appearance="secondary"
+      >
+        Switch to BSC network
+      </app-rubic-button>
+      <ng-template #actions>
+        <app-rubic-button
+          *ngIf="deposit.isStaked && !deposit.rewardsToCollect.isZero() && !needSwitchNetwork"
+          class="deposit-card__actions-collect-rewards"
+          (onClick)="onCollectRewards.emit()"
+          appearance="outline"
+        >
+          {{
+            'lp.collectRewards'
+              | translate
+                : {
+                    amount: deposit.rewardsToCollect
+                      ? (deposit.rewardsToCollect
+                        | bigNumberFormat
+                        | withRound: 'fixedValue':{ decimals: 2 })
+                      : '--.--'
+                  }
+          }}
+        </app-rubic-button>
+        <app-rubic-button
+          *ngIf="deposit.isStaked; else withdraw"
+          [disabled]="needSwitchNetwork"
+          (onClick)="onRequestWithdraw.emit()"
+          appearance="secondary"
+        >
+          {{ 'lp.requestWithdraw' | translate }}
+        </app-rubic-button>
+        <ng-template #withdraw>
+          <div class="deposit-card__actions-withdraw">
+            <app-rubic-button
+              appearance="secondary"
+              [disabled]="!deposit.canWithdraw || needSwitchNetwork"
+              (onClick)="onWithdraw.emit()"
+            >
+              {{ (deposit.canWithdraw ? 'lp.withdraw' : 'lp.returnAfterDay') | translate }}
+            </app-rubic-button>
+            <img
+              *ngIf="!deposit.canWithdraw"
+              src="assets/images/icons/hint.svg"
+              [tuiHint]="withdrawHintTpl"
+              [tuiHintShowDelay]="100"
+              alt="Hint"
+            />
+          </div>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+</tui-loader>
+
+<ng-template #withdrawHintTpl>
+  This period of time is needed to aggregate the liquidity you provided from all blockchains into
+  the BNB Smart Chain network.
+</ng-template>

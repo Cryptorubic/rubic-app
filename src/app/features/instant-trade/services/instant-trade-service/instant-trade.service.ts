@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
+import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import {
   ItOptions,
@@ -96,11 +97,11 @@ export class InstantTradeService {
   public async approve(providerName: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
 
-    try {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
 
-      let subscription$: Subscription;
+    let subscription$: Subscription;
+    try {
       await this.providers[trade.blockchain][providerName].approve(
         trade.from.token.address,
         {
@@ -110,11 +111,10 @@ export class InstantTradeService {
         },
         targetContractAddress
       );
-      subscription$?.unsubscribe();
 
       this.notificationsService.showApproveSuccessful();
-    } catch (err) {
-      throw err;
+    } finally {
+      subscription$?.unsubscribe();
     }
   }
 
@@ -172,10 +172,14 @@ export class InstantTradeService {
     const options = {
       onConfirm: async (hash: string) => {
         transactionHash = hash;
-
         confirmCallback?.();
 
-        this.notifyGtmAfterSignTx(transactionHash);
+        this.notifyGtmAfterSignTx(
+          transactionHash,
+          trade.from.token.symbol,
+          trade.to.token.symbol,
+          trade.from.amount.multipliedBy(trade.from.token.price)
+        );
         this.gtmService.checkGtm();
 
         this.notifyTradeInProgress(hash, trade.blockchain);
@@ -318,8 +322,20 @@ export class InstantTradeService {
     );
   }
 
-  private notifyGtmAfterSignTx(transactionHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, transactionHash);
+  private notifyGtmAfterSignTx(
+    transactionHash: string,
+    fromToken: string,
+    toToken: string,
+    price: BigNumber
+  ): void {
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      transactionHash,
+      fromToken,
+      toToken,
+      new BigNumber(0),
+      price
+    );
   }
 
   private checkDeviceAndShowNotification(): void {

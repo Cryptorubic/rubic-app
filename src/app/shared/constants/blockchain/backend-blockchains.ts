@@ -11,7 +11,8 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   arbitrum: BLOCKCHAIN_NAME.ARBITRUM,
   aurora: BLOCKCHAIN_NAME.AURORA,
   solana: BLOCKCHAIN_NAME.SOLANA,
-  near: BLOCKCHAIN_NAME.NEAR
+  near: BLOCKCHAIN_NAME.NEAR,
+  'telos-evm': BLOCKCHAIN_NAME.TELOS
 };
 
 export const TO_BACKEND_BLOCKCHAINS = {
@@ -25,7 +26,8 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',
   [BLOCKCHAIN_NAME.AURORA]: 'aurora',
   [BLOCKCHAIN_NAME.SOLANA]: 'solana',
-  [BLOCKCHAIN_NAME.NEAR]: 'near'
+  [BLOCKCHAIN_NAME.NEAR]: 'near',
+  [BLOCKCHAIN_NAME.TELOS]: 'telos-evm'
 };
 
 export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;

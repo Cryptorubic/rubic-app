@@ -2,57 +2,68 @@ import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
 
 export const FOOTER_LINKS: FooterLink[] = [
   {
-    imageUrl: 'assets/images/contacts/fb.svg',
+    dark: 'assets/images/contacts/fb.svg',
+    light: 'assets/images/contacts/fb_light.svg',
     altText: 'Facebook',
     link: 'https://www.facebook.com/RubicDEX/'
   },
   {
-    imageUrl: 'assets/images/contacts/twitter.svg',
+    dark: 'assets/images/contacts/twitter.svg',
+    light: 'assets/images/contacts/twitter_light.svg',
     altText: 'Twitter',
     link: 'https://twitter.com/CryptoRubic'
   },
   {
-    imageUrl: 'assets/images/contacts/reddit.svg',
+    dark: 'assets/images/contacts/reddit.svg',
+    light: 'assets/images/contacts/reddit_light.svg',
     altText: 'Reddit',
     link: 'https://www.reddit.com/r/Rubic/new/'
   },
   {
-    imageUrl: 'assets/images/contacts/telegram.svg',
+    dark: 'assets/images/contacts/telegram.svg',
+    light: 'assets/images/contacts/telegram_light.svg',
     altText: 'Telegram',
     link: 'https://t.me/cryptorubic_chat'
   },
   {
-    imageUrl: 'assets/images/contacts/mail.svg',
+    dark: 'assets/images/contacts/mail.svg',
+    light: 'assets/images/contacts/mail_light.svg',
     altText: 'Email',
     link: 'mailto:support@rubic.finance'
   },
   {
-    imageUrl: 'assets/images/contacts/medium.svg',
+    dark: 'assets/images/contacts/medium.svg',
+    light: 'assets/images/contacts/medium_light.svg',
     altText: 'Medium',
     link: 'https://cryptorubic.medium.com/'
   },
   {
-    imageUrl: 'assets/images/contacts/discord.svg',
+    dark: 'assets/images/contacts/discord.svg',
+    light: 'assets/images/contacts/discord_light.svg',
     altText: 'Discord',
-    link: 'https://discord.gg/hayrHU2Tvh'
+    link: 'https://discord.gg/7EYzPbWKFQ'
   },
   {
-    imageUrl: 'assets/images/contacts/coinmarket.svg',
+    dark: 'assets/images/contacts/coinmarket.svg',
+    light: 'assets/images/contacts/coinmarket_light.svg',
     altText: 'Coinmarket',
     link: 'https://coinmarketcap.com/currencies/rubic'
   },
   {
-    imageUrl: 'assets/images/contacts/coingecko.svg',
+    dark: 'assets/images/contacts/coingecko.svg',
+    light: 'assets/images/contacts/coingecko_light.svg',
     altText: 'Coingecko',
     link: 'https://www.coingecko.com/en/coins/rubic'
   },
   {
-    imageUrl: 'assets/images/contacts/youtube.svg',
+    dark: 'assets/images/contacts/youtube.svg',
+    light: 'assets/images/contacts/youtube_light.svg',
     altText: 'Youtube',
     link: 'https://www.youtube.com/c/RubicExchange'
   },
   {
-    imageUrl: 'assets/images/contacts/defi-pulse.svg',
+    dark: 'assets/images/contacts/defi-pulse.svg',
+    light: 'assets/images/contacts/defi-pulse_light.svg',
     altText: 'DeFi Pulse',
     link: 'https://www.defipulse.com/'
   }

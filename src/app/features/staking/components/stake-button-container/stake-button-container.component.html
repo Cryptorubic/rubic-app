@@ -1,9 +1,12 @@
+<!-- First round staking button -->
 <ng-container *ngIf="!isNotFirstStakingRound; else stakingRoundTwo">
   <app-rubic-button appearance="secondary" [disabled]="true">
     <span class="error-button">First staking round closed</span>
   </app-rubic-button>
 </ng-container>
+<!-- Second round staking button -->
 <ng-template #stakingRoundTwo>
+  <!-- Login button -->
   <app-rubic-button
     *ngIf="needLogin$ | async; else stakeBtn"
     appearance="secondary"
@@ -13,6 +16,7 @@
   </app-rubic-button>
 
   <ng-template #stakeBtn>
+    <!-- Switch network button -->
     <app-rubic-button
       *ngIf="needChangeNetwork$ | async; else enterStake"
       (click)="switchNetwork()"
@@ -30,6 +34,7 @@
           "
         >
           <ng-container *ngLet="errorTypeWhitelist$ | async as errorTypeWhitelist">
+            <!-- Enter with white list button -->
             <app-rubic-button
               class="enter-whitelist"
               *ngIf="(isUserWhitelisted$ | async) && isNotFirstStakingRound"
@@ -62,6 +67,7 @@
             </app-rubic-button>
           </ng-container>
         </ng-container>
+        <!-- Common button -->
         <app-rubic-button
           *ngLet="errorType$ | async as errorType"
           [disabled]="(errorType | falsy) || whitelistStakeLoading"
