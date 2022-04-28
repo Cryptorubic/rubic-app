@@ -69,8 +69,12 @@ export abstract class ContractData {
   /**
    * Returns true, if provider is of `uniswap v3` or `algebra` type.
    */
-  protected isProviderV3OrAlgebra(providerIndex: number): boolean {
+  public isProviderV3OrAlgebra(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonUniswapV3AlgebraService;
+  }
+
+  public isProviderAlgebra(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof AlgebraService;
   }
 
   /**
