@@ -87,7 +87,7 @@ export class NearContractExecutorService {
     };
 
     const routes = this.refFinanceService.refRoutes;
-    const routeEstimate = Web3Pure.toWei(routes[0].estimate, WRAP_NEAR_DECIMALS);
+    const routeEstimate = Web3Pure.toWei(routes?.[0]?.estimate, WRAP_NEAR_DECIMALS);
     const tokenInActions: RefFiFunctionCallOptions[] = [
       {
         methodName: 'ft_transfer_call',
