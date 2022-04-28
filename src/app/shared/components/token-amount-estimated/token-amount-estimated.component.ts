@@ -9,7 +9,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 
@@ -55,14 +55,20 @@ export class AmountEstimatedComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscribeOnOutputChange();
+    this.subscribeOnFormChange();
     this.subscribeOnToTokenChange();
   }
 
   /**
-   * Subscribes on output form change, and after change updates token amount parameters.
+   * Subscribes on form change, and after change updates token amount parameters.
    */
-  private subscribeOnOutputChange(): void {
+  private subscribeOnFormChange(): void {
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
+      .subscribe(form => {
+        this.blockchain = form.toBlockchain;
+      });
+
     this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (!form?.toAmount.isFinite()) {
         this.tokenAmount = null;
@@ -73,7 +79,6 @@ export class AmountEstimatedComponent implements OnInit {
 
       this.hidden = false;
 
-      this.blockchain = this.swapFormService.inputValue.toBlockchain;
       this.tokenAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
       this.usdPrice = this.getUsdPrice();
 

@@ -7,6 +7,8 @@ import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-c
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-error-button',
@@ -21,10 +23,12 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
-  public readonly fromBlockchain$ = this.swapFormService.inputValueChanges.pipe(
-    startWith(this.swapFormService.inputValue),
-    map(form => form.fromBlockchain)
-  );
+  public get fromBlockchain$(): Observable<BlockchainName> {
+    return this.swapFormService.inputValueChanges.pipe(
+      startWith(this.swapFormService.inputValue),
+      map(form => form.fromBlockchain)
+    );
+  }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
