@@ -4,8 +4,7 @@ import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/tabl
 import { catchError, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchain
+  TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
@@ -90,7 +89,7 @@ export class CrossChainRoutingApiService {
     blockchain: BlockchainName,
     promoCodeText?: string
   ): Promise<void> {
-    const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
+    const network = TO_BACKEND_BLOCKCHAINS[blockchain];
     return this.httpService
       .patch<void>('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
       .pipe(

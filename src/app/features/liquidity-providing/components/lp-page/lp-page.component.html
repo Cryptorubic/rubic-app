@@ -1,0 +1,24 @@
+<div class="wrapper">
+  <div class="title">
+    <div class="title__back" (click)="navigateBack()" *ngLet="isDarkTheme$ | async as isDarkTheme">
+      <img
+        [src]="
+          isDarkTheme
+            ? 'assets/images/icons/arrow/long-arrow-left.svg'
+            : 'assets/images/icons/arrow/long-arrow-left-black.svg'
+        "
+        alt="Back"
+      />
+    </div>
+    <div class="title__round">{{ 'lp.lpRoundTitle' | translate: { round: 1 } }}</div>
+    <app-status-badge
+      [text]="isLpEnded ? 'Closed' : 'Active'"
+      [type]="isLpEnded ? 'error' : 'active'"
+    ></app-status-badge>
+  </div>
+  <app-lp-statistics class="statistics"></app-lp-statistics>
+  <app-lp-landing class="landing" *ngIf="noDeposits$ | async; else deposits"></app-lp-landing>
+  <ng-template #deposits>
+    <app-deposits class="deposits"></app-deposits>
+  </ng-template>
+</div>

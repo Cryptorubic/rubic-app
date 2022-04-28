@@ -53,6 +53,8 @@ import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/models/swap-provider-type';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -82,13 +84,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain: BlockchainName;
 
-  public isBridgeSupported: boolean;
-
   private fromToken: TokenAmount;
 
   private toToken: TokenAmount;
-
-  public fromAmount: BigNumber;
 
   public minError: false | number;
 
@@ -153,7 +151,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {
-    this.isBridgeSupported = true;
     this.onCalculateTrade$ = new Subject<void>();
   }
 
@@ -202,7 +199,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = form.toBlockchain;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
-    this.fromAmount = form.fromAmount;
     this.setToWalletAddress();
 
     this.cdr.detectChanges();
@@ -227,12 +223,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!(await this.bridgeService.isBridgeSupported())) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.isBridgeSupported = false;
       this.cdr.detectChanges();
       return;
     }
 
-    this.isBridgeSupported = true;
     this.cdr.detectChanges();
 
     this.checkMinMaxAmounts();
@@ -352,8 +346,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
-      onTransactionHash: (txHash: string) => {
-        this.notifyGtmAfterSignTx(txHash);
+      onTransactionHash: (txHash: string, trade?: BridgeTrade) => {
+        this.notifyGtmAfterSignTx(txHash, trade);
         this.notifyTradeInProgress(txHash);
       }
     };
@@ -439,7 +433,16 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
+  private notifyGtmAfterSignTx(txHash: string, trade: BridgeTrade): void {
+    if (trade.provider === BRIDGE_PROVIDER.SWAP_RBC) {
+      this.gtmService.fireTxSignedEvent(
+        SWAP_PROVIDER_TYPE.BRIDGE,
+        txHash,
+        trade.token.symbol,
+        trade.token.symbol,
+        null,
+        null
+      );
+    }
   }
 }

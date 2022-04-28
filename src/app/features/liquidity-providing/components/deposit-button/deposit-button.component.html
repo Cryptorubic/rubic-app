@@ -1,0 +1,87 @@
+<app-rubic-button *ngIf="isLpEnded; else connectWallet" [disabled]="true" appearance="secondary">
+  {{ 'lp.lpRoundEnded' | translate }}
+</app-rubic-button>
+
+<ng-template #connectWallet>
+  <app-rubic-button
+    appearance="secondary"
+    *ngIf="needLogin$ | async; else switchNetwork"
+    (onClick)="onLogin.emit()"
+  >
+    {{ 'modals.walletsModal.title' | translate }}
+  </app-rubic-button>
+</ng-template>
+
+<ng-template #switchNetwork>
+  <app-rubic-button
+    appearance="secondary"
+    *ngIf="needSwitchNetwork$ | async | falsy; else approveAndStake"
+    (onClick)="onSwitchNetwork.emit()"
+  >
+    {{ 'common.switchTo' | translate: { networkName: blockchain } }}
+  </app-rubic-button>
+</ng-template>
+
+<ng-template #approveAndStake>
+  <ng-container
+    *ngLet="{
+      needBrbcApprove: needBrbcApprove$ | async,
+      needUsdcApprove: needUsdcApprove$ | async
+    } as depositButtonValidation"
+  >
+    <ng-container
+      *ngIf="
+        depositButtonValidation.needBrbcApprove || depositButtonValidation.needUsdcApprove;
+        else stakeButton
+      "
+    >
+      <div class="approves">
+        <app-rubic-button
+          appearance="secondary"
+          (click)="onApprove.emit(poolToken.BRBC)"
+          [disabled]="loadingBrbcApproveBtn || !depositButtonValidation.needBrbcApprove"
+          [loading]="loadingBrbcApproveBtn"
+        >
+          Approve BRBC
+        </app-rubic-button>
+        <app-rubic-button
+          appearance="secondary"
+          (click)="onApprove.emit(poolToken.USDC)"
+          [disabled]="loadingUsdcApproveBtn || !depositButtonValidation.needUsdcApprove"
+          [loading]="loadingUsdcApproveBtn"
+        >
+          Approve USDC
+        </app-rubic-button>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #stakeButton>
+    <app-rubic-button
+      *ngLet="error$ | async as error"
+      [disabled]="error !== null"
+      appearance="secondary"
+      (onClick)="onCreateDeposit.emit()"
+      [loading]="loadingDepositBtn"
+    >
+      <ng-container [ngSwitch]="error">
+        <ng-container *ngSwitchCase="errors.LP_ENDED"> LP ended </ng-container>
+        <ng-container *ngSwitchCase="errors.POOL_FULL"> Pool is full </ng-container>
+        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_USDC">
+          Insufficient USDC balance
+        </ng-container>
+        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_BRBC">
+          Insufficient BRBC balance
+        </ng-container>
+        <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT">Empty amount</ng-container>
+        <ng-container *ngSwitchCase="errors.LIMIT_GT_MAX">
+          {{ 'lp.depositLimitMax' | translate: { max: currentMaxLimit } }}
+        </ng-container>
+        <ng-container *ngSwitchCase="errors.LIMIT_LT_MIN">{{
+          'lp.depositLimitMin' | translate: { min: minLimit }
+        }}</ng-container>
+        <ng-container *ngSwitchCase="null"> {{ 'lp.initiateDeposit' | translate }} </ng-container>
+      </ng-container>
+    </app-rubic-button>
+  </ng-template>
+</ng-template>

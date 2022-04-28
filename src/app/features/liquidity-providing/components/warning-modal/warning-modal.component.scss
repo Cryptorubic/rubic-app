@@ -1,0 +1,36 @@
+@use 'src/scss/core'as *;
+
+.warning-modal {
+  padding: 40px;
+
+  text-align: center;
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    @include font(26px, 31px, 700, var(--rubic-base-02));
+    margin-bottom: 32px;
+  }
+
+  &__content {
+    @include font(16px, 19.2px, 500, var(--rubic-base-02));
+    margin-bottom: 32px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+
+    app-rubic-button {
+      width: 50%;
+
+      &:first-child {
+        margin-right: 12px;
+      }
+    }
+  }
+}

@@ -18,6 +18,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.AURORA]: Blockchain;
   [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
   [BLOCKCHAIN_NAME.NEAR]: Blockchain;
+  [BLOCKCHAIN_NAME.TELOS]: Blockchain;
 };
 
 const imageBaseSrc = 'assets/images/icons/coins/';
@@ -77,5 +78,10 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.NEAR,
     name: 'Near',
     img: `${imageBaseSrc}near.svg`
+  },
+  [BLOCKCHAIN_NAME.TELOS]: {
+    key: BLOCKCHAIN_NAME.TELOS,
+    name: 'Telos EVM',
+    img: `${imageBaseSrc}telos.svg`
   }
 };

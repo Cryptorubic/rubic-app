@@ -208,6 +208,22 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'NEAR',
       decimals: 24
     }
+  },
+  {
+    id: 40,
+    name: BLOCKCHAIN_NAME.TELOS,
+    label: 'Telos EVM',
+    scannerUrl: 'https://teloscan.io',
+    rpcLink: 'https://mainnet.telos.net/evm',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.TELOS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Telos EVM',
+      symbol: 'TLOS',
+      decimals: 18
+    }
   }
 ];
 

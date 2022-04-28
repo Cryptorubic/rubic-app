@@ -306,6 +306,7 @@ export class EthLikeWeb3PrivateService {
    * @param [options.value] amount in Wei amount to be attached to the transaction
    * @param [options.gas] gas limit to be attached to the transaction
    * @param allowError Check error and decides to execute contact if it needed.
+   * @param skipChecks Flag to skip call method before execute.
    */
   public async tryExecuteContractMethod(
     contractAddress: string,
@@ -313,19 +314,22 @@ export class EthLikeWeb3PrivateService {
     methodName: string,
     methodArguments: unknown[],
     options: TransactionOptions = {},
-    allowError?: (err: Web3Error) => boolean
+    allowError?: (err: Web3Error) => boolean,
+    skipChecks?: boolean
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     try {
-      await contract.methods[methodName](...methodArguments).call({
-        from: this.address,
-        ...(options.value && { value: options.value }),
-        ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas || this.defaultMockGas
-        })
-        // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
-      });
+      if (!skipChecks) {
+        await contract.methods[methodName](...methodArguments).call({
+          from: this.address,
+          ...(options.value && { value: options.value }),
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas || this.defaultMockGas
+          })
+          // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
+        });
+      }
       return this.executeContractMethod(
         contractAddress,
         contractAbi,

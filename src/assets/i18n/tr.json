@@ -36,9 +36,9 @@
     "bridge": "Köprü",
     "transactionDetails": "Ödeme Detayları",
     "tagline": {
-      "firstText": "Multi-Chain swaps for ",
+      "firstText": "Multi-Chain Swaps for ",
       "numbers": "15,000+ ",
-      "secondText": "assets"
+      "secondText": "Assets"
     }
   },
   "errors": {
@@ -107,6 +107,7 @@
     "logoutMessage": "Gerçekten Oturumu Kapatmak istiyor musunuz?",
     "notAvailable": "Yapım Aşamasında - UX Yeniden Tasarımı.",
     "merch": "ürün mağazası",
+    "stakingLp": "Earn",
     "staking": "Staking",
     "promotion": "Tanıtım"
   },
@@ -494,6 +495,9 @@
     "tradingNotAvailable": "Ticaret yapılamıyor",
     "rateIsUpdated": "Fiyat güncellendi, en son fiyatları almak için dokunun"
   },
+  "lpProviding": {
+    "liquidityTime": "Liquidity time"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",
@@ -585,6 +589,47 @@
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
     }
+  },
+  "earn": {
+    "tvl": "TVL",
+    "stakingTvl": "Staking TVL",
+    "multichainTvl": "Multi-Chain TVL",
+    "joinRound": "Join Round",
+    "totalTradingVolume": "Total Trading Volume"
+  },
+  "lp": {
+    "connectWalletToView": "Connect Wallet to View",
+    "currentlyAvailable": "Currently Available",
+    "lpRoundTitle": "Liquidity Providing: Round {{round}}",
+    "totalCollectedRewards": "Total Collected Rewards",
+    "collectRewardsNow": "Available Rewards",
+    "totalProvided": "Total Provided",
+    "youProvided": "You Provided (BRBC)",
+    "acquireBoth": "Acquire Both BRBC and USDC Tokens",
+    "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
+    "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
+    "depositFunds": "Deposit funds",
+    "initiateDeposit": "Initiate Deposit",
+    "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
+    "requestWithdraw": "Request Withdraw",
+    "withdraw": "Withdraw",
+    "requestWithdrawModalText": "Attention: Due to the early removal of your liquidity, a 10% percent penalty will be taken from your initial deposit of {{ brbcAmount }} BRBC and {{ usdcAmount }} USDC. By confirming, you leave a request which will be processed within a day. This period of time is needed to aggregate the liquidity you provided from all blockchains into the BNB Smart Chain network. After 24 hours, you will be able collect your deposit.",
+    "yourDeposits": "Your Deposits",
+    "newDeposit": "+ Initiate Deposit",
+    "transferToken": "Transfer LP Token",
+    "collectRewards": "Collect rewards $ {{amount}}",
+    "balance": "Balance",
+    "endOfRound": "End of Round {{round}}",
+    "poolIsFull": "Pool is Full",
+    "lpRoundEnded": "LP Round Ended",
+    "returnAfterDay": "Return after 24H",
+    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate of 800 USDC & 3200 BRBC will be available during 24 hours",
+    "ifDidNotParticipate": "If you did not participate, you will be able to enter the round after",
+    "notWhitelistUser": "Your address is not whitelist",
+    "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
+    "emptyAmount": "Empty amount",
+    "depositLimitMax": "Current max limit is {{max}} BRBC",
+    "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "settings": {
     "instantTrades": {

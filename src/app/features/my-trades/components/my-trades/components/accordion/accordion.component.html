@@ -26,12 +26,14 @@
           <div class="status-circle__inner"></div>
         </div>
 
-        <a
+        <app-rubic-button
           *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
-          href="https://wallet.polygon.technology/transactions"
+          size="s"
+          [loading]="item.inProgress"
+          (onClick)="onReceive(trade, $event)"
         >
-          <app-rubic-button size="s">{{ 'tradesTable.receive' | translate }}</app-rubic-button>
-        </a>
+          {{ 'tradesTable.receive' | translate }}
+        </app-rubic-button>
 
         <div class="status__text">{{ TRANSLATION_STATUS_KEY[trade.status] | translate }}</div>
       </div>

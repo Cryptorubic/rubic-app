@@ -35,15 +35,13 @@
   <div class="bottom-form__footer">
     <div class="bottom-form__button">
       <app-swap-button-container
-        [needApprove]="needApprove"
+        [withApproveButton]="withApproveButton"
         [status]="tradeStatus"
-        [formService]="swapFormService"
-        [fromAmount]="fromAmount"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="createTrade()"
-        (approveClick)="approveTrade()"
-        (updateRatesClick)="onSetHiddenData()"
+        (onSwapClick)="createTrade()"
+        (onApproveClick)="approveTrade()"
+        (onUpdateRateClick)="onSetHiddenData()"
       ></app-swap-button-container>
     </div>
   </div>

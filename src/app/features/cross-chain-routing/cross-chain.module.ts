@@ -10,6 +10,7 @@ import { TargetNetworkAddressComponent } from './components/target-network-addre
 import { SmartRoutingComponent } from './components/smart-routing/smart-routing.component';
 import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
 import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
+import { SwapButtonContainerModule } from '@features/swap-button-container/swap-button-container.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CelerApiService } from './services/cross-chain-routing-service/celer/ce
     TuiTextfieldControllerModule,
     TuiInputModule,
     InlineSVGModule,
-    TuiHintModule
+    TuiHintModule,
+    SwapButtonContainerModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
   providers: [CelerService, CelerApiService]

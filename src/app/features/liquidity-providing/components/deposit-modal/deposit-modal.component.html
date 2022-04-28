@@ -1,0 +1,21 @@
+<div class="deposit-modal">
+  <div class="deposit-modal__title">{{ 'lp.initiateDeposit' | translate }}</div>
+  <div class="deposit-modal__content">
+    {{
+      'lp.initiateDepositModalText'
+        | translate
+          : {
+              usdcAmount: (usdcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }),
+              brbcAmount: (brbcAmount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+            }
+    }}
+  </div>
+  <div class="deposit-modal__actions">
+    <app-rubic-button appearance="secondary" (click)="context.completeWith(true)"
+      >Ok</app-rubic-button
+    >
+    <app-rubic-button appearance="outline" (click)="context.completeWith(false)"
+      >Cancel</app-rubic-button
+    >
+  </div>
+</div>

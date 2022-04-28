@@ -41,7 +41,7 @@ export const FOOTER_LINKS: FooterLink[] = [
     dark: 'assets/images/contacts/discord.svg',
     light: 'assets/images/contacts/discord_light.svg',
     altText: 'Discord',
-    link: 'https://discord.gg/hayrHU2Tvh'
+    link: 'https://discord.gg/7EYzPbWKFQ'
   },
   {
     dark: 'assets/images/contacts/coinmarket.svg',

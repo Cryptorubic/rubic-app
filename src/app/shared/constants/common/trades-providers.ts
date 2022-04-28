@@ -14,6 +14,10 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
+  },
+  [BRIDGE_PROVIDER.POLYGON]: {
+    name: 'Polygon',
+    image: `${imageBasePath}polygon.svg`
   }
 };
 
@@ -111,6 +115,11 @@ const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADE_PROVIDER, Provider> = {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.svg`,
     color: '#FACB5B'
+  },
+  [INSTANT_TRADE_PROVIDER.ZAPPY]: {
+    name: 'Zappy',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
   }
 };
 

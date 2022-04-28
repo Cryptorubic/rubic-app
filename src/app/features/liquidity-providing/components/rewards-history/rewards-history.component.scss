@@ -1,0 +1,112 @@
+@use 'src/scss/core'as *;
+
+@mixin txScannerLink($maxWidth) {
+  a {
+    display: flex;
+    align-items: center;
+
+    color: inherit;
+    text-decoration: none;
+
+    img {
+      margin-left: 10px;
+    }
+
+    span {
+      max-width: $maxWidth;
+      overflow: hidden;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+:host {
+  display: block;
+  padding: 0 8px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  &__text {
+    @include font(20px, 20px, 500, var(--rubic-base-02));
+  }
+}
+
+.rewards-history {
+  width: 100%;
+
+  tbody tr:first-child td {
+    padding-top: 12px;
+  }
+    
+  td {
+    @include font(16px, 22px, 500, var(--rubic-base-02));
+
+    @include txScannerLink(300px);
+    width: 15%;
+    height: 22px;
+    padding: 6px 0;
+
+    background: transparent;
+    border: 0;
+  }
+
+  thead tr th {
+    @include font(16px, 19px, 500, var(--rubic-base-24));
+    padding-bottom: 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #292c2a;
+  }
+}
+
+.rewards-history-mobile {
+  ::ng-deep {
+    .wrapper::after {
+      border: 1px solid #202321;
+    }
+
+    .header {
+      border-bottom: 1px solid transparent;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+
+    div {
+      @include font(16px, 19px, 500, var(--rubic-base-24));
+      flex-grow: 0.5;
+    } 
+  }
+
+  &__content {
+    &-row {
+      @include font(16px, 19px, 500, var(--rubic-base-24));
+      display: flex;
+      align-items: center;
+
+      &:not(:last-child) {
+        margin-bottom: 16px;
+      }
+    }
+
+    &-label {
+      width: 100%;
+      max-width: 100px;
+    }
+
+    &-value {
+
+      @include txScannerLink(150px);
+      color: var(--rubic-base-02);
+    }
+  }
+}

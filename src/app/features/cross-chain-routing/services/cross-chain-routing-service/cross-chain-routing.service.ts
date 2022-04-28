@@ -186,19 +186,7 @@ export class CrossChainRoutingService {
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
 
-    // @TODO Solana. Remove after blockchain stabilization.
-    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      throw new CustomError(
-        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
-      );
-    }
-
-    if (
-      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
-      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
-    ) {
-      throw Error('Not supported blockchains');
-    }
+    this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
     const toTransitToken = this.contracts[toBlockchain].transitToken;
@@ -261,17 +249,6 @@ export class CrossChainRoutingService {
       toTransitTokenAmount,
       toToken
     );
-
-    // @TODO fix excluded providers
-    /* @TODO return after SOLANA is returned
-    const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
-      provider =>
-        !(
-          fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
-          this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
-        )
-    );
-    */
 
     const {
       providerIndex: toProviderIndex,
@@ -909,7 +886,18 @@ export class CrossChainRoutingService {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, txHash);
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      this.currentCrossChainTrade.tokenIn.symbol,
+      this.currentCrossChainTrade.tokenOut.symbol,
+      this.currentCrossChainTrade.fromTransitTokenAmount.multipliedBy(
+        this.currentCrossChainTrade.transitTokenFee / 100
+      ),
+      this.currentCrossChainTrade.tokenInAmount.multipliedBy(
+        this.currentCrossChainTrade.tokenIn.price
+      )
+    );
   }
 
   /**
@@ -1020,5 +1008,35 @@ export class CrossChainRoutingService {
     providerIndex: number
   ): INSTANT_TRADE_PROVIDER {
     return this.contracts[blockchain].getProvider(providerIndex).providerType;
+  }
+
+  private handleNotWorkingBlockchains(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): void {
+    if (
+      (fromBlockchain === BLOCKCHAIN_NAME.TELOS &&
+        (toBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.NEAR)) ||
+      (toBlockchain === BLOCKCHAIN_NAME.TELOS &&
+        (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || fromBlockchain === BLOCKCHAIN_NAME.NEAR))
+    ) {
+      throw new CustomError(
+        `Multi-Chain swaps are temporarily unavailable between ${fromBlockchain} and ${toBlockchain} networks.`
+      );
+    }
+
+    // @TODO Solana. Remove after blockchain stabilization.
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      throw new CustomError(
+        'Multi-Chain swaps are temporarily unavailable for the Solana network.'
+      );
+    }
+
+    if (
+      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
+      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
+    ) {
+      throw Error('Not supported blockchains');
+    }
   }
 }
