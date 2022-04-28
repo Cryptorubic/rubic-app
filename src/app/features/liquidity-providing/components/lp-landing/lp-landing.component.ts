@@ -30,7 +30,7 @@ export class LpLandingComponent implements OnInit {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
-  public readonly isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   public readonly isLpEnded = this.lpService.isLpEneded;
 

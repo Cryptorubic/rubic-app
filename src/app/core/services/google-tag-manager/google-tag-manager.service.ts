@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
+import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
@@ -150,8 +151,19 @@ export class GoogleTagManagerService {
    * Fires "transaction signed" GTM event and resets steps of swap type's form.
    * @param eventCategory Swap type.
    * @param txId Transaction hash.
+   * @param fromToken Source token.
+   * @param toToken End Token.
+   * @param revenue System commission in USD.
+   * @param price The actual cost of the sent volume of tokens.
    */
-  public fireTxSignedEvent(eventCategory: SWAP_PROVIDER_TYPE, txId: string): void {
+  public fireTxSignedEvent(
+    eventCategory: SWAP_PROVIDER_TYPE,
+    txId: string,
+    fromToken: string,
+    toToken: string,
+    revenue: BigNumber,
+    price: BigNumber
+  ): void {
     this.forms[eventCategory].next(formStepsInitial);
     this.angularGtmService.pushTag({
       event: 'transactionSigned',
@@ -163,11 +175,15 @@ export class GoogleTagManagerService {
         currencyCode: 'USD',
         purchase: {
           actionField: {
-            id: txId
+            id: txId,
+            revenue: revenue
           },
           products: [
             {
-              category: formEventCategoryMap[eventCategory]
+              name: `${fromToken} to ${toToken}`,
+              price: price,
+              category: formEventCategoryMap[eventCategory],
+              quantity: 1
             }
           ]
         }
@@ -185,6 +201,18 @@ export class GoogleTagManagerService {
       event: 'GAevent',
       ecategory: 'wallet',
       eaction: `connect_wallet_${walletName}`,
+      elabel: undefined
+    });
+  }
+
+  /**
+   * Fires GTM event when user clicks.
+   */
+  public fireClickEvent(ecategory: string, eaction: string): void {
+    this.angularGtmService.pushTag({
+      event: 'GAevent',
+      ecategory: ecategory,
+      eaction: eaction,
       elabel: undefined
     });
   }

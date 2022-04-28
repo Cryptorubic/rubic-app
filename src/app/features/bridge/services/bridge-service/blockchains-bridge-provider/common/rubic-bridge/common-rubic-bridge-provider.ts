@@ -262,7 +262,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
     const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
-        bridgeTrade.onTransactionHash(hash);
+        bridgeTrade.onTransactionHash(hash, bridgeTrade);
       }
       await this.bridgeApiService.postRubicTransaction(
         bridgeTrade.fromBlockchain,

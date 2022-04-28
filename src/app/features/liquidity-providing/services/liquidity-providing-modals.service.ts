@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { DepositModalComponent } from '../components/deposit-modal/deposit-modal.component';
 import { RequestWithdrawModalComponent } from '../components/request-withdraw-modal/request-withdraw-modal.component';
 import { SuccessModalComponent } from '../components/success-modal/success-modal.component';
-import { TransferModalComponent } from '../components/transfer-modal/transfer-modal.component';
 import { WarningModalComponent } from '../components/warning-modal/warning-modal.component';
 
 @Injectable()
@@ -37,12 +36,6 @@ export class LiquidityProvidingModalService {
           brbcAmount
         }
       }
-    );
-  }
-
-  public showTransferModal(): Observable<unknown> {
-    return this.dialogService.open(
-      new PolymorpheusComponent(TransferModalComponent, this.injector)
     );
   }
 
