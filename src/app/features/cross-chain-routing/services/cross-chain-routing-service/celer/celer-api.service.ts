@@ -1,13 +1,15 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
+import { HttpService } from '@core/services/http/http.service';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 
 @Injectable()
 export class CelerApiService {
-  private readonly celerApiBaseUrl = 'https://cbridge-prod2.celer.network';
+  private readonly celerApiBaseUrl = 'https://cbridge-prod2.celer.network/';
 
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpService: HttpService) {}
 
   public getEstimateAmt(
     src_chain_id: number,
@@ -33,8 +35,24 @@ export class CelerApiService {
       params = params.append('is_pegged', is_pegged);
     }
 
-    return this.httpClient.get<EstimateAmtResponse>(`${this.celerApiBaseUrl}/v2/estimateAmt`, {
-      params
-    });
+    return this.httpService.get<EstimateAmtResponse>(
+      'v2/estimateAmt',
+      params,
+      this.celerApiBaseUrl
+    );
+  }
+
+  /**
+   * Posts celer cross-chain trade information to rubic backend.
+   * @param network Source swap network.
+   * @param provider Hardcode: 'celer'
+   * @param fromTxnHash Source swap transaction hash.
+   */
+  public postTradeInfo(
+    network: SupportedCrossChainBlockchain,
+    provider: 'celer',
+    fromTxnHash: string
+  ): void {
+    this.httpService.post<void>('celer/trades', { network, provider, fromTxnHash }).subscribe();
   }
 }
