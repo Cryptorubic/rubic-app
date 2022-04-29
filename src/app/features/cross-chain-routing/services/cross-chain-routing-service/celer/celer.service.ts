@@ -3,7 +3,6 @@ import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/comm
 import { EthLikeWeb3Pure } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { OneinchInstantTrade } from '@app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { SettingsService } from '@app/features/swaps/services/settings-service/settings.service';
 import networks from '@app/shared/constants/blockchain/networks';
@@ -13,7 +12,6 @@ import {
 } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { pluck } from 'rxjs/operators';
 import { transitTokens } from '../contracts-data/contract-data/constants/transit-tokens';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
@@ -35,8 +33,6 @@ import { SwapInfoV3 } from './models/swap-info-v3.interface';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const EMPTY_DATA = '0x';
-
-const CELER_SLIPPAGE_ADDITIONAL_VALUE = 1.01;
 
 const CELER_SLIPPAGE = 0.15;
 
@@ -61,7 +57,6 @@ export class CelerService {
     private readonly privateBlockchainAdapterService: PrivateBlockchainAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly contractsDataService: ContractsDataService,
-    private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly celerApiService: CelerApiService
   ) {}
@@ -85,16 +80,17 @@ export class CelerService {
       this.celerTrade.srcProvider.providerIndex,
       nativeIn
     );
+    const isBridge = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
 
     const preparedArgs = this.prepareArgs([
       receiver,
       amountIn,
       dstChainId,
-      Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken')
+      isBridge
         ? (this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken
         : Object.values(this.celerTrade.srcSwap),
       Object.values(this.celerTrade.dstSwap),
-      1000000,
+      this.celerTrade.maxSlippage,
       nativeOut
     ]);
 
@@ -105,9 +101,9 @@ export class CelerService {
       nativeIn,
       amountIn
     );
-    debugger;
 
     let transactionHash: string;
+    // debugger;
 
     await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
       caller,
@@ -115,7 +111,7 @@ export class CelerService {
       methodName,
       preparedArgs,
       {
-        value: String(msgValue),
+        value: isBridge ? '3000000000000000' : String(msgValue),
         onTransactionHash: (hash: string) => {
           if (onTxHash) {
             onTxHash(hash);
@@ -267,6 +263,9 @@ export class CelerService {
     const dstChainId = this.getBlockchainId(toBlockchain);
     const srcTransitTokenDecimals =
       this.contractsDataService.contracts[fromBlockchain].transitToken.decimals;
+    const fromTransitTokenAmountWithSlippage = fromTransitTokenAmount.minus(
+      fromTransitTokenAmount.multipliedBy(this.userSlippage / 2)
+    );
 
     return await this.celerApiService
       .getEstimateAmt(
@@ -274,7 +273,7 @@ export class CelerService {
         dstChainId,
         'USDC',
         celerSlippage,
-        Web3Pure.toWei(fromTransitTokenAmount, srcTransitTokenDecimals)
+        Web3Pure.toWei(fromTransitTokenAmountWithSlippage, srcTransitTokenDecimals)
       )
       .toPromise();
   }
@@ -290,8 +289,9 @@ export class CelerService {
       'minSwapAmount',
       { methodArguments: [transitToken.address] }
     );
+    const minAmountInTokens = Web3Pure.fromWei(minAmount, transitToken.decimals);
 
-    return Web3Pure.fromWei(minAmount, transitToken.decimals).dividedBy(this.userSlippage / 2);
+    return minAmountInTokens.minus(minAmountInTokens.multipliedBy(this.userSlippage / 2));
   }
 
   private async calculateMsgValue(
@@ -331,24 +331,12 @@ export class CelerService {
       'feeBase'
     );
 
+    // debugger;
+
     if (nativeIn) {
       return Number(amountIn) + Number(fee) + Number(cryptoFee) + Number(feeBase);
     }
     return Number(fee) + Number(cryptoFee) + Number(feeBase);
-  }
-
-  public async getCelerSlippage(
-    srcChainId: number,
-    dstChainId: number,
-    tokenSymbol: string,
-    amt: string
-  ): Promise<number> {
-    const bridgeRate = await this.celerApiService
-      .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, 0, amt)
-      .pipe(pluck('bridge_rate'))
-      .toPromise();
-
-    return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
   }
 
   public checkIsCelerContractPaused(
@@ -440,4 +428,19 @@ export class CelerService {
       }
     });
   }
+
+  // public async getCelerSlippage(
+  //   srcChainId: number,
+  //   dstChainId: number,
+  //   tokenSymbol: string,
+  //   amt: string
+  // ): Promise<number> {
+  //   const CELER_SLIPPAGE_ADDITIONAL_VALUE = 1.01;
+  //   const bridgeRate = await this.celerApiService
+  //     .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, 0, amt)
+  //     .pipe(pluck('bridge_rate'))
+  //     .toPromise();
+
+  //   return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
+  // }
 }
