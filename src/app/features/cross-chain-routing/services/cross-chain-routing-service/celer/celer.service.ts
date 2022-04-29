@@ -12,10 +12,12 @@ import {
 } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
+import { pluck } from 'rxjs/operators';
 import { transitTokens } from '../contracts-data/contract-data/constants/transit-tokens';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
 import { CelerApiService } from './celer-api.service';
+import { CELER_SLIPPAGE_ADDITIONAL_VALUE } from './constants/CELER_CONSTANTS';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
@@ -33,8 +35,6 @@ import { SwapInfoV3 } from './models/swap-info-v3.interface';
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const EMPTY_DATA = '0x';
-
-const CELER_SLIPPAGE = 0.15;
 
 const DEADLINE = 999999999999999;
 
@@ -104,16 +104,6 @@ export class CelerService {
     );
 
     let transactionHash: string;
-    // console.log({
-    //   receiver,
-    //   amountIn,
-    //   dstChainId,
-    //   srcSwap: Object.values(this.celerTrade.srcSwap),
-    //   dstSwap: Object.values(this.celerTrade.dstSwap),
-    //   maxSlippage: this.celerTrade.maxSlippage,
-    //   nativeOut
-    // });
-    // console.log(preparedArgs);
 
     await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
       caller,
@@ -266,9 +256,9 @@ export class CelerService {
   public async getCelerEstimate(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
-    fromTransitTokenAmount: BigNumber
+    fromTransitTokenAmount: BigNumber,
+    celerBridgeSlippage: number
   ): Promise<EstimateAmtResponse> {
-    const celerSlippage = CELER_SLIPPAGE * 1000000;
     const srcChainId = this.getBlockchainId(fromBlockchain);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const srcTransitTokenDecimals =
@@ -282,7 +272,7 @@ export class CelerService {
         srcChainId,
         dstChainId,
         'USDC',
-        celerSlippage,
+        celerBridgeSlippage * 1000000,
         Web3Pure.toWei(fromTransitTokenAmountWithSlippage, srcTransitTokenDecimals)
       )
       .toPromise();
@@ -443,18 +433,25 @@ export class CelerService {
     });
   }
 
-  // public async getCelerSlippage(
-  //   srcChainId: number,
-  //   dstChainId: number,
-  //   tokenSymbol: string,
-  //   amt: string
-  // ): Promise<number> {
-  //   const CELER_SLIPPAGE_ADDITIONAL_VALUE = 1.01;
-  //   const bridgeRate = await this.celerApiService
-  //     .getEstimateAmt(srcChainId, dstChainId, tokenSymbol, 0, amt)
-  //     .pipe(pluck('bridge_rate'))
-  //     .toPromise();
+  public async getCelerBridgeSlippage(
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName,
+    amt: BigNumber
+  ): Promise<number> {
+    const srcChainId = this.getBlockchainId(fromBlockchain);
+    const dstChainId = this.getBlockchainId(toBlockchain);
+    const srcTransitTokenDecimals = transitTokens[fromBlockchain].decimals;
+    const bridgeRate = await this.celerApiService
+      .getEstimateAmt(
+        srcChainId,
+        dstChainId,
+        'USDC',
+        0,
+        Web3Pure.toWei(amt, srcTransitTokenDecimals)
+      )
+      .pipe(pluck('bridge_rate'))
+      .toPromise();
 
-  //   return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
-  // }
+    return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
+  }
 }

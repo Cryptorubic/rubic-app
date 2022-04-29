@@ -386,6 +386,13 @@ export const CELER_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'maxSwapAmount',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [],
     name: 'messageBus',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -413,6 +420,7 @@ export const CELER_CONTRACT_ABI = [
     stateMutability: 'view',
     type: 'function'
   },
+  { inputs: [], name: 'pauseRubic', outputs: [], stateMutability: 'nonpayable', type: 'function' },
   {
     inputs: [],
     name: 'paused',
@@ -455,11 +463,18 @@ export const CELER_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'rubicCollectCryptoFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [
       { internalType: 'address', name: '_token', type: 'address' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' }
     ],
-    name: 'rubicCollectFee',
+    name: 'rubicCollectPlatformFee',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -523,7 +538,10 @@ export const CELER_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'contract IERC20', name: 'token', type: 'address' }],
+    inputs: [
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+    ],
     name: 'sweepTokens',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -756,5 +774,6 @@ export const CELER_CONTRACT_ABI = [
     outputs: [],
     stateMutability: 'payable',
     type: 'function'
-  }
+  },
+  { inputs: [], name: 'unPauseRubic', outputs: [], stateMutability: 'nonpayable', type: 'function' }
 ] as AbiItem[];

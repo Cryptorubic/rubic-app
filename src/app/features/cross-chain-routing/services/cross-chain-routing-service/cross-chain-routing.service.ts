@@ -243,10 +243,24 @@ export class CrossChainRoutingService {
     let celerEstimate: EstimateAmtResponse;
 
     if (this.swapViaCeler) {
-      celerEstimate = await this.celerService.getCelerEstimate(
+      const celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
         fromTransitTokenAmount
+      );
+
+      if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+        fromSlippage = 1 - celerBridgeSlippage + fromSlippage;
+        toSlippage = 1 - celerBridgeSlippage + toSlippage;
+      }
+
+      debugger;
+
+      celerEstimate = await this.celerService.getCelerEstimate(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName,
+        fromTransitTokenAmount,
+        celerBridgeSlippage
       );
 
       finalTransitAmount = Web3Pure.fromWei(
