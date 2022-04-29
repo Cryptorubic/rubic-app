@@ -56,6 +56,7 @@ import { CelerService } from './celer/celer.service';
 import { CELER_CONTRACT } from './celer/constants/CELER_CONTRACT';
 import { transitTokens } from './contracts-data/contract-data/constants/transit-tokens';
 import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interface';
+import { CelerApiService } from '@features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -135,7 +136,8 @@ export class CrossChainRoutingService {
     private readonly iframeService: IframeService,
     private readonly notificationsService: NotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly celerService: CelerService
+    private readonly celerService: CelerService,
+    private readonly celerApiService: CelerApiService
   ) {}
 
   private async needApprove(
@@ -891,6 +893,14 @@ export class CrossChainRoutingService {
       if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
         this.notifyGtmAfterSignTx(txHash);
         this.notifyTradeInProgress(txHash);
+      }
+
+      if (this.shouldSwapViaCeler) {
+        this.celerApiService.postTradeInfo(
+          this.currentCrossChainTrade.fromBlockchain,
+          'celer',
+          txHash
+        );
       }
     };
 
