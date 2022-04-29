@@ -312,13 +312,6 @@ export const CELER_CONTRACT_ABI = [
   },
   {
     inputs: [],
-    name: 'executorAddr',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
     name: 'feeRubic',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
@@ -500,8 +493,28 @@ export const CELER_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+    ],
+    name: 'setMaxSwapAmount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'address', name: '_messageBus', type: 'address' }],
     name: 'setMessageBus',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+    ],
+    name: 'setMinSwapAmount',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

@@ -243,25 +243,25 @@ export class CrossChainRoutingService {
 
     let finalTransitAmount: BigNumber;
     let celerEstimate: EstimateAmtResponse;
+    let celerBridgeSlippage: number;
 
     if (this.swapViaCeler) {
-      const celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
+      celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
         fromTransitTokenAmount
       );
 
-      if (this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
-        fromSlippage = 1 - celerBridgeSlippage + fromSlippage;
-        toSlippage = 1 - celerBridgeSlippage + toSlippage;
+      if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+        fromSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
+        toSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
       }
 
-      debugger;
-
+      const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
       celerEstimate = await this.celerService.getCelerEstimate(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
-        fromTransitTokenAmount,
+        amountWithSlippage,
         celerBridgeSlippage
       );
 
@@ -273,22 +273,22 @@ export class CrossChainRoutingService {
       finalTransitAmount = fromTransitTokenAmount;
     }
 
-    /**
-     * @TODO Take crypto fee on contract.
-     */
-    if (fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
-      const nativeUsdPrice = await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.NEAR);
-      const feeInUsd = cryptoFee.multipliedBy(nativeUsdPrice);
+    // /**
+    //  * @TODO Take crypto fee on contract.
+    //  */
+    // if (fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
+    //   const nativeUsdPrice = await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.NEAR);
+    //   const feeInUsd = cryptoFee.multipliedBy(nativeUsdPrice);
 
-      finalTransitAmount = fromTransitTokenAmount.minus(feeInUsd);
-    }
+    //   finalTransitAmount = fromTransitTokenAmount.minus(feeInUsd);
+    // }
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       fromBlockchain,
       toBlockchain,
       finalTransitAmount,
       fromTrade === null,
-      fromSlippage
+      this.swapViaCeler ? 1 : fromSlippage
     );
 
     const targetBlockchainProviders = await this.getSortedProvidersList(
@@ -319,7 +319,8 @@ export class CrossChainRoutingService {
         toAmount,
         sourceBlockchainProvidersFiltered[0],
         targetBlockchainProvidersFiltered[0],
-        celerEstimate.max_slippage
+        celerEstimate.max_slippage,
+        celerBridgeSlippage
       );
     }
 
@@ -362,12 +363,12 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage1 = compareAddresses(fromToken.address, fromTransitToken.address)
+    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
       ? toAmount
       : toAmount.dividedBy(fromSlippage);
 
     return {
-      toAmount: toAmountWithoutSlippage1,
+      toAmount: toAmountWithoutSlippage,
       ...minMaxErrors,
       needApprove
     };

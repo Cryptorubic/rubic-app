@@ -128,12 +128,13 @@ export class CelerService {
     srcProvider: IndexedTradeAndToAmount,
     fromBlockchain: EthLikeBlockchainName,
     fromTransitTokenAmount: BigNumber,
-    fromToken: TokenAmount
+    fromToken: TokenAmount,
+    celerBridgeSlippage: number
   ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge {
     const dexes = this.contractsDataService.contracts[fromBlockchain];
     const dexAddress = dexes.getProvider(srcProvider.providerIndex).contractAddress;
     const amountOutMinimum = Web3Pure.toWei(
-      this.getAmountOutMinimum(fromTransitTokenAmount),
+      fromTransitTokenAmount.multipliedBy(1 - celerBridgeSlippage),
       dexes.transitToken.decimals
     );
     const canBridgeInSourceNetwork = this.isTransitToken(fromToken);
@@ -235,13 +236,15 @@ export class CelerService {
     toAmount: BigNumber,
     srcProvider: IndexedTradeAndToAmount,
     dstProvider: IndexedTradeAndToAmount,
-    maxSlippage: number
+    maxSlippage: number,
+    celerBridgeSlippage: number
   ): Promise<void> {
     const srcSwap = this.getSrcSwapObject(
       srcProvider,
       fromBlockchain,
       fromTransitTokenAmount,
-      fromToken
+      fromToken,
+      celerBridgeSlippage
     );
     const dstSwap = this.getDstSwapObject(dstProvider, toBlockchain, toAmount, toToken);
 
@@ -263,17 +266,14 @@ export class CelerService {
     const dstChainId = this.getBlockchainId(toBlockchain);
     const srcTransitTokenDecimals =
       this.contractsDataService.contracts[fromBlockchain].transitToken.decimals;
-    const fromTransitTokenAmountWithSlippage = fromTransitTokenAmount.minus(
-      fromTransitTokenAmount.multipliedBy(this.userSlippage / 2)
-    );
 
     return await this.celerApiService
       .getEstimateAmt(
         srcChainId,
         dstChainId,
         'USDC',
-        celerBridgeSlippage * 1000000,
-        Web3Pure.toWei(fromTransitTokenAmountWithSlippage, srcTransitTokenDecimals)
+        Number((celerBridgeSlippage * 1000000).toFixed(0)),
+        Web3Pure.toWei(fromTransitTokenAmount, srcTransitTokenDecimals)
       )
       .toPromise();
   }
@@ -452,6 +452,6 @@ export class CelerService {
       .pipe(pluck('bridge_rate'))
       .toPromise();
 
-    return (1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE;
+    return Math.abs((1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE);
   }
 }
