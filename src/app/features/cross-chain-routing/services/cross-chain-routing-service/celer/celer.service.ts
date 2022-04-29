@@ -99,11 +99,21 @@ export class CelerService {
       toBlockchain,
       preparedArgs,
       nativeIn,
-      amountIn
+      amountIn,
+      isBridge
     );
 
     let transactionHash: string;
-    // debugger;
+    // console.log({
+    //   receiver,
+    //   amountIn,
+    //   dstChainId,
+    //   srcSwap: Object.values(this.celerTrade.srcSwap),
+    //   dstSwap: Object.values(this.celerTrade.dstSwap),
+    //   maxSlippage: this.celerTrade.maxSlippage,
+    //   nativeOut
+    // });
+    // console.log(preparedArgs);
 
     await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
       caller,
@@ -111,7 +121,7 @@ export class CelerService {
       methodName,
       preparedArgs,
       {
-        value: isBridge ? '3000000000000000' : String(msgValue),
+        value: String(msgValue),
         onTransactionHash: (hash: string) => {
           if (onTxHash) {
             onTxHash(hash);
@@ -299,7 +309,8 @@ export class CelerService {
     toBlockchain: EthLikeBlockchainName,
     data: unknown,
     nativeIn: boolean,
-    amountIn: string
+    amountIn: string,
+    isBridge: boolean
   ): Promise<number> {
     const dstNetworkId = this.getBlockchainId(toBlockchain);
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
@@ -331,11 +342,14 @@ export class CelerService {
       'feeBase'
     );
 
-    // debugger;
-
     if (nativeIn) {
       return Number(amountIn) + Number(fee) + Number(cryptoFee) + Number(feeBase);
     }
+
+    if (isBridge) {
+      return Number(fee) + Number(cryptoFee) + Number(feeBase) + Number(feeBase);
+    }
+
     return Number(fee) + Number(cryptoFee) + Number(feeBase);
   }
 

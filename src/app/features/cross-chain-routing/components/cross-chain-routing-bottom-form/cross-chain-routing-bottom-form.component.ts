@@ -23,7 +23,11 @@ import {
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  EthLikeBlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -150,6 +154,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        const { fromBlockchain, toBlockchain } = form;
+        this.crossChainRoutingService.setIsSupportedCelerBlockchainPair(
+          fromBlockchain as EthLikeBlockchainName,
+          toBlockchain as EthLikeBlockchainName
+        );
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
