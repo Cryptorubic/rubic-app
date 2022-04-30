@@ -197,7 +197,6 @@ export class CrossChainRoutingService {
     if (this.isSupportedCelerBlockchainPair) {
       this.shouldSwapViaCeler = await this.canUseCeler(fromBlockchain, toBlockchain);
     }
-    // debugger;
 
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
