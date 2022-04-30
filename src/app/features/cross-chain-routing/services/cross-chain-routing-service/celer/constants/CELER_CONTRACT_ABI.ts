@@ -788,5 +788,12 @@ export const CELER_CONTRACT_ABI = [
     stateMutability: 'payable',
     type: 'function'
   },
+  {
+    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    name: 'txStatusById',
+    outputs: [{ internalType: 'enum SwapBase.SwapStatus', name: '', type: 'uint8' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   { inputs: [], name: 'unPauseRubic', outputs: [], stateMutability: 'nonpayable', type: 'function' }
 ] as AbiItem[];

@@ -118,8 +118,14 @@ export class CrossChainRoutingService {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
-  private get swapViaCeler(): boolean {
+  public get swapViaCeler(): boolean {
     return this.isSupportedCelerBlockchainPair && this.shouldSwapViaCeler;
+  }
+
+  private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
+
+  public get celerSwapLimits(): { min: BigNumber; max: BigNumber } {
+    return this._celerSwapLimits$.getValue();
   }
 
   constructor(
@@ -463,9 +469,18 @@ export class CrossChainRoutingService {
     const { fromBlockchain, fromTransitTokenAmount, fromSlippage } = trade;
 
     if (this.swapViaCeler) {
-      const minTransitTokenAmount = await this.celerService.getMinSwapAmountInTransitTokens(
-        fromBlockchain as EthLikeBlockchainName
+      const minTransitTokenAmount = await this.celerService.getSwapLimit(
+        fromBlockchain as EthLikeBlockchainName,
+        'min'
       );
+      const maxTransitTokenAmount = await this.celerService.getSwapLimit(
+        fromBlockchain as EthLikeBlockchainName,
+        'max'
+      );
+      const limits: { min: BigNumber; max: BigNumber } = {
+        min: undefined,
+        max: undefined
+      };
 
       if (fromTransitTokenAmount.lt(minTransitTokenAmount)) {
         const minAmount = await this.getFromTokenAmount(
@@ -475,11 +490,21 @@ export class CrossChainRoutingService {
           minTransitTokenAmount,
           'min'
         );
-
-        return {
-          minAmountError: minAmount
-        };
+        limits.min = minAmount;
       }
+
+      if (fromTransitTokenAmount.gt(20000)) {
+        const maxAmount = await this.getFromTokenAmount(
+          fromBlockchain,
+          trade.fromProviderIndex,
+          trade.tokenIn,
+          maxTransitTokenAmount,
+          'max'
+        );
+        limits.max = maxAmount;
+      }
+
+      this._celerSwapLimits$.next(limits);
     } else {
       const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
         await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);

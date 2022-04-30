@@ -291,20 +291,21 @@ export class CelerService {
       .toPromise();
   }
 
-  public async getMinSwapAmountInTransitTokens(
-    fromBlockchain: EthLikeBlockchainName
+  public async getSwapLimit(
+    fromBlockchain: EthLikeBlockchainName,
+    type: 'min' | 'max'
   ): Promise<BigNumber> {
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
     const transitToken = transitTokens[fromBlockchain];
-    const minAmount = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+    const amount = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       celerContractAddress,
       CELER_CONTRACT_ABI,
-      'minSwapAmount',
+      type === 'min' ? 'minSwapAmount' : 'maxSwapAmount',
       { methodArguments: [transitToken.address] }
     );
-    const minAmountInTokens = Web3Pure.fromWei(minAmount, transitToken.decimals);
+    const amountInTokens = Web3Pure.fromWei(amount, transitToken.decimals);
 
-    return minAmountInTokens.minus(minAmountInTokens.multipliedBy(this.userSlippage / 2));
+    return amountInTokens;
   }
 
   private async calculateMsgValue(
