@@ -10,7 +10,8 @@
         [attr.error]="true"
         appearance="secondary"
         [loading]="loading"
-        (click)="changeNetwork()"
+        [disabled]="loading"
+        (onClick)="changeNetwork()"
       >
         {{ 'common.switchTo' | translate: { networkName: (fromBlockchain$ | async) } }}
       </app-rubic-button>

@@ -16,6 +16,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -72,6 +73,7 @@ export class SwapButtonContainerErrorsService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
+    private readonly iframeService: IframeService,
     private readonly ngZone: NgZone
   ) {
     this.subscribeOnSwapForm();
@@ -226,9 +228,15 @@ export class SwapButtonContainerErrorsService {
       // @TODO Solana. Remove after blockchain stabilization.
       case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
         type = ERROR_TYPE.SOLANA_UNAVAILABLE;
-        translateParams = {
-          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
-        };
+        if (this.iframeService.iframeAppearance === 'horizontal') {
+          translateParams = {
+            key: 'Unavailable'
+          };
+        } else {
+          translateParams = {
+            key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+          };
+        }
         break;
       case err[ERROR_TYPE.WRONG_WALLET]: {
         type = ERROR_TYPE.WRONG_WALLET;
