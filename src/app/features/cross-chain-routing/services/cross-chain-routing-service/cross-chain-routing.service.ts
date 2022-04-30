@@ -8,7 +8,6 @@ import {
   EthLikeBlockchainName
 } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
@@ -57,16 +56,7 @@ import { CELER_CONTRACT } from './celer/constants/CELER_CONTRACT';
 import { transitTokens } from './contracts-data/contract-data/constants/transit-tokens';
 import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interface';
 import { CelerApiService } from '@features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
-
-interface TradeAndToAmount {
-  trade: InstantTrade | null;
-  toAmount: BigNumber;
-}
-
-export interface IndexedTradeAndToAmount {
-  providerIndex: number;
-  tradeAndToAmount: TradeAndToAmount;
-}
+import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 
 const CACHEABLE_MAX_AGE = 15_000;
 

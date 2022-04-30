@@ -17,7 +17,7 @@ import BigNumber from 'bignumber.js';
 import { pluck } from 'rxjs/operators';
 import { transitTokens } from '../contracts-data/contract-data/constants/transit-tokens';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
-import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
+import { IndexedTradeAndToAmount } from '../models/indexed-trade.interface';
 import { CelerApiService } from './celer-api.service';
 import {
   CELER_SLIPPAGE_ADDITIONAL_VALUE,
