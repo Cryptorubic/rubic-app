@@ -273,15 +273,15 @@ export class CrossChainRoutingService {
       finalTransitAmount = fromTransitTokenAmount;
     }
 
-    // /**
-    //  * @TODO Take crypto fee on contract.
-    //  */
-    // if (fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
-    //   const nativeUsdPrice = await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.NEAR);
-    //   const feeInUsd = cryptoFee.multipliedBy(nativeUsdPrice);
+    /**
+     * @TODO Take crypto fee on contract.
+     */
+    if (fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
+      const nativeUsdPrice = await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.NEAR);
+      const feeInUsd = cryptoFee.multipliedBy(nativeUsdPrice);
 
-    //   finalTransitAmount = fromTransitTokenAmount.minus(feeInUsd);
-    // }
+      finalTransitAmount = fromTransitTokenAmount.minus(feeInUsd);
+    }
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       fromBlockchain,
@@ -310,7 +310,7 @@ export class CrossChainRoutingService {
     } = targetBlockchainProvidersFiltered[0];
 
     if (this.swapViaCeler) {
-      await this.celerService.calculateTrade(
+      await this.celerService.buildCelerTrade(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
         toToken,
@@ -909,7 +909,7 @@ export class CrossChainRoutingService {
         this.notifyTradeInProgress(txHash);
       }
 
-      if (this.shouldSwapViaCeler) {
+      if (this.swapViaCeler) {
         this.celerApiService.postTradeInfo(
           this.currentCrossChainTrade.fromBlockchain,
           'celer',

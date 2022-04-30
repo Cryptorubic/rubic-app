@@ -18,7 +18,11 @@ import { transitTokens } from '../contracts-data/contract-data/constants/transit
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
 import { CelerApiService } from './celer-api.service';
-import { CELER_SLIPPAGE_ADDITIONAL_VALUE } from './constants/CELER_CONSTANTS';
+import {
+  CELER_SLIPPAGE_ADDITIONAL_VALUE,
+  MAX_TRANSIT_SWAP_AMOUNT,
+  MIN_TRANSIT_SWAP_AMOUNT
+} from './constants/CELER_CONSTANTS';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
@@ -52,6 +56,14 @@ export class CelerService {
 
   get userSlippage(): number {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+  }
+
+  get minSwapAmount(): number {
+    return MIN_TRANSIT_SWAP_AMOUNT;
+  }
+
+  get maxSwapAmount(): number {
+    return MAX_TRANSIT_SWAP_AMOUNT;
   }
 
   constructor(
@@ -228,7 +240,7 @@ export class CelerService {
     return dstSwap;
   }
 
-  public async calculateTrade(
+  public async buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
