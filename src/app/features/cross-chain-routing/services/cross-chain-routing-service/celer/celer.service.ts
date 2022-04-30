@@ -5,6 +5,7 @@ import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/b
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { OneinchInstantTrade } from '@app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { SettingsService } from '@app/features/swaps/services/settings-service/settings.service';
+import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 import networks from '@app/shared/constants/blockchain/networks';
 import {
   BlockchainName,
@@ -20,6 +21,8 @@ import { IndexedTradeAndToAmount } from '../cross-chain-routing.service';
 import { CelerApiService } from './celer-api.service';
 import {
   CELER_SLIPPAGE_ADDITIONAL_VALUE,
+  DEADLINE,
+  EMPTY_DATA,
   MAX_TRANSIT_SWAP_AMOUNT,
   MIN_TRANSIT_SWAP_AMOUNT
 } from './constants/CELER_CONSTANTS';
@@ -37,13 +40,7 @@ import { SwapInfoInch } from './models/swap-info-inch.interface';
 import { SwapInfoV2 } from './models/swap-info-v2.interface';
 import { SwapInfoV3 } from './models/swap-info-v3.interface';
 
-const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-
-const EMPTY_DATA = '0x';
-
-const DEADLINE = 999999999999999;
-
-export interface CelerTrade {
+interface CelerTrade {
   srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge;
   dstSwap: SwapInfoDest;
   srcProvider: IndexedTradeAndToAmount;
@@ -204,9 +201,9 @@ export class CelerService {
 
     const dstSwap: SwapInfoDest = {
       dex: dexAddress,
-      integrator: NULL_ADDRESS,
+      integrator: EMPTY_ADDRESS,
       version: swapVersion,
-      path: [NULL_ADDRESS],
+      path: [EMPTY_ADDRESS],
       pathV3: EMPTY_DATA,
       deadline: DEADLINE,
       amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
@@ -214,8 +211,8 @@ export class CelerService {
 
     if (canBridgeInTargetNetwork) {
       return {
-        dex: NULL_ADDRESS,
-        integrator: NULL_ADDRESS,
+        dex: EMPTY_ADDRESS,
+        integrator: EMPTY_ADDRESS,
         version: SwapVersion.BRIDGE,
         path: [toToken.address],
         pathV3: EMPTY_DATA,
