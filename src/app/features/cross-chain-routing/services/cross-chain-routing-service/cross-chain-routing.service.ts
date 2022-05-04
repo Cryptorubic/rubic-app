@@ -220,8 +220,7 @@ export class CrossChainRoutingService {
       fromBlockchain,
       fromToken,
       fromAmount,
-      fromTransitToken,
-      this.swapViaCeler
+      fromTransitToken
     );
     const sourceBlockchainProvidersFiltered = this.swapViaCeler
       ? sourceBlockchainProviders.filter(provider => {
@@ -427,7 +426,10 @@ export class CrossChainRoutingService {
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
-        const contractAddress = this.contracts[blockchain].address;
+        // needed for correct 1inch trade data
+        const contractAddress = this.swapViaCeler
+          ? this.celerService.getCelerContractAddress(blockchain as EthLikeBlockchainName)
+          : this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
           .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
