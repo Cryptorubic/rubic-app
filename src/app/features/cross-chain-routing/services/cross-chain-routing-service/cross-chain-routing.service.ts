@@ -491,7 +491,7 @@ export class CrossChainRoutingService {
         limits.min = minAmount;
       }
 
-      if (fromTransitTokenAmount.gt(20000)) {
+      if (fromTransitTokenAmount.gt(maxTransitTokenAmount)) {
         const maxAmount = await this.getFromTokenAmount(
           fromBlockchain,
           trade.fromProviderIndex,
@@ -920,8 +920,7 @@ export class CrossChainRoutingService {
     this.checkDeviceAndShowNotification();
 
     let transactionHash;
-    const { fromBlockchain, fromAmount, fromToken, toToken, toBlockchain } =
-      this.swapFormService.inputValue;
+    const { fromBlockchain, fromAmount, fromToken, toBlockchain } = this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
 
@@ -948,7 +947,6 @@ export class CrossChainRoutingService {
           fromBlockchain as EthLikeBlockchainName,
           fromToken,
           toBlockchain as EthLikeBlockchainName,
-          toToken,
           onTransactionHash
         );
       } else {

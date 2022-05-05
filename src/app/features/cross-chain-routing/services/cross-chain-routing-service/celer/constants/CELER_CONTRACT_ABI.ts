@@ -23,45 +23,6 @@ export const CELER_CONTRACT_ABI = [
   },
   {
     anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'bytes32', name: 'id', type: 'bytes32' },
-      { indexed: false, internalType: 'uint64', name: 'srcChainId', type: 'uint64' },
-      { indexed: false, internalType: 'uint256', name: 'amountIn', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenIn', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'amountOut', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenOut', type: 'address' }
-    ],
-    name: 'DirectSwapInch',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'bytes32', name: 'id', type: 'bytes32' },
-      { indexed: false, internalType: 'uint64', name: 'srcChainId', type: 'uint64' },
-      { indexed: false, internalType: 'uint256', name: 'amountIn', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenIn', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'amountOut', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenOut', type: 'address' }
-    ],
-    name: 'DirectSwapV2',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'bytes32', name: 'id', type: 'bytes32' },
-      { indexed: false, internalType: 'uint64', name: 'srcChainId', type: 'uint64' },
-      { indexed: false, internalType: 'uint256', name: 'amountIn', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenIn', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'amountOut', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'tokenOut', type: 'address' }
-    ],
-    name: 'DirectSwapV3',
-    type: 'event'
-  },
-  {
-    anonymous: false,
     inputs: [{ indexed: false, internalType: 'address', name: 'messageBus', type: 'address' }],
     name: 'MessageBusUpdated',
     type: 'event'
@@ -200,8 +161,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'bridgeWithSwap',
     outputs: [],
@@ -228,8 +188,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'bridgeWithSwapNative',
     outputs: [],
@@ -590,8 +549,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapInch',
     outputs: [],
@@ -628,8 +586,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapInchNative',
     outputs: [],
@@ -666,8 +623,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapV2',
     outputs: [],
@@ -704,8 +660,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapV2Native',
     outputs: [],
@@ -742,8 +697,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapV3',
     outputs: [],
@@ -780,8 +734,7 @@ export const CELER_CONTRACT_ABI = [
         name: '_dstSwap',
         type: 'tuple'
       },
-      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' },
-      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+      { internalType: 'uint32', name: '_maxBridgeSlippage', type: 'uint32' }
     ],
     name: 'transferWithSwapV3Native',
     outputs: [],

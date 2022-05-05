@@ -75,10 +75,8 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     fromToken: TokenAmount,
     toBlockchain: EthLikeBlockchainName,
-    toToken: TokenAmount,
     onTxHash: (hash: string) => void
   ): Promise<string> {
-    const nativeOut = this.isNativeToken(toBlockchain, toToken);
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const receiver = this.getCelerContractAddress(toBlockchain);
@@ -99,8 +97,7 @@ export class CelerService {
         ? (this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken
         : Object.values(this.celerTrade.srcSwap),
       Object.values(this.celerTrade.dstSwap),
-      this.celerTrade.maxSlippage,
-      nativeOut
+      this.celerTrade.maxSlippage
     ]);
 
     const msgValue = await this.calculateMsgValue(
