@@ -9,7 +9,6 @@ import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 import networks from '@app/shared/constants/blockchain/networks';
 import {
   BlockchainName,
-  BLOCKCHAIN_NAME,
   EthLikeBlockchainName
 } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -403,9 +402,7 @@ export class CelerService {
 
     if (isBridge) {
       // TODO investigate "insufficient fee" error with USDC as source token
-      const multipliedFeeBase =
-        fromBlockchain === BLOCKCHAIN_NAME.POLYGON ? Number(feeBase) * 2.5 : Number(feeBase) * 2;
-      return Number(fee) + Number(cryptoFee) + multipliedFeeBase;
+      return Number(fee) + Number(cryptoFee) + Number(feeBase) * 2.5;
     }
 
     // TODO investigate "insufficient fee" error with USDC as target token
