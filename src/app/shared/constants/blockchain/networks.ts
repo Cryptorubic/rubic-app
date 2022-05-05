@@ -131,9 +131,9 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.FANTOM,
     label: 'Fantom',
     scannerUrl: 'https://ftmscan.com',
-    rpcLink: 'https://ftm.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    rpcLink: 'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
     additionalRpcLink:
-      'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
+      'https://ftm.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/fantom.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.FANTOM,
