@@ -920,7 +920,8 @@ export class CrossChainRoutingService {
     this.checkDeviceAndShowNotification();
 
     let transactionHash;
-    const { fromBlockchain, fromAmount, fromToken, toBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, fromAmount, fromToken, toBlockchain, toToken } =
+      this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
 
@@ -947,6 +948,7 @@ export class CrossChainRoutingService {
           fromBlockchain as EthLikeBlockchainName,
           fromToken,
           toBlockchain as EthLikeBlockchainName,
+          toToken,
           onTransactionHash
         );
       } else {

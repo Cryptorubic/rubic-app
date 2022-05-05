@@ -75,6 +75,7 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     fromToken: TokenAmount,
     toBlockchain: EthLikeBlockchainName,
+    toToken: TokenAmount,
     onTxHash: (hash: string) => void
   ): Promise<string> {
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
@@ -87,13 +88,14 @@ export class CelerService {
       this.celerTrade.srcProvider.providerIndex,
       nativeIn
     );
-    const isBridge = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
+    const isBridgeInSourceNetwork = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
+    const isTransitTokenExpected = CELER_TRANSIT_TOKENS[toBlockchain].includes(toToken.address);
 
     const methodArguments = this.prepareArgs([
       receiver,
       amountIn,
       dstChainId,
-      isBridge
+      isBridgeInSourceNetwork
         ? (this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken
         : Object.values(this.celerTrade.srcSwap),
       Object.values(this.celerTrade.dstSwap),
@@ -106,7 +108,8 @@ export class CelerService {
       methodArguments,
       nativeIn,
       amountIn,
-      isBridge
+      isBridgeInSourceNetwork,
+      isTransitTokenExpected
     );
 
     let transactionHash: string;
@@ -361,7 +364,8 @@ export class CelerService {
     data: unknown,
     nativeIn: boolean,
     amountIn: string,
-    isBridge: boolean
+    isBridge: boolean,
+    isTransitTokenExpected: boolean
   ): Promise<number> {
     const dstNetworkId = this.getBlockchainId(toBlockchain);
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
@@ -404,7 +408,10 @@ export class CelerService {
       return Number(fee) + Number(cryptoFee) + multipliedFeeBase;
     }
 
-    return Number(fee) + Number(cryptoFee) + Number(feeBase);
+    // TODO investigate "insufficient fee" error with USDC as target token
+    const multipliedFee = isTransitTokenExpected ? Number(fee) * 1.5 : Number(fee);
+
+    return multipliedFee + Number(cryptoFee) + Number(feeBase);
   }
 
   /**
