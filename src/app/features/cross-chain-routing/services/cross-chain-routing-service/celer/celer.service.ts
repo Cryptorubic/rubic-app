@@ -18,7 +18,13 @@ import { transitTokens } from '../contracts-data/contract-data/constants/transit
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../models/indexed-trade.interface';
 import { CelerApiService } from './celer-api.service';
-import { CELER_SLIPPAGE_ADDITIONAL_VALUE, DEADLINE, EMPTY_DATA } from './constants/CELER_CONSTANTS';
+import {
+  CELER_BRIDGE_SLIPPAGE_MULTIPLIER,
+  DEADLINE,
+  EMPTY_DATA,
+  FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN,
+  FEE_MULTIPLIER_FOR_TARGET_TRANSIT_TOKEN
+} from './constants/CELER_CONSTANTS';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
@@ -387,7 +393,7 @@ export class CelerService {
       fromBlockchain
     ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
 
-    const fee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+    const feePerByte = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       messageBusAddress,
       MESSAGE_BUS_CONTRACT_ABI,
       'calcFee',
@@ -401,18 +407,21 @@ export class CelerService {
     );
 
     if (nativeIn) {
-      return Number(amountIn) + Number(fee) + Number(cryptoFee) + Number(feeBase);
+      return Number(amountIn) + Number(feePerByte) + Number(cryptoFee) + Number(feeBase);
     }
 
     if (isBridge) {
       // TODO investigate "insufficient fee" error with USDC as source token
-      return Number(fee) + Number(cryptoFee) + Number(feeBase) * 2.5;
+      const adjustedFeeBase = Number(feeBase) * FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN;
+      return Number(feePerByte) + Number(cryptoFee) + adjustedFeeBase;
     }
 
     // TODO investigate "insufficient fee" error with USDC as target token
-    const multipliedFee = isTransitTokenExpected ? Number(fee) * 1.5 : Number(fee);
+    const adjustedFeePerByte = isTransitTokenExpected
+      ? Number(feePerByte) * FEE_MULTIPLIER_FOR_TARGET_TRANSIT_TOKEN
+      : Number(feePerByte);
 
-    return multipliedFee + Number(cryptoFee) + Number(feeBase);
+    return adjustedFeePerByte + Number(cryptoFee) + Number(feeBase);
   }
 
   /**
@@ -589,6 +598,6 @@ export class CelerService {
       .pipe(pluck('bridge_rate'))
       .toPromise();
 
-    return Math.abs((1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE);
+    return Math.abs((1 - bridgeRate) * 100 * CELER_BRIDGE_SLIPPAGE_MULTIPLIER);
   }
 }
