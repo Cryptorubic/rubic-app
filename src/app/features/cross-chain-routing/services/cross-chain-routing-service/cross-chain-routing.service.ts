@@ -113,6 +113,8 @@ export class CrossChainRoutingService {
     return this.isSupportedCelerBlockchainPair && this.canSwapViaCeler;
   }
 
+  private readonly ccrUpperTransitAmountLimit = 280;
+
   private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
 
   public get celerSwapLimits(): { min: BigNumber; max: BigNumber } {
@@ -230,8 +232,9 @@ export class CrossChainRoutingService {
         })
       : sourceBlockchainProviders;
 
-    // TODO get max limit amount from contract.
-    if (!sourceBlockchainProviders[0].tradeAndToAmount.toAmount.gt(280)) {
+    if (
+      !sourceBlockchainProviders[0].tradeAndToAmount.toAmount.gt(this.ccrUpperTransitAmountLimit)
+    ) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
