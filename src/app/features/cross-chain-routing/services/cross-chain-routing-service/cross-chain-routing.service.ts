@@ -232,9 +232,14 @@ export class CrossChainRoutingService {
         })
       : sourceBlockchainProviders;
 
-    if (
-      !sourceBlockchainProviders[0].tradeAndToAmount.toAmount.gt(this.ccrUpperTransitAmountLimit)
-    ) {
+    const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
+    const isEnoughLiquidity = await this.canUseCcrPools(
+      fromBlockchain,
+      toBlockchain,
+      srcTransitTokenAmount
+    );
+
+    if (isEnoughLiquidity) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
@@ -470,6 +475,34 @@ export class CrossChainRoutingService {
       trade: null,
       toAmount: fromAmount
     };
+  }
+
+  private async canUseCcrPools(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    transitTokenAmount: BigNumber
+  ): Promise<boolean> {
+    const { address: srcContractAddress, transitToken: srcTransitToken } =
+      this.contracts[fromBlockchain];
+    const { address: targetContractAddress, transitToken: targetTransitToken } =
+      this.contracts[toBlockchain];
+    const sourcePoolBalance = await this.publicBlockchainAdapterService[
+      fromBlockchain
+    ].getTokenBalance(srcContractAddress, srcTransitToken.address);
+    const targetPoolBalance = await this.publicBlockchainAdapterService[
+      toBlockchain
+    ].getTokenBalance(targetContractAddress, targetTransitToken.address);
+
+    const sourcePoolBalanceInTokens = Web3Pure.fromWei(sourcePoolBalance, srcTransitToken.decimals);
+    const targetPoolBalanceInTokens = Web3Pure.fromWei(
+      targetPoolBalance,
+      targetTransitToken.decimals
+    );
+
+    return (
+      transitTokenAmount.lt(sourcePoolBalanceInTokens) &&
+      transitTokenAmount.lt(targetPoolBalanceInTokens)
+    );
   }
 
   /**
