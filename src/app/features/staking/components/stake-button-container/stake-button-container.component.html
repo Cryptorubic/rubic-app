@@ -1,9 +1,8 @@
-<!-- First round staking button -->
-<ng-container *ngIf="!isNotFirstStakingRound; else stakingRoundTwo">
-  <app-rubic-button appearance="secondary" [disabled]="true">
-    <span class="error-button">First staking round closed</span>
-  </app-rubic-button>
-</ng-container>
+<app-rubic-button appearance="secondary" [disabled]="true">
+  <span class="error-button"
+    >{{ stakingRound === 1 ? 'First' : 'Second' }} staking round closed</span
+  >
+</app-rubic-button>
 <!-- Second round staking button -->
 <ng-template #stakingRoundTwo>
   <!-- Login button -->
