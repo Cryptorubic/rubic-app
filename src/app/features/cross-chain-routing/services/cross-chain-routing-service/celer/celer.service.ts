@@ -24,6 +24,7 @@ import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
 import { CELER_TRANSIT_TOKENS } from './constants/CELER_TRANSIT_TOKENS';
 import { MESSAGE_BUS_CONTRACT_ABI } from './constants/MESSAGE_BUS_CONTRACT_ABI';
+import { WRAPPED_NATIVE } from './constants/WRAPPED_NATIVE';
 import { CelerSwapMethod } from './models/celer-swap-method.enum';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 import { SwapVersion } from './models/provider-type.enum';
@@ -162,9 +163,12 @@ export class CelerService {
 
     if (dexes.isProviderOneinch(srcProvider.providerIndex)) {
       const trade = srcProvider.tradeAndToAmount.trade as OneinchInstantTrade;
+      const [tokenIn, ...path] = trade?.path?.map(token => token.address);
+      const isInchNative = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' === tokenIn;
+
       return {
         dex: dexAddress,
-        path: trade?.path?.map(token => token.address),
+        path: [isInchNative ? WRAPPED_NATIVE[fromBlockchain] : tokenIn, ...path],
         data: trade.data,
         amountOutMinimum
       } as SwapInfoInch;
