@@ -9,7 +9,6 @@ import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 import networks from '@app/shared/constants/blockchain/networks';
 import {
   BlockchainName,
-  BLOCKCHAIN_NAME,
   EthLikeBlockchainName
 } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -20,17 +19,18 @@ import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../models/indexed-trade.interface';
 import { CelerApiService } from './celer-api.service';
 import {
-  CELER_SLIPPAGE_ADDITIONAL_VALUE,
+  CELER_BRIDGE_SLIPPAGE_MULTIPLIER,
   DEADLINE,
   EMPTY_DATA,
-  MAX_TRANSIT_SWAP_AMOUNT,
-  MIN_TRANSIT_SWAP_AMOUNT
+  FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN,
+  FEE_MULTIPLIER_FOR_TARGET_TRANSIT_TOKEN
 } from './constants/CELER_CONSTANTS';
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
 import { CELER_TRANSIT_TOKENS } from './constants/CELER_TRANSIT_TOKENS';
 import { MESSAGE_BUS_CONTRACT_ABI } from './constants/MESSAGE_BUS_CONTRACT_ABI';
+import { WRAPPED_NATIVE } from './constants/WRAPPED_NATIVE';
 import { CelerSwapMethod } from './models/celer-swap-method.enum';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 import { SwapVersion } from './models/provider-type.enum';
@@ -51,16 +51,11 @@ interface CelerTrade {
 export class CelerService {
   private celerTrade: CelerTrade;
 
+  /**
+   * User's slippage.
+   */
   get userSlippage(): number {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-  }
-
-  get minSwapAmount(): number {
-    return MIN_TRANSIT_SWAP_AMOUNT;
-  }
-
-  get maxSwapAmount(): number {
-    return MAX_TRANSIT_SWAP_AMOUNT;
   }
 
   constructor(
@@ -71,6 +66,16 @@ export class CelerService {
     private readonly celerApiService: CelerApiService
   ) {}
 
+  /**
+   * Makes swap via celer.
+   * @param fromAmount Amount in.
+   * @param fromBlockchain Source blockchain.
+   * @param fromToken Token in.
+   * @param toBlockchain Target blockchain.
+   * @param toToken Token out.
+   * @param onTxHash Callback to call after receiving transaction hash.
+   * @returns Transaction hash.
+   */
   public async makeTransferWithSwap(
     fromAmount: BigNumber,
     fromBlockchain: EthLikeBlockchainName,
@@ -79,7 +84,6 @@ export class CelerService {
     toToken: TokenAmount,
     onTxHash: (hash: string) => void
   ): Promise<string> {
-    const nativeOut = this.isNativeToken(toBlockchain, toToken);
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const receiver = this.getCelerContractAddress(toBlockchain);
@@ -90,27 +94,28 @@ export class CelerService {
       this.celerTrade.srcProvider.providerIndex,
       nativeIn
     );
-    const isBridge = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
+    const isBridgeInSourceNetwork = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
+    const isTransitTokenExpected = CELER_TRANSIT_TOKENS[toBlockchain].includes(toToken.address);
 
-    const preparedArgs = this.prepareArgs([
+    const methodArguments = this.prepareArgs([
       receiver,
       amountIn,
       dstChainId,
-      isBridge
+      isBridgeInSourceNetwork
         ? (this.celerTrade.srcSwap as SwapInfoBridge).srcBridgeToken
         : Object.values(this.celerTrade.srcSwap),
       Object.values(this.celerTrade.dstSwap),
-      this.celerTrade.maxSlippage,
-      nativeOut
+      this.celerTrade.maxSlippage
     ]);
 
     const msgValue = await this.calculateMsgValue(
       fromBlockchain,
       toBlockchain,
-      preparedArgs,
+      methodArguments,
       nativeIn,
       amountIn,
-      isBridge
+      isBridgeInSourceNetwork,
+      isTransitTokenExpected
     );
 
     let transactionHash: string;
@@ -119,7 +124,7 @@ export class CelerService {
       caller,
       CELER_CONTRACT_ABI,
       methodName,
-      preparedArgs,
+      methodArguments,
       {
         value: String(msgValue),
         onTransactionHash: (hash: string) => {
@@ -134,6 +139,15 @@ export class CelerService {
     return transactionHash;
   }
 
+  /**
+   * Preparing data for source swap.
+   * @param srcProvider Source provider data.
+   * @param fromBlockchain Source blockchain.
+   * @param fromTransitTokenAmount Transit token amount in source network.
+   * @param fromToken Token in.
+   * @param celerBridgeSlippage Celer bridge slippage.
+   * @returns Source swap data.
+   */
   private getSrcSwapObject(
     srcProvider: IndexedTradeAndToAmount,
     fromBlockchain: EthLikeBlockchainName,
@@ -155,9 +169,12 @@ export class CelerService {
 
     if (dexes.isProviderOneinch(srcProvider.providerIndex)) {
       const trade = srcProvider.tradeAndToAmount.trade as OneinchInstantTrade;
+      const [tokenIn, ...path] = trade?.path?.map(token => token.address);
+      const isInchNative = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' === tokenIn;
+
       return {
         dex: dexAddress,
-        path: trade?.path?.map(token => token.address),
+        path: [isInchNative ? WRAPPED_NATIVE[fromBlockchain] : tokenIn, ...path],
         data: trade.data,
         amountOutMinimum
       } as SwapInfoInch;
@@ -187,6 +204,14 @@ export class CelerService {
     }
   }
 
+  /**
+   * Preparing data for destination swap.
+   * @param dstProvider Target provider data.
+   * @param toBlockchain Target blockchain.
+   * @param estimatedTokenAmount Estimated amount out.
+   * @param toToken Token out.
+   * @returns Destination swap data.
+   */
   private getDstSwapObject(
     dstProvider: IndexedTradeAndToAmount,
     toBlockchain: EthLikeBlockchainName,
@@ -196,7 +221,7 @@ export class CelerService {
     const swapVersion = this.getCelerSwapVersion(toBlockchain, dstProvider.providerIndex);
     const dexes = this.contractsDataService.contracts[toBlockchain];
     const dexAddress = dexes.getProvider(dstProvider.providerIndex).contractAddress;
-    const amountOutMinimum = this.getAmountOutMinimum(estimatedTokenAmount);
+    const amountOutMinimum = this.getAmountWithUsersSlippage(estimatedTokenAmount);
     const canBridgeInTargetNetwork = this.isTransitToken(toToken);
 
     const dstSwap: SwapInfoDest = {
@@ -237,6 +262,19 @@ export class CelerService {
     return dstSwap;
   }
 
+  /**
+   * Builds celer trade object needed for swap.
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @param toToken Token out.
+   * @param fromToken Token in.
+   * @param fromTransitTokenAmount Transit token amount in source network.
+   * @param toAmount Amount out.
+   * @param srcProvider Source provider data.
+   * @param dstProvider Target provider data.
+   * @param maxSlippage Max slippage.
+   * @param celerBridgeSlippage Celer bridge slippage.
+   */
   public async buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
@@ -266,6 +304,14 @@ export class CelerService {
     };
   }
 
+  /**
+   * Gets celer's estimate for trade based on provided data.
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @param fromTransitTokenAmount Transit token amount in source network.
+   * @param celerBridgeSlippage Celer bridge slippage.
+   * @returns Estimated trade data.
+   */
   public async getCelerEstimate(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
@@ -288,6 +334,12 @@ export class CelerService {
       .toPromise();
   }
 
+  /**
+   * Get swap limit for celer's contract in provided blockchain.
+   * @param fromBlockchain Supposed blockchain.
+   * @param type Limit type expected.
+   * @returns Swap limit.
+   */
   public async getSwapLimit(
     fromBlockchain: EthLikeBlockchainName,
     type: 'min' | 'max'
@@ -305,13 +357,24 @@ export class CelerService {
     return amountInTokens;
   }
 
+  /**
+   * Calculates message value for celer swap based on final message length.
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @param data Message.
+   * @param nativeIn Is source token native.
+   * @param amountIn Trade amount.
+   * @param isBridge Is bridge swap in source network.
+   * @returns Message value for swap.
+   */
   private async calculateMsgValue(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     data: unknown,
     nativeIn: boolean,
     amountIn: string,
-    isBridge: boolean
+    isBridge: boolean,
+    isTransitTokenExpected: boolean
   ): Promise<number> {
     const dstNetworkId = this.getBlockchainId(toBlockchain);
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
@@ -330,7 +393,7 @@ export class CelerService {
       fromBlockchain
     ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
 
-    const fee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+    const feePerByte = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       messageBusAddress,
       MESSAGE_BUS_CONTRACT_ABI,
       'calcFee',
@@ -344,19 +407,29 @@ export class CelerService {
     );
 
     if (nativeIn) {
-      return Number(amountIn) + Number(fee) + Number(cryptoFee) + Number(feeBase);
+      return Number(amountIn) + Number(feePerByte) + Number(cryptoFee) + Number(feeBase);
     }
 
     if (isBridge) {
       // TODO investigate "insufficient fee" error with USDC as source token
-      const multipliedFeeBase =
-        fromBlockchain === BLOCKCHAIN_NAME.POLYGON ? Number(feeBase) * 2.5 : Number(feeBase) * 2;
-      return Number(fee) + Number(cryptoFee) + multipliedFeeBase;
+      const adjustedFeeBase = Number(feeBase) * FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN;
+      return Number(feePerByte) + Number(cryptoFee) + adjustedFeeBase;
     }
 
-    return Number(fee) + Number(cryptoFee) + Number(feeBase);
+    // TODO investigate "insufficient fee" error with USDC as target token
+    const adjustedFeePerByte = isTransitTokenExpected
+      ? Number(feePerByte) * FEE_MULTIPLIER_FOR_TARGET_TRANSIT_TOKEN
+      : Number(feePerByte);
+
+    return adjustedFeePerByte + Number(cryptoFee) + Number(feeBase);
   }
 
+  /**
+   * Checks if celer contracts are paused in source and target networks.
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @returns Result for each contract.
+   */
   public checkIsCelerContractPaused(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName
@@ -373,21 +446,45 @@ export class CelerService {
     return Promise.all([checkContract(fromBlockchain), checkContract(toBlockchain)]);
   }
 
+  /**
+   * Returns id of passed blockchain.
+   * @param blockchain Supposed blockchain.
+   * @returns Blockchain id.
+   */
   public getBlockchainId(blockchain: EthLikeBlockchainName): number {
     return networks.find(network => network.name === blockchain).id;
   }
 
+  /**
+   * Checks if the passed token is transit.
+   * @param token Verifiable token.
+   * @returns True if token is transit for token's blockchain.
+   */
   private isTransitToken(token: TokenAmount): boolean {
     return CELER_TRANSIT_TOKENS[token.blockchain].includes(token.address);
   }
 
-  private getAmountOutMinimum(amount: BigNumber): BigNumber {
+  /**
+   * Calculates token amount with user's slippage.
+   * @param amount Amount in.
+   * @returns Amount with slippage.
+   */
+  private getAmountWithUsersSlippage(amount: BigNumber): BigNumber {
     const slippage = this.userSlippage / 2;
 
     return amount.minus(amount.multipliedBy(slippage));
   }
 
-  private getCelerSwapVersion(blockchain: EthLikeBlockchainName, providerIndex: number): number {
+  /**
+   * Returns celer's swap version based on passed provider index and blockchain.
+   * @param blockchain Supposed blockchain.
+   * @param providerIndex Supposed provider index.
+   * @returns Celer's swap version
+   */
+  private getCelerSwapVersion(
+    blockchain: EthLikeBlockchainName,
+    providerIndex: number
+  ): SwapVersion {
     const ccrContract = this.contractsDataService.contracts[blockchain];
 
     if (ccrContract.isProviderUniV3(providerIndex)) {
@@ -397,6 +494,13 @@ export class CelerService {
     return SwapVersion.V2;
   }
 
+  /**
+   * Returns celer's contract swap method based on source token and dex.
+   * @param fromBlockchain Source blockchain.
+   * @param srcProviderIndex Source provider index.
+   * @param nativeIn Is source token native.
+   * @returns Celer swap method.
+   */
   private getSwapMethod(
     fromBlockchain: EthLikeBlockchainName,
     srcProviderIndex: number,
@@ -421,18 +525,39 @@ export class CelerService {
     }
   }
 
+  /**
+   * Returns Celer contract address used in passed blockchain.
+   * @param blockchain Supposed blockchain.
+   * @returns Celer contract address.
+   */
   public getCelerContractAddress(blockchain: EthLikeBlockchainName): string {
     return CELER_CONTRACT[blockchain];
   }
 
+  /**
+   * Checks if the passed blockchain supported by Celer.
+   * @param blockchain Verifiable blochain.
+   * @returns True if supported.
+   */
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return CELER_SUPPORTED_BLOCKCHAINS.includes(blockchain);
   }
 
+  /**
+   * Checks if the passed token is native.
+   * @param blockchain Token's blockchain.
+   * @param token Verifiable token.
+   * @returns True if token is native.
+   */
   private isNativeToken(blockchain: EthLikeBlockchainName, token: TokenAmount): boolean {
     return this.publicBlockchainAdapterService[blockchain].isNativeAddress(token.address);
   }
 
+  /**
+   * Transforms each element of array of arguments to string for smart-contract method call.
+   * @param args Array of arguments.
+   * @returns Prepared array of arguments.
+   */
   private prepareArgs(args: unknown[]): unknown[] {
     return args.map(arg => {
       if (Array.isArray(arg)) {
@@ -447,6 +572,13 @@ export class CelerService {
     });
   }
 
+  /**
+   * Calculates celer bridge slippage.
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @param amt Trade amount.
+   * @returns Celer bridge slippage.
+   */
   public async getCelerBridgeSlippage(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
@@ -466,6 +598,6 @@ export class CelerService {
       .pipe(pluck('bridge_rate'))
       .toPromise();
 
-    return Math.abs((1 - bridgeRate) * 100 * CELER_SLIPPAGE_ADDITIONAL_VALUE);
+    return Math.abs((1 - bridgeRate) * 100 * CELER_BRIDGE_SLIPPAGE_MULTIPLIER);
   }
 }
