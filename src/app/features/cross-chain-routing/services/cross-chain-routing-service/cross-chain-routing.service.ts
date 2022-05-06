@@ -57,6 +57,7 @@ import { transitTokens } from './contracts-data/contract-data/constants/transit-
 import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interface';
 import { CelerApiService } from '@features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
+import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -220,7 +221,8 @@ export class CrossChainRoutingService {
       fromBlockchain,
       fromToken,
       fromAmount,
-      fromTransitToken
+      fromTransitToken,
+      this.swapViaCeler ? WRAPPED_NATIVE[fromBlockchain] : undefined
     );
     let sourceBlockchainProvidersFiltered = this.swapViaCeler
       ? sourceBlockchainProviders.filter(provider => {
@@ -388,7 +390,8 @@ export class CrossChainRoutingService {
     blockchain: SupportedCrossChainBlockchain,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    wrappedNativeAddress?: string
   ): Promise<IndexedTradeAndToAmount[]> {
     const providers = this.contracts[blockchain].providersData;
 
@@ -399,7 +402,8 @@ export class CrossChainRoutingService {
         providerIndex,
         fromToken,
         fromAmount,
-        toToken
+        toToken,
+        wrappedNativeAddress
       )
     }));
 
@@ -429,7 +433,8 @@ export class CrossChainRoutingService {
     providerIndex: number,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    wrappedNativeAddress: string
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
@@ -439,7 +444,14 @@ export class CrossChainRoutingService {
           : this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
-          .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
+          .calculateTrade(
+            fromToken,
+            fromAmount,
+            toToken,
+            false,
+            contractAddress,
+            wrappedNativeAddress
+          );
         return {
           trade: instantTrade,
           toAmount: instantTrade.to.amount
