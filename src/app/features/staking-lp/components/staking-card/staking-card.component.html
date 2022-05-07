@@ -30,7 +30,9 @@
     appearance="secondary"
     class="join"
     (onClick)="onNavigate.emit(round)"
-    *ngIf="statuses | functionCall: isActive:this"
-    >Join Round</app-rubic-button
+    *ngIf="round === 2"
+    >{{
+      statuses && statuses.includes(roundStatus.CLOSED) ? 'Check' : 'Join Round'
+    }}</app-rubic-button
   >
 </div>
