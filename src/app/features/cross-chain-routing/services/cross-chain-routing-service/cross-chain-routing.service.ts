@@ -263,10 +263,8 @@ export class CrossChainRoutingService {
         fromTransitTokenAmount
       );
 
-      if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
-        fromSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
-        toSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
-      }
+      fromSlippage = toSlippage = this.slippageTolerance / 2 - celerBridgeSlippage;
+      debugger;
 
       const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
       celerEstimate = await this.celerService.getCelerEstimate(

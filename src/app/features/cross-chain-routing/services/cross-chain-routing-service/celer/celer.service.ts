@@ -19,7 +19,6 @@ import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../models/indexed-trade.interface';
 import { CelerApiService } from './celer-api.service';
 import {
-  CELER_BRIDGE_SLIPPAGE_MULTIPLIER,
   DEADLINE,
   EMPTY_DATA,
   FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN,
@@ -587,7 +586,7 @@ export class CelerService {
     const srcChainId = this.getBlockchainId(fromBlockchain);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const srcTransitTokenDecimals = transitTokens[fromBlockchain].decimals;
-    const bridgeRate = await this.celerApiService
+    const maxSlippage = await this.celerApiService
       .getEstimateAmt(
         srcChainId,
         dstChainId,
@@ -595,9 +594,9 @@ export class CelerService {
         0,
         Web3Pure.toWei(amt, srcTransitTokenDecimals)
       )
-      .pipe(pluck('bridge_rate'))
+      .pipe(pluck('max_slippage'))
       .toPromise();
 
-    return Math.abs((1 - bridgeRate) * 100 * CELER_BRIDGE_SLIPPAGE_MULTIPLIER);
+    return maxSlippage / 10 ** 6;
   }
 }
