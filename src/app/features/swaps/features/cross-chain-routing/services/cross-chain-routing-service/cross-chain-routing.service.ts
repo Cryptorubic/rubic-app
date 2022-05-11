@@ -2,9 +2,12 @@ import { PCacheable } from 'ts-cacheable';
 import InsufficientFundsGasPriceValueError from '@core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  EthLikeBlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
@@ -43,16 +46,13 @@ import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-tra
 import { SmartRouting } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
-
-interface TradeAndToAmount {
-  trade: InstantTrade | null;
-  toAmount: BigNumber;
-}
-
-interface IndexedTradeAndToAmount {
-  providerIndex: number;
-  tradeAndToAmount: TradeAndToAmount;
-}
+import { CelerService } from './celer/celer.service';
+import { CELER_CONTRACT } from './celer/constants/CELER_CONTRACT';
+import { transitTokens } from './contracts-data/contract-data/constants/transit-tokens';
+import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interface';
+import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
+import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
+import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -78,6 +78,10 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly contracts = this.contractsDataService.contracts;
 
+  private canSwapViaCeler: boolean = false;
+
+  private isSupportedCelerBlockchainPair: boolean = false;
+
   private currentCrossChainTrade: CrossChainTrade;
 
   /**
@@ -85,6 +89,18 @@ export class CrossChainRoutingService extends TradeService {
    */
   private get slippageTolerance(): number {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+  }
+
+  public get swapViaCeler(): boolean {
+    return this.isSupportedCelerBlockchainPair && this.canSwapViaCeler;
+  }
+
+  private readonly ccrUpperTransitAmountLimit = 280;
+
+  private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
+
+  public get celerSwapLimits(): { min: BigNumber; max: BigNumber } {
+    return this._celerSwapLimits$.getValue();
   }
 
   constructor(
@@ -102,7 +118,9 @@ export class CrossChainRoutingService extends TradeService {
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly celerService: CelerService,
+    private readonly celerApiService: CelerApiService
   ) {
     super('cross-chain-routing');
   }
@@ -112,12 +130,13 @@ export class CrossChainRoutingService extends TradeService {
     fromToken: BlockchainToken
   ): Promise<boolean> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    const contractAddress = this.contracts[fromBlockchain].address;
+    const ccrContractAddress = this.contracts[fromBlockchain].address;
+    const celerContractAddress = CELER_CONTRACT[fromBlockchain as EthLikeBlockchainName];
     return blockchainAdapter
       .getAllowance({
         tokenAddress: fromToken.address,
         ownerAddress: this.authService.userAddress,
-        spenderAddress: contractAddress
+        spenderAddress: this.swapViaCeler ? celerContractAddress : ccrContractAddress
       })
       .then(allowance => allowance.eq(0));
   }
@@ -126,7 +145,8 @@ export class CrossChainRoutingService extends TradeService {
     this.checkDeviceAndShowNotification();
 
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
-    const contractAddress = this.contracts[fromBlockchain].address;
+    const ccrContractAddress = this.contracts[fromBlockchain].address;
+    const celerContractAddress = CELER_CONTRACT[fromBlockchain as EthLikeBlockchainName];
 
     let approveInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
@@ -134,9 +154,14 @@ export class CrossChainRoutingService extends TradeService {
     };
 
     try {
-      await this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', {
-        onTransactionHash
-      });
+      await this.web3PrivateService.approveTokens(
+        fromToken.address,
+        this.swapViaCeler ? celerContractAddress : ccrContractAddress,
+        'infinity',
+        {
+          onTransactionHash
+        }
+      );
 
       this.notificationsService.showApproveSuccessful();
     } finally {
@@ -153,6 +178,10 @@ export class CrossChainRoutingService extends TradeService {
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
+
+    if (this.isSupportedCelerBlockchainPair) {
+      this.canSwapViaCeler = await this.canUseCeler(fromBlockchain, toBlockchain);
+    }
 
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
@@ -176,16 +205,65 @@ export class CrossChainRoutingService extends TradeService {
       fromBlockchain,
       fromToken,
       fromAmount,
-      fromTransitToken
+      fromTransitToken,
+      this.swapViaCeler ? WRAPPED_NATIVE[fromBlockchain] : undefined
     );
+    let sourceBlockchainProvidersFiltered = this.swapViaCeler
+      ? sourceBlockchainProviders.filter(provider => {
+          return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
+        })
+      : sourceBlockchainProviders;
+
+    if (
+      !sourceBlockchainProviders[0].tradeAndToAmount.toAmount.gt(this.ccrUpperTransitAmountLimit)
+    ) {
+      this.canSwapViaCeler = false;
+      sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
+        fromBlockchain,
+        fromToken,
+        fromAmount,
+        fromTransitToken
+      );
+    }
+
     const {
       providerIndex: fromProviderIndex,
       tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
-    } = sourceBlockchainProviders[0];
+    } = sourceBlockchainProvidersFiltered[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
-    let finalTransitAmount = fromTransitTokenAmount;
+    let finalTransitAmount: BigNumber;
+    let celerEstimate: EstimateAmtResponse;
+    let celerBridgeSlippage: number;
+
+    if (this.swapViaCeler) {
+      celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName,
+        fromTransitTokenAmount
+      );
+
+      if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
+        fromSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
+        toSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
+      }
+
+      const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
+      celerEstimate = await this.celerService.getCelerEstimate(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName,
+        amountWithSlippage,
+        celerBridgeSlippage
+      );
+
+      finalTransitAmount = Web3Pure.fromWei(
+        celerEstimate.estimated_receive_amt,
+        transitTokens[toBlockchain].decimals
+      );
+    } else {
+      finalTransitAmount = fromTransitTokenAmount;
+    }
 
     /**
      * @TODO Take crypto fee on contract.
@@ -202,7 +280,7 @@ export class CrossChainRoutingService extends TradeService {
       toBlockchain,
       finalTransitAmount,
       fromTrade === null,
-      fromSlippage
+      this.swapViaCeler ? 1 : fromSlippage
     );
 
     const targetBlockchainProviders = await this.getSortedProvidersList(
@@ -211,11 +289,34 @@ export class CrossChainRoutingService extends TradeService {
       toTransitTokenAmount,
       toToken
     );
+    const targetBlockchainProvidersFiltered = this.swapViaCeler
+      ? targetBlockchainProviders.filter(provider => {
+          return (
+            !this.contracts[toBlockchain].isProviderAlgebra(provider.providerIndex) &&
+            !this.contracts[toBlockchain].isProviderOneinch(provider.providerIndex)
+          );
+        })
+      : targetBlockchainProviders;
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = targetBlockchainProviders[0];
+    } = targetBlockchainProvidersFiltered[0];
+
+    if (this.swapViaCeler) {
+      await this.celerService.buildCelerTrade(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName,
+        toToken,
+        fromToken,
+        fromTransitTokenAmount,
+        toAmount,
+        sourceBlockchainProvidersFiltered[0],
+        targetBlockchainProvidersFiltered[0],
+        celerEstimate.max_slippage,
+        celerBridgeSlippage
+      );
+    }
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -239,8 +340,8 @@ export class CrossChainRoutingService extends TradeService {
     };
 
     await this.calculateSmartRouting(
-      sourceBlockchainProviders,
-      targetBlockchainProviders,
+      sourceBlockchainProvidersFiltered,
+      targetBlockchainProvidersFiltered,
       fromBlockchain,
       toBlockchain,
       toToken.address
@@ -274,16 +375,20 @@ export class CrossChainRoutingService extends TradeService {
     blockchain: SupportedCrossChainBlockchain,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    wrappedNativeAddress?: string
   ): Promise<IndexedTradeAndToAmount[]> {
-    const promises = this.contracts[blockchain].providersData.map(async (_, providerIndex) => ({
+    const providers = this.contracts[blockchain].providersData;
+
+    const promises = providers.map(async (_, providerIndex) => ({
       providerIndex,
       tradeAndToAmount: await this.getTradeAndToAmount(
         blockchain,
         providerIndex,
         fromToken,
         fromAmount,
-        toToken
+        toToken,
+        wrappedNativeAddress
       )
     }));
 
@@ -313,14 +418,25 @@ export class CrossChainRoutingService extends TradeService {
     providerIndex: number,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    wrappedNativeAddress: string
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
-        const contractAddress = this.contracts[blockchain].address;
+        // needed for correct 1inch trade data
+        const contractAddress = this.swapViaCeler
+          ? this.celerService.getCelerContractAddress(blockchain as EthLikeBlockchainName)
+          : this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
-          .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
+          .calculateTrade(
+            fromToken,
+            fromAmount,
+            toToken,
+            false,
+            contractAddress,
+            wrappedNativeAddress
+          );
         return {
           trade: instantTrade,
           toAmount: instantTrade.to.amount
@@ -346,36 +462,76 @@ export class CrossChainRoutingService extends TradeService {
     maxAmountError?: BigNumber;
   }> {
     const { fromBlockchain, fromTransitTokenAmount, fromSlippage } = trade;
-    const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
-      await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);
 
-    if (fromTransitTokenAmount.lt(minTransitTokenAmount)) {
-      const minAmount = await this.getFromTokenAmount(
-        fromBlockchain,
-        trade.fromProviderIndex,
-        trade.tokenIn,
-        minTransitTokenAmount,
+    if (this.swapViaCeler) {
+      const minTransitTokenAmount = await this.celerService.getSwapLimit(
+        fromBlockchain as EthLikeBlockchainName,
         'min'
       );
-      if (!minAmount?.isFinite()) {
-        throw new InsufficientLiquidityError('CrossChainRouting');
-      }
-      return {
-        minAmountError: minAmount
-      };
-    }
-
-    if (fromTransitTokenAmount.gt(maxTransitTokenAmount)) {
-      const maxAmount = await this.getFromTokenAmount(
-        fromBlockchain,
-        trade.fromProviderIndex,
-        trade.tokenIn,
-        maxTransitTokenAmount,
+      const maxTransitTokenAmount = await this.celerService.getSwapLimit(
+        fromBlockchain as EthLikeBlockchainName,
         'max'
       );
-      return {
-        maxAmountError: maxAmount
+      const limits: { min: BigNumber; max: BigNumber } = {
+        min: undefined,
+        max: undefined
       };
+
+      if (fromTransitTokenAmount.lt(minTransitTokenAmount)) {
+        const minAmount = await this.getFromTokenAmount(
+          fromBlockchain,
+          trade.fromProviderIndex,
+          trade.tokenIn,
+          minTransitTokenAmount,
+          'min'
+        );
+        limits.min = minAmount;
+      }
+
+      if (fromTransitTokenAmount.gt(maxTransitTokenAmount)) {
+        const maxAmount = await this.getFromTokenAmount(
+          fromBlockchain,
+          trade.fromProviderIndex,
+          trade.tokenIn,
+          maxTransitTokenAmount,
+          'max'
+        );
+        limits.max = maxAmount;
+      }
+
+      this._celerSwapLimits$.next(limits);
+    } else {
+      const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
+        await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);
+
+      if (fromTransitTokenAmount.lt(minTransitTokenAmount)) {
+        const minAmount = await this.getFromTokenAmount(
+          fromBlockchain,
+          trade.fromProviderIndex,
+          trade.tokenIn,
+          minTransitTokenAmount,
+          'min'
+        );
+        if (!minAmount?.isFinite()) {
+          throw new InsufficientLiquidityError('CrossChainRouting');
+        }
+        return {
+          minAmountError: minAmount
+        };
+      }
+
+      if (fromTransitTokenAmount.gt(maxTransitTokenAmount)) {
+        const maxAmount = await this.getFromTokenAmount(
+          fromBlockchain,
+          trade.fromProviderIndex,
+          trade.tokenIn,
+          maxTransitTokenAmount,
+          'max'
+        );
+        return {
+          maxAmountError: maxAmount
+        };
+      }
     }
 
     return {};
@@ -762,7 +918,8 @@ export class CrossChainRoutingService extends TradeService {
 
     let transactionHash;
     let subscription$: Subscription;
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, fromAmount, fromToken, toBlockchain, toToken } =
+      this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
 
@@ -773,14 +930,33 @@ export class CrossChainRoutingService extends TradeService {
 
         subscription$ = this.notifyTradeInProgress(txHash, fromBlockchain);
       }
+
+      if (this.swapViaCeler) {
+        this.celerApiService.postTradeInfo(
+          this.currentCrossChainTrade.fromBlockchain,
+          'celer',
+          txHash
+        );
+      }
     };
 
     try {
-      transactionHash = await this.contractExecutorFacade.executeTrade(
-        this.currentCrossChainTrade,
-        { onTransactionHash },
-        this.authService.userAddress
-      );
+      if (this.swapViaCeler) {
+        transactionHash = await this.celerService.makeTransferWithSwap(
+          fromAmount,
+          fromBlockchain as EthLikeBlockchainName,
+          fromToken,
+          toBlockchain as EthLikeBlockchainName,
+          toToken,
+          onTransactionHash
+        );
+      } else {
+        transactionHash = await this.contractExecutorFacade.executeTrade(
+          this.currentCrossChainTrade,
+          { onTransactionHash },
+          this.authService.userAddress
+        );
+      }
 
       subscription$?.unsubscribe();
       this.showSuccessTrxNotification();
@@ -867,6 +1043,28 @@ export class CrossChainRoutingService extends TradeService {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.showOpenMobileWallet();
     }
+  }
+
+  private async canUseCeler(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): Promise<boolean> {
+    const [srcCelerContractPaused, dstCelerContractPaused] =
+      await this.celerService.checkIsCelerContractPaused(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName
+      );
+
+    return !srcCelerContractPaused && !dstCelerContractPaused;
+  }
+
+  public setIsSupportedCelerBlockchainPair(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): void {
+    this.isSupportedCelerBlockchainPair =
+      this.celerService.isSupportedBlockchain(fromBlockchain) &&
+      this.celerService.isSupportedBlockchain(toBlockchain);
   }
 
   private async calculateSmartRouting(

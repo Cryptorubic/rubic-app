@@ -51,9 +51,10 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
 
   private getOneInchTokenSpecificAddresses(
     fromAddress: string,
-    toAddress: string
+    toAddress: string,
+    wrappedNativeAddress?: string
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    const nativeAddress = this.oneInchNativeAddress;
+    const nativeAddress = wrappedNativeAddress || this.oneInchNativeAddress;
     const fromTokenAddress = fromAddress === NATIVE_TOKEN_ADDRESS ? nativeAddress : fromAddress;
     const toTokenAddress = toAddress === NATIVE_TOKEN_ADDRESS ? nativeAddress : toAddress;
     return { fromTokenAddress, toTokenAddress };
@@ -83,11 +84,13 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
-    fromAddress?: string
+    fromAddress?: string,
+    wrappedNativeAddress?: string
   ): Promise<OneinchInstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
-      toToken.address
+      toToken.address,
+      wrappedNativeAddress
     );
 
     const supportedTokensAddresses = await this.getSupportedTokensByBlockchain();

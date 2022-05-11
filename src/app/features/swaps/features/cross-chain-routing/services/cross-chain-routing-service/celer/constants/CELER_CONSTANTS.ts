@@ -1,0 +1,11 @@
+export const EMPTY_DATA = '0x';
+
+export const CELER_SLIPPAGE = 0.15;
+
+export const DEADLINE = 999999999999999;
+
+export const CELER_BRIDGE_SLIPPAGE_MULTIPLIER = 1.01;
+
+export const FEE_MULTIPLIER_FOR_TARGET_TRANSIT_TOKEN = 1.5;
+
+export const FEE_MULTIPLIER_FOR_SOURCE_TRANSIT_TOKEN = 2.5;

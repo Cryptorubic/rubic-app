@@ -92,8 +92,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        // TODO enable on third day
-        // switchMap(() => this.stakingLpService.getTtv()),
+        switchMap(() => this.stakingLpService.getTtv()),
         take(1)
       )
       .subscribe(() => {
@@ -123,8 +122,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         switchMap(() => this.stakingLpService.getTvlStaking()),
         tap(() => this.stakingLpService.getTotalTvl()),
-        // TODO enable on third day
-        // switchMap(() => this.stakingLpService.getTtv()),
+        switchMap(() => this.stakingLpService.getTtv()),
         take(1)
       )
       .subscribe(() => {

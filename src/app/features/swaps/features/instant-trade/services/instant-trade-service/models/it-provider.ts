@@ -29,7 +29,8 @@ export interface ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
-    fromAddress?: string
+    fromAddress?: string,
+    wrappedNativeAddress?: string
   ): Promise<InstantTrade>;
 
   createTrade(trade: InstantTrade, options: ItOptions): Promise<Partial<TransactionReceipt>>;

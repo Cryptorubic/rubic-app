@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -127,14 +127,11 @@ export class InstantTradeService extends TradeService {
     providersNames: INSTANT_TRADE_PROVIDER[]
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
-
     const providers = providersNames.map(
       providerName => this.providers[fromBlockchain][providerName]
     );
     const shouldCalculateGas =
-      SHOULD_CALCULATE_GAS_BLOCKCHAIN[
-        fromBlockchain as keyof typeof SHOULD_CALCULATE_GAS_BLOCKCHAIN
-      ];
+      SHOULD_CALCULATE_GAS_BLOCKCHAIN[fromBlockchain as EthLikeBlockchainName];
     const providersDataPromises = providers.map(provider =>
       provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas)
     );
