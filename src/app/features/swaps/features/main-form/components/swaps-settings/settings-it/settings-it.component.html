@@ -18,19 +18,18 @@
       >
         Auto
       </div>
-      <div id="slippageTolerance">
-        <tui-input-number
-          [ngModel]="slippageTolerance"
-          (ngModelChange)="onSlippageToleranceChange($event)"
-          [ngModelOptions]="{ standalone: true }"
-          [tuiTextfieldLabelOutside]="true"
-          [tuiTextfieldSize]="'s'"
-          [max]="50"
-          [min]="0.1"
-          [postfix]="'%'"
-          >2%
-        </tui-input-number>
-      </div>
+      <tui-input-number
+        id="slippageTolerance"
+        [ngModel]="slippageTolerance"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [tuiTextfieldLabelOutside]="true"
+        [tuiTextfieldSize]="'s'"
+        [max]="50"
+        [min]="0.1"
+        [postfix]="'%'"
+        >2%
+      </tui-input-number>
     </div>
     <div class="settings__form-row settings__form-row_small-input">
       <div class="settings__form-row">

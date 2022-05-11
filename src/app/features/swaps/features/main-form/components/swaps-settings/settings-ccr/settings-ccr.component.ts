@@ -5,12 +5,19 @@ import {
   SettingsService
 } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { PromoCode } from '@features/swaps/features/main-form/models/promo-code';
+import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-settings-ccr',
   templateUrl: './settings-ccr.component.html',
   styleUrls: ['./settings-ccr.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: TUI_NUMBER_FORMAT,
+      useValue: { decimalSeparator: '.', thousandSeparator: ',' }
+    }
+  ]
 })
 export class SettingsCcrComponent implements OnInit {
   public readonly defaultSlippageTolerance: number;
