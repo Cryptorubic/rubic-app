@@ -486,7 +486,7 @@ export class CrossChainRoutingService {
       targetPoolBalance,
       targetTransitToken.decimals
     );
-    debugger;
+
     return transitTokenAmount.lt(targetPoolBalanceInTokens);
   }
 
