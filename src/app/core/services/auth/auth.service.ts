@@ -17,6 +17,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { BrowserService } from '../browser/browser.service';
 import { BROWSER } from '@app/shared/models/browser/browser';
 import { compareAddresses } from '@shared/utils/utils';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -56,6 +57,7 @@ export class AuthService {
     private readonly errorService: ErrorsService,
     private readonly cookieService: CookieService,
     @Inject(WINDOW) private window: RubicWindow,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly browserService: BrowserService
   ) {
     this.isAuthProcess = false;
@@ -157,7 +159,7 @@ export class AuthService {
   /**
    * Connect wallet.
    */
-  public async serverlessSignIn(): Promise<void> {
+  public async serverlessSignIn(provider?: WALLET_NAME): Promise<void> {
     const isMetamaskBrowser = this.browserService.currentBrowser === BROWSER.METAMASK;
     try {
       this.isAuthProcess = true;
@@ -169,10 +171,13 @@ export class AuthService {
 
       if (permissions) {
         await this.walletConnectorService.activate();
-
         const { address } = this.walletConnectorService;
         this.currentUser$.next({ address } || null);
         this.cookieService.set('address', address, 7, null, null, null, null);
+
+        if (provider) {
+          this.gtmService.fireConnectWalletEvent(provider);
+        }
       } else {
         this.currentUser$.next(null);
       }
