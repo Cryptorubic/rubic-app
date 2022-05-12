@@ -91,7 +91,7 @@ export class StakeButtonContainerComponent implements OnInit {
 
   public readonly isUserWhitelisted = this.stakingService.isUserWhitelisted;
 
-  public readonly isNotFirstStakingRound = this.stakingService.stakingRound !== 1;
+  public readonly stakingRound = this.stakingService.stakingRound;
 
   public readonly isBridgeTokenSelected$ = this.stakingService.selectedToken$.pipe(
     pluck('blockchain'),
