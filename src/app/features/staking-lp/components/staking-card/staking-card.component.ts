@@ -37,9 +37,7 @@ export class StakingCardComponent {
 
   public readonly statusBadgeText = STATUS_BADGE_TEXT;
 
-  constructor() {}
+  public readonly roundStatus = RoundStatus;
 
-  public isActive(statuses: RoundStatus[]): boolean {
-    return !statuses.includes(RoundStatus.CLOSED);
-  }
+  constructor() {}
 }

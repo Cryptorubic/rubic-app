@@ -171,7 +171,7 @@ export class WalletsModalComponent implements OnInit {
     try {
       const connectionSuccessful = await this.walletConnectorService.connectProvider(provider);
       if (connectionSuccessful) {
-        await this.authService.serverlessSignIn();
+        await this.authService.serverlessSignIn(provider);
       }
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);

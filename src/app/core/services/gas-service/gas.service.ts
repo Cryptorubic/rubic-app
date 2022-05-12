@@ -13,7 +13,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.AVALANCHE,
-  BLOCKCHAIN_NAME.TELOS
+  BLOCKCHAIN_NAME.TELOS,
+  BLOCKCHAIN_NAME.FANTOM
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -61,14 +62,16 @@ export class GasService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.AVALANCHE]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.TELOS]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.TELOS]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
       [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this),
       [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this),
-      [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this)
+      [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
+      [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -191,5 +194,16 @@ export class GasService {
   })
   private fetchTelosGas(): Observable<number | null> {
     return of(500);
+  }
+
+  /**
+   * Gets Fantom gas from gas station api.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchFantomGas(): Observable<number | null> {
+    return of(700);
   }
 }
