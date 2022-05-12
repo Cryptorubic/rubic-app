@@ -16,6 +16,7 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -57,9 +58,10 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   constructor(
     public readonly swapFormService: SwapFormService,
+    private readonly translateService: TranslateService,
+    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService,
-    private readonly translateService: TranslateService
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
@@ -80,7 +82,9 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    this.tokenAmountInput.nativeElement.focus();
+    if (!this.iframeService.isIframe) {
+      this.tokenAmountInput.nativeElement.focus();
+    }
   }
 
   public onUserBalanceMaxButtonClick(): void {

@@ -43,11 +43,13 @@
     </label>
 
     <app-usd-price-container *noFrame [usdPrice]="usdPrice"></app-usd-price-container>
+
     <div class="token-amount-input-container__iframe-info-cards" *onlyFrame="'horizontal'">
       <app-usd-price-container
         *ngIf="usdPrice?.gt(0)"
         [usdPrice]="usdPrice"
       ></app-usd-price-container>
+
       <app-user-balance-container
         [token]="selectedToken"
         hide="maxButton"

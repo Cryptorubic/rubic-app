@@ -13,17 +13,20 @@
       [blockchain]="blockchain"
     >
     </app-iframe-blockchain-indicator>
+
     <label class="blockchain-and-amount-input__label">
       <input
         autocomplete="off"
         class="blockchain-and-amount-input__input"
         name="token-amount"
-        [placeholder]="placeholder"
+        [placeholder]="placeholder$ | async"
         appTokenAmount
         [formControl]="amount"
         [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
         (amountChange)="onAmountChange($event)"
+        inputmode="decimal"
       />
+
       <app-user-balance-container
         [token]="selectedToken"
         hide="balance"
@@ -37,6 +40,7 @@
       *ngIf="usdPrice?.gt(0)"
       [usdPrice]="usdPrice"
     ></app-usd-price-container>
+
     <app-user-balance-container
       [token]="selectedToken"
       hide="maxButton"
