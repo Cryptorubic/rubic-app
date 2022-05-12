@@ -12,6 +12,7 @@ import { FormControl } from '@ngneat/reactive-forms';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vertical-iframe-token-amount-input',
@@ -24,7 +25,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
 
   @Input() tokens: AvailableTokenAmount[];
 
-  @Input() placeholder = '0.0';
+  public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');
 
   private get formattedAmount(): string {
     return this.amount.value.split(',').join('');
@@ -42,6 +43,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
 
   constructor(
     public readonly swapFormService: SwapFormService,
+    private readonly translateService: TranslateService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService
   ) {}
