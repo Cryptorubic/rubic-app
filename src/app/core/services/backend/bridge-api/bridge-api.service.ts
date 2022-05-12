@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BridgeTrade } from '@features/bridge/models/bridge-trade';
-import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
+import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { EMPTY, Observable } from 'rxjs';
 import { first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
