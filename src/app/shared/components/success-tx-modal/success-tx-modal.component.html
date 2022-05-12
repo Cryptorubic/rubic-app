@@ -8,9 +8,9 @@
       />
       <h3 *noFrame="'horizontal'" class="modal__title">
         {{
-          (type === 'cross-chain-routing'
-            ? 'notifications.successfulCCRSwapTitle'
-            : 'notifications.successfullySentTransaction'
+          (type === 'instant-trade'
+            ? 'notifications.successfullySentTransaction'
+            : 'notifications.successfulCCRSwapTitle'
           ) | translate
         }}
       </h3>
@@ -32,9 +32,9 @@
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{
-          (type === 'cross-chain-routing'
-            ? 'modals.successTxModal.ccrTitle'
-            : 'modals.successTxModal.title'
+          (type === 'instant-trade'
+            ? 'modals.successTxModal.title'
+            : 'modals.successTxModal.ccrTitle'
           ) | translate
         }}
       </h3>
