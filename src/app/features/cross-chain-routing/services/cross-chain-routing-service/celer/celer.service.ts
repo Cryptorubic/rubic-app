@@ -13,7 +13,6 @@ import {
 } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { pluck } from 'rxjs/operators';
 import { transitTokens } from '../contracts-data/contract-data/constants/transit-tokens';
 import { ContractsDataService } from '../contracts-data/contracts-data.service';
 import { IndexedTradeAndToAmount } from '../models/indexed-trade.interface';
@@ -327,7 +326,7 @@ export class CelerService {
         srcChainId,
         dstChainId,
         'USDC',
-        Number((celerBridgeSlippage * 1000000).toFixed(0)),
+        Number((celerBridgeSlippage * 100 * 10 ** 6).toFixed(0)),
         Web3Pure.toWei(fromTransitTokenAmount, srcTransitTokenDecimals)
       )
       .toPromise();
@@ -586,7 +585,7 @@ export class CelerService {
     const srcChainId = this.getBlockchainId(fromBlockchain);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const srcTransitTokenDecimals = transitTokens[fromBlockchain].decimals;
-    const maxSlippage = await this.celerApiService
+    const estimate = await this.celerApiService
       .getEstimateAmt(
         srcChainId,
         dstChainId,
@@ -594,9 +593,8 @@ export class CelerService {
         0,
         Web3Pure.toWei(amt, srcTransitTokenDecimals)
       )
-      .pipe(pluck('max_slippage'))
       .toPromise();
 
-    return maxSlippage / 10 ** 6;
+    return estimate.max_slippage / 10 ** 6 / 100;
   }
 }
