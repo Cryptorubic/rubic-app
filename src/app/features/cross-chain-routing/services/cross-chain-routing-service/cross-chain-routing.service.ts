@@ -281,7 +281,7 @@ export class CrossChainRoutingService {
 
       finalTransitAmount = Web3Pure.fromWei(
         celerEstimate.estimated_receive_amt,
-        transitTokens[toBlockchain].decimals
+        transitTokens[fromBlockchain].decimals
       );
     } else {
       finalTransitAmount = fromTransitTokenAmount;
