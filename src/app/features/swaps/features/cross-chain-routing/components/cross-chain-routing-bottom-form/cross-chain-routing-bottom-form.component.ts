@@ -34,7 +34,6 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -45,6 +44,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { RefreshButtonService } from '@features/swaps/core/services/refresh-button-service/refresh-button.service';
+import { REFRESH_BUTTON_STATUS } from '@features/swaps/core/services/refresh-button-service/models/refresh-button-status';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -56,16 +57,11 @@ type CalculateTradeType = 'normal' | 'hidden';
   providers: [TuiDestroyService]
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit {
-  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
-  @Input() onRefreshTrade: Subject<void>;
-
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
-
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
@@ -130,6 +126,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly refreshButtonService: RefreshButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -179,7 +176,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.refreshButtonService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
+      if (
+        status === REFRESH_BUTTON_STATUS.REFRESHING &&
+        this.tradeStatus !== TRADE_STATUS.LOADING
+      ) {
+        this.conditionalCalculate();
+      }
+    });
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -231,7 +235,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
           const calculateNeedApprove =
@@ -288,7 +292,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+        this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
 
         this.cdr.markForCheck();
       });
@@ -307,7 +311,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
           const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
@@ -344,7 +348,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+        this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
 
         this.cdr.markForCheck();
       });
@@ -385,7 +389,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public async approveTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
@@ -404,12 +408,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
   }
 
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
@@ -434,7 +438,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
-      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+      this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
     }
   }
 }

@@ -29,7 +29,6 @@ import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
-import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
@@ -77,7 +76,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     RubicTokensComponent,
-    RubicRefreshButtonComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -160,7 +158,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,
-    RubicRefreshButtonComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,

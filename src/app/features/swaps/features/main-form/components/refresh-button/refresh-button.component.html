@@ -1,7 +1,9 @@
 <div class="refresh-button">
   <img
-    class="refresh-icon"
-    [ngClass]="{ autoRefresh: autoUpdate && !stopAnimation }"
+    class="refresh-button__icon"
+    [ngClass]="{
+      animate: !stopAnimation
+    }"
     [src]="imageUrl"
     width="18"
     height="18"
@@ -12,8 +14,9 @@
     (click)="toggleClick()"
     #refreshIcon
   />
+
   <svg
-    *ngIf="autoUpdate && status === REFRESH_BUTTON_STATUS.STOPPED"
+    *ngIf="(status$ | async) === REFRESH_BUTTON_STATUS.ON_TIMER && (autoRefresh$ | async)"
     class="refresh-button__outline-icon"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -29,5 +32,7 @@
 </div>
 
 <ng-template #refreshIconTooltip
-  ><span class="refresh-icon-tooltip">{{ hint }}</span></ng-template
+  ><span class="refresh-icon-tooltip">{{
+    (this.autoRefresh$ | async) ? 'Disable auto refresh' : 'Enable auto refresh'
+  }}</span></ng-template
 >

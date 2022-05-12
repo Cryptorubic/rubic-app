@@ -4,12 +4,11 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -24,14 +23,12 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
-import { AuthService } from '@core/services/auth/auth.service';
 
 type TokenType = 'from' | 'to';
 
@@ -55,14 +52,7 @@ export class SwapsFormComponent implements OnInit {
 
   public tradeStatus: TRADE_STATUS;
 
-  public autoRefresh: boolean;
-
   public allowRefresh: boolean = true;
-
-  public maxGasFee: BigNumber;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public onRefreshTrade$ = new Subject<void>();
 
   private _supportedTokens: List<TokenAmount>;
 
@@ -77,8 +67,6 @@ export class SwapsFormComponent implements OnInit {
   public availableFavoriteTokens: AvailableTokens;
 
   public selectedToken: SelectedToken;
-
-  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
   public fromBlockchain: BlockchainName;
 
@@ -113,15 +101,6 @@ export class SwapsFormComponent implements OnInit {
     );
   }
 
-  public get loadingStatus(): REFRESH_BUTTON_STATUS {
-    return this._loadingStatus;
-  }
-
-  public set loadingStatus(status: REFRESH_BUTTON_STATUS) {
-    this._loadingStatus = status;
-    this.cdr.detectChanges();
-  }
-
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -131,8 +110,7 @@ export class SwapsFormComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
-    private readonly gtmService: GoogleTagManagerService,
-    private readonly authService: AuthService
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.availableTokens = {
       from: [],
@@ -151,19 +129,6 @@ export class SwapsFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnTokens();
-    this.subscribeOnSettings();
-
-    this.swapsService.swapMode$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(swapMode => {
-        this.swapType = swapMode;
-        if (this.authService?.user?.address) {
-          this.autoRefresh =
-            swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-              ? this.settingsService.instantTradeValue.autoRefresh
-              : this.settingsService.crossChainRoutingValue.autoRefresh;
-        }
-      });
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
@@ -228,25 +193,6 @@ export class SwapsFormComponent implements OnInit {
 
     this.isLoading = false;
     this.cdr.detectChanges();
-  }
-
-  private subscribeOnSettings(): void {
-    combineLatest([
-      this.settingsService.instantTradeValueChanges.pipe(
-        startWith(this.settingsService.instantTradeValue)
-      ),
-      this.settingsService.crossChainRoutingValueChanges.pipe(
-        startWith(this.settingsService.crossChainRoutingValue)
-      )
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([instantTradeSettings, crossChainRoutingSettings]) => {
-        if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-          this.autoRefresh = instantTradeSettings.autoRefresh;
-        } else {
-          this.autoRefresh = crossChainRoutingSettings.autoRefresh;
-        }
-      });
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -431,9 +377,5 @@ export class SwapsFormComponent implements OnInit {
           this.gtmService.needTrackFormEventsNow = true;
         }
       });
-  }
-
-  public onRefresh(): void {
-    this.onRefreshTrade$.next();
   }
 }

@@ -8,16 +8,13 @@
         [toBlockchain]="toBlockchain"
         [selectedToken]="selectedToken"
       ></app-swaps-header>
+
       <div class="swaps-form__settings-wrapper">
-        <app-rubic-refresh-button
+        <app-refresh-button
           class="swaps-form__refresh"
           *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
-          type="autoRefresh"
-          (onRefresh)="onRefresh()"
-          [loadingStatus]="loadingStatus"
-          [autoUpdate]="autoRefresh"
-          [swapType]="swapType"
-        ></app-rubic-refresh-button>
+        ></app-refresh-button>
+
         <app-settings-container
           *ngIf="!isBridge"
           class="swaps-form__settings"
@@ -28,14 +25,10 @@
     <!-- TODO: refactor update button, move subscription into service -->
     <ng-container *onlyFrame>
       <!-- prettier-ignore -->
-      <app-rubic-refresh-button
+      <app-refresh-button
         *ngIf="isInstantTrade && allowTrade && allowRefresh"
         style="display: none;"
-        type="autoRefresh"
-        (onRefresh)="onRefresh()"
-        [loadingStatus]="loadingStatus"
-        [autoUpdate]="autoRefresh"
-      ></app-rubic-refresh-button>
+      ></app-refresh-button>
     </ng-container>
 
     <main class="swaps-form__content">
@@ -71,8 +64,6 @@
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"
-          [onRefreshTrade]="onRefreshTrade$"
-          (onRefreshStatusChange)="loadingStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           [favoriteTokens]="availableFavoriteTokens['to']"
@@ -91,8 +82,6 @@
 
         <app-cross-chain-routing-bottom-form
           *ngIf="isCrossChainRouting"
-          [onRefreshTrade]="onRefreshTrade$"
-          (onRefreshStatusChange)="loadingStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (tradeStatusChange)="tradeStatus = $event"

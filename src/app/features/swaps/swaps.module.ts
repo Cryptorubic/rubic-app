@@ -46,6 +46,8 @@ import { BridgeSwapInfoComponent } from './features/main-form/components/swap-in
 import { SwapsSwitcherComponent } from '@features/swaps/features/main-form/components/swaps-switcher/swaps-switcher.component';
 import { PlatformTokensAmountComponent } from './features/main-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { SwapsHeaderComponent } from '@features/swaps/features/main-form/components/swaps-header/swaps-header.component';
+import { RefreshButtonService } from '@features/swaps/core/services/refresh-button-service/refresh-button.service';
+import { RefreshButtonComponent } from '@features/swaps/features/main-form/components/refresh-button/refresh-button.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,8 @@ import { SwapsHeaderComponent } from '@features/swaps/features/main-form/compone
     PriceImpactInfoLineComponent,
     SwapsSwitcherComponent,
     PlatformTokensAmountComponent,
-    SwapsHeaderComponent
+    SwapsHeaderComponent,
+    RefreshButtonComponent
   ],
   exports: [],
   imports: [
@@ -101,6 +104,6 @@ import { SwapsHeaderComponent } from '@features/swaps/features/main-form/compone
     SettingsCcrComponent,
     IframeSettingsComponent
   ],
-  providers: [SwapsService, SuccessTxModalService]
+  providers: [SwapsService, SuccessTxModalService, RefreshButtonService]
 })
 export class SwapsModule {}

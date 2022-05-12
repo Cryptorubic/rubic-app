@@ -35,7 +35,6 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -49,6 +48,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
+import { RefreshButtonService } from '@features/swaps/core/services/refresh-button-service/refresh-button.service';
+import { REFRESH_BUTTON_STATUS } from '@features/swaps/core/services/refresh-button-service/models/refresh-button-status';
 
 interface SettledProviderTrade {
   providerName: INSTANT_TRADE_PROVIDER;
@@ -68,16 +69,11 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
-  @Input() onRefreshTrade: Subject<void>;
-
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
-
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
@@ -190,6 +186,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly refreshButtonService: RefreshButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isIframe = this.iframeService.isIframe;
@@ -255,7 +252,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.refreshButtonService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
+      if (
+        status === REFRESH_BUTTON_STATUS.REFRESHING &&
+        this.tradeStatus !== TRADE_STATUS.LOADING
+      ) {
+        this.conditionalCalculate();
+      }
+    });
   }
 
   /**
@@ -324,7 +328,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
           }
 
           this.setProvidersStateCalculating();
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const providersNames = this.providersData.map(provider => provider.name);
           const providersApproveData$ = this.authService.user?.address
@@ -344,7 +348,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
               }));
               this.setupProviders(settledProvidersTrades);
 
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+              this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
             })
           );
         }),
@@ -504,8 +508,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
-
           const providersNames = this.providersData.map(provider => provider.name);
           const providersTrades$ = from(this.instantTradeService.calculateTrades(providersNames));
 
@@ -519,7 +521,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
               this.cdr.markForCheck();
 
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+              console.log('stop');
+              this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
             })
           );
         }),
@@ -637,7 +640,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
     const provider = this.selectedProvider;
     try {
@@ -665,7 +668,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
   }
 
   public async createTrade(): Promise<void> {
@@ -689,7 +692,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       INSTANT_TRADE_STATUS.TX_IN_PROGRESS
     );
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
@@ -717,7 +720,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
       this.cdr.detectChanges();
 
-      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+      this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
     }
   }
 }

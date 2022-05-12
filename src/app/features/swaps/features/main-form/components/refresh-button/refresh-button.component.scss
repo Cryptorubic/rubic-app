@@ -18,8 +18,8 @@
   }
 
   &__icon {
-    &_refreshing.autoRefresh {
-      animation: 0.9s linear 0.1s infinite refreshAnimation;
+    &_refreshing.animate {
+      animation: 0.9s linear 0.1s infinite rotateAnimation;
     }
   }
 
@@ -57,7 +57,7 @@
   font-size: 15px;
 }
 
-@keyframes refreshAnimation {
+@keyframes rotateAnimation {
   100% {
     transform: rotate(-360deg);
   }
