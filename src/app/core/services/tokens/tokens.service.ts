@@ -375,8 +375,10 @@ export class TokensService {
           if (tokenPrice) {
             return tokenPrice;
           }
-          const foundToken = this.tokens?.find(t => TokensService.areTokensEqual(t, token));
-          return foundToken?.price;
+          return null;
+          // @TODO Uncomment after coingecko refactoring.
+          // const foundToken = this.tokens?.find(t => TokensService.areTokensEqual(t, token));
+          // return foundToken?.price;
         }),
         switchMap(tokenPrice => {
           if (!tokenPrice && searchBackend) {
