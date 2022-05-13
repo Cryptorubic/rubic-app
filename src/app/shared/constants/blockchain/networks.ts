@@ -214,8 +214,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.TELOS,
     label: 'Telos EVM',
     scannerUrl: 'https://teloscan.io',
-    rpcLink: 'https://mainnet.telos.net/evm',
-    additionalRpcLink: '',
+    rpcLink: 'https://rpc1.eu.telos.net/evm',
+    additionalRpcLink: 'https://mainnet.telos.net/evm',
     imagePath: 'assets/images/icons/coins/telos.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.TELOS,
