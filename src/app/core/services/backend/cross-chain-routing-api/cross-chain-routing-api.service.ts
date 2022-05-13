@@ -14,7 +14,7 @@ import {
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
+import { RefFinanceRoute } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
 export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
 

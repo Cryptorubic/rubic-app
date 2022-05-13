@@ -6,7 +6,7 @@ import {
   TuiNotificationOptionsWithData,
   TuiNotificationsService
 } from '@taiga-ui/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -32,6 +32,13 @@ export class NotificationsService {
     return this.ngZone.run(() =>
       this.tuiNotificationsService.show(content, { ...options }).subscribe()
     );
+  }
+
+  public showWithoutSubscribe<T = undefined>(
+    content: PolymorpheusContent<TuiNotificationContentContext>,
+    options: TuiNotificationOptions | TuiNotificationOptionsWithData<T>
+  ): Observable<void> {
+    return this.ngZone.run(() => this.tuiNotificationsService.show(content, { ...options }));
   }
 
   public showApproveInProgress(options?: TuiNotificationOptions): Subscription {

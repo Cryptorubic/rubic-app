@@ -8,7 +8,6 @@ import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-a
 import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
-import { transitTokens } from '@app/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
@@ -30,6 +29,7 @@ import { HttpClient } from '@angular/common/http';
 import { STAKING_CONTRACTS } from '../constants/STAKING_CONTRACTS';
 import { LP_CONTRACTS } from '../constants/LP_CONTRACTS';
 import { parseWeb3Percent } from '@app/shared/utils/utils';
+import { transitTokens } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 
 interface RoundContract {
   address: string;

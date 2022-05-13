@@ -441,7 +441,7 @@
       "itWillAppearsIn": ". It will appears in ",
       "myTradesLink":"My trades",
       "pageSoon": " page soon.",
-      "title": "Транзакция успешко отправлена!",
+      "title": "Транзакция успешно отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
       "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
