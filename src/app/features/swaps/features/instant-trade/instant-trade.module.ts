@@ -7,6 +7,7 @@ import { ProvidersPanelsContainerComponent } from 'src/app/features/swaps/featur
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { InstantTradeProvidersService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
+import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,6 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-co
   ],
   providers: [InstantTradeService, InstantTradeProvidersService],
   exports: [InstantTradeBottomFormComponent],
-  imports: [CommonModule, SharedModule, SwapButtonContainerModule]
+  imports: [CommonModule, SharedModule, SwapButtonContainerModule, SwapsSharedModule]
 })
 export class InstantTradeModule {}

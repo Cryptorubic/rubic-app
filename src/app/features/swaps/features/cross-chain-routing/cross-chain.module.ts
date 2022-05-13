@@ -11,6 +11,7 @@ import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-cha
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
 import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
 import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
+import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CelerApiService } from './services/cross-chain-routing-service/celer/ce
     TuiInputModule,
     InlineSVGModule,
     TuiHintModule,
-    SwapButtonContainerModule
+    SwapButtonContainerModule,
+    SwapsSharedModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
   providers: [CelerService, CelerApiService]

@@ -26,7 +26,6 @@ import {
   TuiManualHintModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
@@ -68,7 +67,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
   declarations: [
     // Components.
     DropdownSelectorComponent,
-    AmountEstimatedComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
@@ -146,7 +144,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     TranslateModule,
     ShortAddressPipe,
     RubicButtonCircleComponent,
-    AmountEstimatedComponent,
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,

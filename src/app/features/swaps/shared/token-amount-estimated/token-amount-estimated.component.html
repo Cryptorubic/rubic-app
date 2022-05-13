@@ -29,8 +29,10 @@
                 | bigNumberFormat
                 | withRound: 'toClosestValue':{ decimals: tokenDecimals }
             }}
+            <app-tokens-rate *noFrame></app-tokens-rate>
           </ng-container>
         </div>
+
         <div
           *ngIf="errorText"
           tuiHintMode="error"
@@ -41,6 +43,10 @@
       </div>
     </div>
 
-    <app-usd-price-container [usdPrice]="usdPrice" [loading]="loading"></app-usd-price-container>
+    <app-usd-price-container
+      *onlyFrame
+      [usdPrice]="usdPrice"
+      [loading]="loading"
+    ></app-usd-price-container>
   </ng-container>
 </div>
