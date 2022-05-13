@@ -99,8 +99,6 @@ $green: rgb(74, 169, 86);
   }
 
   &__amount {
-    overflow: hidden;
-
     text-align: right;
 
     @include iframe-horizontal {
@@ -144,8 +142,6 @@ $green: rgb(74, 169, 86);
 
   &__token-amount {
     max-width: 300px;
-    height: 35px;
-    margin-bottom: 5px;
 
     overflow: auto;
 
@@ -199,6 +195,12 @@ $green: rgb(74, 169, 86);
     }
   }
 
+  app-tokens-rate {
+    display: block;
+    margin-top: 6px;
+    margin-left: 20px;
+  }
+
   &__iframe-info {
     position: absolute;
     bottom: -33px;
@@ -250,6 +252,18 @@ $green: rgb(74, 169, 86);
 
     &__token-amount {
       margin-bottom: 0;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .instant-trade-bottom-form {
+    &__token-amount {
+      text-align: left;
+    }
+
+    app-tokens-rate {
+      margin-left: 0;
     }
   }
 }
