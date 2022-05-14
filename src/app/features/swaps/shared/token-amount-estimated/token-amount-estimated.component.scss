@@ -1,4 +1,4 @@
-@use 'src/scss/core' as *;
+@use '../../../../../scss/core' as *;
 
 :host {
   overflow: hidden;
@@ -71,7 +71,6 @@
   &__tokens-container {
     width: 100%;
     min-width: 200px;
-    height: 35px;
     overflow: auto;
 
     font-weight: 400;
@@ -134,6 +133,11 @@
     &_loading {
       opacity: 0.25;
     }
+  }
+
+  app-tokens-rate {
+    display: block;
+    margin-top: 6px;
   }
 
   &__output_error-text {
