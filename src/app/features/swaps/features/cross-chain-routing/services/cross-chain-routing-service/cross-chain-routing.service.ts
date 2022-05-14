@@ -215,7 +215,7 @@ export class CrossChainRoutingService extends TradeService {
       : sourceBlockchainProviders;
     const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
 
-    if (srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
+    if (!srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
