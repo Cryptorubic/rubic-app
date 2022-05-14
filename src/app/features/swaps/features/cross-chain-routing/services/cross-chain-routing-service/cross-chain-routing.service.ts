@@ -213,11 +213,9 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
-
     const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
-    const isEnoughLiquidity = await this.canUseRubicPools(toBlockchain, srcTransitTokenAmount);
 
-    if (isEnoughLiquidity && this.swapViaCeler) {
+    if (srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
@@ -247,7 +245,11 @@ export class CrossChainRoutingService extends TradeService {
 
       if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
         if (celerBridgeSlippage > this.settingsService.crossChainRoutingValue.slippageTolerance) {
-          throw new CustomError('Increase slippage tolerance');
+          throw new CustomError(
+            `Slippage tolerance is too low. Minimum value for the trade is ${
+              (celerBridgeSlippage + this.slippageTolerance) * 100
+            }`
+          );
         } else {
           fromSlippage = toSlippage = this.slippageTolerance / 2 - celerBridgeSlippage;
         }
@@ -263,7 +265,7 @@ export class CrossChainRoutingService extends TradeService {
 
       finalTransitAmount = Web3Pure.fromWei(
         celerEstimate.estimated_receive_amt,
-        transitTokens[fromBlockchain].decimals
+        transitTokens[toBlockchain].decimals
       );
     } else {
       finalTransitAmount = fromTransitTokenAmount;
@@ -458,22 +460,23 @@ export class CrossChainRoutingService extends TradeService {
     };
   }
 
-  private async canUseRubicPools(
-    toBlockchain: BlockchainName,
-    transitTokenAmount: BigNumber
-  ): Promise<boolean> {
-    const { address: targetContractAddress, transitToken: targetTransitToken } =
-      this.contracts[toBlockchain];
-    const targetPoolBalance = await this.publicBlockchainAdapterService[
-      toBlockchain
-    ].getTokenBalance(targetContractAddress, targetTransitToken.address);
-    const targetPoolBalanceInTokens = Web3Pure.fromWei(
-      targetPoolBalance,
-      targetTransitToken.decimals
-    );
+  // TODO return in the next release
+  // private async canUseRubicPools(
+  //   toBlockchain: BlockchainName,
+  //   transitTokenAmount: BigNumber
+  // ): Promise<boolean> {
+  //   const { address: targetContractAddress, transitToken: targetTransitToken } =
+  //     this.contracts[toBlockchain];
+  //   const targetPoolBalance = await this.publicBlockchainAdapterService[
+  //     toBlockchain
+  //   ].getTokenBalance(targetContractAddress, targetTransitToken.address);
+  //   const targetPoolBalanceInTokens = Web3Pure.fromWei(
+  //     targetPoolBalance,
+  //     targetTransitToken.decimals
+  //   );
 
-    return transitTokenAmount.lt(targetPoolBalanceInTokens);
-  }
+  //   return transitTokenAmount.lt(targetPoolBalanceInTokens);
+  // }
 
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
