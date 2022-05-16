@@ -116,6 +116,7 @@ export class CelerService {
       isBridgeInSourceNetwork,
       isTransitTokenExpected
     );
+    const msgValueStr = new BigNumber(msgValue).toFixed(0);
 
     let transactionHash: string;
 
@@ -125,7 +126,7 @@ export class CelerService {
       methodName,
       methodArguments,
       {
-        value: String(msgValue),
+        value: msgValueStr,
         onTransactionHash: (hash: string) => {
           if (options?.onTransactionHash) {
             options?.onTransactionHash(hash);
@@ -153,12 +154,12 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     fromTransitTokenAmount: BigNumber,
     fromToken: TokenAmount,
-    celerBridgeSlippage: number
+    fromSlippage: number
   ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge {
     const dexes = this.contractsDataService.contracts[fromBlockchain];
     const dexAddress = dexes.getProvider(srcProvider.providerIndex).contractAddress;
     const amountOutMinimum = Web3Pure.toWei(
-      fromTransitTokenAmount.multipliedBy(1 - celerBridgeSlippage),
+      fromTransitTokenAmount.multipliedBy(fromSlippage),
       dexes.transitToken.decimals
     );
     const canBridgeInSourceNetwork = this.isTransitToken(fromToken);
@@ -285,14 +286,14 @@ export class CelerService {
     srcProvider: IndexedTradeAndToAmount,
     dstProvider: IndexedTradeAndToAmount,
     maxSlippage: number,
-    celerBridgeSlippage: number
+    fromSlippage: number
   ): Promise<void> {
     const srcSwap = this.getSrcSwapObject(
       srcProvider,
       fromBlockchain,
       fromTransitTokenAmount,
       fromToken,
-      celerBridgeSlippage
+      fromSlippage
     );
     const dstSwap = this.getDstSwapObject(dstProvider, toBlockchain, toAmount, toToken);
 
