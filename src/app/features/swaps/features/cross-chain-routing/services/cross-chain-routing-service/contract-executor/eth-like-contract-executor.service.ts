@@ -16,6 +16,9 @@ import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-a
 import { WRAP_NEAR_CONTRACT } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import IsNotEthLikeError from '@core/errors/models/common/is-not-eth-like-error';
+import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
+import { UNSUPPORTED_TOKEN_ERRORS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/unsupported-token-errors';
+import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
 
 @Injectable({
   providedIn: 'root'
@@ -37,40 +40,89 @@ export class EthLikeContractExecutorService {
     userAddress: string,
     targetAddress: string
   ): Promise<string> {
+    let transactionHash;
+    try {
+      transactionHash = await this.executeContractMethod(
+        trade,
+        options,
+        userAddress,
+        targetAddress
+      );
+    } catch (err) {
+      const errMessage = err.message || err.toString?.();
+      if (
+        UNSUPPORTED_TOKEN_ERRORS.some(errText =>
+          errMessage.toLowerCase().includes(errText.toLowerCase())
+        )
+      ) {
+        try {
+          if (this.contracts[trade.fromBlockchain].isProviderUniV2(trade.fromProviderIndex)) {
+            transactionHash = await this.executeContractMethod(
+              trade,
+              options,
+              userAddress,
+              targetAddress,
+              true
+            );
+          }
+        } catch (_err) {
+          throw new TokenWithFeeError();
+        }
+      }
+    }
+    return transactionHash;
+  }
+
+  private async executeContractMethod(
+    trade: CrossChainTrade,
+    options: TransactionOptions,
+    userAddress: string,
+    targetAddress: string,
+    swapTokenWithFee = false
+  ): Promise<string> {
     if (!isEthLikeBlockchainName(trade.fromBlockchain)) {
       throw new IsNotEthLikeError(trade.fromBlockchain);
     }
 
-    const isEthLike = BlockchainsInfo.getBlockchainType(trade.toBlockchain) === 'ethLike';
-    const toWalletAddress = isEthLike ? userAddress : targetAddress;
+    const toWalletAddress =
+      BlockchainsInfo.getBlockchainType(trade.toBlockchain) === 'ethLike'
+        ? userAddress
+        : targetAddress;
     const { contractAddress, contractAbi, methodName, methodArguments, value } =
-      await this.getContractParams(trade, toWalletAddress);
+      await this.getContractParams(trade, toWalletAddress, swapTokenWithFee);
 
     const privateAdapter = this.privateAdapter[trade.fromBlockchain];
-    let transactionHash;
-
     const skipChecks = trade.fromBlockchain === BLOCKCHAIN_NAME.TELOS;
-    await privateAdapter.tryExecuteContractMethod(
-      contractAddress,
-      contractAbi,
-      methodName,
-      methodArguments,
-      {
-        ...options,
-        value,
-        onTransactionHash: (hash: string) => {
-          if (options.onTransactionHash) {
-            options.onTransactionHash(hash);
+
+    let transactionHash;
+    try {
+      await privateAdapter.tryExecuteContractMethod(
+        contractAddress,
+        contractAbi,
+        methodName,
+        methodArguments,
+        {
+          ...options,
+          value,
+          onTransactionHash: (hash: string) => {
+            if (options.onTransactionHash) {
+              options.onTransactionHash(hash);
+            }
+            transactionHash = hash;
+            if (trade.toBlockchain === BLOCKCHAIN_NAME.NEAR) {
+              this.sendDataToNear(trade, transactionHash, targetAddress);
+            }
           }
-          transactionHash = hash;
-          if (trade.toBlockchain === BLOCKCHAIN_NAME.NEAR) {
-            this.sendDataToNear(trade, transactionHash, targetAddress);
-          }
-        }
-      },
-      null,
-      skipChecks
-    );
+        },
+        null,
+        skipChecks
+      );
+    } catch (err) {
+      if (err instanceof FailedToCheckForTransactionReceiptError) {
+        return transactionHash;
+      }
+      throw err;
+    }
 
     return transactionHash;
   }
@@ -79,10 +131,12 @@ export class EthLikeContractExecutorService {
    * Returns contract's method's data to execute trade.
    * @param trade Cross chain trade.
    * @param toWalletAddress Target wallet address.
+   * @param swapTokenWithFee True, if token is with fee.
    */
   public async getContractParams(
     trade: CrossChainTrade,
-    toWalletAddress: string
+    toWalletAddress: string,
+    swapTokenWithFee = false
   ): Promise<ContractParams> {
     const { fromBlockchain, toBlockchain } = trade;
     if (!isEthLikeBlockchainName(fromBlockchain)) {
@@ -107,7 +161,8 @@ export class EthLikeContractExecutorService {
       trade,
       isToTokenNative,
       this.contracts[toBlockchain],
-      toWalletAddress
+      toWalletAddress,
+      swapTokenWithFee
     );
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);

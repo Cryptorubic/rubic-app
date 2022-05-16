@@ -53,6 +53,7 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
+import { UNSUPPORTED_TOKEN_ERRORS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/unsupported-token-errors';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -1010,19 +1011,9 @@ export class CrossChainRoutingService extends TradeService {
       throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
     }
 
-    const unsupportedTokenErrors = [
-      'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
-      'execution reverted: UniswapV2: K',
-      'execution reverted: UniswapV2:  TRANSFER_FAILED',
-      'execution reverted: Pancake: K',
-      'execution reverted: Pancake:  TRANSFER_FAILED',
-      'execution reverted: Solarbeam: K',
-      'execution reverted: Solarbeam:  TRANSFER_FAILED'
-    ];
-
     if (
-      unsupportedTokenErrors.some(errText =>
-        errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
+      UNSUPPORTED_TOKEN_ERRORS.some(errText =>
+        errMessage.toLowerCase().includes(errText.toLowerCase())
       )
     ) {
       throw new UnsupportedTokenCCR();
