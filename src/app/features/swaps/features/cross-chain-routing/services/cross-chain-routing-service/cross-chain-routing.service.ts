@@ -969,6 +969,12 @@ export class CrossChainRoutingService extends TradeService {
     };
 
     try {
+      const swapParams = {
+        onTransactionHash,
+        ...(this.currentCrossChainTrade?.gasPrice && {
+          gasPrice: this.currentCrossChainTrade?.gasPrice
+        })
+      };
       if (this.swapViaCeler) {
         transactionHash = await this.celerService.makeTransferWithSwap(
           fromAmount,
@@ -976,12 +982,12 @@ export class CrossChainRoutingService extends TradeService {
           fromToken,
           toBlockchain as EthLikeBlockchainName,
           toToken,
-          onTransactionHash
+          swapParams
         );
       } else {
         transactionHash = await this.contractExecutorFacade.executeTrade(
           this.currentCrossChainTrade,
-          { onTransactionHash },
+          swapParams,
           this.authService.userAddress
         );
       }
