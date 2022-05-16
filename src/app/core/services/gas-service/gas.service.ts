@@ -204,6 +204,11 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchFantomGas(): Observable<number | null> {
-    return of(700);
+    const blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.FANTOM];
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map(gasPriceInWei => {
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
+      })
+    );
   }
 }
