@@ -706,7 +706,11 @@ export class CrossChainRoutingService extends TradeService {
   }> {
     const { fromBlockchain } = trade;
     const walletAddress = this.authService.userAddress;
-    if (fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM || !walletAddress) {
+    const gasCalculateBlockchains: BlockchainName[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.FANTOM
+    ];
+    if (!gasCalculateBlockchains.includes(fromBlockchain) || !walletAddress) {
       return null;
     }
 
@@ -965,6 +969,12 @@ export class CrossChainRoutingService extends TradeService {
     };
 
     try {
+      const swapParams = {
+        onTransactionHash,
+        ...(this.currentCrossChainTrade?.gasPrice && {
+          gasPrice: this.currentCrossChainTrade?.gasPrice
+        })
+      };
       if (this.swapViaCeler) {
         transactionHash = await this.celerService.makeTransferWithSwap(
           fromAmount,
@@ -972,12 +982,12 @@ export class CrossChainRoutingService extends TradeService {
           fromToken,
           toBlockchain as EthLikeBlockchainName,
           toToken,
-          onTransactionHash
+          swapParams
         );
       } else {
         transactionHash = await this.contractExecutorFacade.executeTrade(
           this.currentCrossChainTrade,
-          { onTransactionHash },
+          swapParams,
           this.authService.userAddress
         );
       }

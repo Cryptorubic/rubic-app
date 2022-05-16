@@ -37,6 +37,7 @@ import { SwapInfoDest } from './models/swap-info-dest.interface';
 import { SwapInfoInch } from './models/swap-info-inch.interface';
 import { SwapInfoV2 } from './models/swap-info-v2.interface';
 import { SwapInfoV3 } from './models/swap-info-v3.interface';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 
 interface CelerTrade {
   srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge;
@@ -71,7 +72,7 @@ export class CelerService {
    * @param fromToken Token in.
    * @param toBlockchain Target blockchain.
    * @param toToken Token out.
-   * @param onTxHash Callback to call after receiving transaction hash.
+   * @param options Transaction options.
    * @returns Transaction hash.
    */
   public async makeTransferWithSwap(
@@ -80,7 +81,7 @@ export class CelerService {
     fromToken: TokenAmount,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
-    onTxHash: (hash: string) => void
+    options: TransactionOptions
   ): Promise<string> {
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
@@ -126,11 +127,12 @@ export class CelerService {
       {
         value: String(msgValue),
         onTransactionHash: (hash: string) => {
-          if (onTxHash) {
-            onTxHash(hash);
+          if (options?.onTransactionHash) {
+            options?.onTransactionHash(hash);
           }
           transactionHash = hash;
-        }
+        },
+        ...(options?.gasPrice && { gasPrice: options.gasPrice })
       }
     );
 
