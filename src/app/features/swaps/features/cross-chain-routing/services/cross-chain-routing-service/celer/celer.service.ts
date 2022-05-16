@@ -172,7 +172,7 @@ export class CelerService {
 
       return {
         dex: dexAddress,
-        path: [isInchNative ? WRAPPED_NATIVE[fromBlockchain] : tokenIn, ...path],
+        path: [isInchNative ? WRAPPED_NATIVE[fromBlockchain] : tokenIn, path.at(-1)],
         data: trade.data,
         amountOutMinimum
       } as SwapInfoInch;
