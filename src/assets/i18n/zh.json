@@ -37,7 +37,7 @@
     "transactionDetails": "交易明细",
     "approveToken": "批准 {{symbol}}",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     }

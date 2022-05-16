@@ -251,7 +251,7 @@ export class CrossChainRoutingService extends TradeService {
             }`
           );
         } else {
-          fromSlippage = toSlippage = this.slippageTolerance / 2 - celerBridgeSlippage;
+          fromSlippage = toSlippage = 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
         }
       }
 
