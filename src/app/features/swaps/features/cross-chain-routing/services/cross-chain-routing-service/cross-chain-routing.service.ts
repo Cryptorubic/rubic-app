@@ -706,7 +706,11 @@ export class CrossChainRoutingService extends TradeService {
   }> {
     const { fromBlockchain } = trade;
     const walletAddress = this.authService.userAddress;
-    if (fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM || !walletAddress) {
+    const gasCalculateBlockchains: BlockchainName[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.FANTOM
+    ];
+    if (!gasCalculateBlockchains.includes(fromBlockchain) || !walletAddress) {
       return null;
     }
 
