@@ -1,4 +1,4 @@
-export const UNSUPPORTED_TOKEN_ERRORS = [
+export const TOKEN_WITH_FEE_ERRORS = [
   'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
   'execution reverted: UniswapV2: K',
   'execution reverted: UniswapV2:  TRANSFER_FAILED',

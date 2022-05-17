@@ -17,7 +17,7 @@ import { WRAP_NEAR_CONTRACT } from '@features/swaps/features/instant-trade/servi
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import IsNotEthLikeError from '@core/errors/models/common/is-not-eth-like-error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
-import { UNSUPPORTED_TOKEN_ERRORS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/unsupported-token-errors';
+import { TOKEN_WITH_FEE_ERRORS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/token-with-fee-errors';
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
 
 @Injectable({
@@ -51,7 +51,7 @@ export class EthLikeContractExecutorService {
     } catch (err) {
       const errMessage = err.message || err.toString?.();
       if (
-        UNSUPPORTED_TOKEN_ERRORS.some(errText =>
+        TOKEN_WITH_FEE_ERRORS.some(errText =>
           errMessage.toLowerCase().includes(errText.toLowerCase())
         )
       ) {
@@ -68,6 +68,8 @@ export class EthLikeContractExecutorService {
         } catch (_err) {
           throw new TokenWithFeeError();
         }
+      } else {
+        throw err;
       }
     }
     return transactionHash;

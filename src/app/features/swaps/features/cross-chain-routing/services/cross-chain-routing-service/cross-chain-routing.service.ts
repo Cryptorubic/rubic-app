@@ -15,7 +15,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -53,7 +52,6 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
-import { UNSUPPORTED_TOKEN_ERRORS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/unsupported-token-errors';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -1009,14 +1007,6 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (errMessage?.includes('insufficient funds for')) {
       throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
-    }
-
-    if (
-      UNSUPPORTED_TOKEN_ERRORS.some(errText =>
-        errMessage.toLowerCase().includes(errText.toLowerCase())
-      )
-    ) {
-      throw new UnsupportedTokenCCR();
     }
 
     throw err;
