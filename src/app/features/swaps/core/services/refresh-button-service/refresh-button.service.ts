@@ -3,8 +3,8 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { REFRESH_BUTTON_STATUS } from '@features/swaps/core/services/refresh-button-service/models/refresh-button-status';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { distinctUntilChanged, startWith } from 'rxjs/operators';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
 @Injectable()
 export class RefreshButtonService {

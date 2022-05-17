@@ -19,16 +19,16 @@ import { UndefinedError } from '@core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { compareAddresses } from '@shared/utils/utils';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { BridgeTradeRequest } from '@features/swaps/features/bridge/models/bridge-trade-request';
 import { BinancePolygonBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { TradeService } from '@features/swaps/core/services/abstract-trade-service/trade.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 
 @Injectable()

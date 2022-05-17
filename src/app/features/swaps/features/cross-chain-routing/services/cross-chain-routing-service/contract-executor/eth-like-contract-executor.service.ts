@@ -17,9 +17,7 @@ import { WRAP_NEAR_CONTRACT } from '@features/swaps/features/instant-trade/servi
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import IsNotEthLikeError from '@core/errors/models/common/is-not-eth-like-error';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class EthLikeContractExecutorService {
   private readonly contracts = this.contractsDataService.contracts;
 

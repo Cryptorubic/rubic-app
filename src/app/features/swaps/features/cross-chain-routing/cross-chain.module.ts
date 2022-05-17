@@ -8,10 +8,16 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
-import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
 import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
 import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { ContractsDataService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
+import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
+import { EthLikeContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
+import { NearContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
+import { SolanaContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 
 @NgModule({
   declarations: [
@@ -22,15 +28,24 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
   imports: [
     CommonModule,
     SharedModule,
+    SwapsSharedModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiInputModule,
     InlineSVGModule,
-    TuiHintModule,
-    SwapButtonContainerModule,
-    SwapsSharedModule
+    TuiHintModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
-  providers: [CelerService, CelerApiService]
+  providers: [
+    CrossChainRoutingService,
+    ContractsDataService,
+    ContractExecutorFacadeService,
+    EthLikeContractExecutorService,
+    NearContractExecutorService,
+    SolanaContractExecutorService,
+    CelerService,
+    CelerApiService,
+    TargetNetworkAddressService
+  ]
 })
 export class CrossChainModule {}

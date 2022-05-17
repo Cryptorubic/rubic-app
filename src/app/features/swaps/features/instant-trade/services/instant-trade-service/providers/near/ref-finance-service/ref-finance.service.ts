@@ -4,13 +4,13 @@ import { forkJoin, of } from 'rxjs';
 import {
   ItSettingsForm,
   SettingsService
-} from '@features/swaps/features/main-form/services/settings-service/settings.service';
+} from '@features/swaps/core/services/settings-service/settings.service';
 import { RefFinancePoolsService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { REF_FI_CONTRACT_ID } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { first, startWith, switchMap } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
@@ -21,7 +21,7 @@ import { InstantTradesApiService } from '@core/services/backend/instant-trades-a
 import { ErrorsService } from '@core/errors/errors.service';
 import CustomError from '@core/errors/models/custom-error';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
@@ -30,11 +30,12 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { RefFinanceSwapService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 import { RefFinanceRoute } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 interface SwapParams {
   msg: string;
@@ -65,7 +66,7 @@ type CcrRequest = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADE_PROVIDER.REF;

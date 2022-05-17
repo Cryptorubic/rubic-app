@@ -6,15 +6,13 @@ import { Injectable } from '@angular/core';
 import { RaydiumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { EthLikeContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import BigNumber from 'bignumber.js';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { SolanaContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
 import { NearContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of transit token, based on tokens route and slippage.

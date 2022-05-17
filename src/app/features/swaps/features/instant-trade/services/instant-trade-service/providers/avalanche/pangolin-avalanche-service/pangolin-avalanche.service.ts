@@ -4,9 +4,10 @@ import { CommonUniswapV2Service } from '@features/swaps/features/instant-trade/s
 import AVAX_CONTRACT_ABI from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/models/avax-contract-abi';
 import { AVAX_SWAP_METHOD } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/models/swap-method';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class PangolinAvalancheService extends CommonUniswapV2Service {
   public readonly providerType = INSTANT_TRADE_PROVIDER.PANGOLIN;

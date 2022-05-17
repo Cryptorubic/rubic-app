@@ -1,13 +1,12 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { ERROR_TYPE } from 'src/app/features/swaps/shared/swap-button-container/models/error-type';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
@@ -15,8 +14,9 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { ERROR_TYPE } from 'src/app/features/swaps/shared/swap-button-container/models/error-type';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {

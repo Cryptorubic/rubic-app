@@ -42,9 +42,7 @@ import { RefFinanceService } from '@features/swaps/features/instant-trade/servic
 import { SushiSwapTelosService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
 import { ZappyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ContractsDataService {
   public readonly contracts: Record<
     SupportedCrossChainBlockchain & EthLikeBlockchainName,

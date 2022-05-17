@@ -16,9 +16,10 @@ import InstantTrade from '@features/swaps/features/instant-trade/models/instant-
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class EthWethSwapProviderService {
   private readonly abi = wethContractAbi;

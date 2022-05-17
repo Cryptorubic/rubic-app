@@ -26,15 +26,12 @@ import {
   TuiManualHintModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
-import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
-import { PanelContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
@@ -73,12 +70,9 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
-    RubicTokensComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     UsdPriceContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
@@ -154,11 +148,8 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     FalsyPipe,
     WithRoundPipe,
     SafetyLinkDirective,
-    RubicTokensComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,

@@ -1,0 +1,53 @@
+<div class="settings">
+  <form [formGroup]="crossChainRoutingForm" class="settings__form">
+    <div class="settings__form-row settings__form-row_large-input">
+      <label for="slippageTolerance">{{
+        'settings.crossChainRouting.slippageTitle' | translate
+      }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.crossChainRouting.slippage' | translate"
+      ></div>
+    </div>
+    <div class="settings__form-row settings__form-row_united">
+      <div
+        (click)="toggleAutoSlippageTolerance()"
+        class="settings__button-auto"
+        [ngClass]="{
+          'settings__button-auto_active': crossChainRoutingForm.value.autoSlippageTolerance
+        }"
+      >
+        Auto
+      </div>
+      <tui-input-number
+        id="slippageTolerance"
+        tuiTextfieldSize="s"
+        postfix="%"
+        [ngModel]="slippageTolerance"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [tuiTextfieldLabelOutside]="true"
+        [max]="50"
+        [min]="3"
+        >{{ defaultSlippageTolerance }}%
+      </tui-input-number>
+    </div>
+
+    <div class="settings__form-row">
+      <label for="autoRefresh">{{
+        'settings.crossChainRouting.autoRefreshTitle' | translate
+      }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.crossChainRouting.autoRefresh' | translate"
+      ></div>
+      <tui-toggle
+        class="settings__toggle"
+        id="autoRefresh"
+        formControlName="autoRefresh"
+      ></tui-toggle>
+    </div>
+  </form>
+</div>

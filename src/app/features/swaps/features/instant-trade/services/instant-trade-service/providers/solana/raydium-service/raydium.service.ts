@@ -8,7 +8,7 @@ import { Connection, SignatureResult, TransactionError } from '@solana/web3.js';
 import {
   ItSettingsForm,
   SettingsService
-} from '@features/swaps/features/main-form/services/settings-service/settings.service';
+} from '@features/swaps/core/services/settings-service/settings.service';
 import { startWith } from 'rxjs/operators';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -32,9 +32,10 @@ import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/s
 import CustomError from '@core/errors/models/custom-error';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class RaydiumService implements ItProvider {
   public readonly providerType = INSTANT_TRADE_PROVIDER.RAYDIUM;

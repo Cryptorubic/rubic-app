@@ -6,17 +6,22 @@ import { InstantTradeBottomFormComponent } from 'src/app/features/swaps/features
 import { ProvidersPanelsContainerComponent } from 'src/app/features/swaps/features/instant-trade/components/providers-panels/components/providers-panels-container/providers-panels-container.component';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { InstantTradeProvidersService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
-import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { PanelContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
+import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { TuiHintModule } from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
     InstantTradeBottomFormComponent,
     ProviderPanelComponent,
-    ProvidersPanelsContainerComponent
+    ProvidersPanelsContainerComponent,
+    PanelContentComponent,
+    PanelErrorContentComponent
   ],
-  providers: [InstantTradeService, InstantTradeProvidersService],
   exports: [InstantTradeBottomFormComponent],
-  imports: [CommonModule, SharedModule, SwapButtonContainerModule, SwapsSharedModule]
+  imports: [CommonModule, SharedModule, SwapsSharedModule, InlineSVGModule, TuiHintModule],
+  providers: [InstantTradeService, InstantTradeProvidersService]
 })
 export class InstantTradeModule {}

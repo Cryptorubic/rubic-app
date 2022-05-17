@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { ApproveSwapButtonService } from '@features/swaps/shared/swap-button-container/services/approve-swap-button.service';
+import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 
 @Component({
   selector: 'app-approve-button',

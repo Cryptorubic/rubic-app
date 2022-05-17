@@ -7,7 +7,7 @@ import {
   BlockchainName,
   EthLikeBlockchainName
 } from '@shared/models/blockchain/blockchain-name';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
@@ -34,7 +34,7 @@ import MaxGasPriceOverflowWarning from '@core/errors/models/common/max-gas-price
 import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { EthLikeContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import { ContractsDataService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { compareAddresses } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
@@ -44,8 +44,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SmartRouting } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { TradeService } from '@features/swaps/core/services/abstract-trade-service/trade.service';
 import { CelerService } from './celer/celer.service';
 import { CELER_CONTRACT } from './celer/constants/CELER_CONTRACT';
 import { transitTokens } from './contracts-data/contract-data/constants/transit-tokens';
@@ -56,9 +56,7 @@ import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CrossChainRoutingService extends TradeService {
   public static isSupportedBlockchain(
     blockchain: BlockchainName
@@ -1027,12 +1025,7 @@ export class CrossChainRoutingService extends TradeService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
-    const settings = this.settingsService.crossChainRoutingValue;
-    await this.apiService.postTrade(
-      transactionHash,
-      this.currentCrossChainTrade.fromBlockchain,
-      settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
-    );
+    await this.apiService.postTrade(transactionHash, this.currentCrossChainTrade.fromBlockchain);
   }
 
   public calculateTokenOutAmountMin(): BigNumber {

@@ -40,9 +40,7 @@ import {
   TransferDataType
 } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/solana-cross-chain-types';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SolanaContractExecutorService {
   private readonly contracts = this.contractsDataService.contracts;
 

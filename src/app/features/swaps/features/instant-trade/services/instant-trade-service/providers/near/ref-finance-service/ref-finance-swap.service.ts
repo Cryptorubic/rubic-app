@@ -25,11 +25,12 @@ import { RefFinanceRoute } from '@features/swaps/features/instant-trade/services
 import { WalletConnection } from 'near-api-js';
 import { RefFiFunctionCallOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { RefFinanceStableService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-stable.service';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class RefFinanceSwapService {
   /**

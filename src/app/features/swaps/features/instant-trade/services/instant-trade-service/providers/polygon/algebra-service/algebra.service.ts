@@ -16,9 +16,10 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { CommonUniswapV3AlgebraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
+import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: InstantTradeModule
 })
 export class AlgebraService extends CommonUniswapV3AlgebraService {
   protected readonly unwrapWethMethodName = 'unwrapWNativeToken';

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
+import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 
 @Injectable()
 export class SwapButtonService {

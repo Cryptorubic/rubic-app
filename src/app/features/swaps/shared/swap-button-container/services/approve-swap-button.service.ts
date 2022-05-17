@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
+import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 
 @Injectable()
 export class ApproveSwapButtonService {

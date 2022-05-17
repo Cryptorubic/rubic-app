@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
-import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-swap-button-container',

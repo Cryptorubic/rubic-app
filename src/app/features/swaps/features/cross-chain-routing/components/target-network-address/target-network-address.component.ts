@@ -8,7 +8,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
 

@@ -8,11 +8,11 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
@@ -23,7 +23,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
@@ -40,12 +40,12 @@ import { InstantTradeProviderData } from '@features/swaps/features/instant-trade
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
-import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { RefreshButtonService } from '@features/swaps/core/services/refresh-button-service/refresh-button.service';
@@ -521,7 +521,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
               this.cdr.markForCheck();
 
-              console.log('stop');
               this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
             })
           );

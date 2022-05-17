@@ -15,7 +15,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import {
   ItSettingsForm,
   SettingsService
-} from '@features/swaps/features/main-form/services/settings-service/settings.service';
+} from '@features/swaps/core/services/settings-service/settings.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';

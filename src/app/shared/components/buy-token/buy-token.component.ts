@@ -3,7 +3,7 @@ import { first, map, switchMap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -33,7 +33,7 @@ interface TokenPair {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuyTokenComponent {
-  @Input() appereance: TuiAppearance = TuiAppearance.Outline;
+  @Input() appearance: TuiAppearance = TuiAppearance.Outline;
 
   /**
    * Banner type. Component Renders different texts based on type.

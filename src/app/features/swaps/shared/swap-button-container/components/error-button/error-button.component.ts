@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
-import { HeaderStore } from '@core/header/services/header.store';
-import { ERROR_TYPE } from '@features/swaps/shared/swap-button-container/models/error-type';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
+import { HeaderStore } from '@core/header/services/header.store';
+import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
+import { ERROR_TYPE } from '@features/swaps/shared/swap-button-container/models/error-type';
 
 @Component({
   selector: 'app-error-button',

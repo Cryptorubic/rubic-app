@@ -21,11 +21,9 @@ import {
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { RefFinanceSwapService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NearContractExecutorService {
   @tuiPure
   private get contract(): NearContractData {

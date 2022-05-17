@@ -33,24 +33,24 @@ import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/block
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
-import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { BridgeService } from 'src/app/features/swaps/features/bridge/services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '@features/swaps/features/bridge/models/bridge-trade-request';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SuccessTxModalService } from '@features/swaps/core/services/success-tx-modal-service/success-tx-modal.service';
 
 @Component({
   selector: 'app-bridge-bottom-form',
