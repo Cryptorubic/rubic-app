@@ -30,7 +30,8 @@ export interface ItProvider {
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string,
-    wrappedNativeAddress?: string
+    wrappedNativeAddress?: string,
+    isCrossChain?: boolean
   ): Promise<InstantTrade>;
 
   createTrade(trade: InstantTrade, options: ItOptions): Promise<Partial<TransactionReceipt>>;
