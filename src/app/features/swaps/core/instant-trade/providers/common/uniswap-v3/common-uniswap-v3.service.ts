@@ -26,7 +26,7 @@ import { MAX_TRANSIT_POOL } from '@features/swaps/core/instant-trade/providers/c
 import { UniswapV3Constants } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/models/uniswap-v3-constants';
 import { UNISWAP_V3_SWAP_ROUTER_CONTRACT } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/constants/swap-router-contract-data';
 import { UNISWAP_V3_QUOTER_CONTRACT } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/constants/quoter-contract-data';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 

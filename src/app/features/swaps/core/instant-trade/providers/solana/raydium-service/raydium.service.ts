@@ -22,7 +22,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { TokensService } from '@core/services/tokens/tokens.service';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { ROUTE_SWAP_PROGRAM_ID } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/accounts';
 import { RaydiumStableManager } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumWrapManager } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/utils/raydium-wrap-manager';

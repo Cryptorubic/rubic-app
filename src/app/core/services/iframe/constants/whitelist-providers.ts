@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
 export const WHITELIST_PROVIDERS = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [

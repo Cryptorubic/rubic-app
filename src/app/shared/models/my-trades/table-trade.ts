@@ -1,6 +1,6 @@
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
 export interface TableToken {

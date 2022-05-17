@@ -1,5 +1,5 @@
 import InputToken from '@shared/models/tokens/input-token';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 

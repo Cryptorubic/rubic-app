@@ -1,4 +1,4 @@
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
 export type BridgeBlockchainApi = 'ETH' | 'BSC' | 'POL';

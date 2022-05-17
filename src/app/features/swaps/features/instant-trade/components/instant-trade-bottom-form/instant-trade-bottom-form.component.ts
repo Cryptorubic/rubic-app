@@ -22,7 +22,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {

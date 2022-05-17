@@ -4,7 +4,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 
 @Component({
-  selector: 'app-success-trx-notification',
+  selector: 'polymorpheus-success-trx-notification',
   templateUrl: './success-trx-notification.component.html',
   styleUrls: ['./success-trx-notification.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

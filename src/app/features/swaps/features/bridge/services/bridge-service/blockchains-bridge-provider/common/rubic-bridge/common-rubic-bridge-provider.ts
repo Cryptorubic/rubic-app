@@ -14,7 +14,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import CustomError from '@core/errors/models/custom-error';
 import { HttpService } from '@core/services/http/http.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';

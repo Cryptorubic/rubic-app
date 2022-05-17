@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { first } from 'rxjs/operators';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';

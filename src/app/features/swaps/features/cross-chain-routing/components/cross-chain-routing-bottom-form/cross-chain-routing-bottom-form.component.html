@@ -1,13 +1,13 @@
 <section class="bottom-form">
   <div class="bottom-form__container">
     <div class="bottom-form__estimate-container">
-      <app-rubic-tokens
+      <app-select-token-button
         [loading]="loading"
         formType="to"
         [tokens]="tokens"
         [favoriteTokens]="favoriteTokens"
         [formService]="swapFormService"
-      ></app-rubic-tokens>
+      ></app-select-token-button>
       <app-amount-estimated
         [loading]="tradeStatus === TRADE_STATUS.LOADING"
         [errorText]="errorText"

@@ -25,7 +25,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation-error';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import DEFAULT_UNISWAP_V2_ABI from '@features/swaps/core/instant-trade/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { RequiredField } from '@shared/models/utility-types/required-field';

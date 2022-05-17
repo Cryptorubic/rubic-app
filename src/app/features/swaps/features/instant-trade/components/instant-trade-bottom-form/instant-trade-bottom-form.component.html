@@ -2,13 +2,13 @@
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__left-part">
-        <app-rubic-tokens
+        <app-select-token-button
           [loading]="loading"
           formType="to"
           [tokens]="tokens"
           [favoriteTokens]="favoriteTokens"
           [formService]="swapFormService"
-        ></app-rubic-tokens>
+        ></app-select-token-button>
 
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">

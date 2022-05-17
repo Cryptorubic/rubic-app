@@ -6,7 +6,7 @@ import { OneInchPolygonService } from '@features/swaps/core/instant-trade/provid
 import { QuickSwapService } from '@features/swaps/core/instant-trade/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from '@features/swaps/core/instant-trade/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from '@features/swaps/core/instant-trade/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { SushiSwapPolygonService } from '@features/swaps/core/instant-trade/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from '@features/swaps/core/instant-trade/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from '@features/swaps/core/instant-trade/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';

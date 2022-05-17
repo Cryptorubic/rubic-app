@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { ItOptions, ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { SHOULD_CALCULATE_GAS_BLOCKCHAIN } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';

@@ -4,7 +4,7 @@ import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import BigNumber from 'bignumber.js';
 
 export abstract class BlockchainsBridgeProvider {

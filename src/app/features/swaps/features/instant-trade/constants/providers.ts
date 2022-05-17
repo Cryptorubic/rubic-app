@@ -1,8 +1,8 @@
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { instantTradesLabels } from '@features/swaps/shared/constants/instant-trades-labels';
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,

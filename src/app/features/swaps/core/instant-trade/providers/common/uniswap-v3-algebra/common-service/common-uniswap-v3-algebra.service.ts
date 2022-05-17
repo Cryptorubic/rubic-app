@@ -18,7 +18,7 @@ import { IsEthFromOrTo } from '@features/swaps/core/instant-trade/providers/comm
 
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 import { EthLikeInstantTradeProviderService } from '@features/swaps/core/instant-trade/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
 

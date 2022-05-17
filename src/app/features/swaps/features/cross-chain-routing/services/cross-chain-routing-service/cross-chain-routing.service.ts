@@ -41,7 +41,7 @@ import { CrossChainTradeInfo } from '@features/swaps/features/cross-chain-routin
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { SmartRouting } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { TradeService } from '@features/swaps/core/services/abstract-trade-service/trade.service';

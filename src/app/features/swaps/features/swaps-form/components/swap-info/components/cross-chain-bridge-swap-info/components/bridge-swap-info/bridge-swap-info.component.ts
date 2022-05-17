@@ -4,7 +4,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 

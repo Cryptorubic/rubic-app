@@ -22,7 +22,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import CustomError from '@core/errors/models/custom-error';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';

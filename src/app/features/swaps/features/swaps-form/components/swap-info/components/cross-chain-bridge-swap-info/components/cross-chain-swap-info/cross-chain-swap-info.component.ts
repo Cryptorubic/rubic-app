@@ -13,9 +13,9 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { CrossChainTradeInfo } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { instantTradesLabels } from '@features/swaps/shared/constants/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
 @Component({
   selector: 'app-cross-chain-swap-info',

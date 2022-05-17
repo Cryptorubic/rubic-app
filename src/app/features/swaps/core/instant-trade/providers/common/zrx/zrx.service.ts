@@ -12,7 +12,7 @@ import { ZRX_API_ADDRESS } from '@features/swaps/core/instant-trade/providers/co
 import { ZRX_NATIVE_TOKEN } from '@features/swaps/core/instant-trade/providers/common/zrx/constants/zrx-native-token';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { EthLikeInstantTradeProviderService } from '@features/swaps/core/instant-trade/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
 import { ZRX_CONTRACT_ADDRESS } from '@features/swaps/core/instant-trade/providers/common/zrx/constants/zrx-contract-address';
 import { HttpService } from '@core/services/http/http.service';

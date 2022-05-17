@@ -25,7 +25,7 @@ import { OneinchQuoteError } from '@core/errors/models/provider/oneinch-quote-er
 import { OneinchInstantTrade } from '@features/swaps/core/instant-trade/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 import { EthLikeInstantTradeProviderService } from '@features/swaps/core/instant-trade/providers/common/eth-like-instant-trade-provider/eth-like-instant-trade-provider.service';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
 @Injectable()
 export abstract class CommonOneinchService extends EthLikeInstantTradeProviderService {

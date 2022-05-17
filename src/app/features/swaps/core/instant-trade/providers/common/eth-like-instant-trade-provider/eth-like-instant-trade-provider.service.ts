@@ -1,7 +1,7 @@
 import { ItOptions, ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
 import BigNumber from 'bignumber.js';
 import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { inject } from '@angular/core';

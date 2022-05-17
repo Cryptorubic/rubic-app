@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 

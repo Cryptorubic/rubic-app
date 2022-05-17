@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
 
 @Injectable({

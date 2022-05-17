@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
 import BigNumber from 'bignumber.js';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';

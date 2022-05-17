@@ -44,7 +44,6 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
@@ -57,7 +56,6 @@ import { RubicContainerComponent } from './components/rubic-container/rubic-cont
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
-import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 
 @NgModule({
@@ -77,15 +75,12 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    IframeBlockchainIndicatorComponent,
     RubicContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
-    IframeBlockchainIndicatorComponent,
     StatusBadgeComponent,
-    ChipsComponent,
     ProgressTrxNotificationComponent,
     // Pipes.
     BigNumberFormatPipe,
@@ -153,7 +148,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
@@ -163,8 +157,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicContainerComponent,
     CopyContainerComponent,
     FunctionCallPipe,
-    StatusBadgeComponent,
-    ChipsComponent
+    StatusBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]

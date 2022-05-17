@@ -37,7 +37,7 @@ import { EthereumBinanceRubicBridgeProviderService } from '@features/swaps/featu
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensService } from '@core/services/tokens/tokens.service';

@@ -1,5 +1,5 @@
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
 
 type Provider = {

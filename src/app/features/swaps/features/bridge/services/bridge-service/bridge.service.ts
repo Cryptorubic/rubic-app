@@ -29,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeService } from '@features/swaps/core/services/abstract-trade-service/trade.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 
 @Injectable()
 export class BridgeService extends TradeService {

@@ -13,7 +13,7 @@ import {
   AlgebraRoute
 } from '@features/swaps/core/instant-trade/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { CommonUniswapV3AlgebraService } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
