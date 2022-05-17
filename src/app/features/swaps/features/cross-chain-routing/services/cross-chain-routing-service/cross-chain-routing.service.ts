@@ -242,17 +242,17 @@ export class CrossChainRoutingService extends TradeService {
         toBlockchain as EthLikeBlockchainName,
         fromTransitTokenAmount
       );
+      fromSlippage = toSlippage = 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
 
-      if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
-        if (celerBridgeSlippage > this.settingsService.crossChainRoutingValue.slippageTolerance) {
-          throw new CustomError(
-            `Slippage tolerance is too low. Minimum value for the trade is ${
-              (celerBridgeSlippage + this.slippageTolerance) * 100
-            }`
-          );
-        } else {
-          fromSlippage = toSlippage = 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
-        }
+      if (
+        !this.settingsService.crossChainRoutingValue.autoSlippageTolerance &&
+        celerBridgeSlippage > this.settingsService.crossChainRoutingValue.slippageTolerance
+      ) {
+        throw new CustomError(
+          `Slippage tolerance is too low. Minimum value for the trade is ${
+            (celerBridgeSlippage + this.slippageTolerance) * 100
+          }`
+        );
       }
 
       const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
@@ -320,7 +320,7 @@ export class CrossChainRoutingService extends TradeService {
         sourceBlockchainProvidersFiltered[0],
         targetBlockchainProvidersFiltered[0],
         celerEstimate.max_slippage,
-        celerBridgeSlippage
+        fromSlippage
       );
     }
 
