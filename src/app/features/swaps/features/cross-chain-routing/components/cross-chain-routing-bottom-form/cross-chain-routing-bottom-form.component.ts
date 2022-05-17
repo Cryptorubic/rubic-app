@@ -117,7 +117,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    public readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly errorsService: ErrorsService,
     private readonly settingsService: SettingsService,
     private readonly authService: AuthService,

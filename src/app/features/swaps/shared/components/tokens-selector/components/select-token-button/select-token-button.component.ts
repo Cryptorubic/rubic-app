@@ -3,14 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
 import { TokensSelectService } from '@features/swaps/shared/components/tokens-selector/services/tokens-select.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { takeUntil } from 'rxjs/operators';
@@ -21,6 +21,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Component({
   selector: 'app-select-token-button',
@@ -33,8 +34,6 @@ export class SelectTokenButtonComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() formType: 'from' | 'to';
-
-  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const deepEquality = compareObjects(value, this._tokens$.value);
@@ -50,15 +49,15 @@ export class SelectTokenButtonComponent implements OnInit {
     }
   }
 
-  @Input() formService: FormService;
-
   @Input() allowedBlockchains: BlockchainName[] | undefined;
 
   @Input() disabled = false;
 
   @Input() idPrefix: string = '';
 
-  public ADDRESS_TYPE = ADDRESS_TYPE;
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
+
+  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: Token;
 
@@ -80,12 +79,13 @@ export class SelectTokenButtonComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly destroy$: TuiDestroyService
+    private readonly swapFormService: SwapFormService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
-    this.setFormValues(this.formService.inputValue);
-    this.formService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
+    this.setFormValues(this.swapFormService.inputValue);
+    this.swapFormService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
 
@@ -108,7 +108,7 @@ export class SelectTokenButtonComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromBlockchain, toBlockchain } = this.formService.inputValue;
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.gtmService.reloadGtmSession();
@@ -119,7 +119,7 @@ export class SelectTokenButtonComponent implements OnInit {
         this._favoriteTokens$.asObservable(),
         this.formType,
         currentBlockchain,
-        this.formService.input,
+        this.swapFormService.input,
         this.allowedBlockchains,
         idPrefix
       )
@@ -128,12 +128,12 @@ export class SelectTokenButtonComponent implements OnInit {
           this.tokensService.addToken(token);
           this.selectedToken = token;
           if (this.formType === 'from') {
-            this.formService.input.patchValue({
+            this.swapFormService.input.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
-            this.formService.input.patchValue({
+            this.swapFormService.input.patchValue({
               toToken: token,
               toBlockchain: token.blockchain
             });
@@ -145,7 +145,7 @@ export class SelectTokenButtonComponent implements OnInit {
   public clearToken(): void {
     this.selectedToken = null;
     const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
-    this.formService.input.patchValue({ [formKey]: null });
+    this.swapFormService.input.patchValue({ [formKey]: null });
   }
 
   public onImageError($event: Event): void {

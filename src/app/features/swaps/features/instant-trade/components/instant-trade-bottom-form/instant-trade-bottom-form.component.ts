@@ -176,7 +176,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    public readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,

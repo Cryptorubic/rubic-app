@@ -3,7 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -18,7 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
   selector: 'app-vertical-iframe-token-amount-input',
   templateUrl: './vertical-iframe-token-amount-input.component.html',
   styleUrls: ['./vertical-iframe-token-amount-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class VerticalIframeTokenAmountInputComponent implements OnInit {
   @Input() loading: boolean;
@@ -42,10 +44,10 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
   public selectedToken: TokenAmount;
 
   constructor(
-    public readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly translateService: TranslateService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
