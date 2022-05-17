@@ -85,7 +85,8 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string,
-    wrappedNativeAddress?: string
+    wrappedNativeAddress?: string,
+    isCrossChain?: boolean
   ): Promise<OneinchInstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
@@ -107,7 +108,8 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
       toTokenAddress,
       amountAbsolute,
       shouldCalculateGas,
-      fromAddress
+      fromAddress,
+      isCrossChain
     );
 
     const instantTrade: OneinchInstantTrade = {
@@ -146,7 +148,8 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
     toTokenAddress: string,
     amountAbsolute: string,
     shouldCalculateGas: boolean,
-    fromAddress = this.walletAddress
+    fromAddress = this.walletAddress,
+    isCrossChain = false
   ): Promise<{
     estimatedGas: BigNumber;
     toTokenAmount: string;
@@ -198,7 +201,11 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
       estimatedGas = new BigNumber(oneInchTrade.tx.gas);
       toTokenAmount = oneInchTrade.toTokenAmount;
       data = oneInchTrade.tx.data;
-    } catch (_err) {
+    } catch (err) {
+      if (isCrossChain) {
+        throw err;
+      }
+
       oneInchTrade = await this.httpClient
         .get<OneinchQuoteResponse>(`${this.apiBaseUrl}${blockchainId}/quote`, quoteTradeParams)
         .toPromise();
