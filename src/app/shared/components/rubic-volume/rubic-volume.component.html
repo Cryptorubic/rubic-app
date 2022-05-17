@@ -4,6 +4,8 @@
     {{ 'volume.title' | translate }}:
   </div>
   <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
-    ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat: 0 }}
+    <!-- TODO return after backend fix  -->
+    <!-- ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat: 0 }} -->
+    ${{ '249597748.5553835928440093994140625' | bigNumberFormat: 0 }}
   </div>
 </div>
