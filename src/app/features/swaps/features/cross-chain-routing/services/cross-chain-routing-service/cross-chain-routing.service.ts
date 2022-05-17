@@ -211,10 +211,9 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
+    const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
 
-    if (
-      !sourceBlockchainProviders[0].tradeAndToAmount.toAmount.gt(this.ccrUpperTransitAmountLimit)
-    ) {
+    if (!srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
@@ -241,10 +240,17 @@ export class CrossChainRoutingService extends TradeService {
         toBlockchain as EthLikeBlockchainName,
         fromTransitTokenAmount
       );
+      fromSlippage = toSlippage = 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
 
-      if (!this.settingsService.crossChainRoutingValue.autoSlippageTolerance) {
-        fromSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
-        toSlippage = 1 - (this.slippageTolerance - celerBridgeSlippage) / 2;
+      if (
+        !this.settingsService.crossChainRoutingValue.autoSlippageTolerance &&
+        celerBridgeSlippage > this.settingsService.crossChainRoutingValue.slippageTolerance
+      ) {
+        throw new CustomError(
+          `Slippage tolerance is too low. Minimum value for the trade is ${
+            (celerBridgeSlippage + this.slippageTolerance) * 100
+          }`
+        );
       }
 
       const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
@@ -312,7 +318,7 @@ export class CrossChainRoutingService extends TradeService {
         sourceBlockchainProvidersFiltered[0],
         targetBlockchainProvidersFiltered[0],
         celerEstimate.max_slippage,
-        celerBridgeSlippage
+        fromSlippage
       );
     }
 
@@ -451,6 +457,24 @@ export class CrossChainRoutingService extends TradeService {
       toAmount: fromAmount
     };
   }
+
+  // TODO return in the next release
+  // private async canUseRubicPools(
+  //   toBlockchain: BlockchainName,
+  //   transitTokenAmount: BigNumber
+  // ): Promise<boolean> {
+  //   const { address: targetContractAddress, transitToken: targetTransitToken } =
+  //     this.contracts[toBlockchain];
+  //   const targetPoolBalance = await this.publicBlockchainAdapterService[
+  //     toBlockchain
+  //   ].getTokenBalance(targetContractAddress, targetTransitToken.address);
+  //   const targetPoolBalanceInTokens = Web3Pure.fromWei(
+  //     targetPoolBalance,
+  //     targetTransitToken.decimals
+  //   );
+
+  //   return transitTokenAmount.lt(targetPoolBalanceInTokens);
+  // }
 
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
@@ -680,7 +704,11 @@ export class CrossChainRoutingService extends TradeService {
   }> {
     const { fromBlockchain } = trade;
     const walletAddress = this.authService.userAddress;
-    if (fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM || !walletAddress) {
+    const gasCalculateBlockchains: BlockchainName[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.FANTOM
+    ];
+    if (!gasCalculateBlockchains.includes(fromBlockchain) || !walletAddress) {
       return null;
     }
 
@@ -939,6 +967,12 @@ export class CrossChainRoutingService extends TradeService {
     };
 
     try {
+      const swapParams = {
+        onTransactionHash,
+        ...(this.currentCrossChainTrade?.gasPrice && {
+          gasPrice: this.currentCrossChainTrade?.gasPrice
+        })
+      };
       if (this.swapViaCeler) {
         transactionHash = await this.celerService.makeTransferWithSwap(
           fromAmount,
@@ -946,12 +980,12 @@ export class CrossChainRoutingService extends TradeService {
           fromToken,
           toBlockchain as EthLikeBlockchainName,
           toToken,
-          onTransactionHash
+          swapParams
         );
       } else {
         transactionHash = await this.contractExecutorFacade.executeTrade(
           this.currentCrossChainTrade,
-          { onTransactionHash },
+          swapParams,
           this.authService.userAddress
         );
       }

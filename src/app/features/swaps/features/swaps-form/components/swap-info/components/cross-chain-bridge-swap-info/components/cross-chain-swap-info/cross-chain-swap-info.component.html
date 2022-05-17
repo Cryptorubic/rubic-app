@@ -25,10 +25,12 @@
     />
   </div>
   <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
-    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }} ≈
-    ${{
-      cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
-    }}
+    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
+    <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
+      ≈ ${{
+        cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
+      }}
+    </ng-container>
   </div>
 </div>
 
