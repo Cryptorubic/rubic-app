@@ -15,7 +15,7 @@ import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import BigNumber from 'bignumber.js';
 import { BlockchainNumber } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { WRAP_NEAR_CONTRACT } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import { WRAP_NEAR_CONTRACT } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 type NearCrossChainContract = Contract & NearCcrViewMethods;
 

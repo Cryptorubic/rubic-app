@@ -3,7 +3,7 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Injectable } from '@angular/core';
-import { RaydiumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { RaydiumService } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/raydium.service';
 import { EthLikeContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import BigNumber from 'bignumber.js';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';

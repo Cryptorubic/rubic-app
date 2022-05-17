@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
-import { UniSwapV2Service } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
-import { PancakeSwapService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
-import { QuickSwapService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
-import { PangolinAvalancheService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
-import { JoeAvalancheService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
-import { SolarBeamMoonRiverService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
-import { SpookySwapFantomService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
-import { RaydiumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { UniSwapV2Service } from '@features/swaps/core/instant-trade/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
+import { PancakeSwapService } from '@features/swaps/core/instant-trade/providers/bsc/pancake-swap-service/pancake-swap.service';
+import { QuickSwapService } from '@features/swaps/core/instant-trade/providers/polygon/quick-swap-service/quick-swap.service';
+import { PangolinAvalancheService } from '@features/swaps/core/instant-trade/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
+import { JoeAvalancheService } from '@features/swaps/core/instant-trade/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
+import { SolarBeamMoonRiverService } from '@features/swaps/core/instant-trade/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
+import { SpookySwapFantomService } from '@features/swaps/core/instant-trade/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
+import { RaydiumService } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/raydium.service';
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { EthLikeContractData } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { SushiSwapHarmonyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
-import { SpiritSwapFantomService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
-import { ViperSwapHarmonyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
-import { SushiSwapEthService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
-import { SushiSwapBscService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
-import { SushiSwapPolygonService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
-import { SushiSwapAvalancheService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
-import { SushiSwapMoonRiverService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
-import { SushiSwapFantomService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
+import { SushiSwapHarmonyService } from '@features/swaps/core/instant-trade/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
+import { SpiritSwapFantomService } from '@features/swaps/core/instant-trade/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
+import { ViperSwapHarmonyService } from '@features/swaps/core/instant-trade/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
+import { SushiSwapEthService } from '@features/swaps/core/instant-trade/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
+import { SushiSwapBscService } from '@features/swaps/core/instant-trade/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
+import { SushiSwapPolygonService } from '@features/swaps/core/instant-trade/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
+import { SushiSwapAvalancheService } from '@features/swaps/core/instant-trade/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
+import { SushiSwapMoonRiverService } from '@features/swaps/core/instant-trade/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
+import { SushiSwapFantomService } from '@features/swaps/core/instant-trade/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import {
   BLOCKCHAIN_NAME,
   EthLikeBlockchainName,
@@ -26,21 +26,21 @@ import {
   SolanaBlockchainName
 } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
-import { OneInchPolygonService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
-import { OneInchEthService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
-import { OneInchBscService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
-import { AlgebraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
-import { UniSwapV3PolygonService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
-import { UniSwapV3EthereumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
-import { SushiSwapArbitrumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
-import { UniSwapV3ArbitrumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
-import { OneInchArbitrumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
-import { TrisolarisAuroraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
-import { WannaSwapAuroraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
+import { OneInchPolygonService } from '@features/swaps/core/instant-trade/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
+import { OneInchEthService } from '@features/swaps/core/instant-trade/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
+import { OneInchBscService } from '@features/swaps/core/instant-trade/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
+import { AlgebraService } from '@features/swaps/core/instant-trade/providers/polygon/algebra-service/algebra.service';
+import { UniSwapV3PolygonService } from '@features/swaps/core/instant-trade/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
+import { UniSwapV3EthereumService } from '@features/swaps/core/instant-trade/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
+import { SushiSwapArbitrumService } from '@features/swaps/core/instant-trade/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
+import { UniSwapV3ArbitrumService } from '@features/swaps/core/instant-trade/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
+import { OneInchArbitrumService } from '@features/swaps/core/instant-trade/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { TrisolarisAuroraService } from '@features/swaps/core/instant-trade/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
+import { WannaSwapAuroraService } from '@features/swaps/core/instant-trade/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { NearContractData } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
-import { RefFinanceService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
-import { SushiSwapTelosService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
-import { ZappyService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/telos/zappy-service/zappy.service';
+import { RefFinanceService } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/ref-finance.service';
+import { SushiSwapTelosService } from '@features/swaps/core/instant-trade/providers/telos/sushi-swap-telos-service/sushi-swap-telos.service';
+import { ZappyService } from '@features/swaps/core/instant-trade/providers/telos/zappy-service/zappy.service';
 
 @Injectable()
 export class ContractsDataService {

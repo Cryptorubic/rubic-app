@@ -36,6 +36,7 @@ import { RefreshButtonComponent } from '@features/swaps/features/swaps-form/comp
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { RouterModule } from '@angular/router';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     CommonModule,
     SharedModule,
     SwapsSharedModule,
+    SwapsCoreModule,
     InstantTradeModule,
     BridgeModule,
     CrossChainModule,

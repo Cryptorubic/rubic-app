@@ -4,10 +4,7 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
-import {
-  ItOptions,
-  ItProvider
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ItOptions, ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { SHOULD_CALCULATE_GAS_BLOCKCHAIN } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
@@ -21,9 +18,9 @@ import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
+} from '@features/swaps/core/instant-trade/constants/iframe-proxy-fee-contract';
 import { InstantTradeProvidersService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
-import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { EthWethSwapProviderService } from '@features/swaps/core/instant-trade/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeService } from '@features/swaps/core/services/abstract-trade-service/trade.service';
 
 @Injectable()

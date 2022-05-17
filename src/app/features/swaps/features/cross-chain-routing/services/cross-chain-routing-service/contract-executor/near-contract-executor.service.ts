@@ -3,8 +3,8 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { RefFiFunctionCallOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
-import { RefFinanceService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { RefFiFunctionCallOptions } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/models/ref-function-calls';
+import { RefFinanceService } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/ref-finance.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { tuiPure } from '@taiga-ui/cdk';
@@ -17,10 +17,10 @@ import {
   ONE_YOCTO_NEAR,
   WRAP_NEAR_CONTRACT,
   WRAP_NEAR_DECIMALS
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+} from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { RefFinanceSwapService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
+import { RefFinanceSwapService } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/ref-finance-swap.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
 @Injectable()

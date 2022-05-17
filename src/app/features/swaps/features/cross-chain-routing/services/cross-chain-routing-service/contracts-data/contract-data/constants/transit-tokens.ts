@@ -1,7 +1,7 @@
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { TOKENS } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/tokens';
 
 export type TransitTokens = Record<SupportedCrossChainBlockchain, InstantTradeToken>;
 

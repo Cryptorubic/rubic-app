@@ -5,7 +5,7 @@ import {
   Signer,
   TransactionInstruction
 } from '@solana/web3.js';
-import { UnsignedTransactionAndSigners } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
+import { UnsignedTransactionAndSigners } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
 
 /**
  * Direct request to Solana RPC.

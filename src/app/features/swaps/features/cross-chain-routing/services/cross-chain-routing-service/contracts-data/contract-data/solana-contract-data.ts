@@ -5,7 +5,7 @@ import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/
 import { PublicKey } from '@solana/web3.js';
 import { PDA_CONFIG } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import { BLOCKCHAIN_UUID } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
-import { NATIVE_SOL } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { NATIVE_SOL } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/tokens';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import {
   BLOCKCHAIN_LAYOUT,

@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { TOKENS } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';

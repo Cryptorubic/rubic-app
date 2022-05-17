@@ -7,23 +7,23 @@ import { tuiPure } from '@taiga-ui/cdk';
 import { crossChainContractAbiV2 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
 import { crossChainContractAbiV3 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { UniSwapV3QuoterController } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
-import { UniswapV3InstantTrade } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
-import { AlgebraQuoterController } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
-import { AlgebraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { UniSwapV3QuoterController } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
+import { UniswapV3InstantTrade } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
+import { AlgebraQuoterController } from '@features/swaps/core/instant-trade/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
+import { AlgebraService } from '@features/swaps/core/instant-trade/providers/polygon/algebra-service/algebra.service';
 import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
-import { ItProvider } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { CommonUniswapV3AlgebraService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
-import { CommonUniswapV3Service } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
+import { CommonUniswapV3AlgebraService } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
+import { CommonUniswapV3Service } from '@features/swaps/core/instant-trade/providers/common/uniswap-v3/common-uniswap-v3.service';
 import { crossChainContractAbiInch } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainNumber } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
-import { CommonOneinchService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/common-oneinch.service';
-import { CommonUniswapV2Service } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import { CommonOneinchService } from '@features/swaps/core/instant-trade/providers/common/oneinch/common-service/common-oneinch.service';
+import { CommonUniswapV2Service } from '@features/swaps/core/instant-trade/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',

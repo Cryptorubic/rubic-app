@@ -11,9 +11,9 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { RefFinanceService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { RefFinanceService } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/ref-finance.service';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { WRAP_NEAR_CONTRACT } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import { WRAP_NEAR_CONTRACT } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import IsNotEthLikeError from '@core/errors/models/common/is-not-eth-like-error';
 

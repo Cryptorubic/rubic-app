@@ -24,7 +24,7 @@ import {
 import { asyncMap, shakeUndefiledItem } from '@shared/utils/utils';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { UnsignedTransactionAndSigners } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
+import { UnsignedTransactionAndSigners } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   /**

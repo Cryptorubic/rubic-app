@@ -8,11 +8,12 @@ import { BinancePolygonBridgeProviderService } from '@features/swaps/features/br
 import { BinancePolygonRubicBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { BridgeFormService } from '@features/swaps/features/bridge/services/bridge-form-service/bridge-form.service';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [BridgeBottomFormComponent],
   exports: [BridgeBottomFormComponent],
-  imports: [CommonModule, SwapsSharedModule],
+  imports: [CommonModule, SwapsSharedModule, SwapsCoreModule],
   providers: [
     BridgeService,
     BridgeFormService,

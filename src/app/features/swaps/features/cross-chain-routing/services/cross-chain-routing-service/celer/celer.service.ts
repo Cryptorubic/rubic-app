@@ -3,7 +3,7 @@ import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/comm
 import { EthLikeWeb3Pure } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { OneinchInstantTrade } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
+import { OneinchInstantTrade } from '@features/swaps/core/instant-trade/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 import networks from '@app/shared/constants/blockchain/networks';

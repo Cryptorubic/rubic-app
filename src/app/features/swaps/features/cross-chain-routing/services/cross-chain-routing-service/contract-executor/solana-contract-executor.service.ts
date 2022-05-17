@@ -4,7 +4,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   NATIVE_SOL,
   TOKENS
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+} from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -15,7 +15,7 @@ import {
 import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
+} from '@features/swaps/core/instant-trade/providers/solana/raydium-service/models/accounts';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { Buffer } from 'buffer';
@@ -31,7 +31,7 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { SOLANA_CCR_LAYOUT } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { CROSS_CHAIN_METHODS } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { RaydiumService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { RaydiumService } from '@features/swaps/core/instant-trade/providers/solana/raydium-service/raydium.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {

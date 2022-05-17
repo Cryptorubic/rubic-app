@@ -1,4 +1,4 @@
-import { ItProvider } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { ItProvider } from '@features/swaps/core/instant-trade/models/it-provider';
 
 export interface ProviderData {
   provider: ItProvider;

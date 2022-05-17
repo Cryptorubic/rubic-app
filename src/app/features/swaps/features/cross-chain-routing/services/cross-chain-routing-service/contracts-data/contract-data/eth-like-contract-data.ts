@@ -9,7 +9,7 @@ import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/se
 import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { OneinchInstantTrade } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-instant-trade';
+import { OneinchInstantTrade } from '@features/swaps/core/instant-trade/providers/common/oneinch/common-service/models/oneinch-instant-trade';
 import { BlockchainNumber } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';

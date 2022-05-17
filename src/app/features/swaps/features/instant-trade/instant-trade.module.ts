@@ -11,6 +11,7 @@ import { PanelContentComponent } from '@features/swaps/features/instant-trade/co
 import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiHintModule } from '@taiga-ui/core';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,14 @@ import { TuiHintModule } from '@taiga-ui/core';
     PanelErrorContentComponent
   ],
   exports: [InstantTradeBottomFormComponent],
-  imports: [CommonModule, SharedModule, SwapsSharedModule, InlineSVGModule, TuiHintModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    SwapsSharedModule,
+    SwapsCoreModule,
+    InlineSVGModule,
+    TuiHintModule
+  ],
   providers: [InstantTradeService, InstantTradeProvidersService]
 })
 export class InstantTradeModule {}

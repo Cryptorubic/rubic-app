@@ -47,7 +47,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
+import { IT_PROXY_FEE } from '@features/swaps/core/instant-trade/constants/iframe-proxy-fee-contract';
 import { RefreshButtonService } from '@features/swaps/core/services/refresh-button-service/refresh-button.service';
 import { REFRESH_BUTTON_STATUS } from '@features/swaps/core/services/refresh-button-service/models/refresh-button-status';
 

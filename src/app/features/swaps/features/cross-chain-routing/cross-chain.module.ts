@@ -18,6 +18,7 @@ import { EthLikeContractExecutorService } from '@features/swaps/features/cross-c
 import { NearContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
 import { SolanaContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { TargetNetworkAddressService } from '@features/swaps/features/cross-chai
     CommonModule,
     SharedModule,
     SwapsSharedModule,
+    SwapsCoreModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiInputModule,
