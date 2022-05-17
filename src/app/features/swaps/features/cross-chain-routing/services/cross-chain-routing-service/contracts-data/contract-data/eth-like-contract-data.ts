@@ -96,7 +96,8 @@ export class EthLikeContractData extends ContractData {
     trade: CrossChainTrade,
     isToTokenNative: boolean,
     toContract: ContractData,
-    toWalletAddress: string
+    toWalletAddress: string,
+    swapTokenWithFee = false
   ): unknown[] {
     const toNumOfBlockchain = toContract.numOfBlockchain;
 
@@ -153,16 +154,19 @@ export class EthLikeContractData extends ContractData {
       ]
     ];
 
-    this.modifyArgumentsForProvider(trade, methodArguments);
+    this.modifyArgumentsForProvider(trade, methodArguments, swapTokenWithFee);
 
     methodArguments[0].push(swapToUserMethodSignature);
 
     return methodArguments;
   }
 
-  private modifyArgumentsForProvider(trade: CrossChainTrade, methodArguments: unknown[][]): void {
+  private modifyArgumentsForProvider(
+    trade: CrossChainTrade,
+    methodArguments: unknown[][],
+    swapTokenWithFee: boolean
+  ): void {
     const exactTokensForTokens = true;
-    const swapTokenWithFee = false;
 
     if (this.isProviderOneinch(trade.fromProviderIndex)) {
       const data = (trade.fromTrade as OneinchInstantTrade).data;
