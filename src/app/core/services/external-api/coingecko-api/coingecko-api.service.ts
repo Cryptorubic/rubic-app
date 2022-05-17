@@ -21,7 +21,7 @@ const supportedBlockchains = [
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
 
-const API_BASE_URL = 'https://api.coingecko.com/api/v3/';
+const API_BASE_URL = 'https://pro-api.coingecko.com/api/v3/';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,8 @@ export class CoingeckoApiService {
   private readonly nativeCoinsCoingeckoIds: Record<SupportedBlockchain, string>;
 
   private readonly tokenBlockchainId: Record<SupportedBlockchain, string>;
+
+  private readonly apiKey = 'CG-PwQKBdojzFMRt3QBrkab9zsS';
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -82,7 +84,7 @@ export class CoingeckoApiService {
     const coingeckoId = this.nativeCoinsCoingeckoIds[blockchain];
     return this.httpClient
       .get(`${API_BASE_URL}simple/price`, {
-        params: { ids: coingeckoId, vs_currencies: 'usd' }
+        params: { ids: coingeckoId, vs_currencies: 'usd', x_cg_pro_api_key: this.apiKey }
       })
       .pipe(
         timeout(3_000),
@@ -115,7 +117,9 @@ export class CoingeckoApiService {
 
     const blockchainId = this.tokenBlockchainId[blockchain];
     return this.httpClient
-      .get(`${API_BASE_URL}coins/${blockchainId}/contract/${tokenAddress.toLowerCase()}`)
+      .get(`${API_BASE_URL}coins/${blockchainId}/contract/${tokenAddress.toLowerCase()}`, {
+        params: { x_cg_pro_api_key: this.apiKey }
+      })
       .pipe(
         timeout(3_000),
         map((response: { market_data: { current_price: { usd: number } } }) => {
