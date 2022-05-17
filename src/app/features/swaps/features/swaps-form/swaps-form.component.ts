@@ -52,8 +52,6 @@ export class SwapsFormComponent implements OnInit {
 
   public tradeStatus: TRADE_STATUS;
 
-  public allowRefresh: boolean = true;
-
   private _supportedTokens: List<TokenAmount>;
 
   private _supportedFavoriteTokens: List<TokenAmount>;

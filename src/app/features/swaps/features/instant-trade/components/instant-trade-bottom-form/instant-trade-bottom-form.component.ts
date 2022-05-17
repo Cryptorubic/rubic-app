@@ -75,8 +75,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Output() allowRefreshChange = new EventEmitter<boolean>();
-
   /**
    * Emits info of currently selected trade.
    */
@@ -252,14 +250,17 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.refreshButtonService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
-      if (
-        status === REFRESH_BUTTON_STATUS.REFRESHING &&
-        this.tradeStatus !== TRADE_STATUS.LOADING
-      ) {
+    this.refreshButtonService.status$
+      .pipe(
+        filter(
+          status =>
+            status === REFRESH_BUTTON_STATUS.REFRESHING && this.tradeStatus !== TRADE_STATUS.LOADING
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
         this.conditionalCalculate();
-      }
-    });
+      });
   }
 
   /**
@@ -271,7 +272,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toToken = form.toToken;
 
     this.ethWethTrade = this.instantTradeService.getEthWethTrade();
-    this.allowRefreshChange.emit(!this.ethWethTrade);
+    if (this.ethWethTrade) {
+      this.refreshButtonService.setDisabled();
+    }
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
@@ -328,7 +331,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
           }
 
           this.setProvidersStateCalculating();
-          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.startLoading();
 
           const providersNames = this.providersData.map(provider => provider.name);
           const providersApproveData$ = this.authService.user?.address
@@ -348,7 +351,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
               }));
               this.setupProviders(settledProvidersTrades);
 
-              this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+              this.refreshButtonService.stopLoading();
             })
           );
         }),
@@ -521,7 +524,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
               this.cdr.markForCheck();
 
-              this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+              this.refreshButtonService.stopLoading();
             })
           );
         }),
@@ -639,7 +642,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
 
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+    this.refreshButtonService.startLoading();
 
     const provider = this.selectedProvider;
     try {
@@ -667,7 +670,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+    this.refreshButtonService.stopLoading();
   }
 
   public async createTrade(): Promise<void> {
@@ -691,7 +694,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       INSTANT_TRADE_STATUS.TX_IN_PROGRESS
     );
 
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+    this.refreshButtonService.startLoading();
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
@@ -719,7 +722,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
       this.cdr.detectChanges();
 
-      this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+      this.refreshButtonService.stopLoading();
     }
   }
 }

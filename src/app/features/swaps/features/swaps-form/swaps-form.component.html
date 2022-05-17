@@ -10,10 +10,7 @@
       ></app-swaps-header>
 
       <div class="swaps-form__settings-wrapper">
-        <app-refresh-button
-          class="swaps-form__refresh"
-          *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
-        ></app-refresh-button>
+        <app-refresh-button class="swaps-form__refresh"></app-refresh-button>
 
         <app-settings-container
           *ngIf="!isBridge"
@@ -21,15 +18,6 @@
         ></app-settings-container>
       </div>
     </header>
-
-    <!-- TODO: refactor update button, move subscription into service -->
-    <ng-container *onlyFrame>
-      <!-- prettier-ignore -->
-      <app-refresh-button
-        *ngIf="isInstantTrade && allowTrade && allowRefresh"
-        style="display: none;"
-      ></app-refresh-button>
-    </ng-container>
 
     <main class="swaps-form__content">
       <div class="swaps-form__block">
@@ -67,7 +55,6 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           [favoriteTokens]="availableFavoriteTokens['to']"
-          (allowRefreshChange)="allowRefresh = $event"
           (instantTradeInfoChange)="currentInstantTradeInfo = $event"
           (tradeStatusChange)="tradeStatus = $event"
         ></app-instant-trade-bottom-form>

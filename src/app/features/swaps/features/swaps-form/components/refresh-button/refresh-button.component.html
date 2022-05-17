@@ -1,4 +1,7 @@
-<div class="refresh-button">
+<div
+  class="refresh-button"
+  [ngClass]="{ none: (status$ | async) === REFRESH_BUTTON_STATUS.DISABLED }"
+>
   <img
     class="refresh-button__icon"
     [ngClass]="{

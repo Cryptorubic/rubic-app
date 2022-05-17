@@ -1,4 +1,4 @@
-@use '../../../../../../../scss/core' as *;
+@use 'src/scss/core' as *;
 
 .refresh-button {
   position: relative;
@@ -10,11 +10,11 @@
   width: 30px;
   height: 30px;
 
-  cursor: pointer;
-
   img {
     width: 16px;
     height: 16px;
+
+    cursor: pointer;
   }
 
   &__icon {

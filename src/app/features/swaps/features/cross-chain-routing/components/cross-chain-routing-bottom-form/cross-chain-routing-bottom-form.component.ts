@@ -176,14 +176,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.refreshButtonService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
-      if (
-        status === REFRESH_BUTTON_STATUS.REFRESHING &&
-        this.tradeStatus !== TRADE_STATUS.LOADING
-      ) {
+    this.refreshButtonService.status$
+      .pipe(
+        filter(
+          status =>
+            status === REFRESH_BUTTON_STATUS.REFRESHING && this.tradeStatus !== TRADE_STATUS.LOADING
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
         this.conditionalCalculate();
-      }
-    });
+      });
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -235,7 +238,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
-          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.startLoading();
 
           const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
           const calculateNeedApprove =
@@ -292,7 +295,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+        this.refreshButtonService.stopLoading();
 
         this.cdr.markForCheck();
       });
@@ -311,7 +314,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshButtonService.startLoading();
 
           const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
           const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
@@ -348,7 +351,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+        this.refreshButtonService.stopLoading();
 
         this.cdr.markForCheck();
       });
@@ -389,7 +392,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public async approveTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+    this.refreshButtonService.startLoading();
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
@@ -408,12 +411,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+    this.refreshButtonService.stopLoading();
   }
 
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.REFRESHING);
+    this.refreshButtonService.startLoading();
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
@@ -438,7 +441,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
-      this.refreshButtonService.setStatus(REFRESH_BUTTON_STATUS.STOP);
+      this.refreshButtonService.stopLoading();
     }
   }
 }
