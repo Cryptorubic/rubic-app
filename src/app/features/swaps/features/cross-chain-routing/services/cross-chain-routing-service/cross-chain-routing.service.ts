@@ -212,7 +212,7 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
-    const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
+    const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
 
     if (!srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
       this.canSwapViaCeler = false;
@@ -458,24 +458,6 @@ export class CrossChainRoutingService extends TradeService {
       toAmount: fromAmount
     };
   }
-
-  // TODO return in the next release
-  // private async canUseRubicPools(
-  //   toBlockchain: BlockchainName,
-  //   transitTokenAmount: BigNumber
-  // ): Promise<boolean> {
-  //   const { address: targetContractAddress, transitToken: targetTransitToken } =
-  //     this.contracts[toBlockchain];
-  //   const targetPoolBalance = await this.publicBlockchainAdapterService[
-  //     toBlockchain
-  //   ].getTokenBalance(targetContractAddress, targetTransitToken.address);
-  //   const targetPoolBalanceInTokens = Web3Pure.fromWei(
-  //     targetPoolBalance,
-  //     targetTransitToken.decimals
-  //   );
-
-  //   return transitTokenAmount.lt(targetPoolBalanceInTokens);
-  // }
 
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
