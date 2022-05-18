@@ -15,7 +15,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -1000,24 +999,6 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (errMessage?.includes('insufficient funds for')) {
       throw new InsufficientFundsGasPriceValueError(this.currentCrossChainTrade.tokenIn.symbol);
-    }
-
-    const unsupportedTokenErrors = [
-      'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
-      'execution reverted: UniswapV2: K',
-      'execution reverted: UniswapV2:  TRANSFER_FAILED',
-      'execution reverted: Pancake: K',
-      'execution reverted: Pancake:  TRANSFER_FAILED',
-      'execution reverted: Solarbeam: K',
-      'execution reverted: Solarbeam:  TRANSFER_FAILED'
-    ];
-
-    if (
-      unsupportedTokenErrors.some(errText =>
-        errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
-      )
-    ) {
-      throw new UnsupportedTokenCCR();
     }
 
     throw err;
