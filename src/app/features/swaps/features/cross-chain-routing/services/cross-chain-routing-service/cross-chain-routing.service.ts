@@ -94,7 +94,9 @@ export class CrossChainRoutingService extends TradeService {
     return this.isSupportedCelerBlockchainPair && this.canSwapViaCeler;
   }
 
-  private readonly ccrUpperTransitAmountLimit = 280;
+  private ccrUpperTransitAmountLimit = 280;
+
+  private disableRubicCcrForCelerSupportedBlockchains = false;
 
   private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
 
@@ -214,7 +216,11 @@ export class CrossChainRoutingService extends TradeService {
       : sourceBlockchainProviders;
     const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
 
-    if (!srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit)) {
+    if (
+      this.isSupportedCelerBlockchainPair &&
+      !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
+      !this.disableRubicCcrForCelerSupportedBlockchains
+    ) {
       this.canSwapViaCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
@@ -236,6 +242,7 @@ export class CrossChainRoutingService extends TradeService {
     let celerBridgeSlippage: number;
 
     if (this.swapViaCeler) {
+      console.log('Celer swap');
       celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
@@ -458,24 +465,6 @@ export class CrossChainRoutingService extends TradeService {
       toAmount: fromAmount
     };
   }
-
-  // TODO return in the next release
-  // private async canUseRubicPools(
-  //   toBlockchain: BlockchainName,
-  //   transitTokenAmount: BigNumber
-  // ): Promise<boolean> {
-  //   const { address: targetContractAddress, transitToken: targetTransitToken } =
-  //     this.contracts[toBlockchain];
-  //   const targetPoolBalance = await this.publicBlockchainAdapterService[
-  //     toBlockchain
-  //   ].getTokenBalance(targetContractAddress, targetTransitToken.address);
-  //   const targetPoolBalanceInTokens = Web3Pure.fromWei(
-  //     targetPoolBalance,
-  //     targetTransitToken.decimals
-  //   );
-
-  //   return transitTokenAmount.lt(targetPoolBalanceInTokens);
-  // }
 
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
@@ -1070,7 +1059,10 @@ export class CrossChainRoutingService extends TradeService {
         toBlockchain as EthLikeBlockchainName
       );
 
-    return !srcCelerContractPaused && !dstCelerContractPaused;
+    return (
+      this.disableRubicCcrForCelerSupportedBlockchains ||
+      (!srcCelerContractPaused && !dstCelerContractPaused)
+    );
   }
 
   public setIsSupportedCelerBlockchainPair(
