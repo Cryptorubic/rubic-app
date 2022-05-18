@@ -460,18 +460,6 @@ export class CrossChainRoutingService extends TradeService {
     };
   }
 
-  private async canUseCelerCrosschain(
-    fromBlockchain: BlockchainName,
-    transitTokenAmount: BigNumber
-  ): Promise<boolean> {
-    const minCelerAmount = await this.celerService.getSwapLimit(
-      fromBlockchain as EthLikeBlockchainName,
-      'min'
-    );
-
-    return transitTokenAmount.gt(minCelerAmount);
-  }
-
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
    */
