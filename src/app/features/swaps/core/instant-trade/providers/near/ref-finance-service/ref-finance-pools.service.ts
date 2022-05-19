@@ -14,7 +14,7 @@ import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-a
 import BigNumber from 'bignumber.js';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PoolRPCView } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/models/pool-rpc-view';
-import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 interface PoolsQuery {
   result: object;
@@ -23,7 +23,7 @@ interface PoolsQuery {
 }
 
 @Injectable({
-  providedIn: InstantTradeModule
+  providedIn: SwapsCoreModule
 })
 export class RefFinancePoolsService {
   /**

@@ -35,7 +35,7 @@ import { RefFinanceSwapService } from '@features/swaps/core/instant-trade/provid
 import { RefFinanceRoute } from '@features/swaps/core/instant-trade/providers/near/ref-finance-service/models/ref-finance-route';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
-import { InstantTradeModule } from '@features/swaps/features/instant-trade/instant-trade.module';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 interface SwapParams {
   msg: string;
@@ -66,7 +66,7 @@ type CcrRequest = {
 };
 
 @Injectable({
-  providedIn: InstantTradeModule
+  providedIn: SwapsCoreModule
 })
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADE_PROVIDER.REF;
