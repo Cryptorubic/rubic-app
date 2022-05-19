@@ -6,6 +6,8 @@ import { OneInchPolygonService } from '@features/swaps/core/instant-trade/provid
 import { QuickSwapService } from '@features/swaps/core/instant-trade/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from '@features/swaps/core/instant-trade/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from '@features/swaps/core/instant-trade/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
+import { OneInchFantomService } from '@app/features/swaps/core/instant-trade/providers/fantom/one-inch-fantom-service/one-inch-fantom.service';
+import { OneInchAvalancheService } from '@app/features/swaps/core/instant-trade/providers/avalanche/one-inch-avalanche-service/one-inch-avalanche.service';
 import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 import { SushiSwapPolygonService } from '@features/swaps/core/instant-trade/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from '@features/swaps/core/instant-trade/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
@@ -65,10 +67,12 @@ export class InstantTradeProvidersService {
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
+    private readonly oneInchAvalancheService: OneInchAvalancheService,
     // Fantom.
     private readonly sushiSwapFantomService: SushiSwapFantomService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
+    private readonly oneInchFantomService: OneInchFantomService,
     // MoonRiver.
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
@@ -114,7 +118,8 @@ export class InstantTradeProvidersService {
       [BLOCKCHAIN_NAME.AVALANCHE]: {
         [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
         [INSTANT_TRADE_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
-        [INSTANT_TRADE_PROVIDER.JOE]: this.joeAvalancheService
+        [INSTANT_TRADE_PROVIDER.JOE]: this.joeAvalancheService,
+        [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchAvalancheService
       },
       [BLOCKCHAIN_NAME.MOONRIVER]: {
         [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
@@ -123,7 +128,8 @@ export class InstantTradeProvidersService {
       [BLOCKCHAIN_NAME.FANTOM]: {
         [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
         [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
-        [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
+        [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService,
+        [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchFantomService
       },
       [BLOCKCHAIN_NAME.ARBITRUM]: {
         [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchArbitrumService,

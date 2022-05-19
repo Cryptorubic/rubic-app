@@ -29,6 +29,8 @@ import { SolanaContractData } from '@features/swaps/features/cross-chain-routing
 import { OneInchPolygonService } from '@features/swaps/core/instant-trade/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
 import { OneInchEthService } from '@features/swaps/core/instant-trade/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '@features/swaps/core/instant-trade/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
+import { OneInchFantomService } from '@app/features/swaps/core/instant-trade/providers/fantom/one-inch-fantom-service/one-inch-fantom.service';
+import { OneInchAvalancheService } from '@app/features/swaps/core/instant-trade/providers/avalanche/one-inch-avalanche-service/one-inch-avalanche.service';
 import { AlgebraService } from '@features/swaps/core/instant-trade/providers/polygon/algebra-service/algebra.service';
 import { UniSwapV3PolygonService } from '@features/swaps/core/instant-trade/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 import { UniSwapV3EthereumService } from '@features/swaps/core/instant-trade/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
@@ -72,10 +74,12 @@ export class ContractsDataService {
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
+    private readonly oneInchAvalancheService: OneInchAvalancheService,
     // Fantom.
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly sushiSwapFantomService: SushiSwapFantomService,
+    private readonly oneInchFantomService: OneInchFantomService,
     // Moonriver.
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
@@ -183,6 +187,10 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapAvalancheService,
             methodSuffix: ''
+          },
+          {
+            provider: this.oneInchAvalancheService,
+            methodSuffix: 'Inch'
           }
         ],
         4,
@@ -202,6 +210,10 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapFantomService,
             methodSuffix: '2'
+          },
+          {
+            provider: this.oneInchFantomService,
+            methodSuffix: 'Inch'
           }
         ],
         5,
