@@ -38,6 +38,7 @@ import { SwapInfoInch } from './models/swap-info-inch.interface';
 import { SwapInfoV2 } from './models/swap-info-v2.interface';
 import { SwapInfoV3 } from './models/swap-info-v3.interface';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { LiquidityInfoItem } from './models/liquidity-info-response.interface';
 
 interface CelerTrade {
   srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge;
@@ -57,13 +58,19 @@ export class CelerService {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
+  private celerTransitTokens: Record<BlockchainName, LiquidityInfoItem[]>;
+
   constructor(
     private readonly privateBlockchainAdapterService: PrivateBlockchainAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly contractsDataService: ContractsDataService,
     private readonly settingsService: SettingsService,
     private readonly celerApiService: CelerApiService
-  ) {}
+  ) {
+    this.celerApiService.getCelerLiquidityInfo().subscribe(tokens => {
+      this.celerTransitTokens = tokens;
+    });
+  }
 
   /**
    * Makes swap via celer.
@@ -305,6 +312,20 @@ export class CelerService {
     };
   }
 
+  private checkAbilityToBridgeTokens(fromToken: TokenAmount, toToken: TokenAmount): unknown {
+    const findToken = (token: TokenAmount) =>
+      this.celerTransitTokens[token.blockchain].find(
+        item => item.token.token.address.toLowerCase() === token.address.toLocaleLowerCase()
+      );
+    const srcTokenLiquidityInfo = findToken(fromToken);
+    const dstTokenLiquidityInfo = findToken(toToken);
+    const isPair =
+      srcTokenLiquidityInfo?.token?.token.symbol === dstTokenLiquidityInfo?.token?.token.symbol;
+
+    debugger;
+    return Boolean(srcTokenLiquidityInfo) && Boolean(dstTokenLiquidityInfo) && isPair;
+  }
+
   /**
    * Gets celer's estimate for trade based on provided data.
    * @param fromBlockchain Source blockchain.
@@ -462,7 +483,11 @@ export class CelerService {
    * @returns True if token is transit for token's blockchain.
    */
   private isTransitToken(token: TokenAmount): boolean {
-    return CELER_TRANSIT_TOKENS[token.blockchain].includes(token.address);
+    return Boolean(
+      this.celerTransitTokens[token.blockchain].find(
+        item => item.token.token.address.toLocaleLowerCase() === token.address.toLocaleLowerCase()
+      )
+    );
   }
 
   /**

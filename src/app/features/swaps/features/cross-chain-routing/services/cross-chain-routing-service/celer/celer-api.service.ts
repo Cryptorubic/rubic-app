@@ -1,10 +1,16 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 import { HttpService } from '@core/services/http/http.service';
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
-import { LiquidityInfoResponse } from './models/liquidity-info-response.interface';
+import {
+  LiquidityInfoItem,
+  LiquidityInfoResponse
+} from './models/liquidity-info-response.interface';
+import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
+import networks from '@app/shared/constants/blockchain/networks';
+import { BlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 
 @Injectable()
 export class CelerApiService {
@@ -12,21 +18,24 @@ export class CelerApiService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  public getCelerLiquidityInfo(): Observable<LiquidityInfoResponse> {
-    return this.httpService.get<LiquidityInfoResponse>(
-      'v1/getLPInfoList',
-      {},
-      this.celerApiBaseUrl
-    );
-    // .pipe(
-    //   switchMap(response => {
-    //     if (response.err) {
-    //       throw new Error(response.err);
-    //     } else {
-    //       return of(response.lp_info);
-    //     }
-    //   })
-    // );
+  public getCelerLiquidityInfo(): Observable<Record<BlockchainName, LiquidityInfoItem[]>> {
+    return this.httpService
+      .get<LiquidityInfoResponse>('v1/getLPInfoList', {}, this.celerApiBaseUrl)
+      .pipe(
+        map(response => {
+          const lpInfo = response.lp_info;
+
+          return CELER_SUPPORTED_BLOCKCHAINS.map(blockchain => {
+            const blockchainId = networks.find(item => item.name === blockchain).id;
+            const tokens = lpInfo.filter(item => item.chain.id === blockchainId);
+
+            return { [blockchain]: tokens };
+          }).reduce((acc, curr) => {
+            return { ...acc, ...curr };
+          }, {});
+        }),
+        tap(console.log)
+      );
   }
 
   public getEstimateAmt(

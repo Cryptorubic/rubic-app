@@ -1,4 +1,4 @@
-export interface LiquiditInfoItem {
+export interface LiquidityInfoItem {
   chain: {
     id: number;
     name: string;
@@ -20,5 +20,5 @@ export interface LiquiditInfoItem {
 
 export interface LiquidityInfoResponse {
   err: string | null;
-  lp_info: LiquiditInfoItem[];
+  lp_info: LiquidityInfoItem[];
 }
