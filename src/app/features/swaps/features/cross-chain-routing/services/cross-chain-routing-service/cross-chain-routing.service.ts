@@ -52,6 +52,7 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
+import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -214,21 +215,21 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
-    const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
+    // const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
 
-    if (
-      this.isSupportedCelerBlockchainPair &&
-      !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
-      !this.disableRubicCcrForCelerSupportedBlockchains
-    ) {
-      this.canSwapViaCeler = false;
-      sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
-        fromBlockchain,
-        fromToken,
-        fromAmount,
-        fromTransitToken
-      );
-    }
+    // if (
+    //   this.isSupportedCelerBlockchainPair &&
+    //   !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
+    //   !this.disableRubicCcrForCelerSupportedBlockchains
+    // ) {
+    //   this.canSwapViaCeler = false;
+    //   sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
+    //     fromBlockchain,
+    //     fromToken,
+    //     fromAmount,
+    //     fromTransitToken
+    //   );
+    // }
 
     const {
       providerIndex: fromProviderIndex,
@@ -981,7 +982,9 @@ export class CrossChainRoutingService extends TradeService {
       }
 
       subscription$?.unsubscribe();
-      this.showSuccessTrxNotification();
+      this.showSuccessTrxNotification(
+        this.swapViaCeler ? CcrProviderType.CELER : CcrProviderType.RUBIC
+      );
 
       await this.postCrossChainTrade(transactionHash);
     } catch (err) {
