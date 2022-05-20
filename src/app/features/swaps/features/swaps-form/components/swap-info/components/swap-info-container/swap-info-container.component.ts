@@ -8,11 +8,12 @@ import {
 } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/core/services/swap-info-service/swap-info.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-swap-info-container',
@@ -22,8 +23,6 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
   providers: [TuiDestroyService]
 })
 export class SwapInfoContainerComponent implements OnInit {
-  @Input() public swapType: SWAP_PROVIDER_TYPE;
-
   @Input() public currentInstantTradeInfo: InstantTradeInfo;
 
   @Input() private set tradeStatus(status: TRADE_STATUS) {
@@ -36,14 +35,15 @@ export class SwapInfoContainerComponent implements OnInit {
 
   public accordionOpened = false;
 
-  public get isInstantTrade(): boolean {
-    return this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
-  }
+  public readonly isInstantTrade$ = this.swapsService.swapMode$.pipe(
+    map(swapMode => swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
+  );
 
   public get showTransactionInfo(): boolean {
     const { toAmount } = this.swapFormService.outputValue;
     return (
-      (!this.isInstantTrade || this.currentInstantTradeInfo?.isWrappedType === false) &&
+      (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE ||
+        this.currentInstantTradeInfo?.isWrappedType === false) &&
       toAmount?.isFinite()
     );
   }
@@ -52,6 +52,7 @@ export class SwapInfoContainerComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.loading = false;

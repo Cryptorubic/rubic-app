@@ -22,14 +22,12 @@
         <hr class="delimiter" />
 
         <app-instant-trade-swap-info
-          *ngIf="isInstantTrade; else crossChainSwapInfo"
+          *ngIf="isInstantTrade$ | async; else crossChainSwapInfo"
           [currentInstantTrade]="currentInstantTradeInfo?.trade"
         ></app-instant-trade-swap-info>
 
         <ng-template #crossChainSwapInfo>
-          <app-cross-chain-bridge-swap-info
-            [swapType]="swapType"
-          ></app-cross-chain-bridge-swap-info>
+          <app-cross-chain-bridge-swap-info></app-cross-chain-bridge-swap-info>
         </ng-template>
       </div>
     </tui-loader>

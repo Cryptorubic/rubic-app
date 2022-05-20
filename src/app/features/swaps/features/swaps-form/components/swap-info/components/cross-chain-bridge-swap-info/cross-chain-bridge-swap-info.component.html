@@ -1,8 +1,8 @@
-<app-bridge-swap-info *ngIf="swapType === SWAP_PROVIDER_TYPE.BRIDGE"></app-bridge-swap-info>
+<app-bridge-swap-info *ngIf="isBridge$ | async; else crossChainSwapInfo"></app-bridge-swap-info>
 
-<app-cross-chain-swap-info
-  *ngIf="swapType === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
-></app-cross-chain-swap-info>
+<ng-template #crossChainSwapInfo>
+  <app-cross-chain-swap-info></app-cross-chain-swap-info
+></ng-template>
 
 <ng-container *ngIf="toWalletAddress">
   <hr class="delimiter" />

@@ -40,7 +40,7 @@ import { InstantTradeProviderData } from '@features/swaps/features/instant-trade
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/core/services/swap-info-service/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';

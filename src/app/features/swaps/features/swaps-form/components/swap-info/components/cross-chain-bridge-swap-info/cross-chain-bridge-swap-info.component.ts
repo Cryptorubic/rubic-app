@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  Input,
-  ChangeDetectorRef,
-  OnInit,
-  Self
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, Self } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -14,9 +7,10 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-cross-chain-bridge-swap-info',
@@ -26,8 +20,6 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
   providers: [TuiDestroyService]
 })
 export class CrossChainBridgeSwapInfoComponent implements OnInit {
-  @Input() public swapType: SWAP_PROVIDER_TYPE;
-
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
@@ -37,6 +29,10 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
   public toWalletAddress: string;
 
   public isWalletCopied: boolean;
+
+  public readonly isBridge$ = this.swapsService.swapMode$.pipe(
+    map(swapMode => swapMode === SWAP_PROVIDER_TYPE.BRIDGE)
+  );
 
   public get blockchainLabel(): string {
     return BlockchainsInfo.getBlockchainLabel(this.toBlockchain);
@@ -48,7 +44,8 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly swapsService: SwapsService
   ) {
     this.isWalletCopied = false;
   }

@@ -6,7 +6,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { BRIDGE_PROVIDER } from '@features/swaps/shared/models/bridge-provider';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/core/services/swap-info-service/swap-info.service';
 
 @Component({
   selector: 'app-bridge-swap-info',

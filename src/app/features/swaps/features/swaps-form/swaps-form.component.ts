@@ -70,8 +70,6 @@ export class SwapsFormComponent implements OnInit {
 
   public toBlockchain: BlockchainName;
 
-  public swapType: SWAP_PROVIDER_TYPE;
-
   public isMobile$: Observable<boolean>;
 
   public currentInstantTradeInfo: InstantTradeInfo;

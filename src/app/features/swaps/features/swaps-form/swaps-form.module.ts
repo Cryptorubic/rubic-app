@@ -37,7 +37,6 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { RouterModule } from '@angular/router';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 
 @NgModule({
   declarations: [
@@ -89,7 +88,6 @@ import { SwapInfoService } from '@features/swaps/features/swaps-form/components/
     SettingsBridgeComponent,
     SettingsCcrComponent,
     IframeSettingsComponent
-  ],
-  providers: [SwapInfoService]
+  ]
 })
 export class SwapsFormModule {}
