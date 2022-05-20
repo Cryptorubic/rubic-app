@@ -33,7 +33,8 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.TRADES,
-    loadChildren: () => import('./features/my-trades/my-trades.module').then(m => m.MyTradesModule)
+    loadChildren: () =>
+      import('./features/my-trades-v2/my-trades-v2.module').then(m => m.MyTradesv2Module)
   },
   {
     path: ROUTE_PATH.STAKING,

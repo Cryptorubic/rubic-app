@@ -52,6 +52,9 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
+import { LatestTrade } from '@app/shared/models/my-trades/latest-trades.interface';
+import { CrossChainProviderType } from '@app/shared/models/swaps/cross-chain-provider-type.enum';
+import { MyTradesStoreService } from '@app/shared/services/my-trades-store.service';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -119,7 +122,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly iframeService: IframeService,
     private readonly celerService: CelerService,
-    private readonly celerApiService: CelerApiService
+    private readonly celerApiService: CelerApiService,
+    private readonly myTradesStoreService: MyTradesStoreService
   ) {
     super('cross-chain-routing');
   }
@@ -930,6 +934,16 @@ export class CrossChainRoutingService extends TradeService {
     const { fromBlockchain, fromAmount, fromToken, toBlockchain, toToken } =
       this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
+      const tradeData: LatestTrade = {
+        srcTxHash: txHash,
+        fromBlockchain,
+        toBlockchain,
+        fromToken,
+        toToken,
+        amountIn: fromAmount.toNumber(),
+        crossChainProviderType: CrossChainProviderType.RUBIC,
+        timestamp: Date.now()
+      };
       transactionHash = txHash;
 
       confirmCallback?.();
@@ -941,12 +955,16 @@ export class CrossChainRoutingService extends TradeService {
       }
 
       if (this.swapViaCeler) {
+        tradeData.crossChainProviderType = CrossChainProviderType.CELER;
+
         this.celerApiService.postTradeInfo(
           this.currentCrossChainTrade.fromBlockchain,
           'celer',
           txHash
         );
       }
+
+      this.myTradesStoreService.saveTrade(tradeData);
     };
 
     try {

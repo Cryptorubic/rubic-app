@@ -3,6 +3,7 @@ import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import { LatestTrade } from '@app/shared/models/my-trades/latest-trades.interface';
 
 export interface Store {
   /**
@@ -48,4 +49,6 @@ export interface Store {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormSteps;
 
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormSteps;
+
+  latestTrades: LatestTrade[];
 }
