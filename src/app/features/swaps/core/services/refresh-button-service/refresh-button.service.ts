@@ -30,7 +30,7 @@ export class RefreshButtonService {
   private allowTrade = false;
 
   // in seconds
-  public readonly AUTO_REFRESHING_TIMEOUT = 15;
+  public readonly AUTO_REFRESHING_TIMEOUT = 30;
 
   constructor(
     private readonly swapsService: SwapsService,
