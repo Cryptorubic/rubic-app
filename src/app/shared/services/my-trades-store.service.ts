@@ -15,9 +15,9 @@ export class MyTradesStoreService {
   constructor(private readonly storeService: StoreService) {}
 
   public saveTrade(tradeData: LatestTrade): void {
-    let updatedLatestTrades = [...this.latestTrades];
+    let updatedLatestTrades = [...(this.latestTrades || [])];
 
-    if (this.latestTrades.length === MAX_LATEST_TRADES) {
+    if (this?.latestTrades?.length === MAX_LATEST_TRADES) {
       updatedLatestTrades.pop();
     }
 
