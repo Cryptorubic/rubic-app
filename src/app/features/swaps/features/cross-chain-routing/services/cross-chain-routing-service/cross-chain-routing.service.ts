@@ -94,9 +94,9 @@ export class CrossChainRoutingService extends TradeService {
     return this.isSupportedCelerBlockchainPair && this.canSwapViaCeler;
   }
 
-  private ccrUpperTransitAmountLimit = 280;
+  private readonly ccrUpperTransitAmountLimit = 280;
 
-  private disableRubicCcrForCelerSupportedBlockchains = false;
+  private readonly disableRubicCcrForCelerSupportedBlockchains = false;
 
   private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
 
