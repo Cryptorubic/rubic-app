@@ -319,7 +319,8 @@ export class CrossChainRoutingService extends TradeService {
         sourceBlockchainProvidersFiltered[0],
         targetBlockchainProvidersFiltered[0],
         celerEstimate.max_slippage,
-        fromSlippage
+        fromSlippage,
+        fromAmount
       );
     }
 
