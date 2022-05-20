@@ -214,7 +214,7 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
-    const srcTransitTokenAmount = sourceBlockchainProviders[0].tradeAndToAmount.toAmount;
+    const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
 
     if (
       this.isSupportedCelerBlockchainPair &&
