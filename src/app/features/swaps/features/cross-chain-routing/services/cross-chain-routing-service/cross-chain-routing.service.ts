@@ -96,7 +96,7 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly ccrUpperTransitAmountLimit = 280;
 
-  private readonly disableRubicCcrForCelerSupportedBlockchains = false;
+  private readonly disableRubicCcrForCelerSupportedBlockchains = true;
 
   private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
 
