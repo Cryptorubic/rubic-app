@@ -215,21 +215,21 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
-    // const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
+    const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
 
-    // if (
-    //   this.isSupportedCelerBlockchainPair &&
-    //   !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
-    //   !this.disableRubicCcrForCelerSupportedBlockchains
-    // ) {
-    //   this.canSwapViaCeler = false;
-    //   sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
-    //     fromBlockchain,
-    //     fromToken,
-    //     fromAmount,
-    //     fromTransitToken
-    //   );
-    // }
+    if (
+      this.isSupportedCelerBlockchainPair &&
+      !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
+      !this.disableRubicCcrForCelerSupportedBlockchains
+    ) {
+      this.canSwapViaCeler = false;
+      sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
+        fromBlockchain,
+        fromToken,
+        fromAmount,
+        fromTransitToken
+      );
+    }
 
     const {
       providerIndex: fromProviderIndex,
@@ -243,7 +243,6 @@ export class CrossChainRoutingService extends TradeService {
     let celerBridgeSlippage: number;
 
     if (this.swapViaCeler) {
-      console.log('Celer swap');
       celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
@@ -945,7 +944,11 @@ export class CrossChainRoutingService extends TradeService {
       if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
         this.notifyGtmAfterSignTx(txHash);
 
-        subscription$ = this.notifyTradeInProgress(txHash, fromBlockchain);
+        subscription$ = this.notifyTradeInProgress(
+          txHash,
+          fromBlockchain,
+          this.swapViaCeler ? CcrProviderType.CELER : CcrProviderType.RUBIC
+        );
       }
 
       if (this.swapViaCeler) {

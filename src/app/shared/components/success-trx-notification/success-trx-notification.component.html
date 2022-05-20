@@ -8,7 +8,7 @@
     }}
   </div>
   <span
-    *ngIf="type !== 'instant-trade' || ccrProviderType !== CcrProviderType.CELER"
+    *ngIf="type !== 'instant-trade' && ccrProviderType !== CcrProviderType.CELER"
     [innerHTML]="'notifications.successfulTradeParagraph' | translate"
   ></span>
 </div>

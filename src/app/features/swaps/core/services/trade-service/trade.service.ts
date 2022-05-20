@@ -45,12 +45,14 @@ export abstract class TradeService {
 
   protected notifyTradeInProgress(
     transactionHash: string,
-    blockchain: BlockchainName
+    blockchain: BlockchainName,
+    ccrProviderType: CcrProviderType = CcrProviderType.RUBIC
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,
       blockchain,
       this.successTxModalType,
+      ccrProviderType,
       this.showTrxInProgressTrxNotification
     );
   }
