@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { HeaderStore } from '@app/core/header/services/header.store';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';

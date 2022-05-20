@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { HeaderStore } from '@app/core/header/services/header.store';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 import { TokenLpParsed } from '../../models/token-lp.interface';
 
 @Component({

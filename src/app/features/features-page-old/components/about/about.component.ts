@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { HeaderStore } from 'src/app/core/header/services/header.store';
+import { HeaderStore } from 'src/app/root-components/header/services/header.store';
 
 interface TitleDescription {
   title: string;

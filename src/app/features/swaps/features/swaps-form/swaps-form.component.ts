@@ -17,7 +17,6 @@ import {
   takeUntil,
   withLatestFrom
 } from 'rxjs/operators';
-import { HeaderStore } from '@core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
@@ -29,6 +28,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 
 type TokenType = 'from' | 'to';
 

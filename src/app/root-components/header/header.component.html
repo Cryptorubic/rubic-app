@@ -1,0 +1,66 @@
+<header class="rubic-header">
+  <a *noFrame class="rubic-header__logo" routerLink="/">
+    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+  </a>
+
+  <a
+    *onlyFrame
+    class="rubic-header__logo"
+    rel="noopener noreferrer"
+    target="_blank"
+    [href]="noFrameLink"
+  >
+    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
+  </a>
+
+  <app-menu
+    *noFrame
+    class="rubic-header__menu"
+    [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+    [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
+    [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
+    (swapClick)="navigateToSwaps()"
+    (bridgeClick)="navigateToBridgeOrCrossChain('bridge')"
+    (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
+  ></app-menu>
+
+  <nav *noFrame class="rubic-header__nav">
+    <a
+      class="button-link"
+      (click)="navigateToBridgeOrCrossChain('cross-chain')"
+      [class.button-link_active]="
+        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+      "
+      >Swaps</a
+    >
+    <a
+      *noFrame
+      class="button-link"
+      routerLink="staking-lp"
+      routerLinkActive="button-link_active"
+      (click)="handleMenuButtonClick()"
+    >
+      {{ 'navigation.stakingLp' | translate }}
+    </a>
+  </nav>
+
+  <app-buy-token
+    *noFrame
+    class="rubic-header__buy-token"
+    [tokensType]="advertisementType"
+    appearance="outline"
+  ></app-buy-token>
+
+  <div class="rubic-header__profile">
+    <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
+    <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
+      <app-login-button class="rubic-header__login" *noFrame></app-login-button>
+    </ng-container>
+    <ng-template #loggedIn>
+      <app-user-profile class="rubic-header__profile-user"></app-user-profile>
+      <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
+    </ng-template>
+
+    <app-settings *noFrame></app-settings>
+  </div>
+</header>

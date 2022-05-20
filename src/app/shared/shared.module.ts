@@ -26,7 +26,6 @@ import {
   TuiManualHintModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
@@ -66,7 +65,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicButtonCircleComponent,
     RubicButtonComponent,
     IconButtonComponent,
-    RubicLanguageSelectComponent,
     RubicVolumeComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
@@ -138,7 +136,6 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicButtonComponent,
     IconButtonComponent,
     ShortenAmountPipe,
-    RubicLanguageSelectComponent,
     RubicVolumeComponent,
     FalsyPipe,
     WithRoundPipe,

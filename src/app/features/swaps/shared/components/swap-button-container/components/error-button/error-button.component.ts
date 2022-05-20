@@ -4,11 +4,11 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 import { map, startWith } from 'rxjs/operators';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
-import { HeaderStore } from '@core/header/services/header.store';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/error-type';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 
 @Component({
   selector: 'app-error-button',

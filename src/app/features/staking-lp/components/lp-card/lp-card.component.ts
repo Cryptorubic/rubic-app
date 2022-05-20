@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { HeaderStore } from '@app/core/header/services/header.store';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 import { RoundStatus } from '../../models/round-status.enum';
 
 const STATUS_BADGE_TYPE = {

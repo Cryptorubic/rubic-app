@@ -20,7 +20,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
-import { HeaderStore } from 'src/app/core/header/services/header.store';
+import { HeaderStore } from 'src/app/root-components/header/services/header.store';
 import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/iframe-wallets-warning/iframe-wallets-warning.component';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';

@@ -3,7 +3,7 @@ import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { HeaderStore } from '../../header/services/header.store';
+import { HeaderStore } from '@app/root-components/header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
 import { StoreService } from '../store/store.service';

@@ -11,10 +11,14 @@ import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
+import { HeaderModule } from '@app/root-components/header/header.module';
+import { FooterComponent } from '@app/root-components/footer/footer.component';
+import { MaintenanceComponent } from '@app/root-components/maintenance/maintenance.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FooterComponent, MaintenanceComponent],
   imports: [
+    HeaderModule,
     CoreModule,
     SharedModule,
     TuiRootModule,
