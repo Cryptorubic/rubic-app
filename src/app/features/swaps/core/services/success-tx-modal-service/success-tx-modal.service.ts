@@ -7,6 +7,7 @@ import { SuccessTxModalType } from '@shared/components/success-trx-notification/
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -27,13 +28,14 @@ export class SuccessTxModalService {
     transactionHash: string,
     blockchain: BlockchainName,
     type: SuccessTxModalType,
+    ccrProviderType: CcrProviderType,
     callback: () => Observable<void>
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
-        data: { idPrefix: '', type, txHash: transactionHash, blockchain }
+        data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
       })
       .pipe(switchMap(() => callback?.()))
       .subscribe();
