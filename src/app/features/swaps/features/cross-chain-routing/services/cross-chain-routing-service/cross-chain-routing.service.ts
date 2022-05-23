@@ -181,10 +181,6 @@ export class CrossChainRoutingService extends TradeService {
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
 
-    // if (this.isSupportedCelerBlockchainPair) {
-    //   this.canSwapViaCeler = await this.canUseCeler(fromBlockchain, toBlockchain);
-    // }
-
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
