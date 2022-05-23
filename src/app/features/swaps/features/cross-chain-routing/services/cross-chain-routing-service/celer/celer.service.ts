@@ -353,6 +353,12 @@ export class CelerService {
     };
   }
 
+  /**
+   * Check is enough liquidity in source and target pool for provided token pair and amount.
+   * @param fromToken Source token.
+   * @param toToken Target token.
+   * @param amountIn Supposed amount in.
+   */
   private checkBridgePairLiquidity(
     fromToken: TokenAmount,
     toToken: TokenAmount,
@@ -369,6 +375,11 @@ export class CelerService {
     );
   }
 
+  /**
+   * Checks if tokens supported by Celer liquidity pools in source and target networks.
+   * @param fromToken Source token.
+   * @param toToken Target token.
+   */
   public async checkIsCelerBridgeSupportedTokenPair(
     fromToken: TokenAmount,
     toToken: TokenAmount
@@ -385,6 +396,10 @@ export class CelerService {
     );
   }
 
+  /**
+   * Find token info in Celer's liquidity info list.
+   * @param token Supposed token.
+   */
   private findCelerTransitTokenInfo(token: TokenAmount): LiquidityInfoItem {
     return this.celerTransitTokens?.[token.blockchain]?.find(
       item => item.token.token.address.toLowerCase() === token.address.toLocaleLowerCase()
