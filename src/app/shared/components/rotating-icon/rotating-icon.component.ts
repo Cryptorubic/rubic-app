@@ -27,7 +27,7 @@ export class RotatingIconComponent implements OnChanges {
   /**
    * Icon image source. Default is reload arrows.
    */
-  @Input() image = 'assets/images/icons/reload.svg';
+  @Input() image = 'assets/images/icons/reload/reload.svg';
 
   /**
    * Should rotate image.
