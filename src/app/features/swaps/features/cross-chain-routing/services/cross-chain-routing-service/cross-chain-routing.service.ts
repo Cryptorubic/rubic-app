@@ -241,14 +241,19 @@ export class CrossChainRoutingService extends TradeService {
     let finalTransitAmount: BigNumber;
     let celerEstimate: EstimateAmtResponse;
     let celerBridgeSlippage: number;
+    let isPairOfCelerSupportedTransitTokens = false;
 
     if (this.swapViaCeler) {
+      isPairOfCelerSupportedTransitTokens =
+        await this.celerService.checkIsCelerBridgeSupportedTokenPair(fromToken, toToken);
       celerBridgeSlippage = await this.celerService.getCelerBridgeSlippage(
         fromBlockchain as EthLikeBlockchainName,
         toBlockchain as EthLikeBlockchainName,
         fromTransitTokenAmount
       );
-      fromSlippage = toSlippage = 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
+      fromSlippage = toSlippage = isPairOfCelerSupportedTransitTokens
+        ? 1
+        : 1 - (this.slippageTolerance / 2 - celerBridgeSlippage);
 
       if (
         !this.settingsService.crossChainRoutingValue.autoSlippageTolerance &&
@@ -327,7 +332,8 @@ export class CrossChainRoutingService extends TradeService {
         targetBlockchainProvidersFiltered[0],
         celerEstimate.max_slippage,
         fromSlippage,
-        fromAmount
+        fromAmount,
+        isPairOfCelerSupportedTransitTokens
       );
     }
 
