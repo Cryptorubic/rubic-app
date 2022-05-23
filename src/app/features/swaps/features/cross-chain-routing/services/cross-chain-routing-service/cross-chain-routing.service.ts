@@ -92,7 +92,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public get swapViaCeler(): boolean {
-    return this.isSupportedCelerBlockchainPair && this.canSwapViaCeler;
+    return this.isSupportedCelerBlockchainPair && this.disableRubicCcrForCelerSupportedBlockchains;
   }
 
   private readonly ccrUpperTransitAmountLimit = 280;
@@ -181,9 +181,9 @@ export class CrossChainRoutingService extends TradeService {
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
 
-    if (this.isSupportedCelerBlockchainPair) {
-      this.canSwapViaCeler = await this.canUseCeler(fromBlockchain, toBlockchain);
-    }
+    // if (this.isSupportedCelerBlockchainPair) {
+    //   this.canSwapViaCeler = await this.canUseCeler(fromBlockchain, toBlockchain);
+    // }
 
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
@@ -837,10 +837,15 @@ export class CrossChainRoutingService extends TradeService {
   private async checkIfPaused(): Promise<void> {
     const { fromBlockchain, toBlockchain } = this.currentCrossChainTrade;
 
-    const [isFromPaused, isToPaused] = await Promise.all([
-      this.contracts[fromBlockchain].isPaused(),
-      this.contracts[toBlockchain].isPaused()
-    ]);
+    const [isFromPaused, isToPaused] = this.swapViaCeler
+      ? await this.celerService.checkIsCelerContractPaused(
+          fromBlockchain as EthLikeBlockchainName,
+          toBlockchain as EthLikeBlockchainName
+        )
+      : await Promise.all([
+          this.contracts[fromBlockchain].isPaused(),
+          this.contracts[toBlockchain].isPaused()
+        ]);
 
     if (isFromPaused || isToPaused) {
       throw new CrossChainIsUnavailableWarning();

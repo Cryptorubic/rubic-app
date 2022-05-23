@@ -49,8 +49,7 @@ interface CelerTrade {
 
 enum CelerTransitTokenSymbol {
   USDT = 'USDT',
-  USDC = 'USDC',
-  WETH = 'WETH'
+  USDC = 'USDC'
 }
 
 @Injectable()
@@ -154,7 +153,7 @@ export class CelerService {
     const msgValueStr = new BigNumber(msgValue).toFixed(0);
 
     let transactionHash: string;
-
+    debugger;
     await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
       caller,
       CELER_CONTRACT_ABI,
@@ -549,7 +548,7 @@ export class CelerService {
    * @returns True if token is transit for token's blockchain.
    */
   private isSmartRoutingTransitToken(token: TokenAmount): boolean {
-    return transitTokens[token.blockchain].address === token.address;
+    return transitTokens[token.blockchain].address.toLowerCase() === token.address.toLowerCase();
   }
 
   /**
