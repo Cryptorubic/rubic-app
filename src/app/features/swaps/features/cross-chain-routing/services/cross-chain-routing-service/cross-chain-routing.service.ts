@@ -78,7 +78,7 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly contracts = this.contractsDataService.contracts;
 
-  private canSwapViaCeler: boolean = false;
+  private usingCeler: boolean = false;
 
   private isSupportedCelerBlockchainPair: boolean = false;
 
@@ -92,7 +92,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public get swapViaCeler(): boolean {
-    return this.isSupportedCelerBlockchainPair && this.disableRubicCcrForCelerSupportedBlockchains;
+    return this.isSupportedCelerBlockchainPair && this.usingCeler;
   }
 
   private readonly ccrUpperTransitAmountLimit = 280;
@@ -181,6 +181,10 @@ export class CrossChainRoutingService extends TradeService {
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
 
+    if (this.isSupportedCelerBlockchainPair) {
+      this.usingCeler = true;
+    }
+
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
 
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
@@ -218,7 +222,7 @@ export class CrossChainRoutingService extends TradeService {
       !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
       !this.disableRubicCcrForCelerSupportedBlockchains
     ) {
-      this.canSwapViaCeler = false;
+      this.usingCeler = false;
       sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
         fromBlockchain,
         fromToken,
@@ -1061,22 +1065,6 @@ export class CrossChainRoutingService extends TradeService {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.showOpenMobileWallet();
     }
-  }
-
-  private async canUseCeler(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): Promise<boolean> {
-    const [srcCelerContractPaused, dstCelerContractPaused] =
-      await this.celerService.checkIsCelerContractPaused(
-        fromBlockchain as EthLikeBlockchainName,
-        toBlockchain as EthLikeBlockchainName
-      );
-
-    return (
-      this.disableRubicCcrForCelerSupportedBlockchains ||
-      (!srcCelerContractPaused && !dstCelerContractPaused)
-    );
   }
 
   public setIsSupportedCelerBlockchainPair(
