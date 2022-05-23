@@ -153,7 +153,7 @@ export class CelerService {
     const msgValueStr = new BigNumber(msgValue).toFixed(0);
 
     let transactionHash: string;
-    debugger;
+
     await this.privateBlockchainAdapterService[fromBlockchain].tryExecuteContractMethod(
       caller,
       CELER_CONTRACT_ABI,
