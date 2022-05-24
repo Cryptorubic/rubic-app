@@ -1,5 +1,5 @@
 import { BlockchainName } from '../blockchain/blockchain-name';
-import { CrossChainProviderType } from '../swaps/cross-chain-provider-type.enum';
+import { CcrProviderType } from '../swaps/ccr-provider-type.enum';
 import { TokenAmount } from '../tokens/token-amount';
 import { RecentTradeStatus } from './recent-trade-status.enum';
 
@@ -11,7 +11,7 @@ export interface RecentTrade {
   fromToken: TokenAmount;
   toToken: TokenAmount;
   amountIn: number;
-  crossChainProviderType: CrossChainProviderType;
+  crossChainProviderType: CcrProviderType;
   timestamp: number;
   status?: RecentTradeStatus;
 }

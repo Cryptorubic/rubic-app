@@ -23,6 +23,7 @@
           <ng-container *ngIf="errorText">
             {{ 'errors.tradingIsNotAvailable' | translate }}
           </ng-container>
+          <ng-container *ngIf="loading && !tokenAmount">Loading</ng-container>
           <ng-container *ngIf="tokenAmount?.gt(0)">
             {{
               tokenAmount
