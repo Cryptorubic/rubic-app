@@ -392,6 +392,8 @@ export class CelerService {
     const dstTokenLiquidityInfo = this.findCelerTransitTokenInfo(toToken);
 
     return (
+      Boolean(srcTokenLiquidityInfo) &&
+      Boolean(dstTokenLiquidityInfo) &&
       srcTokenLiquidityInfo?.token?.token.symbol === dstTokenLiquidityInfo?.token?.token.symbol
     );
   }
