@@ -22,6 +22,8 @@ export interface CrossChainTrade {
   toSlippage: number;
   toTrade: InstantTrade | null; // `null` means `tokenOut` = `transitToken`
 
+  usingCelerBridge: boolean; // true if bridging pair of tokens through Celer bridge
+
   // fee data
   transitTokenFee: number; // in percents
   cryptoFee: BigNumber; // in Eth units
