@@ -53,7 +53,7 @@ import { CelerApiService } from '@features/swaps/features/cross-chain-routing/se
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 import { CrossChainProviderType } from '@app/shared/models/swaps/cross-chain-provider-type.enum';
-import { MyTradesStoreService } from '@app/shared/services/my-trades-store.service';
+import { RecentTradesService } from '@app/shared/services/recent-trades.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 
 const CACHEABLE_MAX_AGE = 15_000;
@@ -123,7 +123,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly iframeService: IframeService,
     private readonly celerService: CelerService,
     private readonly celerApiService: CelerApiService,
-    private readonly myTradesStoreService: MyTradesStoreService
+    private readonly myTradesStoreService: RecentTradesService
   ) {
     super('cross-chain-routing');
   }

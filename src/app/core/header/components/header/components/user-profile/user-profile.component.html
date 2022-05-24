@@ -29,14 +29,13 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <a
+  <button
     *noFrame
     class="rubic-header__profile-trades button-link"
-    routerLink="my-trades"
-    routerLinkActive="button-link_active"
+    (click)="openRecentTradesModal()"
   >
-    {{ 'navigation.myTrades' | translate }}
-  </a>
+    Recent crosschain tx
+  </button>
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>

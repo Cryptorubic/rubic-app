@@ -22,6 +22,8 @@ import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { RecentCrosschainTxComponent } from '../../../recent-crosschain-tx/recent-crosschain-tx.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -85,5 +87,9 @@ export class UserProfileComponent implements AfterViewInit {
 
   public getDropdownStatus(status: boolean): void {
     this.dropdownIsOpened = status;
+  }
+
+  public openRecentTradesModal(): void {
+    this.dialogService.open(new PolymorpheusComponent(RecentCrosschainTxComponent)).subscribe();
   }
 }

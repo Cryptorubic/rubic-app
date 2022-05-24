@@ -1,0 +1,17 @@
+<div class="title">
+  Recent Crosschain Tx
+  <app-rotating-icon [rotating]="true"></app-rotating-icon>
+</div>
+<div class="description">History of your latest Crosschain Transactions:</div>
+<div class="transactions">
+  <ng-container *ngLet="recentTrades$ | async as recentTrades">
+    <ng-container *ngIf="recentTrades?.length > 0; else noTransactions">
+      <ng-container *ngFor="let tx of recentTrades">
+        Symbols: {{ tx.fromToken.symbol }} -> {{ tx.toToken.symbol }}<br />
+        Network: {{ tx.fromBlockchain.label }} -> {{ tx.toBlockchain.label }} <br />
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #noTransactions> No transactions </ng-template>

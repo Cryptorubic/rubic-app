@@ -8,7 +8,7 @@ const MAX_LATEST_TRADES = 3;
 @Injectable({
   providedIn: 'root'
 })
-export class MyTradesStoreService {
+export class RecentTradesService {
   get recentTradesFromLs(): RecentTrade[] {
     return this.storeService.fetchData().recentTrades;
   }

@@ -35,6 +35,7 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { RecentCrosschainTxComponent } from './components/recent-crosschain-tx/recent-crosschain-tx.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    AppReferralBannerComponent
+    AppReferralBannerComponent,
+    RecentCrosschainTxComponent
   ],
   imports: [
     CommonModule,
