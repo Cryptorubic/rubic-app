@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { LatestTrade } from '@app/shared/models/my-trades/latest-trades.interface';
 import { StoreService } from '@core/services/store/store.service';
+import { BehaviorSubject } from 'rxjs';
+import { RecentTrade } from '../models/my-trades/recent-trades.interface';
 
 const MAX_LATEST_TRADES = 3;
 
@@ -8,20 +9,25 @@ const MAX_LATEST_TRADES = 3;
   providedIn: 'root'
 })
 export class MyTradesStoreService {
-  get latestTrades(): LatestTrade[] {
-    return this.storeService.fetchData().latestTrades;
+  get recentTradesFromLs(): RecentTrade[] {
+    return this.storeService.fetchData().recentTrades;
   }
+
+  private readonly _recentTrades$ = new BehaviorSubject(this.recentTradesFromLs);
+
+  public readonly recentTrades$ = this._recentTrades$.asObservable();
 
   constructor(private readonly storeService: StoreService) {}
 
-  public saveTrade(tradeData: LatestTrade): void {
-    let updatedLatestTrades = [...(this.latestTrades || [])];
+  public saveTrade(tradeData: RecentTrade): void {
+    let currentRecentTrades = [...(this.recentTradesFromLs || [])];
 
-    if (this?.latestTrades?.length === MAX_LATEST_TRADES) {
-      updatedLatestTrades.pop();
+    if (this?.recentTradesFromLs?.length === MAX_LATEST_TRADES) {
+      currentRecentTrades.pop();
     }
+    currentRecentTrades.unshift(tradeData);
 
-    updatedLatestTrades.unshift(tradeData);
-    this.storeService.setItem('latestTrades', updatedLatestTrades);
+    this.storeService.setItem('recentTrades', currentRecentTrades);
+    this._recentTrades$.next(currentRecentTrades);
   }
 }

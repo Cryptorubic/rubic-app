@@ -52,9 +52,9 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
-import { LatestTrade } from '@app/shared/models/my-trades/latest-trades.interface';
 import { CrossChainProviderType } from '@app/shared/models/swaps/cross-chain-provider-type.enum';
 import { MyTradesStoreService } from '@app/shared/services/my-trades-store.service';
+import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -934,7 +934,7 @@ export class CrossChainRoutingService extends TradeService {
     const { fromBlockchain, fromAmount, fromToken, toBlockchain, toToken } =
       this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
-      const tradeData: LatestTrade = {
+      const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain,
         toBlockchain,
