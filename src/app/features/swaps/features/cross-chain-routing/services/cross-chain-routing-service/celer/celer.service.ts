@@ -26,7 +26,6 @@ import {
 import { CELER_CONTRACT } from './constants/CELER_CONTRACT';
 import { CELER_CONTRACT_ABI } from './constants/CELER_CONTRACT_ABI';
 import { CELER_SUPPORTED_BLOCKCHAINS } from './constants/CELER_SUPPORTED_BLOCKCHAINS';
-import { CELER_TRANSIT_TOKENS } from './constants/CELER_TRANSIT_TOKENS';
 import { MESSAGE_BUS_CONTRACT_ABI } from './constants/MESSAGE_BUS_CONTRACT_ABI';
 import { WRAPPED_NATIVE } from './constants/WRAPPED_NATIVE';
 import { CelerSwapMethod } from './models/celer-swap-method.enum';
@@ -38,12 +37,19 @@ import { SwapInfoInch } from './models/swap-info-inch.interface';
 import { SwapInfoV2 } from './models/swap-info-v2.interface';
 import { SwapInfoV3 } from './models/swap-info-v3.interface';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { LiquidityInfoItem } from './models/liquidity-info-response.interface';
+import { map } from 'rxjs';
 
 interface CelerTrade {
   srcSwap: SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge;
   dstSwap: SwapInfoDest;
   srcProvider: IndexedTradeAndToAmount;
   maxSlippage: number;
+}
+
+enum CelerTransitTokenSymbol {
+  USDT = 'USDT',
+  USDC = 'USDC'
 }
 
 @Injectable()
@@ -57,6 +63,8 @@ export class CelerService {
     return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
+  private celerTransitTokens: Record<BlockchainName, LiquidityInfoItem[]>;
+
   constructor(
     private readonly privateBlockchainAdapterService: PrivateBlockchainAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -64,6 +72,32 @@ export class CelerService {
     private readonly settingsService: SettingsService,
     private readonly celerApiService: CelerApiService
   ) {}
+
+  public async getCelerLiquidityInfo(): Promise<void> {
+    this.celerTransitTokens = (await this.celerApiService
+      .getCelerLiquidityInfo()
+      .pipe(
+        map(response => {
+          const lpInfo = response.lp_info.filter(
+            item =>
+              CELER_SUPPORTED_BLOCKCHAINS.map(
+                (blockchain: BlockchainName) =>
+                  networks.find(network => network.name === blockchain).id
+              ).includes(item.chain.id) && this.isSupportedTransitToken(item.token.token.symbol)
+          );
+
+          return CELER_SUPPORTED_BLOCKCHAINS.map(blockchain => {
+            const blockchainId = networks.find(item => item.name === blockchain).id;
+            const tokens = lpInfo.filter(item => item.chain.id === blockchainId);
+
+            return { [blockchain]: tokens };
+          }).reduce((acc, curr) => {
+            return { ...acc, ...curr };
+          }, {});
+        })
+      )
+      .toPromise()) as Record<BlockchainName, LiquidityInfoItem[]>;
+  }
 
   /**
    * Makes swap via celer.
@@ -94,7 +128,7 @@ export class CelerService {
       nativeIn
     );
     const isBridgeInSourceNetwork = Object.keys(this.celerTrade.srcSwap).includes('srcBridgeToken');
-    const isTransitTokenExpected = CELER_TRANSIT_TOKENS[toBlockchain].includes(toToken.address);
+    const isTransitTokenExpected = this.isSmartRoutingTransitToken(toToken);
 
     const methodArguments = this.prepareArgs([
       receiver,
@@ -154,7 +188,8 @@ export class CelerService {
     fromBlockchain: EthLikeBlockchainName,
     fromTransitTokenAmount: BigNumber,
     fromToken: TokenAmount,
-    fromSlippage: number
+    fromSlippage: number,
+    bridgePair: boolean
   ): SwapInfoInch | SwapInfoV2 | SwapInfoV3 | SwapInfoBridge {
     const dexes = this.contractsDataService.contracts[fromBlockchain];
     const dexAddress = dexes.getProvider(srcProvider.providerIndex).contractAddress;
@@ -162,7 +197,7 @@ export class CelerService {
       fromTransitTokenAmount.multipliedBy(fromSlippage),
       dexes.transitToken.decimals
     );
-    const canBridgeInSourceNetwork = this.isTransitToken(fromToken);
+    const canBridgeInSourceNetwork = bridgePair || this.isSmartRoutingTransitToken(fromToken);
 
     if (canBridgeInSourceNetwork) {
       return { srcBridgeToken: fromToken.address } as SwapInfoBridge;
@@ -217,13 +252,14 @@ export class CelerService {
     dstProvider: IndexedTradeAndToAmount,
     toBlockchain: EthLikeBlockchainName,
     estimatedTokenAmount: BigNumber,
-    toToken: TokenAmount
+    toToken: TokenAmount,
+    bridgePair: boolean
   ): SwapInfoDest {
     const swapVersion = this.getCelerSwapVersion(toBlockchain, dstProvider.providerIndex);
     const dexes = this.contractsDataService.contracts[toBlockchain];
     const dexAddress = dexes.getProvider(dstProvider.providerIndex).contractAddress;
     const amountOutMinimum = this.getAmountWithUsersSlippage(estimatedTokenAmount);
-    const canBridgeInTargetNetwork = this.isTransitToken(toToken);
+    const canBridgeInTargetNetwork = bridgePair || this.isSmartRoutingTransitToken(toToken);
 
     const dstSwap: SwapInfoDest = {
       dex: dexAddress,
@@ -274,7 +310,8 @@ export class CelerService {
    * @param srcProvider Source provider data.
    * @param dstProvider Target provider data.
    * @param maxSlippage Max slippage.
-   * @param celerBridgeSlippage Celer bridge slippage.
+   * @param fromSlippage Celer bridge slippage.
+   * @param amountIn Token amount user wants to swap.
    */
   public async buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
@@ -286,16 +323,27 @@ export class CelerService {
     srcProvider: IndexedTradeAndToAmount,
     dstProvider: IndexedTradeAndToAmount,
     maxSlippage: number,
-    fromSlippage: number
+    fromSlippage: number,
+    amountIn: BigNumber,
+    isBridgePair: boolean
   ): Promise<void> {
+    const isEnoughtLiquidityForBridge =
+      isBridgePair && this.checkBridgePairLiquidity(fromToken, toToken, amountIn);
     const srcSwap = this.getSrcSwapObject(
       srcProvider,
       fromBlockchain,
       fromTransitTokenAmount,
       fromToken,
-      fromSlippage
+      fromSlippage,
+      isEnoughtLiquidityForBridge
     );
-    const dstSwap = this.getDstSwapObject(dstProvider, toBlockchain, toAmount, toToken);
+    const dstSwap = this.getDstSwapObject(
+      dstProvider,
+      toBlockchain,
+      toAmount,
+      toToken,
+      isEnoughtLiquidityForBridge
+    );
 
     this.celerTrade = {
       srcSwap,
@@ -303,6 +351,59 @@ export class CelerService {
       srcProvider,
       maxSlippage
     };
+  }
+
+  /**
+   * Check is enough liquidity in source and target pool for provided token pair and amount.
+   * @param fromToken Source token.
+   * @param toToken Target token.
+   * @param amountIn Supposed amount in.
+   */
+  private checkBridgePairLiquidity(
+    fromToken: TokenAmount,
+    toToken: TokenAmount,
+    amountIn: BigNumber
+  ): boolean {
+    const srcTokenLiquidityInfo = this.findCelerTransitTokenInfo(fromToken);
+    const dstTokenLiquidityInfo = this.findCelerTransitTokenInfo(toToken);
+    const isEnoughtLiquidityForTrade =
+      amountIn.lt(srcTokenLiquidityInfo?.total_liquidity) &&
+      amountIn.lt(dstTokenLiquidityInfo?.total_liquidity);
+
+    return (
+      Boolean(srcTokenLiquidityInfo) && Boolean(dstTokenLiquidityInfo) && isEnoughtLiquidityForTrade
+    );
+  }
+
+  /**
+   * Checks if tokens supported by Celer liquidity pools in source and target networks.
+   * @param fromToken Source token.
+   * @param toToken Target token.
+   */
+  public async checkIsCelerBridgeSupportedTokenPair(
+    fromToken: TokenAmount,
+    toToken: TokenAmount
+  ): Promise<boolean> {
+    if (!Boolean(this.celerTransitTokens)) {
+      await this.getCelerLiquidityInfo();
+    }
+
+    const srcTokenLiquidityInfo = this.findCelerTransitTokenInfo(fromToken);
+    const dstTokenLiquidityInfo = this.findCelerTransitTokenInfo(toToken);
+
+    return (
+      srcTokenLiquidityInfo?.token?.token.symbol === dstTokenLiquidityInfo?.token?.token.symbol
+    );
+  }
+
+  /**
+   * Find token info in Celer's liquidity info list.
+   * @param token Supposed token.
+   */
+  private findCelerTransitTokenInfo(token: TokenAmount): LiquidityInfoItem {
+    return this.celerTransitTokens?.[token.blockchain]?.find(
+      item => item.token.token.address.toLowerCase() === token.address.toLocaleLowerCase()
+    );
   }
 
   /**
@@ -461,8 +562,8 @@ export class CelerService {
    * @param token Verifiable token.
    * @returns True if token is transit for token's blockchain.
    */
-  private isTransitToken(token: TokenAmount): boolean {
-    return CELER_TRANSIT_TOKENS[token.blockchain].includes(token.address);
+  private isSmartRoutingTransitToken(token: TokenAmount): boolean {
+    return transitTokens[token.blockchain].address.toLowerCase() === token.address.toLowerCase();
   }
 
   /**
@@ -571,6 +672,10 @@ export class CelerService {
         return String(arg);
       }
     });
+  }
+
+  private isSupportedTransitToken(symbol: string): boolean {
+    return (Object.values(CelerTransitTokenSymbol) as string[]).includes(symbol);
   }
 
   /**
