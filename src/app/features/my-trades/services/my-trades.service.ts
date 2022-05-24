@@ -129,7 +129,7 @@ export class MyTradesService {
               )
             }));
             this._tableData$.next({
-              totalCount: tableData.totalCount,
+              totalCount: tableData.totalCount + bridgeTrades.length,
               trades: adjustedData
             });
             return adjustedData;
