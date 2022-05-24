@@ -4,12 +4,21 @@ import { Observable } from 'rxjs';
 import { EstimateAmtResponse } from './models/estimate-amt-response.interface';
 import { HttpService } from '@core/services/http/http.service';
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
+import { LiquidityInfoResponse } from './models/liquidity-info-response.interface';
 
 @Injectable()
 export class CelerApiService {
   private readonly celerApiBaseUrl = 'https://cbridge-prod2.celer.network/';
 
   constructor(private readonly httpService: HttpService) {}
+
+  public getCelerLiquidityInfo(): Observable<LiquidityInfoResponse> {
+    return this.httpService.get<LiquidityInfoResponse>(
+      'v1/getLPInfoList',
+      {},
+      this.celerApiBaseUrl
+    );
+  }
 
   public getEstimateAmt(
     src_chain_id: number,

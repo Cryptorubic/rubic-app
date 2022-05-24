@@ -8,15 +8,19 @@ import { SuccessTxModalService } from '@features/swaps/features/main-form/servic
 import { Observable, Subscription } from 'rxjs';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
+import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
 
 @Injectable()
 export abstract class TradeService {
-  protected showSuccessTrxNotification = (): void => {
+  protected showSuccessTrxNotification = (
+    ccrProviderType: CcrProviderType = CcrProviderType.RUBIC
+  ): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000,
       data: {
-        type: this.successTxModalType
+        type: this.successTxModalType,
+        ccrProviderType
       }
     });
   };
@@ -41,12 +45,14 @@ export abstract class TradeService {
 
   protected notifyTradeInProgress(
     transactionHash: string,
-    blockchain: BlockchainName
+    blockchain: BlockchainName,
+    ccrProviderType: CcrProviderType = CcrProviderType.RUBIC
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,
       blockchain,
       this.successTxModalType,
+      ccrProviderType,
       this.showTrxInProgressTrxNotification
     );
   }
