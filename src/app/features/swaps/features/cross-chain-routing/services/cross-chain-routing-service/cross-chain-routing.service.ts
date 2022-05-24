@@ -354,6 +354,8 @@ export class CrossChainRoutingService extends TradeService {
       toSlippage,
       toTrade,
 
+      usingCelerBridge: Boolean(isPairOfCelerSupportedTransitTokens),
+
       transitTokenFee: feeInPercents,
       cryptoFee
     };
@@ -363,7 +365,8 @@ export class CrossChainRoutingService extends TradeService {
       targetBlockchainProvidersFiltered,
       fromBlockchain,
       toBlockchain,
-      toToken.address
+      toToken.address,
+      isPairOfCelerSupportedTransitTokens
     );
 
     const [gasData, minMaxErrors, needApprove] = await Promise.all([
@@ -750,7 +753,8 @@ export class CrossChainRoutingService extends TradeService {
       tokenInAmount,
       tokenOutAmount,
       fromTransitTokenAmount,
-      toTransitTokenAmount
+      toTransitTokenAmount,
+      usingCelerBridge
     } = trade;
     const firstTransitToken = this.contracts[fromBlockchain].transitToken;
     const secondTransitToken = this.contracts[toBlockchain].transitToken;
@@ -797,7 +801,8 @@ export class CrossChainRoutingService extends TradeService {
       fromProvider,
       toProvider,
       fromPath,
-      toPath
+      toPath,
+      usingCelerBridge: this.swapViaCeler && usingCelerBridge
     };
   }
 
@@ -1081,15 +1086,20 @@ export class CrossChainRoutingService extends TradeService {
     targetBlockchainProviders: IndexedTradeAndToAmount[],
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain,
-    toToken: string
+    toToken: string,
+    isPairOfCelerSupportedTransitTokens: boolean
   ): Promise<void> {
     const [sourceBestProvider, sourceWorseProvider] = sourceBlockchainProviders;
     const [targetBestProvider, targetWorstProvider] = targetBlockchainProviders;
     const smartRouting = {
       fromProvider: this.getProviderType(fromBlockchain, sourceBestProvider.providerIndex),
       toProvider: this.getProviderType(toBlockchain, targetBestProvider.providerIndex),
-      fromHasTrade: Boolean(sourceBestProvider?.tradeAndToAmount.trade),
-      toHasTrade: Boolean(targetBestProvider?.tradeAndToAmount.trade),
+      fromHasTrade: isPairOfCelerSupportedTransitTokens
+        ? false
+        : Boolean(sourceBestProvider?.tradeAndToAmount.trade),
+      toHasTrade: isPairOfCelerSupportedTransitTokens
+        ? false
+        : Boolean(targetBestProvider?.tradeAndToAmount.trade),
       savings: new BigNumber(0)
     };
     const sourceBestUSDC = sourceBestProvider.tradeAndToAmount.toAmount;
