@@ -94,7 +94,7 @@ export class RecentTradesService {
     sourceTransactionReceipt: TransactionReceipt,
     trade: RecentTrade
   ): Promise<unknown> {
-    const { fromToken, toToken, amountIn, fromBlockchain, toBlockchain, crossChainProviderType } =
+    const { fromToken, toToken, timestamp, fromBlockchain, toBlockchain, crossChainProviderType } =
       trade;
     const celerMessageId = sourceTransactionReceipt.logs.pop().data.slice(0, 66);
     const dstTransactionStatus = await destinationWeb3Provider.callContractMethod(
@@ -107,7 +107,7 @@ export class RecentTradesService {
     );
 
     return {
-      amountIn,
+      timestamp,
       crossChainProviderType,
       fromBlockchain: networks.find(network => network.name === fromBlockchain),
       toBlockchain: networks.find(network => network.name === toBlockchain),
