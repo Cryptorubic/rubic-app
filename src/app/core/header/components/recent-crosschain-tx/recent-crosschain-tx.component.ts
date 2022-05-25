@@ -19,6 +19,14 @@ export class RecentCrosschainTxComponent implements OnInit {
   constructor(private readonly recentTradesService: RecentTradesService) {}
 
   ngOnInit(): void {
-    return undefined;
+    this.recentTradesService.updateUnreadTrades(true);
+  }
+
+  reload(): void {
+    this._loading$.next(true);
+    this.recentTradesService.reloadTrades();
+    setTimeout(() => {
+      this._loading$.next(false);
+    }, 500);
   }
 }

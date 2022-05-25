@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 .user-profile {
+  position: relative;
+
   display: flex;
   align-items: center;
   height: 50px;
@@ -61,5 +63,24 @@
 
   &__logout {
     color: $rubic-text-error;
+  }
+}
+
+.notification-counter {
+  @include font(10px, 16px, 500, #fff, 0.03em);
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+
+  background: #f35e42;
+  border-radius: 100%;
+  
+  &_profile {
+    top: 7px;
+    right: 35px;
   }
 }

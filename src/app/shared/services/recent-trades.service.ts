@@ -20,23 +20,39 @@ const MAX_LATEST_TRADES = 3;
   providedIn: 'root'
 })
 export class RecentTradesService {
-  get recentTradesFromLs(): { [address: string]: RecentTrade[] } {
+  get recentTradesLS(): { [address: string]: RecentTrade[] } {
     return this.storeService.fetchData().recentTrades;
+  }
+
+  get unreadTradesLS(): { [address: string]: number } {
+    return this.storeService.fetchData().unreadTrades;
   }
 
   get userAddress(): string {
     return this.authService.userAddress;
   }
 
-  private readonly _recentTrades$ = new BehaviorSubject(this.recentTradesFromLs);
+  private readonly _recentTrades$ = new BehaviorSubject<{ [address: string]: RecentTrade[] }>(
+    this.recentTradesLS
+  );
 
   public readonly recentTrades$ = this._recentTrades$.asObservable().pipe(
-    map(recentTrades => recentTrades[this.userAddress] || []),
     map(async trades => {
-      return trades?.length > 0 ? await asyncMap(trades, this.parseTradeForUi.bind(this)) : [];
+      const usersTrades = trades[this.userAddress] || [];
+      return usersTrades?.length > 0
+        ? await asyncMap(usersTrades, this.parseTradeForUi.bind(this))
+        : [];
     }),
     switchMap(result => from(result))
   );
+
+  private readonly _unreadTrades$ = new BehaviorSubject<{ [address: string]: number }>(
+    this.unreadTradesLS
+  );
+
+  public readonly unreadTrades$ = this._unreadTrades$
+    .asObservable()
+    .pipe(map(unreadTrades => unreadTrades[this.userAddress] || 0));
 
   constructor(
     private readonly storeService: StoreService,
@@ -45,16 +61,21 @@ export class RecentTradesService {
   ) {}
 
   public saveTrade(address: string, tradeData: RecentTrade): void {
-    let currentRecentTradesForAddress = [...(this.recentTradesFromLs[address] || [])];
+    let currentUsersTrades = [...(this.recentTradesLS[address] || [])];
 
-    if (currentRecentTradesForAddress?.length === MAX_LATEST_TRADES) {
-      currentRecentTradesForAddress.pop();
+    if (currentUsersTrades?.length === MAX_LATEST_TRADES) {
+      currentUsersTrades.pop();
     }
-    currentRecentTradesForAddress.unshift(tradeData);
-    const updatedTrades = { ...this.recentTradesFromLs, [address]: currentRecentTradesForAddress };
+    currentUsersTrades.unshift(tradeData);
+    const updatedTrades = { ...this.recentTradesLS, [address]: currentUsersTrades };
 
     this.storeService.setItem('recentTrades', updatedTrades);
     this._recentTrades$.next(updatedTrades);
+    this.updateUnreadTrades();
+  }
+
+  public reloadTrades(): void {
+    this._recentTrades$.next(this.recentTradesLS);
   }
 
   private async parseTradeForUi(trade: RecentTrade): Promise<unknown> {
@@ -97,5 +118,26 @@ export class RecentTradesService {
     };
   }
 
-  // private parseRubicTrade(data): unknown {}
+  public updateUnreadTrades(readAll = false): void {
+    const currentUsersUnreadTrades = this.unreadTradesLS[this.userAddress] || 0;
+
+    const update = (value: { [address: string]: number }): void => {
+      this.storeService.setItem('unreadTrades', value);
+      this._unreadTrades$.next(value);
+    };
+
+    if (readAll) {
+      if (currentUsersUnreadTrades !== 0) update({ ...this.unreadTradesLS, [this.userAddress]: 0 });
+      return;
+    }
+
+    if (currentUsersUnreadTrades === 3) {
+      return;
+    }
+
+    update({
+      ...this.unreadTradesLS,
+      [this.userAddress]: currentUsersUnreadTrades + 1
+    });
+  }
 }

@@ -9,7 +9,7 @@ export interface Store {
   /**
    * Count of unread trades by user.
    */
-  unreadTrades: number;
+  unreadTrades_: number;
 
   /**
    * Current wallet provider selected by user.
@@ -52,5 +52,9 @@ export interface Store {
 
   recentTrades: {
     [address: string]: RecentTrade[];
+  };
+
+  unreadTrades: {
+    [address: string]: number;
   };
 }

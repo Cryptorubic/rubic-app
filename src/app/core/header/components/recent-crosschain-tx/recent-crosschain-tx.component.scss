@@ -1,0 +1,33 @@
+@use 'src/scss/core' as *;
+
+.title {
+  @include font(26px, 31px, 700, #fff);
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+
+  app-rotating-icon {
+    display: block;
+    margin-left: 11px;
+  }
+}
+
+.description {
+  @include font(16px, 19px, 500, rgba(255, 255, 255, 0.8));
+  margin-bottom: 32px;
+}
+
+.transactions {
+  margin-bottom: 1.5em;
+    
+  .tx {
+    height: 82px;
+
+    background: #181a19;
+    border-radius: 16px;
+
+    &:not(:last-child) {
+      margin-bottom: 12px;
+    }
+  }
+}

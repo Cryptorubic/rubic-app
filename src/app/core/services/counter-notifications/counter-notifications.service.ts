@@ -9,7 +9,7 @@ import { filter, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CounterNotificationsService {
-  private static storageKey = 'unreadTrades' as const;
+  private static storageKey = 'unreadTrades_' as const;
 
   private _unreadReceived$ = new BehaviorSubject(0);
 
