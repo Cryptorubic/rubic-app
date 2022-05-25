@@ -50,5 +50,7 @@ export interface Store {
 
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormSteps;
 
-  recentTrades: RecentTrade[];
+  recentTrades: {
+    [address: string]: RecentTrade[];
+  };
 }

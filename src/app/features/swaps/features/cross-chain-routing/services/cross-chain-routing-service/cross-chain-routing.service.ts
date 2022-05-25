@@ -991,7 +991,7 @@ export class CrossChainRoutingService extends TradeService {
         );
       }
 
-      this.myTradesStoreService.saveTrade(tradeData);
+      this.myTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
     };
 
     try {
