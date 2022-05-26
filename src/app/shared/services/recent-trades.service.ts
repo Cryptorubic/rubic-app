@@ -50,7 +50,7 @@ export class RecentTradesService {
 
   public readonly recentTrades$ = this._recentTrades$.asObservable().pipe(
     map(async trades => {
-      const usersTrades = trades[this.userAddress] || [];
+      const usersTrades = trades?.[this.userAddress] || [];
       return usersTrades?.length > 0
         ? await asyncMap(usersTrades, this.parseTradeForUi.bind(this))
         : [];
@@ -64,7 +64,7 @@ export class RecentTradesService {
 
   public readonly unreadTrades$ = this._unreadTrades$
     .asObservable()
-    .pipe(map(unreadTrades => unreadTrades[this.userAddress] || 0));
+    .pipe(map(unreadTrades => unreadTrades?.[this.userAddress] || 0));
 
   constructor(
     private readonly storeService: StoreService,
@@ -73,7 +73,7 @@ export class RecentTradesService {
   ) {}
 
   public saveTrade(address: string, tradeData: RecentTrade): void {
-    let currentUsersTrades = [...(this.recentTradesLS[address] || [])];
+    let currentUsersTrades = [...(this.recentTradesLS?.[address] || [])];
 
     if (currentUsersTrades?.length === MAX_LATEST_TRADES) {
       currentUsersTrades.pop();
@@ -167,7 +167,7 @@ export class RecentTradesService {
   }
 
   public updateUnreadTrades(readAll = false): void {
-    const currentUsersUnreadTrades = this.unreadTradesLS[this.userAddress] || 0;
+    const currentUsersUnreadTrades = this.unreadTradesLS?.[this.userAddress] || 0;
 
     const update = (value: { [address: string]: number }): void => {
       this.storeService.setItem('unreadTrades', value);
