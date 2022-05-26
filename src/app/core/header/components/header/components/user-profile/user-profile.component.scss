@@ -58,6 +58,8 @@
   }
 
   &__dropdown-item {
+    position: relative;
+
     min-width: 135px;
   }
 
@@ -82,5 +84,10 @@
   &_profile {
     top: 7px;
     right: 35px;
+  }
+
+  &_menu {
+    top: -10px;
+    right: 0;
   }
 }

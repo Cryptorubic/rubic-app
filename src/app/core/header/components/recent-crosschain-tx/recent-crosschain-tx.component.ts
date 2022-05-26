@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RecentTradesService } from '@app/shared/services/recent-trades.service';
 import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recent-crosschain-tx',
@@ -14,7 +13,7 @@ export class RecentCrosschainTxComponent implements OnInit {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  public readonly recentTrades$ = this.recentTradesService.recentTrades$.pipe(tap(console.log));
+  public readonly recentTrades$ = this.recentTradesService.recentTrades$;
 
   constructor(private readonly recentTradesService: RecentTradesService) {}
 

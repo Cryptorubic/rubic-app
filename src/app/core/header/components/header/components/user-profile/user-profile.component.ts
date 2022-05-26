@@ -31,8 +31,6 @@ import { RecentTradesService } from '@app/shared/services/recent-trades.service'
   providers: [TuiDestroyService]
 })
 export class UserProfileComponent implements AfterViewInit {
-  public readonly unreadTrades$ = this.recentTradesService.unreadTrades$;
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -52,6 +50,7 @@ export class UserProfileComponent implements AfterViewInit {
       }
     });
     this.currentUser$ = this.authService.getCurrentUser();
+    this.unreadTrades$ = this.recentTradesService.unreadTrades$;
   }
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
@@ -65,6 +64,8 @@ export class UserProfileComponent implements AfterViewInit {
   public currentBlockchain: BlockchainData;
 
   public dropdownIsOpened = false;
+
+  public readonly unreadTrades$: Observable<number>;
 
   @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 

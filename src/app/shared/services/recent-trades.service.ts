@@ -10,11 +10,23 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { CcrProviderType } from '../models/swaps/ccr-provider-type.enum';
 import { CELER_CONTRACT_ABI } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
 import { CELER_CONTRACT } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
-import networks from '../constants/blockchain/networks';
-import { EthLikeBlockchainName } from '../models/blockchain/blockchain-name';
+import networks, { Network } from '../constants/blockchain/networks';
+import { BlockchainName, EthLikeBlockchainName } from '../models/blockchain/blockchain-name';
 import { CelerSwapStatus } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
+import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
+import { AbiItem } from 'web3-utils';
 
 const MAX_LATEST_TRADES = 3;
+
+const PROCESSED_TRANSACTION_METHOD_ABI: AbiItem[] = [
+  {
+    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    name: 'processedTransactions',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  }
+];
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +79,7 @@ export class RecentTradesService {
       currentUsersTrades.pop();
     }
     currentUsersTrades.unshift(tradeData);
+
     const updatedTrades = { ...this.recentTradesLS, [address]: currentUsersTrades };
 
     this.storeService.setItem('recentTrades', updatedTrades);
@@ -81,23 +94,27 @@ export class RecentTradesService {
   private async parseTradeForUi(trade: RecentTrade): Promise<unknown> {
     const { srcTxHash, crossChainProviderType } = trade;
     const sourceWeb3Provider = this.web3Public[trade.fromBlockchain] as EthLikeWeb3Public;
-    const destinationWeb3Provider = this.web3Public[trade.toBlockchain] as EthLikeWeb3Public;
-    const sourceTransactionReceipt = await sourceWeb3Provider.getTransactionReceipt(srcTxHash);
+    const dstWeb3Provider = this.web3Public[trade.toBlockchain] as EthLikeWeb3Public;
+    const srcTransactionReceipt = await sourceWeb3Provider.getTransactionReceipt(srcTxHash);
 
     if (crossChainProviderType === CcrProviderType.CELER) {
-      return await this.parseCelerTrade(destinationWeb3Provider, sourceTransactionReceipt, trade);
+      return await this.parseCelerTrade(dstWeb3Provider, srcTransactionReceipt, trade);
+    }
+
+    if (crossChainProviderType === CcrProviderType.RUBIC) {
+      return await this.parseRubicTrade(dstWeb3Provider, srcTransactionReceipt, trade);
     }
   }
 
   private async parseCelerTrade(
-    destinationWeb3Provider: EthLikeWeb3Public,
-    sourceTransactionReceipt: TransactionReceipt,
+    dstWeb3Provider: EthLikeWeb3Public,
+    srcTransactionReceipt: TransactionReceipt,
     trade: RecentTrade
   ): Promise<unknown> {
     const { fromToken, toToken, timestamp, fromBlockchain, toBlockchain, crossChainProviderType } =
       trade;
-    const celerMessageId = sourceTransactionReceipt.logs.pop().data.slice(0, 66);
-    const dstTransactionStatus = await destinationWeb3Provider.callContractMethod(
+    const celerMessageId = srcTransactionReceipt.logs.pop().data.slice(0, 66);
+    const dstTransactionStatus = await dstWeb3Provider.callContractMethod(
       CELER_CONTRACT[toBlockchain as EthLikeBlockchainName],
       CELER_CONTRACT_ABI,
       'txStatusById',
@@ -109,13 +126,44 @@ export class RecentTradesService {
     return {
       timestamp,
       crossChainProviderType,
-      fromBlockchain: networks.find(network => network.name === fromBlockchain),
-      toBlockchain: networks.find(network => network.name === toBlockchain),
+      fromBlockchain: this.getFullBlockchainInfo(fromBlockchain),
+      toBlockchain: this.getFullBlockchainInfo(fromBlockchain),
       fromToken,
       toToken,
-      srcTransactionStatus: sourceTransactionReceipt.status ? 'SUCCEEDED' : 'FAIL',
+      srcTransactionStatus: srcTransactionReceipt.status ? 'SUCCEEDED' : 'FAIL',
       dstTransactionStatus: Object.keys(CelerSwapStatus).slice(4, 8)[Number(dstTransactionStatus)]
     };
+  }
+
+  private async parseRubicTrade(
+    dstWeb3Provider: EthLikeWeb3Public,
+    srcTransactionReceipt: TransactionReceipt,
+    trade: RecentTrade
+  ): Promise<unknown> {
+    const { fromToken, toToken, fromBlockchain, toBlockchain, timestamp, crossChainProviderType } =
+      trade;
+    const srcTransactionStatus = srcTransactionReceipt.status ? 'SUCCEEDED' : 'FAIL';
+    const dstTransactionStatus = await dstWeb3Provider.callContractMethod(
+      CROSS_CHAIN_PROD.contractAddresses[toBlockchain],
+      PROCESSED_TRANSACTION_METHOD_ABI,
+      'processedTransactions',
+      { methodArguments: [srcTransactionReceipt.transactionHash] }
+    );
+
+    return {
+      fromBlockchain: this.getFullBlockchainInfo(fromBlockchain),
+      toBlockchain: this.getFullBlockchainInfo(toBlockchain),
+      fromToken,
+      toToken,
+      srcTransactionStatus,
+      dstTransactionStatus: Boolean(Number(dstTransactionStatus)) ? 'SUCCESS' : 'FAIL',
+      timestamp,
+      crossChainProviderType
+    };
+  }
+
+  private getFullBlockchainInfo(blockchain: BlockchainName): Network {
+    return networks.find(network => network.name === blockchain);
   }
 
   public updateUnreadTrades(readAll = false): void {

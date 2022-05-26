@@ -8,11 +8,13 @@
     <ng-container *ngIf="recentTrades?.length > 0; else empty">
       <ng-container *ngFor="let tx of recentTrades">
         <div class="tx">
+          Provider: {{ tx.crossChainProviderType }}<br />
           Date: {{ (tx.timestamp | date: 'MMM dd, yyyy') + ' at ' + (tx.timestamp | date: 'h:mm')
           }}<br />
           Tokens: {{ tx.fromToken.symbol }} -> {{ tx.toToken.symbol }}<br />
           Networks: {{ tx.fromBlockchain.label }} -> {{ tx.toBlockchain.label }} <br />
         </div>
+        <hr style="margin: 5px 0px" />
       </ng-container>
     </ng-container>
   </ng-container>
