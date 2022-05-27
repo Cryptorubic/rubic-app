@@ -150,6 +150,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -177,6 +178,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -193,6 +195,16 @@ export const CELER_CONTRACT_ABI = [
     name: 'bridgeWithSwapNative',
     outputs: [],
     stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: '_id', type: 'bytes32' },
+      { internalType: 'enum SwapBase.SwapStatus', name: '_status', type: 'uint8' }
+    ],
+    name: 'changeTxStatus',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -242,7 +254,7 @@ export const CELER_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'address', name: '', type: 'address' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' },
       { internalType: 'uint64', name: '_srcChainId', type: 'uint64' },
       { internalType: 'bytes', name: '_message', type: 'bytes' },
@@ -312,8 +324,21 @@ export const CELER_CONTRACT_ABI = [
   },
   {
     inputs: [
+      { internalType: 'address', name: '_integrator', type: 'address' },
       { internalType: 'address', name: '_token', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+    ],
+    name: 'integratorCollectFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
     ],
     name: 'integratorCollectFee',
     outputs: [],
@@ -335,6 +360,19 @@ export const CELER_CONTRACT_ABI = [
     name: 'integratorFee',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: '_id', type: 'bytes32' },
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'address', name: '_to', type: 'address' },
+      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
+    ],
+    name: 'manualRefund',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -424,7 +462,8 @@ export const CELER_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_token', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
     ],
     name: 'rubicCollectPlatformFee',
     outputs: [],
@@ -512,7 +551,8 @@ export const CELER_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_token', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'bool', name: '_nativeOut', type: 'bool' }
     ],
     name: 'sweepTokens',
     outputs: [],
@@ -538,6 +578,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -575,6 +616,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -612,6 +654,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -649,6 +692,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -686,6 +730,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },
@@ -723,6 +768,7 @@ export const CELER_CONTRACT_ABI = [
       {
         components: [
           { internalType: 'address', name: 'dex', type: 'address' },
+          { internalType: 'bool', name: 'nativeOut', type: 'bool' },
           { internalType: 'address', name: 'integrator', type: 'address' },
           { internalType: 'enum SwapBase.SwapVersion', name: 'version', type: 'uint8' },
           { internalType: 'address[]', name: 'path', type: 'address[]' },

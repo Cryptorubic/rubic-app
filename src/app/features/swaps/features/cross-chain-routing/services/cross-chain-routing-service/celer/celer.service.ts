@@ -49,7 +49,8 @@ interface CelerTrade {
 
 enum CelerTransitTokenSymbol {
   USDT = 'USDT',
-  USDC = 'USDC'
+  USDC = 'USDC',
+  WETH = 'WETH'
 }
 
 @Injectable()
@@ -260,9 +261,11 @@ export class CelerService {
     const dexAddress = dexes.getProvider(dstProvider.providerIndex).contractAddress;
     const amountOutMinimum = this.getAmountWithUsersSlippage(estimatedTokenAmount);
     const canBridgeInTargetNetwork = bridgePair || this.isSmartRoutingTransitToken(toToken);
+    const nativeOut = this.isNativeToken(toBlockchain, toToken);
 
     const dstSwap: SwapInfoDest = {
       dex: dexAddress,
+      nativeOut,
       integrator: EMPTY_ADDRESS,
       version: swapVersion,
       path: [EMPTY_ADDRESS],
@@ -274,6 +277,7 @@ export class CelerService {
     if (canBridgeInTargetNetwork) {
       return {
         dex: EMPTY_ADDRESS,
+        nativeOut,
         integrator: EMPTY_ADDRESS,
         version: SwapVersion.BRIDGE,
         path: [toToken.address],

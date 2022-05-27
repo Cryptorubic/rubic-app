@@ -1,5 +1,6 @@
 export interface SwapInfoDest {
   dex: string;
+  nativeOut?: boolean;
   integrator: string;
   version: number;
   path: string[];
