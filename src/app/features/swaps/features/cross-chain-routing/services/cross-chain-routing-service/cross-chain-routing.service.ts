@@ -243,8 +243,8 @@ export class CrossChainRoutingService extends TradeService {
     const [
       {
         trade: celerRubicTrade,
-        minAmountError: celerMinAmountError,
-        maxAmountError: celerMaxAmountError
+        minAmountError: celerRubicMinAmountError,
+        maxAmountError: celerRubicMaxAmountError
       },
       symbiosisResponse
     ] = await Promise.all([
@@ -252,12 +252,12 @@ export class CrossChainRoutingService extends TradeService {
       this.symbiosisService.calculateTrade()
     ]);
     let minAmountError = BigNumber.min(
-      celerMinAmountError || Infinity,
+      celerRubicMinAmountError || Infinity,
       symbiosisResponse.minAmountError || Infinity
     );
     minAmountError = minAmountError.eq(Infinity) ? null : minAmountError;
     let maxAmountError = BigNumber.max(
-      celerMaxAmountError || 0,
+      celerRubicMaxAmountError || 0,
       symbiosisResponse.maxAmountError || 0
     );
     maxAmountError = maxAmountError.eq(0) ? null : maxAmountError;
@@ -280,9 +280,7 @@ export class CrossChainRoutingService extends TradeService {
           trade: {
             toAmount: symbiosisResponse.toAmount
           }
-        },
-        minAmountError,
-        maxAmountError
+        }
       };
     }
 
@@ -315,8 +313,8 @@ export class CrossChainRoutingService extends TradeService {
           type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
           trade: celerRubicTrade
         },
-        minAmountError,
-        maxAmountError
+        minAmountError: celerRubicMinAmountError,
+        maxAmountError: celerRubicMaxAmountError
       };
     } else {
       return {
@@ -325,9 +323,7 @@ export class CrossChainRoutingService extends TradeService {
           trade: {
             toAmount: symbiosisResponse.toAmount
           }
-        },
-        minAmountError,
-        maxAmountError
+        }
       };
     }
   }
