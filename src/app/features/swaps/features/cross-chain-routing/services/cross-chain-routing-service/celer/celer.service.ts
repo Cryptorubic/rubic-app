@@ -461,6 +461,12 @@ export class CelerService {
     return amountInTokens;
   }
 
+  /**
+   * Returns target blockchain crypto fee (in Wei!).
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @returns Crypto fee amount.
+   */
   public async getDstCryptoFee(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName
@@ -684,6 +690,11 @@ export class CelerService {
     });
   }
 
+  /**
+   * Checks if token with provided symbol supported as transit token for Celer.
+   * @param symbol Token symbol from Celer Liquidity-API response.
+   * @returns True if token supported.
+   */
   private isSupportedTransitToken(symbol: string): boolean {
     return (Object.values(CelerTransitTokenSymbol) as string[]).includes(symbol);
   }
