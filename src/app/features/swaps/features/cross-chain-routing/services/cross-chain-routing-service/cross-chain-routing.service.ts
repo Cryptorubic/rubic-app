@@ -62,7 +62,6 @@ import { CelerApiService } from '@features/swaps/features/cross-chain-routing/se
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
-import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 
 const CACHEABLE_MAX_AGE = 15_000;
@@ -271,7 +270,8 @@ export class CrossChainRoutingService extends TradeService {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
           trade: {
-            toAmount: symbiosisResponse.toAmount
+            toAmount: symbiosisResponse.toAmount,
+            fee: symbiosisResponse.fee
           }
         }
       };
@@ -315,7 +315,8 @@ export class CrossChainRoutingService extends TradeService {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
           trade: {
-            toAmount: symbiosisResponse.toAmount
+            toAmount: symbiosisResponse.toAmount,
+            fee: symbiosisResponse.fee
           }
         }
       };
@@ -1070,8 +1071,6 @@ export class CrossChainRoutingService extends TradeService {
    * Checks contracts' state and user's balance.
    */
   private async checkTradeParameters(): Promise<void | never> {
-    this.walletConnectorService.checkSettings(this.swapFormService.inputValue.fromBlockchain);
-
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
@@ -1103,11 +1102,12 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async createTrade(confirmCallback?: () => void): Promise<void> {
-    if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
-      return this.symbiosisService.swap();
+    this.walletConnectorService.checkSettings(this.swapFormService.inputValue.fromBlockchain);
+
+    if (this.currentCrossChainProvider.type !== CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      await this.checkTradeParameters();
     }
 
-    await this.checkTradeParameters();
     this.checkDeviceAndShowNotification();
 
     let transactionHash;
@@ -1125,43 +1125,45 @@ export class CrossChainRoutingService extends TradeService {
         subscription$ = this.notifyTradeInProgress(
           txHash,
           fromBlockchain,
-          this.swapViaCeler ? CcrProviderType.CELER : CcrProviderType.RUBIC
+          this.currentCrossChainProvider.type
         );
       }
 
-      if (this.swapViaCeler) {
+      if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.CELER) {
         this.celerApiService.postTradeInfo(fromBlockchain, 'celer', txHash);
       }
     };
 
     try {
-      const swapParams = {
-        onTransactionHash,
-        ...(this.currentCrossChainProvider?.gasPrice && {
-          gasPrice: this.currentCrossChainProvider?.gasPrice
-        })
-      };
-      if (this.swapViaCeler) {
-        transactionHash = await this.celerService.makeTransferWithSwap(
-          fromAmount,
-          fromBlockchain as EthLikeBlockchainName,
-          fromToken,
-          toBlockchain as EthLikeBlockchainName,
-          toToken,
-          swapParams
-        );
+      if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+        await this.symbiosisService.swap(onTransactionHash);
       } else {
-        transactionHash = await this.contractExecutorFacade.executeTrade(
-          this.currentCrossChainProvider.trade as CelerRubicTrade,
-          swapParams,
-          this.authService.userAddress
-        );
+        const swapParams = {
+          onTransactionHash,
+          ...(this.currentCrossChainProvider?.gasPrice && {
+            gasPrice: this.currentCrossChainProvider?.gasPrice
+          })
+        };
+        if (this.swapViaCeler) {
+          transactionHash = await this.celerService.makeTransferWithSwap(
+            fromAmount,
+            fromBlockchain as EthLikeBlockchainName,
+            fromToken,
+            toBlockchain as EthLikeBlockchainName,
+            toToken,
+            swapParams
+          );
+        } else {
+          transactionHash = await this.contractExecutorFacade.executeTrade(
+            this.currentCrossChainProvider.trade as CelerRubicTrade,
+            swapParams,
+            this.authService.userAddress
+          );
+        }
       }
 
       subscription$?.unsubscribe();
-      this.showSuccessTrxNotification(
-        this.swapViaCeler ? CcrProviderType.CELER : CcrProviderType.RUBIC
-      );
+      this.showSuccessTrxNotification(this.currentCrossChainProvider.type);
 
       await this.postCrossChainTrade(transactionHash);
     } catch (err) {
@@ -1194,14 +1196,24 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    const trade = this.currentCrossChainProvider.trade as CelerRubicTrade;
+    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+
+    let fee: BigNumber;
+    if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
+      fee = trade.fee;
+    } else {
+      const trade = this.currentCrossChainProvider.trade as CelerRubicTrade;
+      fee = trade.fromTransitTokenAmount.multipliedBy(trade.transitTokenFee / 100);
+    }
+
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
       txHash,
-      trade.fromToken.symbol,
-      trade.toToken.symbol,
-      trade.fromTransitTokenAmount.multipliedBy(trade.transitTokenFee / 100),
-      trade.fromAmount.multipliedBy(trade.fromToken.price)
+      fromToken.symbol,
+      toToken.symbol,
+      fee,
+      fromAmount.multipliedBy(fromToken.price)
     );
   }
 

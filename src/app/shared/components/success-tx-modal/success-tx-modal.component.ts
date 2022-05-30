@@ -8,7 +8,10 @@ import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
+import {
+  CROSS_CHAIN_PROVIDER,
+  CrossChainProvider
+} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -22,7 +25,7 @@ export class SuccessTxModalComponent {
 
   public type: SuccessTxModalType;
 
-  public ccrProviderType: CcrProviderType;
+  public ccrProviderType: CrossChainProvider;
 
   public txHash: string;
 
@@ -30,7 +33,7 @@ export class SuccessTxModalComponent {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly CcrProviderType = CcrProviderType;
+  public readonly CROSS_CHAIN_PROVIDER = CROSS_CHAIN_PROVIDER;
 
   constructor(
     private readonly destroy$: TuiDestroyService,
@@ -42,7 +45,7 @@ export class SuccessTxModalComponent {
         type: SuccessTxModalType;
         txHash: string;
         blockchain: BlockchainName;
-        ccrProviderType: CcrProviderType;
+        ccrProviderType: CrossChainProvider;
       }
     >
   ) {

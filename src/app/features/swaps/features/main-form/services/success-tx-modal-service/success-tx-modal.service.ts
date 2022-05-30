@@ -7,7 +7,7 @@ import { SuccessTxModalType } from '@shared/components/success-trx-notification/
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
+import { CrossChainProvider } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -28,7 +28,7 @@ export class SuccessTxModalService {
     transactionHash: string,
     blockchain: BlockchainName,
     type: SuccessTxModalType,
-    ccrProviderType: CcrProviderType,
+    ccrProviderType: CrossChainProvider,
     callback: () => Observable<void>
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';

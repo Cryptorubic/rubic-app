@@ -108,6 +108,7 @@ export class SymbiosisService {
 
   public async calculateTrade(): Promise<{
     toAmount: BigNumber;
+    fee?: BigNumber;
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
@@ -153,7 +154,11 @@ export class SymbiosisService {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance * 100;
 
     try {
-      const { tokenAmountOut, transactionRequest } = await swapping.exactIn(
+      const {
+        tokenAmountOut,
+        transactionRequest,
+        fee: transitTokenFee
+      } = await swapping.exactIn(
         tokenAmountIn,
         tokenOut,
         this.walletAddress,
@@ -166,7 +171,8 @@ export class SymbiosisService {
       this.transactionRequest = transactionRequest;
 
       return {
-        toAmount: new BigNumber(tokenAmountOut.toFixed())
+        toAmount: new BigNumber(tokenAmountOut.toFixed()),
+        fee: new BigNumber(transitTokenFee.toFixed())
       };
       // @ts-ignore
     } catch (err: { code: ErrorCode; message: string }) {
@@ -266,7 +272,7 @@ export class SymbiosisService {
     }
   }
 
-  public async swap(): Promise<void> {
+  public async swap(onTransactionHash: (hash: string) => void): Promise<void> {
     const { fromBlockchain } = this.swapFormService.inputValue;
     if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
       throw new Error('Not supported blockchain');
@@ -279,7 +285,7 @@ export class SymbiosisService {
       SYMBIOSIS_CONTRACT_ABI,
       methodName,
       methodArguments,
-      { value }
+      { value, onTransactionHash }
     );
   }
 
