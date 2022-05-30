@@ -40,6 +40,7 @@ import { UserRejectError } from '@core/errors/models/provider/user-reject-error'
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { EthereumPolygonBridgeService } from '@features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
+import { SymbiosisService } from '@features/my-trades/services/symbiosis-service/symbiosis.service';
 
 interface HashPair {
   fromTransactionHash: string;
@@ -71,7 +72,8 @@ export class MyTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly router: Router,
-    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
+    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService,
+    private readonly symbiosisService: SymbiosisService
   ) {
     this.initWarningSubscription();
   }
@@ -115,21 +117,25 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.getCrossChainTrades(page, pageSize)
+          this.getCrossChainTrades(page, pageSize),
+          this.symbiosisService.getUserTrades()
         ]).pipe(
-          map(([bridgeTrades, tableData]) => {
-            const adjustedData = bridgeTrades.concat(tableData.trades.flat()).map(trade => ({
-              ...trade,
-              transactionHashScanUrl: this.scannerLinkPipe.transform(
-                trade.fromTransactionHash || trade.toTransactionHash,
-                trade.fromTransactionHash
-                  ? trade?.fromToken?.blockchain
-                  : trade?.toToken?.blockchain,
-                ADDRESS_TYPE.TRANSACTION
-              )
-            }));
+          map(([bridgeTrades, tableData, symbiosisTrades]) => {
+            const adjustedData = bridgeTrades
+              .concat(symbiosisTrades)
+              .concat(tableData.trades.flat())
+              .map(trade => ({
+                ...trade,
+                transactionHashScanUrl: this.scannerLinkPipe.transform(
+                  trade.fromTransactionHash || trade.toTransactionHash,
+                  trade.fromTransactionHash
+                    ? trade?.fromToken?.blockchain
+                    : trade?.toToken?.blockchain,
+                  ADDRESS_TYPE.TRANSACTION
+                )
+              }));
             this._tableData$.next({
-              totalCount: tableData.totalCount + bridgeTrades.length,
+              totalCount: tableData.totalCount + bridgeTrades.length + symbiosisTrades.length,
               trades: adjustedData
             });
             return adjustedData;
@@ -252,10 +258,8 @@ export class MyTradesService {
     };
   }
 
-  public getTableTradeByDate(date: Date): TableTrade {
-    return this._tableData$
-      .getValue()
-      ?.trades.find(trade => trade.date.getTime() === date.getTime());
+  public getTableTradeByHash(hash: string): TableTrade {
+    return this._tableData$.getValue()?.trades.find(trade => trade.fromTransactionHash === hash);
   }
 
   public depositPolygonBridgeTradeAfterCheckpoint(

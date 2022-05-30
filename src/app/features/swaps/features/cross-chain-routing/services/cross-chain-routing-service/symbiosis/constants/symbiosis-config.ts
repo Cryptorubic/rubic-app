@@ -1,5 +1,5 @@
 export const SYMBIOSIS_CONFIG = {
-  minSwapAmountInUsd: 15,
+  minSwapAmountInUsd: 10,
   maxSwapAmountInUsd: 5000000,
   advisor: {
     url: 'https://api.symbiosis.finance/calculations'
@@ -192,7 +192,7 @@ export const SYMBIOSIS_CONFIG = {
       stables: [
         {
           name: 'USD Coin',
-          address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+          address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
           symbol: 'USDC',
           isStable: true,
           decimals: 6,

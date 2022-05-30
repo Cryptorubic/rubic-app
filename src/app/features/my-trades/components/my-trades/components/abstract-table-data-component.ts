@@ -47,7 +47,7 @@ export abstract class AbstractTableDataComponent {
   }
 
   public getTableTrade(tableRow: TableRowTrade): TableTrade {
-    return this.myTradesService.getTableTradeByDate(tableRow.Date);
+    return this.myTradesService.getTableTradeByHash(tableRow.hash);
   }
 
   public getTransactionLink(trade: TableTrade): string {
