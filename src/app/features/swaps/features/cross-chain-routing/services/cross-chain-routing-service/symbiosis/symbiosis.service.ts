@@ -135,10 +135,10 @@ export class SymbiosisService {
       isNative: fromBlockchainAdapter.isNativeAddress(fromToken.address)
     });
     const feePercent = await this.getFeePercent(fromBlockchain);
-    const fromAmountMinusFee = fromAmount.multipliedBy(100 - feePercent).dividedBy(100);
+    const fromAmountWithoutFee = fromAmount.multipliedBy(100 - feePercent).dividedBy(100);
     const tokenAmountIn = new SymbiosisTokenAmount(
       tokenIn,
-      Web3Pure.toWei(fromAmountMinusFee, tokenIn.decimals)
+      Web3Pure.toWei(fromAmountWithoutFee, tokenIn.decimals)
     );
 
     const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];

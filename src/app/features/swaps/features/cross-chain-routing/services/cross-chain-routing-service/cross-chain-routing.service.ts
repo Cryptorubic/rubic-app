@@ -240,24 +240,17 @@ export class CrossChainRoutingService extends TradeService {
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
-    const [
-      {
-        trade: celerRubicTrade,
-        minAmountError: celerRubicMinAmountError,
-        maxAmountError: celerRubicMaxAmountError
-      },
-      symbiosisResponse
-    ] = await Promise.all([
+    const [celerRubicResponse, symbiosisResponse] = await Promise.all([
       this.calculateCelerRubicTrade(),
       this.symbiosisService.calculateTrade()
     ]);
     let minAmountError = BigNumber.min(
-      celerRubicMinAmountError || Infinity,
+      celerRubicResponse.minAmountError || Infinity,
       symbiosisResponse.minAmountError || Infinity
     );
     minAmountError = minAmountError.eq(Infinity) ? null : minAmountError;
     let maxAmountError = BigNumber.max(
-      celerRubicMaxAmountError || 0,
+      celerRubicResponse.maxAmountError || 0,
       symbiosisResponse.maxAmountError || 0
     );
     maxAmountError = maxAmountError.eq(0) ? null : maxAmountError;
@@ -266,14 +259,14 @@ export class CrossChainRoutingService extends TradeService {
       return {
         provider: {
           type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
-          trade: celerRubicTrade
+          trade: celerRubicResponse.trade
         },
         minAmountError,
         maxAmountError
       };
     }
 
-    if (!celerRubicTrade) {
+    if (!celerRubicResponse.trade) {
       return {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
@@ -284,6 +277,7 @@ export class CrossChainRoutingService extends TradeService {
       };
     }
 
+    const celerRubicTrade = celerRubicResponse.trade;
     const fromTransitTokenAmount = celerRubicTrade.fromTransitTokenAmount;
 
     const symbiosisRatio = fromTransitTokenAmount.dividedBy(symbiosisResponse.toAmount);
@@ -313,8 +307,8 @@ export class CrossChainRoutingService extends TradeService {
           type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
           trade: celerRubicTrade
         },
-        minAmountError: celerRubicMinAmountError,
-        maxAmountError: celerRubicMaxAmountError
+        minAmountError: celerRubicResponse.minAmountError,
+        maxAmountError: celerRubicResponse.maxAmountError
       };
     } else {
       return {
@@ -528,7 +522,9 @@ export class CrossChainRoutingService extends TradeService {
         ...minMaxErrors
       };
     } catch (_err) {
-      return null;
+      return {
+        trade: null
+      };
     }
   }
 
