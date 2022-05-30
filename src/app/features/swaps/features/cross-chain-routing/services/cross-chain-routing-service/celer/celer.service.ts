@@ -313,7 +313,7 @@ export class CelerService {
    * @param fromSlippage Celer bridge slippage.
    * @param amountIn Token amount user wants to swap.
    */
-  public async buildCelerTrade(
+  public buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
@@ -326,7 +326,7 @@ export class CelerService {
     fromSlippage: number,
     amountIn: BigNumber,
     isBridgePair: boolean
-  ): Promise<void> {
+  ): void {
     const isEnoughtLiquidityForBridge =
       isBridgePair && this.checkBridgePairLiquidity(fromToken, toToken, amountIn);
     const srcSwap = this.getSrcSwapObject(

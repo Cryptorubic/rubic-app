@@ -12,6 +12,7 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-co
 import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
 import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,6 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
     SwapsSharedModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
-  providers: [CelerService, CelerApiService]
+  providers: [CelerService, CelerApiService, SymbiosisService]
 })
 export class CrossChainModule {}

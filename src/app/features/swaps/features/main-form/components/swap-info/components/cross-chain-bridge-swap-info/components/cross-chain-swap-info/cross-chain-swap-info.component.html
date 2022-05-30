@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="info-line">
+<div class="info-line" *ngIf="!isSymbiosis">
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img
@@ -34,7 +34,7 @@
   </div>
 </div>
 
-<div class="info-line">
+<div class="info-line" *ngIf="!isSymbiosis">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
@@ -50,7 +50,7 @@
   </div>
 </div>
 
-<hr class="delimiter" />
+<hr class="delimiter" *ngIf="!isSymbiosis || estimateGasInEth?.isFinite()" />
 
 <app-price-impact-info-line
   title="Price impact in source network"
@@ -58,6 +58,7 @@
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
   "
   [priceImpact]="priceImpactFrom"
+  *ngIf="!isSymbiosis"
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
@@ -66,9 +67,10 @@
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
   "
   [priceImpact]="priceImpactTo"
+  *ngIf="!isSymbiosis"
 ></app-price-impact-info-line>
 
-<ng-container *ngIf="!usingCelerBridge">
+<ng-container *ngIf="isSymbiosis || !usingCelerBridge">
   <div
     class="info-line"
     *ngLet="
