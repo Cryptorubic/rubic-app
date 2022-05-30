@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
@@ -13,10 +13,8 @@ import { TransactionReceipt } from 'web3-eth';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { OneinchSwapResponse } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-swap-response';
 import { OneinchQuoteResponse } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-quote-response';
-import { OneinchTokensResponse } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-tokens-response';
 import { OneinchQuoteRequest } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-quote-request';
 import { OneinchSwapRequest } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/models/oneinch-swap-request';
-import { OneinchNotSupportedTokens } from '@core/errors/models/instant-trade/oneinch-not-supported-tokens';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
@@ -60,25 +58,6 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
     return { fromTokenAddress, toTokenAddress };
   }
 
-  private async getSupportedTokensByBlockchain(): Promise<string[]> {
-    if (this.supportedTokens.length) {
-      return this.supportedTokens;
-    }
-
-    const blockchainId = BlockchainsInfo.getBlockchainByName(this.blockchain).id;
-    const supportedTokensByBlockchain = await this.httpClient
-      .get<OneinchTokensResponse>(`${this.apiBaseUrl}${blockchainId}/tokens`)
-      .pipe(
-        map(response =>
-          Object.keys(response.tokens).map(tokenAddress => tokenAddress.toLowerCase())
-        )
-      )
-      .toPromise();
-    this.supportedTokens = supportedTokensByBlockchain;
-
-    return supportedTokensByBlockchain;
-  }
-
   public async calculateTrade(
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
@@ -93,14 +72,6 @@ export abstract class CommonOneinchService extends EthLikeInstantTradeProviderSe
       toToken.address,
       wrappedNativeAddress
     );
-
-    const supportedTokensAddresses = await this.getSupportedTokensByBlockchain();
-    if (
-      !supportedTokensAddresses.includes(fromTokenAddress.toLowerCase()) ||
-      !supportedTokensAddresses.includes(toTokenAddress.toLowerCase())
-    ) {
-      throw new OneinchNotSupportedTokens();
-    }
 
     const amountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
     const { estimatedGas, toTokenAmount, path, data } = await this.getTradeInfo(
