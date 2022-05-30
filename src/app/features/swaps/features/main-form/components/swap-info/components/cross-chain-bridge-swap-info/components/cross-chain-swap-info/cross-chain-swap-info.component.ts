@@ -16,6 +16,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -59,6 +60,10 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public toPath: string[] | null;
 
+  public slippage: number;
+
+  public usingCelerBridge: boolean;
+
   public get fromProviderImg(): string {
     return TRADES_PROVIDERS[this.fromProvider].image;
   }
@@ -88,6 +93,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
+    private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -171,6 +177,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.toPath = tradeInfo.toPath;
 
     this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+
+    this.usingCelerBridge = tradeInfo.usingCelerBridge;
   }
 
   /**

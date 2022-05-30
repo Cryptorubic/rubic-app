@@ -8,6 +8,7 @@ import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -21,24 +22,35 @@ export class SuccessTxModalComponent {
 
   public type: SuccessTxModalType;
 
+  public ccrProviderType: CcrProviderType;
+
   public txHash: string;
 
   public blockchain: BlockchainName;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
+  public readonly CcrProviderType = CcrProviderType;
+
   constructor(
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
-      { idPrefix: string; type: SuccessTxModalType; txHash: string; blockchain: BlockchainName }
+      {
+        idPrefix: string;
+        type: SuccessTxModalType;
+        txHash: string;
+        blockchain: BlockchainName;
+        ccrProviderType: CcrProviderType;
+      }
     >
   ) {
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
     this.txHash = context.data.txHash;
     this.blockchain = context.data.blockchain;
+    this.ccrProviderType = context.data.ccrProviderType;
 
     timer(MODAL_CONFIG.modalLifetime)
       .pipe(takeUntil(this.destroy$))
