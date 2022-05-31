@@ -97,7 +97,7 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly ccrUpperTransitAmountLimit = 280;
 
-  private readonly disableRubicCcrForCelerSupportedBlockchains = false;
+  private readonly disableRubicCcrForCelerSupportedBlockchains = true;
 
   private _celerSwapLimits$ = new BehaviorSubject<{ min: BigNumber; max: BigNumber }>(undefined);
 
@@ -182,7 +182,7 @@ export class CrossChainRoutingService extends TradeService {
     const toBlockchain = toToken.blockchain;
 
     if (this.isSupportedCelerBlockchainPair) {
-      this.usingCeler = false;
+      this.usingCeler = true;
     }
 
     this.handleNotWorkingBlockchains(fromBlockchain, toBlockchain);
@@ -215,23 +215,21 @@ export class CrossChainRoutingService extends TradeService {
           return !this.contracts[fromBlockchain].isProviderAlgebra(provider.providerIndex);
         })
       : sourceBlockchainProviders;
+    const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
 
-    // TODO return after Celer stabilization
-    // const srcTransitTokenAmount = sourceBlockchainProvidersFiltered[0].tradeAndToAmount.toAmount;
-
-    // if (
-    //   this.isSupportedCelerBlockchainPair &&
-    //   !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
-    //   !this.disableRubicCcrForCelerSupportedBlockchains
-    // ) {
-    //   this.usingCeler = false;
-    //   sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
-    //     fromBlockchain,
-    //     fromToken,
-    //     fromAmount,
-    //     fromTransitToken
-    //   );
-    // }
+    if (
+      this.isSupportedCelerBlockchainPair &&
+      !srcTransitTokenAmount.gt(this.ccrUpperTransitAmountLimit) &&
+      !this.disableRubicCcrForCelerSupportedBlockchains
+    ) {
+      this.usingCeler = false;
+      sourceBlockchainProvidersFiltered = await this.getSortedProvidersList(
+        fromBlockchain,
+        fromToken,
+        fromAmount,
+        fromTransitToken
+      );
+    }
 
     const {
       providerIndex: fromProviderIndex,
