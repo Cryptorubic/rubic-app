@@ -46,7 +46,9 @@ export class SymbiosisService {
   private readonly DEFAULT_DEADLINE = 20;
 
   private readonly oneInchService: Record<SymbiosisSupportedBlockchain, CommonOneinchService> = {
-    [BLOCKCHAIN_NAME.POLYGON]: this.oneInchPolygonService
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.oneInchBscService,
+    [BLOCKCHAIN_NAME.POLYGON]: this.oneInchPolygonService,
+    [BLOCKCHAIN_NAME.AVALANCHE]: this.oneInchAvalancheService
   };
 
   private transactionRequest: TransactionRequest;
