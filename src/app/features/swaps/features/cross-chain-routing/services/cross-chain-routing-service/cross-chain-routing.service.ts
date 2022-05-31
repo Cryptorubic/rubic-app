@@ -1141,8 +1141,8 @@ export class CrossChainRoutingService extends TradeService {
 
     try {
       if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
-        const size = this.iframeService.isIframe ? 'fullscreen' : 's';
         try {
+          const size = this.iframeService.isIframe ? 'fullscreen' : 's';
           await firstValueFrom(
             this.dialogService.open(new PolymorpheusComponent(SymbiosisWarningTxModalComponent), {
               size

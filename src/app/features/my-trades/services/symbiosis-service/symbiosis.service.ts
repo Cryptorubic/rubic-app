@@ -8,6 +8,12 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import BigNumber from 'bignumber.js';
+import { firstValueFrom } from 'rxjs';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { TuiDialogService } from '@taiga-ui/core';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +30,9 @@ export class SymbiosisService {
   constructor(
     private readonly authService: AuthService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly iframeService: IframeService,
+    private readonly dialogService: TuiDialogService
   ) {}
 
   public async getUserTrades(): Promise<TableTrade[]> {
@@ -65,6 +73,29 @@ export class SymbiosisService {
 
     const toBlockchain = BlockchainsInfo.getBlockchainById(request.chainIdTo).name;
     this.walletConnectorService.checkSettings(toBlockchain);
+
+    try {
+      const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+
+      const amount = request.fromTokenAmount.toFixed();
+      const tokenSymbol = request.fromTokenAmount.token.symbol;
+      const tokenAddress = request.fromTokenAmount.token.address;
+      const blockchain = BlockchainsInfo.getBlockchainById(request.chainIdFrom).name;
+
+      await firstValueFrom(
+        this.dialogService.open(new PolymorpheusComponent(SymbiosisWarningTxModalComponent), {
+          size,
+          data: {
+            amount,
+            tokenSymbol,
+            tokenAddress,
+            blockchain
+          }
+        })
+      );
+    } catch (_err) {
+      throw new UserRejectError();
+    }
 
     const { transactionRequest } = await this.symbiosis.newRevertPending(request).revert();
     await this.web3PrivateService.trySendTransaction(
