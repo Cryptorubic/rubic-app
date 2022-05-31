@@ -129,9 +129,10 @@ export class AppComponent implements AfterViewInit {
 
   private setupUISettings(queryParams: QueryParams): void {
     const hideUI = queryParams.hideUnusedUI === 'true';
+
     if (hideUI) {
       this.document.body.classList.add('hide-unused-ui');
+      this.removeLiveChatInIframe();
     }
-    this.removeLiveChatInIframe();
   }
 }
