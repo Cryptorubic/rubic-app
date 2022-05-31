@@ -1,0 +1,22 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+    </main>
+
+    <div class="modal__footer">
+      <div class="modal__footer-text">
+        You are swapping through Symbiosis. Please use the <strong>Revert</strong> function found in
+        the <a href="/my-trades" target="_blank">My Trades</a> table if your transaction is stuck.
+      </div>
+
+      <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>
