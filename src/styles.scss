@@ -195,6 +195,7 @@ body.hide-unused-ui {
   }
 
   .main-content {
+    margin: 0;
     padding: 0;
   }
 
@@ -204,6 +205,10 @@ body.hide-unused-ui {
 
   app-swap-info-container {
     display: none;
+  }
+
+  app-swaps-form {
+    display: inline;
   }
 }
 
