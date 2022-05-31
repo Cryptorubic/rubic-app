@@ -692,6 +692,15 @@ export class CrossChainRoutingService extends TradeService {
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
   ): Promise<BigNumber> {
+    if (this.swapViaCeler) {
+      const cryptoFee = await this.celerService.getDstCryptoFee(
+        fromBlockchain as EthLikeBlockchainName,
+        toBlockchain as EthLikeBlockchainName
+      );
+
+      return Web3Pure.fromWei(cryptoFee);
+    }
+
     return this.contracts[fromBlockchain].blockchainCryptoFee(
       this.contracts[toBlockchain].numOfBlockchain
     );
