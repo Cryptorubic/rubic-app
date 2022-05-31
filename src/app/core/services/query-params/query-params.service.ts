@@ -141,13 +141,6 @@ export class QueryParamsService {
     }
   }
 
-  public hideUnusedUI(queryParams: QueryParams): void {
-    const hideUI = queryParams.hideUnusedUI === 'true';
-    if (hideUI) {
-      this.document.body.classList.add('hide-unused-ui');
-    }
-  }
-
   public setQueryParams(params: Partial<QueryParams>): void {
     this.currentQueryParams = {
       ...this.currentQueryParams,
