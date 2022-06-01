@@ -264,7 +264,10 @@ export class CrossChainRoutingService extends TradeService {
       throw new InsufficientLiquidityError('CrossChainRouting');
     }
 
-    if (!this.swapViaCeler || !symbiosisResponse) {
+    if (!this.swapViaCeler || !symbiosisResponse.trade) {
+      minAmountError = celerRubicResponse.minAmountError ? minAmountError : null;
+      maxAmountError = celerRubicResponse.maxAmountError ? maxAmountError : null;
+
       return {
         provider: {
           type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
@@ -275,14 +278,16 @@ export class CrossChainRoutingService extends TradeService {
       };
     }
 
-    if (!celerRubicResponse.trade || celerRubicResponse.minAmountError) {
+    if (
+      !celerRubicResponse.trade ||
+      celerRubicResponse.minAmountError ||
+      celerRubicResponse.maxAmountError
+    ) {
       return {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
           trade: symbiosisResponse.trade
-        },
-        minAmountError,
-        maxAmountError
+        }
       };
     }
 
@@ -313,11 +318,9 @@ export class CrossChainRoutingService extends TradeService {
     if (celerRatio.lte(symbiosisRatio)) {
       return {
         provider: {
-          type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
+          type: CROSS_CHAIN_PROVIDER.CELER,
           trade: celerRubicTrade
-        },
-        minAmountError: celerRubicResponse.minAmountError,
-        maxAmountError: celerRubicResponse.maxAmountError
+        }
       };
     } else {
       return {
