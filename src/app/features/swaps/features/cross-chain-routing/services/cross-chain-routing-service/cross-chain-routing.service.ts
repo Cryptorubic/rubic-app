@@ -11,7 +11,7 @@ import { SwapFormService } from '@features/swaps/features/main-form/services/swa
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
-import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -63,9 +63,6 @@ import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trad
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
-import { TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SymbiosisWarningTxModalComponent } from '@features/swaps/features/cross-chain-routing/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 const CACHEABLE_MAX_AGE = 15_000;
@@ -135,8 +132,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly iframeService: IframeService,
     private readonly celerService: CelerService,
     private readonly celerApiService: CelerApiService,
-    private readonly symbiosisService: SymbiosisService,
-    private readonly dialogService: TuiDialogService
+    private readonly symbiosisService: SymbiosisService
   ) {
     super('cross-chain-routing');
   }
@@ -1144,13 +1140,6 @@ export class CrossChainRoutingService extends TradeService {
     try {
       if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
         try {
-          const size = this.iframeService.isIframe ? 'fullscreen' : 's';
-          await firstValueFrom(
-            this.dialogService.open(new PolymorpheusComponent(SymbiosisWarningTxModalComponent), {
-              size
-            })
-          );
-
           await this.symbiosisService.swap(onTransactionHash);
         } catch (_err) {
           throw new UserRejectError();
