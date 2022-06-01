@@ -53,21 +53,30 @@
 <hr class="delimiter" *ngIf="!isSymbiosis || estimateGasInEth?.isFinite()" />
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosis"
   title="Price impact in source network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
   "
   [priceImpact]="priceImpactFrom"
-  *ngIf="!isSymbiosis"
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosis"
   title="Price impact in target network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
   "
   [priceImpact]="priceImpactTo"
-  *ngIf="!isSymbiosis"
+></app-price-impact-info-line>
+
+<app-price-impact-info-line
+  *ngIf="isSymbiosis"
+  title="Price impact"
+  [hint]="
+    'Correlation between an incoming order and the change in the price of the asset involved caused by the trade.'
+  "
+  [priceImpact]="priceImpact"
 ></app-price-impact-info-line>
 
 <ng-container *ngIf="isSymbiosis || !usingCelerBridge">

@@ -257,14 +257,14 @@ export class CrossChainRoutingService extends TradeService {
 
     if (
       !celerRubicResponse.trade &&
-      !symbiosisResponse.toAmount &&
+      !symbiosisResponse.trade &&
       !minAmountError &&
       !maxAmountError
     ) {
       throw new InsufficientLiquidityError('CrossChainRouting');
     }
 
-    if (!this.swapViaCeler || !symbiosisResponse.toAmount?.isFinite()) {
+    if (!this.swapViaCeler || !symbiosisResponse) {
       return {
         provider: {
           type: this.swapViaCeler ? CROSS_CHAIN_PROVIDER.CELER : CROSS_CHAIN_PROVIDER.RUBIC,
@@ -279,10 +279,7 @@ export class CrossChainRoutingService extends TradeService {
       return {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
-          trade: {
-            toAmount: symbiosisResponse.toAmount,
-            fee: symbiosisResponse.fee
-          }
+          trade: symbiosisResponse.trade
         },
         minAmountError,
         maxAmountError
@@ -292,7 +289,7 @@ export class CrossChainRoutingService extends TradeService {
     const celerRubicTrade = celerRubicResponse.trade;
     const fromTransitTokenAmount = celerRubicTrade.fromTransitTokenAmount;
 
-    const symbiosisRatio = fromTransitTokenAmount.dividedBy(symbiosisResponse.toAmount);
+    const symbiosisRatio = fromTransitTokenAmount.dividedBy(symbiosisResponse.trade.toAmount);
 
     const { fromBlockchain } = this.swapFormService.inputValue;
     const fromTransitToken = this.contracts[fromBlockchain].transitToken;
@@ -326,10 +323,7 @@ export class CrossChainRoutingService extends TradeService {
       return {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
-          trade: {
-            toAmount: symbiosisResponse.toAmount,
-            fee: symbiosisResponse.fee
-          }
+          trade: symbiosisResponse.trade
         }
       };
     }
@@ -912,8 +906,10 @@ export class CrossChainRoutingService extends TradeService {
     );
 
     if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
       return {
-        estimatedGas
+        estimatedGas,
+        priceImpact: trade.priceImpact
       };
     }
 

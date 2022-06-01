@@ -32,6 +32,7 @@ import { OneInchPolygonService } from '@features/swaps/features/instant-trade/se
 import { OneInchAvalancheService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/avalanche/one-inch-avalanche-service/one-inch-avalanche.service';
 import { CommonOneinchService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/common-oneinch.service';
 import { transitTokens } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
+import { SymbiosisTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 @Injectable()
 export class SymbiosisService {
@@ -109,23 +110,18 @@ export class SymbiosisService {
   }
 
   public async calculateTrade(): Promise<{
-    toAmount: BigNumber;
-    fee?: BigNumber;
+    trade: SymbiosisTrade;
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
     if (!this.walletAddress) {
-      return {
-        toAmount: null
-      };
+      return { trade: null };
     }
 
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
     if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
-      return {
-        toAmount: null
-      };
+      return { trade: null };
     }
 
     const swapping = this.symbiosis.newSwapping();
@@ -159,7 +155,8 @@ export class SymbiosisService {
       const {
         tokenAmountOut,
         transactionRequest,
-        fee: transitTokenFee
+        fee: transitTokenFee,
+        priceImpact
       } = await swapping.exactIn(
         tokenAmountIn,
         tokenOut,
@@ -173,8 +170,11 @@ export class SymbiosisService {
       this.transactionRequest = transactionRequest;
 
       return {
-        toAmount: new BigNumber(tokenAmountOut.toFixed()),
-        fee: new BigNumber(transitTokenFee.toFixed())
+        trade: {
+          toAmount: new BigNumber(tokenAmountOut.toFixed()),
+          fee: new BigNumber(transitTokenFee.toFixed()),
+          priceImpact: priceImpact.toFixed()
+        }
       };
       // @ts-ignore
     } catch (err: { code: ErrorCode; message: string }) {
@@ -183,7 +183,7 @@ export class SymbiosisService {
         const transitTokenAmount = new BigNumber(err.message.substring(index + 1));
         const minAmount = await this.getFromTokenAmount(fromBlockchain, transitTokenAmount, 'min');
         return {
-          toAmount: null,
+          trade: null,
           minAmountError: minAmount
         };
       } else if (err?.code === ErrorCode.AMOUNT_TOO_HIGH) {
@@ -191,14 +191,12 @@ export class SymbiosisService {
         const transitTokenAmount = new BigNumber(err.message.substring(index + 1));
         const maxAmount = await this.getFromTokenAmount(fromBlockchain, transitTokenAmount, 'max');
         return {
-          toAmount: null,
+          trade: null,
           maxAmountError: maxAmount
         };
       }
 
-      return {
-        toAmount: null
-      };
+      return { trade: null };
     }
   }
 

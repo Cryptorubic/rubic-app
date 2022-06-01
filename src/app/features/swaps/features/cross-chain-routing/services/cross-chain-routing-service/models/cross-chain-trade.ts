@@ -49,4 +49,5 @@ export interface CelerRubicTrade {
 export interface SymbiosisTrade {
   toAmount: BigNumber;
   fee: BigNumber;
+  priceImpact: string;
 }
