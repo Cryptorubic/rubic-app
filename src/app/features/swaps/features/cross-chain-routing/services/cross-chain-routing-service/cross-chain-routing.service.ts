@@ -255,6 +255,15 @@ export class CrossChainRoutingService extends TradeService {
     );
     maxAmountError = maxAmountError.eq(0) ? null : maxAmountError;
 
+    if (
+      !celerRubicResponse.trade &&
+      !symbiosisResponse.toAmount &&
+      !minAmountError &&
+      !maxAmountError
+    ) {
+      throw new InsufficientLiquidityError('CrossChainRouting');
+    }
+
     if (!this.swapViaCeler || !symbiosisResponse.toAmount?.isFinite()) {
       return {
         provider: {
