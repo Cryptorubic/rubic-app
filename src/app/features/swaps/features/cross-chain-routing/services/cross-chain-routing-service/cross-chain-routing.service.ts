@@ -63,7 +63,6 @@ import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trad
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
-import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -1139,11 +1138,7 @@ export class CrossChainRoutingService extends TradeService {
 
     try {
       if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
-        try {
-          await this.symbiosisService.swap(onTransactionHash);
-        } catch (_err) {
-          throw new UserRejectError();
-        }
+        await this.symbiosisService.swap(onTransactionHash);
       } else {
         const swapParams = {
           onTransactionHash,
