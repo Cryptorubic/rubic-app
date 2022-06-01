@@ -1120,8 +1120,7 @@ export class CrossChainRoutingService extends TradeService {
 
     let transactionHash;
     let subscription$: Subscription;
-    const { fromBlockchain, fromAmount, fromToken, toBlockchain, toToken } =
-      this.swapFormService.inputValue;
+    const { fromBlockchain } = this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
 
@@ -1164,14 +1163,7 @@ export class CrossChainRoutingService extends TradeService {
           })
         };
         if (this.swapViaCeler) {
-          transactionHash = await this.celerService.makeTransferWithSwap(
-            fromAmount,
-            fromBlockchain as EthLikeBlockchainName,
-            fromToken,
-            toBlockchain as EthLikeBlockchainName,
-            toToken,
-            swapParams
-          );
+          transactionHash = await this.celerService.makeTransferWithSwap(swapParams);
         } else {
           transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainProvider.trade as CelerRubicTrade,
