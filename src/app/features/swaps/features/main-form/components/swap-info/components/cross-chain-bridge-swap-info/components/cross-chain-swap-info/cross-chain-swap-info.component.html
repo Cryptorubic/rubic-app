@@ -34,7 +34,7 @@
   </div>
 </div>
 
-<div class="info-line">
+<div class="info-line" [class.info-line_red]="feePercent === 0">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
@@ -44,9 +44,12 @@
     />
   </div>
   <div class="info-line__value" *ngIf="feePercent !== undefined">
-    {{ feePercent }}% ≈
-    {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-    {{ feeTokenSymbol }}
+    <ng-container *ngIf="feePercent !== 0; else zero">
+      {{ feePercent }}% ≈
+      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
+      {{ feeTokenSymbol }}
+    </ng-container>
+    <ng-template #zero>0%</ng-template>
   </div>
 </div>
 
