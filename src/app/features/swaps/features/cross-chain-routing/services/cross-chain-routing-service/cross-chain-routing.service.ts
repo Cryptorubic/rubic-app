@@ -275,7 +275,7 @@ export class CrossChainRoutingService extends TradeService {
       };
     }
 
-    if (!celerRubicResponse.trade) {
+    if (!celerRubicResponse.trade || celerRubicResponse.minAmountError) {
       return {
         provider: {
           type: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
