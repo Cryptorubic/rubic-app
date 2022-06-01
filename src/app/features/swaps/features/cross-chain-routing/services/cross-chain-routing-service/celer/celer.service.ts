@@ -268,7 +268,7 @@ export class CelerService {
       path: [EMPTY_ADDRESS],
       pathV3: EMPTY_DATA,
       deadline: DEADLINE,
-      amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
+      amountOutMinimum: Web3Pure.toWei(amountOutMinimum, toToken.decimals)
     };
 
     if (canBridgeInTargetNetwork) {
