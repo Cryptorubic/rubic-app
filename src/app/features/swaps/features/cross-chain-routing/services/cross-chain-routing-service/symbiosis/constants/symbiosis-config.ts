@@ -1,3 +1,5 @@
+import networks from '@shared/constants/blockchain/networks';
+
 export const SYMBIOSIS_CONFIG = {
   minSwapAmountInUsd: 10,
   maxSwapAmountInUsd: 5000000,
@@ -7,7 +9,7 @@ export const SYMBIOSIS_CONFIG = {
   chains: [
     {
       id: 1,
-      rpc: 'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+      rpc: networks.find(network => network.id === 1).additionalRpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 5,
       stables: [
@@ -43,7 +45,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 56,
-      rpc: 'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+      rpc: networks.find(network => network.id === 56).additionalRpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 20,
       stables: [
@@ -103,7 +105,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 43114,
-      rpc: 'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet',
+      rpc: networks.find(network => network.id === 43114).rpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 30,
       stables: [
@@ -186,7 +188,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 137,
-      rpc: 'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+      rpc: networks.find(network => network.id === 137).additionalRpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 60,
       stables: [
