@@ -155,7 +155,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
                 this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
-                this.minimumReceived = toAmount.multipliedBy(this.slippage);
+                this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
               } else {
                 this.isSymbiosis = false;
 
