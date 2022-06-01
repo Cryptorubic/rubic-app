@@ -223,10 +223,11 @@ export class CrossChainRoutingService extends TradeService {
       ...gasData
     };
 
-    const toAmount =
-      this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+    const toAmount = this.currentCrossChainProvider.trade
+      ? this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS
         ? (this.currentCrossChainProvider.trade as SymbiosisTrade).toAmount
-        : (this.currentCrossChainProvider.trade as CelerRubicTrade).toAmountWithoutSlippage;
+        : (this.currentCrossChainProvider.trade as CelerRubicTrade).toAmountWithoutSlippage
+      : null;
 
     return {
       toAmount,
@@ -278,7 +279,9 @@ export class CrossChainRoutingService extends TradeService {
             toAmount: symbiosisResponse.toAmount,
             fee: symbiosisResponse.fee
           }
-        }
+        },
+        minAmountError,
+        maxAmountError
       };
     }
 
@@ -857,18 +860,18 @@ export class CrossChainRoutingService extends TradeService {
       return this.symbiosisService.getGasData();
     }
 
-    const trade = this.currentCrossChainProvider.trade as CelerRubicTrade;
-    const { fromBlockchain } = trade;
-    const walletAddress = this.authService.userAddress;
-    const gasCalculateBlockchains: BlockchainName[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.FANTOM
-    ];
-    if (!gasCalculateBlockchains.includes(fromBlockchain) || !walletAddress) {
-      return null;
-    }
-
     try {
+      const trade = this.currentCrossChainProvider.trade as CelerRubicTrade;
+      const { fromBlockchain } = trade;
+      const walletAddress = this.authService.userAddress;
+      const gasCalculateBlockchains: BlockchainName[] = [
+        BLOCKCHAIN_NAME.ETHEREUM,
+        BLOCKCHAIN_NAME.FANTOM
+      ];
+      if (!gasCalculateBlockchains.includes(fromBlockchain) || !walletAddress) {
+        return null;
+      }
+
       const { contractAddress, contractAbi, methodName, methodArguments, value } =
         await this.ethLikeContractExecutor.getContractParams(trade, walletAddress);
 
