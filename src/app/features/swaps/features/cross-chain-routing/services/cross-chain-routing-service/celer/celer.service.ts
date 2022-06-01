@@ -466,6 +466,29 @@ export class CelerService {
   }
 
   /**
+   * Returns target blockchain crypto fee (in Wei!).
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @returns Crypto fee amount.
+   */
+  public async getDstCryptoFee(
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName
+  ): Promise<number> {
+    const dstNetworkId = this.getBlockchainId(toBlockchain);
+    const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
+
+    return await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      celerContractAddress,
+      CELER_CONTRACT_ABI,
+      'dstCryptoFee',
+      {
+        methodArguments: [String(dstNetworkId)]
+      }
+    );
+  }
+
+  /**
    * Calculates message value for celer swap based on final message length.
    * @param fromBlockchain Source blockchain.
    * @param toBlockchain Target blockchain.
@@ -484,22 +507,13 @@ export class CelerService {
     isBridge: boolean,
     isTransitTokenExpected: boolean
   ): Promise<number> {
-    const dstNetworkId = this.getBlockchainId(toBlockchain);
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
-
-    const cryptoFee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
-      celerContractAddress,
-      CELER_CONTRACT_ABI,
-      'dstCryptoFee',
-      {
-        methodArguments: [String(dstNetworkId)]
-      }
-    );
-
     const message = EthLikeWeb3Pure.asciiToBytes32(JSON.stringify(data));
     const messageBusAddress = await this.publicBlockchainAdapterService[
       fromBlockchain
     ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
+
+    const cryptoFee = await this.getDstCryptoFee(fromBlockchain, toBlockchain);
 
     const feePerByte = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       messageBusAddress,
@@ -680,6 +694,11 @@ export class CelerService {
     });
   }
 
+  /**
+   * Checks if token with provided symbol supported as transit token for Celer.
+   * @param symbol Token symbol from Celer Liquidity-API response.
+   * @returns True if token supported.
+   */
   private isSupportedTransitToken(symbol: string): boolean {
     return (Object.values(CelerTransitTokenSymbol) as string[]).includes(symbol);
   }
