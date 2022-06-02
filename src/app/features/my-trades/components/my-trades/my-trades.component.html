@@ -30,7 +30,8 @@
         *ngIf="!isDesktop && data"
         [tableData$]="tableData$"
         (onPageChange)="onPageChange($event)"
-        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+        (onReceivePolygonBridgeTrade)="createTrade($event, 'polygon')"
+        (onRevertSymbiosisTrade)="createTrade($event, 'symbiosis')"
       ></app-accordion>
 
       <app-table
@@ -38,7 +39,8 @@
         [loading]="loading"
         [tableData$]="tableData$"
         (onPageChange)="onPageChange($event)"
-        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+        (onReceivePolygonBridgeTrade)="createTrade($event, 'polygon')"
+        (onRevertSymbiosisTrade)="createTrade($event, 'symbiosis')"
       ></app-table>
     </div>
   </tui-loader>

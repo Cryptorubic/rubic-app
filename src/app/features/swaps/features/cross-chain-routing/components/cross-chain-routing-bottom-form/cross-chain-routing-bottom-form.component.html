@@ -19,7 +19,7 @@
       [targetBlockchain]="toBlockchain"
     ></app-target-network-address>
 
-    <ng-container *ngIf="smartRouting">
+    <ng-container *ngIf="showSmartRouting">
       <app-smart-routing
         *noFrame
         [class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"

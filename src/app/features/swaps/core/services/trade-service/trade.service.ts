@@ -8,12 +8,15 @@ import { SuccessTxModalService } from '@features/swaps/features/main-form/servic
 import { Observable, Subscription } from 'rxjs';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
-import { CcrProviderType } from '@app/shared/models/swaps/ccr-provider-type.enum';
+import {
+  CROSS_CHAIN_PROVIDER,
+  CrossChainProvider
+} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 @Injectable()
 export abstract class TradeService {
   protected showSuccessTrxNotification = (
-    ccrProviderType: CcrProviderType = CcrProviderType.RUBIC
+    ccrProviderType: CrossChainProvider = CROSS_CHAIN_PROVIDER.RUBIC
   ): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
@@ -46,7 +49,7 @@ export abstract class TradeService {
   protected notifyTradeInProgress(
     transactionHash: string,
     blockchain: BlockchainName,
-    ccrProviderType: CcrProviderType = CcrProviderType.RUBIC
+    ccrProviderType: CrossChainProvider = CROSS_CHAIN_PROVIDER.RUBIC
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,

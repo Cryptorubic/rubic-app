@@ -1,4 +1,4 @@
-import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CelerRubicTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -19,7 +19,7 @@ export class ContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
-  public static calculateFromTransitTokenAmountMin(trade: CrossChainTrade): BigNumber {
+  public static calculateFromTransitTokenAmountMin(trade: CelerRubicTrade): BigNumber {
     if (trade.fromTrade === null) {
       return trade.fromTransitTokenAmount;
     }
@@ -29,11 +29,11 @@ export class ContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of token-out, based on tokens route and slippage.
    */
-  public static calculateTokenOutAmountMin(trade: CrossChainTrade): BigNumber {
+  public static calculateTokenOutAmountMin(trade: CelerRubicTrade): BigNumber {
     if (trade.toTrade === null) {
-      return trade.tokenOutAmount;
+      return trade.toAmount;
     }
-    return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
+    return trade.toAmount.multipliedBy(trade.toSlippage);
   }
 
   /**
@@ -56,7 +56,7 @@ export class ContractExecutorFacadeService {
   ) {}
 
   public async executeTrade(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     options: TransactionOptions,
     userAddress: string
   ): Promise<string> {
@@ -74,7 +74,7 @@ export class ContractExecutorFacadeService {
       }
 
       if (blockchainType === 'solana') {
-        const isToNative = blockchainAdapter.isNativeAddress(trade.tokenOut.address);
+        const isToNative = blockchainAdapter.isNativeAddress(trade.toToken.address);
         return this.solanaContractExecutor.executeTrade(
           trade,
           userAddress,

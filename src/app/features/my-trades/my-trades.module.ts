@@ -23,6 +23,7 @@ import { TableComponent } from './components/my-trades/components/table/table.co
 import { AccordionComponent } from './components/my-trades/components/accordion/accordion.component';
 import { GasRefundComponent } from './components/gas-refund/gas-refund.component';
 import { GasRefundCardComponent } from './components/gas-refund/components/gas-refund-card/gas-refund-card.component';
+import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { GasRefundCardComponent } from './components/gas-refund/components/gas-r
     AccordionComponent,
     GasRefundComponent,
     MyTradesPageComponent,
-    GasRefundCardComponent
+    GasRefundCardComponent,
+    SymbiosisWarningTxModalComponent
   ],
   imports: [
     CommonModule,
