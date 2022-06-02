@@ -2,21 +2,13 @@
 
 .modal {
   &__content {
-    padding: 44px 20px 0;
+    padding: 35px 20px 0;
 
     text-align: center;
-
-    @include iframe-vertical {
-      padding-top: 52px;
-    }
   }
 
-  &__title {
-    max-width: 65%;
-    margin: 30px auto 40px;
-
-    font-size: 25px;
-    line-height: 30px;
+  &__footer {
+    margin-top: 20px;
   }
 
   &__footer-text {

@@ -10,6 +10,8 @@ export type TableRowKeyValue = {
 };
 
 export interface TableRowTrade {
+  hash: string;
+
   Status: TRANSACTION_STATUS;
   FromTo: string;
   Provider: TableProvider;

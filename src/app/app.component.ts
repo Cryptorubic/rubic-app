@@ -103,6 +103,9 @@ export class AppComponent implements AfterViewInit {
       (queryParams: QueryParams) => {
         try {
           this.queryParamsService.setupQueryParams(queryParams);
+          if (queryParams?.hideUnusedUI) {
+            this.setupUISettings(queryParams);
+          }
         } catch (err) {
           this.errorService.catch(err);
         }
@@ -122,5 +125,14 @@ export class AppComponent implements AfterViewInit {
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
+  }
+
+  private setupUISettings(queryParams: QueryParams): void {
+    const hideUI = queryParams.hideUnusedUI === 'true';
+
+    if (hideUI) {
+      this.document.body.classList.add('hide-unused-ui');
+      this.removeLiveChatInIframe();
+    }
   }
 }

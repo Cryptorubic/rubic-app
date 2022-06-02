@@ -41,6 +41,8 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
+  @Output() onRevertSymbiosisTrade = new EventEmitter<TableTrade>();
+
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
   public BLOCKCHAINS = BLOCKCHAINS;
@@ -100,5 +102,10 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   public onReceive(trade: TableTrade, event: Event): void {
     event.stopPropagation();
     this.onReceivePolygonBridgeTrade.emit(trade);
+  }
+
+  public onRevertSymbiosis(trade: TableTrade, event: Event): void {
+    event.stopPropagation();
+    this.onRevertSymbiosisTrade.emit(trade);
   }
 }
