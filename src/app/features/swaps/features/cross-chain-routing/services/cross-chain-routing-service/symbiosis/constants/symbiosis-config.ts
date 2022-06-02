@@ -1,7 +1,7 @@
 import networks from '@shared/constants/blockchain/networks';
 
 export const SYMBIOSIS_CONFIG = {
-  minSwapAmountInUsd: 10,
+  minSwapAmountInUsd: 50,
   maxSwapAmountInUsd: 5000000,
   advisor: {
     url: 'https://api.symbiosis.finance/calculations'
