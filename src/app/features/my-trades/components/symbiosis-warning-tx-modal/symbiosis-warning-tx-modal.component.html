@@ -1,0 +1,25 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+    </main>
+
+    <div class="modal__footer">
+      <div class="modal__footer-text">
+        You will get {{ amount | bigNumberFormat | withRound: 'toClosestValue' }}
+        <a [safetyLink]="tokenAddress | scannerLink: blockchain:ADDRESS_TYPE.TOKEN">{{
+          tokenSymbol
+        }}</a>
+        in {{ blockchain }} chain.
+      </div>
+
+      <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>

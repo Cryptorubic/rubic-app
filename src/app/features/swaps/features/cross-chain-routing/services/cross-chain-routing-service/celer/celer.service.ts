@@ -45,6 +45,13 @@ interface CelerTrade {
   dstSwap: SwapInfoDest;
   srcProvider: IndexedTradeAndToAmount;
   maxSlippage: number;
+  tradeParams: {
+    fromAmount: BigNumber;
+    fromBlockchain: EthLikeBlockchainName;
+    fromToken: TokenAmount;
+    toBlockchain: EthLikeBlockchainName;
+    toToken: TokenAmount;
+  };
 }
 
 enum CelerTransitTokenSymbol {
@@ -101,22 +108,12 @@ export class CelerService {
 
   /**
    * Makes swap via celer.
-   * @param fromAmount Amount in.
-   * @param fromBlockchain Source blockchain.
-   * @param fromToken Token in.
-   * @param toBlockchain Target blockchain.
-   * @param toToken Token out.
    * @param options Transaction options.
    * @returns Transaction hash.
    */
-  public async makeTransferWithSwap(
-    fromAmount: BigNumber,
-    fromBlockchain: EthLikeBlockchainName,
-    fromToken: TokenAmount,
-    toBlockchain: EthLikeBlockchainName,
-    toToken: TokenAmount,
-    options: TransactionOptions
-  ): Promise<string> {
+  public async makeTransferWithSwap(options: TransactionOptions): Promise<string> {
+    const { fromAmount, fromBlockchain, fromToken, toBlockchain, toToken } =
+      this.celerTrade.tradeParams;
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const receiver = this.getCelerContractAddress(toBlockchain);
@@ -313,7 +310,7 @@ export class CelerService {
    * @param fromSlippage Celer bridge slippage.
    * @param amountIn Token amount user wants to swap.
    */
-  public async buildCelerTrade(
+  public buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
@@ -326,7 +323,7 @@ export class CelerService {
     fromSlippage: number,
     amountIn: BigNumber,
     isBridgePair: boolean
-  ): Promise<void> {
+  ): void {
     const isEnoughtLiquidityForBridge =
       isBridgePair && this.checkBridgePairLiquidity(fromToken, toToken, amountIn);
     const srcSwap = this.getSrcSwapObject(
@@ -349,7 +346,14 @@ export class CelerService {
       srcSwap,
       dstSwap,
       srcProvider,
-      maxSlippage
+      maxSlippage,
+      tradeParams: {
+        fromAmount: amountIn,
+        fromBlockchain,
+        fromToken,
+        toBlockchain,
+        toToken
+      }
     };
   }
 

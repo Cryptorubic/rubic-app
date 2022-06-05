@@ -25,6 +25,7 @@ interface AllQueryParams {
   hideSelectionTo: string;
   slippageIt: string;
   slippageCcr: string;
+  hideUnusedUI: string;
   background: string;
   theme: string;
   language: SupportedLanguages;

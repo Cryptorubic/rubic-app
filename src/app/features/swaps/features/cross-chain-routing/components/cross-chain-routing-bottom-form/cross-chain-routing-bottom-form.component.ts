@@ -45,6 +45,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -117,6 +118,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
+  }
+
+  get showSmartRouting(): boolean {
+    return (
+      Boolean(this.smartRouting) &&
+      this.crossChainRoutingService.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS
+    );
   }
 
   constructor(
@@ -254,13 +262,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 this.onCalculateTrade$.next('normal');
                 return;
               }
-              if (this.crossChainRoutingService.swapViaCeler) {
-                this.minError = this.crossChainRoutingService.celerSwapLimits.min || false;
-                this.maxError = this.crossChainRoutingService.celerSwapLimits.max || false;
-              } else {
-                this.minError = minAmountError || false;
-                this.maxError = maxAmountError || false;
-              }
+
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
               this.errorText = '';
 
               this.needApprove = needApprove;
@@ -324,13 +328,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              if (this.crossChainRoutingService.swapViaCeler) {
-                this.minError = this.crossChainRoutingService.celerSwapLimits.min || false;
-                this.maxError = this.crossChainRoutingService.celerSwapLimits.max || false;
-              } else {
-                this.minError = minAmountError || false;
-                this.maxError = maxAmountError || false;
-              }
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
 
               this.hiddenTradeData = { toAmount };
               if (!toAmount.eq(this.toAmount)) {
