@@ -1,9 +1,8 @@
 @use 'src/scss/core' as *;
 
 :host {
-  display: flex;
-  gap: 10px;
-  // max-width: 565px;
+  display: block;
+  max-width: 565px;
   margin: 0 auto;
 
   @include iframe {
@@ -13,18 +12,6 @@
   @include iframe-horizontal {
     max-width: unset;
   }
-}
-
-.fee-banner-container {
-  width: 33%;
-}
-
-.swaps-form {
-  min-width: 565px;
-}
-
-.col {
-  width: 33%;
 }
 
 .swaps-form {

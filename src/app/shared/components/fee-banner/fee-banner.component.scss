@@ -1,15 +1,23 @@
 @use 'src/scss/core' as *;
 
 :host {
+  position: absolute;
+
   display: block;
+
+  @media screen and (max-width: 1072px) {
+    position: initial;
+  }
 }
 
 .fee-banner {
   position: relative;
 
+  width: 100vw;
+
   max-width: 408px;
-  margin-right: 34px;
   padding: 24px 9px 24px 24px;
+  overflow: hidden;
 
   background: linear-gradient(to left, #30383e 0%, #0f1216 100%);
   border-radius: 19px;
@@ -30,6 +38,9 @@
 
   &__text {
     @include font(16px, 20px, 500, #C7C7CC);
+    position: relative;
+    z-index: 1;
+
     max-width: 213px;
 
     &-paragraph {
@@ -49,7 +60,86 @@
     position: absolute;
     right: 0;
     bottom: 0;
+    z-index: 0;
 
     border-bottom-right-radius: 19px;
+  }
+
+  @media screen and (max-width: 1450px) {
+    max-width: 303px;
+
+    &__title {
+      max-width: 212px;
+
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    &__zero {
+      right: -22px;
+      bottom: 65px;
+      /* width: 137px; */
+      height: 90px;
+    }
+
+    &__text {
+      max-width: 174px;
+    }
+  }
+
+  @media screen and (max-width: 1235px) {
+    max-width: 226px;
+
+    &__title {
+      max-width: 135px;
+
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    &__text {
+      max-width: 186px;
+
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    &__zero {
+      display: none;
+    }
+
+    &__close {
+      top: 18px;
+      right: 18px;
+    }
+  }
+
+  @media screen and (max-width: 1072px) {
+    width: 100%;
+    max-width: 565px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    padding: 20px;
+
+    &__title {
+      max-width: 80%;
+    }
+
+    &__text {
+      max-width: 60%;
+    }
+
+    &__close {
+      top: 10px;
+      right: 10px;
+    }
+
+    &__zero {
+      right: -25px;
+      bottom: 10px;
+
+      display: block;
+      height: 90px;
+    }
   }
 }
