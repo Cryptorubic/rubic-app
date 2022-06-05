@@ -121,7 +121,9 @@ export class SymbiosisService {
 
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
+    const isSupportedBlockchain = false; // SymbiosisService.isSupportedBlockchain(fromBlockchain);
+
+    if (!isSupportedBlockchain) {
       return { trade: null };
     }
 
@@ -134,7 +136,7 @@ export class SymbiosisService {
       decimals: fromToken.decimals,
       isNative: fromBlockchainAdapter.isNativeAddress(fromToken.address)
     });
-    const feePercent = await this.getFeePercent(fromBlockchain);
+    const feePercent = await this.getFeePercent(fromBlockchain as SymbiosisSupportedBlockchain);
     const fromAmountWithoutFee = fromAmount.multipliedBy(100 - feePercent).dividedBy(100);
     const tokenAmountIn = new SymbiosisTokenAmount(
       tokenIn,
@@ -182,7 +184,11 @@ export class SymbiosisService {
       if (err?.code === ErrorCode.AMOUNT_TOO_LOW || err?.code === ErrorCode.AMOUNT_LESS_THAN_FEE) {
         const index = err.message.lastIndexOf('$');
         const transitTokenAmount = new BigNumber(err.message.substring(index + 1));
-        const minAmount = await this.getFromTokenAmount(fromBlockchain, transitTokenAmount, 'min');
+        const minAmount = await this.getFromTokenAmount(
+          fromBlockchain as SymbiosisSupportedBlockchain,
+          transitTokenAmount,
+          'min'
+        );
         return {
           trade: null,
           minAmountError: minAmount
@@ -190,7 +196,11 @@ export class SymbiosisService {
       } else if (err?.code === ErrorCode.AMOUNT_TOO_HIGH) {
         const index = err.message.lastIndexOf('$');
         const transitTokenAmount = new BigNumber(err.message.substring(index + 1));
-        const maxAmount = await this.getFromTokenAmount(fromBlockchain, transitTokenAmount, 'max');
+        const maxAmount = await this.getFromTokenAmount(
+          fromBlockchain as SymbiosisSupportedBlockchain,
+          transitTokenAmount,
+          'max'
+        );
         return {
           trade: null,
           maxAmountError: maxAmount
