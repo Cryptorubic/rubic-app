@@ -19,33 +19,56 @@
   padding: 24px 9px 24px 24px;
   overflow: hidden;
 
-  background: linear-gradient(to left, #30383e 0%, #0f1216 100%);
+  background: linear-gradient(to left, #f2fff3 0%, #fff 100%);
+
   border-radius: 19px;
   box-shadow: 2px 14px 24px rgba(20, 23, 26, 0.35);
+  
+
+  @include dark {
+    background: linear-gradient(to left, #30383e 0%, #0f1216 100%);
+  }
 
   &__close {
     position: absolute;
     top: 21px;
     right: 21px;
+    z-index: 1;
 
     cursor: pointer;
+
+    path {
+      stroke: #000;
+
+      @include dark {
+        stroke: #fff;
+      }
+    }
   }
 
   &__title {
-    @include font(18px, 22px, 700, #fff);
+    @include font(18px, 22px, 700, #1B1F3B);
     margin-bottom: 8px;
+
+    @include dark {
+      color: #fff;
+    }
   }
 
   &__text {
-    @include font(16px, 20px, 500, #C7C7CC);
+    @include font(16px, 20px, 500, #757575);
     position: relative;
     z-index: 1;
 
     max-width: 213px;
 
+    @include dark {
+      color: #c7c7cc;
+    }
+
     &-paragraph {
       &:first-child {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
 
       &:last-child {
@@ -58,11 +81,14 @@
 
   &__zero {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 14px;
+    bottom: 5px;
     z-index: 0;
 
-    border-bottom-right-radius: 19px;
+    width: 169px;
+    height: 100px;
+
+    transform: scale(1.5);
   }
 
   @media screen and (max-width: 1450px) {
@@ -76,14 +102,17 @@
     }
 
     &__zero {
-      right: -22px;
-      bottom: 65px;
-      /* width: 137px; */
+      right: -23px;
+      bottom: 24px;
+
       height: 90px;
     }
 
     &__text {
       max-width: 174px;
+
+      font-size: 13px;
+      line-height: 16px;
     }
   }
 
@@ -122,11 +151,11 @@
     padding: 20px;
 
     &__title {
-      max-width: 80%;
+      max-width: 83%;
     }
 
     &__text {
-      max-width: 60%;
+      max-width: 80%;
     }
 
     &__close {
@@ -135,11 +164,18 @@
     }
 
     &__zero {
-      right: -25px;
-      bottom: 10px;
+      right: -11px;
+      bottom: 11px;
 
       display: block;
-      height: 90px;
+      width: 103px;
+      height: 59px;
+    }
+  }
+
+  @media screen and (max-width: 581px) {
+    &__zero {
+      bottom: 24px;
     }
   }
 }
