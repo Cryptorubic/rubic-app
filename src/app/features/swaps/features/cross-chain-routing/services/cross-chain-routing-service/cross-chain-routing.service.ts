@@ -819,7 +819,7 @@ export class CrossChainRoutingService extends TradeService {
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
   ): Promise<number> {
-    if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
+    if (!this.swapViaCeler) {
       const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
       const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
         numOfFromBlockchain
