@@ -526,6 +526,11 @@
     },
     "external": {
       "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Comercia ahora!"
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 20th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {

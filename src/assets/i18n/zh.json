@@ -527,6 +527,11 @@
     },
     "external": {
       "text": "以 0% 的協議費用交換任何代幣。立即交易！"
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 20th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {
