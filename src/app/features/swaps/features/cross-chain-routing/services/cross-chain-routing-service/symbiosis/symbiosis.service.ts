@@ -121,7 +121,10 @@ export class SymbiosisService {
 
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
+    if (
+      !SymbiosisService.isSupportedBlockchain(fromBlockchain) ||
+      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM // TODO return after fix
+    ) {
       return { trade: null };
     }
 
