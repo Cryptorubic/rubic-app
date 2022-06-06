@@ -185,6 +185,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
   private setSymbiosisTradeInfoParameters(tradeInfo: SymbiosisTradeInfo): void {
     this.priceImpact = parseFloat(tradeInfo.priceImpact);
     this.priceImpactService.setPriceImpact(this.priceImpact);
+
+    // TODO remove after end of marketing company
+    this.feePercent = 0;
   }
 
   /**
