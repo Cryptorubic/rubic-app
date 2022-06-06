@@ -24,11 +24,11 @@ export class FeeBannerComponent {
 
   constructor(private readonly viewContainerRef: ViewContainerRef) {}
 
-  closeBanner(): void {
+  public closeBanner(): void {
     this.closeAnimationState = 'closed';
   }
 
-  handleAnimationEnd(): void {
+  public handleAnimationEnd(): void {
     if (this.closeAnimationState !== 'untouched') {
       this.viewContainerRef.element.nativeElement.parentElement.removeChild(
         this.viewContainerRef.element.nativeElement
