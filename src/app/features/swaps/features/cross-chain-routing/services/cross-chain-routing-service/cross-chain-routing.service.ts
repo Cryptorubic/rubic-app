@@ -796,6 +796,7 @@ export class CrossChainRoutingService extends TradeService {
     fromSlippage: number
   ): Promise<{ toTransitTokenAmount: BigNumber; feeInPercents: number }> {
     const feeInPercents = await this.getFeeInPercents(fromBlockchain, toBlockchain);
+    console.log(feeInPercents);
     let toTransitTokenAmount = fromTransitTokenAmount
       .multipliedBy(100 - feeInPercents)
       .dividedBy(100);
@@ -819,11 +820,15 @@ export class CrossChainRoutingService extends TradeService {
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
   ): Promise<number> {
-    const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
-    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
-      numOfFromBlockchain
-    );
-    return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+    if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
+      const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
+      const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
+        numOfFromBlockchain
+      );
+      return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+    } else {
+      return await this.celerService.getFeePercent(fromBlockchain as EthLikeBlockchainName);
+    }
   }
 
   /**
