@@ -796,7 +796,6 @@ export class CrossChainRoutingService extends TradeService {
     fromSlippage: number
   ): Promise<{ toTransitTokenAmount: BigNumber; feeInPercents: number }> {
     const feeInPercents = await this.getFeeInPercents(fromBlockchain, toBlockchain);
-    console.log(feeInPercents);
     let toTransitTokenAmount = fromTransitTokenAmount
       .multipliedBy(100 - feeInPercents)
       .dividedBy(100);
