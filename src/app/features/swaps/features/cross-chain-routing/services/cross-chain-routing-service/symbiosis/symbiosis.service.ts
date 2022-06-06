@@ -121,8 +121,18 @@ export class SymbiosisService {
 
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
+    if (
+      !SymbiosisService.isSupportedBlockchain(fromBlockchain) ||
+      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM // TODO return after fix
+    ) {
       return { trade: null };
+    }
+
+    const isPaused = await this.checkIfPaused(fromBlockchain);
+    if (isPaused) {
+      return {
+        trade: null
+      };
     }
 
     const swapping = this.symbiosis.newSwapping();
@@ -271,6 +281,16 @@ export class SymbiosisService {
     } catch (_err) {
       return null;
     }
+  }
+
+  private checkIfPaused(fromBlockchain: SymbiosisSupportedBlockchain): Promise<boolean> {
+    const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
+
+    return web3Public.callContractMethod(
+      SYMBIOSIS_CONTRACT_ADDRESS[fromBlockchain],
+      SYMBIOSIS_CONTRACT_ABI,
+      'paused'
+    );
   }
 
   public async swap(onTransactionHash: (hash: string) => void): Promise<void> {
