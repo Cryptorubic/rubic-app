@@ -819,11 +819,15 @@ export class CrossChainRoutingService extends TradeService {
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
   ): Promise<number> {
-    const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
-    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
-      numOfFromBlockchain
-    );
-    return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+    if (!this.swapViaCeler) {
+      const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
+      const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
+        numOfFromBlockchain
+      );
+      return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+    } else {
+      return await this.celerService.getFeePercent(fromBlockchain as EthLikeBlockchainName);
+    }
   }
 
   /**
