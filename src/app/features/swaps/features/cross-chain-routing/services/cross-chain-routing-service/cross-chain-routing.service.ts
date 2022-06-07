@@ -224,6 +224,10 @@ export class CrossChainRoutingService extends TradeService {
         : (this.currentCrossChainProvider.trade as CelerRubicTrade).toAmountWithoutSlippage
       : null;
 
+    if (crossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      this.setSymbiosisSmartRouting();
+    }
+
     return {
       toAmount,
       minAmountError,
@@ -1321,6 +1325,16 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     this._smartRouting$.next(smartRouting);
+  }
+
+  private setSymbiosisSmartRouting(): void {
+    this._smartRouting$.next({
+      fromProvider: INSTANT_TRADE_PROVIDER.ONEINCH,
+      toProvider: INSTANT_TRADE_PROVIDER.ONEINCH,
+      fromHasTrade: true,
+      toHasTrade: true,
+      savings: new BigNumber(0)
+    });
   }
 
   private getProviderType(
