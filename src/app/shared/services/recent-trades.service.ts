@@ -7,7 +7,6 @@ import { BehaviorSubject, from, map, switchMap } from 'rxjs';
 import { RecentTrade } from '../models/my-trades/recent-trades.interface';
 import { asyncMap } from '../utils/utils';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { CcrProviderType } from '../models/swaps/ccr-provider-type.enum';
 import { CELER_CONTRACT_ABI } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
 import { CELER_CONTRACT } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
 import networks, { Network } from '../constants/blockchain/networks';
@@ -15,6 +14,7 @@ import { BlockchainName, EthLikeBlockchainName } from '../models/blockchain/bloc
 import { CelerSwapStatus } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
 import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
 import { AbiItem } from 'web3-utils';
+import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 const MAX_LATEST_TRADES = 3;
 
@@ -97,11 +97,11 @@ export class RecentTradesService {
     const dstWeb3Provider = this.web3Public[trade.toBlockchain] as EthLikeWeb3Public;
     const srcTransactionReceipt = await sourceWeb3Provider.getTransactionReceipt(srcTxHash);
 
-    if (crossChainProviderType === CcrProviderType.CELER) {
+    if (crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER) {
       return await this.parseCelerTrade(dstWeb3Provider, srcTransactionReceipt, trade);
     }
 
-    if (crossChainProviderType === CcrProviderType.RUBIC) {
+    if (crossChainProviderType === CROSS_CHAIN_PROVIDER.RUBIC) {
       return await this.parseRubicTrade(dstWeb3Provider, srcTransactionReceipt, trade);
     }
   }
