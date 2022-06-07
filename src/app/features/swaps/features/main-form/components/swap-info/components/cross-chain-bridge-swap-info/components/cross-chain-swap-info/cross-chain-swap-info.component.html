@@ -34,17 +34,13 @@
   </div>
 </div>
 
-<div class="info-line" [class.info-line_red]="feePercent === 0">
+<div class="info-line" [class.info-line_green]="feePercent === 0">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <!-- TODO return after end of zero fees marketing  company -->
     <!-- [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'" -->
     <img
-      [src]="
-        feePercent === 0
-          ? 'assets/images/swaps/swaps-info/question-icon_red.svg'
-          : 'assets/images/swaps/swaps-info/question-icon.svg'
-      "
+      src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
       [tuiHint]="
         'The terms of the campaign don\’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR'
