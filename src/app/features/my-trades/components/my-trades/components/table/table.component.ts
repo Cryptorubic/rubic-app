@@ -35,6 +35,8 @@ export class TableComponent extends AbstractTableDataComponent {
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
+  @Output() onRevertSymbiosisTrade = new EventEmitter<TableTrade>();
+
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
   public BLOCKCHAINS = BLOCKCHAINS;

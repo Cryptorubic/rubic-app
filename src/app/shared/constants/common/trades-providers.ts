@@ -133,9 +133,15 @@ const GAS_REFUND_PROVIDER: Provider = {
   image: `${imageBasePath}gas-refund.svg`
 };
 
+const SYMBIOSIS_PROVIDER: Provider = {
+  name: 'Symbiosis',
+  image: `${imageBasePath}symbiosis.png`
+};
+
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
   CROSS_CHAIN_ROUTING_PROVIDER,
-  GAS_REFUND_PROVIDER
+  GAS_REFUND_PROVIDER,
+  SYMBIOSIS_PROVIDER
 };

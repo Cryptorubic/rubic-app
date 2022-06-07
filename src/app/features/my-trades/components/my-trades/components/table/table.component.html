@@ -74,6 +74,16 @@
             >
               {{ 'tradesTable.receive' | translate }}
             </app-rubic-button>
+
+            <app-rubic-button
+              *ngIf="trade.provider === 'SYMBIOSIS_PROVIDER'"
+              size="s"
+              appearance="secondary"
+              [loading]="item.inProgress"
+              (onClick)="onRevertSymbiosisTrade.emit(trade)"
+            >
+              Revert
+            </app-rubic-button>
           </td>
 
           <td *tuiCell="'FromTo'" tuiTd class="blockchains">
@@ -142,7 +152,7 @@
 
           <td *tuiCell="'Sent'" tuiTd class="token">
             <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
-              <ng-container *ngIf="trade.fromToken; else none">
+              <ng-container *ngIf="trade.fromToken?.symbol; else none">
                 <span>{{
                   trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
                 }}</span>
@@ -157,27 +167,26 @@
                   {{ trade.fromToken.symbol }}
                 </div>
               </ng-container>
-              <ng-template #none>
-                <span class="none"> — </span>
-              </ng-template>
             </a>
           </td>
 
           <td *tuiCell="'Expected'" tuiTd class="token">
             <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
-              <span>{{
-                trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
-              }}</span>
-              <div class="token-info">
-                <div class="img-container">
-                  <img
-                    [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
-                    alt="to token"
-                    (error)="onTokenImageError($event)"
-                  />
+              <ng-container *ngIf="trade.toToken?.symbol; else none">
+                <span>{{
+                  trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
+                <div class="token-info">
+                  <div class="img-container">
+                    <img
+                      [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
+                      alt="to token"
+                      (error)="onTokenImageError($event)"
+                    />
+                  </div>
+                  {{ trade.toToken.symbol }}
                 </div>
-                {{ trade.toToken.symbol }}
-              </div>
+              </ng-container>
             </a>
           </td>
 
@@ -204,3 +213,7 @@
     </tr>
   </tfoot>
 </table>
+
+<ng-template #none>
+  <span class="none"> — </span>
+</ng-template>

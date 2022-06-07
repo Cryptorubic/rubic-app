@@ -45,6 +45,13 @@ interface CelerTrade {
   dstSwap: SwapInfoDest;
   srcProvider: IndexedTradeAndToAmount;
   maxSlippage: number;
+  tradeParams: {
+    fromAmount: BigNumber;
+    fromBlockchain: EthLikeBlockchainName;
+    fromToken: TokenAmount;
+    toBlockchain: EthLikeBlockchainName;
+    toToken: TokenAmount;
+  };
 }
 
 enum CelerTransitTokenSymbol {
@@ -101,22 +108,12 @@ export class CelerService {
 
   /**
    * Makes swap via celer.
-   * @param fromAmount Amount in.
-   * @param fromBlockchain Source blockchain.
-   * @param fromToken Token in.
-   * @param toBlockchain Target blockchain.
-   * @param toToken Token out.
    * @param options Transaction options.
    * @returns Transaction hash.
    */
-  public async makeTransferWithSwap(
-    fromAmount: BigNumber,
-    fromBlockchain: EthLikeBlockchainName,
-    fromToken: TokenAmount,
-    toBlockchain: EthLikeBlockchainName,
-    toToken: TokenAmount,
-    options: TransactionOptions
-  ): Promise<string> {
+  public async makeTransferWithSwap(options: TransactionOptions): Promise<string> {
+    const { fromAmount, fromBlockchain, fromToken, toBlockchain, toToken } =
+      this.celerTrade.tradeParams;
     const nativeIn = this.isNativeToken(fromBlockchain, fromToken);
     const dstChainId = this.getBlockchainId(toBlockchain);
     const receiver = this.getCelerContractAddress(toBlockchain);
@@ -268,7 +265,7 @@ export class CelerService {
       path: [EMPTY_ADDRESS],
       pathV3: EMPTY_DATA,
       deadline: DEADLINE,
-      amountOutMinimum: Web3Pure.toWei(amountOutMinimum, dexes.transitToken.decimals)
+      amountOutMinimum: Web3Pure.toWei(amountOutMinimum, toToken.decimals)
     };
 
     if (canBridgeInTargetNetwork) {
@@ -313,7 +310,7 @@ export class CelerService {
    * @param fromSlippage Celer bridge slippage.
    * @param amountIn Token amount user wants to swap.
    */
-  public async buildCelerTrade(
+  public buildCelerTrade(
     fromBlockchain: EthLikeBlockchainName,
     toBlockchain: EthLikeBlockchainName,
     toToken: TokenAmount,
@@ -326,7 +323,7 @@ export class CelerService {
     fromSlippage: number,
     amountIn: BigNumber,
     isBridgePair: boolean
-  ): Promise<void> {
+  ): void {
     const isEnoughtLiquidityForBridge =
       isBridgePair && this.checkBridgePairLiquidity(fromToken, toToken, amountIn);
     const srcSwap = this.getSrcSwapObject(
@@ -349,7 +346,14 @@ export class CelerService {
       srcSwap,
       dstSwap,
       srcProvider,
-      maxSlippage
+      maxSlippage,
+      tradeParams: {
+        fromAmount: amountIn,
+        fromBlockchain,
+        fromToken,
+        toBlockchain,
+        toToken
+      }
     };
   }
 
@@ -462,6 +466,29 @@ export class CelerService {
   }
 
   /**
+   * Returns target blockchain crypto fee (in Wei!).
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
+   * @returns Crypto fee amount.
+   */
+  public async getDstCryptoFee(
+    fromBlockchain: EthLikeBlockchainName,
+    toBlockchain: EthLikeBlockchainName
+  ): Promise<number> {
+    const dstNetworkId = this.getBlockchainId(toBlockchain);
+    const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
+
+    return await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
+      celerContractAddress,
+      CELER_CONTRACT_ABI,
+      'dstCryptoFee',
+      {
+        methodArguments: [String(dstNetworkId)]
+      }
+    );
+  }
+
+  /**
    * Calculates message value for celer swap based on final message length.
    * @param fromBlockchain Source blockchain.
    * @param toBlockchain Target blockchain.
@@ -480,22 +507,13 @@ export class CelerService {
     isBridge: boolean,
     isTransitTokenExpected: boolean
   ): Promise<number> {
-    const dstNetworkId = this.getBlockchainId(toBlockchain);
     const celerContractAddress = this.getCelerContractAddress(fromBlockchain);
-
-    const cryptoFee = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
-      celerContractAddress,
-      CELER_CONTRACT_ABI,
-      'dstCryptoFee',
-      {
-        methodArguments: [String(dstNetworkId)]
-      }
-    );
-
     const message = EthLikeWeb3Pure.asciiToBytes32(JSON.stringify(data));
     const messageBusAddress = await this.publicBlockchainAdapterService[
       fromBlockchain
     ].callContractMethod(celerContractAddress, CELER_CONTRACT_ABI, 'messageBus');
+
+    const cryptoFee = await this.getDstCryptoFee(fromBlockchain, toBlockchain);
 
     const feePerByte = await this.publicBlockchainAdapterService[fromBlockchain].callContractMethod(
       messageBusAddress,
@@ -676,6 +694,11 @@ export class CelerService {
     });
   }
 
+  /**
+   * Checks if token with provided symbol supported as transit token for Celer.
+   * @param symbol Token symbol from Celer Liquidity-API response.
+   * @returns True if token supported.
+   */
   private isSupportedTransitToken(symbol: string): boolean {
     return (Object.values(CelerTransitTokenSymbol) as string[]).includes(symbol);
   }
@@ -706,5 +729,16 @@ export class CelerService {
       .toPromise();
 
     return estimate.max_slippage / 10 ** 6 / 100;
+  }
+
+  public async getFeePercent(fromBlockchain: EthLikeBlockchainName): Promise<number> {
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    const fee = await blockchainAdapter.callContractMethod<number>(
+      CELER_CONTRACT[fromBlockchain],
+      CELER_CONTRACT_ABI,
+      'feeRubic'
+    );
+
+    return Number(fee) / 10000;
   }
 }

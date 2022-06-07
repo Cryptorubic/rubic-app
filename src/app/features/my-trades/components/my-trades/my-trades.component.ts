@@ -7,16 +7,13 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { TableData, TableTrade } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
-import {
-  TableRowsData,
-  TableRowTrade
-} from '@features/my-trades/components/my-trades/models/table-row-trade';
+import { TableRowsData } from '@features/my-trades/components/my-trades/models/table-row-trade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { catchError, filter, first, mergeMap, takeUntil } from 'rxjs/operators';
@@ -27,6 +24,7 @@ import { PageData } from '@features/my-trades/components/my-trades/models/page-d
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SymbiosisService } from '@features/my-trades/services/symbiosis-service/symbiosis.service';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -58,7 +56,8 @@ export class MyTradesComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: Window,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly symbiosisService: SymbiosisService
   ) {}
 
   ngOnInit(): void {
@@ -115,18 +114,16 @@ export class MyTradesComponent implements OnInit {
   }
 
   private updateTableData(tableData: TableData): void {
-    const tableRowsData = tableData.trades.map(
-      trade =>
-        ({
-          Status: trade.status,
-          FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
-          Provider: trade.provider,
-          Sent: new BigNumber(trade.fromToken?.amount),
-          Expected: new BigNumber(trade.toToken.amount),
-          Date: trade.date,
-          inProgress: false
-        } as TableRowTrade)
-    );
+    const tableRowsData = tableData.trades.map(trade => ({
+      hash: trade.fromTransactionHash,
+      Status: trade.status,
+      FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
+      Provider: trade.provider,
+      Sent: new BigNumber(trade.fromToken?.amount),
+      Expected: new BigNumber(trade.toToken.amount),
+      Date: trade.date,
+      inProgress: false
+    }));
 
     this.tableDataSubject$.next({
       totalCount: tableData.totalCount,
@@ -158,7 +155,7 @@ export class MyTradesComponent implements OnInit {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 
-  public receivePolygonBridgeTrade(trade: TableTrade): void {
+  public async createTrade(trade: TableTrade, type: 'polygon' | 'symbiosis'): Promise<void> {
     let tableData = this.tableDataSubject$.getValue().rowTrades.map(tableTrade => {
       if (tableTrade.Date.getTime() === trade.date.getTime()) {
         return {
@@ -185,36 +182,53 @@ export class MyTradesComponent implements OnInit {
       );
     };
 
-    this.myTradesService
-      .depositPolygonBridgeTradeAfterCheckpoint(trade.fromTransactionHash, onTransactionHash)
-      .subscribe(
-        async _receipt => {
-          tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
-            this.translateService.instant('bridgePage.successMessage'),
-            {
-              label: this.translateService.instant('notifications.successfulTradeTitle'),
-              status: TuiNotification.Success,
-              autoClose: 15000
-            }
-          );
+    try {
+      if (type === 'symbiosis') {
+        await this.revertSymbiosisTrade(trade, onTransactionHash);
+      } else {
+        await this.receivePolygonBridgeTrade(trade, onTransactionHash);
+      }
 
-          this.refreshTable();
-        },
-        err => {
-          tradeInProgressSubscription$?.unsubscribe();
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
 
-          tableData = this.tableDataSubject$.getValue().rowTrades.map(tableTrade => ({
-            ...tableTrade,
-            inProgress: false
-          }));
-          this.tableDataSubject$.next({
-            rowTrades: tableData,
-            totalCount: this.tableDataSubject$.getValue().totalCount
-          });
+      this.refreshTable();
+    } catch (err) {
+      this.errorsService.catch(err);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
 
-          this.errorsService.catch(err);
-        }
-      );
+      tableData = this.tableDataSubject$.getValue().rowTrades.map(tableTrade => ({
+        ...tableTrade,
+        inProgress: false
+      }));
+      this.tableDataSubject$.next({
+        rowTrades: tableData,
+        totalCount: this.tableDataSubject$.getValue().totalCount
+      });
+    }
+  }
+
+  private async receivePolygonBridgeTrade(
+    trade: TableTrade,
+    onTransactionHash: (hash: string) => void
+  ): Promise<void> {
+    await firstValueFrom(
+      this.myTradesService.depositPolygonBridgeTradeAfterCheckpoint(
+        trade.fromTransactionHash,
+        onTransactionHash
+      )
+    );
+  }
+
+  private async revertSymbiosisTrade(
+    trade: TableTrade,
+    onTransactionHash: (hash: string) => void
+  ): Promise<void> {
+    await this.symbiosisService.revertTrade(trade.fromTransactionHash, onTransactionHash);
   }
 }

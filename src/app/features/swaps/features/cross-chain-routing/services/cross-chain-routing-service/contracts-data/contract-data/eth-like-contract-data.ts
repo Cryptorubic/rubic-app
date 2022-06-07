@@ -5,7 +5,7 @@ import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { crossChainContractAbi } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/constants/eth-like/cross-chain-contract-abi';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CelerRubicTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { ContractExecutorFacadeService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
@@ -93,7 +93,7 @@ export class EthLikeContractData extends ContractData {
    * Returns method's arguments to use in source network.
    */
   public getMethodArguments(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     isToTokenNative: boolean,
     toContract: ContractData,
     toWalletAddress: string,
@@ -101,7 +101,7 @@ export class EthLikeContractData extends ContractData {
   ): unknown[] {
     const toNumOfBlockchain = toContract.numOfBlockchain;
 
-    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.fromAmount, trade.fromToken.decimals);
 
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
@@ -119,7 +119,7 @@ export class EthLikeContractData extends ContractData {
     );
 
     const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.toToken.decimals);
 
     let toWalletAddressBytes32: string;
     const { toBlockchain } = trade;
@@ -162,7 +162,7 @@ export class EthLikeContractData extends ContractData {
   }
 
   private modifyArgumentsForProvider(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     methodArguments: unknown[][],
     swapTokenWithFee: boolean
   ): void {

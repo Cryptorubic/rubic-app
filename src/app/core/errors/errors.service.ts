@@ -81,6 +81,7 @@ export class ErrorsService {
         this.injector
       );
       this.notificationsService.show(errorComponent, options);
+      return;
     }
 
     if (

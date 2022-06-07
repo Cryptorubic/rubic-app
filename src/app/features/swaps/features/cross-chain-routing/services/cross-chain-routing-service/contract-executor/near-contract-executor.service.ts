@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CelerRubicTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { RefFiFunctionCallOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
@@ -44,11 +44,11 @@ export class NearContractExecutorService {
   ) {}
 
   public async executeTrade(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     options: TransactionOptions,
     targetAddress: string
   ): Promise<string> {
-    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.fromAmount, trade.fromToken.decimals);
 
     const secondPath = this.contracts[trade.toBlockchain].getSecondPath(
       trade.toTrade,
@@ -64,10 +64,10 @@ export class NearContractExecutorService {
     );
 
     const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.fromToken.decimals);
 
     const toAdapter = this.publicBlockchainAdapterService[trade.toBlockchain];
-    const isToNative = toAdapter.isNativeAddress(trade.tokenOut.address);
+    const isToNative = toAdapter.isNativeAddress(trade.toToken.address);
 
     const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
       trade.toProviderIndex,
@@ -75,7 +75,9 @@ export class NearContractExecutorService {
     );
 
     const fromTokenAddress =
-      trade.tokenIn.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : trade.tokenIn.address;
+      trade.fromToken.address === NATIVE_NEAR_ADDRESS
+        ? WRAP_NEAR_CONTRACT
+        : trade.fromToken.address;
 
     const targetParams = {
       second_path: secondPath,
