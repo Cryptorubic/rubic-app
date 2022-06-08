@@ -25,7 +25,7 @@ import {
   SYMBIOSIS_SUPPORTED_BLOCKCHAINS,
   SymbiosisSupportedBlockchain
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/contract-address';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses } from '@shared/utils/utils';
 import { OneInchEthService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
 import { OneInchPolygonService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
@@ -121,13 +121,7 @@ export class SymbiosisService {
 
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    if (
-      !SymbiosisService.isSupportedBlockchain(fromBlockchain) ||
-      compareTokens(fromToken, {
-        blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
-      }) // TODO return after fix
-    ) {
+    if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
       return { trade: null };
     }
 
