@@ -8,7 +8,7 @@ try {
 `;
 
   fs.writeFileSync(timestampPath, fileContent);
-  console.log('temestamp was successfully written')
+  console.log('timestamp was successfully written')
 } catch (err) {
   console.debug('Cant find timestamp file');
 }
