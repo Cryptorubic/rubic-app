@@ -7,12 +7,32 @@ tui-dialog {
     box-shadow: unset !important;
   }
 
+  &[data-size='page'] {
+    > .content {
+      height: 100%;
+    }
+  }
+
   &[data-size='l'] {
     width: 51em !important;
     margin-bottom: auto !important;
 
     > .content {
       padding: 1.5em !important;
+    }
+  }
+
+  &[data-size='xl'] {
+    width: 100% !important;
+    max-width: 900px !important;
+    
+    > .content {
+      padding: 32px !important;
+      // background: rgba(255, 255, 255, 0.9) !important;
+
+      @include dark {
+        background: rgba(10, 10, 10, 0.9) !important;
+      }
     }
   }
 
