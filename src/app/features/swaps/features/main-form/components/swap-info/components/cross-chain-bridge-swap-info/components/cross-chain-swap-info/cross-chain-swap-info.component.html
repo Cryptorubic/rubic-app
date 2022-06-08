@@ -34,19 +34,26 @@
   </div>
 </div>
 
-<div class="info-line" *ngIf="!isSymbiosis">
+<div class="info-line" [class.info-line_green]="feePercent === 0">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'"
+      [tuiHint]="
+        feePercent === 0
+          ? 'The terms of the campaign don\’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR'
+          : 'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'
+      "
     />
   </div>
   <div class="info-line__value" *ngIf="feePercent !== undefined">
-    {{ feePercent }}% ≈
-    {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-    {{ feeTokenSymbol }}
+    <ng-container *ngIf="feePercent !== 0; else zero">
+      {{ feePercent }}% ≈
+      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
+      {{ feeTokenSymbol }}
+    </ng-container>
+    <ng-template #zero>0%</ng-template>
   </div>
 </div>
 

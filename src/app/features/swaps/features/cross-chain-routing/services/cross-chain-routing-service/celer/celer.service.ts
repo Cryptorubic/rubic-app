@@ -730,4 +730,15 @@ export class CelerService {
 
     return estimate.max_slippage / 10 ** 6 / 100;
   }
+
+  public async getFeePercent(fromBlockchain: EthLikeBlockchainName): Promise<number> {
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    const fee = await blockchainAdapter.callContractMethod<number>(
+      CELER_CONTRACT[fromBlockchain],
+      CELER_CONTRACT_ABI,
+      'feeRubic'
+    );
+
+    return Number(fee) / 10000;
+  }
 }

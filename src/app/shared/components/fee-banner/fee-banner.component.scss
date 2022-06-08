@@ -1,0 +1,182 @@
+@use 'src/scss/core' as *;
+
+:host {
+  position: absolute;
+  left: 20px;
+
+  display: block;
+
+  @media screen and (max-width: 1072px) {
+    position: initial;
+  }
+}
+
+.fee-banner {
+  position: relative;
+
+  width: 100vw;
+
+  max-width: 408px;
+  padding: 24px 9px 24px 24px;
+  overflow: hidden;
+
+  background: linear-gradient(to left, #f2fff3 0%, #fff 100%);
+
+  border-radius: 19px;
+  box-shadow: 2px 14px 24px rgba(20, 23, 26, 0.35);
+  
+
+  @include dark {
+    background: linear-gradient(to left, #30383e 0%, #0f1216 100%);
+  }
+
+  &__close {
+    position: absolute;
+    top: 21px;
+    right: 21px;
+    z-index: 1;
+
+    cursor: pointer;
+
+    path {
+      stroke: #000;
+
+      @include dark {
+        stroke: #fff;
+      }
+    }
+  }
+
+  &__title {
+    @include font(18px, 22px, 700, #1B1F3B);
+    margin-bottom: 8px;
+
+    @include dark {
+      color: #fff;
+    }
+  }
+
+  &__text {
+    @include font(16px, 20px, 500, #757575);
+    position: relative;
+    z-index: 1;
+
+    max-width: 213px;
+
+    @include dark {
+      color: #c7c7cc;
+    }
+
+    &-paragraph {
+      &:first-child {
+        margin-bottom: 8px;
+      }
+
+      &:last-child {
+        font-size: 10px;
+        font-style: italic;
+        line-height: 14px;
+      }
+    }
+  }
+
+  &__zero {
+    position: absolute;
+    right: 14px;
+    bottom: 5px;
+    z-index: 0;
+
+    width: 169px;
+    height: 100px;
+
+    transform: scale(1.5);
+  }
+
+  @media screen and (max-width: 1450px) {
+    max-width: 303px;
+
+    &__title {
+      max-width: 212px;
+
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    &__zero {
+      right: -23px;
+      bottom: 24px;
+
+      height: 90px;
+    }
+
+    &__text {
+      max-width: 174px;
+
+      font-size: 13px;
+      line-height: 16px;
+    }
+  }
+
+  @media screen and (max-width: 1235px) {
+    max-width: 226px;
+
+    &__title {
+      max-width: 135px;
+
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    &__text {
+      max-width: 186px;
+
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    &__zero {
+      display: none;
+    }
+
+    &__close {
+      top: 18px;
+      right: 18px;
+    }
+  }
+
+  @media screen and (max-width: 1072px) {
+    width: 100%;
+    max-width: 565px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    padding: 20px;
+
+    &__title {
+      max-width: 83%;
+    }
+
+    &__text {
+      max-width: 80%;
+    }
+
+    &__close {
+      top: 10px;
+      right: 10px;
+    }
+
+    &__zero {
+      right: -11px;
+      bottom: 11px;
+
+      display: block;
+      width: 103px;
+      height: 59px;
+    }
+  }
+
+  @media screen and (max-width: 581px) {
+    &__zero {
+      bottom: 24px;
+    }
+  }
+}
