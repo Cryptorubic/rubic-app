@@ -1,6 +1,7 @@
+import { Blockchain } from '@app/features/my-trades/constants/blockchains';
 import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { BlockchainName } from '../blockchain/blockchain-name';
-import { TokenAmount } from '../tokens/token-amount';
+import { Token } from '../tokens/token';
 import { RecentTradeStatus } from './recent-trade-status.enum';
 
 export interface RecentTrade {
@@ -8,10 +9,20 @@ export interface RecentTrade {
   dstTxHash?: string;
   fromBlockchain: BlockchainName;
   toBlockchain: BlockchainName;
-  fromToken: TokenAmount;
-  toToken: TokenAmount;
-  amountIn: number;
+  fromToken: Token;
+  toToken: Token;
   crossChainProviderType: CROSS_CHAIN_PROVIDER;
   timestamp: number;
-  status?: RecentTradeStatus;
+  _parsed?: boolean;
+}
+
+export interface UiRecentTrade {
+  fromBlockchain: Blockchain;
+  toBlockchain: Blockchain;
+  fromToken: Token;
+  toToken: Token;
+  timestamp: number;
+  srcTxLink: string;
+  statusFrom: RecentTradeStatus;
+  statusTo: RecentTradeStatus;
 }

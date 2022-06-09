@@ -1,19 +1,19 @@
-<div class="title">
-  Recent Crosschain Tx
-  <app-rotating-icon [rotating]="loading$ | async" (iconClick)="reload()"></app-rotating-icon>
-</div>
+<div class="title">Recent Crosschain Tx</div>
 <div class="description">History of your latest Crosschain Transactions:</div>
-<table class="table" *ngIf="!this.isMobile; else mobileRecentTrades">
-  <tbody>
-    <tr class="table__tr table__tr_head">
-      <th class="table__th">Date</th>
-      <th class="table__th">From</th>
-      <th class="table__th">Status From</th>
-      <th class="table__th">To</th>
-      <th class="table__th">Status To</th>
-    </tr>
-    <ng-container *ngLet="recentTrades$ | async as recentTrades">
-      <ng-container *ngIf="recentTrades?.length > 0; else empty">
+<div class="overlay" *ngIf="initialLoading$ | async">
+  <tui-loader size="xxl" [showLoader]="true" [overlay]="true"></tui-loader>
+</div>
+<ng-container *ngLet="recentTrades$ | async as recentTrades">
+  <ng-container *ngIf="recentTrades?.length > 0; else noTransactions">
+    <table class="table" *ngIf="!this.isMobile; else mobileRecentTrades">
+      <tbody>
+        <tr class="table__tr table__tr_head">
+          <th class="table__th">Date</th>
+          <th class="table__th">From</th>
+          <th class="table__th">Status From</th>
+          <th class="table__th">To</th>
+          <th class="table__th">Status To</th>
+        </tr>
         <ng-container *ngFor="let tx of recentTrades">
           <tr class="table__tr table__tr_data">
             <td class="table__td table__td_date">
@@ -27,7 +27,7 @@
                 ></div>
                 <div class="table__trade-data">
                   <div class="table__trade-token">{{ tx.fromToken.symbol }}</div>
-                  <div class="table__trade-blockchain">{{ tx.fromBlockchain.label }}</div>
+                  <div class="table__trade-blockchain">{{ tx.fromBlockchain.name }}</div>
                 </div>
               </div>
             </td>
@@ -36,7 +36,8 @@
                 <app-status-badge
                   [type]="STATUS_BADGE_TYPE[tx.statusFrom]"
                   [text]="STATUS_BADGE_TEXT[tx.statusFrom]"
-                ></app-status-badge>
+                >
+                </app-status-badge>
               </a>
             </td>
             <td class="table__td table__td_to">
@@ -47,7 +48,7 @@
                 ></div>
                 <div class="table__trade-data">
                   <div class="table__trade-token">{{ tx.toToken.symbol }}</div>
-                  <div class="table__trade-blockchain">{{ tx.toBlockchain.label }}</div>
+                  <div class="table__trade-blockchain">{{ tx.toBlockchain.name }}</div>
                 </div>
               </div>
             </td>
@@ -55,19 +56,16 @@
               <app-status-badge
                 [type]="STATUS_BADGE_TYPE[tx.statusTo]"
                 [text]="STATUS_BADGE_TEXT[tx.statusTo]"
-              ></app-status-badge>
+              >
+              </app-status-badge>
             </td>
           </tr>
         </ng-container>
-      </ng-container>
-    </ng-container>
-  </tbody>
-</table>
+      </tbody>
+    </table>
 
-<ng-template #mobileRecentTrades>
-  <div class="list">
-    <ng-container *ngLet="recentTrades$ | async as recentTrades">
-      <ng-container *ngIf="recentTrades?.length > 0; else empty">
+    <ng-template #mobileRecentTrades>
+      <div class="list">
         <ng-container *ngFor="let tx of recentTrades">
           <div class="tx">
             <div class="tx__row">
@@ -87,7 +85,7 @@
                   {{ tx.fromToken.symbol }}
                 </div>
                 <div class="tx__token-blockchain">
-                  {{ tx.fromBlockchain.label }}
+                  {{ tx.fromBlockchain.name }}
                 </div>
               </div>
             </div>
@@ -114,7 +112,7 @@
                   {{ tx.toToken.symbol }}
                 </div>
                 <div class="tx__token-blockchain">
-                  {{ tx.toBlockchain.label }}
+                  {{ tx.toBlockchain.name }}
                 </div>
               </div>
             </div>
@@ -124,17 +122,27 @@
                 <app-status-badge
                   [type]="STATUS_BADGE_TYPE[tx.statusTo]"
                   [text]="STATUS_BADGE_TEXT[tx.statusTo]"
-                ></app-status-badge>
+                >
+                </app-status-badge>
               </div>
             </div>
             <hr class="tx__divider" />
           </div>
         </ng-container>
-      </ng-container>
-    </ng-container>
-  </div>
-</ng-template>
+      </div>
+    </ng-template>
+  </ng-container>
+</ng-container>
 
-<ng-template #empty>
-  <div class="empty">No transactions</div>
+<ng-template #noTransactions>
+  <div class="no-transactions">
+    <div class="no-transactions__title">You don't have Cross-Chain Transactions yet</div>
+    <app-rubic-button
+      class="no-transactions__navigate"
+      appearance="secondary"
+      (onClick)="navigateToCrossChainSwaps()"
+    >
+      Swap Now
+    </app-rubic-button>
+  </div>
 </ng-template>

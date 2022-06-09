@@ -1130,8 +1130,7 @@ export class CrossChainRoutingService extends TradeService {
 
     let transactionHash;
     let subscription$: Subscription;
-    const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
-      this.swapFormService.inputValue;
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
     const onTransactionHash = (txHash: string) => {
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
@@ -1139,8 +1138,7 @@ export class CrossChainRoutingService extends TradeService {
         toBlockchain,
         fromToken,
         toToken,
-        amountIn: fromAmount.toNumber(),
-        crossChainProviderType: CROSS_CHAIN_PROVIDER.RUBIC,
+        crossChainProviderType: this.currentCrossChainProvider.type as CROSS_CHAIN_PROVIDER,
         timestamp: Date.now()
       };
       transactionHash = txHash;
@@ -1158,7 +1156,6 @@ export class CrossChainRoutingService extends TradeService {
       }
 
       if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.CELER) {
-        tradeData.crossChainProviderType = CROSS_CHAIN_PROVIDER.CELER;
         this.celerApiService.postTradeInfo(fromBlockchain, 'celer', txHash);
       }
 

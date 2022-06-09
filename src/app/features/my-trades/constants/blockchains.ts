@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
-interface Blockchain {
+export interface Blockchain {
   key: BlockchainName;
   name: string;
   img: string;
