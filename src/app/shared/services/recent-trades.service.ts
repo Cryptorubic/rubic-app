@@ -46,19 +46,19 @@ enum RubicSwapStatus {
   providedIn: 'root'
 })
 export class RecentTradesService {
-  get recentTradesLS(): { [address: string]: RecentTrade[] } {
+  private get recentTradesLS(): { [address: string]: RecentTrade[] } {
     return this.storeService.fetchData().recentTrades;
   }
 
-  get unreadTradesLS(): { [address: string]: number } {
+  private get unreadTradesLS(): { [address: string]: number } {
     return this.storeService.fetchData().unreadTrades;
   }
 
-  get userAddress(): string {
+  public get userAddress(): string {
     return this.authService.userAddress;
   }
 
-  get isMobile(): boolean {
+  public get isMobile(): boolean {
     return this.headerStoreService.isMobile;
   }
 
@@ -88,7 +88,7 @@ export class RecentTradesService {
   }
 
   public saveTrade(address: string, tradeData: RecentTrade): void {
-    let currentUsersTrades = [...(this.recentTradesLS?.[address] || [])];
+    const currentUsersTrades = [...(this.recentTradesLS?.[address] || [])];
 
     if (currentUsersTrades?.length === MAX_LATEST_TRADES) {
       currentUsersTrades.pop();
