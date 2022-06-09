@@ -4,18 +4,24 @@ import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-a
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { StoreService } from '@core/services/store/store.service';
 import { BehaviorSubject, interval, map, Observable, startWith, switchMap, tap } from 'rxjs';
-import { RecentTrade, UiRecentTrade } from '../models/my-trades/recent-trades.interface';
+import {
+  RecentTrade,
+  UiRecentTrade
+} from '../../../shared/models/my-trades/recent-trades.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { CELER_CONTRACT_ABI } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
 import { CELER_CONTRACT } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
-import { BlockchainName, EthLikeBlockchainName } from '../models/blockchain/blockchain-name';
+import {
+  BlockchainName,
+  EthLikeBlockchainName
+} from '../../../shared/models/blockchain/blockchain-name';
 import { CelerSwapStatus } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
 import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
 import { AbiItem } from 'web3-utils';
 import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
-import { ScannerLinkPipe } from '../pipes/scanner-link.pipe';
-import ADDRESS_TYPE from '../models/blockchain/address-type';
-import { RecentTradeStatus } from '../models/my-trades/recent-trade-status.enum';
+import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
+import { RecentTradeStatus } from '../../../shared/models/my-trades/recent-trade-status.enum';
 import { decodeLogs } from './decode-logs';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
