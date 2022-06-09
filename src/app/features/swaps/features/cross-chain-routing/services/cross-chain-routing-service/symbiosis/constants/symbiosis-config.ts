@@ -45,7 +45,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 56,
-      rpc: networks.find(network => network.id === 56).additionalRpcLink,
+      rpc: networks.find(network => network.id === 56).rpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 20,
       stables: [
