@@ -14,6 +14,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class SymbiosisService {
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
-    private readonly dialogService: TuiDialogService
+    private readonly dialogService: TuiDialogService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
   public async getUserTrades(): Promise<TableTrade[]> {

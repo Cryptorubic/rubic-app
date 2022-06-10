@@ -24,5 +24,8 @@ export interface CelerRubicTradeInfo {
 export interface SymbiosisTradeInfo {
   estimatedGas: BigNumber; // in Eth units
 
+  fee: BigNumber;
+  feeSymbol: string;
+
   priceImpact: string;
 }
