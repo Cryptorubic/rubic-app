@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { PendingRequest, Symbiosis } from 'symbiosis-js-sdk';
-import { SYMBIOSIS_CONFIG } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/symbiosis-config';
+import {
+  getSymbiosisConfig,
+  SymbiosisConfigRpcLinks
+} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/symbiosis-config';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
@@ -14,13 +17,12 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SymbiosisService {
-  private readonly symbiosis = new Symbiosis(SYMBIOSIS_CONFIG, 'rubic');
-
   private pendingRequests: PendingRequest[];
 
   private get walletAddress(): string {
@@ -32,11 +34,18 @@ export class SymbiosisService {
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
-    private readonly dialogService: TuiDialogService
+    private readonly dialogService: TuiDialogService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
   public async getUserTrades(): Promise<TableTrade[]> {
-    const pendingRequests = await this.symbiosis.getPendingRequests(this.walletAddress);
+    const symbiosis = new Symbiosis(
+      getSymbiosisConfig(
+        this.publicBlockchainAdapterService.currentRpcLink as SymbiosisConfigRpcLinks
+      ),
+      'rubic'
+    );
+    const pendingRequests = await symbiosis.getPendingRequests(this.walletAddress);
     this.pendingRequests = pendingRequests;
 
     return Promise.all(
@@ -97,7 +106,13 @@ export class SymbiosisService {
       throw new UserRejectError();
     }
 
-    const { transactionRequest } = await this.symbiosis.newRevertPending(request).revert();
+    const symbiosis = new Symbiosis(
+      getSymbiosisConfig(
+        this.publicBlockchainAdapterService.currentRpcLink as SymbiosisConfigRpcLinks
+      ),
+      'rubic'
+    );
+    const { transactionRequest } = await symbiosis.newRevertPending(request).revert();
     await this.web3PrivateService.trySendTransaction(
       transactionRequest.to,
       new BigNumber(transactionRequest.value?.toString() || 0),

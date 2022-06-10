@@ -53,6 +53,8 @@ export class PublicBlockchainAdapterService {
 
   public [BLOCKCHAIN_NAME.TELOS]: EthLikeWeb3Public;
 
+  public currentRpcLink: Partial<Record<BlockchainName, string>> = {};
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpClient: HttpClient
@@ -83,6 +85,7 @@ export class PublicBlockchainAdapterService {
       BlockchainsInfo.getBlockchainByName(blockchainName),
       this.httpClient
     );
+    this.currentRpcLink[blockchainName] = rpcLink;
 
     const nodesChecked$ = this._nodesChecked$.asObservable();
 
@@ -145,6 +148,7 @@ export class PublicBlockchainAdapterService {
           );
           if (connector?.additionalRpcLink) {
             this[blockchainName].setProvider(connector.additionalRpcLink);
+            this.currentRpcLink[blockchainName] = connector.additionalRpcLink;
             console.debug(
               `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
             );
