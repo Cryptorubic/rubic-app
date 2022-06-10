@@ -178,6 +178,7 @@ export class SymbiosisService {
         trade: {
           toAmount: new BigNumber(tokenAmountOut.toFixed()),
           fee: new BigNumber(transitTokenFee.toFixed()),
+          feeSymbol: transitTokenFee.token.symbol,
           priceImpact: priceImpact.toFixed()
         }
       };
