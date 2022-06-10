@@ -23,6 +23,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
+import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -129,6 +130,17 @@ export class RubicTokensComponent implements OnInit {
       .subscribe((token: TokenAmount) => {
         if (token) {
           this.selectedToken = token;
+          const inputElement = this.document.getElementById('token-amount-input-element');
+          const isSwapsForm = this.formService instanceof SwapFormService;
+          const isToAmountEmpty = !(
+            this.formService as SwapFormService
+          )?.inputValue?.fromAmount?.isFinite();
+
+          if (inputElement && isSwapsForm && isToAmountEmpty) {
+            setTimeout(() => {
+              inputElement.focus();
+            }, 0);
+          }
 
           if (this.formType === 'from') {
             this.formService.input.patchValue({
