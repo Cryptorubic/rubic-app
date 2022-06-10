@@ -130,21 +130,23 @@ export class RubicTokensComponent implements OnInit {
       .subscribe((token: TokenAmount) => {
         if (token) {
           this.selectedToken = token;
-          if (this.formType === 'from') {
-            const inputElement = this.document.getElementById('token-amount-input-element');
-            const isSwapsForm = this.formService instanceof SwapFormService;
-            const toAmount = (this.formService as SwapFormService)?.inputValue?.fromAmount;
+          const inputElement = this.document.getElementById('token-amount-input-element');
+          const isSwapsForm = this.formService instanceof SwapFormService;
+          const isToAmountEmpty = !(
+            this.formService as SwapFormService
+          )?.inputValue?.fromAmount.isFinite();
 
+          if (inputElement && isSwapsForm && isToAmountEmpty) {
+            setTimeout(() => {
+              inputElement.focus();
+            }, 0);
+          }
+
+          if (this.formType === 'from') {
             this.formService.input.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
-
-            if (inputElement && isSwapsForm && !toAmount.isFinite()) {
-              setTimeout(() => {
-                inputElement.focus();
-              }, 0);
-            }
           } else {
             this.formService.input.patchValue({
               toToken: token,

@@ -194,11 +194,21 @@
 }
 
 .blink-animation {
-  animation: blink 1s linear infinite;
+  animation: blink 2s ease-in-out infinite;
+  opacity: 1;
+  color: var(--tui-text-01);
 }
 
 @keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
   50% {
-    opacity: 0;
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 1;
   }
 }

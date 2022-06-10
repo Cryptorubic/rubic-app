@@ -9,7 +9,7 @@
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
-          'bottom-amount__tokens-container_loading': loading,
+          'bottom-amount__tokens-container_loading': loading && tokenAmount,
           'bottom-amount__tokens-container_error': errorText,
           'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
