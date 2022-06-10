@@ -420,7 +420,9 @@ export class CrossChainRoutingService extends TradeService {
           );
         }
 
-        const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
+        const amountWithSlippage = fromTransitTokenAmount.multipliedBy(
+          compareAddresses(fromToken.address, fromTransitToken.address) ? 1 : fromSlippage
+        );
         celerEstimate = await this.celerService.getCelerEstimate(
           fromBlockchain as EthLikeBlockchainName,
           toBlockchain as EthLikeBlockchainName,
