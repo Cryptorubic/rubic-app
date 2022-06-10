@@ -192,7 +192,7 @@ export function getSymbiosisConfig(rpcLink: SymbiosisConfigRpcLinks) {
       },
       {
         id: 137,
-        rpc: rpcLink[BLOCKCHAIN_NAME.AVALANCHE],
+        rpc: rpcLink[BLOCKCHAIN_NAME.POLYGON],
         filterBlockOffset: 100000,
         waitForBlocksCount: 60,
         stables: [
