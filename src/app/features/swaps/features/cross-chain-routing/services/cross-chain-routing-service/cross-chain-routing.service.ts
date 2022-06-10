@@ -920,6 +920,8 @@ export class CrossChainRoutingService extends TradeService {
       const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
       return {
         estimatedGas,
+        fee: trade.fee,
+        feeSymbol: trade.feeSymbol,
         priceImpact: trade.priceImpact
       };
     }
