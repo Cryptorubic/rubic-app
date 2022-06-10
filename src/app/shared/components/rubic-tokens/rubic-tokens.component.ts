@@ -134,7 +134,7 @@ export class RubicTokensComponent implements OnInit {
           const isSwapsForm = this.formService instanceof SwapFormService;
           const isToAmountEmpty = !(
             this.formService as SwapFormService
-          )?.inputValue?.fromAmount.isFinite();
+          )?.inputValue?.fromAmount?.isFinite();
 
           if (inputElement && isSwapsForm && isToAmountEmpty) {
             setTimeout(() => {
