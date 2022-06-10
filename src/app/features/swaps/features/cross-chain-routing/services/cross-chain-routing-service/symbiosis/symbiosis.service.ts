@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ErrorCode, Symbiosis } from 'symbiosis-js-sdk';
-import {
-  getSymbiosisConfig,
-  SymbiosisConfigRpcLinks
-} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/symbiosis-config';
+import { SYMBIOSIS_CONFIG } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/symbiosis-config';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Token as SymbiosisToken, TokenAmount as SymbiosisTokenAmount } from 'symbiosis-js-sdk';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -45,6 +42,8 @@ export class SymbiosisService {
   ): blockchain is SymbiosisSupportedBlockchain {
     return SYMBIOSIS_SUPPORTED_BLOCKCHAINS.some(supBlockchain => supBlockchain === blockchain);
   }
+
+  private readonly symbiosis = new Symbiosis(SYMBIOSIS_CONFIG, 'rubic');
 
   private readonly DEFAULT_DEADLINE = 20;
 
@@ -119,7 +118,10 @@ export class SymbiosisService {
   }> {
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    if (!SymbiosisService.isSupportedBlockchain(fromBlockchain)) {
+    if (
+      !SymbiosisService.isSupportedBlockchain(fromBlockchain) ||
+      !SymbiosisService.isSupportedBlockchain(toBlockchain)
+    ) {
       return { trade: null };
     }
 
@@ -130,13 +132,7 @@ export class SymbiosisService {
       };
     }
 
-    const symbiosis = new Symbiosis(
-      getSymbiosisConfig(
-        this.publicBlockchainAdapterService.currentRpcLink as SymbiosisConfigRpcLinks
-      ),
-      'rubic'
-    );
-    const swapping = symbiosis.newSwapping();
+    const swapping = this.symbiosis.newSwapping();
 
     const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     const tokenIn = new SymbiosisToken({
