@@ -1,4 +1,4 @@
-import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CelerRubicTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { AccountMeta, PublicKey, Signer, TransactionInstruction } from '@solana/web3.js';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
@@ -155,7 +155,7 @@ export class SolanaContractExecutorService {
   ) {}
 
   public async executeTrade(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     address: string,
     targetAddress: string,
     isToNative: boolean
@@ -197,15 +197,15 @@ export class SolanaContractExecutorService {
    * @param isToNative Is swap to native token.
    */
   private getArguments(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     targetAddress: string,
     isToNative: boolean
   ): CrossChainArguments {
-    const isTransfer = trade.tokenIn.address === this.contract.transitToken.address;
-    const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
+    const isTransfer = trade.fromToken.address === this.contract.transitToken.address;
+    const fromNative = trade.fromToken.address === NATIVE_SOLANA_MINT_ADDRESS;
     const transferType = SolanaContractExecutorService.getTransferType(fromNative, isTransfer);
     // From amount
-    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.fromAmount, trade.fromToken.decimals);
     const fromFinalAmount = parseInt(tokenInAmountAbsolute);
     // Transit amount
     const fromTransitTokenAmountMin =
@@ -217,7 +217,7 @@ export class SolanaContractExecutorService {
     const fromTransitTokenAmount = parseInt(fromTransitTokenAmountMinAbsolute);
     // To amount
     const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutAmountAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.toToken.decimals);
 
     const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
       trade.toProviderIndex,
@@ -245,9 +245,9 @@ export class SolanaContractExecutorService {
    * Handles missed token error.
    * @param trade Current cross-chain trade.
    */
-  private handleTokenError(trade: CrossChainTrade): void {
-    const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
-    const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
+  private handleTokenError(trade: CelerRubicTrade): void {
+    const from = this.tokensService.tokens.find(el => el.address === trade.fromToken.address);
+    const to = this.tokensService.tokens.find(el => el.address === trade.toToken.address);
 
     if (!from || !to) {
       throw new Error('Miss token info');
@@ -264,7 +264,7 @@ export class SolanaContractExecutorService {
    * @param address User address.
    */
   private async getPublicKeys(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     methodArguments: CrossChainArguments,
     owner: PublicKey,
     setupInstructions: TransactionInstruction[],
@@ -275,9 +275,9 @@ export class SolanaContractExecutorService {
     const blockchainUUID = BLOCKCHAIN_UUID[this.contracts[trade.toBlockchain].numOfBlockchain];
 
     const fromMint =
-      trade.tokenIn.address === NATIVE_SOL.mintAddress
+      trade.fromToken.address === NATIVE_SOL.mintAddress
         ? TOKENS.WSOL.mintAddress
-        : trade.tokenIn.address;
+        : trade.fromToken.address;
     const middleMint = this.contract.transitToken.address;
 
     const fromAccount =

@@ -35,12 +35,21 @@
           {{ 'tradesTable.receive' | translate }}
         </app-rubic-button>
 
+        <app-rubic-button
+          *ngIf="trade.provider === 'SYMBIOSIS_PROVIDER'"
+          size="s"
+          [loading]="item.inProgress"
+          (onClick)="onRevertSymbiosis(trade, $event)"
+        >
+          Revert
+        </app-rubic-button>
+
         <div class="status__text">{{ TRANSLATION_STATUS_KEY[trade.status] | translate }}</div>
       </div>
 
       <div class="item-header__blockchains-container">
         <div class="blockchains">
-          <ng-container *ngIf="trade.fromToken; else showToTokenChain">
+          <ng-container *ngIf="trade.fromToken?.symbol; else showToTokenChain">
             <div class="blockchains__blockchain">
               <div class="img-container">
                 <img
@@ -88,17 +97,19 @@
       </div>
 
       <div class="item-header__token token">
-        <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
-        <div class="token__info">
-          <div class="img-container">
-            <img
-              [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
-              alt="to token"
-              (error)="onTokenImageError($event)"
-            />
+        <ng-container *ngIf="trade.toToken?.symbol">
+          <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+          <div class="token__info">
+            <div class="img-container">
+              <img
+                [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
+                alt="to token"
+                (error)="onTokenImageError($event)"
+              />
+            </div>
+            {{ trade.toToken.symbol }}
           </div>
-          {{ trade.toToken.symbol }}
-        </div>
+        </ng-container>
       </div>
 
       <div class="item-header__provider provider">
@@ -199,7 +210,7 @@
 
         <div class="row__data">
           <div class="token">
-            <ng-container *ngIf="trade.fromToken; else none">
+            <ng-container *ngIf="trade.fromToken?.symbol; else none">
               <span>{{
                 trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
               }}</span>
@@ -214,7 +225,6 @@
                 {{ trade.fromToken.symbol }}
               </div>
             </ng-container>
-            <ng-template #none> — </ng-template>
           </div>
         </div>
       </div>
@@ -224,17 +234,21 @@
 
         <div class="row__data">
           <div class="token">
-            <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
-            <div class="token__info">
-              <div class="img-container">
-                <img
-                  [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
-                  alt="to token"
-                  (error)="onTokenImageError($event)"
-                />
+            <ng-container *ngIf="trade.toToken?.symbol; else none">
+              <span>{{
+                trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+              }}</span>
+              <div class="token__info">
+                <div class="img-container">
+                  <img
+                    [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
+                    alt="to token"
+                    (error)="onTokenImageError($event)"
+                  />
+                </div>
+                {{ trade.toToken.symbol }}
               </div>
-              {{ trade.toToken.symbol }}
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -258,3 +272,5 @@
   [activePadding]="0"
   [(index)]="index"
 ></tui-pagination>
+
+<ng-template #none> — </ng-template>

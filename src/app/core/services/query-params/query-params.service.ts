@@ -354,6 +354,10 @@ export class QueryParamsService {
   }
 
   private setIframeInfo(queryParams: QueryParams): void {
+    if (queryParams.hideUnusedUI) {
+      this.setHideSelectionStatus(queryParams);
+    }
+
     if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
@@ -393,7 +397,7 @@ export class QueryParamsService {
   }
 
   private setHideSelectionStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
+    if (!this.iframeService.isIframe && queryParams.hideUnusedUI !== 'true') {
       return;
     }
 

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
 
-export interface CrossChainTradeInfo {
+export interface CelerRubicTradeInfo {
   feePercent: number;
   feeAmount: BigNumber;
   feeTokenSymbol: string;
@@ -17,4 +17,15 @@ export interface CrossChainTradeInfo {
 
   fromPath: string[] | null; // null if `tokenIn` = `transitToken`
   toPath: string[] | null; // null if `tokenOut` = `transitToken`
+
+  usingCelerBridge: boolean; // true if bridging pair of tokens through Celer bridge
+}
+
+export interface SymbiosisTradeInfo {
+  estimatedGas: BigNumber; // in Eth units
+
+  fee: BigNumber;
+  feeSymbol: string;
+
+  priceImpact: string;
 }

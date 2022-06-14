@@ -115,6 +115,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
+  get showSmartRouting(): boolean {
+    return Boolean(this.smartRouting);
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapFormService: SwapFormService,
@@ -268,13 +272,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 this.onCalculateTrade$.next('normal');
                 return;
               }
-              if (this.crossChainRoutingService.swapViaCeler) {
-                this.minError = this.crossChainRoutingService.celerSwapLimits.min || false;
-                this.maxError = this.crossChainRoutingService.celerSwapLimits.max || false;
-              } else {
-                this.minError = minAmountError || false;
-                this.maxError = maxAmountError || false;
-              }
+
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
               this.errorText = '';
 
               this.needApprove = needApprove;
@@ -338,13 +338,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              if (this.crossChainRoutingService.swapViaCeler) {
-                this.minError = this.crossChainRoutingService.celerSwapLimits.min || false;
-                this.maxError = this.crossChainRoutingService.celerSwapLimits.max || false;
-              } else {
-                this.minError = minAmountError || false;
-                this.maxError = maxAmountError || false;
-              }
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
 
               this.hiddenTradeData = { toAmount };
               if (!toAmount.eq(this.toAmount)) {

@@ -1,88 +1,88 @@
-<ng-container>
-  <div class="swaps-form">
-    <header *noFrame class="swaps-form__header">
-      <app-swaps-header
-        class="swaps-form__blockchains"
-        *noFrame
-        [fromBlockchain]="fromBlockchain"
-        [toBlockchain]="toBlockchain"
-        [selectedToken]="selectedToken"
-      ></app-swaps-header>
+<app-fee-banner></app-fee-banner>
 
-      <div class="swaps-form__settings-wrapper">
-        <app-refresh-button class="swaps-form__refresh"></app-refresh-button>
+<div class="swaps-form">
+  <header *noFrame class="swaps-form__header">
+    <app-swaps-header
+      class="swaps-form__blockchains"
+      *noFrame
+      [fromBlockchain]="fromBlockchain"
+      [toBlockchain]="toBlockchain"
+      [selectedToken]="selectedToken"
+    ></app-swaps-header>
 
-        <app-settings-container
-          *ngIf="!isBridge"
-          class="swaps-form__settings"
-        ></app-settings-container>
-      </div>
-    </header>
+    <div class="swaps-form__settings-wrapper">
+      <app-refresh-button class="swaps-form__refresh"></app-refresh-button>
 
-    <main class="swaps-form__content">
-      <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator
-          [blockchain]="fromBlockchain"
-          *onlyFrame="'horizontal'"
-        ></app-iframe-blockchain-indicator>
+      <app-settings-container
+        *ngIf="!isBridge"
+        class="swaps-form__settings"
+      ></app-settings-container>
+    </div>
+  </header>
 
-        <app-token-amount-input
-          *noFrame="'vertical'"
-          [loading]="isLoading"
-          [tokens]="availableTokens['from']"
-          [favoriteTokens]="availableFavoriteTokens['from']"
-        ></app-token-amount-input>
+  <main class="swaps-form__content">
+    <div class="swaps-form__block">
+      <app-iframe-blockchain-indicator
+        [blockchain]="fromBlockchain"
+        *onlyFrame="'horizontal'"
+      ></app-iframe-blockchain-indicator>
 
-        <app-vertical-iframe-token-amount-input
-          *onlyFrame="'vertical'"
-          [loading]="isLoading"
-          [tokens]="availableTokens['from']"
-        ></app-vertical-iframe-token-amount-input>
-      </div>
+      <app-token-amount-input
+        *noFrame="'vertical'"
+        [loading]="isLoading"
+        [tokens]="availableTokens['from']"
+        [favoriteTokens]="availableFavoriteTokens['from']"
+      ></app-token-amount-input>
 
-      <div class="swaps-form__delimiter">
-        <app-swaps-switcher (switcherClick)="revert()"></app-swaps-switcher>
-      </div>
+      <app-vertical-iframe-token-amount-input
+        *onlyFrame="'vertical'"
+        [loading]="isLoading"
+        [tokens]="availableTokens['from']"
+      ></app-vertical-iframe-token-amount-input>
+    </div>
 
-      <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator
-          *onlyFrame="'horizontal'"
-          [blockchain]="toBlockchain"
-        ></app-iframe-blockchain-indicator>
+    <div class="swaps-form__delimiter">
+      <app-swaps-switcher (switcherClick)="revert()"></app-swaps-switcher>
+    </div>
 
-        <app-instant-trade-bottom-form
-          *ngIf="isInstantTrade"
-          [loading]="isLoading"
-          [tokens]="availableTokens['to']"
-          [favoriteTokens]="availableFavoriteTokens['to']"
-          (instantTradeInfoChange)="currentInstantTradeInfo = $event"
-          (tradeStatusChange)="tradeStatus = $event"
-        ></app-instant-trade-bottom-form>
+    <div class="swaps-form__block">
+      <app-iframe-blockchain-indicator
+        *onlyFrame="'horizontal'"
+        [blockchain]="toBlockchain"
+      ></app-iframe-blockchain-indicator>
 
-        <app-bridge-bottom-form
-          *ngIf="isBridge"
-          [loading]="isLoading"
-          [tokens]="availableTokens['to']"
-          (tradeStatusChange)="tradeStatus = $event"
-          [favoriteTokens]="availableFavoriteTokens['to']"
-        ></app-bridge-bottom-form>
+      <app-instant-trade-bottom-form
+        *ngIf="isInstantTrade"
+        [loading]="isLoading"
+        [tokens]="availableTokens['to']"
+        [favoriteTokens]="availableFavoriteTokens['to']"
+        (instantTradeInfoChange)="currentInstantTradeInfo = $event"
+        (tradeStatusChange)="tradeStatus = $event"
+      ></app-instant-trade-bottom-form>
 
-        <app-cross-chain-routing-bottom-form
-          *ngIf="isCrossChainRouting"
-          [loading]="isLoading"
-          [tokens]="availableTokens['to']"
-          (tradeStatusChange)="tradeStatus = $event"
-          [favoriteTokens]="availableFavoriteTokens['to']"
-        ></app-cross-chain-routing-bottom-form>
-      </div>
-    </main>
-  </div>
+      <app-bridge-bottom-form
+        *ngIf="isBridge"
+        [loading]="isLoading"
+        [tokens]="availableTokens['to']"
+        (tradeStatusChange)="tradeStatus = $event"
+        [favoriteTokens]="availableFavoriteTokens['to']"
+      ></app-bridge-bottom-form>
 
-  <ng-container *noFrame>
-    <app-swap-info-container
-      *ngIf="allowTrade"
-      [currentInstantTradeInfo]="currentInstantTradeInfo"
-      [tradeStatus]="tradeStatus"
-    ></app-swap-info-container>
-  </ng-container>
+      <app-cross-chain-routing-bottom-form
+        *ngIf="isCrossChainRouting"
+        [loading]="isLoading"
+        [tokens]="availableTokens['to']"
+        (tradeStatusChange)="tradeStatus = $event"
+        [favoriteTokens]="availableFavoriteTokens['to']"
+      ></app-cross-chain-routing-bottom-form>
+    </div>
+  </main>
+</div>
+
+<ng-container *noFrame>
+  <app-swap-info-container
+    *ngIf="allowTrade"
+    [currentInstantTradeInfo]="currentInstantTradeInfo"
+    [tradeStatus]="tradeStatus"
+  ></app-swap-info-container>
 </ng-container>

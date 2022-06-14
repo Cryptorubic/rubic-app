@@ -10,12 +10,17 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { CrossChainTradeInfo } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
+import {
+  CelerRubicTradeInfo,
+  SymbiosisTradeInfo
+} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { instantTradesLabels } from '@features/swaps/shared/constants/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { INSTANT_TRADE_PROVIDER } from '@features/swaps/shared/models/instant-trade-provider';
+import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -47,6 +52,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public minimumReceived: BigNumber;
 
+  public priceImpact: number;
+
   public priceImpactFrom: number;
 
   public priceImpactTo: number;
@@ -58,6 +65,16 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public fromPath: string[] | null;
 
   public toPath: string[] | null;
+
+  public slippage: number;
+
+  public usingCelerBridge: boolean;
+
+  public isSymbiosis: boolean;
+
+  public symbiosisCryptoFee: BigNumber;
+
+  public symbiosisCryptoFeeSymbol: string;
 
   public get fromProviderImg(): string {
     return TRADES_PROVIDERS[this.fromProvider].image;
@@ -88,6 +105,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
+    private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -136,7 +154,27 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   token.blockchain === fromBlockchain &&
                   blockchainAdapter?.isNativeAddress(token.address)
               ).symbol;
-              this.setTradeInfoParameters(tradeInfo, nativeCoinPrice);
+
+              if (
+                this.crossChainRoutingService.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+              ) {
+                this.isSymbiosis = true;
+
+                this.estimateGasInEth = tradeInfo.estimatedGas;
+                this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
+
+                this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+                this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
+
+                this.setSymbiosisTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
+              } else {
+                this.isSymbiosis = false;
+
+                this.setCelerRubicTradeInfoParameters(
+                  tradeInfo as CelerRubicTradeInfo,
+                  nativeCoinPrice
+                );
+              }
 
               this.swapInfoService.emitInfoCalculated();
             })
@@ -148,16 +186,29 @@ export class CrossChainSwapInfoComponent implements OnInit {
       .subscribe();
   }
 
+  private setSymbiosisTradeInfoParameters(tradeInfo: SymbiosisTradeInfo): void {
+    this.priceImpact = parseFloat(tradeInfo.priceImpact);
+    this.priceImpactService.setPriceImpact(this.priceImpact);
+
+    this.symbiosisCryptoFee = tradeInfo.fee;
+    this.symbiosisCryptoFeeSymbol = tradeInfo.feeSymbol;
+
+    // TODO remove after end of marketing company
+    this.feePercent = 0;
+  }
+
   /**
    * Sets parameters of currently selected ccr trade.
    */
-  private setTradeInfoParameters(tradeInfo: CrossChainTradeInfo, nativeCoinPrice: number): void {
+  private setCelerRubicTradeInfoParameters(
+    tradeInfo: CelerRubicTradeInfo,
+    nativeCoinPrice: number
+  ): void {
     this.estimateGasInEth = tradeInfo.estimatedGas;
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
     this.cryptoFeeInEth = tradeInfo.cryptoFee;
     this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice);
-
     this.feePercent = tradeInfo.feePercent;
     this.feeAmount = tradeInfo.feeAmount;
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
@@ -171,12 +222,15 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.toPath = tradeInfo.toPath;
 
     this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+
+    this.usingCelerBridge = tradeInfo.usingCelerBridge;
   }
 
   /**
    * Sets from and to price impacts and sets maximum as current price impact.
    */
-  private setPriceImpact(tradeInfo: CrossChainTradeInfo): void {
+  private setPriceImpact(tradeInfo: CelerRubicTradeInfo): void {
     this.priceImpactFrom = tradeInfo.priceImpactFrom;
     if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {
       this.priceImpactFrom = null;

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
   Self
@@ -22,6 +23,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-select-token-button',
@@ -80,7 +82,8 @@ export class SelectTokenButtonComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public ngOnInit(): void {
@@ -125,8 +128,16 @@ export class SelectTokenButtonComponent implements OnInit {
       )
       .subscribe((token: TokenAmount) => {
         if (token) {
-          this.tokensService.addToken(token);
           this.selectedToken = token;
+          const inputElement = this.document.getElementById('token-amount-input-element');
+          const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
+
+          if (inputElement && isFromAmountEmpty) {
+            setTimeout(() => {
+              inputElement.focus();
+            }, 0);
+          }
+
           if (this.formType === 'from') {
             this.swapFormService.input.patchValue({
               fromBlockchain: token.blockchain,

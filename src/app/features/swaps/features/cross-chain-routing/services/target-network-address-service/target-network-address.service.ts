@@ -36,11 +36,16 @@ export class TargetNetworkAddressService {
     this.formService.input.valueChanges
       .pipe(startWith(this.formService.inputValue))
       .subscribe(form => {
-        this._displayAddress$.next(
+        const needDisplayAddress =
           (this.networksRequiresAddress.includes(form.fromBlockchain) ||
             this.networksRequiresAddress.includes(form.toBlockchain)) &&
-            Boolean(form.fromToken && form.toToken)
-        );
+          Boolean(form.fromToken && form.toToken);
+
+        this._displayAddress$.next(needDisplayAddress);
+
+        if (!needDisplayAddress) {
+          this._targetNetworkAddress$.next(null);
+        }
       });
   }
 }

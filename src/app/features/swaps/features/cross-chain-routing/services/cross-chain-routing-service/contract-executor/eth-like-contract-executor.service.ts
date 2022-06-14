@@ -1,4 +1,4 @@
-import { CrossChainTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CelerRubicTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
@@ -33,7 +33,7 @@ export class EthLikeContractExecutorService {
   ) {}
 
   public async executeTrade(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     options: TransactionOptions,
     userAddress: string,
     targetAddress: string
@@ -74,7 +74,7 @@ export class EthLikeContractExecutorService {
   }
 
   private async executeContractMethod(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     options: TransactionOptions,
     userAddress: string,
     targetAddress: string,
@@ -134,7 +134,7 @@ export class EthLikeContractExecutorService {
    * @param swapTokenWithFee True, if token is with fee.
    */
   public async getContractParams(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     toWalletAddress: string,
     swapTokenWithFee = false
   ): Promise<ContractParams> {
@@ -144,10 +144,10 @@ export class EthLikeContractExecutorService {
     }
 
     const isFromTokenNative = this.publicBlockchainAdapterService[fromBlockchain].isNativeAddress(
-      trade.tokenIn.address
+      trade.fromToken.address
     );
     const isToTokenNative = this.publicBlockchainAdapterService[toBlockchain].isNativeAddress(
-      trade.tokenOut.address
+      trade.toToken.address
     );
 
     const contractAddress = this.contracts[fromBlockchain].address;
@@ -165,7 +165,7 @@ export class EthLikeContractExecutorService {
       swapTokenWithFee
     );
 
-    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.fromAmount, trade.fromToken.decimals);
     const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);
     const value = new BigNumber(blockchainCryptoFee)
       .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
@@ -187,7 +187,7 @@ export class EthLikeContractExecutorService {
    * @param targetAddress Target network wallet address.
    */
   private sendDataToNear(
-    trade: CrossChainTrade,
+    trade: CelerRubicTrade,
     transactionHash: string,
     targetAddress: string
   ): void {
@@ -198,7 +198,7 @@ export class EthLikeContractExecutorService {
         targetAddress,
         trade.toTrade?.path?.map(token =>
           token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : token.address
-        ) || [trade.tokenOut.address],
+        ) || [trade.toToken.address],
         this.refFinanceService.refRoutes
       )
       .subscribe();

@@ -56,6 +56,7 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { FeeBannerComponent } from './components/fee-banner/fee-banner.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     CopyContainerComponent,
     StatusBadgeComponent,
     ProgressTrxNotificationComponent,
+    FeeBannerComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -154,7 +156,8 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     RubicContainerComponent,
     CopyContainerComponent,
     FunctionCallPipe,
-    StatusBadgeComponent
+    StatusBadgeComponent,
+    FeeBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]

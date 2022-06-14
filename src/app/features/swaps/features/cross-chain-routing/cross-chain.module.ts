@@ -19,6 +19,7 @@ import { NearContractExecutorService } from '@features/swaps/features/cross-chai
 import { SolanaContractExecutorService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/services/target-network-address-service/target-network-address.service';
 import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
+import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     SolanaContractExecutorService,
     CelerService,
     CelerApiService,
-    TargetNetworkAddressService
+    TargetNetworkAddressService,
+    SymbiosisService
   ]
 })
 export class CrossChainModule {}

@@ -21,38 +21,62 @@
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'Gas fee in target network taken in native token of source network'"
+      [tuiHint]="
+        'Gas fee in target network taken in' +
+        (!isSymbiosis ? 'native' : 'stable') +
+        'token of source network'
+      "
     />
   </div>
-  <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
-    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
-    <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
-      ≈ ${{
-        cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
-      }}
-    </ng-container>
-  </div>
+
+  <ng-container *ngIf="!isSymbiosis; else symbiosisCryptoFeeTemplate">
+    <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
+      {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
+      <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
+        ≈ ${{
+          cryptoFeeInUsd
+            | bigNumberFormat
+            | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
+        }}
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #symbiosisCryptoFeeTemplate>
+    <div class="info-line__value" *ngIf="symbiosisCryptoFee !== undefined">
+      {{ symbiosisCryptoFee | bigNumberFormat | withRound: 'toClosestValue' }}
+      {{ symbiosisCryptoFeeSymbol }}
+    </div>
+  </ng-template>
 </div>
 
-<div class="info-line">
+<div class="info-line" [class.info-line_green]="feePercent === 0">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'"
+      [tuiHint]="
+        feePercent === 0
+          ? 'The terms of the campaign don\’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR'
+          : 'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'
+      "
     />
   </div>
   <div class="info-line__value" *ngIf="feePercent !== undefined">
-    {{ feePercent }}% ≈
-    {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-    {{ feeTokenSymbol }}
+    <ng-container *ngIf="feePercent !== 0; else zero">
+      {{ feePercent }}% ≈
+      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
+      {{ feeTokenSymbol }}
+    </ng-container>
+    <ng-template #zero>0%</ng-template>
   </div>
 </div>
 
-<hr class="delimiter" />
+<hr class="delimiter" *ngIf="!isSymbiosis || estimateGasInEth?.isFinite()" />
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosis"
   title="Price impact in source network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -61,6 +85,7 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosis"
   title="Price impact in target network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -68,29 +93,38 @@
   [priceImpact]="priceImpactTo"
 ></app-price-impact-info-line>
 
-<div
-  class="info-line"
-  *ngLet="
-    (minimumReceived
-      | bigNumberFormat
-      | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
-    ' ' +
-    toToken.symbol as minimumReceivedFormatted
+<app-price-impact-info-line
+  *ngIf="isSymbiosis"
+  title="Price impact"
+  [hint]="
+    'Correlation between an incoming order and the change in the price of the asset involved caused by the trade.'
   "
->
-  <div class="info-line__title title">
-    <span class="title__text"> {{ 'crossChainPage.swapInfo.minimumReceived' | translate }}</span>
-    <img
-      src="assets/images/swaps/swaps-info/question-icon.svg"
-      alt="question"
-      [tuiHint]="
-        'Output is estimated. You will receive at least ' +
-        minimumReceivedFormatted +
-        ' or the transaction will revert.'
-      "
-    />
+  [priceImpact]="priceImpact"
+></app-price-impact-info-line>
+
+<ng-container *ngIf="isSymbiosis || !usingCelerBridge">
+  <div
+    class="info-line"
+    *ngLet="
+      (minimumReceived
+        | bigNumberFormat
+        | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
+      ' ' +
+      toToken.symbol as minimumReceivedFormatted
+    "
+  >
+    <div class="info-line__title title">
+      <span class="title__text">Current slippage</span>
+      <img
+        src="assets/images/swaps/swaps-info/question-icon.svg"
+        alt="question"
+        [tuiHint]="
+          'Output is estimated. You will receive at least ' +
+          minimumReceivedFormatted +
+          ' or the transaction will revert.'
+        "
+      />
+    </div>
+    <div class="info-line__value">{{ slippage }}%</div>
   </div>
-  <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
-    {{ minimumReceivedFormatted }}
-  </div>
-</div>
+</ng-container>

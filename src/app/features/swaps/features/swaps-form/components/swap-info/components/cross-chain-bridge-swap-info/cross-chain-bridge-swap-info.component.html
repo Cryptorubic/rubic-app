@@ -15,7 +15,7 @@
       {{ toWalletAddress | shortAddress: 5:5 }}
 
       <a [safetyLink]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
-        ><img src="assets/images/icons/scanner.svg" alt="{{ 'common.checkOnScanner' | translate }}"
+        ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
       /></a>
 
       <button

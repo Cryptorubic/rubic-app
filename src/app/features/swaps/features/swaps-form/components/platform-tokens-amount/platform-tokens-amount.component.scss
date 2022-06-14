@@ -11,7 +11,7 @@ $block-height: 18px;
   letter-spacing: 0.7px;
 
   @include b($mobile-sm) {
-    max-width: 160px;
+    max-width: 170px;
   }
 
   &__container {
