@@ -619,7 +619,8 @@ export class CrossChainRoutingService extends TradeService {
             toToken,
             false,
             contractAddress,
-            wrappedNativeAddress
+            wrappedNativeAddress,
+            true
           );
         return {
           trade: instantTrade,
