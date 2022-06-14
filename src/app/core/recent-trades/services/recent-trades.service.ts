@@ -2,12 +2,10 @@ import { Inject, Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { StoreService } from '@core/services/store/store.service';
-import { BehaviorSubject, interval, map, Observable, startWith, switchMap, tap } from 'rxjs';
-import {
-  RecentTrade,
-  UiRecentTrade
-} from '../../../shared/models/my-trades/recent-trades.interface';
+import { BehaviorSubject, from, interval, Observable, Subject, Subscription } from 'rxjs';
+import { tap, switchMap, startWith, repeatWhen, map } from 'rxjs/operators';
+import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
+import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { CELER_CONTRACT_ABI } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
 import { CELER_CONTRACT } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
@@ -21,16 +19,20 @@ import { AbiItem } from 'web3-utils';
 import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
-import { RecentTradeStatus } from '../../../shared/models/my-trades/recent-trade-status.enum';
-import { decodeLogs } from './decode-logs';
-import { TuiDialogService } from '@taiga-ui/core';
+import { RecentTradeStatus } from '../models/recent-trade-status.enum';
+import { decodeLogs } from '../decode-logs';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RecentCrosschainTxComponent } from '@app/core/header/components/recent-crosschain-tx/recent-crosschain-tx.component';
+import { RecentCrosschainTxComponent } from '../components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
-import { asyncMap } from '@shared/utils/utils';
-
-const MAX_LATEST_TRADES = 3;
+import { asyncMap, isNil } from '@shared/utils/utils';
+import { SymbiosisService } from '@app/features/my-trades/services/symbiosis-service/symbiosis.service';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { PendingRequest } from 'symbiosis-js-sdk';
 
 const PROCESSED_TRANSACTION_METHOD_ABI: AbiItem[] = [
   {
@@ -48,16 +50,10 @@ enum RubicSwapStatus {
   REVERTED = 2
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RecentTradesService {
-  private get recentTradesLS(): { [address: string]: RecentTrade[] } {
-    return this.storeService.fetchData().recentTrades;
-  }
-
-  private get unreadTradesLS(): { [address: string]: number } {
-    return this.storeService.fetchData().unreadTrades;
+  private get recentTrades(): RecentTrade[] {
+    return this.recentTradesStoreService.currentUserRecentTrades;
   }
 
   public get userAddress(): string {
@@ -72,75 +68,52 @@ export class RecentTradesService {
 
   public readonly usersTrades$ = this._usersTrades$.asObservable();
 
-  private readonly _unreadTrades$ = new BehaviorSubject<{ [address: string]: number }>(
-    this.unreadTradesLS
-  );
+  private readonly _forceReload$ = new Subject<void>();
 
-  public readonly unreadTrades$ = this._unreadTrades$
-    .asObservable()
-    .pipe(map(unreadTrades => unreadTrades?.[this.userAddress] || 0));
+  private symbiosisPendingRequests: PendingRequest[];
 
   constructor(
-    private readonly storeService: StoreService,
     private readonly web3Public: PublicBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly scannerLinkPipe: ScannerLinkPipe,
     private readonly headerStoreService: HeaderStore,
+    private readonly symbiosisService: SymbiosisService,
+    private readonly errorService: ErrorsService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {}
 
   public resetTrades(): void {
     this._usersTrades$.next(undefined);
-  }
-
-  public saveTrade(address: string, tradeData: RecentTrade): void {
-    const currentUsersTrades = [...(this.recentTradesLS?.[address] || [])];
-
-    if (currentUsersTrades?.length === MAX_LATEST_TRADES) {
-      currentUsersTrades.pop();
-    }
-    currentUsersTrades.unshift(tradeData);
-
-    const updatedTrades = { ...this.recentTradesLS, [address]: currentUsersTrades };
-
-    this.storeService.setItem('recentTrades', updatedTrades);
-    this.updateUnreadTrades();
-  }
-
-  private saveTradeAsParsed(trade: RecentTrade): void {
-    const currentUsersTrades = this.recentTradesLS?.[this.userAddress];
-    const tradeIndex = currentUsersTrades.indexOf(
-      currentUsersTrades.find(
-        savedTrade =>
-          savedTrade.fromBlockchain === trade.fromBlockchain &&
-          savedTrade.srcTxHash === trade.srcTxHash
-      )
-    );
-    currentUsersTrades[tradeIndex] = trade;
-    const updatedTrades = { ...this.recentTradesLS, [this.userAddress]: currentUsersTrades };
-    this.storeService.setItem('recentTrades', updatedTrades);
+    this.recentTradesStoreService.resetTrades();
   }
 
   public initStatusPolling(): Observable<UiRecentTrade[]> {
-    return interval(10000).pipe(
+    return interval(20000).pipe(
       startWith(0),
-      switchMap(async () => {
-        const recentTrades = this.recentTradesLS[this.userAddress];
-        return recentTrades?.length > 0
-          ? await asyncMap<RecentTrade, UiRecentTrade>(
-              recentTrades,
-              this.parseTradeForUi.bind(this)
+      map(() => this.recentTrades),
+      switchMap(recentTrades => {
+        return recentTrades && recentTrades?.length > 0
+          ? from(
+              asyncMap<RecentTrade, UiRecentTrade>(recentTrades, this.parseTradeForUi.bind(this))
             )
-          : ([] as UiRecentTrade[]);
+          : (from([]) as Observable<UiRecentTrade[]>);
       }),
-      tap(uiUsersTrades => this._usersTrades$.next(uiUsersTrades))
+      tap(uiUsersTrades => {
+        this._usersTrades$.next(uiUsersTrades);
+        console.log('parsed trades', this._usersTrades$.getValue());
+      }),
+      // eslint-disable-next-line rxjs/no-ignored-notifier
+      repeatWhen(() => this._forceReload$)
     );
   }
 
   private async parseTradeForUi(trade: RecentTrade, index: number): Promise<UiRecentTrade> {
     const parsedTrades = this._usersTrades$.getValue();
 
-    if (trade._parsed && parsedTrades && parsedTrades.length) {
+    if (trade?._parsed && parsedTrades && parsedTrades.length) {
       return parsedTrades[index];
     }
 
@@ -163,7 +136,9 @@ export class RecentTradesService {
       fromToken,
       toToken,
       timestamp,
-      srcTxLink
+      srcTxLink,
+      srcTxHash,
+      crossChainProviderType
     };
 
     if (crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER) {
@@ -187,6 +162,117 @@ export class RecentTradesService {
 
       return { statusTo, statusFrom, ...uiTrade };
     }
+
+    if (crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      const { statusTo, statusFrom } = await this.getSymbiosisTradeStatuses(
+        srcWeb3Provider,
+        srcTxHash,
+        trade
+      );
+
+      return {
+        statusTo,
+        statusFrom,
+        ...uiTrade
+      };
+    }
+  }
+
+  private async getSymbiosisTradeStatuses(
+    srcWeb3Provider: EthLikeWeb3Public,
+    srcTxHash: string,
+    trade: RecentTrade
+  ): Promise<{
+    statusFrom: RecentTradeStatus;
+    statusTo: RecentTradeStatus;
+  }> {
+    const statusFrom = await this.getSourceTransactionStatus(srcWeb3Provider, srcTxHash);
+
+    if (statusFrom === RecentTradeStatus.PENDING) {
+      return { statusFrom, statusTo: RecentTradeStatus.PENDING };
+    }
+
+    if (statusFrom === RecentTradeStatus.FAIL) {
+      return { statusFrom, statusTo: RecentTradeStatus.FAIL };
+    }
+
+    if (statusFrom === RecentTradeStatus.SUCCESS) {
+      // const pendingRequests = await this.symbiosisService.getPendingRequests();
+      // const specificTx = pendingRequests?.find(tx => tx.transactionHash === srcTxHash);
+      const isAverageTxTimeSpent = Date.now() - trade.timestamp > 300000;
+
+      if (!isNil(trade?._revertable)) {
+        return trade._revertable
+          ? { statusFrom, statusTo: RecentTradeStatus.REVERT }
+          : { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
+      }
+
+      if (!isAverageTxTimeSpent) {
+        return { statusFrom, statusTo: RecentTradeStatus.PENDING };
+      } else {
+        if (!Array.isArray(this.symbiosisPendingRequests)) {
+          return { statusFrom, statusTo: RecentTradeStatus.PENDING };
+        } else {
+          const specificTx = this.symbiosisPendingRequests.find(
+            request => request.transactionHash === trade.srcTxHash
+          );
+
+          if (specificTx) {
+            this.recentTradesStoreService.updateTrade({ ...trade, _revertable: true });
+            return { statusFrom, statusTo: RecentTradeStatus.REVERT };
+          } else {
+            this.recentTradesStoreService.updateTrade({ ...trade, _revertable: false });
+            return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
+          }
+        }
+      }
+    }
+  }
+
+  public loadSymbiosisPendingRequests(): Observable<PendingRequest[]> {
+    return interval(25000).pipe(
+      startWith(0),
+      switchMap(() => this.symbiosisService.getPendingRequests()),
+      tap(pendingRequests => (this.symbiosisPendingRequests = pendingRequests))
+    );
+  }
+
+  public async revertSymbiosis(srcTxHash: string, fromBlockchain: BlockchainName): Promise<void> {
+    let tradeInProgressSubscription$: Subscription;
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      await this.symbiosisService.revertTrade(srcTxHash, onTransactionHash);
+
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      const tradeToUpdate = this.recentTradesStoreService.getSpecificTrade(
+        srcTxHash,
+        fromBlockchain
+      );
+      this.recentTradesStoreService.updateTrade({
+        ...tradeToUpdate,
+        _revertable: false
+      });
+    } catch (err) {
+      this.errorService.catch(err);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
   }
 
   private async getCelerTradeStatuses(
@@ -204,7 +290,7 @@ export class RecentTradesService {
     }
 
     if (statusFrom === RecentTradeStatus.FAIL) {
-      this.saveTradeAsParsed({ ...trade, _parsed: true });
+      this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
       return { statusFrom, statusTo: RecentTradeStatus.FAIL };
     }
 
@@ -224,12 +310,12 @@ export class RecentTradesService {
       }
 
       if (dstTransactionStatus === CelerSwapStatus.FAILED) {
-        this.saveTradeAsParsed({ ...trade, _parsed: true });
+        this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
         return { statusFrom, statusTo: RecentTradeStatus.FAIL };
       }
 
       if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
-        this.saveTradeAsParsed({ ...trade, _parsed: true });
+        this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
         return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
       }
     }
@@ -248,7 +334,7 @@ export class RecentTradesService {
     }
 
     if (statusFrom === RecentTradeStatus.FAIL) {
-      this.saveTradeAsParsed({ ...trade, _parsed: true });
+      this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
       return { statusFrom, statusTo: RecentTradeStatus.FAIL };
     }
 
@@ -267,12 +353,12 @@ export class RecentTradesService {
       }
 
       if (statusTo === RubicSwapStatus.PROCESSED) {
-        this.saveTradeAsParsed({ ...trade, _parsed: true });
+        this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
         return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
       }
 
       if (statusTo === RubicSwapStatus.REVERTED) {
-        this.saveTradeAsParsed({ ...trade, _parsed: true });
+        this.recentTradesStoreService.updateTrade({ ...trade, _parsed: true });
         return { statusFrom, statusTo: RecentTradeStatus.FAIL };
       }
     }
@@ -295,29 +381,6 @@ export class RecentTradesService {
         return RecentTradeStatus.FAIL;
       }
     }
-  }
-
-  public updateUnreadTrades(readAll = false): void {
-    const currentUsersUnreadTrades = this.unreadTradesLS?.[this.userAddress] || 0;
-
-    const update = (value: { [address: string]: number }): void => {
-      this.storeService.setItem('unreadTrades', value);
-      this._unreadTrades$.next(value);
-    };
-
-    if (readAll && currentUsersUnreadTrades !== 0) {
-      update({ ...this.unreadTradesLS, [this.userAddress]: 0 });
-      return;
-    }
-
-    if (currentUsersUnreadTrades === 3) {
-      return;
-    }
-
-    update({
-      ...this.unreadTradesLS,
-      [this.userAddress]: currentUsersUnreadTrades + 1
-    });
   }
 
   private getFullBlockchainInfo(blockchain: BlockchainName): Blockchain {

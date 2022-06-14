@@ -61,10 +61,10 @@ import { EstimateAmtResponse } from './celer/models/estimate-amt-response.interf
 import { CelerApiService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/celer-api.service';
 import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trade.interface';
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
-import { RecentTradesService } from '@app/shared/services/recent-trades.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -109,7 +109,7 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly ccrUpperTransitAmountLimit = 280;
 
-  private readonly disableRubicCcrForCelerSupportedBlockchains = false;
+  private readonly disableRubicCcrForCelerSupportedBlockchains = true;
 
   public get crossChainProvider(): CrossChainProvider {
     return this.currentCrossChainProvider.type;
@@ -133,7 +133,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly iframeService: IframeService,
     private readonly celerService: CelerService,
     private readonly celerApiService: CelerApiService,
-    private readonly myTradesStoreService: RecentTradesService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly symbiosisService: SymbiosisService
   ) {
     super('cross-chain-routing');
@@ -1159,7 +1159,7 @@ export class CrossChainRoutingService extends TradeService {
         this.celerApiService.postTradeInfo(fromBlockchain, 'celer', txHash);
       }
 
-      this.myTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
+      this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
     };
 
     try {

@@ -56,8 +56,17 @@
               <app-status-badge
                 [type]="STATUS_BADGE_TYPE[tx.statusTo]"
                 [text]="STATUS_BADGE_TEXT[tx.statusTo]"
+                *ngIf="tx.statusTo !== RecentTradeStatus.REVERT; else revert"
               >
               </app-status-badge>
+              <ng-template #revert>
+                <app-rubic-button
+                  appearance="secondary"
+                  (onClick)="revertSymbiosis(tx.srcTxHash, tx.fromBlockchain.key)"
+                >
+                  Revert
+                </app-rubic-button>
+              </ng-template>
             </td>
           </tr>
         </ng-container>

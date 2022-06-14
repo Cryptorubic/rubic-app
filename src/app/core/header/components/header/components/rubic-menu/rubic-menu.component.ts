@@ -22,6 +22,10 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { WINDOW } from '@ng-web-apis/common';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -64,6 +68,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
+    private readonly headerStore: HeaderStore,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(WINDOW) private window: Window
   ) {
     this.currentUser$ = this.authService.getCurrentUser();
@@ -126,5 +132,16 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public handleButtonClick(): void {
     this.gtmService.reloadGtmSession();
+  }
+
+  public openRecentTradesModal(): void {
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
+
+    this.dialogService
+      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+      })
+      .subscribe();
   }
 }

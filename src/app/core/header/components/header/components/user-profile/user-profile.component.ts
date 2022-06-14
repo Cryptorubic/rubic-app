@@ -20,8 +20,7 @@ import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RecentCrosschainTxComponent } from '../../../recent-crosschain-tx/recent-crosschain-tx.component';
-import { RecentTradesService } from '@app/shared/services/recent-trades.service';
+import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -37,7 +36,6 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly recentTradesService: RecentTradesService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
@@ -50,7 +48,6 @@ export class UserProfileComponent implements AfterViewInit {
       }
     });
     this.currentUser$ = this.authService.getCurrentUser();
-    this.unreadTrades$ = this.recentTradesService.unreadTrades$;
   }
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
@@ -89,6 +86,13 @@ export class UserProfileComponent implements AfterViewInit {
   }
 
   public openRecentTradesModal(): void {
-    this.dialogService.open(new PolymorpheusComponent(RecentCrosschainTxComponent)).subscribe();
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
+
+    this.dialogService
+      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+      })
+      .subscribe();
   }
 }

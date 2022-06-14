@@ -35,6 +35,10 @@ export class SymbiosisService {
     private readonly dialogService: TuiDialogService
   ) {}
 
+  public async getPendingRequests(): Promise<PendingRequest[]> {
+    return await this.symbiosis.getPendingRequests(this.walletAddress);
+  }
+
   public async getUserTrades(): Promise<TableTrade[]> {
     const pendingRequests = await this.symbiosis.getPendingRequests(this.walletAddress);
     this.pendingRequests = pendingRequests;
