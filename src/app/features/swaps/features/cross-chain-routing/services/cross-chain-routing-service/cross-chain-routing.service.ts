@@ -63,6 +63,7 @@ import { IndexedTradeAndToAmount, TradeAndToAmount } from './models/indexed-trad
 import { WRAPPED_NATIVE } from './celer/constants/WRAPPED_NATIVE';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -198,6 +199,13 @@ export class CrossChainRoutingService extends TradeService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    // @TODO Remove after near fix.
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const isNear = fromBlockchain === BLOCKCHAIN_NAME.NEAR || toBlockchain === BLOCKCHAIN_NAME.NEAR;
+    if (isNear) {
+      throw new RubicError('Near blockchain is temporarily unavailable.');
+    }
+
     const {
       provider: crossChainProvider,
       minAmountError,
