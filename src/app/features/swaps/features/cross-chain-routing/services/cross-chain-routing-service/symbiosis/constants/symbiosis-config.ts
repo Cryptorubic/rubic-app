@@ -9,7 +9,7 @@ export const SYMBIOSIS_CONFIG = {
   chains: [
     {
       id: 1,
-      rpc: networks.find(network => network.id === 1).additionalRpcLink,
+      rpc: networks.find(network => network.id === 1).rpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 5,
       stables: [
@@ -45,7 +45,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 56,
-      rpc: networks.find(network => network.id === 56).additionalRpcLink,
+      rpc: networks.find(network => network.id === 56).rpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 20,
       stables: [
@@ -188,7 +188,7 @@ export const SYMBIOSIS_CONFIG = {
     },
     {
       id: 137,
-      rpc: networks.find(network => network.id === 137).additionalRpcLink,
+      rpc: networks.find(network => network.id === 137).rpcLink,
       filterBlockOffset: 100000,
       waitForBlocksCount: 60,
       stables: [
