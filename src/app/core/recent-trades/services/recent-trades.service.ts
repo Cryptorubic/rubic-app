@@ -26,7 +26,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RecentCrosschainTxComponent } from '../components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
-import { asyncMap, isNil } from '@shared/utils/utils';
+import { asyncMap } from '@shared/utils/utils';
 import { SymbiosisService } from '@app/features/my-trades/services/symbiosis-service/symbiosis.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
@@ -202,12 +202,6 @@ export class RecentTradesService {
         return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
       }
 
-      if (!isNil(trade?._revertable)) {
-        return trade._revertable
-          ? { statusFrom, statusTo: RecentTradeStatus.REVERT }
-          : { statusFrom, statusTo: RecentTradeStatus.FALLBACK };
-      }
-
       if (!isAverageTxTimeSpent) {
         return { statusFrom, statusTo: RecentTradeStatus.PENDING };
       } else {
@@ -218,15 +212,22 @@ export class RecentTradesService {
             request => request.transactionHash === trade.srcTxHash
           );
 
+          if (trade?._revertable === false) {
+            return { statusFrom, statusTo: RecentTradeStatus.FALLBACK };
+          }
+
           if (specificTx) {
             this.recentTradesStoreService.updateTrade({ ...trade, _revertable: true });
             return { statusFrom, statusTo: RecentTradeStatus.REVERT };
-          } else {
-            this.recentTradesStoreService.updateTrade({
-              ...trade,
-              _parsed: true,
-              _symbiosisSuccess: true
-            });
+          }
+
+          if (!specificTx) {
+            this.recentTradesStoreService.updateTrade({ ...trade, _symbiosisSuccess: true });
+            return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
+          }
+
+          if (!specificTx && trade?._revertable === true) {
+            this.recentTradesStoreService.updateTrade({ ...trade, _symbiosisSuccess: true });
             return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
           }
         }
@@ -235,10 +236,21 @@ export class RecentTradesService {
   }
 
   public loadSymbiosisPendingRequests(): Observable<PendingRequest[]> {
-    return interval(180000).pipe(
-      startWith(0),
+    return interval(21000).pipe(
       switchMap(() => this.symbiosisService.getPendingRequests()),
-      tap(pendingRequests => (this.symbiosisPendingRequests = pendingRequests))
+      tap(pendingRequests => (this.symbiosisPendingRequests = pendingRequests)),
+      tap(() => {
+        const symbiosisPendingRequestHashes = this.symbiosisPendingRequests.map(pendingRequest =>
+          pendingRequest.transactionHash.toLocaleLowerCase()
+        );
+        const hasPendingTrades = this.recentTradesStoreService.currentUserRecentTrades
+          .filter(trade => trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS)
+          .some(item => symbiosisPendingRequestHashes.includes(item.srcTxHash.toLowerCase()));
+
+        if (hasPendingTrades) {
+          this._forceReload$.next(true);
+        }
+      })
     );
   }
 
