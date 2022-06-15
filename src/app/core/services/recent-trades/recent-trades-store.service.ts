@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { BlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { BehaviorSubject, map } from 'rxjs';
@@ -51,7 +52,7 @@ export class RecentTradesStoreService {
     const updatedTrades = { ...this.recentTrades, [address]: currentUsersTrades };
 
     this.storeService.setItem('recentTrades', updatedTrades);
-    // this.updateUnreadTrades();
+    this.updateUnreadTrades();
   }
 
   public updateTrade(trade: RecentTrade): void {
@@ -81,23 +82,22 @@ export class RecentTradesStoreService {
   public resetTrades(): void {
     this.storeService.setItem('recentTrades', {
       ...this.recentTrades,
-      [this.userAddress]: this.recentTrades?.[this.userAddress]?.map(trade => ({
-        ...trade,
-        _parsed: false
-      }))
+      [this.userAddress]: this.recentTrades?.[this.userAddress]?.map(trade => {
+        if (trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+          return trade;
+        } else {
+          return { ...trade, _parsed: false };
+        }
+      })
     });
   }
 
   public updateUnreadTrades(readAll = false): void {
     const currentUsersUnreadTrades = this.unreadTrades?.[this.userAddress] || 0;
 
-    const update = (value: { [address: string]: number }): void => {
-      this.storeService.setItem('unreadTrades', value);
-      this._unreadTrades$.next(value);
-    };
-
-    if (readAll && currentUsersUnreadTrades !== 0) {
-      update({ ...this.unreadTrades, [this.userAddress]: 0 });
+    if (readAll) {
+      this.storeService.setItem('unreadTrades', { ...this.unreadTrades, [this.userAddress]: 0 });
+      this._unreadTrades$.next({ ...this.unreadTrades, [this.userAddress]: 0 });
       return;
     }
 
@@ -105,7 +105,11 @@ export class RecentTradesStoreService {
       return;
     }
 
-    update({
+    this.storeService.setItem('unreadTrades', {
+      ...this.unreadTrades,
+      [this.userAddress]: currentUsersUnreadTrades + 1
+    });
+    this._unreadTrades$.next({
       ...this.unreadTrades,
       [this.userAddress]: currentUsersUnreadTrades + 1
     });

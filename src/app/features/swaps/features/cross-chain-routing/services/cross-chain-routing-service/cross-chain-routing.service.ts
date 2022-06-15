@@ -1155,11 +1155,11 @@ export class CrossChainRoutingService extends TradeService {
         );
       }
 
+      this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
+
       if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.CELER) {
         this.celerApiService.postTradeInfo(fromBlockchain, 'celer', txHash);
       }
-
-      this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
     };
 
     try {

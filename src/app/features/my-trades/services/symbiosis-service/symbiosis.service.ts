@@ -70,8 +70,12 @@ export class SymbiosisService {
     );
   }
 
-  public async revertTrade(hash: string, onTransactionHash: (hash: string) => void): Promise<void> {
-    const request = this.pendingRequests.find(
+  public async revertTrade(
+    hash: string,
+    onTransactionHash: (hash: string) => void,
+    pendingRequests?: PendingRequest[]
+  ): Promise<void> {
+    const request = (pendingRequests || this.pendingRequests).find(
       pendingRequest => pendingRequest.transactionHash === hash
     );
 

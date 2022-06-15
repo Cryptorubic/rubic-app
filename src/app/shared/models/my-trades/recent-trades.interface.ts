@@ -13,4 +13,5 @@ export interface RecentTrade {
   timestamp: number;
   _parsed?: boolean;
   _revertable?: boolean;
+  _symbiosisSuccess?: boolean;
 }

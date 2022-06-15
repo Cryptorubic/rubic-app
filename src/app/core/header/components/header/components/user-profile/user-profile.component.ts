@@ -21,6 +21,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -36,6 +37,7 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
@@ -62,7 +64,7 @@ export class UserProfileComponent implements AfterViewInit {
 
   public dropdownIsOpened = false;
 
-  public readonly unreadTrades$: Observable<number>;
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
   @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 

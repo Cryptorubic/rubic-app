@@ -72,7 +72,8 @@ export class RecentCrosschainTxComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    // this.recentTradesService.updateUnreadTrades(true);
+    this.recentTradesService.readAllTrades();
+
     this.recentTradesService.initStatusPolling().pipe(takeUntil(this.destroy$)).subscribe();
 
     this.recentTradesService

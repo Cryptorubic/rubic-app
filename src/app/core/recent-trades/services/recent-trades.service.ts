@@ -3,7 +3,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BehaviorSubject, from, interval, Observable, Subject, Subscription } from 'rxjs';
-import { tap, switchMap, startWith, repeatWhen, map } from 'rxjs/operators';
+import { tap, switchMap, startWith, map } from 'rxjs/operators';
 import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
@@ -68,7 +68,7 @@ export class RecentTradesService {
 
   public readonly usersTrades$ = this._usersTrades$.asObservable();
 
-  private readonly _forceReload$ = new Subject<void>();
+  private readonly _forceReload$ = new Subject<boolean>();
 
   private symbiosisPendingRequests: PendingRequest[];
 
@@ -91,8 +91,9 @@ export class RecentTradesService {
   }
 
   public initStatusPolling(): Observable<UiRecentTrade[]> {
-    return interval(20000).pipe(
-      startWith(0),
+    return this._forceReload$.pipe(
+      startWith(true),
+      switchMap(() => interval(20000).pipe(startWith(-1))),
       map(() => this.recentTrades),
       switchMap(recentTrades => {
         return recentTrades && recentTrades?.length > 0
@@ -104,9 +105,7 @@ export class RecentTradesService {
       tap(uiUsersTrades => {
         this._usersTrades$.next(uiUsersTrades);
         console.log('parsed trades', this._usersTrades$.getValue());
-      }),
-      // eslint-disable-next-line rxjs/no-ignored-notifier
-      repeatWhen(() => this._forceReload$)
+      })
     );
   }
 
@@ -197,14 +196,16 @@ export class RecentTradesService {
     }
 
     if (statusFrom === RecentTradeStatus.SUCCESS) {
-      // const pendingRequests = await this.symbiosisService.getPendingRequests();
-      // const specificTx = pendingRequests?.find(tx => tx.transactionHash === srcTxHash);
-      const isAverageTxTimeSpent = Date.now() - trade.timestamp > 300000;
+      const isAverageTxTimeSpent = Date.now() - trade.timestamp > 150000;
+
+      if (trade?._symbiosisSuccess) {
+        return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
+      }
 
       if (!isNil(trade?._revertable)) {
         return trade._revertable
           ? { statusFrom, statusTo: RecentTradeStatus.REVERT }
-          : { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
+          : { statusFrom, statusTo: RecentTradeStatus.FALLBACK };
       }
 
       if (!isAverageTxTimeSpent) {
@@ -213,7 +214,7 @@ export class RecentTradesService {
         if (!Array.isArray(this.symbiosisPendingRequests)) {
           return { statusFrom, statusTo: RecentTradeStatus.PENDING };
         } else {
-          const specificTx = this.symbiosisPendingRequests.find(
+          const specificTx = this.symbiosisPendingRequests?.find(
             request => request.transactionHash === trade.srcTxHash
           );
 
@@ -221,7 +222,11 @@ export class RecentTradesService {
             this.recentTradesStoreService.updateTrade({ ...trade, _revertable: true });
             return { statusFrom, statusTo: RecentTradeStatus.REVERT };
           } else {
-            this.recentTradesStoreService.updateTrade({ ...trade, _revertable: false });
+            this.recentTradesStoreService.updateTrade({
+              ...trade,
+              _parsed: true,
+              _symbiosisSuccess: true
+            });
             return { statusFrom, statusTo: RecentTradeStatus.SUCCESS };
           }
         }
@@ -230,11 +235,15 @@ export class RecentTradesService {
   }
 
   public loadSymbiosisPendingRequests(): Observable<PendingRequest[]> {
-    return interval(25000).pipe(
+    return interval(180000).pipe(
       startWith(0),
       switchMap(() => this.symbiosisService.getPendingRequests()),
       tap(pendingRequests => (this.symbiosisPendingRequests = pendingRequests))
     );
+  }
+
+  public readAllTrades(): void {
+    setTimeout(() => this.recentTradesStoreService.updateUnreadTrades(true), 0);
   }
 
   public async revertSymbiosis(srcTxHash: string, fromBlockchain: BlockchainName): Promise<void> {
@@ -251,7 +260,11 @@ export class RecentTradesService {
     };
 
     try {
-      await this.symbiosisService.revertTrade(srcTxHash, onTransactionHash);
+      await this.symbiosisService.revertTrade(
+        srcTxHash,
+        onTransactionHash,
+        this.symbiosisPendingRequests
+      );
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -268,6 +281,7 @@ export class RecentTradesService {
         ...tradeToUpdate,
         _revertable: false
       });
+      this._forceReload$.next(true);
     } catch (err) {
       this.errorService.catch(err);
     } finally {
@@ -296,14 +310,16 @@ export class RecentTradesService {
 
     if (statusFrom === RecentTradeStatus.SUCCESS) {
       const [requestLog] = decodeLogs(CELER_CONTRACT_ABI, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
-      const dstTransactionStatus = (await dstWeb3Provider.callContractMethod(
-        CELER_CONTRACT[trade.toBlockchain as EthLikeBlockchainName],
-        CELER_CONTRACT_ABI,
-        'txStatusById',
-        {
-          methodArguments: [requestLog.params.find(param => param.name === 'id').value]
-        }
-      )) as CelerSwapStatus;
+      const dstTransactionStatus = Number(
+        await dstWeb3Provider.callContractMethod(
+          CELER_CONTRACT[trade.toBlockchain as EthLikeBlockchainName],
+          CELER_CONTRACT_ABI,
+          'txStatusById',
+          {
+            methodArguments: [requestLog.params.find(param => param.name === 'id').value]
+          }
+        )
+      ) as CelerSwapStatus;
 
       if (dstTransactionStatus === CelerSwapStatus.NULL) {
         return { statusFrom, statusTo: RecentTradeStatus.PENDING };
@@ -368,7 +384,13 @@ export class RecentTradesService {
     web3Provider: EthLikeWeb3Public,
     txHash: string
   ): Promise<RecentTradeStatus> {
-    const receipt = await web3Provider.getTransactionReceipt(txHash);
+    let receipt: TransactionReceipt;
+
+    try {
+      receipt = await web3Provider.getTransactionReceipt(txHash);
+    } catch (_err) {
+      receipt = null;
+    }
 
     if (receipt === null) {
       return RecentTradeStatus.PENDING;
