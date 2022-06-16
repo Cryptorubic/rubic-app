@@ -18,7 +18,7 @@ import { SwapInfoService } from '@features/swaps/features/main-form/components/s
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { InstantTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -28,8 +28,8 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
   providers: [TuiDestroyService]
 })
 export class InstantTradeSwapInfoComponent implements OnInit {
-  @Input() set currentInstantTrade(instantTrade: RubicAny) {
-    this.path = instantTrade?.path?.map((token: RubicAny) => token.symbol);
+  @Input() set currentInstantTrade(instantTrade: InstantTrade) {
+    this.path = instantTrade?.path?.map(token => token.symbol);
   }
 
   public toToken: TokenAmount;

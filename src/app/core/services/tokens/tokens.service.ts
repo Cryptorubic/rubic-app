@@ -267,7 +267,7 @@ export class TokensService {
     const token$ = this.sdk.tokens.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
-      map(([token]) => ({
+      map(([token, amount]) => ({
         blockchain,
         address,
         name: token.name,
@@ -277,7 +277,7 @@ export class TokensService {
         rank: 1,
         price: null,
         usedInIframe: true,
-        amount: /* amount || */ new BigNumber(NaN)
+        amount: amount || new BigNumber(NaN)
       })),
       tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))
     );
@@ -406,8 +406,8 @@ export class TokensService {
     try {
       const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
       const balanceInWei = Web3Pure.isNativeAddress(token.address)
-        ? await blockchainAdapter.getBalance(token.address)
-        : await blockchainAdapter.getTokenBalance(token.address, token.address);
+        ? await blockchainAdapter.getBalance(this.userAddress)
+        : await blockchainAdapter.getTokenBalance(this.userAddress, token.address);
 
       const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
       if (!foundToken) {
@@ -536,24 +536,6 @@ export class TokensService {
    */
   public fetchQueryTokens(query: string, blockchain: BlockchainName): Observable<List<Token>> {
     const isAddress = query.length >= 42;
-
-    // if (blockchain === NEAR_BLOCKCHAIN_NAME) {
-    //   const fetchQueryTokensByAddress$ = this.tokensApiService.fetchQueryTokens({
-    //     network: blockchain,
-    //     address: query
-    //   });
-    //   const fetchQueryTokensBySymbol$ = this.tokensApiService.fetchQueryTokens({
-    //     network: blockchain,
-    //     symbol: query
-    //   });
-    //
-    //   return forkJoin([fetchQueryTokensByAddress$, fetchQueryTokensBySymbol$]).pipe(
-    //     map(([foundTokensByAddress, foundTokensBySymbol]) => {
-    //       return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
-    //     })
-    //   );
-    // }
-
     const params: TokensRequestQueryOptions = {
       network: blockchain,
       ...(!isAddress && { symbol: query }),

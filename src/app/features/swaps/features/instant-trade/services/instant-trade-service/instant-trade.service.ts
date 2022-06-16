@@ -29,6 +29,7 @@ import {
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
+import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -62,7 +63,8 @@ export class InstantTradeService extends TradeService {
       await trade.approve({
         onTransactionHash: () => {
           subscription$ = this.notificationsService.showApproveInProgress();
-        }
+        },
+        gasPrice: trade.gasFeeInfo?.gasPrice
       });
 
       this.notificationsService.showApproveSuccessful();
@@ -111,8 +113,10 @@ export class InstantTradeService extends TradeService {
         first(el => el === false),
         switchMap(() =>
           this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
-            timeout: 5000,
-            slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100
+            timeout: 10000,
+            slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
+            gasCalculation:
+              shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
           })
         )
       )
@@ -147,7 +151,8 @@ export class InstantTradeService extends TradeService {
         subscription$ = this.notifyTradeInProgress(hash, blockchain);
 
         this.postTrade(hash, providerName, trade);
-      }
+      },
+      gasPrice: trade instanceof InstantTrade ? trade.gasFeeInfo?.gasPrice : undefined
     };
 
     try {

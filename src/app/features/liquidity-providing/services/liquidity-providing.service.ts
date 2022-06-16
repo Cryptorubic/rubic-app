@@ -4,15 +4,27 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, EMPTY, forkJoin, from, interval, Observable, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
   filter,
   map,
+  retry,
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap
 } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
@@ -22,7 +34,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { TokenLp, TokenLpParsed } from '../models/token-lp.interface';
 import { DepositType } from '../models/deposit-type.enum';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
@@ -34,8 +46,10 @@ import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { WINDOW } from '@ng-web-apis/common';
 import { DEPOSIT_RATIO } from '../constants/DEPOSIT_RATIO';
 import { LpProvidingConfig } from 'src/environments/constants/lp-providing';
-import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, Web3Private, Web3Public, Web3Pure } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 // TODO create env token
 @Injectable()
@@ -268,52 +282,50 @@ export class LiquidityProvidingService {
   }
 
   public getAndUpdatePoolTokensBalances(address?: string): Observable<BigNumber[]> {
-    // @ts-ignore @TODO
-    console.log(address);
-    // const provider = this.web3PublicService[this.blockchain];
-    // return from(
-    //   provider.getTokensBalances(address || this.authService.userAddress, [
-    //     this.usdcAddress,
-    //     this.brbcAddress
-    //   ])
-    // ).pipe(
-    //   tap(([usdcBalance, brbcBalance]) => {
-    //     this._usdcBalance$.next(Web3Pure.fromWei(usdcBalance));
-    //     this._brbcBalance$.next(Web3Pure.fromWei(brbcBalance));
-    //   })
-    // );
-    return null;
+    const provider: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
+    return from(
+      provider.getTokensBalances(address || this.authService.userAddress, [
+        this.usdcAddress,
+        this.brbcAddress
+      ])
+    ).pipe(
+      tap(([usdcBalance, brbcBalance]) => {
+        this._usdcBalance$.next(Web3Pure.fromWei(usdcBalance));
+        this._brbcBalance$.next(Web3Pure.fromWei(brbcBalance));
+      })
+    );
   }
 
   public getDeposits(): Observable<TokenLpParsed[]> {
-    // @TODO
-    return null;
-    // return this.userAddress$.pipe(
-    //   filter(user => Boolean(user?.address)),
-    //   tap(() => this.setDepositsLoading(true)),
-    //   switchMap(user => {
-    //     return from(
-    //       this.web3PublicService[this.blockchain].callContractMethod<DepositsResponse>(
-    //         this.lpContractAddress,
-    //         LP_PROVIDING_CONTRACT_ABI,
-    //         'infoAboutDepositsParsed',
-    //         { methodArguments: [user.address], from: user.address }
-    //       )
-    //     ).pipe(
-    //       retry(3),
-    //       catchError((error: unknown) => {
-    //         this.errorService.catchAnyError(error as Error);
-    //         return EMPTY;
-    //       }),
-    //       map(deposits => this.parseDeposits(deposits)),
-    //       tap(deposits => {
-    //         this.zone.run(() => {
-    //           this._deposits$.next(deposits);
-    //         });
-    //       })
-    //     );
-    //   })
-    // );
+    return this.userAddress$.pipe(
+      filter(user => Boolean(user?.address)),
+      tap(() => this.setDepositsLoading(true)),
+      switchMap(user => {
+        const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+          this.blockchain
+        );
+        return from(
+          blockchainAdapter.callContractMethod<DepositsResponse>(
+            this.lpContractAddress,
+            LP_PROVIDING_CONTRACT_ABI,
+            'infoAboutDepositsParsed',
+            { methodArguments: [user.address], from: user.address }
+          )
+        ).pipe(
+          retry(3),
+          catchError((error: unknown) => {
+            this.errorService.catchAnyError(error as Error);
+            return EMPTY;
+          }),
+          map(deposits => this.parseDeposits(deposits)),
+          tap(deposits => {
+            this.zone.run(() => {
+              this._deposits$.next(deposits);
+            });
+          })
+        );
+      })
+    );
   }
 
   public setDepositsLoading(value: boolean): void {
@@ -321,41 +333,41 @@ export class LiquidityProvidingService {
   }
 
   public watchWhitelist(): Observable<boolean> {
-    // @TODO SDK;
-    return null;
-    // return combineLatest([
-    //   this.walletConnectorService.addressChange$,
-    //   this.userAddress$,
-    //   this.router.events.pipe(filter(e => e instanceof NavigationEnd))
-    // ]).pipe(
-    //   switchMap(() =>
-    //     from(
-    //       this.web3PublicService[this.blockchain].callContractMethod<boolean>(
-    //         this.lpContractAddress,
-    //         LP_PROVIDING_CONTRACT_ABI,
-    //         'viewWhitelistInProgress'
-    //       )
-    //     )
-    //   ),
-    //   tap(isWhitelistInProgress => {
-    //     const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
-    //     const isOnDepositForm = this.router.url.includes('deposit');
-    //
-    //     this.zone.run(() => {
-    //       this._isWhitelistInProgress$.next(isWhitelistInProgress);
-    //       this._isWhitelistUser$.next(isWhitelistUser);
-    //     });
-    //
-    //     if (!isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
-    //       this.window.location.assign(this.window.location.origin + '/liquidity-providing');
-    //     }
-    //
-    //     if (isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
-    //       this.setDepositType(DepositType.WHITELIST);
-    //     }
-    //   }),
-    //   takeUntil(this._stopWhitelistWatch$)
-    // );
+    return combineLatest([
+      this.walletConnectorService.addressChange$,
+      this.userAddress$,
+      this.router.events.pipe(filter(e => e instanceof NavigationEnd))
+    ]).pipe(
+      switchMap(() =>
+        from(
+          Injector.web3PublicService
+            .getWeb3Public(this.blockchain)
+            .callContractMethod<boolean>(
+              this.lpContractAddress,
+              LP_PROVIDING_CONTRACT_ABI,
+              'viewWhitelistInProgress'
+            )
+        )
+      ),
+      tap((isWhitelistInProgress: boolean) => {
+        const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
+        const isOnDepositForm = this.router.url.includes('deposit');
+
+        this.zone.run(() => {
+          this._isWhitelistInProgress$.next(isWhitelistInProgress);
+          this._isWhitelistUser$.next(isWhitelistUser);
+        });
+
+        if (!isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
+          this.window.location.assign(this.window.location.origin + '/liquidity-providing');
+        }
+
+        if (isWhitelistUser && isWhitelistInProgress && isOnDepositForm) {
+          this.setDepositType(DepositType.WHITELIST);
+        }
+      }),
+      takeUntil(this._stopWhitelistWatch$)
+    );
   }
 
   public stopWatchWhitelist(): void {
@@ -367,223 +379,212 @@ export class LiquidityProvidingService {
   }
 
   public getNeedTokensApprove(): Observable<BigNumber[]> {
-    // @TODO SDK
-    return null;
-    // return forkJoin([
-    //   from(
-    //     this.web3PublicService[this.blockchain].getAllowance({
-    //       tokenAddress: this.usdcAddress,
-    //       ownerAddress: this.authService.userAddress,
-    //       spenderAddress: this.lpContractAddress
-    //     })
-    //   ),
-    //   from(
-    //     this.web3PublicService[this.blockchain].getAllowance({
-    //       tokenAddress: this.brbcAddress,
-    //       ownerAddress: this.authService.userAddress,
-    //       spenderAddress: this.lpContractAddress
-    //     })
-    //   )
-    // ]).pipe(
-    //   tap(([usdcAllowance, brbcAllowance]) => {
-    //     this.zone.run(() => {
-    //       this._usdcAllowance$.next(usdcAllowance);
-    //       this._brbcAllowance$.next(brbcAllowance);
-    //     });
-    //   })
-    // );
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
+    return forkJoin([
+      from(
+        blockchainAdapter.getAllowance(
+          this.usdcAddress,
+          this.authService.userAddress,
+          this.lpContractAddress
+        )
+      ),
+      from(
+        blockchainAdapter.getAllowance(
+          this.brbcAddress,
+          this.authService.userAddress,
+          this.lpContractAddress
+        )
+      )
+    ]).pipe(
+      tap(([usdcAllowance, brbcAllowance]) => {
+        this.zone.run(() => {
+          this._usdcAllowance$.next(usdcAllowance);
+          this._brbcAllowance$.next(brbcAllowance);
+        });
+      })
+    );
   }
 
   public approvePoolToken(token: PoolToken): Observable<TransactionReceipt> {
-    console.log(token);
-    return null;
-    // @TODO SDK
-    // return from(
-    //   this.web3PrivateService[this.blockchain].approveTokens(
-    //     token === PoolToken.USDC ? this.usdcAddress : this.brbcAddress,
-    //     this.lpContractAddress,
-    //     'infinity'
-    //   )
-    // ).pipe(
-    //   catchError((error: unknown) => {
-    //     this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-    //     return EMPTY;
-    //   })
-    // );
+    const blockchainAdapter: Web3Private = Injector.web3Private;
+    return from(
+      blockchainAdapter.approveTokens(
+        token === PoolToken.USDC ? this.usdcAddress : this.brbcAddress,
+        this.lpContractAddress,
+        'infinity'
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return EMPTY;
+      })
+    );
   }
 
   public requestWithdraw(tokenId: string): Observable<unknown> {
-    console.log(tokenId);
-    return null;
-    // @TODO SDK
-    // return from(
-    //   this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
-    //     this.lpContractAddress,
-    //     LP_PROVIDING_CONTRACT_ABI,
-    //     'requestWithdraw',
-    //     [tokenId]
-    //   )
-    // ).pipe(
-    //   switchMap((hash: string) => this.waitForReceipt(hash)),
-    //   switchMap(receipt => {
-    //     if (receipt.status === false) {
-    //       return EMPTY;
-    //     } else {
-    //       return of(receipt.status);
-    //     }
-    //   }),
-    //   tap(() => {
-    //     const updatedDeposits = this.deposits.map(deposit => {
-    //       if (deposit.tokenId === tokenId) {
-    //         return { ...deposit, isStaked: false, canWithdraw: false };
-    //       } else {
-    //         return deposit;
-    //       }
-    //     });
-    //     this.lpNotificationService.showSuccessWithdrawRequestNotification();
-    //     this._deposits$.next(updatedDeposits);
-    //   })
-    // );
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
+    return from(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'requestWithdraw',
+        [tokenId]
+      )
+    ).pipe(
+      switchMap((hash: string) => this.waitForReceipt(hash)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
+          return EMPTY;
+        } else {
+          return of(receipt.status);
+        }
+      }),
+      tap(() => {
+        const updatedDeposits = this.deposits.map(deposit => {
+          if (deposit.tokenId === tokenId) {
+            return { ...deposit, isStaked: false, canWithdraw: false };
+          } else {
+            return deposit;
+          }
+        });
+        this.lpNotificationService.showSuccessWithdrawRequestNotification();
+        this._deposits$.next(updatedDeposits);
+      })
+    );
   }
 
   public createDeposit(usdcAmount: BigNumber): Observable<BigNumber[]> {
-    console.log(usdcAmount);
-    return null;
-    // @TODO SDK
-    // const depositMethod =
-    //   this.depositType === DepositType.WHITELIST && Boolean(this.isWhitelistUser)
-    //     ? 'whitelistStake'
-    //     : 'stake';
-    //
-    // return from(
-    //   this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
-    //     this.lpContractAddress,
-    //     LP_PROVIDING_CONTRACT_ABI,
-    //     depositMethod,
-    //     [Web3Pure.toWei(usdcAmount)]
-    //   )
-    // ).pipe(
-    //   switchMap((hash: string) => this.waitForReceipt(hash)),
-    //   switchMap(receipt => {
-    //     if (receipt.status === false) {
-    //       return EMPTY;
-    //     } else {
-    //       return this.getAndUpdatePoolTokensBalances();
-    //     }
-    //   })
-    // );
+    const depositMethod =
+      this.depositType === DepositType.WHITELIST && Boolean(this.isWhitelistUser)
+        ? 'whitelistStake'
+        : 'stake';
+
+    const blockchainPrivateAdapter: Web3Private = Injector.web3Private;
+    return from(
+      blockchainPrivateAdapter.executeContractMethodWithOnHashResolve(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        depositMethod,
+        [Web3Pure.toWei(usdcAmount)]
+      )
+    ).pipe(
+      switchMap((hash: string) => this.waitForReceipt(hash)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
+          return EMPTY;
+        } else {
+          return this.getAndUpdatePoolTokensBalances();
+        }
+      })
+    );
   }
 
   public withdraw(tokenId: string): Observable<unknown> {
-    console.log(tokenId);
-    return null;
-    // @TODO SDK
-    // return from(
-    //   this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
-    //     this.lpContractAddress,
-    //     LP_PROVIDING_CONTRACT_ABI,
-    //     'withdraw',
-    //     [tokenId]
-    //   )
-    // ).pipe(
-    //   switchMap((hash: string) => this.waitForReceipt(hash as string)),
-    //   switchMap(receipt => {
-    //     if (receipt.status === false) {
-    //       return EMPTY;
-    //     } else {
-    //       return of(receipt.status);
-    //     }
-    //   }),
-    //   tap(() => {
-    //     const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
-    //     this._deposits$.next(updatedDeposits);
-    //   })
-    // );
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
+    return from(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'withdraw',
+        [tokenId]
+      )
+    ).pipe(
+      switchMap((hash: string) => this.waitForReceipt(hash as string)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
+          return EMPTY;
+        } else {
+          return of(receipt.status);
+        }
+      }),
+      tap(() => {
+        const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
+        this._deposits$.next(updatedDeposits);
+      })
+    );
   }
 
   public collectRewards(tokenId: string): Observable<unknown> {
-    console.log(tokenId);
-    return null;
-    // @TODO SDK
-    // return from(
-    //   this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
-    //     this.lpContractAddress,
-    //     LP_PROVIDING_CONTRACT_ABI,
-    //     'claimRewards',
-    //     [tokenId]
-    //   )
-    // ).pipe(
-    //   switchMap((hash: string) => this.waitForReceipt(hash as string)),
-    //   switchMap(receipt => {
-    //     if (receipt.status === false) {
-    //       return EMPTY;
-    //     } else {
-    //       const updatedDeposits = this._deposits$.getValue().map(deposit => {
-    //         if (deposit.tokenId === tokenId) {
-    //           return { ...deposit, rewardsToCollect: new BigNumber(0) };
-    //         } else {
-    //           return deposit;
-    //         }
-    //       });
-    //       this._deposits$.next(updatedDeposits);
-    //
-    //       return this.getStatistics().pipe(take(1));
-    //     }
-    //   })
-    // );
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
+    return from(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'claimRewards',
+        [tokenId]
+      )
+    ).pipe(
+      switchMap((hash: string) => this.waitForReceipt(hash as string)),
+      switchMap(receipt => {
+        if (receipt.status === false) {
+          return EMPTY;
+        } else {
+          const updatedDeposits = this._deposits$.getValue().map(deposit => {
+            if (deposit.tokenId === tokenId) {
+              return { ...deposit, rewardsToCollect: new BigNumber(0) };
+            } else {
+              return deposit;
+            }
+          });
+          this._deposits$.next(updatedDeposits);
+
+          return this.getStatistics().pipe(take(1));
+        }
+      })
+    );
   }
 
   public getStartAndEndTime(): Observable<string[]> {
-    return null;
-    // @TODO SDK
-    // return forkJoin([
-    //   from(
-    //     this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
-    //       this.lpContractAddress,
-    //       LP_PROVIDING_CONTRACT_ABI,
-    //       'startTime'
-    //     )
-    //   ),
-    //   from(
-    //     this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
-    //       this.lpContractAddress,
-    //       LP_PROVIDING_CONTRACT_ABI,
-    //       'endTime'
-    //     )
-    //   )
-    // ]).pipe(
-    //   tap(([startTime, endTime]) => {
-    //     const whitelistEndTimestamp = +startTime * 1000 + this.whitelistDuration * 1000;
-    //     this.endDate = new Date(+endTime * 1000);
-    //     this.isLpEneded = new Date().getTime() > +endTime * 1000;
-    //     this.whitelistEndTime = new Date(whitelistEndTimestamp);
-    //   })
-    // );
+    const publicBlockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+
+    return forkJoin([
+      from(
+        publicBlockchainAdapter.callContractMethod<string>(
+          this.lpContractAddress,
+          LP_PROVIDING_CONTRACT_ABI,
+          'startTime'
+        )
+      ),
+      from(
+        publicBlockchainAdapter.callContractMethod<string>(
+          this.lpContractAddress,
+          LP_PROVIDING_CONTRACT_ABI,
+          'endTime'
+        )
+      )
+    ]).pipe(
+      tap(([startTime, endTime]) => {
+        const whitelistEndTimestamp = +startTime * 1000 + this.whitelistDuration * 1000;
+        this.endDate = new Date(+endTime * 1000);
+        this.isLpEneded = new Date().getTime() > +endTime * 1000;
+        this.whitelistEndTime = new Date(whitelistEndTimestamp);
+      })
+    );
   }
 
   public transfer(tokenId: string, address: string): Observable<unknown> {
-    console.log(tokenId, address);
-    return null;
-    // @TODO SDK
-    // return from(
-    //   this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
-    //     this.lpContractAddress,
-    //     LP_PROVIDING_CONTRACT_ABI,
-    //     'transfer',
-    //     [address, tokenId]
-    //   )
-    // ).pipe(
-    //   catchError((error: unknown) => {
-    //     this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-    //     return EMPTY;
-    //   }),
-    //   tap(() => {
-    //     this.setDepositsLoading(true);
-    //
-    //     const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
-    //     this._deposits$.next(updatedDeposits);
-    //   })
-    // );
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
+    return from(
+      privateBlockchainAdapter.tryExecuteContractMethod(
+        this.lpContractAddress,
+        LP_PROVIDING_CONTRACT_ABI,
+        'transfer',
+        [address, tokenId]
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+        return EMPTY;
+      }),
+      tap(() => {
+        this.setDepositsLoading(true);
+
+        const updatedDeposits = this.deposits.filter(deposit => deposit.tokenId !== tokenId);
+        this._deposits$.next(updatedDeposits);
+      })
+    );
   }
 
   public checkDepositErrors(

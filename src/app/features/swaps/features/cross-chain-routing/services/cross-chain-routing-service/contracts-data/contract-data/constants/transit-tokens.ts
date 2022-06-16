@@ -51,8 +51,8 @@ export const transitTokens: TransitTokens = {
     symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
-    address: '@TODO SOLANA',
-    decimals: 0,
+    address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    decimals: 6,
     symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.NEAR]: {

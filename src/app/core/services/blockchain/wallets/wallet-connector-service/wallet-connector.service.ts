@@ -83,7 +83,23 @@ export class WalletConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public readonly networkChange$ = this.networkChangeSubject$.asObservable();
+  public readonly networkChange$ = this.networkChangeSubject$.asObservable().pipe(
+    switchMap(network => {
+      const walletProvider: WalletProvider =
+        this.addressChangeSubject$.value && network
+          ? {
+              address: this.addressChangeSubject$.value,
+              chainId: network.id,
+              core: this.provider.wallet
+            }
+          : undefined;
+      return forkJoin([
+        of(network),
+        walletProvider ? this.sdk.patchConfig({ walletProvider }) : of(null)
+      ]);
+    }),
+    map(([network]) => network)
+  );
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
     switchMap(address =>

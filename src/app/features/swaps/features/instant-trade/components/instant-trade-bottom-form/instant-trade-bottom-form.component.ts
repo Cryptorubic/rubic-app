@@ -35,16 +35,16 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  map,
   startWith,
   switchMap,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
@@ -477,15 +477,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!trade) {
       return new BigNumber(-Infinity);
     }
-    const {
-      gasFeeInfo: { gasFeeInUsd },
-      to
-    } = trade;
+    const { gasFeeInfo, to } = trade;
     if (!to.price) {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
-    return amountInUsd.minus(gasFeeInUsd || 0);
+    return amountInUsd.minus(gasFeeInfo?.gasFeeInUsd || 0);
   }
 
   /**
@@ -526,30 +523,19 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const instantTrades$: Promise<Array<InstantTrade | InstantTradeError>> =
-            this.sdk.instantTrades.calculateTrade(
-              this.fromToken,
-              this.fromAmount.toFixed(),
-              this.toToken
-            );
+          const instantTrades$ = this.instantTradeService.calculateTrades(
+            this.fromToken,
+            this.fromAmount.toFixed(),
+            this.toToken
+          );
 
           return from(instantTrades$).pipe(
-            map(instantTrades => {
-              this.hiddenProvidersTrades = instantTrades.map(trade => {
-                const hasError = 'error' in trade;
-                return {
-                  providerName: trade.type,
-                  value: hasError ? null : trade,
-                  status: hasError ? 'rejected' : 'fulfilled'
-                  // @TODO SDK
-                };
-              });
+            switchMap(instantTrades => this.getHiddenTradeAndApproveData(instantTrades)),
+            tap(() => {
               this.checkSelectedProviderHiddenData();
-
-              this.cdr.markForCheck();
-
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-            })
+            }),
+            watch(this.cdr)
           );
         }),
         takeUntil(this.destroy$)
@@ -749,5 +735,29 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }
+  }
+
+  private async getHiddenTradeAndApproveData(
+    instantTrades: Array<InstantTrade | InstantTradeError>
+  ): Promise<SettledProviderTrade[]> {
+    const approveData: Array<boolean | null> = await Promise.all(
+      instantTrades.map(trade => ('error' in trade ? null : trade.needApprove()))
+    );
+    return instantTrades.map((trade, index) => {
+      if ('error' in trade) {
+        return {
+          providerName: trade.type,
+          value: null,
+          status: 'rejected',
+          reason: new RubicError(trade.error.message)
+        };
+      }
+      return {
+        providerName: trade.type,
+        value: trade,
+        status: 'fulfilled',
+        needApprove: approveData?.[index]
+      };
+    });
   }
 }

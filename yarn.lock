@@ -15155,10 +15155,25 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.6.5, symbiosis-js-sdk@^2.6.6:
+symbiosis-js-sdk@^2.6.5:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.7.2.tgz#d2e720d2194118afbed3cb05f03fa6a3f31bceeb"
   integrity sha512-DUjUP4kTiT/dZ9FctDH06exzz5qq7WaLeDljgWFJTUwuxtDFkuYSdWXDzCj2yUt4Vy1DiIb+U7DizdhSz6XRnQ==
+  dependencies:
+    big.js "^5.2.2"
+    bignumber.js "^9.0.1"
+    decimal.js-light "^2.5.0"
+    isomorphic-unfetch "^3.1.0"
+    jsbi "^3.1.1"
+    lodash.flatmap "^4.5.0"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
+symbiosis-js-sdk@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.7.3.tgz#d2a0383f3940ea4b761623a5644c71727e9efa13"
+  integrity sha512-qRYN+xPIOr9287cZ5Ey9vpeEHhFpYKRj0YPdR998IDJBAB2T670+5WouFQ57EBwYCoVDd8enPnDIAP3CF7c2eQ==
   dependencies:
     big.js "^5.2.2"
     bignumber.js "^9.0.1"
