@@ -1,4 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 export interface Promotion {
   id: number;

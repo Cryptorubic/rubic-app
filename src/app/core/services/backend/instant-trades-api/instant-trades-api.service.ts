@@ -5,20 +5,18 @@ import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { AuthService } from '../../auth/auth.service';
+import { BlockchainName, BLOCKCHAIN_NAME, InstantTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
+import { getItSwapParams } from '@shared/utils/utils';
 
 type HashObject = { hash: string } | { signature: string };
 
@@ -32,9 +30,8 @@ const instantTradesApiRoutes = {
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  private static getHashObject(blockchain: BlockchainName, hash: string): HashObject {
-    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
-    return blockchainType === 'solana' ? { signature: hash } : { hash };
+  private static getHashObject(_blockchain: BlockchainName, hash: string): HashObject {
+    return { hash };
   }
 
   constructor(
@@ -44,20 +41,25 @@ export class InstantTradesApiService {
   ) {}
 
   public notifyInstantTradesBot(body: {
-    provider: INSTANT_TRADE_PROVIDER;
+    provider: TradeType;
     blockchain: BlockchainName;
     walletAddress: string;
-    trade: InstantTrade;
+    trade: InstantTrade | WrapTrade;
     txHash: string;
   }): Promise<void> {
-    const { trade, ...props } = body;
+    const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
+      getItSwapParams(body.trade);
+    const { txHash, walletAddress } = body;
     const req: InstantTradeBotRequest = {
-      ...props,
-      fromAmount: trade.from.amount.toNumber(),
-      toAmount: trade.to.amount.toNumber(),
-      fromSymbol: trade.from.token.symbol,
-      toSymbol: trade.to.token.symbol,
-      price: trade.from.token.price
+      fromAmount: fromAmount.toNumber(),
+      toAmount: toAmount.toNumber(),
+      fromSymbol: fromSymbol,
+      toSymbol: toSymbol,
+      price: fromPrice,
+      txHash,
+      walletAddress,
+      blockchain,
+      provider: type
     };
 
     return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
@@ -69,19 +71,28 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: INSTANT_TRADE_PROVIDER,
-    trade: InstantTrade,
+    provider: TradeType,
+    trade: InstantTrade | WrapTrade,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
-    const hashObject = InstantTradesApiService.getHashObject(trade.blockchain, hash);
+    const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
+      getItSwapParams(trade);
+    const options = {
+      blockchain: blockchain,
+      fromAddress: fromAddress,
+      fromAmount: Web3Pure.toWei(fromAmount, fromDecimals),
+      toAddress: toAddress,
+      toAmount: Web3Pure.toWei(toAmount, toDecimals)
+    };
+    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
-      network: TO_BACKEND_BLOCKCHAINS[trade.blockchain],
+      network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
       provider,
-      from_token: trade.from.token.address,
-      to_token: trade.to.token.address,
-      from_amount: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
-      to_amount: Web3Pure.toWei(trade.to.amount, trade.to.token.decimals),
+      from_token: options.fromAddress,
+      to_token: options.toAddress,
+      from_amount: options.fromAmount,
+      to_amount: options.toAmount,
       user: this.authService.userAddress,
       fee,
       promocode: promoCode,

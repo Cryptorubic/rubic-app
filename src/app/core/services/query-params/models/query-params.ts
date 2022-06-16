@@ -1,4 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 

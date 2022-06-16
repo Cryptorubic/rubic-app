@@ -3,7 +3,7 @@ import {
   NATIVE_SOLANA_MINT_ADDRESS,
   NATIVE_TOKEN_ADDRESS
 } from '@shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 interface NativeCoin {
   blockchain: BlockchainName;

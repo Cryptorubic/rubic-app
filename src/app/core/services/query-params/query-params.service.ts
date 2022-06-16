@@ -3,11 +3,6 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import {
-  BLOCKCHAIN_NAME,
-  BLOCKCHAIN_NAMES,
-  BlockchainName
-} from '@shared/models/blockchain/blockchain-name';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -15,37 +10,18 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
-import { CrossChainRoutingService } from 'src/app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-
-type NearQueryParams =
-  | {
-      hash: string;
-      toAmount: string;
-      walletAddress: string;
-      type: NearTransactionType;
-    }
-  | {
-      errorCode: string;
-      errorMessage: string;
-    }
-  | {
-      accountId: string;
-      publicKey: string;
-      allKeys: string;
-    };
+import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
+import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -86,12 +62,6 @@ export class QueryParamsService {
 
   public tokensSelectionDisabled$ = this._tokensSelectionDisabled$.asObservable();
 
-  private readonly _nearQueryParams$ = new BehaviorSubject<NearQueryParams>(null);
-
-  public readonly nearQueryParams$ = this._nearQueryParams$.asObservable();
-
-  public readonly nearQueryParams = this._nearQueryParams$.value;
-
   public slippage: QuerySlippage;
 
   public get noFrameLink(): string {
@@ -102,7 +72,6 @@ export class QueryParamsService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
@@ -136,7 +105,6 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
-        this.setNearParams(queryParams);
       }
     }
   }
@@ -202,11 +170,12 @@ export class QueryParamsService {
     return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
       first(pairsArray => !!pairsArray?.size),
       map(pairsArray => {
-        const fromChain = BLOCKCHAIN_NAMES.includes(queryParams?.fromChain)
+        const blockchainNames = Object.values(BLOCKCHAIN_NAME);
+        const fromChain = blockchainNames.includes(queryParams?.fromChain)
           ? queryParams.fromChain
           : DEFAULT_PARAMETERS.swap.fromChain;
 
-        const toChain = BLOCKCHAIN_NAMES.includes(queryParams?.toChain)
+        const toChain = blockchainNames.includes(queryParams?.toChain)
           ? queryParams.toChain
           : DEFAULT_PARAMETERS.swap.toChain;
 
@@ -271,9 +240,8 @@ export class QueryParamsService {
     if (!token) {
       return of(null);
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[chain];
 
-    return blockchainAdapter.isAddressCorrect(token)
+    return Web3Pure.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }
@@ -457,51 +425,6 @@ export class QueryParamsService {
     const { theme } = queryParams;
     if (theme && (theme === 'dark' || theme === 'light')) {
       this.themeService.setTheme(theme);
-    }
-  }
-
-  /**
-   * Sets specific query params after near transaction or login.
-   * @param queryParams Query params with specific for near fields.
-   */
-  private async setNearParams(queryParams: QueryParams): Promise<void> {
-    const { nearLogin, transactionHashes = undefined, errorCode = undefined } = queryParams;
-    if (nearLogin === 'true') {
-      if (!queryParams?.all_keys || !queryParams.account_id) {
-        return;
-      }
-      this._nearQueryParams$.next({
-        accountId: queryParams?.account_id,
-        publicKey: queryParams?.public_key,
-        allKeys: queryParams?.all_keys
-      });
-      await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
-      this.walletConnectorService.setNearPublicKey(queryParams.all_keys);
-      setTimeout(async () => {
-        await this.authService.serverlessSignIn();
-        this.clearNearParams();
-      }, 500);
-    } else if (transactionHashes) {
-      if (!queryParams.toAmount || !queryParams.walletAddress) {
-        return;
-      }
-      const hash = transactionHashes.split(',').pop();
-      this._nearQueryParams$.next({
-        type: queryParams.swap_type as NearTransactionType,
-        toAmount: queryParams.toAmount,
-        hash,
-        walletAddress: queryParams.walletAddress
-      });
-      this.clearNearParams();
-    } else if (errorCode) {
-      if (!queryParams.errorMessage || !queryParams.walletAddress) {
-        return;
-      }
-      this._nearQueryParams$.next({
-        errorMessage: queryParams.errorMessage,
-        errorCode: queryParams.errorCode
-      });
-      this.clearNearParams();
     }
   }
 

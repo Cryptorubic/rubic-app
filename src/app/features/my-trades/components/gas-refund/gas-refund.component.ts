@@ -4,7 +4,7 @@ import { Promotion } from '@features/my-trades/models/promotion';
 import { GasRefundService } from '@features/my-trades/services/gas-refund.service';
 import { watch } from '@taiga-ui/cdk';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';

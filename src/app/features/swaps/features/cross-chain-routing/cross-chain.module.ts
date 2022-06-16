@@ -9,10 +9,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
-import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
-import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
-import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 
 @NgModule({
   declarations: [
@@ -32,6 +29,6 @@ import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/s
     SwapsSharedModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
-  providers: [CelerService, CelerApiService, SymbiosisService]
+  providers: []
 })
 export class CrossChainModule {}

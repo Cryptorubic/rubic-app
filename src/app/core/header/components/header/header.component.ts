@@ -20,7 +20,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';

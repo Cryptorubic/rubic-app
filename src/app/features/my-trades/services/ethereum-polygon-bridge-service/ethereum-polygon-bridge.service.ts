@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { defer, Observable } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TransactionReceipt } from 'web3-eth';

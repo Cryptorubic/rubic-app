@@ -1,4 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';

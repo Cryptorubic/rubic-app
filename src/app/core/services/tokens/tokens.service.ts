@@ -4,17 +4,11 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
-import { BlockchainName, NEAR_BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  NATIVE_SOLANA_MINT_ADDRESS,
-  NATIVE_NEAR_ADDRESS
-} from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
@@ -22,9 +16,10 @@ import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-imag
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { BlockchainName, Web3Pure } from 'rubic-sdk';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -104,10 +99,10 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly errorsService: ErrorsService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly sdk: RubicSdkService
   ) {
     this.setupSubscriptions();
   }
@@ -231,12 +226,8 @@ export class TokensService {
       const balances$: Observable<BigNumber[]>[] = blockchains.map(blockchain => {
         const tokensAddresses = tokensWithBlockchain[blockchain].map(el => el.address);
 
-        return from(
-          this.publicBlockchainAdapterService[blockchain].getTokensBalances(
-            this.userAddress,
-            tokensAddresses
-          )
-        ).pipe(
+        const publicAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
+        return from(publicAdapter.getTokensBalances(this.userAddress, tokensAddresses)).pipe(
           timeout(3000),
           catchError(() => [])
         );
@@ -269,23 +260,24 @@ export class TokensService {
    * @return Observable<TokenAmount> Tokens with balance.
    */
   public addTokenByAddress(address: string, blockchain: BlockchainName): Observable<TokenAmount> {
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
-    const balance$: Observable<BigNumber> = this.userAddress
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
+    const balance$ = this.userAddress
       ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
       : of(null);
+    const token$ = this.sdk.tokens.createToken({ blockchain, address });
 
-    return forkJoin([blockchainAdapter.getTokenInfo(address), balance$]).pipe(
-      map(([tokenInfo, amount]) => ({
+    return forkJoin([token$, balance$]).pipe(
+      map(([token]) => ({
         blockchain,
         address,
-        name: tokenInfo.name,
-        symbol: tokenInfo.symbol,
-        decimals: tokenInfo.decimals,
+        name: token.name,
+        symbol: token.symbol,
+        decimals: token.decimals,
         image: '',
         rank: 1,
         price: null,
         usedInIframe: true,
-        amount: amount || new BigNumber(NaN)
+        amount: /* amount || */ new BigNumber(NaN)
       })),
       tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))
     );
@@ -337,16 +329,7 @@ export class TokensService {
    * @param blockchain Blockchain of native token.
    */
   public getNativeCoinPriceInUsd(blockchain: BlockchainName): Promise<number> {
-    let nativeCoinAddress: string;
-    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
-    if (blockchainType === 'solana') {
-      nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
-    } else if (blockchainType === 'ethLike') {
-      nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
-    } else if (blockchainType === 'near') {
-      nativeCoinAddress = NATIVE_NEAR_ADDRESS;
-    }
-
+    const nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
     const nativeCoin = this.tokens.find(token =>
       TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })
     );
@@ -421,11 +404,10 @@ export class TokensService {
     }
 
     try {
-      const blockchainAdapter = this.publicBlockchainAdapterService[token.blockchain];
-      const balanceInWei = await blockchainAdapter.getTokenOrNativeBalance(
-        this.userAddress,
-        token.address
-      );
+      const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
+      const balanceInWei = Web3Pure.isNativeAddress(token.address)
+        ? await blockchainAdapter.getBalance(token.address)
+        : await blockchainAdapter.getTokenBalance(token.address, token.address);
 
       const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
       if (!foundToken) {
@@ -452,9 +434,8 @@ export class TokensService {
   }
 
   public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
-    const web3Public = this.publicBlockchainAdapterService[blockchain];
     await this.getAndUpdateTokenBalance({
-      address: web3Public.nativeTokenAddress,
+      address: Web3Pure.nativeTokenAddress,
       blockchain
     });
   }
@@ -463,14 +444,13 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<void> {
-    const web3Public = this.publicBlockchainAdapterService[token.blockchain];
-    if (web3Public.isNativeAddress(token.address)) {
+    if (Web3Pure.isNativeAddress(token.address)) {
       await this.getAndUpdateTokenBalance(token);
     } else {
       await Promise.all([
         this.getAndUpdateTokenBalance(token),
         this.getAndUpdateTokenBalance({
-          address: web3Public.nativeTokenAddress,
+          address: Web3Pure.nativeTokenAddress,
           blockchain: token.blockchain
         })
       ]);
@@ -557,22 +537,22 @@ export class TokensService {
   public fetchQueryTokens(query: string, blockchain: BlockchainName): Observable<List<Token>> {
     const isAddress = query.length >= 42;
 
-    if (blockchain === NEAR_BLOCKCHAIN_NAME) {
-      const fetchQueryTokensByAddress$ = this.tokensApiService.fetchQueryTokens({
-        network: blockchain,
-        address: query
-      });
-      const fetchQueryTokensBySymbol$ = this.tokensApiService.fetchQueryTokens({
-        network: blockchain,
-        symbol: query
-      });
-
-      return forkJoin([fetchQueryTokensByAddress$, fetchQueryTokensBySymbol$]).pipe(
-        map(([foundTokensByAddress, foundTokensBySymbol]) => {
-          return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
-        })
-      );
-    }
+    // if (blockchain === NEAR_BLOCKCHAIN_NAME) {
+    //   const fetchQueryTokensByAddress$ = this.tokensApiService.fetchQueryTokens({
+    //     network: blockchain,
+    //     address: query
+    //   });
+    //   const fetchQueryTokensBySymbol$ = this.tokensApiService.fetchQueryTokens({
+    //     network: blockchain,
+    //     symbol: query
+    //   });
+    //
+    //   return forkJoin([fetchQueryTokensByAddress$, fetchQueryTokensBySymbol$]).pipe(
+    //     map(([foundTokensByAddress, foundTokensBySymbol]) => {
+    //       return foundTokensByAddress.size > 0 ? foundTokensByAddress : foundTokensBySymbol;
+    //     })
+    //   );
+    // }
 
     const params: TokensRequestQueryOptions = {
       network: blockchain,
@@ -627,7 +607,11 @@ export class TokensService {
       return foundToken?.symbol;
     }
 
-    const blockchainAdapter = this.publicBlockchainAdapterService.getEthLikeWeb3Public(blockchain);
-    return blockchainAdapter.getTokenSymbol(tokenAddress);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
+    const token = await this.sdk.tokens.createToken({
+      blockchain: blockchainAdapter,
+      address: tokenAddress
+    });
+    return token.symbol;
   }
 }

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -51,10 +51,7 @@ export class GasService {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
-  ) {
+  constructor(private readonly httpClient: HttpClient) {
     this.updateInterval = 15_000;
 
     this.networkGasPrice$ = {
@@ -177,9 +174,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchAvalancheGas(): Observable<number | null> {
-    const blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.AVALANCHE];
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.AVALANCHE);
     return from(blockchainAdapter.getGasPrice()).pipe(
-      map(gasPriceInWei => {
+      map((gasPriceInWei: string) => {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })
     );
@@ -204,9 +201,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchFantomGas(): Observable<number | null> {
-    const blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.FANTOM];
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FANTOM);
     return from(blockchainAdapter.getGasPrice()).pipe(
-      map(gasPriceInWei => {
+      map((gasPriceInWei: string) => {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })
     );

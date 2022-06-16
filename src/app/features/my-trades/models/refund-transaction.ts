@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 export interface RefundTransaction {
   hash: string;

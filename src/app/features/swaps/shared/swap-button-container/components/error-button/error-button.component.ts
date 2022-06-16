@@ -7,7 +7,7 @@ import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-c
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { Observable } from 'rxjs';
 
 @Component({

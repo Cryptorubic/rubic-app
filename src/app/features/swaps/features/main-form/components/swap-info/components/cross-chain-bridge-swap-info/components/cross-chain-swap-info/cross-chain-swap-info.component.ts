@@ -14,13 +14,10 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
-import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -85,11 +82,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   public get fromProviderLabel(): string {
-    return instantTradesLabels[this.fromProvider];
+    return null;
+    // return instantTradesLabels[this.fromProvider]; @TODO SDK.
   }
 
   public get toProviderLabel(): string {
-    return instantTradesLabels[this.toProvider];
+    return null;
+    // return instantTradesLabels[this.toProvider]; @TODO SDK.
   }
 
   public get fromBlockchainLabel(): string {
@@ -108,7 +107,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -144,38 +142,39 @@ export class CrossChainSwapInfoComponent implements OnInit {
           const { fromBlockchain } = this.swapFormService.inputValue;
           return forkJoin([
             this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)),
-            from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)),
-            this.crossChainRoutingService.getTradeInfo()
+            from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain))
+            // this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
-            map(([tokens, nativeCoinPrice, tradeInfo]) => {
-              const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-              this.nativeCoinSymbol = tokens.find(
-                token =>
-                  token.blockchain === fromBlockchain &&
-                  blockchainAdapter?.isNativeAddress(token.address)
-              ).symbol;
-
-              if (
-                this.crossChainRoutingService.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
-              ) {
-                this.isSymbiosis = true;
-
-                this.estimateGasInEth = tradeInfo.estimatedGas;
-                this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
-
-                this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
-                this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
-
-                this.setSymbiosisTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
-              } else {
-                this.isSymbiosis = false;
-
-                this.setCelerRubicTradeInfoParameters(
-                  tradeInfo as CelerRubicTradeInfo,
-                  nativeCoinPrice
-                );
-              }
-
+            map(([tokens, nativeCoinPrice]) => {
+              console.log(tokens, nativeCoinPrice);
+              // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+              // this.nativeCoinSymbol = tokens.find(
+              //   token =>
+              //     token.blockchain === fromBlockchain &&
+              //     blockchainAdapter?.isNativeAddress(token.address)
+              // ).symbol;
+              //
+              // if (
+              //   this.crossChainRoutingService.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+              // ) {
+              //   this.isSymbiosis = true;
+              //
+              //   this.estimateGasInEth = tradeInfo.estimatedGas;
+              //   this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
+              //
+              //   this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+              //   this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
+              //
+              //   this.setSymbiosisTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
+              // } else {
+              //   this.isSymbiosis = false;
+              //
+              //   this.setCelerRubicTradeInfoParameters(
+              //     tradeInfo as CelerRubicTradeInfo,
+              //     nativeCoinPrice
+              //   );
+              // }
+              // @TODO SDK
               this.swapInfoService.emitInfoCalculated();
             })
           );
@@ -221,7 +220,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    // this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;

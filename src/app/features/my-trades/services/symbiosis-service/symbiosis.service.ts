@@ -5,7 +5,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom } from 'rxjs';
@@ -14,7 +13,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +29,9 @@ export class SymbiosisService {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
-    private readonly dialogService: TuiDialogService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
+    private readonly dialogService: TuiDialogService
   ) {}
 
   public async getUserTrades(): Promise<TableTrade[]> {
@@ -100,7 +97,7 @@ export class SymbiosisService {
     }
 
     const { transactionRequest } = await this.symbiosis.newRevertPending(request).revert();
-    await this.web3PrivateService.trySendTransaction(
+    await Injector.web3Private.trySendTransaction(
       transactionRequest.to,
       new BigNumber(transactionRequest.value?.toString() || 0),
       {

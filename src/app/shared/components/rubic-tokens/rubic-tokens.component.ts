@@ -13,7 +13,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';

@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { BlockchainItem } from '@features/swaps/features/main-form/models/blockchain-item';
 
 const imageBaseSrc = 'assets/images/icons/coins/';

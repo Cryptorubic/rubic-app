@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { StakingService } from '@features/staking/services/staking.service';
 
 /**

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -11,29 +11,23 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
-import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
 import { Near } from 'near-api-js';
-import { NearWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/near/near-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { AccountError } from '@core/errors/models/provider/account-error';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  ETH_LIKE_BLOCKCHAIN_NAMES
-} from '@shared/models/blockchain/blockchain-name';
 import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { Token } from '@shared/models/tokens/token';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { BLOCKCHAIN_NAME, BlockchainName, WalletProvider } from 'rubic-sdk';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
 
 interface WCWallets {
   [P: string]: {
@@ -51,9 +45,9 @@ interface WCWallets {
   providedIn: 'root'
 })
 export class WalletConnectorService {
-  private readonly networkChangeSubject$: BehaviorSubject<BlockchainData>;
+  private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainData>(null);
 
-  private readonly addressChangeSubject$: BehaviorSubject<string>;
+  private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
 
   private readonly _transactionEmitter$ = new Subject<void>();
 
@@ -89,13 +83,24 @@ export class WalletConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public get networkChange$(): Observable<BlockchainData> {
-    return this.networkChangeSubject$.asObservable();
-  }
+  public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
-  public get addressChange$(): Observable<string> {
-    return this.addressChangeSubject$.asObservable();
-  }
+  public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
+    switchMap(address =>
+      forkJoin([of(address), this.sdk.sdkLoading$.pipe(first(loading => loading === false))])
+    ),
+    switchMap(([address]) => {
+      const walletProvider: WalletProvider = address
+        ? {
+            address,
+            chainId: this.networkChangeSubject$.value.id,
+            core: this.provider.wallet
+          }
+        : undefined;
+      return forkJoin([of(address), address ? this.sdk.patchConfig({ walletProvider }) : of(null)]);
+    }),
+    map(([address]) => address)
+  );
 
   public readonly web3: Web3;
 
@@ -124,12 +129,11 @@ export class WalletConnectorService {
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
+    private readonly sdk: RubicSdkService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
     this.web3 = new Web3();
-    this.networkChangeSubject$ = new BehaviorSubject<BlockchainData>(null);
-    this.addressChangeSubject$ = new BehaviorSubject<string>(null);
   }
 
   /**
@@ -165,16 +169,7 @@ export class WalletConnectorService {
   }
 
   public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    if (this.provider.walletType === 'solana') {
-      return [BLOCKCHAIN_NAME.SOLANA];
-    }
-    if (this.provider.walletType === 'ethLike') {
-      return [...ETH_LIKE_BLOCKCHAIN_NAMES];
-    }
-    if (this.provider.walletType === 'near') {
-      return [BLOCKCHAIN_NAME.NEAR];
-    }
-    return [];
+    return Object.values(BLOCKCHAIN_NAME);
   }
 
   public async activate(): Promise<void> {
@@ -214,20 +209,6 @@ export class WalletConnectorService {
     chainId?: number
   ): Promise<CommonWalletAdapter> {
     const walletAdapters: Record<WALLET_NAME, () => Promise<CommonWalletAdapter>> = {
-      [WALLET_NAME.SOLFLARE]: async () =>
-        new SolflareWalletAdapter(
-          this.networkChangeSubject$,
-          this.addressChangeSubject$,
-          this.errorService,
-          this.solanaWeb3Connection
-        ),
-      [WALLET_NAME.PHANTOM]: async () =>
-        new PhantomWalletAdapter(
-          this.networkChangeSubject$,
-          this.addressChangeSubject$,
-          this.errorService,
-          this.solanaWeb3Connection
-        ),
       [WALLET_NAME.TRUST_WALLET]: async () =>
         new TrustWalletAdapter(
           this.web3,
@@ -244,14 +225,6 @@ export class WalletConnectorService {
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService
-        ),
-      [WALLET_NAME.NEAR]: async () =>
-        new NearWalletAdapter(
-          this.networkChangeSubject$,
-          this.addressChangeSubject$,
-          this.errorService,
-          this.window,
-          this.iframeService.isIframe
         ),
       [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(
@@ -392,11 +365,5 @@ export class WalletConnectorService {
         return allowMobileWallets.map(el => el.metadata.shortName);
       })
     );
-  }
-
-  public setNearPublicKey(publicKey: string): void {
-    if (this.provider.walletType === 'near') {
-      (this.provider as NearWalletAdapter).publicKey = publicKey;
-    }
   }
 }

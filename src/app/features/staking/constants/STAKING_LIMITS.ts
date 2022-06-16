@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const STAKE_LIMIT_MAX = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 100000,

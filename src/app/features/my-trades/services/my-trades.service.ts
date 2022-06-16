@@ -37,7 +37,7 @@ import { Router } from '@angular/router';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { EthereumPolygonBridgeService } from '@features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
 import { SymbiosisService } from '@features/my-trades/services/symbiosis-service/symbiosis.service';

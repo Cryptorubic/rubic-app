@@ -8,16 +8,13 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/refund-abi';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
 import { REFUND_ADDRESS } from '@features/my-trades/constants/refund-address';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import CustomError from '@core/errors/models/custom-error';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 @Injectable()
 export class GasRefundService {
@@ -38,8 +35,6 @@ export class GasRefundService {
   constructor(
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
-    private readonly web3Private: EthLikeWeb3PrivateService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();
@@ -148,10 +143,7 @@ export class GasRefundService {
     onTransactionHash?: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const address = this.authService.userAddress;
-    if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    const blockchainAdapter = this.publicBlockchainAdapterService[this.refundBlockchain];
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(this.refundBlockchain);
     const hexRootFromContract = await blockchainAdapter.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,
@@ -165,7 +157,7 @@ export class GasRefundService {
       );
     }
 
-    return this.web3Private.tryExecuteContractMethod(
+    return Injector.web3Private.tryExecuteContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,
       'getTokensByMerkleProof',

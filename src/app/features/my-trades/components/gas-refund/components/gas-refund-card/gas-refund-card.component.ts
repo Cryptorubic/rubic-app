@@ -7,7 +7,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { Promotion } from '@features/my-trades/models/promotion';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { WINDOW } from '@ng-web-apis/common';

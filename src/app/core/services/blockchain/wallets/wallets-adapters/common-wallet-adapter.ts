@@ -1,5 +1,5 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';

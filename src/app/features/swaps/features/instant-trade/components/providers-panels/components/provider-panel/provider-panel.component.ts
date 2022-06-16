@@ -12,7 +12,7 @@ import { TradePanelData } from '@features/swaps/features/instant-trade/component
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
+import { InstantTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-provider-panel',
@@ -59,11 +59,11 @@ export class ProviderPanelComponent implements OnInit {
 
   private setupTradePanelData(trade: InstantTrade): void {
     this.tradePanelData = {
-      blockchain: trade.blockchain,
-      amount: trade.to.amount,
-      gasLimit: trade.gasLimit,
-      gasFeeInUsd: trade.gasFeeInUsd,
-      gasFeeInEth: trade.gasFeeInEth
+      blockchain: trade.from.blockchain,
+      amount: trade.to.tokenAmount,
+      gasLimit: trade.gasFeeInfo.gasLimit,
+      gasFeeInUsd: trade.gasFeeInfo.gasFeeInUsd,
+      gasFeeInEth: trade.gasFeeInfo.gasFeeInEth
     };
   }
 

@@ -14,7 +14,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-panel-content',

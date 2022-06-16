@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const REFUND_ADDRESS = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
