@@ -318,6 +318,9 @@ export class EthLikeWeb3PrivateService {
     skipChecks?: boolean
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+    const defaultAllowedErrors = (err: Web3Error) => {
+      return err?.message.includes('STF');
+    };
 
     try {
       if (!skipChecks) {
@@ -338,7 +341,7 @@ export class EthLikeWeb3PrivateService {
         options
       );
     } catch (err) {
-      if (allowError?.(err)) {
+      if (allowError?.(err) || defaultAllowedErrors?.(err)) {
         return this.executeContractMethod(
           contractAddress,
           contractAbi,
