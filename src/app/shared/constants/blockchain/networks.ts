@@ -31,7 +31,7 @@ const networks: ReadonlyArray<Network> = [
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
     rpcLink:
-      'https://rpc.ankr.com/eth/21727ed381af6c79c3a39512f2c46a117e20daca30d92efe264992c8e6200551/',
+      'https://rpc.ankr.com/eth/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
@@ -49,7 +49,7 @@ const networks: ReadonlyArray<Network> = [
     label: 'BSC',
     scannerUrl: 'https://bscscan.com/',
     rpcLink:
-      'https://rpc.ankr.com/bsc/21727ed381af6c79c3a39512f2c46a117e20daca30d92efe264992c8e6200551/',
+      'https://rpc.ankr.com/bsc/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/bnb.svg',
@@ -67,7 +67,7 @@ const networks: ReadonlyArray<Network> = [
     label: 'Polygon',
     scannerUrl: 'https://polygonscan.com',
     rpcLink:
-      'https://rpc.ankr.com/polygon/21727ed381af6c79c3a39512f2c46a117e20daca30d92efe264992c8e6200551/',
+      'https://rpc.ankr.com/polygon/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/polygon.svg',
