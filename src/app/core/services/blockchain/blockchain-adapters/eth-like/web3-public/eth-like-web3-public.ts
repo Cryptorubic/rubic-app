@@ -313,6 +313,10 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     return transactionReceipt;
   }
 
+  public async getBlockNumber(): Promise<number> {
+    return await this.web3.eth.getBlockNumber();
+  }
+
   /**
    * call smart-contract pure method of smart-contract and returns its output value
    * @param contractAddress address of smart-contract which method is to be executed

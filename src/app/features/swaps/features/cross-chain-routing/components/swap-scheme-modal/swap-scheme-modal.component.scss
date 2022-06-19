@@ -1,0 +1,226 @@
+@use 'src/scss/core' as *;
+
+.title {
+  @include font(26px, 31px, 700, #fff);
+  margin-bottom: 8px;
+
+  text-align: center;
+}
+
+.description {
+  @include font(16px, 19px, 500, #A2A1A5);
+  margin-bottom: 56px;
+
+  text-align: center;
+
+  span {
+    cursor: pointer;
+  }
+}
+
+.pair {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 500px;
+  margin: 0 auto 56px;
+
+  &__from,
+  &__to {
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 42px;
+      height: 42px;
+      margin-right: 8px;
+
+      border-radius: 100%;
+    }
+  }
+
+  &__symbol {
+    @include font(20px, 17px, 500,#E8E8EA);
+    margin-bottom: 4px;
+  }
+
+  &__blockchain {
+    @include font(18px, 16px, 500,#8E8D91);
+  }
+}
+
+.scheme {
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+  margin: 0 auto 16px;
+
+  &__status-icon {
+    position: absolute;
+    top: -25px;
+
+    &_rotating {
+      animation: rotating 2s linear infinite;
+    }
+  }
+
+  &_failed {
+    opacity: 0.4;
+  }
+    
+  &__pool {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+
+    &-icon {
+      position: relative;
+      z-index: 3;
+
+      width: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+
+      border-radius: 100%;
+    }
+
+    &-name {
+      @include font(18px, 21px, 600, #fff);
+      text-align: center;
+
+      span {
+        @include font(14px, 17px, 400, #fff);
+      }
+    }
+  }
+
+  &__util {
+    position: absolute;
+
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+
+    &-left {
+      width: 32px;
+      height: 100%;
+
+      background-color: red;
+    }
+
+    &-right {
+      width: 32px;
+      height: 100%;
+
+      background-color: red;
+    }
+  }
+
+  &__src,
+  &__dst {
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+
+    &-icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+
+      border-radius: 100%;
+    }
+
+    &-name {
+      @include font(18px, 21px, 600, #fff);
+    }
+  }
+
+  &__line {
+    position: absolute;
+
+    width: 60%;
+
+    &-dashed {
+      height: 2px;
+
+      background: url('/assets/images/icons/dashed-line.svg');
+    }
+
+    hr {
+      width: 100%;
+      height: 2px;
+    }
+
+    &_default hr {
+      background: #242327;
+    }
+
+    &_success hr {
+      background: $rubic-primary;
+    }
+
+    &_src {
+      top: 1em;
+      left: -3em;
+      z-index: 2;
+    }
+
+    &_dst {
+      top: 1em;
+      right: -3em;
+      z-index: 1;
+    }
+  }
+}
+
+.caption {
+  @include font(14px, 17px, 400, #8E8D91);
+  max-width: 575px;
+  margin: 0 auto;
+
+  text-align: center;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+app-rubic-button {
+  display: block;
+  max-width: 469px;
+  margin: 32px auto 0;
+}
+
+.highlight {
+  &_green {
+    color: $rubic-primary;
+  }
+
+  &_black-white {
+    color: #000;
+
+    @include dark {
+      color: #fff;
+    }
+  }
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

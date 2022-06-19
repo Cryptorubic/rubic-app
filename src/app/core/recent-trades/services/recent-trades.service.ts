@@ -15,7 +15,6 @@ import {
 } from '../../../shared/models/blockchain/blockchain-name';
 import { CelerSwapStatus } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
 import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
-import { AbiItem } from 'web3-utils';
 import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
@@ -33,22 +32,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { PendingRequest } from 'symbiosis-js-sdk';
-
-const PROCESSED_TRANSACTION_METHOD_ABI: AbiItem[] = [
-  {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
-    name: 'processedTransactions',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  }
-];
-
-enum RubicSwapStatus {
-  NULL = 0,
-  PROCESSED = 1,
-  REVERTED = 2
-}
+import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
+import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
 
 @Injectable()
 export class RecentTradesService {

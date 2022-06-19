@@ -18,7 +18,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
@@ -65,6 +65,12 @@ import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interfac
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { TuiDialogService } from '@taiga-ui/core';
+import {
+  CrosschainSwapSchemeData,
+  SwapSchemeModalComponent
+} from '../../components/swap-scheme-modal/swap-scheme-modal.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -134,7 +140,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly celerService: CelerService,
     private readonly celerApiService: CelerApiService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly symbiosisService: SymbiosisService
+    private readonly symbiosisService: SymbiosisService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     super('cross-chain-routing');
   }
@@ -1145,9 +1152,11 @@ export class CrossChainRoutingService extends TradeService {
 
       confirmCallback?.();
 
-      if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
+      if (isEthLikeBlockchainName(fromBlockchain) && isEthLikeBlockchainName(toBlockchain)) {
         this.notifyGtmAfterSignTx(txHash);
 
+        this.openSwapSchemeModal(this.crossChainProvider, txHash);
+      } else {
         subscription$ = this.notifyTradeInProgress(
           txHash,
           fromBlockchain,
@@ -1184,7 +1193,6 @@ export class CrossChainRoutingService extends TradeService {
       }
 
       subscription$?.unsubscribe();
-      this.showSuccessTrxNotification(this.currentCrossChainProvider.type);
 
       await this.postCrossChainTrade(transactionHash);
     } catch (err) {
@@ -1192,6 +1200,25 @@ export class CrossChainRoutingService extends TradeService {
 
       await this.handleCreateTradeError(err, transactionHash);
     }
+  }
+
+  public openSwapSchemeModal(provider: CrossChainProvider, txHash: string): void {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+    this.dialogService
+      .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+        size: 'xl' as 'l',
+        data: {
+          fromToken,
+          fromBlockchain,
+          toToken,
+          toBlockchain,
+          srcProvider: this.smartRouting.fromProvider,
+          dstProvider: this.smartRouting.toProvider,
+          crossChainProvider: provider,
+          srcTxHash: txHash
+        }
+      })
+      .subscribe();
   }
 
   /**

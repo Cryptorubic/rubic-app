@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -46,6 +47,12 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import {
+  CrosschainSwapSchemeData,
+  SwapSchemeModalComponent
+} from '../swap-scheme-modal/swap-scheme-modal.component';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -138,6 +145,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -188,6 +196,26 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+  }
+
+  public openSwapSchemeModal(): void {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+    this.dialogService
+      .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+        size: 'xl' as 'l',
+        data: {
+          fromToken,
+          fromBlockchain,
+          toToken,
+          toBlockchain,
+          srcProvider: this.smartRouting.fromProvider,
+          dstProvider: this.smartRouting.toProvider,
+          crossChainProvider: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
+          srcTxHash: '',
+          srcTxBlockNumber: 123
+        }
+      })
+      .subscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
