@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { first, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -18,7 +18,6 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { switchMap } from 'rxjs/operators';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { getItSwapParams } from '@shared/utils/utils';
@@ -52,7 +51,6 @@ export class InstantTradeService extends TradeService {
   }
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
-    await this.sdk.sdkLoading$.pipe(first(loading => loading === false)).toPromise();
     return trade.needApprove();
   }
 
@@ -108,19 +106,11 @@ export class InstantTradeService extends TradeService {
       blockchain: BlockchainName;
     }
   ): Promise<Array<InstantTrade | InstantTradeError>> {
-    return this.sdk.sdkLoading$
-      .pipe(
-        first(el => el === false),
-        switchMap(() =>
-          this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
-            timeout: 10000,
-            slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-            gasCalculation:
-              shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
-          })
-        )
-      )
-      .toPromise();
+    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
+      timeout: 10000,
+      slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
+    });
   }
 
   public async createTrade(

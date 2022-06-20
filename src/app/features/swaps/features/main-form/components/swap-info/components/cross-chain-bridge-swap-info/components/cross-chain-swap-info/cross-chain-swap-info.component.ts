@@ -16,8 +16,9 @@ import {
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
+import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { TradeType } from 'rubic-sdk';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -55,9 +56,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
-  private fromProvider: INSTANT_TRADE_PROVIDER;
+  private fromProvider: TradeType;
 
-  private toProvider: INSTANT_TRADE_PROVIDER;
+  private toProvider: TradeType;
 
   public fromPath: string[] | null;
 
@@ -82,13 +83,11 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   public get fromProviderLabel(): string {
-    return null;
-    // return instantTradesLabels[this.fromProvider]; @TODO SDK.
+    return instantTradesLabels[this.fromProvider];
   }
 
   public get toProviderLabel(): string {
-    return null;
-    // return instantTradesLabels[this.toProvider]; @TODO SDK.
+    return instantTradesLabels[this.toProvider];
   }
 
   public get fromBlockchainLabel(): string {
@@ -147,6 +146,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
           ]).pipe(
             map(([tokens, nativeCoinPrice]) => {
               console.log(tokens, nativeCoinPrice);
+              // @TODO SDK.
               // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
               // this.nativeCoinSymbol = tokens.find(
               //   token =>

@@ -11,7 +11,7 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Connection } from '@solana/web3.js';
@@ -85,7 +85,6 @@ export class WalletConnectorService {
   }
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable().pipe(
-    switchTap(() => this.sdk.sdkLoading$.pipe(first(loading => loading === false))),
     switchTap(network => {
       const walletProvider: WalletProvider =
         this.addressChangeSubject$.value && network
@@ -100,7 +99,6 @@ export class WalletConnectorService {
   );
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
-    switchTap(() => this.sdk.sdkLoading$.pipe(first(loading => loading === false))),
     switchTap(address => {
       const walletProvider: WalletProvider = address
         ? {

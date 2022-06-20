@@ -8,12 +8,14 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
+  map,
   startWith,
   switchMap,
   takeUntil
@@ -37,7 +39,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { switchTap } from '@shared/utils/utils';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -113,12 +116,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   get showSmartRouting(): boolean {
-    // @TODO SDK
-    return false;
-    // return (
-    //   Boolean(this.smartRouting) &&
-    //   this.crossChainRoutingService.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS
-    // );
+    return (
+      Boolean(this.smartRouting) &&
+      this.crossChainRoutingService.crossChainTrade?.trade &&
+      this.crossChainRoutingService.crossChainTrade.trade !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+    );
   }
 
   constructor(
@@ -222,68 +224,70 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         filter(el => el === 'normal'),
         debounceTime(200),
         switchMap(() => {
-          // if (!this.allowTrade) {
-          //   this.tradeStatus = TRADE_STATUS.DISABLED;
-          //   this.swapFormService.output.patchValue({
-          //     toAmount: new BigNumber(NaN)
-          //   });
-          //   return of(null);
-          // }
-          //
-          // this.tradeStatus = TRADE_STATUS.LOADING;
-          // this.cdr.detectChanges();
-          //
-          // this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
-          //
-          // const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-          // const calculateNeedApprove =
-          //   Boolean(this.authService.userAddress) && isEthLikeBlockchainName(fromBlockchain);
-          // const crossChainTrade$ = from(
-          //   this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
-          // );
-          // const balance$ = from(
-          //   this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
-          // );
-          //
-          // return forkJoin([crossChainTrade$, balance$]).pipe(
-          //   map(([{ toAmount, minAmountError, maxAmountError }]) => {
-          //     if (
-          //       (minAmountError &&
-          //         fromAmount.gte(minAmountError) &&
-          //         fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
-          //       (maxAmountError && fromAmount.lte(maxAmountError))
-          //     ) {
-          //       this.onCalculateTrade$.next('normal');
-          //       return;
-          //     }
-          //
-          //     this.minError = false;
-          //     this.maxError = false;
-          //     this.errorText = '';
-          //
-          //     this.needApprove = false;
-          //     this.withApproveButton = this.needApprove;
-          //
-          //     this.toAmount = toAmount;
-          //     this.swapFormService.output.patchValue({
-          //       toAmount
-          //     });
-          //     this.smartRouting = this.crossChainRoutingService.smartRouting;
-          //     this.hiddenTradeData = null;
-          //     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          //
-          //     if (this.minError || this.maxError || !toAmount?.gt(0)) {
-          //       this.tradeStatus = TRADE_STATUS.DISABLED;
-          //     } else {
-          //       this.tradeStatus = needApprove
-          //         ? TRADE_STATUS.READY_TO_APPROVE
-          //         : TRADE_STATUS.READY_TO_SWAP;
-          //     }
-          //   }),
-          //   eslint-disable-next-line rxjs/no-implicit-any-catch
-          //   catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
-          // );
-          return of('');
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            return of(null);
+          }
+
+          this.tradeStatus = TRADE_STATUS.LOADING;
+          this.cdr.detectChanges();
+
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+
+          // @TODO SDK
+          const { fromAmount /*, fromBlockchain */ } = this.swapFormService.inputValue;
+          const calculateNeedApprove = Boolean(this.authService.userAddress);
+          const crossChainTrade$ = from(
+            this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
+          );
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
+
+          return crossChainTrade$.pipe(
+            switchTap(() => balance$),
+            map(
+              ({ trade, minAmountError, maxAmountError }) => {
+                if (
+                  (minAmountError && fromAmount.gte(minAmountError)) ||
+                  (maxAmountError && fromAmount.lte(maxAmountError))
+                ) {
+                  this.onCalculateTrade$.next('normal');
+                  return;
+                }
+
+                this.minError = false;
+                this.maxError = false;
+                this.errorText = '';
+
+                this.needApprove = false;
+                this.withApproveButton = this.needApprove;
+
+                this.toAmount = trade?.to?.tokenAmount;
+                this.swapFormService.output.patchValue({
+                  toAmount: trade?.to.tokenAmount
+                });
+                // this.smartRouting = this.crossChainRoutingService.smartRouting;
+                this.hiddenTradeData = null;
+                this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+                if (this.minError || this.maxError /* || !toAmount?.gt(0)*/) {
+                  this.tradeStatus = TRADE_STATUS.DISABLED;
+                } else {
+                  // @TODO SDK.
+                  // this.tradeStatus = false
+                  //   ? TRADE_STATUS.READY_TO_APPROVE
+                  //   : TRADE_STATUS.READY_TO_SWAP;
+                  this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+                }
+              },
+              // eslint-disable-next-line rxjs/no-implicit-any-catch
+              catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
+            )
+          );
         }),
         takeUntil(this.destroy$)
       )
@@ -409,12 +413,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
-      // await this.crossChainRoutingService.createTrade(() => {
-      //   if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
-      //     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      //     this.cdr.detectChanges();
-      //   }
-      // });
+      await this.crossChainRoutingService.createTrade(() => {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.cdr.detectChanges();
+      });
 
       this.conditionalCalculate('hidden');
 
