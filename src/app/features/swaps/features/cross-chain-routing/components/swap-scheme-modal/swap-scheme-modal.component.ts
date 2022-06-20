@@ -6,8 +6,8 @@ import {
   EthLikeBlockchainName
 } from '@app/shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADE_PROVIDER } from '@app/shared/models/instant-trade/instant-trade-provider';
-import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { PolymorpheusComponent, POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
 import {
@@ -34,6 +34,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { isNil } from '@app/shared/utils/utils';
 import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
+import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 export interface CrosschainSwapSchemeData {
   srcProvider: INSTANT_TRADE_PROVIDER;
@@ -124,12 +126,14 @@ export class SwapSchemeModalComponent implements OnInit {
     private readonly symbiosisService: SymbiosisService,
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
-    private readonly notificationService: NotificationsService
+    private readonly notificationService: NotificationsService,
+    private readonly headerStore: HeaderStore,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     this.setTradeData(this.context.data);
 
     from(this.srcWeb3Public.getTransactionByHash(this.srcTxHash)).subscribe(tx => {
-      this.srcTxBlockNumber = Number(tx?.blockNumber);
+      this.srcTxBlockNumber = tx?.blockNumber;
     });
   }
 
@@ -380,5 +384,16 @@ export class SwapSchemeModalComponent implements OnInit {
     return this.web3Public[blockchain] as EthLikeWeb3Public;
   }
 
-  public closeModalAndOpenMyTrades(): void {}
+  public closeModalAndOpenMyTrades(): void {
+    this.context.completeWith(false);
+
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
+
+    this.dialogService
+      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+      })
+      .subscribe();
+  }
 }
