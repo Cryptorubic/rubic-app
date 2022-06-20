@@ -46,7 +46,7 @@ import { BridgeSwapInfoComponent } from './features/main-form/components/swap-in
 import { SwapsSwitcherComponent } from '@features/swaps/features/main-form/components/swaps-switcher/swaps-switcher.component';
 import { PlatformTokensAmountComponent } from './features/main-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { SwapsHeaderComponent } from '@features/swaps/features/main-form/components/swaps-header/swaps-header.component';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @NgModule({
   declarations: [

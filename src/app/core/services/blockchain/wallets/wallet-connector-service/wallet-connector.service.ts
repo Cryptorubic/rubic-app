@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subject } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -11,7 +11,7 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Connection } from '@solana/web3.js';
@@ -27,7 +27,8 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { Token } from '@shared/models/tokens/token';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { BLOCKCHAIN_NAME, BlockchainName, WalletProvider } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { switchTap } from '@shared/utils/utils';
 
 interface WCWallets {
   [P: string]: {
@@ -84,7 +85,8 @@ export class WalletConnectorService {
   }
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable().pipe(
-    switchMap(network => {
+    switchTap(() => this.sdk.sdkLoading$.pipe(first(loading => loading === false))),
+    switchTap(network => {
       const walletProvider: WalletProvider =
         this.addressChangeSubject$.value && network
           ? {
@@ -93,19 +95,13 @@ export class WalletConnectorService {
               core: this.provider.wallet
             }
           : undefined;
-      return forkJoin([
-        of(network),
-        walletProvider ? this.sdk.patchConfig({ walletProvider }) : of(null)
-      ]);
-    }),
-    map(([network]) => network)
+      return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
+    })
   );
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
-    switchMap(address =>
-      forkJoin([of(address), this.sdk.sdkLoading$.pipe(first(loading => loading === false))])
-    ),
-    switchMap(([address]) => {
+    switchTap(() => this.sdk.sdkLoading$.pipe(first(loading => loading === false))),
+    switchTap(address => {
       const walletProvider: WalletProvider = address
         ? {
             address,
@@ -113,9 +109,8 @@ export class WalletConnectorService {
             core: this.provider.wallet
           }
         : undefined;
-      return forkJoin([of(address), address ? this.sdk.patchConfig({ walletProvider }) : of(null)]);
-    }),
-    map(([address]) => address)
+      return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
+    })
   );
 
   public readonly web3: Web3;

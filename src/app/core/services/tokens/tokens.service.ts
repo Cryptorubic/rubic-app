@@ -6,20 +6,20 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens, switchTap } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BlockchainName, Web3Pure } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -113,6 +113,13 @@ export class TokensService {
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
       .pipe(
+        switchTap(() =>
+          this.sdk.sdkLoading$.pipe(
+            first(loading => loading !== false),
+            timeout(10_000),
+            catchError(() => of(null))
+          )
+        ),
         switchMap(params => this.tokensApiService.getTokensList(params, this._tokensNetworkState$)),
         switchMap(tokens => {
           const newTokens = this.setDefaultTokensParams(tokens, false);

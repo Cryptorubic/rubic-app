@@ -17,7 +17,7 @@ import {
   EncodeTransactionOptions,
   Web3Pure
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { switchMap } from 'rxjs/operators';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';

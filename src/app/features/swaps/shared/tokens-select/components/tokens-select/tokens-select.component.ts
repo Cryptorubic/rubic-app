@@ -48,7 +48,7 @@ import { TokensListType } from '@features/swaps/shared/tokens-select/models/toke
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk-service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
