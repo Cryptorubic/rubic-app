@@ -71,6 +71,7 @@ import {
   SwapSchemeModalComponent
 } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -141,6 +142,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly celerApiService: CelerApiService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly symbiosisService: SymbiosisService,
+    private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     super('cross-chain-routing');
@@ -1204,9 +1206,11 @@ export class CrossChainRoutingService extends TradeService {
 
   public openSwapSchemeModal(provider: CrossChainProvider, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
     this.dialogService
       .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: 'xl' as 'l',
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize,
         data: {
           fromToken,
           fromBlockchain,

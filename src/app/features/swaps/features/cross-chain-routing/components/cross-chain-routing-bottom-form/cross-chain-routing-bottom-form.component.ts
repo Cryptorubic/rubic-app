@@ -53,6 +53,7 @@ import {
   CrosschainSwapSchemeData,
   SwapSchemeModalComponent
 } from '../swap-scheme-modal/swap-scheme-modal.component';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -145,6 +146,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
@@ -200,9 +202,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public openSwapSchemeModal(): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
     this.dialogService
       .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: 'xl' as 'l',
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize,
         data: {
           fromToken,
           fromBlockchain,

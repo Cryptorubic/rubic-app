@@ -19,14 +19,14 @@ import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-r
 import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { RecentTradeStatus } from '../models/recent-trade-status.enum';
-import { decodeLogs } from '../decode-logs';
+import { decodeLogs } from '../../../shared/utils/decode-logs';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RecentCrosschainTxComponent } from '../components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
 import { asyncMap } from '@shared/utils/utils';
-import { SymbiosisService } from '@app/features/my-trades/services/symbiosis-service/symbiosis.service';
+import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';

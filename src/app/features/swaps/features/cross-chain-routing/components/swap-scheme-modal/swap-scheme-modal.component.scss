@@ -1,10 +1,23 @@
 @use 'src/scss/core' as *;
 
 .title {
-  @include font(26px, 31px, 700, #fff);
+  @include font(26px, 31px, 700, #000);
   margin-bottom: 8px;
 
   text-align: center;
+
+  @include b($tablet) {
+    max-width: 296px;
+    margin-bottom: 6px;
+
+    font-size: 20px;
+    line-height: 24px;
+    text-align: left;
+  }
+
+  @include dark {
+    color: #fff;
+  }
 }
 
 .description {
@@ -12,6 +25,12 @@
   margin-bottom: 56px;
 
   text-align: center;
+
+  @include b($tablet) {
+    font-size: 13px;
+    line-height: 15px;
+    text-align: left;
+  }
 
   span {
     cursor: pointer;
@@ -25,6 +44,11 @@
   max-width: 500px;
   margin: 0 auto 56px;
 
+  @include b($tablet) {
+    max-width: 400px;
+    margin: 0 auto 90px;
+  }
+
   &__from,
   &__to {
     display: flex;
@@ -36,16 +60,37 @@
       margin-right: 8px;
 
       border-radius: 100%;
+
+      @include b($tablet) {
+        width: 38px;
+        height: 38px;
+      }
     }
   }
 
   &__symbol {
-    @include font(20px, 17px, 500,#E8E8EA);
+    @include font(20px, 17px, 500,#000);
     margin-bottom: 4px;
+
+    @include dark {
+      color: #e8e8ea;
+    }
+
+    @include b($tablet) {
+      margin-bottom: 0;
+
+      font-size: 16px;
+      line-height: 17px;
+    }
   }
 
   &__blockchain {
     @include font(18px, 16px, 500,#8E8D91);
+
+    @include b($tablet) {
+      font-size: 14px;
+      line-height: 16px;
+    }    
   }
 }
 
@@ -56,6 +101,10 @@
   justify-content: space-between;
   max-width: 600px;
   margin: 0 auto 16px;
+
+  @include b($tablet) {
+    margin: 0 auto 32px;
+  }
 
   &__status-icon {
     position: absolute;
@@ -90,11 +139,25 @@
     }
 
     &-name {
-      @include font(18px, 21px, 600, #fff);
+      @include font(18px, 21px, 500, #000);
       text-align: center;
 
+      @include dark {
+        color: #fff;
+        font-weight: 600;
+      }
+
+      @include b($tablet) {
+        font-size: 14px;
+        line-height: 16px;
+      }
+
       span {
-        @include font(14px, 17px, 400, #fff);
+        @include font(14px, 17px, 400, #8E8D91);
+
+        @include dark {
+          color: #fff;
+        }
       }
     }
   }
@@ -132,6 +195,10 @@
     align-items: center;
     width: 120px;
 
+    @include b($tablet) {
+      width: 90px;
+    }
+
     &-icon {
       width: 32px;
       height: 32px;
@@ -141,7 +208,17 @@
     }
 
     &-name {
-      @include font(18px, 21px, 600, #fff);
+      @include font(18px, 21px, 500, #000);
+
+      @include dark {
+        color: #fff;
+        font-weight: 600;
+      }
+
+      @include b($tablet) {
+        font-size: 14px;
+        line-height: 16px;
+      }
     }
   }
 
@@ -173,22 +250,42 @@
       top: 1em;
       left: -3em;
       z-index: 2;
+
+      @include b($tablet) {
+        left: -2em;
+      }
     }
 
     &_dst {
       top: 1em;
       right: -3em;
       z-index: 1;
+
+      @include b($tablet) {
+        right: -2em;
+      }
     }
   }
 }
 
 .caption {
-  @include font(14px, 17px, 400, #8E8D91);
+  @include font(14px, 17px, 400, #525155);
   max-width: 575px;
   margin: 0 auto;
 
   text-align: center;
+
+  @include dark {
+    color: #8e8d91;
+  }
+
+  @include b($tablet) {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 15px;
+    text-align: left;
+  }
 
   a {
     text-decoration: none;
