@@ -11,7 +11,7 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { map } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Connection } from '@solana/web3.js';
@@ -108,7 +108,8 @@ export class WalletConnectorService {
           }
         : undefined;
       return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
-    })
+    }),
+    delay(200)
   );
 
   public readonly web3: Web3;
