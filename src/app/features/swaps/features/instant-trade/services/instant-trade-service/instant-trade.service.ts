@@ -29,6 +29,7 @@ import {
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -45,7 +46,8 @@ export class InstantTradeService extends TradeService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly sdk: RubicSdkService
+    private readonly sdk: RubicSdkService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     super('instant-trade');
   }
@@ -182,6 +184,7 @@ export class InstantTradeService extends TradeService {
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
+    await this.walletConnectorService.checkSettings(trade.from.blockchain);
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
       return this.createTradeWithFee(trade, options);
     }

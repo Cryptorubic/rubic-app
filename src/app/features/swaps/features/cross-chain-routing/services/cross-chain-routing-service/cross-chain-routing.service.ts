@@ -10,6 +10,7 @@ import { SwapFormService } from '@features/swaps/features/main-form/services/swa
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,8 @@ export class CrossChainRoutingService extends TradeService {
   constructor(
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     super('cross-chain-routing');
   }
@@ -53,6 +55,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async createTrade(confirmCallback?: () => void): Promise<void> {
+    await this.walletConnectorService.checkSettings(this.crossChainTrade.trade?.from?.blockchain);
     if (!this.crossChainTrade?.trade) {
       throw new RubicError('[RUBIC SDK] Cross chain trade object not found.');
     }
