@@ -15,7 +15,7 @@ import {
   CROSS_CHAIN_PROVIDER
 } from '../../services/cross-chain-routing-service/models/cross-chain-trade';
 import { ThemeService } from '@app/core/services/theme/theme.service';
-import { filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { BehaviorSubject, from, interval, Observable, delay, Subscription, iif, of } from 'rxjs';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -131,158 +131,159 @@ export class SwapSchemeModalComponent implements OnInit {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     this.setTradeData(this.context.data);
-
-    from(this.srcWeb3Public.getTransactionByHash(this.srcTxHash)).subscribe(tx => {
-      this.srcTxBlockNumber = tx?.blockNumber;
-    });
   }
 
   ngOnInit(): void {
-    this.initSrcTxStatusPolling()
+    this.initSrcTxStatusPolling();
+    this.initTradeProcessingStatusPolling();
+    this.initDstTxStatusPolling();
+  }
+
+  public initSrcTxStatusPolling(): void {
+    interval(5000)
       .pipe(
-        takeWhile(srcTxStatus => {
-          return srcTxStatus === MODAL_SWAP_STATUS.PENDING;
-        })
+        delay(new Date(Date.now() + 2000)),
+        startWith(-1),
+        switchMap(() => {
+          return from(this.getSourceTxStatus(this.srcTxHash));
+        }),
+        tap(srcTxStatus => this._srcTxStatus$.next(srcTxStatus)),
+        takeWhile(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.PENDING)
       )
       .subscribe();
+  }
 
+  public initTradeProcessingStatusPolling(): void {
     this.srcTxStatus$
       .pipe(
         filter(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.SUCCESS),
+        tap(() => this._tradeProcessingStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
-          return this.initTradeProcessingStatusPolling();
+          return interval(5000).pipe(
+            startWith(-1),
+            switchMap(() => {
+              return iif(
+                () => isNil(this.srcTxBlockNumber),
+                from(this.srcWeb3Public.getTransactionByHash(this.srcTxHash)).pipe(
+                  switchMap(tx => {
+                    this.srcTxBlockNumber = tx?.blockNumber || 0;
+                    return this.srcWeb3Public.getBlockNumber();
+                  })
+                ),
+                from(this.srcWeb3Public.getBlockNumber())
+              ).pipe(
+                map(currentBlockNumber => {
+                  const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
+                  console.log({ currentBlockNumber, txBlock: this.srcTxBlockNumber });
+                  return currentBlockNumber - this.srcTxBlockNumber > diff
+                    ? MODAL_SWAP_STATUS.SUCCESS
+                    : MODAL_SWAP_STATUS.PENDING;
+                })
+              );
+            }),
+            catchError(() => of(MODAL_SWAP_STATUS.PENDING)),
+            tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
+          );
         }),
         takeWhile(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING)
       )
       .subscribe();
+  }
 
+  public initDstTxStatusPolling(): void {
     this.tradeProcessingStatus$
       .pipe(
         filter(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.SUCCESS),
+        tap(() => this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
-          return this.initDstTxStatusPolling();
+          return iif(
+            () => this.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS,
+            interval(5000).pipe(
+              startWith(-1),
+              switchMap(() => {
+                if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
+                  return this.getRubicDstTxStatus();
+                }
+
+                if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.CELER) {
+                  return this.getCelerDstTxStatus();
+                }
+              }),
+              tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
+            ),
+            interval(7000).pipe(
+              startWith(-1),
+              switchMap(() => this.getSymbiosisDstTxStatus()),
+              tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
+            )
+          );
         }),
         takeWhile(dstTxStatus => dstTxStatus === MODAL_SWAP_STATUS.PENDING)
       )
       .subscribe();
   }
 
-  public initSrcTxStatusPolling(): Observable<MODAL_SWAP_STATUS> {
-    return interval(5000).pipe(
-      delay(new Date(Date.now() + 2000)),
-      startWith(-1),
-      switchMap(() => {
-        return from(this.getSourceTxStatus(this.srcTxHash));
-      }),
-      tap(srcTxStatus => this._srcTxStatus$.next(srcTxStatus))
-    );
-  }
-
-  public initTradeProcessingStatusPolling(): Observable<MODAL_SWAP_STATUS> {
-    this._tradeProcessingStatus$.next(MODAL_SWAP_STATUS.PENDING);
-    return interval(5000).pipe(
-      startWith(-1),
-      switchMap(() => {
-        return iif(
-          () => isNil(this.srcTxBlockNumber),
-          from(this.srcWeb3Public.getTransactionByHash(this.srcTxHash)).pipe(
-            switchMap(tx => {
-              this.srcTxBlockNumber = tx?.blockNumber || 0;
-              return this.srcWeb3Public.getBlockNumber();
-            })
-          ),
-          from(this.srcWeb3Public.getBlockNumber())
-        );
-      }),
-      map(currentBlockNumber => {
-        const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
-        console.log({ currentBlockNumber, txBlock: this.srcTxBlockNumber });
-        return currentBlockNumber - this.srcTxBlockNumber > diff
-          ? MODAL_SWAP_STATUS.SUCCESS
-          : MODAL_SWAP_STATUS.PENDING;
-      }),
-      tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
-    );
-  }
-
-  public initDstTxStatusPolling(): Observable<MODAL_SWAP_STATUS> {
-    this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING);
-    if (this.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
-      return interval(5000).pipe(
-        startWith(-1),
-        switchMap(() => {
-          if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
-            return this.getRubicDstTxStatus();
-          }
-
-          if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.CELER) {
-            return this.getCelerDstTxStatus();
-          }
-        }),
-        tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
-      );
-    } else {
-      return interval(7000).pipe(
-        startWith(-1),
-        switchMap(() => this.getSymbiosisDstTxStatus()),
-        tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
-      );
-    }
-  }
-
   private async getCelerDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
-    const srcTransactionReceipt = await this.srcWeb3Public.getTransactionReceipt(this.srcTxHash);
-    const [requestLog] = decodeLogs(CELER_CONTRACT_ABI, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
-    const dstTransactionStatus = Number(
-      await this.dstWeb3Public.callContractMethod(
-        CELER_CONTRACT[this.fromBlockchain.key as EthLikeBlockchainName],
-        CELER_CONTRACT_ABI,
-        'txStatusById',
-        {
-          methodArguments: [requestLog.params.find(param => param.name === 'id').value]
-        }
-      )
-    ) as CelerSwapStatus;
+    try {
+      const srcTransactionReceipt = await this.srcWeb3Public.getTransactionReceipt(this.srcTxHash);
+      const [requestLog] = decodeLogs(CELER_CONTRACT_ABI, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
+      const dstTransactionStatus = Number(
+        await this.dstWeb3Public.callContractMethod(
+          CELER_CONTRACT[this.toBlockchain.key as EthLikeBlockchainName],
+          CELER_CONTRACT_ABI,
+          'txStatusById',
+          {
+            methodArguments: [requestLog.params.find(param => param.name === 'id').value]
+          }
+        )
+      ) as CelerSwapStatus;
 
-    if (dstTransactionStatus === CelerSwapStatus.NULL) {
+      if (dstTransactionStatus === CelerSwapStatus.NULL) {
+        return MODAL_SWAP_STATUS.PENDING;
+      }
+
+      if (dstTransactionStatus === CelerSwapStatus.FAILED) {
+        return MODAL_SWAP_STATUS.FAIL;
+      }
+
+      if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
+        return MODAL_SWAP_STATUS.SUCCESS;
+      }
+    } catch (_error) {
       return MODAL_SWAP_STATUS.PENDING;
-    }
-
-    if (dstTransactionStatus === CelerSwapStatus.FAILED) {
-      return MODAL_SWAP_STATUS.FAIL;
-    }
-
-    if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
-      return MODAL_SWAP_STATUS.SUCCESS;
     }
   }
 
   private async getRubicDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
-    const statusTo = Number(
-      await this.dstWeb3Public.callContractMethod(
-        CROSS_CHAIN_PROD.contractAddresses[this.toBlockchain.key],
-        PROCESSED_TRANSACTION_METHOD_ABI,
-        'processedTransactions',
-        { methodArguments: [this.srcTxHash] }
-      )
-    );
+    try {
+      const statusTo = Number(
+        await this.dstWeb3Public.callContractMethod(
+          CROSS_CHAIN_PROD.contractAddresses[this.toBlockchain.key],
+          PROCESSED_TRANSACTION_METHOD_ABI,
+          'processedTransactions',
+          { methodArguments: [this.srcTxHash] }
+        )
+      );
 
-    if (statusTo === RubicSwapStatus.NULL) {
+      if (statusTo === RubicSwapStatus.NULL) {
+        return MODAL_SWAP_STATUS.PENDING;
+      }
+
+      if (statusTo === RubicSwapStatus.PROCESSED) {
+        return MODAL_SWAP_STATUS.SUCCESS;
+      }
+
+      if (statusTo === RubicSwapStatus.REVERTED) {
+        return MODAL_SWAP_STATUS.FAIL;
+      }
+    } catch (_error) {
       return MODAL_SWAP_STATUS.PENDING;
-    }
-
-    if (statusTo === RubicSwapStatus.PROCESSED) {
-      return MODAL_SWAP_STATUS.SUCCESS;
-    }
-
-    if (statusTo === RubicSwapStatus.REVERTED) {
-      return MODAL_SWAP_STATUS.FAIL;
     }
   }
 
   private getSymbiosisDstTxStatus(): Observable<MODAL_SWAP_STATUS> {
     const currentTimestamp = Date.now();
-    const diff = 300000;
+    const diff = 180000; // production 300000
 
     if (currentTimestamp - this.txTimestamp < diff) {
       return of(MODAL_SWAP_STATUS.PENDING);
@@ -318,6 +319,7 @@ export class SwapSchemeModalComponent implements OnInit {
     if (receipt === null) {
       return MODAL_SWAP_STATUS.PENDING;
     } else {
+      this.srcTxBlockNumber = receipt.blockNumber;
       return receipt.status ? MODAL_SWAP_STATUS.SUCCESS : MODAL_SWAP_STATUS.FAIL;
     }
   }
@@ -359,7 +361,20 @@ export class SwapSchemeModalComponent implements OnInit {
     }
   }
 
-  public setTradeData(data: CrosschainSwapSchemeData): void {
+  public closeModalAndOpenMyTrades(): void {
+    this.context.completeWith(false);
+
+    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
+    const mobileModalSize = 'page';
+
+    this.dialogService
+      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
+        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+      })
+      .subscribe();
+  }
+
+  private setTradeData(data: CrosschainSwapSchemeData): void {
     this.srcProvider = TRADES_PROVIDERS[data.srcProvider];
     this.dstProvider = TRADES_PROVIDERS[data.dstProvider];
 
@@ -382,18 +397,5 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private getWeb3Public(blockchain: BlockchainName): EthLikeWeb3Public {
     return this.web3Public[blockchain] as EthLikeWeb3Public;
-  }
-
-  public closeModalAndOpenMyTrades(): void {
-    this.context.completeWith(false);
-
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-
-    this.dialogService
-      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
-      })
-      .subscribe();
   }
 }

@@ -148,7 +148,12 @@
               tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
             "
           ></div>
-          <hr *ngIf="tradeData.dstStatus !== MODAL_SWAP_STATUS.PENDING" />
+          <hr
+            *ngIf="
+              tradeData.dstStatus !== MODAL_SWAP_STATUS.PENDING &&
+              tradeData.dstStatus !== MODAL_SWAP_STATUS.REVERT
+            "
+          />
         </div>
         <div class="scheme__pool-name">
           Rubic<br />
@@ -158,7 +163,17 @@
       <div class="scheme__dst">
         <ng-container [ngSwitch]="tradeData.dstStatus">
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING || MODAL_SWAP_STATUS.REVERT"
+            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            class="scheme__status-icon scheme__status-icon_rotating"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/white_loader.svg'
+                : 'assets/images/icons/black_loader.svg'
+            "
+            alt=""
+          />
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.REVERT"
             class="scheme__status-icon scheme__status-icon_rotating"
             [src]="
               isDarkTheme

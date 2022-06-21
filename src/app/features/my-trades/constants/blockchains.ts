@@ -31,7 +31,7 @@ export const BLOCKCHAINS: Blockchains = {
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     key: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    name: 'Binance Smart Chain',
+    name: 'BNB',
     img: `${imageBaseSrc}bnb.svg`
   },
   [BLOCKCHAIN_NAME.POLYGON]: {

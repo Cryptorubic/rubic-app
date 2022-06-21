@@ -40,18 +40,26 @@
 .pair {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 500px;
+  justify-content: center;
   margin: 0 auto 56px;
 
   @include b($tablet) {
-    max-width: 400px;
     margin: 0 auto 90px;
+  }
+
+  &__arrow {
+    width: 32px;
+    margin: 0 65px;
+
+    @include b($tablet) {
+      margin: 0 32px;
+    }
   }
 
   &__from,
   &__to {
     display: flex;
+    flex-grow: 1;
     align-items: center;
 
     img {
@@ -66,6 +74,14 @@
         height: 38px;
       }
     }
+  }
+
+  &__from {
+    justify-content: flex-end;
+  }
+
+  &__to {
+    justify-content: flex-start;
   }
 
   &__symbol {

@@ -180,6 +180,10 @@ export class RecentTradesService {
       return { statusFrom, statusTo: RecentTradeStatus.FAIL };
     }
 
+    if (trade?._revertable === false) {
+      return { statusFrom, statusTo: RecentTradeStatus.FALLBACK };
+    }
+
     if (statusFrom === RecentTradeStatus.SUCCESS) {
       const isAverageTxTimeSpent = Date.now() - trade.timestamp > 150000;
 
@@ -196,10 +200,6 @@ export class RecentTradesService {
           const specificTx = this.symbiosisPendingRequests?.find(
             request => request.transactionHash === trade.srcTxHash
           );
-
-          if (trade?._revertable === false) {
-            return { statusFrom, statusTo: RecentTradeStatus.FALLBACK };
-          }
 
           if (specificTx) {
             this.recentTradesStoreService.updateTrade({ ...trade, _revertable: true });

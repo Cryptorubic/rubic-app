@@ -1206,18 +1206,23 @@ export class CrossChainRoutingService extends TradeService {
 
   public openSwapSchemeModal(provider: CrossChainProvider, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
+
     this.dialogService
       .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize,
+        size: this.headerStore.isMobile ? 'page' : 'l',
         data: {
           fromToken,
           fromBlockchain,
           toToken,
           toBlockchain,
-          srcProvider: this.smartRouting.fromProvider,
-          dstProvider: this.smartRouting.toProvider,
+          srcProvider:
+            this.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+              ? INSTANT_TRADE_PROVIDER.ONEINCH
+              : this.smartRouting.fromProvider,
+          dstProvider:
+            this.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+              ? INSTANT_TRADE_PROVIDER.ONEINCH
+              : this.smartRouting.toProvider,
           crossChainProvider: provider,
           srcTxHash: txHash
         }
