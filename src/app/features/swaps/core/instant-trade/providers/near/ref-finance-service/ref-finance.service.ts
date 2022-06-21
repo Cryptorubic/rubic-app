@@ -154,7 +154,11 @@ export class RefFinanceService implements ItProvider {
   public async calculateTrade(
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    _shouldCalculateGas?: boolean,
+    _fromAddress?: string,
+    _wrappedNativeAddress?: string,
+    isCrossChain?: boolean
   ): Promise<InstantTrade> {
     if (RefFinanceSwapService.isWrap(fromToken.address, toToken.address)) {
       return RefFinanceSwapService.getWrapTrade(fromToken, toToken, fromAmount);
@@ -168,6 +172,9 @@ export class RefFinanceService implements ItProvider {
       );
 
       if (!pools.length) {
+        if (isCrossChain) {
+          throw Error();
+        }
         const transitToken: InstantTradeToken = {
           address: 'wrap.near',
           decimals: 24,
