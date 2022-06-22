@@ -4,9 +4,7 @@ import {
   BlockchainName,
   CelerRubicCrossChainTrade,
   compareAddresses,
-  CROSS_CHAIN_TRADE_TYPE,
-  PriceTokenAmount,
-  Token
+  CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
@@ -15,7 +13,6 @@ import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/provi
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
@@ -23,10 +20,10 @@ import {
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import BigNumber from 'bignumber.js';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 
 @Injectable({
   providedIn: 'root'
@@ -57,12 +54,11 @@ export class CrossChainRoutingService extends TradeService {
   public async calculateTrade(_needApprove?: boolean): Promise<WrappedCrossChainTrade> {
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    // @TODO SDK.
-    const options: SwapManagerCrossChainCalculationOptions = {
+    const options: CrossChainOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance
-    } as unknown;
+    };
 
     this.crossChainTrade = await this.sdk.crossChain.calculateTrade(
       fromToken,
@@ -108,27 +104,27 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     if (trade instanceof CelerRubicCrossChainTrade) {
-      const { fromTrade, toTrade } = trade as CelerRubicCrossChainTrade;
+      const { fromTrade, toTrade, feeInPercents, cryptoFeeToken } =
+        trade as CelerRubicCrossChainTrade;
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
 
-      // const feePercent = trade.transitTokenFee;
-      // const fee = feePercent / 100;
-      // const feeAmount = trade.toTransitTokenAmount.multipliedBy(fee).dividedBy(1 - fee);
-      const feePercent = 0;
-      // const fee = 0.02;
-      const feeAmount = new BigNumber(NaN);
+      const fee = feeInPercents / 100;
+      const feeAmount = toTrade.toTokenAmountMin.multipliedBy(fee).dividedBy(1 - fee);
 
-      // const firstTransitToken = (trade.const[(priceImpactFrom, priceImpactTo)] = await Promise.all([
-      //   this.calculatePriceImpact(
-      //     fromToken,
-      //     firstTransitToken,
-      //     fromAmount,
-      //     fromTransitTokenAmount,
-      //     'from'
-      //   ),
-      //   this.calculatePriceImpact(toToken, secondTransitToken, toAmount, toTransitTokenAmount, 'to')
-      // ]));
+      const priceImpactFrom = PriceImpactService.calculatePriceImpact(
+        fromTrade.fromToken.price,
+        fromTrade.toToken.price,
+        fromTrade.fromToken.tokenAmount,
+        fromTrade.toToken.tokenAmount
+      );
+
+      const priceImpactTo = PriceImpactService.calculatePriceImpact(
+        toTrade.fromToken.price,
+        toTrade.toToken.price,
+        toTrade.fromToken.tokenAmount,
+        toTrade.toToken.tokenAmount
+      );
 
       const fromPath: null = null;
       const toPath: null = null;
@@ -136,14 +132,11 @@ export class CrossChainRoutingService extends TradeService {
       // const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
       // const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
 
-      const priceImpactFrom = 1;
-      const priceImpactTo = 1;
-
       return {
-        feePercent,
+        feePercent: feeInPercents,
         feeAmount,
-        feeTokenSymbol: 'TEST' /* secondTransitToken.symbol */,
-        cryptoFee: 0 /* trade.cryptoFee.toNumber() */,
+        feeTokenSymbol: cryptoFeeToken.symbol,
+        cryptoFee: cryptoFeeToken.tokenAmount,
         estimatedGas,
         priceImpactFrom,
         priceImpactTo,
@@ -158,61 +151,22 @@ export class CrossChainRoutingService extends TradeService {
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 
-  /**
-   * Calculates price impact of token to 'transit token', or vice versa, trade.
-   * @param token Token, selected in form.
-   * @param transitToken Transit token.
-   * @param tokenAmount Amount of token, selected in form.
-   * @param transitTokenAmount Amount of transit token.
-   * @param type 'From' or 'to' type of token in form.
-   * @return number Price impact in percents.
-   */
-  private async calculatePriceImpact(
-    token: PriceTokenAmount,
-    transitToken: Token,
-    tokenAmount: PriceTokenAmount,
-    transitTokenAmount: BigNumber,
-    type: 'from' | 'to'
-  ): Promise<number> {
-    // @ts-ignore @TODO SDK
-    if (!compareAddresses(token.address, transitToken.address)) {
-      const transitTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
-        address: transitToken.address,
-        // @ts-ignore @TODO
-        blockchain: token.blockchain
-      });
-      // @ts-ignore @TODO
-      const priceImpactArguments: [number, number, BigNumber, BigNumber] =
-        type === 'from'
-          ? // @ts-ignore @TODO
-            [token.price, transitTokenPrice, tokenAmount, transitTokenAmount]
-          : // @ts-ignore @TODO
-            [transitTokenPrice, token.price, transitTokenAmount, tokenAmount];
-      return PriceImpactService.calculatePriceImpact(...priceImpactArguments);
-    }
-    return 0;
-  }
-
   private async calculateSmartRouting(): Promise<void> {
     this.smartRouting = {
       fromProvider: this.crossChainTrade.trade.itType.from,
       toProvider: this.crossChainTrade.trade.itType.to,
-      // @TODO SDK.
-      // fromHasTrade: isPairOfCelerSupportedTransitTokens
-      //   ? false
-      //   : Boolean(sourceBestProvider?.tradeAndToAmount.trade),
-      // toHasTrade: isPairOfCelerSupportedTransitTokens
-      //   ? false
-      //   : Boolean(targetBestProvider?.tradeAndToAmount.trade),
-      fromHasTrade: true,
-      toHasTrade: true
+      fromHasTrade: compareAddresses(
+        this.crossChainTrade.trade.fromTrade.fromToken.address,
+        this.crossChainTrade.trade.fromTrade.toToken.address
+      ),
+      toHasTrade: compareAddresses(
+        this.crossChainTrade.trade.toTrade.fromToken.address,
+        this.crossChainTrade.trade.toTrade.toToken.address
+      )
     };
-    // const sourceBestUSDC = this.crossChainTrade.trade.to.price;
-    // const toTokenUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
-    //   address: toToken,
-    //   blockchain: toBlockchain
-    // });
-    // const hasSourceTrades = Boolean(sourceBlockchainProviders[0]?.tradeAndToAmount.trade);
-    // const hasTargetTrades = Boolean(targetBlockchainProviders[0]?.tradeAndToAmount.trade);
+  }
+
+  public async approve(): Promise<void> {
+    this.crossChainTrade.trade.approve();
   }
 }

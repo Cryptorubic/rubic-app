@@ -158,11 +158,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
-        // const { fromBlockchain, toBlockchain } = form;
-        // this.crossChainRoutingService.setIsSupportedCelerBlockchainPair(
-        //   fromBlockchain as EthLikeBlockchainName,
-        //   toBlockchain as EthLikeBlockchainName
-        // );
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -369,7 +364,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
       });
-      // this.smartRouting = this.crossChainRoutingService.smartRouting;
+      this.smartRouting = this.crossChainRoutingService.smartRouting;
 
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -387,7 +382,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      // await this.crossChainRoutingService.approve();
+      await this.crossChainRoutingService.approve();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = false;

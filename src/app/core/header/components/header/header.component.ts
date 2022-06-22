@@ -93,7 +93,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone
   ) {
-    this.loadUser();
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.getCurrentUser();
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
@@ -124,18 +123,6 @@ export class HeaderComponent implements AfterViewInit {
     const offset = 90;
     const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
     this.document.documentElement.style.setProperty('--scroll-size', pixelOffset);
-  }
-
-  private async loadUser(): Promise<void> {
-    const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
-    if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch (err) {
-        this.errorService.catch(err);
-      }
-    }
   }
 
   /**
