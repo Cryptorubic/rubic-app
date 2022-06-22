@@ -29,6 +29,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { BLOCKCHAIN_NAME, BlockchainName, WalletProvider } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { switchTap } from '@shared/utils/utils';
+import { provider as Web3Provider } from 'web3-core';
 
 interface WCWallets {
   [P: string]: {
@@ -104,7 +105,7 @@ export class WalletConnectorService {
         ? {
             address,
             chainId: this.networkChangeSubject$.value.id,
-            core: this.provider.wallet
+            core: this.provider.wallet as Web3Provider | Web3
           }
         : undefined;
       return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);

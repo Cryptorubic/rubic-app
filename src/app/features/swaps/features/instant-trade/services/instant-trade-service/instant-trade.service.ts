@@ -15,7 +15,8 @@ import {
   BlockchainName,
   InstantTradeError,
   EncodeTransactionOptions,
-  Web3Pure
+  Web3Pure,
+  Web3Public
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -30,6 +31,7 @@ import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -47,7 +49,8 @@ export class InstantTradeService extends TradeService {
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly sdk: RubicSdkService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {
     super('instant-trade');
   }
@@ -121,11 +124,18 @@ export class InstantTradeService extends TradeService {
     confirmCallback?: () => void
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
+    const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
+      getItSwapParams(trade);
+
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
+    await blockchainAdapter.checkBalance(
+      { address: fromAddress, decimals: fromDecimals, symbol: fromSymbol },
+      fromAmount,
+      this.authService.userAddress
+    );
 
     let transactionHash: string;
     let subscription$: Subscription;
-
-    const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain } = getItSwapParams(trade);
 
     const options = {
       onConfirm: (hash: string) => {

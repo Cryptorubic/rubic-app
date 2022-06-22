@@ -16,12 +16,14 @@ import {
   UserRejectError as SdkUserRejectError,
   TransactionRevertedError as SdkTransactionRevertedError,
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
-  LowGasError as SdkLowGasError
+  LowGasError as SdkLowGasError,
+  InsufficientFundsError as SdkInsufficientFundsError
 } from 'rubic-sdk';
 import { UserRejectError } from './models/provider/user-reject-error';
 import TransactionRevertedError from './models/common/transaction-reverted-error';
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
 import { LowGasError } from './models/provider/low-gas-error';
+import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 
 interface Question {
   title: string;
@@ -167,6 +169,9 @@ export class ErrorsService {
       }
       if (err instanceof SdkUserRejectError) {
         return new UserRejectError();
+      }
+      if (err instanceof SdkInsufficientFundsError) {
+        return new InsufficientFundsError(err.tokenSymbol, err.balance, err.requiredBalance);
       }
       if (err instanceof SdkLowGasError) {
         return new LowGasError();

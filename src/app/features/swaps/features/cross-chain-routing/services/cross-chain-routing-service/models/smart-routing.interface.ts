@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { TradeType } from 'rubic-sdk';
 
 export interface SmartRouting {
@@ -6,5 +5,4 @@ export interface SmartRouting {
   toProvider: TradeType;
   fromHasTrade: boolean;
   toHasTrade: boolean;
-  savings: BigNumber;
 }

@@ -15,6 +15,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -83,7 +84,7 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnSwapForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => {
+      .subscribe((form: SwapFormInput) => {
         const { fromAmount } = form;
         this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
@@ -146,7 +147,7 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
-    const { fromToken /*, fromAmount */ } = this.swapFormService.inputValue;
+    const { fromToken, fromAmount } = this.swapFormService.inputValue;
 
     if (!fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
@@ -155,7 +156,7 @@ export class SwapButtonContainerErrorsService {
 
     if (fromToken.amount?.isFinite()) {
       this._errorLoading$.next(false);
-      this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+      this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = fromToken.amount.lt(fromAmount);
     } else {
       this._errorLoading$.next(true);
     }

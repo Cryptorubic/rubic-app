@@ -237,8 +237,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          // @TODO SDK
-          const { fromAmount /*, fromBlockchain */ } = this.swapFormService.inputValue;
+          const { fromAmount } = this.swapFormService.inputValue;
           const calculateNeedApprove = Boolean(this.authService.userAddress);
           const crossChainTrade$ = from(
             this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
@@ -270,17 +269,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 this.swapFormService.output.patchValue({
                   toAmount: trade?.to.tokenAmount
                 });
-                // this.smartRouting = this.crossChainRoutingService.smartRouting;
+                this.smartRouting = this.crossChainRoutingService.smartRouting;
                 this.hiddenTradeData = null;
                 this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
 
-                if (this.minError || this.maxError /* || !toAmount?.gt(0)*/) {
+                if (this.minError || this.maxError || this.toAmount?.lte(0)) {
                   this.tradeStatus = TRADE_STATUS.DISABLED;
                 } else {
-                  // @TODO SDK.
-                  // this.tradeStatus = false
-                  //   ? TRADE_STATUS.READY_TO_APPROVE
-                  //   : TRADE_STATUS.READY_TO_SWAP;
+                  this.tradeStatus = this.needApprove
+                    ? TRADE_STATUS.READY_TO_APPROVE
+                    : TRADE_STATUS.READY_TO_SWAP;
                   this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
                 }
               },

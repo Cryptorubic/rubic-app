@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
-import BigNumber from 'bignumber.js';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { TradeType } from 'rubic-sdk';
 
@@ -16,9 +15,6 @@ export class SmartRoutingComponent {
 
   @Input()
   public toProvider: TradeType;
-
-  @Input()
-  public savings: BigNumber;
 
   @Input()
   public fromHasTrade: boolean;
