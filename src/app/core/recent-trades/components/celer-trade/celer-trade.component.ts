@@ -57,14 +57,10 @@ export class CelerTradeComponent implements OnInit, OnDestroy {
           }
         }),
         watch(this.cdr),
-        takeWhile(uiTrade => {
-          return uiTrade?.statusTo === RecentTradeStatus.PENDING;
-        }),
+        takeWhile(uiTrade => uiTrade?.statusTo === RecentTradeStatus.PENDING),
         takeUntil(this.destroy$)
       )
-      .subscribe(result => {
-        console.log('parsed celer trade', result);
-      });
+      .subscribe();
   }
 
   public ngOnDestroy(): void {

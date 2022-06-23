@@ -59,9 +59,7 @@ export class RubicTradeComponent implements OnInit {
         takeWhile(uiTrade => uiTrade?.statusTo === RecentTradeStatus.PENDING),
         takeUntil(this.destroy$)
       )
-      .subscribe(result => {
-        console.log('parsed rubic trade', result);
-      });
+      .subscribe();
   }
 
   public ngOnDestroy(): void {
