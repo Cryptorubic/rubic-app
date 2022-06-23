@@ -1,3 +1,5 @@
+@use 'src/scss/vars' as *;
+
 :host {
   display: flex;
   justify-content: center;
@@ -6,5 +8,5 @@
   color: white;
   font-size: 16px;
 
-  background: #4aa956;
+  background: $rubic-primary;
 }
