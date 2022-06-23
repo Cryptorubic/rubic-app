@@ -49,11 +49,9 @@ import { SmartRouting } from '@features/swaps/features/cross-chain-routing/servi
 import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import {
-  CrosschainSwapSchemeData,
-  SwapSchemeModalComponent
-} from '../swap-scheme-modal/swap-scheme-modal.component';
+import { SwapSchemeModalComponent } from '../swap-scheme-modal/swap-scheme-modal.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -205,7 +203,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
     const mobileModalSize = 'page';
     this.dialogService
-      .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize,
         data: {
           fromToken,

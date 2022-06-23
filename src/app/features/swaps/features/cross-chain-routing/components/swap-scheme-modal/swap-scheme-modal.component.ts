@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { Provider, TRADES_PROVIDERS } from '@app/shared/constants/common/trades-providers';
 import {
   BlockchainName,
-  BLOCKCHAIN_NAME,
   EthLikeBlockchainName
 } from '@app/shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@app/shared/models/instant-trade/instant-trade-provider';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent, POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -15,8 +13,26 @@ import {
   CROSS_CHAIN_PROVIDER
 } from '../../services/cross-chain-routing-service/models/cross-chain-trade';
 import { ThemeService } from '@app/core/services/theme/theme.service';
-import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
-import { BehaviorSubject, from, interval, Observable, delay, Subscription, iif, of } from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  retry,
+  startWith,
+  switchMap,
+  takeWhile,
+  tap
+} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  from,
+  interval,
+  Observable,
+  delay,
+  Subscription,
+  of,
+  takeUntil
+} from 'rxjs';
 import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TransactionReceipt } from 'web3-eth';
@@ -27,26 +43,18 @@ import { CELER_CONTRACT_ABI } from '../../services/cross-chain-routing-service/c
 import { CELER_CONTRACT } from '../../services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
 import { decodeLogs } from '@app/shared/utils/decode-logs';
 import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
-import { PendingRequest } from 'symbiosis-js-sdk';
+import { TransactionStuckError } from 'symbiosis-js-sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { isNil } from '@app/shared/utils/utils';
 import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
-
-export interface CrosschainSwapSchemeData {
-  srcProvider: INSTANT_TRADE_PROVIDER;
-  dstProvider: INSTANT_TRADE_PROVIDER;
-  fromToken: TokenAmount;
-  toToken: TokenAmount;
-  fromBlockchain: BlockchainName;
-  toBlockchain: BlockchainName;
-  crossChainProvider: CrossChainProvider;
-  srcTxHash: string;
-}
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { RecentTradeStatus } from '@app/core/recent-trades/models/recent-trade-status.enum';
+import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
+import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 
 enum MODAL_SWAP_STATUS {
   SUCCESS = 'SUCCESS',
@@ -63,7 +71,7 @@ enum MODAL_SWAP_STATUS {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapSchemeModalComponent implements OnInit {
-  public trade: CrosschainSwapSchemeData;
+  public trade: SwapSchemeModalData;
 
   public srcProvider: Provider;
 
@@ -81,15 +89,11 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private srcTxHash: string;
 
-  private srcTxBlockNumber: number;
-
-  private txTimestamp: number;
+  private srcTxReceipt: TransactionReceipt;
 
   private srcWeb3Public: EthLikeWeb3Public;
 
   private dstWeb3Public: EthLikeWeb3Public;
-
-  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   private readonly _srcTxStatus$ = new BehaviorSubject<MODAL_SWAP_STATUS>(
     MODAL_SWAP_STATUS.PENDING
@@ -111,23 +115,24 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public readonly MODAL_SWAP_STATUS = MODAL_SWAP_STATUS;
 
-  private symbiosisPendingRequests: PendingRequest[];
-
   private readonly _revertBtnLoading$ = new BehaviorSubject<boolean>(false);
 
   public readonly revertBtnLoading$ = this._revertBtnLoading$.asObservable();
 
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+
   constructor(
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, CrosschainSwapSchemeData>,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    private readonly themeService: ThemeService,
     private readonly web3Public: PublicBlockchainAdapterService,
     private readonly symbiosisService: SymbiosisService,
-    private readonly translateService: TranslateService,
+    private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
     private readonly notificationService: NotificationsService,
-    private readonly headerStore: HeaderStore,
+    private readonly themeService: ThemeService,
+    private readonly translateService: TranslateService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
+    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     this.setTradeData(this.context.data);
@@ -148,7 +153,8 @@ export class SwapSchemeModalComponent implements OnInit {
           return from(this.getSourceTxStatus(this.srcTxHash));
         }),
         tap(srcTxStatus => this._srcTxStatus$.next(srcTxStatus)),
-        takeWhile(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.PENDING)
+        takeWhile(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.PENDING),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -159,33 +165,28 @@ export class SwapSchemeModalComponent implements OnInit {
         filter(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.SUCCESS),
         tap(() => this._tradeProcessingStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
-          return interval(5000).pipe(
+          return interval(7000).pipe(
             startWith(-1),
             switchMap(() => {
-              return iif(
-                () => isNil(this.srcTxBlockNumber),
-                from(this.srcWeb3Public.getTransactionByHash(this.srcTxHash)).pipe(
-                  switchMap(tx => {
-                    this.srcTxBlockNumber = tx?.blockNumber || 0;
-                    return this.srcWeb3Public.getBlockNumber();
-                  })
-                ),
-                from(this.srcWeb3Public.getBlockNumber())
-              ).pipe(
+              return from(this.srcWeb3Public.getBlockNumber()).pipe(
                 map(currentBlockNumber => {
                   const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
-                  console.log({ currentBlockNumber, txBlock: this.srcTxBlockNumber });
-                  return currentBlockNumber - this.srcTxBlockNumber > diff
+
+                  return currentBlockNumber - this.srcTxReceipt.blockNumber > diff
                     ? MODAL_SWAP_STATUS.SUCCESS
                     : MODAL_SWAP_STATUS.PENDING;
                 })
               );
             }),
-            catchError(() => of(MODAL_SWAP_STATUS.PENDING)),
+            catchError((error: unknown) => {
+              console.debug('[General] error getting current block number', error);
+              return of(MODAL_SWAP_STATUS.PENDING);
+            }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
         }),
-        takeWhile(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING)
+        takeWhile(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -196,29 +197,28 @@ export class SwapSchemeModalComponent implements OnInit {
         filter(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.SUCCESS),
         tap(() => this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
-          return iif(
-            () => this.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS,
-            interval(5000).pipe(
-              startWith(-1),
-              switchMap(() => {
-                if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
-                  return this.getRubicDstTxStatus();
-                }
+          if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+            return this.getSymbiosisDstTxStatus();
+          }
 
-                if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.CELER) {
-                  return this.getCelerDstTxStatus();
-                }
-              }),
-              tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
-            ),
-            interval(7000).pipe(
-              startWith(-1),
-              switchMap(() => this.getSymbiosisDstTxStatus()),
-              tap(dstTxStatus => this._dstTxStatus$.next(dstTxStatus))
-            )
+          return interval(10000).pipe(
+            startWith(-1),
+            switchMap(() => {
+              if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
+                return this.getRubicDstTxStatus();
+              }
+
+              if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.CELER) {
+                return this.getCelerDstTxStatus();
+              }
+            })
           );
         }),
-        takeWhile(dstTxStatus => dstTxStatus === MODAL_SWAP_STATUS.PENDING)
+        tap(dstTxStatus => {
+          this._dstTxStatus$.next(dstTxStatus);
+        }),
+        takeWhile(dstTxStatus => dstTxStatus === MODAL_SWAP_STATUS.PENDING),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -249,7 +249,8 @@ export class SwapSchemeModalComponent implements OnInit {
       if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
         return MODAL_SWAP_STATUS.SUCCESS;
       }
-    } catch (_error) {
+    } catch (error) {
+      console.debug('[Celer] error retrieving dst tx status: ', error);
       return MODAL_SWAP_STATUS.PENDING;
     }
   }
@@ -276,52 +277,56 @@ export class SwapSchemeModalComponent implements OnInit {
       if (statusTo === RubicSwapStatus.REVERTED) {
         return MODAL_SWAP_STATUS.FAIL;
       }
-    } catch (_error) {
+    } catch (error) {
+      console.debug('[Rubic] error retrieving dst tx status: ', error);
       return MODAL_SWAP_STATUS.PENDING;
     }
   }
 
   private getSymbiosisDstTxStatus(): Observable<MODAL_SWAP_STATUS> {
-    const currentTimestamp = Date.now();
-    const diff = 180000; // production 300000
+    return from(
+      this.symbiosisService.waitForComplete(
+        this.fromBlockchain.key,
+        this.toBlockchain.key,
+        this.toToken,
+        this.srcTxReceipt
+      )
+    ).pipe(
+      retry(3),
+      map(response => {
+        console.log('[Symbiosis] cross-chain completed: ', response);
 
-    if (currentTimestamp - this.txTimestamp < diff) {
-      return of(MODAL_SWAP_STATUS.PENDING);
-    } else {
-      return from(this.symbiosisService.getPendingRequests()).pipe(
-        map(pendingRequests => {
-          this.symbiosisPendingRequests = pendingRequests;
-          const specificTx = this.symbiosisPendingRequests?.find(
-            request => request.transactionHash === this.srcTxHash
-          );
+        if (response) {
+          return MODAL_SWAP_STATUS.SUCCESS;
+        }
 
-          console.log({ pendingRequests });
+        return MODAL_SWAP_STATUS.PENDING;
+      }),
+      catchError((error: unknown) => {
+        console.debug('[Symbiosis] error retrieving dst tx status: ', error);
 
-          if (specificTx) {
-            return MODAL_SWAP_STATUS.REVERT;
-          } else {
-            return MODAL_SWAP_STATUS.SUCCESS;
-          }
-        })
-      );
-    }
+        if (error instanceof TransactionStuckError) {
+          return of(MODAL_SWAP_STATUS.REVERT);
+        }
+
+        return of(MODAL_SWAP_STATUS.PENDING);
+      })
+    );
   }
 
   private async getSourceTxStatus(txHash: string): Promise<MODAL_SWAP_STATUS> {
-    let receipt: TransactionReceipt;
-
     try {
-      receipt = await this.srcWeb3Public.getTransactionReceipt(txHash);
-    } catch (_err) {
-      receipt = null;
+      this.srcTxReceipt = await this.srcWeb3Public.getTransactionReceipt(txHash);
+    } catch (error) {
+      console.debug('[General] error retrieving src tx status', { error, txHash });
+      this.srcTxReceipt = null;
     }
 
-    if (receipt === null) {
+    if (this.srcTxReceipt === null) {
       return MODAL_SWAP_STATUS.PENDING;
-    } else {
-      this.srcTxBlockNumber = receipt.blockNumber;
-      return receipt.status ? MODAL_SWAP_STATUS.SUCCESS : MODAL_SWAP_STATUS.FAIL;
     }
+
+    return this.srcTxReceipt.status ? MODAL_SWAP_STATUS.SUCCESS : MODAL_SWAP_STATUS.FAIL;
   }
 
   public async revertSymbiosisTrade(): Promise<void> {
@@ -340,11 +345,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this._revertBtnLoading$.next(true);
 
     try {
-      await this.symbiosisService.revertTrade(
-        this.srcTxHash,
-        onTransactionHash,
-        this.symbiosisPendingRequests
-      );
+      await this.symbiosisService.revertTrade(this.srcTxHash, onTransactionHash);
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -352,6 +353,13 @@ export class SwapSchemeModalComponent implements OnInit {
         status: TuiNotification.Success,
         autoClose: 15000
       });
+
+      this.recentTradesStoreService.updateTrade({
+        ...this.recentTradesStoreService.getSpecificTrade(this.srcTxHash, this.fromBlockchain.key),
+        calculatedStatusFrom: RecentTradeStatus.SUCCESS,
+        calculatedStatusTo: RecentTradeStatus.FALLBACK
+      });
+
       this.context.completeWith(true);
     } catch (err) {
       this.errorService.catch(err);
@@ -374,7 +382,7 @@ export class SwapSchemeModalComponent implements OnInit {
       .subscribe();
   }
 
-  private setTradeData(data: CrosschainSwapSchemeData): void {
+  private setTradeData(data: SwapSchemeModalData): void {
     this.srcProvider = TRADES_PROVIDERS[data.srcProvider];
     this.dstProvider = TRADES_PROVIDERS[data.dstProvider];
 
@@ -387,8 +395,6 @@ export class SwapSchemeModalComponent implements OnInit {
     this.srcTxHash = data.srcTxHash;
 
     this.crossChainProvider = data.crossChainProvider;
-
-    this.txTimestamp = Date.now();
 
     this.srcWeb3Public = this.getWeb3Public(data.fromBlockchain);
 

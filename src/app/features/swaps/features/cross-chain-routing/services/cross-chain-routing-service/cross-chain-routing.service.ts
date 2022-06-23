@@ -66,12 +66,10 @@ import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/s
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { TuiDialogService } from '@taiga-ui/core';
-import {
-  CrosschainSwapSchemeData,
-  SwapSchemeModalComponent
-} from '../../components/swap-scheme-modal/swap-scheme-modal.component';
+import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -1208,7 +1206,7 @@ export class CrossChainRoutingService extends TradeService {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     this.dialogService
-      .open<CrosschainSwapSchemeData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
         data: {
           fromToken,

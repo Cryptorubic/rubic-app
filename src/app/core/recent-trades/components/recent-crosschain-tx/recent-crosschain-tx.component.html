@@ -1,11 +1,9 @@
 <div class="title">Recent Crosschain Tx</div>
 <div class="description">History of your latest Crosschain Transactions:</div>
-<div class="overlay" *ngIf="initialLoading$ | async">
-  <tui-loader size="xxl" [showLoader]="true" [overlay]="true"></tui-loader>
-</div>
-<ng-container *ngLet="recentTrades$ | async as recentTrades">
-  <ng-container *ngIf="recentTrades?.length > 0; else noTransactions">
-    <table class="table" *ngIf="!this.isMobile; else mobileRecentTrades">
+
+<ng-container *ngIf="recentTrades?.length > 0; else noTransactions">
+  <ng-container *ngIf="!isMobile; else mobileRecentTrades">
+    <table class="table">
       <tbody>
         <tr class="table__tr table__tr_head">
           <th class="table__th">Date</th>
@@ -14,133 +12,54 @@
           <th class="table__th">To</th>
           <th class="table__th">Status To</th>
         </tr>
-        <ng-container *ngFor="let tx of recentTrades">
-          <tr class="table__tr table__tr_data">
-            <td class="table__td table__td_date">
-              {{ (tx.timestamp | date: 'MMM dd, yyyy') + ' at ' + (tx.timestamp | date: 'h:mm') }}
-            </td>
-            <td class="table__td table__td_from">
-              <div class="table__trade">
-                <div
-                  class="table__trade-token-image"
-                  [ngStyle]="{ 'background-image': 'url(' + tx.fromToken.image + ')' }"
-                ></div>
-                <div class="table__trade-data">
-                  <div class="table__trade-token">{{ tx.fromToken.symbol }}</div>
-                  <div class="table__trade-blockchain">{{ tx.fromBlockchain.name }}</div>
-                </div>
-              </div>
-            </td>
-            <td class="table__td table__td_status">
-              <a [href]="tx.srcTxLink" target="_blank">
-                <app-status-badge
-                  [type]="STATUS_BADGE_TYPE[tx.statusFrom]"
-                  [text]="STATUS_BADGE_TEXT[tx.statusFrom]"
-                >
-                </app-status-badge>
-              </a>
-            </td>
-            <td class="table__td table__td_to">
-              <div class="table__trade">
-                <div
-                  class="table__trade-token-image"
-                  [ngStyle]="{ 'background-image': 'url(' + tx.toToken.image + ')' }"
-                ></div>
-                <div class="table__trade-data">
-                  <div class="table__trade-token">{{ tx.toToken.symbol }}</div>
-                  <div class="table__trade-blockchain">{{ tx.toBlockchain.name }}</div>
-                </div>
-              </div>
-            </td>
-            <td class="table__td table__td_status">
-              <app-status-badge
-                [type]="STATUS_BADGE_TYPE[tx.statusTo]"
-                [text]="STATUS_BADGE_TEXT[tx.statusTo]"
-                *ngIf="tx.statusTo !== RecentTradeStatus.REVERT; else revert"
-              >
-              </app-status-badge>
-              <ng-template #revert>
-                <app-rubic-button
-                  appearance="secondary"
-                  (onClick)="revertSymbiosis(tx.srcTxHash, tx.fromBlockchain.key)"
-                >
-                  Revert
-                </app-rubic-button>
-              </ng-template>
-            </td>
-          </tr>
+        <ng-container *ngFor="let trade of recentTrades">
+          <tr
+            celer-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
+          ></tr>
+          <tr
+            rubic-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RUBIC"
+          ></tr>
+          <tr
+            symbiosis-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
-
-    <ng-template #mobileRecentTrades>
-      <div class="list">
-        <ng-container *ngFor="let tx of recentTrades">
-          <div class="tx">
-            <div class="tx__row">
-              <div class="tx__row-label">Date</div>
-              <div class="tx__row-value">
-                {{ (tx.timestamp | date: 'MMM dd, yyyy') + ' at ' + (tx.timestamp | date: 'h:mm') }}
-              </div>
-            </div>
-            <div class="tx__row">
-              <div class="tx__row-label">From</div>
-              <div class="tx__row-value">
-                <div
-                  class="tx__token-image"
-                  [ngStyle]="{ 'background-image': 'url(' + tx.fromToken.image + ')' }"
-                ></div>
-                <div class="tx__token-symbol">
-                  {{ tx.fromToken.symbol }}
-                </div>
-                <div class="tx__token-blockchain">
-                  {{ tx.fromBlockchain.name }}
-                </div>
-              </div>
-            </div>
-            <div class="tx__row">
-              <div class="tx__row-label">Status From</div>
-              <div class="tx__row-value">
-                <a class="tx__status-from" [href]="tx.srcTxLink" target="_blank">
-                  <app-status-badge
-                    [type]="STATUS_BADGE_TYPE[tx.statusFrom]"
-                    [text]="STATUS_BADGE_TEXT[tx.statusFrom]"
-                  >
-                  </app-status-badge>
-                </a>
-              </div>
-            </div>
-            <div class="tx__row">
-              <div class="tx__row-label">To</div>
-              <div class="tx__row-value">
-                <div
-                  class="tx__token-image"
-                  [ngStyle]="{ 'background-image': 'url(' + tx.toToken.image + ')' }"
-                ></div>
-                <div class="tx__token-symbol">
-                  {{ tx.toToken.symbol }}
-                </div>
-                <div class="tx__token-blockchain">
-                  {{ tx.toBlockchain.name }}
-                </div>
-              </div>
-            </div>
-            <div class="tx__row">
-              <div class="tx__row-label">Status To</div>
-              <div class="tx__row-value">
-                <app-status-badge
-                  [type]="STATUS_BADGE_TYPE[tx.statusTo]"
-                  [text]="STATUS_BADGE_TEXT[tx.statusTo]"
-                >
-                </app-status-badge>
-              </div>
-            </div>
-            <hr class="tx__divider" />
-          </div>
-        </ng-container>
-      </div>
-    </ng-template>
   </ng-container>
+
+  <ng-template #mobileRecentTrades>
+    <div class="list">
+      <ng-container *ngFor="let trade of recentTrades">
+        <div
+          celer-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
+        ></div>
+        <div
+          rubic-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RUBIC"
+        ></div>
+        <div
+          symbiosis-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
+        ></div>
+      </ng-container>
+    </div>
+  </ng-template>
 </ng-container>
 
 <ng-template #noTransactions>

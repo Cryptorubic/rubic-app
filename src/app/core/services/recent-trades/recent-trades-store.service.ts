@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CROSS_CHAIN_PROVIDER } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { BlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { BehaviorSubject, map } from 'rxjs';
@@ -77,19 +76,6 @@ export class RecentTradesStoreService {
     return this.currentUserRecentTrades.find(
       trade => trade.srcTxHash === srcTxHash && trade.fromBlockchain === fromBlockchain
     );
-  }
-
-  public resetTrades(): void {
-    this.storeService.setItem('recentTrades', {
-      ...this.recentTrades,
-      [this.userAddress]: this.recentTrades?.[this.userAddress]?.map(trade => {
-        if (trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
-          return trade;
-        } else {
-          return { ...trade, _parsed: false };
-        }
-      })
-    });
   }
 
   public updateUnreadTrades(readAll = false): void {

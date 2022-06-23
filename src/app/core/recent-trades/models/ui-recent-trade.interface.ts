@@ -11,7 +11,7 @@ export interface UiRecentTrade {
   timestamp: number;
   srcTxLink: string;
   srcTxHash: string;
-  statusFrom: RecentTradeStatus;
-  statusTo: RecentTradeStatus;
+  statusFrom?: RecentTradeStatus;
+  statusTo?: RecentTradeStatus;
   crossChainProviderType: CROSS_CHAIN_PROVIDER;
 }

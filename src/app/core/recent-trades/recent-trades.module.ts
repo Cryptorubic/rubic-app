@@ -4,9 +4,17 @@ import { RecentCrosschainTxComponent } from './components/recent-crosschain-tx/r
 import { RecentTradesService } from './services/recent-trades.service';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { SharedModule } from '@app/shared/shared.module';
+import { CelerTradeComponent } from './components/celer-trade/celer-trade.component';
+import { SymbiosisTradeComponent } from './components/symbiosis-trade/symbiosis-trade.component';
+import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.component';
 
 @NgModule({
-  declarations: [RecentCrosschainTxComponent],
+  declarations: [
+    RecentCrosschainTxComponent,
+    CelerTradeComponent,
+    SymbiosisTradeComponent,
+    RubicTradeComponent
+  ],
   imports: [CommonModule, TuiLoaderModule, SharedModule],
   exports: [RecentCrosschainTxComponent],
   providers: [RecentTradesService]
