@@ -527,15 +527,15 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
-      [BLOCKCHAIN_NAME.AVALANCHE]: '@TODO',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanchec',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',
       [BLOCKCHAIN_NAME.AURORA]: 'aurora',
       [BLOCKCHAIN_NAME.TELOS]: 'telos',
-      [BLOCKCHAIN_NAME.HARMONY]: '@TODO',
-      [BLOCKCHAIN_NAME.SOLANA]: '@TODO',
-      [BLOCKCHAIN_NAME.NEAR]: '@TODO'
+      [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
+      [BLOCKCHAIN_NAME.SOLANA]: 'solana',
+      [BLOCKCHAIN_NAME.NEAR]: 'near'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]

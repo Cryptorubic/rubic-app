@@ -109,8 +109,9 @@ export class CrossChainRoutingService extends TradeService {
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
 
-      const fee = feeInPercents / 100;
-      const feeAmount = toTrade.toTokenAmountMin.multipliedBy(fee).dividedBy(1 - fee);
+      const feeAmount = toTrade.toTokenAmountMin
+        .multipliedBy(feeInPercents)
+        .dividedBy(1 - feeInPercents);
 
       const priceImpactFrom = PriceImpactService.calculatePriceImpact(
         fromTrade.fromToken.price,
@@ -129,6 +130,7 @@ export class CrossChainRoutingService extends TradeService {
       const fromPath: null = null;
       const toPath: null = null;
 
+      // @TODO SDK
       // const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
       // const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
 
@@ -138,8 +140,8 @@ export class CrossChainRoutingService extends TradeService {
         feeTokenSymbol: cryptoFeeToken.symbol,
         cryptoFee: cryptoFeeToken.tokenAmount,
         estimatedGas,
-        priceImpactFrom,
-        priceImpactTo,
+        priceImpactFrom: Number.isNaN(priceImpactFrom) ? 0 : priceImpactFrom,
+        priceImpactTo: Number.isNaN(priceImpactTo) ? 0 : priceImpactTo,
         fromProvider,
         toProvider,
         fromPath,
@@ -152,18 +154,27 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   private async calculateSmartRouting(): Promise<void> {
-    this.smartRouting = {
-      fromProvider: this.crossChainTrade.trade.itType.from,
-      toProvider: this.crossChainTrade.trade.itType.to,
-      fromHasTrade: compareAddresses(
-        this.crossChainTrade.trade.fromTrade.fromToken.address,
-        this.crossChainTrade.trade.fromTrade.toToken.address
-      ),
-      toHasTrade: compareAddresses(
-        this.crossChainTrade.trade.toTrade.fromToken.address,
-        this.crossChainTrade.trade.toTrade.toToken.address
-      )
-    };
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+      this.smartRouting = {
+        fromProvider: 'ONE_INCH_BSC',
+        toProvider: 'ONE_INCH_ETHEREUM',
+        fromHasTrade: true,
+        toHasTrade: true
+      };
+    } else {
+      this.smartRouting = {
+        fromProvider: this.crossChainTrade.trade.itType.from,
+        toProvider: this.crossChainTrade.trade.itType.to,
+        fromHasTrade: !compareAddresses(
+          this.crossChainTrade.trade.fromTrade.fromToken.address,
+          this.crossChainTrade.trade.fromTrade.toToken.address
+        ),
+        toHasTrade: !compareAddresses(
+          this.crossChainTrade.trade.toTrade.fromToken.address,
+          this.crossChainTrade.trade.toTrade.toToken.address
+        )
+      };
+    }
   }
 
   public async approve(): Promise<void> {

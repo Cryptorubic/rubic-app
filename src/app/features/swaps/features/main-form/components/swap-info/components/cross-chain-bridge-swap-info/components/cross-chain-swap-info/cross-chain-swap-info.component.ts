@@ -216,7 +216,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    // this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.trade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;
