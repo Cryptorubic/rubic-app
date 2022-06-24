@@ -22,6 +22,12 @@ function typeToString(input: AbiInput): string {
   return input.type;
 }
 
+/**
+ * Function for decoding transaction logs
+ * @param abi Contract ABI
+ * @param receipt Transaction receipt
+ * @returns Array of decoded logs
+ */
 export function decodeLogs(abi: AbiItem[], receipt: TransactionReceipt): DecodedLog[] {
   const methodIds: Record<string, AbiItem> = {};
 

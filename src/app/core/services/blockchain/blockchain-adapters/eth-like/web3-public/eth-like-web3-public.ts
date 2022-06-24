@@ -313,7 +313,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   public async getBlockNumber(): Promise<number> {
-    return await this.web3.eth.getBlockNumber();
+    return this.web3.eth.getBlockNumber();
   }
 
   /**
