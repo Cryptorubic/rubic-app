@@ -8,9 +8,10 @@
       </div>
       <app-notification-badge
         class="notification-counter"
-        *ngIf="(countUnread$ | async) && (currentUser$ | async) && !isOpened"
-        size="s"
-        [value]="countUnread$ | async"
+        *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
       ></app-notification-badge>
     </app-rubic-button-circle>
   </div>
@@ -90,12 +91,12 @@
 
         <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
           <button tuiOption class="data-list__option">Recent crosschain tx</button>
-
           <app-notification-badge
-            class="notification-counter notification-counter_my-trades"
-            *ngIf="(countUnread$ | async) && (currentUser$ | async) && isOpened"
-            size="s"
-            [value]="countUnread$ | async"
+            class="notification-counter notification-counter_menu"
+            *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && isOpened"
+            size="xs"
+            color="red"
+            [value]="unreadTrades$ | async"
           ></app-notification-badge>
         </a>
 

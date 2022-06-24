@@ -18,12 +18,13 @@
     <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
       {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
     </div>
-    <div
+    <app-notification-badge
       class="notification-counter notification-counter_profile"
-      *ngIf="unreadTrades$ | async as unreadTrades"
-    >
-      {{ unreadTrades }}
-    </div>
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+      size="xs"
+      color="red"
+      [value]="unreadTrades$ | async"
+    ></app-notification-badge>
     <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
   </div>
 </ng-template>
@@ -41,12 +42,13 @@
     (click)="openRecentTradesModal()"
   >
     Recent crosschain tx
-    <div
+    <app-notification-badge
       class="notification-counter notification-counter_menu"
-      *ngIf="unreadTrades$ | async as unreadTrades"
-    >
-      {{ unreadTrades }}
-    </div>
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+      size="xs"
+      color="red"
+      [value]="unreadTrades$ | async"
+    ></app-notification-badge>
   </button>
 </ng-template>
 

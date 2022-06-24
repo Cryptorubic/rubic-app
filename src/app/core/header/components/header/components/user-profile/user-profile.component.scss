@@ -69,25 +69,15 @@
 }
 
 .notification-counter {
-  @include font(10px, 16px, 500, #fff, 0.03em);
   position: absolute;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-
-  background: #f35e42;
-  border-radius: 100%;
   
   &_profile {
-    top: 7px;
+    top: 0px;
     right: 35px;
   }
 
   &_menu {
-    top: -10px;
-    right: 0;
+    top: -14px;
+    right: 0px;
   }
 }

@@ -18,7 +18,6 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
-import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -26,6 +25,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -52,8 +52,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public currentUser$: Observable<UserInterface>;
 
-  public countUnread$: Observable<number>;
-
   public currentBlockchain: BlockchainData;
 
   private _onNetworkChanges$: Subscription;
@@ -62,18 +60,19 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public readonly navigationList: NavigationItem[];
 
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
   constructor(
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly headerStore: HeaderStore,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(WINDOW) private window: Window
   ) {
     this.currentUser$ = this.authService.getCurrentUser();
-    this.countUnread$ = this.counterNotificationsService.unread$;
     this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
