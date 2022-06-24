@@ -79,7 +79,6 @@
     "multichainWallet": "Leider unterstützen wir aktuell keine Multi-Chain-Wallets. Derzeit bieten wir ausschließlich Transaktionen im Ethereum Netzwerk",
     "unknown": "Hoppla, da ist etwas schiefgelaufen. Bitte versuche es erneut.",
     "insufficientFoundsGasPriceValue": "Dein Guthaben reicht leider nicht aus um die Gas-Gebühren zu begleichen. Bitte erhöhe Dein {{nativeToken}}-Guthaben entsprechend.",
-    "NoDataMyTradesError": "Hoppla, da ist etwas schiefgelaufen. Bitte lade die Seite erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren Kundendienst.",
     "rubicOptimisation": "Für Deine Transaktion ist nicht ausreichend Liquidität vorhanden. Du kannst versuchen, die Transaktionsoptimierung zu deaktivieren.",
     "partialTradesData": "Beim serverseitigen Abruf der Transaktionsdaten ist ein Fehler aufgetreten. Bitte lade die Seite erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren Kundendienst.",
     "tradingIsNotAvailable": "Handel nicht verfügbar",
@@ -92,7 +91,8 @@
     "wrongPromoterWallet": "Dein Wallet ist leider nicht mit Ethereum kompatibel. Bitte verbinde ein unterstütztes Wallet, z.B. MetaMask.",
     "walletNotInstalled": "Kein Wallet installiert."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "Über Rubic",
     "faq": "FAQ",
     "features": "Funktionen",
@@ -102,7 +102,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Wallet verbinden",
-    "myTrades": "Transaktionen",
     "logout": "Abmelden",
     "logoutMessage": "Möchtest Du Dich wirklich abmelden?",
     "notAvailable": "Hier passiert gerade Spannendes -  UX Redesign.",
@@ -244,9 +243,6 @@
     "useOptimization": "Transaktionsoptimierung",
     "notAvailableBefore": "Transaktionen mit ",
     "notAvailableAfter": " sind nicht verfügbar."
-  },
-  "myTrades": {
-    "title": "Meine Transaktionen"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

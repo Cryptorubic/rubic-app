@@ -79,7 +79,6 @@
     "multichainWallet": "Rubic aún no es compatible con billeteras de múltiples cadenas. Actualmente, solo puedes operar en la red de Ethereum",
     "unknown": "Oops, algo salió mal, por favor, inténtalo de nuevo",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, algo salió mal, por favor intente recargar la página. Póngase en contacto con nuestro soporte si sigue teniendo este problema después de recargar.",
     "rubicOptimisation": "Liquidez insuficiente para este comercio. Intenta desactivar la optimización de rubic.",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Por favor, vuelva a cargar la página o póngase en contacto con soporte si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
@@ -92,7 +91,8 @@
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "Sobre",
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
@@ -102,7 +102,6 @@
     "sdk": "SDK",
     "team": "Equipo",
     "login": "Conectar Cartera",
-    "myTrades": "Mis comercios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿De verdad quieres cerrar sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
@@ -245,9 +244,6 @@
     "useOptimization": "Usar optimización de Rubic",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " no está disponible."
-  },
-  "myTrades": {
-    "title": "Mis operaciones"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

@@ -41,7 +41,7 @@
     class="user-profile__dropdown-item button-link"
     (click)="openRecentTradesModal()"
   >
-    Recent crosschain tx
+    {{ 'navigation.recentTrades' | translate }}
     <app-notification-badge
       class="notification-counter notification-counter_menu"
       *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"

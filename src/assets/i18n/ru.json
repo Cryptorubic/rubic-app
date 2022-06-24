@@ -80,7 +80,6 @@
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Торговля недоступна",
@@ -93,7 +92,8 @@
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
@@ -103,7 +103,6 @@
     "sdk": "SDK",
     "team": "Команда",
     "login": "Подключить кошелек",
-    "myTrades": "Мои Сделки",
     "logout": "Выйти",
     "logoutMessage": "Вы действительно хотите выйти?",
     "notAvailable": "В работе. UX редизайн.",
@@ -246,9 +245,6 @@
     "useOptimization": "Использовать оптимизацию Rubic",
     "notAvailableBefore": "Торговля на ",
     "notAvailableAfter": " недоступно."
-  },
-  "myTrades": {
-    "title": "Мои Сделки"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

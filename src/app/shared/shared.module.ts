@@ -64,6 +64,7 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { FeeBannerComponent } from './components/fee-banner/fee-banner.component';
+import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +98,7 @@ import { FeeBannerComponent } from './components/fee-banner/fee-banner.component
     ChipsComponent,
     ProgressTrxNotificationComponent,
     FeeBannerComponent,
+    SymbiosisWarningTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,

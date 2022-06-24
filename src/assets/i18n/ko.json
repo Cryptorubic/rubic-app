@@ -80,7 +80,6 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "거래 불가",
@@ -93,7 +92,8 @@
     "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "소개",
     "features": "기능",
     "faq": "FAQ",
@@ -103,7 +103,6 @@
     "sdk": "SDK",
     "team": "팀",
     "login": "메타마스크로 로그인",
-    "myTrades": "내 거래",
     "logout": "로그 아웃",
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
@@ -246,9 +245,6 @@
     "useOptimization": "Rubic 최적화 사용",
     "notAvailableBefore": "거래 ",
     "notAvailableAfter": " 사용할 수 없습니다."
-  },
-  "myTrades": {
-    "title": "내 거래"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

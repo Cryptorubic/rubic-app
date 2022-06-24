@@ -79,7 +79,6 @@
     "multichainWallet": "Rubic ne prend pas encore en charge les portefeuilles multi-chaînes. Actuellement, vous ne pouvez échanger que sur le réseau Ethereum",
     "unknown": "Oups, quelque chose s'est mal passé, veuillez réessayer",
     "insufficientFoundsGasPriceValue": "Montant pour les frais de gaz insuffisants. Veuillez recharger en {{ nativeToken }}.",
-    "NoDataMyTradesError": "Oups, quelque chose s'est mal passé, veuillez essayer de recharger la page. Contactez notre support si vous continuez à rencontrer ce problème.",
     "rubicOptimisation": "Liquidité insuffisante pour cet échange. Essayez en désactivant le routage optimisé Rubic.",
     "partialTradesData": "Impossible de récupérer les données de transactions du serveur. Veuillez recharger la page ou contacter le support si le problème persiste.",
     "tradingIsNotAvailable": "Échanges non disponibles",
@@ -92,7 +91,8 @@
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "À propos",
     "faq": "FAQ",
     "features": "Fonctionnalités",
@@ -102,7 +102,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Connecter le portefeuille",
-    "myTrades": "Mes échanges",
     "logout": "Déconnexion",
     "logoutMessage": "Voulez vous vraiment vous déconnecter ?",
     "notAvailable": "En construction - refonte UX.",
@@ -349,9 +348,6 @@
     "useOptimization": "Utiliser le routage optimisé Rubic",
     "notAvailableBefore": "Échangez sur ",
     "notAvailableAfter": " n'est pas disponible."
-  },
-  "myTrades": {
-    "title": "Mes Échanges"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

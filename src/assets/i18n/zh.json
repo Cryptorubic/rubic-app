@@ -80,7 +80,6 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "糟糕，出了點問題，請嘗試重新加載頁面。 如果您在重新加載後仍然遇到此問題，請聯繫我們的支持。",
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "交易不可用",
@@ -93,7 +92,8 @@
     "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
     "walletNotInstalled": "未安装钱包"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "关于",
     "faq": "常见问题解答",
     "features": "特点",
@@ -103,7 +103,6 @@
     "sdk": "SDK",
     "team": "團隊",
     "login": "連接錢包",
-    "myTrades": "我的行业",
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
@@ -246,9 +245,6 @@
     "useOptimization": "使用Rubic優化",
     "notAvailableBefore": "交易 ",
     "notAvailableAfter": " 不可用。"
-  },
-  "myTrades": {
-    "title": "我的行业"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

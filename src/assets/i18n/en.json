@@ -80,7 +80,6 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading.",
     "rubicOptimisation": "Insufficient liquidity for this trade. Try to disable rubic optimisation.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Trading is not available",
@@ -93,7 +92,8 @@
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent crosschain tx",
     "about": "About",
     "faq": "FAQ",
     "features": "Features",
@@ -103,7 +103,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Connect Wallet",
-    "myTrades": "My Trades",
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
@@ -245,9 +244,6 @@
     "useOptimization": "Use Rubic Optimization",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
-  },
-  "myTrades": {
-    "title": "My Trades"
   },
   "recentTrades": {
     "title": "Recent Crosschain Tx",

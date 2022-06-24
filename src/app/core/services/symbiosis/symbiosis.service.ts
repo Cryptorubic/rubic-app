@@ -13,13 +13,13 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { SymbiosisWarningTxModalComponent } from '@features/my-trades/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { TransactionReceipt } from 'web3-eth';
 import { TransactionReceipt as EthersReceipt, Log as EthersLog } from '@ethersproject/providers';
 import { BlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { PublicBlockchainAdapterService } from '../blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Token as SymbiosisToken } from 'symbiosis-js-sdk';
+import { SymbiosisWarningTxModalComponent } from '@app/shared/components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 
 const CHAINS_PRIORITY = [
   ChainId.ETH_MAINNET,

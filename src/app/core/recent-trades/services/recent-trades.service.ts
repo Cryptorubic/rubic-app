@@ -22,7 +22,7 @@ import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RecentCrosschainTxComponent } from '../components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
+import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';

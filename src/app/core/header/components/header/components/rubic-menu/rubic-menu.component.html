@@ -90,7 +90,9 @@
         </button>
 
         <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
-          <button tuiOption class="data-list__option">Recent crosschain tx</button>
+          <button tuiOption class="data-list__option">
+            {{ 'navigation.recentTrades' | translate }}
+          </button>
           <app-notification-badge
             class="notification-counter notification-counter_menu"
             *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && isOpened"

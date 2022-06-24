@@ -7,7 +7,7 @@ import {
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent, POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
-import { Blockchain, BLOCKCHAINS } from '@app/features/my-trades/constants/blockchains';
+import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import {
   CrossChainProvider,
   CROSS_CHAIN_PROVIDER
