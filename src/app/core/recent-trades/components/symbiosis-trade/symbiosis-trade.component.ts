@@ -1,10 +1,19 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { RecentTradeStatus } from '../../models/recent-trade-status.enum';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { CommonTradeComponent } from '../common-trade/common-trade.component';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
+import { CommonTrade } from '../../models/common-trade';
+import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -12,19 +21,31 @@ import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
   styleUrls: ['./symbiosis-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SymbiosisTradeComponent extends CommonTradeComponent {
+export class SymbiosisTradeComponent extends CommonTrade implements OnInit, OnDestroy {
+  @Input() trade: RecentTrade;
+
+  @Input() mode: 'table-row' | 'mobile';
+
   public revertBtnLoading = false;
 
   constructor(
-    readonly recentTradesService: RecentTradesService,
-    readonly recentTradesStoreService: RecentTradesStoreService,
-    readonly cdr: ChangeDetectorRef,
+    public readonly recentTradesService: RecentTradesService,
+    public readonly recentTradesStoreService: RecentTradesStoreService,
+    public readonly cdr: ChangeDetectorRef,
     @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
   ) {
-    super(recentTradesService, recentTradesStoreService, cdr, destroy$);
+    super(recentTradesStoreService, recentTradesService, cdr, destroy$);
   }
 
-  setUiTrade(uiTrade: UiRecentTrade): void {
+  public ngOnInit(): void {
+    this.initTradeDataPolling();
+  }
+
+  public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
+    return await this.recentTradesService.getSymbiosisTradeData(trade);
+  }
+
+  public setUiTrade(uiTrade: UiRecentTrade): void {
     if (!this.uiTrade || this.uiTrade?.statusTo !== RecentTradeStatus.FALLBACK) {
       this.uiTrade = uiTrade;
 
@@ -47,5 +68,9 @@ export class SymbiosisTradeComponent extends CommonTradeComponent {
       this.revertBtnLoading = false;
       this.cdr.detectChanges();
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.saveTradeOnDestroy();
   }
 }
