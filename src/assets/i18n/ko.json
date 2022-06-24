@@ -250,6 +250,23 @@
   "myTrades": {
     "title": "내 거래"
   },
+  "recentTrades": {
+    "title": "Recent Crosschain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have Cross-Chain Transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
+  },
   "gasRefund": {
     "title": "가스 환불",
     "body": {

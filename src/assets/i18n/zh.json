@@ -250,6 +250,23 @@
   "myTrades": {
     "title": "我的行业"
   },
+  "recentTrades": {
+    "title": "Recent Crosschain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have Cross-Chain Transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
+  },
   "gasRefund": {
     "title": "天然氣退款",
     "body": {

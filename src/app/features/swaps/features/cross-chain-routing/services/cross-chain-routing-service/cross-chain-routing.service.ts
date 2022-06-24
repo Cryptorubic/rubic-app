@@ -1068,6 +1068,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   /**
+   * TODO handle Celer pools too
    * Checks that in target blockchain tokens' pool's balance is enough.
    */
   @PCacheable({

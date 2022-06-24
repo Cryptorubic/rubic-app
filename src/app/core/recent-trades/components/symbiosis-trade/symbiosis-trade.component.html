@@ -31,7 +31,7 @@
     <a [href]="uiTrade?.srcTxLink" target="_blank" [class.tui-skeleton]="initialLoading">
       <app-status-badge
         [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-        [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this"
+        [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
         cursor="pointer"
       ></app-status-badge>
     </a>
@@ -59,7 +59,7 @@
   <td class="status-to">
     <app-status-badge
       [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-      [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this"
+      [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
       *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
       [class.tui-skeleton]="initialLoading"
     >
@@ -102,7 +102,7 @@
         <a class="tx__status-from" [href]="uiTrade?.srcTxLink" target="_blank">
           <app-status-badge
             [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-            [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this"
+            [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
           >
           </app-status-badge>
         </a>
@@ -132,7 +132,7 @@
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-          [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this"
+          [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
           *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
         >
         </app-status-badge>
