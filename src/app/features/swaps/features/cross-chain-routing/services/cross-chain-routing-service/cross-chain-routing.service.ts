@@ -1103,12 +1103,13 @@ export class CrossChainRoutingService extends TradeService {
    * Checks contracts' state and user's balance.
    */
   private async checkTradeParameters(): Promise<void | never> {
-    await Promise.all([
-      this.checkIfPaused(),
-      this.checkGasPrice(),
-      this.checkContractBalance(),
-      this.checkUserBalance()
-    ]);
+    const checks = [this.checkIfPaused(), this.checkGasPrice(), this.checkUserBalance()];
+
+    await Promise.all(
+      this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC
+        ? checks.concat(this.checkContractBalance())
+        : checks
+    );
   }
 
   private async checkUserBalance(): Promise<void> {
