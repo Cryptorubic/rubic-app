@@ -27,11 +27,11 @@ export class CelerTradeComponent extends CommonTrade implements OnInit, OnDestro
 
   constructor(
     public readonly recentTradesService: RecentTradesService,
-    public readonly recentTradesStoreService: RecentTradesStoreService,
-    public readonly cdr: ChangeDetectorRef,
+    protected readonly recentTradesStoreService: RecentTradesStoreService,
+    protected readonly cdr: ChangeDetectorRef,
     @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
   ) {
-    super(recentTradesStoreService, recentTradesService, cdr, destroy$);
+    super(recentTradesStoreService, cdr, destroy$);
   }
 
   public ngOnInit(): void {

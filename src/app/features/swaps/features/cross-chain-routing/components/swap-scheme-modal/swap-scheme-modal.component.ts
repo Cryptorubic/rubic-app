@@ -4,8 +4,8 @@ import {
   BlockchainName,
   EthLikeBlockchainName
 } from '@app/shared/models/blockchain/blockchain-name';
-import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { PolymorpheusComponent, POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import {
@@ -49,12 +49,12 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
-import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTradeStatus } from '@app/core/recent-trades/models/recent-trade-status.enum';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
+import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 
 enum MODAL_SWAP_STATUS {
   SUCCESS = 'SUCCESS',
@@ -130,10 +130,10 @@ export class SwapSchemeModalComponent implements OnInit {
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly commonModalService: CommonModalService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -372,12 +372,9 @@ export class SwapSchemeModalComponent implements OnInit {
   public closeModalAndOpenMyTrades(): void {
     this.context.completeWith(false);
 
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-
-    this.dialogService
-      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+    this.commonModalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
   }

@@ -19,8 +19,6 @@ import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { RecentTradeStatus } from '../models/recent-trade-status.enum';
 import { decodeLogs } from '../../../shared/utils/decode-logs';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RecentCrosschainTxComponent } from '../components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
@@ -357,16 +355,5 @@ export class RecentTradesService {
 
   public readAllTrades(): void {
     setTimeout(() => this.recentTradesStoreService.updateUnreadTrades(true), 0);
-  }
-
-  public openRecentTradesModal(): void {
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-
-    this.dialogService
-      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
-        size: this.isMobile ? mobileModalSize : desktopModalSize
-      })
-      .subscribe();
   }
 }

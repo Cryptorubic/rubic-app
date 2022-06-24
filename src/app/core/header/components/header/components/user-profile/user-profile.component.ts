@@ -6,7 +6,6 @@ import {
   ViewChildren,
   QueryList,
   TemplateRef,
-  Inject,
   Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
@@ -14,14 +13,12 @@ import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { TuiDialogService } from '@taiga-ui/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -38,8 +35,8 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    @Self() private readonly destroy$: TuiDestroyService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    private readonly commonModalService: CommonModalService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
@@ -88,12 +85,9 @@ export class UserProfileComponent implements AfterViewInit {
   }
 
   public openRecentTradesModal(): void {
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-
-    this.dialogService
-      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+    this.commonModalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
   }

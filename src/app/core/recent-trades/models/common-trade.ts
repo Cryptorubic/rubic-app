@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Inject } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { interval } from 'rxjs';
 import { startWith, switchMap, tap, takeWhile, takeUntil } from 'rxjs/operators';
-import { RecentTradesService } from '../services/recent-trades.service';
 import { getStatusBadgeText, getStatusBadgeType } from '../utils/recent-trades-utils';
 import { RecentTradeStatus } from './recent-trade-status.enum';
 import { UiRecentTrade } from './ui-recent-trade.interface';
@@ -26,15 +25,14 @@ export abstract class CommonTrade {
   public readonly getStatusBadgeText = getStatusBadgeText;
 
   constructor(
-    public readonly recentTradesStoreService: RecentTradesStoreService,
-    public readonly recentTradesService: RecentTradesService,
-    public readonly cdr: ChangeDetectorRef,
-    @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
+    protected readonly recentTradesStoreService: RecentTradesStoreService,
+    protected readonly cdr: ChangeDetectorRef,
+    protected readonly destroy$: TuiDestroyService
   ) {}
 
   public abstract getTradeData(trade: RecentTrade): Promise<UiRecentTrade>;
 
-  public initTradeDataPolling(): void {
+  protected initTradeDataPolling(): void {
     interval(30000)
       .pipe(
         startWith(-1),
@@ -47,14 +45,14 @@ export abstract class CommonTrade {
       .subscribe();
   }
 
-  public setUiTrade(uiTrade: UiRecentTrade): void {
+  protected setUiTrade(uiTrade: UiRecentTrade): void {
     this.uiTrade = uiTrade;
     if (this.initialLoading) {
       this.initialLoading = false;
     }
   }
 
-  public saveTradeOnDestroy(): void {
+  protected saveTradeOnDestroy(): void {
     if (this.uiTrade.statusTo === RecentTradeStatus.SUCCESS) {
       this.recentTradesStoreService.updateTrade({
         ...this.trade,

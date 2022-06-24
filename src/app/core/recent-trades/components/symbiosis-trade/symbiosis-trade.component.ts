@@ -29,12 +29,12 @@ export class SymbiosisTradeComponent extends CommonTrade implements OnInit, OnDe
   public revertBtnLoading = false;
 
   constructor(
-    public readonly recentTradesService: RecentTradesService,
-    public readonly recentTradesStoreService: RecentTradesStoreService,
-    public readonly cdr: ChangeDetectorRef,
+    private readonly recentTradesService: RecentTradesService,
+    protected readonly recentTradesStoreService: RecentTradesStoreService,
+    protected readonly cdr: ChangeDetectorRef,
     @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
   ) {
-    super(recentTradesStoreService, recentTradesService, cdr, destroy$);
+    super(recentTradesStoreService, cdr, destroy$);
   }
 
   public ngOnInit(): void {

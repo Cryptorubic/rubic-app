@@ -21,11 +21,9 @@ import { NavigationItem } from 'src/app/core/header/components/header/components
 import { WINDOW } from '@ng-web-apis/common';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -69,7 +67,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly commonModalService: CommonModalService,
     @Inject(WINDOW) private window: Window
   ) {
     this.currentUser$ = this.authService.getCurrentUser();
@@ -134,12 +132,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   public openRecentTradesModal(): void {
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-
-    this.dialogService
-      .open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize
+    this.commonModalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
   }

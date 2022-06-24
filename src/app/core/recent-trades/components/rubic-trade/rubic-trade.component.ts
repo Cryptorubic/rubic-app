@@ -26,16 +26,16 @@ export class RubicTradeComponent extends CommonTrade implements OnInit, OnDestro
   @Input() mode: 'table-row' | 'mobile';
 
   constructor(
-    public readonly recentTradesService: RecentTradesService,
-    public readonly recentTradesStoreService: RecentTradesStoreService,
-    public readonly cdr: ChangeDetectorRef,
+    private readonly recentTradesService: RecentTradesService,
+    protected readonly recentTradesStoreService: RecentTradesStoreService,
+    protected readonly cdr: ChangeDetectorRef,
     @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
   ) {
-    super(recentTradesStoreService, recentTradesService, cdr, destroy$);
+    super(recentTradesStoreService, cdr, destroy$);
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getRubicTradeData(trade);
+    return this.recentTradesService.getRubicTradeData(trade);
   }
 
   public ngOnInit(): void {

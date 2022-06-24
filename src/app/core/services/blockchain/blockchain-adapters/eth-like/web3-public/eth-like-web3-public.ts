@@ -309,7 +309,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   public async getTransactionReceipt(hash: string): Promise<TransactionReceipt> {
-    return await this.web3.eth.getTransactionReceipt(hash);
+    return this.web3.eth.getTransactionReceipt(hash);
   }
 
   public async getBlockNumber(): Promise<number> {
