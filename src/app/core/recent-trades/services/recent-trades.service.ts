@@ -60,10 +60,8 @@ export class RecentTradesService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {}
 
-  public async getSymbiosisTradeData(
-    trade: RecentTrade,
-    isAverageTxTimeSpent: boolean
-  ): Promise<UiRecentTrade> {
+  public async getSymbiosisTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
+    const isAverageTxTimeSpent = Date.now() - trade.timestamp > 120000;
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
     const srcWeb3 = this.web3Public[trade.fromBlockchain] as EthLikeWeb3Public;
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);

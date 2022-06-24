@@ -1,21 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { interval, switchMap } from 'rxjs';
-import { map, startWith, tap, takeWhile, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { RecentTradeStatus } from '../../models/recent-trade-status.enum';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
+import { CommonTradeComponent } from '../common-trade/common-trade.component';
+import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -23,55 +12,26 @@ import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trade
   styleUrls: ['./symbiosis-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SymbiosisTradeComponent implements OnInit, OnDestroy {
-  @Input() trade: RecentTrade;
-
-  @Input() mode: 'mobile' | 'table-row';
-
-  public uiTrade: UiRecentTrade;
-
-  public initialLoading = true;
-
+export class SymbiosisTradeComponent extends CommonTradeComponent {
   public revertBtnLoading = false;
 
-  public readonly RecentTradeStatus = RecentTradeStatus;
-
-  public readonly getStatusBadgeType = getStatusBadgeType;
-
-  public readonly getStatusBadgeText = getStatusBadgeText;
-
   constructor(
-    private readonly recentTradesService: RecentTradesService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly recentTradesStoreService: RecentTradesStoreService,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
-  ) {}
+    readonly recentTradesService: RecentTradesService,
+    readonly recentTradesStoreService: RecentTradesStoreService,
+    readonly cdr: ChangeDetectorRef,
+    @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
+  ) {
+    super(recentTradesService, recentTradesStoreService, cdr, destroy$);
+  }
 
-  public ngOnInit(): void {
-    interval(30000)
-      .pipe(
-        startWith(-1),
-        map(() => Date.now() - this.trade.timestamp > 120000),
-        switchMap(isAverageSymbiosisTxTimeSpent => {
-          return this.recentTradesService.getSymbiosisTradeData(
-            this.trade,
-            isAverageSymbiosisTxTimeSpent
-          );
-        }),
-        tap(uiTrade => {
-          if (!this.uiTrade || this.uiTrade?.statusTo !== RecentTradeStatus.FALLBACK) {
-            this.uiTrade = uiTrade;
+  setUiTrade(uiTrade: UiRecentTrade): void {
+    if (!this.uiTrade || this.uiTrade?.statusTo !== RecentTradeStatus.FALLBACK) {
+      this.uiTrade = uiTrade;
 
-            if (this.initialLoading) {
-              this.initialLoading = false;
-            }
-          }
-        }),
-        watch(this.cdr),
-        takeWhile(uiTrade => uiTrade?.statusTo === RecentTradeStatus.PENDING),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+      if (this.initialLoading) {
+        this.initialLoading = false;
+      }
+    }
   }
 
   public async revertSymbiosis(): Promise<void> {
@@ -86,16 +46,6 @@ export class SymbiosisTradeComponent implements OnInit, OnDestroy {
       this.uiTrade.statusTo = RecentTradeStatus.FALLBACK;
       this.revertBtnLoading = false;
       this.cdr.detectChanges();
-    }
-  }
-
-  public ngOnDestroy(): void {
-    if (this.uiTrade.statusTo === RecentTradeStatus.SUCCESS) {
-      this.recentTradesStoreService.updateTrade({
-        ...this.trade,
-        calculatedStatusTo: RecentTradeStatus.SUCCESS,
-        calculatedStatusFrom: RecentTradeStatus.SUCCESS
-      });
     }
   }
 }
