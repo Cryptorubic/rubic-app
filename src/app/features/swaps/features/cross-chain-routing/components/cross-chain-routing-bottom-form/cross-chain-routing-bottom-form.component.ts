@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnInit,
   Output,
@@ -46,11 +45,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
-import { TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SwapSchemeModalComponent } from '../swap-scheme-modal/swap-scheme-modal.component';
-import { HeaderStore } from '@app/core/header/services/header.store';
-import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -142,8 +136,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly headerStore: HeaderStore,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -194,28 +186,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
-  }
-
-  public openSwapSchemeModal(): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
-    const desktopModalSize = 'xl' as 'l'; // hack for custom modal size
-    const mobileModalSize = 'page';
-    this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: this.headerStore.isMobile ? mobileModalSize : desktopModalSize,
-        data: {
-          fromToken,
-          fromBlockchain,
-          toToken,
-          toBlockchain,
-          srcProvider: this.smartRouting.fromProvider,
-          dstProvider: this.smartRouting.toProvider,
-          crossChainProvider: CROSS_CHAIN_PROVIDER.SYMBIOSIS,
-          srcTxHash: '',
-          srcTxBlockNumber: 123
-        }
-      })
-      .subscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {

@@ -294,7 +294,7 @@ export class SwapSchemeModalComponent implements OnInit {
     ).pipe(
       retry(3),
       map(response => {
-        console.log('[Symbiosis] cross-chain completed: ', response);
+        console.debug('[Symbiosis] cross-chain completed: ', response);
 
         if (response) {
           return MODAL_SWAP_STATUS.SUCCESS;
