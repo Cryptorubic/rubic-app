@@ -8,7 +8,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -39,8 +39,10 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BLOCKCHAIN_NAME, BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
+import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
+import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -243,43 +245,42 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           return crossChainTrade$.pipe(
             switchTap(() => balance$),
-            map(
-              ({ trade, minAmountError, maxAmountError }) => {
-                if (
-                  (minAmountError && fromAmount.gte(minAmountError)) ||
-                  (maxAmountError && fromAmount.lte(maxAmountError))
-                ) {
-                  this.onCalculateTrade$.next('normal');
-                  return;
-                }
+            map(({ trade, error }) => {
+              if (
+                error !== undefined &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+              ) {
+                this.onCalculateTrade$.next('normal');
+                return;
+              }
 
-                this.minError = false;
-                this.maxError = false;
-                this.errorText = '';
+              this.minError = error?.minAmount || false;
+              this.maxError = error?.maxAmount || false;
+              this.errorText = '';
 
-                this.needApprove = false;
-                this.withApproveButton = this.needApprove;
+              this.needApprove = false;
+              this.withApproveButton = this.needApprove;
 
-                this.toAmount = trade?.to?.tokenAmount;
-                this.swapFormService.output.patchValue({
-                  toAmount: trade?.to.tokenAmount
-                });
-                this.smartRouting = this.crossChainRoutingService.smartRouting;
-                this.hiddenTradeData = null;
+              this.toAmount = trade?.to?.tokenAmount;
+              this.swapFormService.output.patchValue({
+                toAmount: trade?.to.tokenAmount
+              });
+              this.smartRouting = this.crossChainRoutingService.smartRouting;
+              this.hiddenTradeData = null;
+              this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+              if (this.minError || this.maxError || this.toAmount?.lte(0)) {
+                this.tradeStatus = TRADE_STATUS.DISABLED;
+              } else {
+                this.tradeStatus = this.needApprove
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
                 this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-
-                if (this.minError || this.maxError || this.toAmount?.lte(0)) {
-                  this.tradeStatus = TRADE_STATUS.DISABLED;
-                } else {
-                  this.tradeStatus = this.needApprove
-                    ? TRADE_STATUS.READY_TO_APPROVE
-                    : TRADE_STATUS.READY_TO_SWAP;
-                  this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-                }
-              },
-              // eslint-disable-next-line rxjs/no-implicit-any-catch
-              catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
-            )
+              }
+            }),
+            // eslint-disable-next-line rxjs/no-implicit-any-catch
+            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
           );
         }),
         takeUntil(this.destroy$)
@@ -306,23 +307,21 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
-          const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
+          const { fromAmount } = this.swapFormService.inputValue;
 
-          return forkJoin([crossChainTrade$]).pipe(
-            map(([{ trade, minAmountError, maxAmountError }]) => {
+          return from(this.crossChainRoutingService.calculateTrade()).pipe(
+            map(({ trade, error }) => {
               if (
-                (minAmountError &&
-                  fromAmount.gte(minAmountError) &&
-                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
-                (maxAmountError && fromAmount.lte(maxAmountError))
+                error &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
                 this.onCalculateTrade$.next('hidden');
                 return;
               }
 
-              this.minError = false;
-              this.maxError = false;
+              this.minError = error?.minAmount || false;
+              this.maxError = error?.maxAmount || false;
 
               this.hiddenTradeData = { toAmount: trade.to.tokenAmount };
               if (!this.hiddenTradeData.toAmount.eq(this.toAmount)) {

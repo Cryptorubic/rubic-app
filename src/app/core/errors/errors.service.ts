@@ -17,13 +17,15 @@ import {
   TransactionRevertedError as SdkTransactionRevertedError,
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
   LowGasError as SdkLowGasError,
-  InsufficientFundsError as SdkInsufficientFundsError
+  InsufficientFundsError as SdkInsufficientFundsError,
+  LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError
 } from 'rubic-sdk';
 import { UserRejectError } from './models/provider/user-reject-error';
 import TransactionRevertedError from './models/common/transaction-reverted-error';
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
 import { LowGasError } from './models/provider/low-gas-error';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
+import CrossChainTokensWithFeeWarning from '@core/errors/models/cross-chain-routing/cross-chain-tokens-with-fee-warning';
 
 interface Question {
   title: string;
@@ -175,6 +177,9 @@ export class ErrorsService {
       }
       if (err instanceof SdkLowGasError) {
         return new LowGasError();
+      }
+      if (err instanceof SdkLowSlippageDeflationaryTokenError) {
+        return new CrossChainTokensWithFeeWarning();
       }
       if (err?.message) {
         return new RubicError<ERROR_TYPE.TEXT>(err.message);

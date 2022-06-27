@@ -4,7 +4,9 @@ import {
   BlockchainName,
   CelerRubicCrossChainTrade,
   compareAddresses,
-  CROSS_CHAIN_TRADE_TYPE
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainIsUnavailableError,
+  RubicSdkError
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
@@ -20,10 +22,13 @@ import {
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
+import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 
 @Injectable({
   providedIn: 'root'
@@ -45,28 +50,42 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokensService: TokensService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     super('cross-chain-routing');
   }
 
   public async calculateTrade(_needApprove?: boolean): Promise<WrappedCrossChainTrade> {
-    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const options: CrossChainOptions = {
-      fromSlippageTolerance: slippageTolerance / 2,
-      toSlippageTolerance: slippageTolerance / 2,
-      slippageTolerance
-    };
+    try {
+      const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+      const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+      const options: CrossChainOptions = {
+        fromSlippageTolerance: slippageTolerance / 2,
+        toSlippageTolerance: slippageTolerance / 2,
+        slippageTolerance
+      };
 
-    this.crossChainTrade = await this.sdk.crossChain.calculateTrade(
-      fromToken,
-      fromAmount.toString(),
-      toToken,
-      options
-    );
-    await this.calculateSmartRouting();
+      this.crossChainTrade = (
+        await this.sdk.crossChain.calculateTrade(fromToken, fromAmount.toString(), toToken, options)
+      )[0];
+      const { trade, error } = this.crossChainTrade;
+      await this.calculateSmartRouting();
+      if (!trade && error instanceof RubicSdkError) {
+        if (
+          error instanceof CrossChainMinAmountError ||
+          error instanceof CrossChainMaxAmountError
+        ) {
+          throw new RubicSdkError('Can not calculate the trade.');
+        } else {
+          throw this.parseCalculcationError(this.crossChainTrade.error);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      this.crossChainTrade = null;
+      this.smartRouting = null;
+      throw err;
+    }
     return this.crossChainTrade;
   }
 
@@ -99,7 +118,7 @@ export class CrossChainRoutingService extends TradeService {
         estimatedGas,
         fee: trade.fee,
         feeSymbol: trade.feeSymbol,
-        priceImpact: trade.priceImpact
+        priceImpact: String(trade.priceImpact)
       };
     }
 
@@ -154,6 +173,10 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   private async calculateSmartRouting(): Promise<void> {
+    if (!this.crossChainTrade?.trade) {
+      this.smartRouting = null;
+      return;
+    }
     if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: 'ONE_INCH_BSC',
@@ -179,5 +202,11 @@ export class CrossChainRoutingService extends TradeService {
 
   public async approve(): Promise<void> {
     this.crossChainTrade.trade.approve();
+  }
+
+  private parseCalculcationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof CrossChainIsUnavailableError) {
+      return new CrossChainIsUnavailableWarning();
+    }
   }
 }
