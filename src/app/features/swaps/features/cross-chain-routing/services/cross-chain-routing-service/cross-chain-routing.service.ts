@@ -931,8 +931,11 @@ export class CrossChainRoutingService extends TradeService {
       const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
       return {
         estimatedGas,
-        fee: trade.fee,
-        feeSymbol: trade.feeSymbol,
+        feePercent: trade.feePercent,
+        feeAmount: trade.feeAmount,
+        feeTokenSymbol: trade.feeTokenSymbol,
+        networkFee: trade.networkFee,
+        networkFeeSymbol: trade.networkFeeSymbol,
         priceImpact: trade.priceImpact
       };
     }
@@ -1226,7 +1229,7 @@ export class CrossChainRoutingService extends TradeService {
     let fee: BigNumber;
     if (this.currentCrossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
       const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
-      fee = trade.fee;
+      fee = trade.networkFee;
     } else {
       const trade = this.currentCrossChainProvider.trade as CelerRubicTrade;
       fee = trade.fromTransitTokenAmount.multipliedBy(trade.transitTokenFee / 100);

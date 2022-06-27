@@ -190,11 +190,12 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.priceImpact = parseFloat(tradeInfo.priceImpact);
     this.priceImpactService.setPriceImpact(this.priceImpact);
 
-    this.symbiosisCryptoFee = tradeInfo.fee;
-    this.symbiosisCryptoFeeSymbol = tradeInfo.feeSymbol;
+    this.symbiosisCryptoFee = tradeInfo.networkFee;
+    this.symbiosisCryptoFeeSymbol = tradeInfo.networkFeeSymbol;
 
-    // TODO remove after end of marketing company
-    this.feePercent = 0;
+    this.feePercent = tradeInfo.feePercent;
+    this.feeAmount = tradeInfo.feeAmount;
+    this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
   }
 
   /**
