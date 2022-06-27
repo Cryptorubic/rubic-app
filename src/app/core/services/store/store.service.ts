@@ -132,7 +132,11 @@ export class StoreService {
   public clearStorage(): void {
     try {
       if (!this.isIframe) {
+        const recentTrades = this.getItem('recentTrades');
         this.localStorage?.clear();
+        if (recentTrades) {
+          this.localStorage.setItem(this.storageKey, JSON.stringify({ recentTrades }));
+        }
       }
     } catch (err: unknown) {
       console.debug(err);

@@ -59,8 +59,12 @@
 
   &__dropdown-item {
     position: relative;
-
+    
+    display: flex;
+    align-items: center;
     min-width: 135px;
+    
+    height: 100%;
   }
 
   &__logout {

@@ -60,6 +60,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
