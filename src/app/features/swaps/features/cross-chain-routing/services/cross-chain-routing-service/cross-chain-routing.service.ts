@@ -24,11 +24,12 @@ import {
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
+import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
+import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 
 @Injectable({
   providedIn: 'root'
@@ -59,10 +60,11 @@ export class CrossChainRoutingService extends TradeService {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-      const options: CrossChainOptions = {
+      const options: SwapManagerCrossChainCalculationOptions & CrossChainOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
-        slippageTolerance
+        slippageTolerance,
+        timeout: 10_000
       };
 
       this.crossChainTrade = (
