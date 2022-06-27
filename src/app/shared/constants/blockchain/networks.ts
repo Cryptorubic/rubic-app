@@ -30,7 +30,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://empty-broken-firefly.quiknode.pro/55b63ded29c6e56f01da6c1fa29babd3be2ee1c8/',
+    rpcLink:
+      'https://rpc.ankr.com/eth/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
@@ -47,7 +48,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'BSC',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://summer-late-dew.bsc.quiknode.pro/',
+    rpcLink:
+      'https://rpc.ankr.com/bsc/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/bnb.svg',
@@ -64,7 +66,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.POLYGON,
     label: 'Polygon',
     scannerUrl: 'https://polygonscan.com',
-    rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    rpcLink:
+      'https://rpc.ankr.com/polygon/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
     additionalRpcLink:
       'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/polygon.svg',

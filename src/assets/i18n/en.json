@@ -538,11 +538,11 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Swap any token with 0% protocol fees. Trade now!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
-      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 20th",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
       "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },

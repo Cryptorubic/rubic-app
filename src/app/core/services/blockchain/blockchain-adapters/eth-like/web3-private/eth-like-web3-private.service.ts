@@ -172,7 +172,10 @@ export class EthLikeWeb3PrivateService {
       });
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
-      console.error('Send transaction error', err);
+      console.error('Call transaction error', err);
+      if (this.shouldIgnoreError(err)) {
+        return this.sendTransaction(toAddress, value, options);
+      }
       throw EthLikeWeb3PrivateService.parseError(err);
     }
   }
@@ -338,7 +341,7 @@ export class EthLikeWeb3PrivateService {
         options
       );
     } catch (err) {
-      if (allowError?.(err)) {
+      if (allowError?.(err) || this.shouldIgnoreError(err)) {
         return this.executeContractMethod(
           contractAddress,
           contractAbi,
@@ -459,5 +462,15 @@ export class EthLikeWeb3PrivateService {
     setTimeout(() => {
       this.walletConnectorService.emitTransaction();
     }, 500);
+  }
+
+  private shouldIgnoreError(error: Web3Error): boolean {
+    const ignoreCallErrors = [
+      'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
+      'STF',
+      'execution reverted: ERC20: transfer amount exceeds allowance'
+    ];
+
+    return ignoreCallErrors.some(err => error?.message.includes(err));
   }
 }

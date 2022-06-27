@@ -7,10 +7,12 @@
       {{ tradesProviders[fromProvider].name }}
     </div>
   </div>
+
   <div
     class="route__line route__line_left"
     [style.border-color]="fromHasTrade ? tradesProviders[fromProvider].color : '#4aa956'"
   ></div>
+
   <div class="dex">
     <div class="dex__icon">
       <img src="assets/images/icons/providers/rubic.svg" alt="Provider" />
@@ -18,10 +20,12 @@
     <div class="dex__name">Rubic</div>
     <div class="dex__cap">Smart Routing</div>
   </div>
+
   <div
     class="route__line route__line_right"
     [style.border-color]="toHasTrade ? tradesProviders[toProvider].color : '#4aa956'"
   ></div>
+
   <div class="dex" *ngIf="toHasTrade; else rubicPool">
     <div class="dex__icon">
       <img [src]="tradesProviders[toProvider].image" alt="Provider" />

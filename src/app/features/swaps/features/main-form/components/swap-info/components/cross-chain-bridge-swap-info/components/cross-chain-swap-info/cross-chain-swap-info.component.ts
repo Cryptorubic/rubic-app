@@ -72,6 +72,10 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public isSymbiosis: boolean;
 
+  public symbiosisCryptoFee: BigNumber;
+
+  public symbiosisCryptoFeeSymbol: string;
+
   public get fromProviderImg(): string {
     return TRADES_PROVIDERS[this.fromProvider].image;
   }
@@ -186,6 +190,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.priceImpact = parseFloat(tradeInfo.priceImpact);
     this.priceImpactService.setPriceImpact(this.priceImpact);
 
+    this.symbiosisCryptoFee = tradeInfo.fee;
+    this.symbiosisCryptoFeeSymbol = tradeInfo.feeSymbol;
+
     // TODO remove after end of marketing company
     this.feePercent = 0;
   }
@@ -202,10 +209,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
     this.cryptoFeeInEth = tradeInfo.cryptoFee;
     this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice);
-
-    // TODO return after end of marketing company
-    // this.feePercent = tradeInfo.feePercent;
-    this.feePercent = 0;
+    this.feePercent = tradeInfo.feePercent;
     this.feeAmount = tradeInfo.feeAmount;
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
 

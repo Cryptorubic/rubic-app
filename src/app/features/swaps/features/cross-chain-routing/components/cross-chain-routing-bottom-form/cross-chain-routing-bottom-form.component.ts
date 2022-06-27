@@ -44,7 +44,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -120,10 +119,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   get showSmartRouting(): boolean {
-    return (
-      Boolean(this.smartRouting) &&
-      this.crossChainRoutingService.crossChainProvider !== CROSS_CHAIN_PROVIDER.SYMBIOSIS
-    );
+    return Boolean(this.smartRouting);
   }
 
   constructor(

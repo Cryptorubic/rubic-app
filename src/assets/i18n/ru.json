@@ -539,11 +539,11 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Кросс-чейны обмены с 0% комиссией протокола",
-      "period": "C 6 по 20 июня обменивайте токены между блокчейнами с 0 комиссией протокола",
+      "period": "C 6 по 27 июня обменивайте токены между блокчейнами с 0 комиссией протокола",
       "excluded": "*Telos, Aurora, Moonriver, Harmony, Solana, NEAR не участвуют в акции"
     }
   },

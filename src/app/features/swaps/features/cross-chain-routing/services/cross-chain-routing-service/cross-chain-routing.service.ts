@@ -70,6 +70,7 @@ import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swa
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 const CACHEABLE_MAX_AGE = 15_000;
 
@@ -208,6 +209,13 @@ export class CrossChainRoutingService extends TradeService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    // @TODO Remove after near fix.
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const isNear = fromBlockchain === BLOCKCHAIN_NAME.NEAR || toBlockchain === BLOCKCHAIN_NAME.NEAR;
+    if (isNear) {
+      throw new RubicError('Near blockchain is temporarily unavailable.');
+    }
+
     const {
       provider: crossChainProvider,
       minAmountError,
@@ -233,6 +241,10 @@ export class CrossChainRoutingService extends TradeService {
         ? (this.currentCrossChainProvider.trade as SymbiosisTrade).toAmount
         : (this.currentCrossChainProvider.trade as CelerRubicTrade).toAmountWithoutSlippage
       : null;
+
+    if (crossChainProvider.type === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+      this.setSymbiosisSmartRouting();
+    }
 
     return {
       toAmount,
@@ -426,7 +438,9 @@ export class CrossChainRoutingService extends TradeService {
           );
         }
 
-        const amountWithSlippage = fromTransitTokenAmount.multipliedBy(fromSlippage);
+        const amountWithSlippage = fromTransitTokenAmount.multipliedBy(
+          compareAddresses(fromToken.address, fromTransitToken.address) ? 1 : fromSlippage
+        );
         celerEstimate = await this.celerService.getCelerEstimate(
           fromBlockchain as EthLikeBlockchainName,
           toBlockchain as EthLikeBlockchainName,
@@ -615,7 +629,8 @@ export class CrossChainRoutingService extends TradeService {
             toToken,
             false,
             contractAddress,
-            wrappedNativeAddress
+            wrappedNativeAddress,
+            true
           );
         return {
           trade: instantTrade,
@@ -926,6 +941,8 @@ export class CrossChainRoutingService extends TradeService {
       const trade = this.currentCrossChainProvider.trade as SymbiosisTrade;
       return {
         estimatedGas,
+        fee: trade.fee,
+        feeSymbol: trade.feeSymbol,
         priceImpact: trade.priceImpact
       };
     }
@@ -1097,12 +1114,13 @@ export class CrossChainRoutingService extends TradeService {
    * Checks contracts' state and user's balance.
    */
   private async checkTradeParameters(): Promise<void | never> {
-    await Promise.all([
-      this.checkIfPaused(),
-      this.checkGasPrice(),
-      this.checkContractBalance(),
-      this.checkUserBalance()
-    ]);
+    const checks = [this.checkIfPaused(), this.checkGasPrice(), this.checkUserBalance()];
+
+    await Promise.all(
+      this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC
+        ? checks.concat(this.checkContractBalance())
+        : checks
+    );
   }
 
   private async checkUserBalance(): Promise<void> {
@@ -1374,6 +1392,16 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     this._smartRouting$.next(smartRouting);
+  }
+
+  private setSymbiosisSmartRouting(): void {
+    this._smartRouting$.next({
+      fromProvider: INSTANT_TRADE_PROVIDER.ONEINCH,
+      toProvider: INSTANT_TRADE_PROVIDER.ONEINCH,
+      fromHasTrade: true,
+      toHasTrade: true,
+      savings: new BigNumber(0)
+    });
   }
 
   private getProviderType(

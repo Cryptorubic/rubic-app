@@ -25,7 +25,7 @@ import {
   SYMBIOSIS_SUPPORTED_BLOCKCHAINS,
   SymbiosisSupportedBlockchain
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/constants/contract-address';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses } from '@shared/utils/utils';
 import { OneInchEthService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
 import { OneInchPolygonService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
@@ -33,6 +33,7 @@ import { OneInchAvalancheService } from '@features/swaps/features/instant-trade/
 import { CommonOneinchService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-service/common-oneinch.service';
 import { transitTokens } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { SymbiosisTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { PLUG_ADDRESS } from '@shared/constants/blockchain/plug-address';
 
 @Injectable()
 export class SymbiosisService {
@@ -115,18 +116,11 @@ export class SymbiosisService {
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
-    if (!this.walletAddress) {
-      return { trade: null };
-    }
-
     const { fromToken, fromAmount, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
     if (
       !SymbiosisService.isSupportedBlockchain(fromBlockchain) ||
-      compareTokens(fromToken, {
-        blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
-      }) // TODO return after fix
+      !SymbiosisService.isSupportedBlockchain(toBlockchain)
     ) {
       return { trade: null };
     }
@@ -174,9 +168,9 @@ export class SymbiosisService {
       } = await swapping.exactIn(
         tokenAmountIn,
         tokenOut,
-        this.walletAddress,
-        this.walletAddress,
-        this.walletAddress,
+        this.walletAddress || PLUG_ADDRESS,
+        this.walletAddress || PLUG_ADDRESS,
+        this.walletAddress || PLUG_ADDRESS,
         slippageTolerance,
         deadline,
         true
@@ -187,11 +181,14 @@ export class SymbiosisService {
         trade: {
           toAmount: new BigNumber(tokenAmountOut.toFixed()),
           fee: new BigNumber(transitTokenFee.toFixed()),
+          feeSymbol: transitTokenFee.token.symbol,
           priceImpact: priceImpact.toFixed()
         }
       };
       // @ts-ignore
     } catch (err: { code: ErrorCode; message: string }) {
+      console.debug(err);
+
       if (err?.code === ErrorCode.AMOUNT_TOO_LOW || err?.code === ErrorCode.AMOUNT_LESS_THAN_FEE) {
         const index = err.message.lastIndexOf('$');
         const transitTokenAmount = new BigNumber(err.message.substring(index + 1));
