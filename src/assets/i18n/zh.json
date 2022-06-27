@@ -93,7 +93,7 @@
     "walletNotInstalled": "未安装钱包"
   },
   "navigation": { 
-    "recentTrades": "Recent crosschain tx",
+    "recentTrades": "Recent cross-chain tx",
     "about": "关于",
     "faq": "常见问题解答",
     "features": "特点",
@@ -247,10 +247,10 @@
     "notAvailableAfter": " 不可用。"
   },
   "recentTrades": {
-    "title": "Recent Crosschain Tx",
+    "title": "Recent Cross-Chain Tx",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
-    "noTransactions": "You don't have Cross-Chain Transactions yet",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
     "revert": "Revert",
     "date": "Date",
     "from": "From",

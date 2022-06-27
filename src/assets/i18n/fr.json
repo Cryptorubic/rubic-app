@@ -92,7 +92,7 @@
     "walletNotInstalled": "Le portefeuille n'est pas installé."
   },
   "navigation": { 
-    "recentTrades": "Recent crosschain tx",
+    "recentTrades": "Recent cross-chain tx",
     "about": "À propos",
     "faq": "FAQ",
     "features": "Fonctionnalités",
@@ -350,10 +350,10 @@
     "notAvailableAfter": " n'est pas disponible."
   },
   "recentTrades": {
-    "title": "Recent Crosschain Tx",
+    "title": "Recent Cross-Chain Tx",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
-    "noTransactions": "You don't have Cross-Chain Transactions yet",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
     "revert": "Revert",
     "date": "Date",
     "from": "From",

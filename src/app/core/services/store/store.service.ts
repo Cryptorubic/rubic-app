@@ -127,21 +127,32 @@ export class StoreService {
   }
 
   /**
-   * Clear all data in user storage.
+   * Clear all data in user storage except
+   * recent trades and unread trades if they exists.
    */
   public clearStorage(): void {
+    const recentTrades = this.getItem('recentTrades');
+    const unreadTrades = this.getItem('unreadTrades');
+
     try {
       if (!this.isIframe) {
-        const recentTrades = this.getItem('recentTrades');
         this.localStorage?.clear();
+
         if (recentTrades) {
-          this.localStorage.setItem(this.storageKey, JSON.stringify({ recentTrades }));
+          this.localStorage.setItem(
+            this.storageKey,
+            JSON.stringify({ recentTrades, unreadTrades })
+          );
         }
       }
     } catch (err: unknown) {
       console.debug(err);
     } finally {
-      this.storageSubject$.next(null);
+      if (recentTrades) {
+        this.storageSubject$.next({ ...({} as Store), recentTrades, unreadTrades });
+      } else {
+        this.storageSubject$.next(null);
+      }
     }
   }
 }

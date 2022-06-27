@@ -48,9 +48,6 @@
   }
 
   &__arrow {
-    position: relative;
-    right: 3px;
-
     width: 32px;
     margin: 0 65px;
 
@@ -62,8 +59,12 @@
   &__from,
   &__to {
     display: flex;
-    flex-grow: 1;
     align-items: center;
+    width: calc(100% - 32px - 65px - 65px);
+
+    @include b($tablet) {
+      width: calc(100% - 32px - 32px - 32px);
+    }
 
     img {
       width: 42px;

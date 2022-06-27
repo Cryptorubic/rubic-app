@@ -7,11 +7,6 @@ import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interfac
 
 export interface Store {
   /**
-   * Count of unread trades by user.
-   */
-  unreadTrades_: number;
-
-  /**
    * Current wallet provider selected by user.
    */
   provider: WALLET_NAME;
@@ -44,16 +39,31 @@ export interface Store {
     blockchain: BlockchainName;
   };
 
+  /**
+   * Passed form steps for bridge swap.
+   */
   [SWAP_PROVIDER_TYPE.BRIDGE]: FormSteps;
 
+  /**
+   * Passed form steps for instant-trade swap.
+   */
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormSteps;
 
+  /**
+   * Passed form steps for cross-chain swap.
+   */
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormSteps;
 
+  /**
+   * Latest cross-chain trades by address.
+   */
   recentTrades: {
     [address: string]: RecentTrade[];
   };
 
+  /**
+   * Count of unread trades by address.
+   */
   unreadTrades: {
     [address: string]: number;
   };
