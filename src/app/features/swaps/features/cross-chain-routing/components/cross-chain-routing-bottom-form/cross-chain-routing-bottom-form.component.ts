@@ -32,7 +32,6 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
-import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -131,7 +130,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
-    private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Self() private readonly destroy$: TuiDestroyService
@@ -416,8 +414,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
       this.conditionalCalculate('hidden');
-
-      this.counterNotificationsService.updateUnread();
 
       await this.tokensService.updateTokenBalanceAfterSwap({
         address: fromToken.address,
