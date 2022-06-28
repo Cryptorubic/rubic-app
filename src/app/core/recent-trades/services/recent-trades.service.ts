@@ -235,6 +235,8 @@ export class RecentTradesService {
     const srcTransactionReceipt = await this.getTxReceipt(srcTxHash, srcWeb3);
     const statusFrom = this.getSrcTxStatus(srcTransactionReceipt);
 
+    uiTrade.statusFrom = statusFrom;
+
     if (statusFrom === RecentTradeStatus.PENDING) {
       uiTrade.statusTo = RecentTradeStatus.PENDING;
     }
