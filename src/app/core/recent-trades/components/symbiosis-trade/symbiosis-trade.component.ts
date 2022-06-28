@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { RecentTradeStatus } from '../../models/recent-trade-status.enum';
@@ -20,10 +14,6 @@ import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interfac
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SymbiosisTradeComponent extends CommonTrade {
-  @Input() trade: RecentTrade;
-
-  @Input() mode: 'table-row' | 'mobile';
-
   public revertBtnLoading = false;
 
   constructor(

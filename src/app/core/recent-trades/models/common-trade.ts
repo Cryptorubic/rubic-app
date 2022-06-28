@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input } from '@angular/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -11,9 +11,9 @@ import { watch } from '@taiga-ui/cdk';
 
 @Directive()
 export abstract class CommonTrade {
-  public abstract trade: RecentTrade;
+  @Input() trade: RecentTrade;
 
-  public abstract mode: 'mobile' | 'table-row';
+  @Input() mode: 'mobile' | 'table-row';
 
   public uiTrade: UiRecentTrade;
 

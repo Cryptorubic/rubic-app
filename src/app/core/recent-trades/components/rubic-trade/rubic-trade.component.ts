@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -19,10 +13,6 @@ import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicTradeComponent extends CommonTrade {
-  @Input() trade: RecentTrade;
-
-  @Input() mode: 'table-row' | 'mobile';
-
   constructor(
     private readonly recentTradesService: RecentTradesService,
     protected readonly recentTradesStoreService: RecentTradesStoreService,
