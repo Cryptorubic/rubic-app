@@ -13,7 +13,7 @@
           tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
         "
       >
-        Transaction completed successfully!
+        {{ 'crossChainPage.swapSchemeModal.transactionCompleted' | translate }}
       </ng-container>
 
       <ng-container
@@ -24,7 +24,7 @@
           tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
         "
       >
-        Your Transaction is Being Processed!
+        {{ 'crossChainPage.swapSchemeModal.transactionIsBeingProcessed' | translate }}
       </ng-container>
 
       <ng-container
@@ -33,13 +33,15 @@
           tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL
         "
       >
-        Your transaction has not been completed!
+        {{ 'crossChainPage.swapSchemeModal.transactionNotCompleted' | translate }}
       </ng-container>
     </div>
 
     <div class="description">
-      Transaction status can also be tracked in
-      <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">My Trades</span>
+      {{ 'crossChainPage.swapSchemeModal.transactionCanBeTracked' | translate }}
+      <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">
+        {{ 'crossChainPage.swapSchemeModal.recentTrades' | translate }}</span
+      >
     </div>
 
     <div class="pair">
@@ -199,8 +201,7 @@
     </div>
 
     <div class="caption">
-      If your transaction seems to be taking longer than normal, please try to update your
-      transaction history. In the case of excessive wait times, contact our Support Team at
+      {{ 'crossChainPage.swapSchemeModal.ifTransactionNotCompleted' | translate }}
       <a class="highlight_black-white" href="mailto:support@rubic.exchange">
         support@rubic.exchange</a
       >.
@@ -211,7 +212,7 @@
       (onClick)="revertSymbiosisTrade()"
       [loading]="revertBtnLoading$ | async"
     >
-      Revert
+      {{ 'common.revert' | translate }}
     </app-rubic-button>
   </ng-container>
 </ng-container>

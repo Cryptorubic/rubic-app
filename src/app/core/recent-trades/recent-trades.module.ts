@@ -7,6 +7,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { CelerTradeComponent } from './components/celer-trade/celer-trade.component';
 import { SymbiosisTradeComponent } from './components/symbiosis-trade/symbiosis-trade.component';
 import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.compon
     SymbiosisTradeComponent,
     RubicTradeComponent
   ],
-  imports: [CommonModule, TuiLoaderModule, SharedModule],
+  imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],
   providers: [RecentTradesService]
 })
