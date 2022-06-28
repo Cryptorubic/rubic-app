@@ -3,9 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
-  OnDestroy,
-  OnInit
+  Input
 } from '@angular/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -20,7 +18,7 @@ import { RecentTradesService } from '../../services/recent-trades.service';
   styleUrls: ['./celer-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CelerTradeComponent extends CommonTrade implements OnInit, OnDestroy {
+export class CelerTradeComponent extends CommonTrade {
   @Input() trade: RecentTrade;
 
   @Input() mode: 'table-row' | 'mobile';
@@ -34,15 +32,7 @@ export class CelerTradeComponent extends CommonTrade implements OnInit, OnDestro
     super(recentTradesStoreService, cdr, destroy$);
   }
 
-  public ngOnInit(): void {
-    this.initTradeDataPolling();
-  }
-
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     return await this.recentTradesService.getCelerTradeData(trade);
-  }
-
-  public ngOnDestroy(): void {
-    this.saveTradeOnDestroy();
   }
 }

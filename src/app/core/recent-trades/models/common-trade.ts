@@ -1,4 +1,4 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Directive } from '@angular/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -9,6 +9,7 @@ import { RecentTradeStatus } from './recent-trade-status.enum';
 import { UiRecentTrade } from './ui-recent-trade.interface';
 import { watch } from '@taiga-ui/cdk';
 
+@Directive()
 export abstract class CommonTrade {
   public abstract trade: RecentTrade;
 
@@ -31,6 +32,10 @@ export abstract class CommonTrade {
   ) {}
 
   public abstract getTradeData(trade: RecentTrade): Promise<UiRecentTrade>;
+
+  protected ngOnInit(): void {
+    this.initTradeDataPolling();
+  }
 
   protected initTradeDataPolling(): void {
     interval(30000)
@@ -60,5 +65,9 @@ export abstract class CommonTrade {
         calculatedStatusFrom: RecentTradeStatus.SUCCESS
       });
     }
+  }
+
+  protected ngOnDestroy(): void {
+    this.saveTradeOnDestroy();
   }
 }

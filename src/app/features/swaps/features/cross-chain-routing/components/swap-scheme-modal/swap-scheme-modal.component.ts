@@ -197,6 +197,7 @@ export class SwapSchemeModalComponent implements OnInit {
         filter(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.SUCCESS),
         tap(() => this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
+          // TODO move switchMap callback to fabric
           if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
             return this.getSymbiosisDstTxStatus();
           }
@@ -314,6 +315,7 @@ export class SwapSchemeModalComponent implements OnInit {
     );
   }
 
+  // TODO move method to fabric
   private async getSourceTxStatus(txHash: string): Promise<MODAL_SWAP_STATUS> {
     try {
       this.srcTxReceipt = await this.srcWeb3Public.getTransactionReceipt(txHash);

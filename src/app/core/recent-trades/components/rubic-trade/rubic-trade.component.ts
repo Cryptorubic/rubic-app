@@ -3,9 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
-  OnDestroy,
-  OnInit
+  Input
 } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
@@ -20,7 +18,7 @@ import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
   styleUrls: ['./rubic-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RubicTradeComponent extends CommonTrade implements OnInit, OnDestroy {
+export class RubicTradeComponent extends CommonTrade {
   @Input() trade: RecentTrade;
 
   @Input() mode: 'table-row' | 'mobile';
@@ -36,13 +34,5 @@ export class RubicTradeComponent extends CommonTrade implements OnInit, OnDestro
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     return this.recentTradesService.getRubicTradeData(trade);
-  }
-
-  public ngOnInit(): void {
-    this.initTradeDataPolling();
-  }
-
-  public ngOnDestroy(): void {
-    this.saveTradeOnDestroy();
   }
 }

@@ -3,9 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
-  OnDestroy,
-  OnInit
+  Input
 } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
@@ -21,7 +19,7 @@ import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interfac
   styleUrls: ['./symbiosis-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SymbiosisTradeComponent extends CommonTrade implements OnInit, OnDestroy {
+export class SymbiosisTradeComponent extends CommonTrade {
   @Input() trade: RecentTrade;
 
   @Input() mode: 'table-row' | 'mobile';
@@ -35,10 +33,6 @@ export class SymbiosisTradeComponent extends CommonTrade implements OnInit, OnDe
     @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
   ) {
     super(recentTradesStoreService, cdr, destroy$);
-  }
-
-  public ngOnInit(): void {
-    this.initTradeDataPolling();
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
@@ -68,9 +62,5 @@ export class SymbiosisTradeComponent extends CommonTrade implements OnInit, OnDe
       this.revertBtnLoading = false;
       this.cdr.detectChanges();
     }
-  }
-
-  public ngOnDestroy(): void {
-    this.saveTradeOnDestroy();
   }
 }
