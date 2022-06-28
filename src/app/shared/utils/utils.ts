@@ -128,3 +128,10 @@ export async function asyncMap<T, U>(
 export function parseWeb3Percent(value: string | number): number {
   return Number(value) / Math.pow(10, 29);
 }
+
+/**
+ * Checks if value is null or undefined.
+ */
+export function isNil(value: unknown): boolean {
+  return value === undefined || value === null;
+}

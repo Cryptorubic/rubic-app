@@ -12,4 +12,6 @@ export class StatusBadgeComponent {
   @Input() type: StatusBadgeType;
 
   @Input() text: string;
+
+  @Input() cursor: 'pointer' | 'default' = 'default';
 }

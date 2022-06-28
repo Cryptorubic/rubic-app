@@ -3,8 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -12,7 +10,7 @@ import {
 } from '@angular/core';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
   debounceTime,
@@ -37,14 +35,8 @@ import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-fo
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { CounterNotificationsService } from '@core/services/counter-notifications/counter-notifications.service';
-import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { WINDOW } from '@ng-web-apis/common';
-import { RubicWindow } from '@shared/utils/rubic-window';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { BridgeService } from 'src/app/features/swaps/features/bridge/services/bridge-service/bridge.service';
@@ -124,19 +116,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly bridgeService: BridgeService,
     private readonly errorsService: ErrorsService,
-    private readonly settingsService: SettingsService,
     private readonly authService: AuthService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
-    @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
-    private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly successTxModalService: SuccessTxModalService,
-    private readonly iframeService: IframeService,
-    private readonly gtmService: GoogleTagManagerService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.onCalculateTrade$ = new Subject<void>();
   }
@@ -339,9 +324,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(
         first(),
-        tap(() => {
-          this.counterNotificationsService.updateUnread();
-        }),
         switchMap(() => this.tokensService.calculateTokensBalances()),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),

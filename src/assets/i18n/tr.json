@@ -39,7 +39,8 @@
       "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
@@ -79,7 +80,6 @@
     "multichainWallet": "Rubic henüz çok zincirli cüzdanları desteklemiyor. Şu anda yalnızca Ethereum ağında işlem yapabilirsiniz.",
     "unknown": "Hata, bir şeyler ters gitti, lütfen tekrar deneyin",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Hata! Bir şeyler ters gitti, lütfen sayfayı yeniden yüklemeyi deneyin. Yeniden yükledikten sonra hala bu sorunu yaşıyorsanız desteğimizle iletişime geçin. ",
     "rubicOptimisation": "Bu ticaret için yetersiz likidite. Rubik optimizasyonunu devre dışı bırakmayı deneyin..",
     "partialTradesData": "Sunucudan işlem verilerini alma sorunu ile karşı karşıyayız. Lütfen sayfayı yeniden yükleyin veya sorun devam ederse desteğe başvurun.",
     "tradingIsNotAvailable": "Ticaret yapılamıyor",
@@ -92,7 +92,8 @@
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "Hakkında",
     "faq": "FAQ",
     "features": "Özellikler",
@@ -102,7 +103,6 @@
     "sdk": "SDK",
     "team": "Takım",
     "login": "Cüzdan Bağla",
-    "myTrades": "Ticaretlerim",
     "logout": "çıkıç yap",
     "logoutMessage": "Gerçekten Oturumu Kapatmak istiyor musunuz?",
     "notAvailable": "Yapım Aşamasında - UX Yeniden Tasarımı.",
@@ -409,6 +409,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": "~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal, please try to update your transaction history. In the case of excessive wait times, contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -419,8 +427,22 @@
     "notAvailableBefore": "Trading on",
     "notAvailableAfter": "mevcut değil."
   },
-  "myTrades": {
-    "title": "My Trades"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Gas Refund",
