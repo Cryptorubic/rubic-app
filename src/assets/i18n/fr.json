@@ -39,7 +39,8 @@
       "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
@@ -79,7 +80,6 @@
     "multichainWallet": "Rubic ne prend pas encore en charge les portefeuilles multi-chaînes. Actuellement, vous ne pouvez échanger que sur le réseau Ethereum",
     "unknown": "Oups, quelque chose s'est mal passé, veuillez réessayer",
     "insufficientFoundsGasPriceValue": "Montant pour les frais de gaz insuffisants. Veuillez recharger en {{ nativeToken }}.",
-    "NoDataMyTradesError": "Oups, quelque chose s'est mal passé, veuillez essayer de recharger la page. Contactez notre support si vous continuez à rencontrer ce problème.",
     "rubicOptimisation": "Liquidité insuffisante pour cet échange. Essayez en désactivant le routage optimisé Rubic.",
     "partialTradesData": "Impossible de récupérer les données de transactions du serveur. Veuillez recharger la page ou contacter le support si le problème persiste.",
     "tradingIsNotAvailable": "Échanges non disponibles",
@@ -92,7 +92,8 @@
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "À propos",
     "faq": "FAQ",
     "features": "Fonctionnalités",
@@ -102,7 +103,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Connecter le portefeuille",
-    "myTrades": "Mes échanges",
     "logout": "Déconnexion",
     "logoutMessage": "Voulez vous vraiment vous déconnecter ?",
     "notAvailable": "En construction - refonte UX.",
@@ -340,6 +340,14 @@
       "save": "Économisez {{amount}}$ avec le routage intelligent Rubic",
       "estTime": "Délai estimé ~ 80 sec",
       "estTimeMobile": " ~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal, please try to update your transaction history. In the case of excessive wait times, contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -350,8 +358,22 @@
     "notAvailableBefore": "Échangez sur ",
     "notAvailableAfter": " n'est pas disponible."
   },
-  "myTrades": {
-    "title": "Mes Échanges"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Gaz remboursé",

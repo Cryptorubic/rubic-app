@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
-import { MyTradesModule } from 'src/app/features/my-trades/my-trades.module';
 import { WalletsModule } from 'src/app/core/wallets/wallets.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
@@ -54,8 +53,7 @@ import { ErrorsModule } from './errors/errors.module';
         deps: [HttpClient]
       }
     }),
-    SwapsModule,
-    MyTradesModule
+    SwapsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })

@@ -6,8 +6,6 @@ import {
   ViewChildren,
   QueryList,
   TemplateRef,
-  Inject,
-  Injector,
   Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
@@ -15,13 +13,12 @@ import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { TuiDialogService } from '@taiga-ui/core';
-import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -37,10 +34,8 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private translateService: TranslateService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
-    @Inject(WINDOW) private readonly window: Window,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly commonModalService: CommonModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
@@ -66,6 +61,8 @@ export class UserProfileComponent implements AfterViewInit {
 
   public dropdownIsOpened = false;
 
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
   @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 
   ngAfterViewInit(): void {
@@ -85,5 +82,13 @@ export class UserProfileComponent implements AfterViewInit {
 
   public getDropdownStatus(status: boolean): void {
     this.dropdownIsOpened = status;
+  }
+
+  public openRecentTradesModal(): void {
+    this.commonModalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
+      })
+      .subscribe();
   }
 }

@@ -13,12 +13,14 @@ import { CelerService } from './services/cross-chain-routing-service/celer/celer
 import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { SymbiosisService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/symbiosis/symbiosis.service';
+import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-scheme-modal.component';
 
 @NgModule({
   declarations: [
     CrossChainRoutingBottomFormComponent,
     TargetNetworkAddressComponent,
-    SmartRoutingComponent
+    SmartRoutingComponent,
+    SwapSchemeModalComponent
   ],
   imports: [
     CommonModule,

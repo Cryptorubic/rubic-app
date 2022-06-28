@@ -39,7 +39,8 @@
       "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",
@@ -79,7 +80,6 @@
     "multichainWallet": "Leider unterstützen wir aktuell keine Multi-Chain-Wallets. Derzeit bieten wir ausschließlich Transaktionen im Ethereum Netzwerk",
     "unknown": "Hoppla, da ist etwas schiefgelaufen. Bitte versuche es erneut.",
     "insufficientFoundsGasPriceValue": "Dein Guthaben reicht leider nicht aus um die Gas-Gebühren zu begleichen. Bitte erhöhe Dein {{nativeToken}}-Guthaben entsprechend.",
-    "NoDataMyTradesError": "Hoppla, da ist etwas schiefgelaufen. Bitte lade die Seite erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren Kundendienst.",
     "rubicOptimisation": "Für Deine Transaktion ist nicht ausreichend Liquidität vorhanden. Du kannst versuchen, die Transaktionsoptimierung zu deaktivieren.",
     "partialTradesData": "Beim serverseitigen Abruf der Transaktionsdaten ist ein Fehler aufgetreten. Bitte lade die Seite erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren Kundendienst.",
     "tradingIsNotAvailable": "Handel nicht verfügbar",
@@ -92,7 +92,8 @@
     "wrongPromoterWallet": "Dein Wallet ist leider nicht mit Ethereum kompatibel. Bitte verbinde ein unterstütztes Wallet, z.B. MetaMask.",
     "walletNotInstalled": "Kein Wallet installiert."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "Über Rubic",
     "faq": "FAQ",
     "features": "Funktionen",
@@ -102,7 +103,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Wallet verbinden",
-    "myTrades": "Transaktionen",
     "logout": "Abmelden",
     "logoutMessage": "Möchtest Du Dich wirklich abmelden?",
     "notAvailable": "Hier passiert gerade Spannendes -  UX Redesign.",
@@ -235,6 +235,14 @@
     "smartRouting": {
       "save": "Spare ${{amount}} dank unseres Smart Routing",
       "estTime": "Gesch. Dauer ~ 80 Sek"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal, please try to update your transaction history. In the case of excessive wait times, contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -245,8 +253,22 @@
     "notAvailableBefore": "Transaktionen mit ",
     "notAvailableAfter": " sind nicht verfügbar."
   },
-  "myTrades": {
-    "title": "Meine Transaktionen"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Rückerstattung von Gas-Gebühren",
