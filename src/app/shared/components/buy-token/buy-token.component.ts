@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ interface TokenPair {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuyTokenComponent {
-  @Input() appereance: TuiAppearance = TuiAppearance.Outline;
+  @Input() appearance: TuiAppearance = TuiAppearance.Outline;
 
   /**
    * Banner type. Component Renders different texts based on type.
@@ -56,8 +56,7 @@ export class BuyTokenComponent {
     private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly themeService: ThemeService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly themeService: ThemeService
   ) {
     this.tokensType = 'default';
     this.customTokens = {

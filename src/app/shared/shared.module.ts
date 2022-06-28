@@ -63,7 +63,6 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
-import { FeeBannerComponent } from './components/fee-banner/fee-banner.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 
 @NgModule({
@@ -96,8 +95,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
     IframeBlockchainIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
-    ProgressTrxNotificationComponent,
-    FeeBannerComponent,
+    ProgressTrxNotificationComponent,    
     SymbiosisWarningTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
@@ -180,8 +178,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
     CopyContainerComponent,
     FunctionCallPipe,
     StatusBadgeComponent,
-    ChipsComponent,
-    FeeBannerComponent
+    ChipsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
