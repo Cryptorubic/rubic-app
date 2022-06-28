@@ -95,7 +95,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
     IframeBlockchainIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
-    ProgressTrxNotificationComponent,    
+    ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
