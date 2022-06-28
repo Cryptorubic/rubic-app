@@ -1,23 +1,29 @@
-name: Deploy to development server
+name: Deploy to dev server
 
 on:
   workflow_dispatch:
     inputs:
       server:
-        description: 'Development server'
+        description: 'Choose environment'
         required: true
         default: 'dev'
         type: choice
         options:
         - dev
         - dev-2
-        - stage 
+        - stage
+
+env:
+  name: ${{ inputs.environment }}
   
 jobs:
   deploy:
-    name: Deploy on ${{ inputs.server }} server
+    name: Deploy on ${{ inputs.environment }} server
     runs-on: ubuntu-latest
-    environment: ${{ inputs.server }}
+    env: 
+      USER: ${{ secrets.USER }}
+      PASS: ${{ secrets.PASS }}
+      HOST: ${{ secrets.HOST }}
 
     steps:
       - uses: actions/checkout@v2
@@ -38,8 +44,8 @@ jobs:
         run: |
           sudo apt-get install sshpass
           npm install
-      - name: Run build ${{ inputs.server }}
+      - name: Run build ${{ inputs.environment }}
         run: npm run build
 
       - name: Deploy on ${{ inputs.server }} server
-        run: sshpass -p $PASS rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ $USER@$HOST:/var/www/rubic_exchange/frontend
+        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
