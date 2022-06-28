@@ -7,7 +7,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   LowSlippageError,
-  RubicSdkError
+  RubicSdkError,
+  Web3Pure
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
@@ -37,6 +38,8 @@ import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -63,12 +66,16 @@ export class CrossChainRoutingService extends TradeService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService
+    private readonly apiService: CrossChainRoutingApiService,
+    private readonly gasService: GasService
   ) {
     super('cross-chain-routing');
   }
 
-  public async calculateTrade(_needApprove?: boolean): Promise<WrappedCrossChainTrade> {
+  public async calculateTrade(
+    userAuthorized: boolean
+  ): Promise<WrappedCrossChainTrade & { needApprove: boolean }> {
+    let needApprove = false;
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -83,6 +90,7 @@ export class CrossChainRoutingService extends TradeService {
         await this.sdk.crossChain.calculateTrade(fromToken, fromAmount.toString(), toToken, options)
       )[0];
       const { trade, error } = this.crossChainTrade;
+      needApprove = userAuthorized && (await trade?.needApprove());
       await this.calculateSmartRouting();
       if (!trade && error instanceof RubicSdkError) {
         if (
@@ -99,7 +107,7 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = null;
       throw err;
     }
-    return this.crossChainTrade;
+    return { ...this.crossChainTrade, needApprove };
   }
 
   public async createTrade(confirmCallback?: () => void): Promise<void> {
@@ -115,14 +123,21 @@ export class CrossChainRoutingService extends TradeService {
       this.notifyGtmAfterSignTx(txHash);
       subscription$ = this.notifyTradeInProgress(
         txHash,
-        this.crossChainTrade.trade.f,
+        this.crossChainTrade?.trade?.from?.blockchain,
         this.crossChainTrade.tradeType
       );
     };
 
-    await this.crossChainTrade.trade.swap({
-      onConfirm: onTransactionHash
-    });
+    const blockchain = this.crossChainTrade?.trade?.from?.blockchain as BlockchainName;
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+    const swapOptions = {
+      onConfirm: onTransactionHash,
+      ...(Boolean(shouldCalculateGasPrice) && {
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+      })
+    };
+
+    await this.crossChainTrade.trade.swap(swapOptions);
 
     subscription$?.unsubscribe();
     this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
@@ -230,7 +245,18 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async approve(): Promise<void> {
-    this.crossChainTrade.trade.approve();
+    this.checkDeviceAndShowNotification();
+    let approveInProgressSubscription$: Subscription;
+    const onTransactionHash = () => {
+      approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+    };
+
+    try {
+      await this.crossChainTrade.trade.approve({ onTransactionHash });
+      this.notificationsService.showApproveSuccessful();
+    } finally {
+      approveInProgressSubscription$?.unsubscribe();
+    }
   }
 
   private parseCalculcationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
@@ -238,8 +264,9 @@ export class CrossChainRoutingService extends TradeService {
       return new CrossChainIsUnavailableWarning();
     }
     if (error instanceof LowSlippageError) {
-      return new RubicError('Slippage is too low fro transaction.');
+      return new RubicError('Slippage is too low for transaction.');
     }
+    return new RubicError('Unknown SDK error. Try to refresh the page');
   }
 
   private checkDeviceAndShowNotification(): void {

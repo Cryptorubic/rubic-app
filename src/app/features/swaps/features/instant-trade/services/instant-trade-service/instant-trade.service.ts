@@ -32,6 +32,7 @@ import { ItOptions } from '@features/swaps/features/instant-trade/services/insta
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -50,7 +51,8 @@ export class InstantTradeService extends TradeService {
     private readonly settingsService: SettingsService,
     private readonly sdk: RubicSdkService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly gasService: GasService
   ) {
     super('instant-trade');
   }
@@ -137,6 +139,7 @@ export class InstantTradeService extends TradeService {
     let transactionHash: string;
     let subscription$: Subscription;
 
+    const gasPrice = shouldCalculateGas[blockchain];
     const options = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -154,7 +157,9 @@ export class InstantTradeService extends TradeService {
 
         this.postTrade(hash, providerName, trade);
       },
-      gasPrice: trade instanceof InstantTrade ? trade.gasFeeInfo?.gasPrice : undefined
+      ...(Boolean(gasPrice) && {
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+      })
     };
 
     try {

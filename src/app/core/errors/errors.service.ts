@@ -25,7 +25,7 @@ import TransactionRevertedError from './models/common/transaction-reverted-error
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
 import { LowGasError } from './models/provider/low-gas-error';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
-import CrossChainTokensWithFeeWarning from '@core/errors/models/cross-chain-routing/cross-chain-tokens-with-fee-warning';
+import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 
 interface Question {
   title: string;
@@ -179,10 +179,15 @@ export class ErrorsService {
         return new LowGasError();
       }
       if (err instanceof SdkLowSlippageDeflationaryTokenError) {
-        return new CrossChainTokensWithFeeWarning();
+        return new TokenWithFeeError();
       }
       if (err?.message) {
-        return new RubicError<ERROR_TYPE.TEXT>(err.message);
+        if (err.message.includes('Request failed with status code 400')) {
+          return new RubicError(
+            'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
+          );
+        }
+        return new RubicError(err.message);
       }
 
       return new RubicError('[RUBIC SDK] Unknown error.');

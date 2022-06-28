@@ -531,7 +531,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
           return from(instantTrades$).pipe(
             switchMap(instantTrades => this.getHiddenTradeAndApproveData(instantTrades)),
-            tap(() => {
+            tap(hiddenTrades => {
+              this.hiddenProvidersTrades = hiddenTrades;
               this.checkSelectedProviderHiddenData();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
@@ -583,9 +584,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
         trade => trade.providerName === this.selectedProvider.name
       );
       const providerAmount =
-        providerData.status === 'fulfilled' ? providerData.value.to.amount : null;
+        providerData.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
 
-      if (!this.selectedProvider.trade.to.amount.eq(providerAmount)) {
+      if (!this.selectedProvider.trade.to.tokenAmount.eq(providerAmount)) {
         this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
       }
     }

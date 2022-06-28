@@ -235,9 +235,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
-          const calculateNeedApprove = Boolean(this.authService.userAddress);
+          const isUserAuthorized = Boolean(this.authService.userAddress);
           const crossChainTrade$ = from(
-            this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
+            this.crossChainRoutingService.calculateTrade(isUserAuthorized)
           );
           const balance$ = from(
             this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
@@ -245,7 +245,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           return crossChainTrade$.pipe(
             switchTap(() => balance$),
-            map(({ trade, error }) => {
+            map(({ trade, error, needApprove }) => {
               if (
                 error !== undefined &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
@@ -259,7 +259,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.maxError = error?.maxAmount || false;
               this.errorText = '';
 
-              this.needApprove = false;
+              this.needApprove = needApprove;
               this.withApproveButton = this.needApprove;
 
               this.toAmount = trade?.to?.tokenAmount;
@@ -268,7 +268,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               });
               this.smartRouting = this.crossChainRoutingService.smartRouting;
               this.hiddenTradeData = null;
-              this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
 
               if (this.minError || this.maxError || this.toAmount?.lte(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -276,7 +275,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 this.tradeStatus = this.needApprove
                   ? TRADE_STATUS.READY_TO_APPROVE
                   : TRADE_STATUS.READY_TO_SWAP;
-                this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
               }
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
@@ -309,7 +307,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           const { fromAmount } = this.swapFormService.inputValue;
 
-          return from(this.crossChainRoutingService.calculateTrade()).pipe(
+          return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
             map(({ trade, error }) => {
               if (
                 error &&
