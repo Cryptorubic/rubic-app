@@ -6,10 +6,10 @@ on:
       server:
         description: 'Development server'
         required: true
-        default: 'dev-1'
+        default: 'dev'
         type: choice
         options:
-        - dev-1
+        - dev
         - dev-2
         - stage 
   
@@ -17,6 +17,7 @@ jobs:
   deploy:
     name: Deploy on ${{ inputs.server }} server
     runs-on: ubuntu-latest
+    environment: ${{ inputs.server }}
 
     steps:
       - uses: actions/checkout@v2
@@ -41,4 +42,4 @@ jobs:
         run: npm run build
 
       - name: Deploy on ${{ inputs.server }} server
-        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p $PASS rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ $USER@$HOST:/var/www/rubic_exchange/frontend
