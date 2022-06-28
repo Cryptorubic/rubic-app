@@ -6,9 +6,10 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { map, startWith } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { BlockchainName } from 'rubic-sdk';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Component({
   selector: 'app-error-button',
@@ -36,7 +37,8 @@ export class ErrorButtonComponent {
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly sdkService: RubicSdkService
   ) {}
 
   public allowChangeNetwork(err: ERROR_TYPE): boolean {
@@ -52,6 +54,7 @@ export class ErrorButtonComponent {
     const { fromBlockchain } = this.swapFormService.inputValue;
     try {
       await this.walletConnectorService.switchChain(fromBlockchain);
+      await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));
     } finally {
       this.loading = false;
       this.cdr.markForCheck();

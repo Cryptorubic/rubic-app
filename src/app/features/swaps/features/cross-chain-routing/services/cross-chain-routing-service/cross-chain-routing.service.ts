@@ -6,6 +6,7 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  LowSlippageError,
   RubicSdkError
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
@@ -30,11 +31,19 @@ import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chai
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
+import { Subscription } from 'rxjs';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import BigNumber from 'bignumber.js';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossChainRoutingService extends TradeService {
+  private readonly defaultTimeout = 20_000;
+
   public crossChainTrade: WrappedCrossChainTrade;
 
   public smartRouting: SmartRouting;
@@ -51,7 +60,10 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly iframeService: IframeService,
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly apiService: CrossChainRoutingApiService
   ) {
     super('cross-chain-routing');
   }
@@ -64,7 +76,7 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: 10_000
+        timeout: this.defaultTimeout
       };
 
       this.crossChainTrade = (
@@ -77,10 +89,9 @@ export class CrossChainRoutingService extends TradeService {
           error instanceof CrossChainMinAmountError ||
           error instanceof CrossChainMaxAmountError
         ) {
-          throw new RubicSdkError('Can not calculate the trade.');
-        } else {
-          throw this.parseCalculcationError(this.crossChainTrade.error);
+          throw new RubicSdkError(error.message);
         }
+        throw this.parseCalculcationError(this.crossChainTrade.error);
       }
     } catch (err) {
       console.log(err);
@@ -96,9 +107,25 @@ export class CrossChainRoutingService extends TradeService {
     if (!this.crossChainTrade?.trade) {
       throw new RubicError('[RUBIC SDK] Cross chain trade object not found.');
     }
+    this.checkDeviceAndShowNotification();
+
+    let subscription$: Subscription;
+    const onTransactionHash = (txHash: string) => {
+      confirmCallback?.();
+      this.notifyGtmAfterSignTx(txHash);
+      subscription$ = this.notifyTradeInProgress(
+        txHash,
+        this.crossChainTrade.trade.f,
+        this.crossChainTrade.tradeType
+      );
+    };
+
     await this.crossChainTrade.trade.swap({
-      onConfirm: confirmCallback
+      onConfirm: onTransactionHash
     });
+
+    subscription$?.unsubscribe();
+    this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
   }
 
   /**
@@ -210,5 +237,38 @@ export class CrossChainRoutingService extends TradeService {
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
+    if (error instanceof LowSlippageError) {
+      return new RubicError('Slippage is too low fro transaction.');
+    }
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.showOpenMobileWallet();
+    }
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+
+    let fee: BigNumber;
+    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+      const trade = this.crossChainTrade.trade as SymbiosisCrossChainTrade;
+      fee = trade.fee;
+    } else {
+      // @TODO SDK.
+      // const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
+      // fee = trade.from.tokenAmount.multipliedBy(trade.transitTokenFee / 100);
+      fee = new BigNumber(0);
+    }
+
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      fromToken.symbol,
+      toToken.symbol,
+      fee,
+      fromAmount.multipliedBy(fromToken.price)
+    );
   }
 }

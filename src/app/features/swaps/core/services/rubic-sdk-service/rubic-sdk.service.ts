@@ -6,9 +6,14 @@ import SDK, {
   TokensManager
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class RubicSdkService {
+  private readonly _sdkLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly sdkLoading$ = this._sdkLoading$.asObservable();
+
   private _SDK: SDK | null;
 
   private get SDK(): SDK {
@@ -48,9 +53,15 @@ export class RubicSdkService {
   }
 
   public async patchConfig(config: Partial<Configuration>): Promise<void> {
-    await this.SDK.updateConfiguration({
-      ...this.currentConfig,
-      ...config
-    });
+    this._sdkLoading$.next(true);
+    try {
+      await this.SDK.updateConfiguration({
+        ...this.currentConfig,
+        ...config
+      });
+    } catch {
+      console.debug('Failed to reload SDK configuration.');
+    }
+    this._sdkLoading$.next(false);
   }
 }
