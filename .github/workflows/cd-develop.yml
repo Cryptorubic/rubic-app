@@ -21,6 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Set dev env
         if: ${{ inputs.env_id == 'dev' }}
         run: |
@@ -57,10 +64,9 @@ jobs:
       - name: Set up npm
         run: npm install
 
-      - name: Set up sshpass and npm
+      - name: Set up sshpass
         run: |
           sudo apt-get install sshpass
-          npm install
 
       - name: Run build
         run: npm run build
