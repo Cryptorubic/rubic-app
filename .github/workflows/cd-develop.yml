@@ -10,7 +10,7 @@ on:
         type: choice
         options:
         - dev
-        - dev-2
+        - dev2
         - stage
 
 jobs:
@@ -27,13 +27,15 @@ jobs:
           echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
           echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
           echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
 
-      - name: Set dev-2 env
-        if: ${{ inputs.env_id == 'dev-2' }}
+      - name: Set dev2 env
+        if: ${{ inputs.env_id == 'dev2' }}
         run: |
-          echo "HOST=${{ secrets.DEV-2_HOST }}" >> $GITHUB_ENV
-          echo "USER=${{ secrets.DEV-2_USER }}" >> $GITHUB_ENV
-          echo "PASS=${{ secrets.DEV-2_PASS }}" >> $GITHUB_ENV
+          echo "HOST=${{ secrets.DEV2_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV2_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV2_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Set stage env
         if: ${{ inputs.env_id == 'stage' }}
@@ -41,6 +43,7 @@ jobs:
           echo "HOST=${{ secrets.STAGE_HOST }}" >> $GITHUB_ENV
           echo "USER=${{ secrets.STAGE_USER }}" >> $GITHUB_ENV
           echo "PASS=${{ secrets.STAGE_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
@@ -63,4 +66,4 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
