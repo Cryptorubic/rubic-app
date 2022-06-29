@@ -106,6 +106,8 @@ export class CrossChainRoutingService extends TradeService {
         toToken,
         options
       );
+      console.log('TRADES: ', trades);
+      console.log('BEST TRADE: ', trades?.[0]);
       this.crossChainTrade = trades[0];
       const { trade, error } = this.crossChainTrade;
       needApprove = userAuthorized && (await trade?.needApprove());
