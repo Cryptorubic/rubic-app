@@ -201,6 +201,24 @@ body.hide-unused-ui {
 
   .swaps-form {
     margin: 0;
+
+    &__settings-wrapper {
+      @include b($mobile-md) {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+    }
+
+    &__delimiter {
+      &::before {
+        width: 100%;
+      }
+
+      &::after {
+        width: 0;
+      }
+    }
   }
 
   app-swap-info-container {
@@ -209,6 +227,36 @@ body.hide-unused-ui {
 
   app-swaps-form {
     display: inline;
+  }
+
+  app-swaps-switcher {
+    display: none;
+  }
+
+  app-iframe-logout-button {
+    z-index: 10;
+
+    margin-left: 15px;
+
+    img {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  app-settings-container {
+    @include b($mobile-md) {
+      position: initial !important;
+    }
+  }
+
+  app-rubic-refresh-button {
+    display: flex;
+    align-items: center;
+
+    @include b($mobile-md) {
+      position: initial !important;
+    }
   }
 }
 

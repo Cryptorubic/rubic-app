@@ -40,6 +40,8 @@ export class HeaderStore {
     return this.isMobile$.getValue();
   }
 
+  private screenWidth: number;
+
   constructor() {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
     this.mobileWidth = 1023;
@@ -86,7 +88,15 @@ export class HeaderStore {
     return this.isMobile$.asObservable();
   }
 
+  public setScreenWidth(width: number): void {
+    this.screenWidth = width;
+  }
+
   public setMobileDisplayStatus(status: boolean): void {
-    this.isMobile$.next(status);
+    if (this.screenWidth > 0) {
+      this.isMobile$.next(this.screenWidth < 1023 ? status : false);
+    } else {
+      this.isMobile$.next(status);
+    }
   }
 }

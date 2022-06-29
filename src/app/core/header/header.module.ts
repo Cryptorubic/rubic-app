@@ -15,7 +15,6 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule
 } from '@taiga-ui/core';
-import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
 import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
@@ -45,7 +44,6 @@ import { RecentTradesModule } from '../recent-trades/recent-trades.module';
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    IframeLogoutButtonComponent,
     IframeSettingsButtonComponent,
     HeaderSettingsComponent,
     SettingsElementComponent,

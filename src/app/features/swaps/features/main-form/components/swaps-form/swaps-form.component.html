@@ -22,6 +22,9 @@
         *ngIf="!isBridge"
         class="swaps-form__settings"
       ></app-settings-container>
+      <app-iframe-logout-button
+        *ngIf="queryParams.hideUnusedUI && getCurrentUser$ | async"
+      ></app-iframe-logout-button>
     </div>
   </header>
 

@@ -32,6 +32,7 @@ import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 type TokenType = 'from' | 'to';
 
@@ -122,6 +123,8 @@ export class SwapsFormComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  public readonly getCurrentUser$ = this.authService.getCurrentUser();
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -132,7 +135,8 @@ export class SwapsFormComponent implements OnInit {
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    public readonly queryParams: QueryParamsService
   ) {
     this.availableTokens = {
       from: [],

@@ -29,6 +29,7 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
+import { HeaderStore } from '@core/header/services/header.store';
 
 type NearQueryParams =
   | {
@@ -100,7 +101,12 @@ export class QueryParamsService {
     return urlTree.toString();
   }
 
+  public hideUnusedUI: boolean;
+
+  public screenWidth: number;
+
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly tokensService: TokensService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Inject(DOCUMENT) private document: Document,
@@ -130,6 +136,8 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
+      this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+      this.headerStore.setScreenWidth(+queryParams.screenWidth);
       this.setIframeInfo(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
