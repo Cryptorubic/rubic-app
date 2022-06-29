@@ -59,12 +59,8 @@ jobs:
           sudo apt-get install sshpass
           npm install
 
-      - name: Check env variable existence
-        if: ${{ env.USER == 'vlad.k' }}
-        run: echo 'env variable "user" exists'
-
       - name: Run build
         run: npm run build
 
       - name: Deploy
-        run: sshpass -p "${{ env.PASS }}" rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
