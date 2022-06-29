@@ -47,5 +47,9 @@ jobs:
       - name: Run build ${{ inputs.environment }}
         run: npm run build
 
+      - name: Check variable existence
+        if: ${{ env.USER == 'vlad.k' }}
+        run: echo 'User is correct'
+
       - name: Deploy on ${{ inputs.server }} server
-        run: sshpass -p ${{ env.PASS }} rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p "${{ env.PASS }}" rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
