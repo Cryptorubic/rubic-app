@@ -3,8 +3,8 @@ name: Deploy to dev server
 on:
   workflow_dispatch:
     inputs:
-      server:
-        description: 'Choose environment'
+      env_id:
+        description: 'Environment'
         required: true
         default: 'dev'
         type: choice
@@ -13,20 +13,34 @@ on:
         - dev-2
         - stage
 
-env:
-  name: ${{ inputs.environment }}
-  
 jobs:
   deploy:
     name: Deploy on ${{ inputs.environment }} server
     runs-on: ubuntu-latest
-    env: 
-      USER: ${{ secrets.USER }}
-      PASS: ${{ secrets.PASS }}
-      HOST: ${{ secrets.HOST }}
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set dev env
+        if: ${{ inputs.env_id == 'dev' }}
+        run: |
+          echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
+
+      - name: Set dev-2 env
+        if: ${{ inputs.env_id == 'dev-2' }}
+        run: |
+          echo "HOST=${{ secrets.DEV-2_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV-2_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV-2_PASS }}" >> $GITHUB_ENV
+
+      - name: Set stage env
+        if: ${{ inputs.env_id == 'stage' }}
+        run: |
+          echo "HOST=${{ secrets.STAGE_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.STAGE_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.STAGE_PASS }}" >> $GITHUB_ENV
 
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
@@ -44,12 +58,13 @@ jobs:
         run: |
           sudo apt-get install sshpass
           npm install
-      - name: Run build ${{ inputs.environment }}
+
+      - name: Check env variable existence
+        if: ${{ env.USER == 'vlad.k' }}
+        run: echo 'env variable "user" exists'
+
+      - name: Run build
         run: npm run build
 
-      - name: Check variable existence
-        if: ${{ env.USER == 'vlad.k' }}
-        run: echo 'User is correct'
-
-      - name: Deploy on ${{ inputs.server }} server
+      - name: Deploy
         run: sshpass -p "${{ env.PASS }}" rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
