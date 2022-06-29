@@ -48,4 +48,4 @@ jobs:
         run: npm run build
 
       - name: Deploy on ${{ inputs.server }} server
-        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p ${{ env.PASS }} rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
