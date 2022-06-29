@@ -85,10 +85,13 @@ export class CrossChainRoutingService extends TradeService {
         slippageTolerance,
         timeout: this.defaultTimeout
       };
-
-      this.crossChainTrade = (
-        await this.sdk.crossChain.calculateTrade(fromToken, fromAmount.toString(), toToken, options)
-      )[0];
+      const trades = await this.sdk.crossChain.calculateTrade(
+        fromToken,
+        fromAmount.toString(),
+        toToken,
+        options
+      );
+      this.crossChainTrade = trades[0];
       const { trade, error } = this.crossChainTrade;
       needApprove = userAuthorized && (await trade?.needApprove());
       await this.calculateSmartRouting();
@@ -102,7 +105,7 @@ export class CrossChainRoutingService extends TradeService {
         throw this.parseCalculcationError(this.crossChainTrade.error);
       }
     } catch (err) {
-      console.log(err);
+      console.debug(err);
       this.crossChainTrade = null;
       this.smartRouting = null;
       throw err;
@@ -160,9 +163,13 @@ export class CrossChainRoutingService extends TradeService {
     ) {
       return {
         estimatedGas,
-        fee: trade.fee,
-        feeSymbol: trade.feeSymbol,
-        priceImpact: String(trade.priceImpact)
+        feeAmount: trade.fee,
+        feeTokenSymbol: trade.feeSymbol,
+        // @TODO Get from contract
+        feePercent: trade.feePercent,
+        priceImpact: String(trade.priceImpact),
+        networkFee: trade.networkFee,
+        networkFeeSymbol: trade.networkFeeSymbol
       };
     }
 
@@ -172,9 +179,7 @@ export class CrossChainRoutingService extends TradeService {
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
 
-      const feeAmount = toTrade.toTokenAmountMin
-        .multipliedBy(feeInPercents)
-        .dividedBy(1 - feeInPercents);
+      const feeAmount = toTrade.toTokenAmountMin.multipliedBy(feeInPercents).dividedBy(100);
 
       const priceImpactFrom = PriceImpactService.calculatePriceImpact(
         fromTrade.fromToken.price,
