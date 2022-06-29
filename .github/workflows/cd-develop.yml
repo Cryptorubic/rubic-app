@@ -66,4 +66,7 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
+        run: |
+          echo "${{ env.PASS }}" | sshpass -p "${{ env.PASS }}" ssh -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
+          sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
+          echo "${{ env.PASS }}" | sshpass -p "${{ env.PASS }}" ssh -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
