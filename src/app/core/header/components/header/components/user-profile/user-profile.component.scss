@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 .user-profile {
+  position: relative;
+
   display: flex;
   align-items: center;
   height: 50px;
@@ -56,10 +58,30 @@
   }
 
   &__dropdown-item {
+    position: relative;
+    
+    display: flex;
+    align-items: center;
     min-width: 135px;
+    
+    height: 100%;
   }
 
   &__logout {
     color: $rubic-text-error;
+  }
+}
+
+.notification-counter {
+  position: absolute;
+  
+  &_profile {
+    top: 0px;
+    right: 35px;
+  }
+
+  &_menu {
+    top: 0px;
+    right: 0px;
   }
 }

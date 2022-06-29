@@ -4,8 +4,6 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletProvider } from 'rubic-sdk';
-import { provider as Web3Provider } from 'web3-core';
-import Web3 from 'web3';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
@@ -41,7 +39,7 @@ export class SdkLoaderService {
       const walletProvider: WalletProvider = {
         address: this.authService.user.address,
         chainId: this.walletConnectorService.network.id,
-        core: this.walletConnectorService.provider.wallet as Web3Provider | Web3
+        core: this.walletConnectorService.provider.wallet
       };
       await this.sdkService.patchConfig({ walletProvider });
     }

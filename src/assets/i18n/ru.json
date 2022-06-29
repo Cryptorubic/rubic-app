@@ -40,7 +40,8 @@
       "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -80,7 +81,6 @@
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Торговля недоступна",
@@ -93,7 +93,8 @@
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
@@ -103,7 +104,6 @@
     "sdk": "SDK",
     "team": "Команда",
     "login": "Подключить кошелек",
-    "myTrades": "Мои Сделки",
     "logout": "Выйти",
     "logoutMessage": "Вы действительно хотите выйти?",
     "notAvailable": "В работе. UX редизайн.",
@@ -237,6 +237,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": "~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal, please try to update your transaction history. In the case of excessive wait times, contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -247,8 +255,22 @@
     "notAvailableBefore": "Торговля на ",
     "notAvailableAfter": " недоступно."
   },
-  "myTrades": {
-    "title": "Мои Сделки"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "tradePage": {
     "getBefore": "You will get",
@@ -526,11 +548,11 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Кросс-чейны обмены с 0% комиссией протокола",
-      "period": "C 6 по 20 июня обменивайте токены между блокчейнами с 0 комиссией протокола",
+      "period": "C 6 по 27 июня обменивайте токены между блокчейнами с 0 комиссией протокола",
       "excluded": "*Telos, Aurora, Moonriver, Harmony, Solana, NEAR не участвуют в акции"
     }
   },

@@ -1,0 +1,218 @@
+<ng-container *ngLet="isDarkTheme$ | async as isDarkTheme">
+  <ng-container
+    *ngLet="{
+      srcStatus: srcTxStatus$ | async,
+      dstStatus: dstTxStatus$ | async,
+      tradeProcessingStatus: tradeProcessingStatus$ | async
+    } as tradeData"
+  >
+    <div class="title">
+      <ng-container
+        *ngIf="
+          tradeData.srcStatus === MODAL_SWAP_STATUS.SUCCESS &&
+          tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
+        "
+      >
+        {{ 'crossChainPage.swapSchemeModal.transactionCompleted' | translate }}
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          tradeData.srcStatus === MODAL_SWAP_STATUS.PENDING ||
+          tradeData.dstStatus === MODAL_SWAP_STATUS.PENDING ||
+          tradeData.tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING ||
+          tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
+        "
+      >
+        {{ 'crossChainPage.swapSchemeModal.transactionIsBeingProcessed' | translate }}
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
+          tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL
+        "
+      >
+        {{ 'crossChainPage.swapSchemeModal.transactionNotCompleted' | translate }}
+      </ng-container>
+    </div>
+
+    <div class="description">
+      {{ 'crossChainPage.swapSchemeModal.transactionCanBeTracked' | translate }}
+      <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">
+        {{ 'crossChainPage.swapSchemeModal.recentTrades' | translate }}</span
+      >
+    </div>
+
+    <div class="pair">
+      <div class="pair__from">
+        <img [src]="fromToken.image" alt="" class="pair__token-image" />
+        <div class="pair__data">
+          <div class="pair__symbol">{{ fromToken.symbol }}</div>
+          <div class="pair__blockchain">{{ fromBlockchain.name }}</div>
+        </div>
+      </div>
+      <img src="assets/images/icons/arrow/long-arrow-right-grey.svg" class="pair__arrow" alt="" />
+      <div class="pair__to">
+        <img [src]="toToken.image" alt="" class="pair__token-image" />
+        <div class="pair__data">
+          <div class="pair__symbol">{{ toToken.symbol }}</div>
+          <div class="pair__blockchain">{{ toBlockchain.name }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="scheme"
+      [class.scheme_failed]="
+        tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
+        tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED
+      "
+    >
+      <div class="scheme__src">
+        <ng-container [ngSwitch]="tradeData.srcStatus">
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            class="scheme__status-icon scheme__status-icon_rotating"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/white_loader.svg'
+                : 'assets/images/icons/black_loader.svg'
+            "
+            alt=""
+          />
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            class="scheme__status-icon"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/checkmark/checkmark-thin-white.svg'
+                : 'assets/images/icons/checkmark/checkmark-thin-black.svg'
+            "
+            alt=""
+          />
+        </ng-container>
+        <img [src]="srcProvider.image" class="scheme__src-icon" />
+        <div class="scheme__src-name">{{ srcProvider.name }}</div>
+      </div>
+      <div class="scheme__pool">
+        <ng-container [ngSwitch]="tradeData.tradeProcessingStatus">
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            class="scheme__status-icon scheme__status-icon_rotating"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/white_loader.svg'
+                : 'assets/images/icons/black_loader.svg'
+            "
+            alt=""
+          />
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            class="scheme__status-icon"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/checkmark/checkmark-thin-white.svg'
+                : 'assets/images/icons/checkmark/checkmark-thin-black.svg'
+            "
+            alt=""
+          />
+        </ng-container>
+        <div
+          class="scheme__line scheme__line_src"
+          [ngClass]="{
+            scheme__line_default:
+              tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
+              tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED,
+            scheme__line_success: tradeData.srcStatus === MODAL_SWAP_STATUS.SUCCESS
+          }"
+        >
+          <div
+            class="scheme__line-dashed"
+            *ngIf="tradeData.srcStatus === MODAL_SWAP_STATUS.PENDING"
+          ></div>
+          <hr *ngIf="tradeData.srcStatus !== MODAL_SWAP_STATUS.PENDING" />
+        </div>
+        <img src="assets/images/icons/providers/rubic.svg" class="scheme__pool-icon" />
+        <div
+          class="scheme__line scheme__line_default scheme__line_dst"
+          [ngClass]="{
+            scheme__line_default:
+              tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
+              tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED,
+            scheme__line_success: tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
+          }"
+        >
+          <div
+            class="scheme__line-dashed"
+            *ngIf="
+              tradeData.dstStatus === MODAL_SWAP_STATUS.PENDING ||
+              tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
+            "
+          ></div>
+          <hr
+            *ngIf="
+              tradeData.dstStatus !== MODAL_SWAP_STATUS.PENDING &&
+              tradeData.dstStatus !== MODAL_SWAP_STATUS.REVERT
+            "
+          />
+        </div>
+        <div class="scheme__pool-name">
+          Rubic<br />
+          <span>Smart Routing</span>
+        </div>
+      </div>
+      <div class="scheme__dst">
+        <ng-container [ngSwitch]="tradeData.dstStatus">
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            class="scheme__status-icon scheme__status-icon_rotating"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/white_loader.svg'
+                : 'assets/images/icons/black_loader.svg'
+            "
+            alt=""
+          />
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.REVERT"
+            class="scheme__status-icon scheme__status-icon_rotating"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/white_loader.svg'
+                : 'assets/images/icons/black_loader.svg'
+            "
+            alt=""
+          />
+          <img
+            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            class="scheme__status-icon"
+            [src]="
+              isDarkTheme
+                ? 'assets/images/icons/checkmark/checkmark-thin-white.svg'
+                : 'assets/images/icons/checkmark/checkmark-thin-black.svg'
+            "
+            alt=""
+          />
+        </ng-container>
+        <img [src]="dstProvider.image" class="scheme__dst-icon" />
+        <div class="scheme__dst-name">{{ dstProvider.name }}</div>
+      </div>
+    </div>
+
+    <div class="caption">
+      {{ 'crossChainPage.swapSchemeModal.ifTransactionNotCompleted' | translate }}
+      <a class="highlight_black-white" href="mailto:support@rubic.exchange">
+        support@rubic.exchange</a
+      >.
+    </div>
+    <app-rubic-button
+      *ngIf="tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT"
+      appearance="secondary"
+      (onClick)="revertSymbiosisTrade()"
+      [loading]="revertBtnLoading$ | async"
+    >
+      {{ 'common.revert' | translate }}
+    </app-rubic-button>
+  </ng-container>
+</ng-container>

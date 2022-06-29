@@ -8,9 +8,10 @@
       </div>
       <app-notification-badge
         class="notification-counter"
-        *ngIf="(countUnread$ | async) && (currentUser$ | async) && !isOpened"
-        size="s"
-        [value]="countUnread$ | async"
+        *ngIf="isMobile && (unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
       ></app-notification-badge>
     </app-rubic-button-circle>
   </div>
@@ -88,21 +89,16 @@
           {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
         </button>
 
-        <a
-          routerLink="my-trades"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link data-list__link_my-trades"
-        >
+        <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
           <button tuiOption class="data-list__option">
-            {{ 'navigation.myTrades' | translate }}
+            {{ 'navigation.recentTrades' | translate }}
           </button>
-
           <app-notification-badge
-            class="notification-counter notification-counter_my-trades"
-            *ngIf="(countUnread$ | async) && (currentUser$ | async) && isOpened"
-            size="s"
-            [value]="countUnread$ | async"
+            class="notification-counter notification-counter_menu"
+            *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && isOpened"
+            size="xs"
+            color="red"
+            [value]="unreadTrades$ | async"
           ></app-notification-badge>
         </a>
 

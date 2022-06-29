@@ -3,13 +3,9 @@ import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { BlockchainName } from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 
 export interface Store {
-  /**
-   * Count of unread trades by user.
-   */
-  unreadTrades: number;
-
   /**
    * Current wallet provider selected by user.
    */
@@ -43,9 +39,32 @@ export interface Store {
     blockchain: BlockchainName;
   };
 
+  /**
+   * Passed form steps for bridge swap.
+   */
   [SWAP_PROVIDER_TYPE.BRIDGE]: FormSteps;
 
+  /**
+   * Passed form steps for instant-trade swap.
+   */
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormSteps;
 
+  /**
+   * Passed form steps for cross-chain swap.
+   */
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormSteps;
+
+  /**
+   * Latest cross-chain trades by address.
+   */
+  recentTrades: {
+    [address: string]: RecentTrade[];
+  };
+
+  /**
+   * Count of unread trades by address.
+   */
+  unreadTrades: {
+    [address: string]: number;
+  };
 }

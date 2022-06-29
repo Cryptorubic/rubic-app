@@ -131,6 +131,13 @@ export function parseWeb3Percent(value: string | number): number {
   return Number(value) / Math.pow(10, 29);
 }
 
+/**
+ * Checks if value is null or undefined.
+ */
+export function isNil(value: unknown): boolean {
+  return value === undefined || value === null;
+}
+
 export function getItSwapParams(trade: InstantTrade | WrapTrade): {
   fromAddress: string;
   fromSymbol: string;

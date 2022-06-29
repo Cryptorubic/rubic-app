@@ -39,7 +39,8 @@
       "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
@@ -79,7 +80,6 @@
     "multichainWallet": "Rubic aún no es compatible con billeteras de múltiples cadenas. Actualmente, solo puedes operar en la red de Ethereum",
     "unknown": "Oops, algo salió mal, por favor, inténtalo de nuevo",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, algo salió mal, por favor intente recargar la página. Póngase en contacto con nuestro soporte si sigue teniendo este problema después de recargar.",
     "rubicOptimisation": "Liquidez insuficiente para este comercio. Intenta desactivar la optimización de rubic.",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Por favor, vuelva a cargar la página o póngase en contacto con soporte si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
@@ -92,7 +92,8 @@
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "Sobre",
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
@@ -102,7 +103,6 @@
     "sdk": "SDK",
     "team": "Equipo",
     "login": "Conectar Cartera",
-    "myTrades": "Mis comercios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿De verdad quieres cerrar sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
@@ -236,6 +236,14 @@
       "save": "Ahorra ${{amount}} con Enrutamiento inteligente",
       "estTime": "Tiempo estimado ~ 80 segundos",
       "estTimeMobile": "~ 80 segundos"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal, please try to update your transaction history. In the case of excessive wait times, contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -246,8 +254,22 @@
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " no está disponible."
   },
-  "myTrades": {
-    "title": "Mis operaciones"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Reembolso de Gas",
@@ -525,11 +547,11 @@
       "link": "¡Pruébalo hoy!"
     },
     "external": {
-      "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Comercia ahora!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
-      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 20th",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
       "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },

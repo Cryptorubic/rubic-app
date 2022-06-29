@@ -2,7 +2,7 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
 import { TRADE_TYPE, TradeType } from 'rubic-sdk';
 
-type Provider = {
+export type Provider = {
   name: string;
   image: string;
   color?: string;

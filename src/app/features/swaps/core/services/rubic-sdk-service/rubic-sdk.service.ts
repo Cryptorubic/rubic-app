@@ -7,6 +7,7 @@ import SDK, {
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
+import { CrossChainSymbiosisManager } from 'rubic-sdk/lib/features/cross-chain/cross-chain-symbiosis-manager';
 
 @Injectable()
 export class RubicSdkService {
@@ -25,6 +26,10 @@ export class RubicSdkService {
 
   public get tokens(): TokensManager {
     return this.SDK.tokens;
+  }
+
+  public get symbiosis(): CrossChainSymbiosisManager {
+    return this.SDK.crossChainSymbiosisManager;
   }
 
   public get instantTrade(): InstantTradesManager {

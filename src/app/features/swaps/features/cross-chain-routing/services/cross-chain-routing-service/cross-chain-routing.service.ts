@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import {
   BlockchainName,
@@ -6,6 +5,7 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  CrossChainTradeType,
   LowSlippageError,
   RubicSdkError,
   Web3Pure
@@ -17,13 +17,15 @@ import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/provi
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { Inject, Injectable } from '@angular/core';
+import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+
+import BigNumber from 'bignumber.js';
 import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
@@ -34,12 +36,21 @@ import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 import { Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
+import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { TuiDialogService } from '@taiga-ui/core';
+import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { HeaderStore } from '@app/core/header/services/header.store';
+import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { AuthService } from '@core/services/auth/auth.service';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 @Injectable({
   providedIn: 'root'
@@ -65,9 +76,13 @@ export class CrossChainRoutingService extends TradeService {
     private readonly settingsService: SettingsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly headerStore: HeaderStore,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly apiService: CrossChainRoutingApiService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly authService: AuthService
   ) {
     super('cross-chain-routing');
   }
@@ -123,6 +138,22 @@ export class CrossChainRoutingService extends TradeService {
     let subscription$: Subscription;
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
+      const tradeData: RecentTrade = {
+        srcTxHash: txHash,
+        fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
+        toBlockchain: this.crossChainTrade?.trade.to?.blockchain,
+        fromToken: this.crossChainTrade?.trade?.from,
+        toToken: this.crossChainTrade?.trade?.to,
+        crossChainProviderType: this.crossChainTrade.tradeType,
+        timestamp: Date.now()
+      };
+
+      confirmCallback?.();
+
+      this.openSwapSchemeModal(this.crossChainTrade?.tradeType, txHash);
+
+      this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
+
       this.notifyGtmAfterSignTx(txHash);
       subscription$ = this.notifyTradeInProgress(
         txHash,
@@ -302,5 +333,31 @@ export class CrossChainRoutingService extends TradeService {
       fee,
       fromAmount.multipliedBy(fromToken.price)
     );
+  }
+
+  public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+
+    this.dialogService
+      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+        size: this.headerStore.isMobile ? 'page' : 'l',
+        data: {
+          fromToken,
+          fromBlockchain,
+          toToken,
+          toBlockchain,
+          srcProvider:
+            this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+              ? INSTANT_TRADE_PROVIDER.ONEINCH
+              : this.smartRouting.fromProvider,
+          dstProvider:
+            this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+              ? INSTANT_TRADE_PROVIDER.ONEINCH
+              : this.smartRouting.toProvider,
+          crossChainProvider: provider,
+          srcTxHash: txHash
+        }
+      })
+      .subscribe();
   }
 }

@@ -30,7 +30,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -85,7 +84,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
-    private readonly myTradesService: MyTradesService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,

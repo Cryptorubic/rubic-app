@@ -102,11 +102,11 @@ export class WalletConnectorService {
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
     switchTap(address => {
       const walletProvider: WalletProvider = address
-        ? {
+        ? ({
             address,
             chainId: this.networkChangeSubject$.value.id,
             core: this.provider.wallet as Web3Provider | Web3
-          }
+          } as undefined)
         : undefined;
       return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
     }),

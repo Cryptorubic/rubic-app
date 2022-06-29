@@ -10,12 +10,14 @@ import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/c
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-scheme-modal.component';
 
 @NgModule({
   declarations: [
     CrossChainRoutingBottomFormComponent,
     TargetNetworkAddressComponent,
-    SmartRoutingComponent
+    SmartRoutingComponent,
+    SwapSchemeModalComponent
   ],
   imports: [
     CommonModule,

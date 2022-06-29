@@ -11,7 +11,3 @@ export interface WalletProvider {
   supportsInVerticalIframe: boolean;
   supportsInVerticalMobileIframe: boolean;
 }
-
-export interface UnreadTrades {
-  [userAddress: string]: number;
-}

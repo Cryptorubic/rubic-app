@@ -50,7 +50,7 @@
   </ng-template>
 </div>
 
-<div class="info-line" [class.info-line_green]="feePercent === 0">
+<div class="info-line">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
@@ -63,7 +63,8 @@
       "
     />
   </div>
-  <div class="info-line__value" *ngIf="feePercent !== undefined">
+
+  <div class="info-line__value">
     <ng-container *ngIf="feePercent !== 0; else zero">
       {{ feePercent }}% ≈
       {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
@@ -73,7 +74,7 @@
   </div>
 </div>
 
-<hr class="delimiter" *ngIf="!isSymbiosis || estimateGasInEth?.isFinite()" />
+<hr class="delimiter" />
 
 <app-price-impact-info-line
   *ngIf="!isSymbiosis"
