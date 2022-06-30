@@ -137,7 +137,7 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
-      this.headerStore.setScreenWidth(queryParams.isDesktop);
+      this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
