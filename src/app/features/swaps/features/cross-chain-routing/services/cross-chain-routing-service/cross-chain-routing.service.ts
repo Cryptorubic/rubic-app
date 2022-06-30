@@ -82,7 +82,6 @@ export class CrossChainRoutingService extends TradeService {
     private readonly authService: AuthService
   ) {
     super('cross-chain-routing');
-    setTimeout(() => this.openSwapSchemeModal(CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS, '0x000'), 15000);
   }
 
   public async calculateTrade(
@@ -144,7 +143,9 @@ export class CrossChainRoutingService extends TradeService {
 
       confirmCallback?.();
 
-      this.openSwapSchemeModal(this.crossChainTrade?.tradeType, txHash);
+      if (this.crossChainTrade?.tradeType) {
+        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash);
+      }
 
       this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
 
