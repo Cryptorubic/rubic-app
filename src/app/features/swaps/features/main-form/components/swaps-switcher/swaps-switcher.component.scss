@@ -1,5 +1,11 @@
 @use 'src/scss/core' as *;
 
+:host {
+  @include hide-unused-ui {
+    display: none;
+  }
+}
+
 .switcher {
   display: flex;
   box-sizing: content-box;

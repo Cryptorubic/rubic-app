@@ -185,33 +185,6 @@ body.default-iframe-background {
   background: linear-gradient(45deg, #4aa956 20%, white);
 }
 
-body.hide-unused-ui {
-  .rubic-header {
-    display: none;
-  }
-
-  .rubic-footer {
-    display: none;
-  }
-
-  .main-content {
-    margin: 0;
-    padding: 0;
-  }
-
-  .swaps-form {
-    margin: 0;
-  }
-
-  app-swap-info-container {
-    display: none;
-  }
-
-  app-swaps-form {
-    display: inline;
-  }
-}
-
 #loader {
   position: fixed;
   top: 0;

@@ -1,5 +1,13 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: block;
+
+  @include hide-unused-ui {
+    z-index: 10;
+
+    margin-left: 15px;
+  }
 }
 
 app-icon-button ::ng-deep button {
