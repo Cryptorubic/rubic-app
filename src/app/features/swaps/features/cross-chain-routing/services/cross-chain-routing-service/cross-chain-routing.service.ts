@@ -50,7 +50,6 @@ import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-g
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 @Injectable({
   providedIn: 'root'
@@ -85,6 +84,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly authService: AuthService
   ) {
     super('cross-chain-routing');
+    setTimeout(() => this.openSwapSchemeModal(CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS, '0x000'), 15000);
   }
 
   public async calculateTrade(
@@ -348,14 +348,8 @@ export class CrossChainRoutingService extends TradeService {
           fromBlockchain,
           toToken,
           toBlockchain,
-          srcProvider:
-            this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-              ? INSTANT_TRADE_PROVIDER.ONEINCH
-              : this.smartRouting.fromProvider,
-          dstProvider:
-            this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-              ? INSTANT_TRADE_PROVIDER.ONEINCH
-              : this.smartRouting.toProvider,
+          srcProvider: this.crossChainTrade.trade.itType.from,
+          dstProvider: this.crossChainTrade.trade.itType.to,
           crossChainProvider: provider,
           srcTxHash: txHash
         }
