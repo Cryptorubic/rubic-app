@@ -12,6 +12,10 @@
   @include iframe-horizontal {
     max-width: unset;
   }
+
+  @include hide-unused-ui {
+    display: inline;
+  }
 }
 
 .swaps-form {
@@ -43,6 +47,10 @@
     background-color: white;
   }
 
+  @include hide-unused-ui {
+    margin: 0;
+  }
+
   ~ *:not(:last-child) {
     display: block;
     margin-bottom: 35px;
@@ -66,6 +74,10 @@
 
   &__settings-wrapper {
     display: flex;
+
+    @include hide-unused-ui {
+      margin: 0;
+    }
   }
 
   &__refresh {
@@ -97,6 +109,16 @@
       padding: 15px 0;
 
       background: transparent;
+    }
+
+    @include hide-unused-ui {
+      &::before {
+        width: 100%;
+      }
+
+      &::after {
+        width: 0;
+      }
     }
 
     > * {
@@ -190,6 +212,14 @@
     position: relative;
 
     padding: 0 0 20px;
+
+    &__settings-wrapper {
+      @include hide-unused-ui {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+    }
 
     &__content {
       margin-top: 0;

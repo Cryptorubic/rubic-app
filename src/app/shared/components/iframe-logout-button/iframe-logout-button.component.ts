@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-iframe-logout-button',
