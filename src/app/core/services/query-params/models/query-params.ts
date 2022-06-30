@@ -32,7 +32,7 @@ interface AllQueryParams {
   feeTarget: string;
   promoCode: string;
   hideUnusedUI: string;
-  screenWidth: string;
+  isDesktop: string;
   // Near specific query params.
   // Transaction.
   nearLogin: string;

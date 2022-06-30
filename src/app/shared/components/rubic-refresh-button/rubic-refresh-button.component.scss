@@ -1,5 +1,16 @@
 @use 'src/scss/core' as *;
 
+:host {
+  @include hide-unused-ui {
+    display: flex;
+    align-items: center;
+
+    @include b($mobile-md) {
+      position: initial !important;
+    }
+  }
+}
+
 .refresh-button {
   position: relative;
 

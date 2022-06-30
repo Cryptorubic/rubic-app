@@ -36,6 +36,11 @@
   width: 100%;
   padding: 0 20px 60px;
 
+  @include hide-unused-ui {
+    margin: 0;
+    padding: 0;
+  }
+
   ::ng-deep {
     > * {
       margin: 0 auto;

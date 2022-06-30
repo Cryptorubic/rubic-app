@@ -40,7 +40,7 @@ export class HeaderStore {
     return this.isMobile$.getValue();
   }
 
-  private screenWidth: number;
+  private forceDesktopResolution: string;
 
   constructor() {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
@@ -88,13 +88,13 @@ export class HeaderStore {
     return this.isMobile$.asObservable();
   }
 
-  public setScreenWidth(width: number): void {
-    this.screenWidth = width;
+  public setScreenWidth(isDesktop: string): void {
+    this.forceDesktopResolution = isDesktop;
   }
 
   public setMobileDisplayStatus(status: boolean): void {
-    if (this.screenWidth > 0) {
-      this.isMobile$.next(this.screenWidth < 1023 ? status : false);
+    if (this.forceDesktopResolution === 'true') {
+      this.isMobile$.next(false);
     } else {
       this.isMobile$.next(status);
     }
