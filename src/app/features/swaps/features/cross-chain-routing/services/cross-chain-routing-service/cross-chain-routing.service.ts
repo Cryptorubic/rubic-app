@@ -30,8 +30,6 @@ import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/pro
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
-import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 import { Subscription } from 'rxjs';
@@ -113,13 +111,7 @@ export class CrossChainRoutingService extends TradeService {
       needApprove = userAuthorized && (await trade?.needApprove());
       await this.calculateSmartRouting();
       if (!trade && error instanceof RubicSdkError) {
-        if (
-          error instanceof CrossChainMinAmountError ||
-          error instanceof CrossChainMaxAmountError
-        ) {
-          throw new RubicSdkError(error.message);
-        }
-        throw this.parseCalculcationError(this.crossChainTrade.error);
+        throw this.parseCalculationError(this.crossChainTrade.error);
       }
     } catch (err) {
       console.debug(err);
@@ -297,7 +289,7 @@ export class CrossChainRoutingService extends TradeService {
     }
   }
 
-  private parseCalculcationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+  private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }

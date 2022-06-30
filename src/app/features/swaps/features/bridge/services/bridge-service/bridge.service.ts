@@ -81,9 +81,10 @@ export class BridgeService extends TradeService {
 
   private setTokens(): void {
     const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
+    const blockchains = Object.values(BLOCKCHAIN_NAME);
 
-    Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
-      Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
+    blockchains.forEach(fromBlockchain => {
+      blockchains.forEach(toBlockchain => {
         const provider: BlockchainsBridgeProvider =
           this.blockchainsProviders[fromBlockchain]?.[toBlockchain];
 

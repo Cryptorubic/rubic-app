@@ -379,9 +379,7 @@ export class StakingService {
     const stakingContractAddress =
       this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
 
-    const privateAdapter: Web3Private = Injector.web3PublicService.getWeb3Public(
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-    );
+    const privateAdapter: Web3Private = Injector.web3Private();
 
     return from(
       privateAdapter.tryExecuteContractMethod(

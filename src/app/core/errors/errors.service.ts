@@ -11,21 +11,7 @@ import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
 import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicWarning } from '@core/errors/models/rubic-warning';
-import {
-  RubicSdkError,
-  UserRejectError as SdkUserRejectError,
-  TransactionRevertedError as SdkTransactionRevertedError,
-  FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
-  LowGasError as SdkLowGasError,
-  InsufficientFundsError as SdkInsufficientFundsError,
-  LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError
-} from 'rubic-sdk';
-import { UserRejectError } from './models/provider/user-reject-error';
-import TransactionRevertedError from './models/common/transaction-reverted-error';
-import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
-import { LowGasError } from './models/provider/low-gas-error';
-import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
-import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 interface Question {
   title: string;
@@ -74,7 +60,7 @@ export class ErrorsService {
   public catch(err: RubicError<ERROR_TYPE> | Error): void {
     console.debug(err);
 
-    const error = ErrorsService.parseRubicSdkError(err);
+    const error = RubicSdkErrorParser.parseError(err);
 
     if (
       error.displayError === false ||
@@ -157,42 +143,5 @@ export class ErrorsService {
    */
   private isCustomRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
     return CUSTOM_RPC_ERROR.some(rpcError => this.findRPCError(rpcError, currentError));
-  }
-
-  private static parseRubicSdkError(
-    err: RubicError<ERROR_TYPE> | RubicSdkError
-  ): RubicError<ERROR_TYPE> {
-    if (err instanceof RubicSdkError) {
-      if (err instanceof SdkTransactionRevertedError) {
-        return new TransactionRevertedError();
-      }
-      if (err instanceof SdkFailedToCheckForTransactionReceiptError) {
-        return new FailedToCheckForTransactionReceiptError();
-      }
-      if (err instanceof SdkUserRejectError) {
-        return new UserRejectError();
-      }
-      if (err instanceof SdkInsufficientFundsError) {
-        return new InsufficientFundsError(err.tokenSymbol, err.balance, err.requiredBalance);
-      }
-      if (err instanceof SdkLowGasError) {
-        return new LowGasError();
-      }
-      if (err instanceof SdkLowSlippageDeflationaryTokenError) {
-        return new TokenWithFeeError();
-      }
-      if (err?.message) {
-        if (err.message.includes('Request failed with status code 400')) {
-          return new RubicError(
-            'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
-          );
-        }
-        return new RubicError(err.message);
-      }
-
-      return new RubicError('[RUBIC SDK] Unknown error.');
-    }
-
-    return err;
   }
 }

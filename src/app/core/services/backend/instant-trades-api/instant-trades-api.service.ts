@@ -16,7 +16,7 @@ import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { AuthService } from '../../auth/auth.service';
 import { BlockchainName, BLOCKCHAIN_NAME, InstantTrade, TradeType, Web3Pure } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
-import { getItSwapParams } from '@shared/utils/utils';
+import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 
 type HashObject = { hash: string } | { signature: string };
 
@@ -48,7 +48,7 @@ export class InstantTradesApiService {
     txHash: string;
   }): Promise<void> {
     const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
-      getItSwapParams(body.trade);
+      TradeParser.getItSwapParams(body.trade);
     const { txHash, walletAddress } = body;
     const req: InstantTradeBotRequest = {
       fromAmount: fromAmount.toNumber(),
@@ -77,7 +77,7 @@ export class InstantTradesApiService {
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
-      getItSwapParams(trade);
+      TradeParser.getItSwapParams(trade);
     const options = {
       blockchain: blockchain,
       fromAddress: fromAddress,

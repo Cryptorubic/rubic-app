@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { VolumeApiService } from 'src/app/core/services/backend/volume-api/volume-api.service';
-import { ContentLoaderService } from '@core/services/content-loader/content-loader.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
@@ -20,7 +19,6 @@ export class RubicVolumeComponent {
   };
 
   constructor(
-    private readonly contentLoaderService: ContentLoaderService,
     private readonly volumeApiService: VolumeApiService,
     private readonly themeService: ThemeService
   ) {}

@@ -527,7 +527,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanchec',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',

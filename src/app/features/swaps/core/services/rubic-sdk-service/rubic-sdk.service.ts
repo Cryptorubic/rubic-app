@@ -60,10 +60,9 @@ export class RubicSdkService {
   public async patchConfig(config: Partial<Configuration>): Promise<void> {
     this._sdkLoading$.next(true);
     try {
-      await this.SDK.updateConfiguration({
-        ...this.currentConfig,
-        ...config
-      });
+      const newConfig = { ...this.currentConfig, ...config };
+      await this.SDK.updateConfiguration(newConfig);
+      this.currentConfig = newConfig;
     } catch {
       console.debug('Failed to reload SDK configuration.');
     }

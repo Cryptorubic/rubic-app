@@ -55,7 +55,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
-import { getItSwapParams } from '@shared/utils/utils';
+import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 
 interface SettledProviderTrade {
   providerName: TradeType;
@@ -718,7 +718,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.conditionalCalculate('hidden');
 
-      const { fromAddress, blockchain } = getItSwapParams(providerTrade);
+      const { fromAddress, blockchain } = TradeParser.getItSwapParams(providerTrade);
 
       await this.tokensService.updateTokenBalanceAfterSwap({
         address: fromAddress,

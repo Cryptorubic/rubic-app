@@ -14,8 +14,7 @@ import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-intercep
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
-import { configLoader, httpLoaderFactory, sdkLoader } from './app.loaders';
-import { ContentLoaderService } from './services/content-loader/content-loader.service';
+import { httpLoaderFactory, sdkLoader } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
 import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
 
@@ -23,12 +22,6 @@ import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
   declarations: [MaintenanceComponent, RubicFooterComponent],
   providers: [
     CookieService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: configLoader,
-      deps: [ContentLoaderService],
-      multi: true
-    },
     {
       provide: APP_INITIALIZER,
       useFactory: sdkLoader,

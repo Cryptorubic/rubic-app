@@ -21,7 +21,6 @@ import {
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
-import { getItSwapParams } from '@shared/utils/utils';
 import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
@@ -33,6 +32,7 @@ import { shouldCalculateGas } from '@features/swaps/features/instant-trade/servi
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -127,7 +127,7 @@ export class InstantTradeService extends TradeService {
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
-      getItSwapParams(trade);
+      TradeParser.getItSwapParams(trade);
 
     const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
     await blockchainAdapter.checkBalance(
@@ -252,7 +252,7 @@ export class InstantTradeService extends TradeService {
   ): Promise<void> {
     let fee: number;
     let promoCode: string;
-    const { blockchain } = getItSwapParams(trade);
+    const { blockchain } = TradeParser.getItSwapParams(trade);
     if (this.iframeService.isIframeWithFee(blockchain, providerName)) {
       fee = this.iframeService.feeData.fee;
       promoCode = this.iframeService.promoCode;
