@@ -3,30 +3,54 @@ name: Deploy to dev server
 on:
   workflow_dispatch:
     inputs:
-      server:
-        description: 'Choose environment'
+      env_id:
+        description: 'Environment'
         required: true
         default: 'dev'
         type: choice
         options:
         - dev
-        - dev-2
+        - dev2
         - stage
 
-env:
-  name: ${{ inputs.environment }}
-  
 jobs:
   deploy:
     name: Deploy on ${{ inputs.environment }} server
     runs-on: ubuntu-latest
-    env: 
-      USER: ${{ secrets.USER }}
-      PASS: ${{ secrets.PASS }}
-      HOST: ${{ secrets.HOST }}
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Set dev env
+        if: ${{ inputs.env_id == 'dev' }}
+        run: |
+          echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
+
+      - name: Set dev2 env
+        if: ${{ inputs.env_id == 'dev2' }}
+        run: |
+          echo "HOST=${{ secrets.DEV2_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV2_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV2_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
+
+      - name: Set stage env
+        if: ${{ inputs.env_id == 'stage' }}
+        run: |
+          echo "HOST=${{ secrets.STAGE_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.STAGE_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.STAGE_PASS }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
@@ -40,12 +64,15 @@ jobs:
       - name: Set up npm
         run: npm install
 
-      - name: Set up sshpass and npm
+      - name: Set up sshpass
         run: |
           sudo apt-get install sshpass
-          npm install
-      - name: Run build ${{ inputs.environment }}
+
+      - name: Run build
         run: npm run build
 
-      - name: Deploy on ${{ inputs.server }} server
-        run: sshpass -p ${{ env.PASS }} rsync "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:/var/www/rubic_exchange/frontend
+      - name: Deploy
+        run: |
+          sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
+          sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
+          sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
