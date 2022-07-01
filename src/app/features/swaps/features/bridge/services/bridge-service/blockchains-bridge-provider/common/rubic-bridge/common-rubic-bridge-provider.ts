@@ -93,7 +93,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     this.httpService
       .get('networks/', {}, this.apiUrl)
       .pipe(
-        timeout(3000),
+        timeout(7000),
         catchError((e: unknown) => {
           console.error(e);
           this._tokenPairs$.next(List([]));
