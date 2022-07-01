@@ -15,37 +15,34 @@ on:
 
 jobs:
   deploy:
-    name: Deploy on ${{ inputs.environment }} server
+    name: Deploy on ${{ inputs.env_id }} server
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set dev env
-        if: ${{ inputs.env_id == 'dev' }}
+      - name: Set SSH credentials
         run: |
           echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
           echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
           echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
-          echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
 
-      - name: Set dev2 env
-        if: ${{ inputs.env_id == 'dev2' }}
+      - name: Set dev target path
+        if: ${{ inputs.env_id == 'dev' }}
         run: |
-          echo "HOST=${{ secrets.DEV2_HOST }}" >> $GITHUB_ENV
-          echo "USER=${{ secrets.DEV2_USER }}" >> $GITHUB_ENV
-          echo "PASS=${{ secrets.DEV2_PASS }}" >> $GITHUB_ENV
           echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
 
-      - name: Set stage env
+      - name: Set dev2 target path
+        if: ${{ inputs.env_id == 'dev2' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
+
+      - name: Set stage target path
         if: ${{ inputs.env_id == 'stage' }}
         run: |
-          echo "HOST=${{ secrets.STAGE_HOST }}" >> $GITHUB_ENV
-          echo "USER=${{ secrets.STAGE_USER }}" >> $GITHUB_ENV
-          echo "PASS=${{ secrets.STAGE_PASS }}" >> $GITHUB_ENV
           echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
 
-      - name: Set up sshpass
+      - name: Install sshpass
         run: |
           sudo apt-get install sshpass
 
@@ -53,7 +50,7 @@ jobs:
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
         id: nvm
 
-      - name: Set up Node.js
+      - name: Set Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
