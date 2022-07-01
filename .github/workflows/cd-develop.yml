@@ -15,7 +15,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy on ${{ inputs.environment }} server
+    name: Deploy on ${{ inputs.env_id }} server
     runs-on: ubuntu-latest
 
     steps:
