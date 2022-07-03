@@ -34,6 +34,7 @@ import { NotSupportedNetworkError } from '@core/errors/models/provider/not-suppo
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { Token } from '@shared/models/tokens/token';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { BitkeepWalletAdapter } from '../wallets-adapters/eth-like/bitkeep-wallet-adapter';
 
 interface WCWallets {
   [P: string]: {
@@ -262,6 +263,16 @@ export class WalletConnectorService {
         );
         await metamaskWalletAdapter.setupDefaultValues();
         return metamaskWalletAdapter as CommonWalletAdapter;
+      },
+      [WALLET_NAME.BITKEEP]: async () => {
+        const bitkeepWalletAdapter = new BitkeepWalletAdapter(
+          this.web3,
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService
+        );
+        await bitkeepWalletAdapter.setupDefaultValues();
+        return bitkeepWalletAdapter as CommonWalletAdapter;
       },
       [WALLET_NAME.WALLET_LINK]: async () =>
         new WalletLinkWalletAdapter(
