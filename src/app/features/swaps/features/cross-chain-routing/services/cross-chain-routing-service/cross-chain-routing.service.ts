@@ -128,7 +128,6 @@ export class CrossChainRoutingService extends TradeService {
     }
     this.checkDeviceAndShowNotification();
 
-    let subscription$: Subscription;
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
       const tradeData: RecentTrade = {
@@ -150,11 +149,6 @@ export class CrossChainRoutingService extends TradeService {
       this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
 
       this.notifyGtmAfterSignTx(txHash);
-      subscription$ = this.notifyTradeInProgress(
-        txHash,
-        this.crossChainTrade?.trade?.from?.blockchain,
-        this.crossChainTrade.tradeType
-      );
     };
 
     const blockchain = this.crossChainTrade?.trade?.from?.blockchain as BlockchainName;
@@ -168,7 +162,6 @@ export class CrossChainRoutingService extends TradeService {
 
     await this.crossChainTrade.trade.swap(swapOptions);
 
-    subscription$?.unsubscribe();
     this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
   }
 

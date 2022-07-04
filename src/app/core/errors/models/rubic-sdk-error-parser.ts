@@ -13,11 +13,14 @@ import { LowGasError } from '@core/errors/models/provider/low-gas-error';
 import { LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError } from 'rubic-sdk/lib/common/errors/swap/low-slippage-deflationary-token.error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import { RubicSdkError } from 'rubic-sdk';
+import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } from 'rubic-sdk';
+import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
-  ): RubicError<ERROR_TYPE> | undefined {
+  ): RubicError<ERROR_TYPE> {
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
     }
@@ -36,13 +39,18 @@ export class RubicSdkErrorParser {
     if (err instanceof SdkLowSlippageDeflationaryTokenError) {
       return new TokenWithFeeError();
     }
+    if (err instanceof SdkInsufficientFundsOneinchError) {
+      return new InsufficientFundsOneinchError(
+        BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
+      );
+    }
 
     return new RubicError('[RUBIC SDK] Unknown SDK error.');
   }
 
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
-  ): RubicError<ERROR_TYPE> | undefined {
+  ): RubicError<ERROR_TYPE> {
     if (err.message.includes('Request failed with status code 400')) {
       return new RubicError(
         'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
@@ -51,6 +59,14 @@ export class RubicSdkErrorParser {
     if (err.message.includes('max fee per gas less than block base fee')) {
       return new RubicError(
         'Max fee per gas less than block base fee. Increase max gas in your wallet.'
+      );
+    }
+    if (
+      err.message.includes('insufficient funds for transfer') ||
+      err.message.includes('execution reverted: MetaRouter: second swap failed')
+    ) {
+      return new RubicError(
+        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
     }
     return new RubicError(err.message);

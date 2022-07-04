@@ -393,7 +393,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    */
   private async setupProviders(trades: Array<InstantTrade | InstantTradeError>): Promise<void> {
     const providersPromises = this.providersData.map(async provider => {
-      const settledTrade = trades.find(trade => trade.type === provider.name);
+      const settledTrade = trades.find(trade => trade?.type === provider.name);
 
       const defaultProvider: InstantTradeProviderData = {
         name: provider.name,

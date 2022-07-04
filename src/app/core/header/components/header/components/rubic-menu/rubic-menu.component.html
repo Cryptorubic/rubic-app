@@ -24,9 +24,19 @@
         <ng-container *ngFor="let item of navigationList">
           <a
             *ngIf="item.type === 'internal'"
-            [routerLink]="item.link"
             (click)="closeMenu()"
             routerLinkActive="data-list__link_active"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+          <a
+            *ngIf="item.type === 'external'"
+            [href]="item.link"
+            target="_blank"
             class="data-list__link"
           >
             <button tuiOption class="data-list__option" (click)="handleButtonClick()">
@@ -34,26 +44,7 @@
               {{ item.translateKey | translate }}
             </button>
           </a>
-          <a *ngIf="item.type === 'external'" [href]="item.link" class="data-list__link">
-            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
-              {{ item.translateKey | translate }}
-            </button>
-          </a>
         </ng-container>
-        <a
-          (click)="menuClickHandler('bridge')"
-          [class.data-list__link_active]="bridgeActive"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">
-            <div
-              class="data-list__option-image"
-              [inlineSVG]="'assets/images/icons/swap-types/bridge.svg'"
-            ></div>
-            Rubic Bridge
-          </button>
-        </a>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">

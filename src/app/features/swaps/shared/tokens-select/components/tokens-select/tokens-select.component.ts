@@ -480,41 +480,44 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Tries to parse custom token by search query requesting Web3.
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
-    if (this.searchQuery) {
-      if (!Web3Pure.isAddressCorrect(this.searchQuery)) {
-        return null;
+    try {
+      if (this.searchQuery) {
+        if (!Web3Pure.isAddressCorrect(this.searchQuery)) {
+          return null;
+        }
+
+        const token = await this.sdk.tokens.createToken({
+          blockchain: this.blockchain,
+          address: this.searchQuery
+        });
+
+        if (token?.name && token?.symbol && token?.decimals != null) {
+          const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
+          const oppositeToken = this.form.value[oppositeTokenType];
+
+          const image = await this.fetchTokenImage(token);
+
+          return {
+            ...token,
+            image,
+            rank: 0,
+            amount: new BigNumber(NaN),
+            price: 0,
+            usedInIframe: true,
+            available:
+              !oppositeToken ||
+              this.blockchain === oppositeToken.blockchain ||
+              TokensSelectComponent.allowedInCrossChain(token.blockchain, oppositeToken.blockchain),
+            favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+              compareTokens(favoriteToken, token)
+            ),
+            hasDirectPair: true
+          };
+        }
       }
-
-      const token = await this.sdk.tokens.createToken({
-        blockchain: this.blockchain,
-        address: this.searchQuery
-      });
-
-      if (token?.name && token?.symbol && token?.decimals != null) {
-        const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
-        const oppositeToken = this.form.value[oppositeTokenType];
-
-        const image = await this.fetchTokenImage(token);
-
-        return {
-          ...token,
-          image,
-          rank: 0,
-          amount: new BigNumber(NaN),
-          price: 0,
-          usedInIframe: true,
-          available:
-            !oppositeToken ||
-            this.blockchain === oppositeToken.blockchain ||
-            TokensSelectComponent.allowedInCrossChain(token.blockchain, oppositeToken.blockchain),
-          favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
-            compareTokens(favoriteToken, token)
-          ),
-          hasDirectPair: true
-        };
-      }
+    } catch {
+      return null;
     }
-    return null;
   }
 
   /**

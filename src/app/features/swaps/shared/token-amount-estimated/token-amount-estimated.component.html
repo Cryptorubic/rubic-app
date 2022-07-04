@@ -20,7 +20,7 @@
             'bottom-amount__output_error-text': errorText
           }"
         >
-          <ng-container *ngIf="errorText">
+          <ng-container *ngIf="errorText && !loading">
             {{ 'errors.tradingIsNotAvailable' | translate }}
           </ng-container>
           <ng-container *ngIf="loading && !tokenAmount"
