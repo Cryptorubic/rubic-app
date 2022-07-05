@@ -285,7 +285,7 @@ export class WalletConnectorService {
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         name: 'Polygon Mainnet',
-        rpc: 'https://polygon-rpc.com/'
+        rpc: 'https://rpc-mainnet.maticvigil.com'
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',
@@ -301,7 +301,7 @@ export class WalletConnectorService {
       },
       [BLOCKCHAIN_NAME.FANTOM]: {
         name: 'Fantom Opera',
-        rpc: 'https://rpc.ftm.tools'
+        rpc: 'https://rpc.ankr.com/fantom'
       },
       [BLOCKCHAIN_NAME.ARBITRUM]: {
         name: 'Arbitrum One',

@@ -84,6 +84,10 @@
     }
   }
 
+  @include hide-unused-ui {
+    display: none;
+  }
+
   &__disabled-link {
     color: #909090;
     font-size: 16px;

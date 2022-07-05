@@ -22,6 +22,7 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -70,7 +71,12 @@ export class QueryParamsService {
     return urlTree.toString();
   }
 
+  public hideUnusedUI: boolean;
+
+  public screenWidth: number;
+
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly tokensService: TokensService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
@@ -99,6 +105,8 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
+      this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+      this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);

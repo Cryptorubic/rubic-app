@@ -25,13 +25,14 @@ interface AllQueryParams {
   hideSelectionTo: string;
   slippageIt: string;
   slippageCcr: string;
-  hideUnusedUI: string;
   background: string;
   theme: string;
   language: SupportedLanguages;
   fee: string;
   feeTarget: string;
   promoCode: string;
+  hideUnusedUI: string;
+  isDesktop: string;
   // Near specific query params.
   // Transaction.
   nearLogin: string;
