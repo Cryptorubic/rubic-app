@@ -24,7 +24,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 /**
  * Perform backend requests and transforms to get valid tokens.

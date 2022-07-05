@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { StakingService } from '@features/staking/services/staking.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { WINDOW } from '@ng-web-apis/common';

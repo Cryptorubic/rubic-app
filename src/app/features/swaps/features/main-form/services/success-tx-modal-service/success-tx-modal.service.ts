@@ -4,10 +4,9 @@ import { SuccessTxModalComponent } from '@shared/components/success-tx-modal/suc
 import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CrossChainProvider } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -22,13 +21,14 @@ export class SuccessTxModalService {
    * @param transactionHash Transaction's hash.
    * @param blockchain Name of blockchain.
    * @param type Type of modal, cross-chain or default.
+   * @param ccrProviderType Cross Chain provider.
    * @param callback Callback to be called after modal is closed.
    */
   public open(
     transactionHash: string,
     blockchain: BlockchainName,
     type: SuccessTxModalType,
-    ccrProviderType: CrossChainProvider,
+    ccrProviderType: CrossChainTradeType,
     callback: () => Observable<void>
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';

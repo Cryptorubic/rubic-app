@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 export const WHITELIST_PROVIDERS = {

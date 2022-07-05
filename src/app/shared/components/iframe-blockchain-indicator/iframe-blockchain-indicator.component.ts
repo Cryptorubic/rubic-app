@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 

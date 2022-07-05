@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { BLOCKCHAIN_LABEL } from '@features/swaps/shared/tokens-select/constants/blockchains-labels';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-blockchains-aside',

@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Observable, Subject } from 'rxjs';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';

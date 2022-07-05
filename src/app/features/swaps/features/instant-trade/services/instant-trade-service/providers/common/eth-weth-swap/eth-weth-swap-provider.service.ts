@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, Web3Public, Web3Pure } from 'rubic-sdk';
 import wethContractAbi from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-abi';
 import {
   SupportedEthWethSwapBlockchain,
   WETH_CONTRACT_ADDRESS
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-addresses-net-mode';
 import { TransactionReceipt } from 'web3-eth';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { compareAddresses } from '@shared/utils/utils';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +23,6 @@ export class EthWethSwapProviderService {
   private readonly contractAddress = WETH_CONTRACT_ADDRESS;
 
   constructor(
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService
   ) {}
@@ -37,10 +32,6 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
-    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
-    if (blockchainType !== 'ethLike') {
-      return false;
-    }
     const wethAddress = this.contractAddress[blockchain as SupportedEthWethSwapBlockchain];
 
     return (
@@ -50,17 +41,17 @@ export class EthWethSwapProviderService {
     );
   }
 
-  public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+  public async createTrade(trade: WrapTrade, options: ItOptions): Promise<TransactionReceipt> {
     const { blockchain } = trade;
     const fromToken = trade.from.token;
     const fromAmount = trade.from.amount;
 
     this.walletConnectorService.checkSettings(blockchain);
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
     await blockchainAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
     const fromAmountAbsolute = Web3Pure.toWei(fromAmount);
-    const swapMethod = blockchainAdapter.isNativeAddress(fromToken.address)
+    const swapMethod = Web3Pure.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;
     return swapMethod.bind(this)(blockchain, fromAmountAbsolute, options);
@@ -71,7 +62,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    return this.web3PrivateService.executeContractMethod(
+    return Injector.web3Private.executeContractMethod(
       this.contractAddress[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'deposit',
@@ -88,7 +79,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    return this.web3PrivateService.executeContractMethod(
+    return Injector.web3Private.executeContractMethod(
       this.contractAddress[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'withdraw',

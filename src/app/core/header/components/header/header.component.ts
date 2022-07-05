@@ -20,7 +20,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
@@ -91,7 +91,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone
   ) {
-    this.loadUser();
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.getCurrentUser();
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
@@ -122,18 +121,6 @@ export class HeaderComponent implements AfterViewInit {
     const offset = 90;
     const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
     this.document.documentElement.style.setProperty('--scroll-size', pixelOffset);
-  }
-
-  private async loadUser(): Promise<void> {
-    const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
-    if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch (err) {
-        this.errorService.catch(err);
-      }
-    }
   }
 
   /**

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';

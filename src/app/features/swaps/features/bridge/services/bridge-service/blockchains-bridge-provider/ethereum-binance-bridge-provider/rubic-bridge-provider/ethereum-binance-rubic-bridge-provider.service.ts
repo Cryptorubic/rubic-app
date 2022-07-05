@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { CommonRubicBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/common-rubic-bridge-provider';
 import { RubicBridgeConfig } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/models/types';
 

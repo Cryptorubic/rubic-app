@@ -1,12 +1,8 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { PrivateBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
 import {
   BehaviorSubject,
@@ -43,9 +39,6 @@ import { PoolToken } from '../models/pool-token.enum';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import { DepositsResponse } from '../models/deposits-response.interface';
 import { LiquidityProvidingNotificationService } from './liquidity-providing-notification.service';
-import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { ERROR_TYPE } from '@app/core/errors/models/error-type';
-import { RubicError } from '@app/core/errors/models/rubic-error';
 import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
 import { LpReward, LpRewardParsed } from '@app/core/services/backend/volume-api/models/lp-rewards';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
@@ -53,6 +46,10 @@ import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { WINDOW } from '@ng-web-apis/common';
 import { DEPOSIT_RATIO } from '../constants/DEPOSIT_RATIO';
 import { LpProvidingConfig } from 'src/environments/constants/lp-providing';
+import { BLOCKCHAIN_NAME, Web3Private, Web3Public, Web3Pure } from 'rubic-sdk';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 // TODO create env token
 @Injectable()
@@ -216,11 +213,9 @@ export class LiquidityProvidingService {
   public isPoolFull: boolean = false;
 
   private waitForReceipt = (hash: string): Observable<TransactionReceipt> => {
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
     return interval(3000).pipe(
-      switchMap(async () => {
-        const tx = await this.web3PublicService[this.blockchain].getTransactionReceipt(hash);
-        return tx;
-      }),
+      switchMap(() => publicAdapter.getTransactionReceipt(hash)),
       filter<TransactionReceipt>(Boolean),
       tap(receipt => {
         if (receipt.status === false) {
@@ -231,13 +226,11 @@ export class LiquidityProvidingService {
     );
   };
 
-  get blockchainAdapter(): EthLikeWeb3Public {
-    return this.web3PublicService[this.blockchain];
+  public get blockchainAdapter(): Web3Public {
+    return Injector.web3PublicService.getWeb3Public(this.blockchain);
   }
 
   constructor(
-    private readonly web3PublicService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: PrivateBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensService: TokensService,
@@ -289,11 +282,12 @@ export class LiquidityProvidingService {
   }
 
   public getAndUpdatePoolTokensBalances(address?: string): Observable<BigNumber[]> {
+    const provider: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
     return from(
-      this.web3PublicService[this.blockchain].getTokensBalances(
-        address || this.authService.userAddress,
-        [this.usdcAddress, this.brbcAddress]
-      )
+      provider.getTokensBalances(address || this.authService.userAddress, [
+        this.usdcAddress,
+        this.brbcAddress
+      ])
     ).pipe(
       tap(([usdcBalance, brbcBalance]) => {
         this._usdcBalance$.next(Web3Pure.fromWei(usdcBalance));
@@ -307,8 +301,11 @@ export class LiquidityProvidingService {
       filter(user => Boolean(user?.address)),
       tap(() => this.setDepositsLoading(true)),
       switchMap(user => {
+        const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+          this.blockchain
+        );
         return from(
-          this.web3PublicService[this.blockchain].callContractMethod<DepositsResponse>(
+          blockchainAdapter.callContractMethod<DepositsResponse>(
             this.lpContractAddress,
             LP_PROVIDING_CONTRACT_ABI,
             'infoAboutDepositsParsed',
@@ -343,14 +340,16 @@ export class LiquidityProvidingService {
     ]).pipe(
       switchMap(() =>
         from(
-          this.web3PublicService[this.blockchain].callContractMethod<boolean>(
-            this.lpContractAddress,
-            LP_PROVIDING_CONTRACT_ABI,
-            'viewWhitelistInProgress'
-          )
+          Injector.web3PublicService
+            .getWeb3Public(this.blockchain)
+            .callContractMethod<boolean>(
+              this.lpContractAddress,
+              LP_PROVIDING_CONTRACT_ABI,
+              'viewWhitelistInProgress'
+            )
         )
       ),
-      tap(isWhitelistInProgress => {
+      tap((isWhitelistInProgress: boolean) => {
         const isWhitelistUser = this.checkIsWhitelistUser(this.userAddress);
         const isOnDepositForm = this.router.url.includes('deposit');
 
@@ -380,20 +379,21 @@ export class LiquidityProvidingService {
   }
 
   public getNeedTokensApprove(): Observable<BigNumber[]> {
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
     return forkJoin([
       from(
-        this.web3PublicService[this.blockchain].getAllowance({
-          tokenAddress: this.usdcAddress,
-          ownerAddress: this.authService.userAddress,
-          spenderAddress: this.lpContractAddress
-        })
+        blockchainAdapter.getAllowance(
+          this.usdcAddress,
+          this.authService.userAddress,
+          this.lpContractAddress
+        )
       ),
       from(
-        this.web3PublicService[this.blockchain].getAllowance({
-          tokenAddress: this.brbcAddress,
-          ownerAddress: this.authService.userAddress,
-          spenderAddress: this.lpContractAddress
-        })
+        blockchainAdapter.getAllowance(
+          this.brbcAddress,
+          this.authService.userAddress,
+          this.lpContractAddress
+        )
       )
     ]).pipe(
       tap(([usdcAllowance, brbcAllowance]) => {
@@ -406,8 +406,9 @@ export class LiquidityProvidingService {
   }
 
   public approvePoolToken(token: PoolToken): Observable<TransactionReceipt> {
+    const blockchainAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[this.blockchain].approveTokens(
+      blockchainAdapter.approveTokens(
         token === PoolToken.USDC ? this.usdcAddress : this.brbcAddress,
         this.lpContractAddress,
         'infinity'
@@ -421,8 +422,9 @@ export class LiquidityProvidingService {
   }
 
   public requestWithdraw(tokenId: string): Observable<unknown> {
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'requestWithdraw',
@@ -457,8 +459,9 @@ export class LiquidityProvidingService {
         ? 'whitelistStake'
         : 'stake';
 
+    const blockchainPrivateAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+      blockchainPrivateAdapter.executeContractMethodWithOnHashResolve(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         depositMethod,
@@ -477,8 +480,9 @@ export class LiquidityProvidingService {
   }
 
   public withdraw(tokenId: string): Observable<unknown> {
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'withdraw',
@@ -501,8 +505,9 @@ export class LiquidityProvidingService {
   }
 
   public collectRewards(tokenId: string): Observable<unknown> {
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+      privateBlockchainAdapter.executeContractMethodWithOnHashResolve(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'claimRewards',
@@ -530,16 +535,20 @@ export class LiquidityProvidingService {
   }
 
   public getStartAndEndTime(): Observable<string[]> {
+    const publicBlockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+
     return forkJoin([
       from(
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+        publicBlockchainAdapter.callContractMethod<string>(
           this.lpContractAddress,
           LP_PROVIDING_CONTRACT_ABI,
           'startTime'
         )
       ),
       from(
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+        publicBlockchainAdapter.callContractMethod<string>(
           this.lpContractAddress,
           LP_PROVIDING_CONTRACT_ABI,
           'endTime'
@@ -556,8 +565,9 @@ export class LiquidityProvidingService {
   }
 
   public transfer(tokenId: string, address: string): Observable<unknown> {
+    const privateBlockchainAdapter: Web3Private = Injector.web3Private;
     return from(
-      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
+      privateBlockchainAdapter.tryExecuteContractMethod(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'transfer',
@@ -656,8 +666,11 @@ export class LiquidityProvidingService {
   }
 
   private getTotalRewards(): Observable<BigNumber> {
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'viewRewardsTotal',
@@ -670,8 +683,11 @@ export class LiquidityProvidingService {
   }
 
   private getTotalCollectedRewards(): Observable<BigNumber> {
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'viewCollectedRewardsTotal',
@@ -684,8 +700,11 @@ export class LiquidityProvidingService {
   }
 
   public getUserTotalStaked(): Observable<BigNumber> {
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'viewUSDCAmountOf',
@@ -716,8 +735,9 @@ export class LiquidityProvidingService {
   }
 
   private getApr(): Observable<string> {
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(this.blockchain);
     return from(
-      this.web3PublicService[this.blockchain].callContractMethod<string>(
+      blockchainAdapter.callContractMethod<string>(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'apr'
@@ -727,7 +747,7 @@ export class LiquidityProvidingService {
 
   private getTotalStaked(): Observable<BigNumber> {
     return from(
-      this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
+      this.blockchainAdapter.callContractMethod<BigNumber>(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'poolBRBC'

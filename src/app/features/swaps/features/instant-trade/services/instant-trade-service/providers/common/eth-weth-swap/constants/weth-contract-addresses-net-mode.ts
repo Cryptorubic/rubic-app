@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,

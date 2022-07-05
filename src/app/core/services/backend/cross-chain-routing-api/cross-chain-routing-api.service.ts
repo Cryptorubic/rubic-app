@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TableData, TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
-import { catchError, map } from 'rxjs/operators';
-import {
-  FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
-} from '@shared/constants/blockchain/backend-blockchains';
+import { map } from 'rxjs/operators';
+import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   CrossChainTokenApi,
   CrossChainTradeApi,
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { RefFinanceRoute } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
 export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
 
@@ -76,48 +72,5 @@ export class CrossChainRoutingApiService {
           };
         })
       );
-  }
-
-  /**
-   * post trade with domain query {@link RubicExchangeInterceptor} to save extended trade info in backend
-   * @param transactionHash hash of crosschain swap transaction
-   * @param blockchain swap origin blockchain
-   * @param [promoCodeText] promo code text if promo code has been successfully applied
-   */
-  public postTrade(
-    transactionHash: string,
-    blockchain: BlockchainName,
-    promoCodeText?: string
-  ): Promise<void> {
-    const network = TO_BACKEND_BLOCKCHAINS[blockchain];
-    return this.httpService
-      .patch<void>('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
-      .pipe(
-        catchError((err: unknown) => {
-          console.error(err);
-          return of(undefined);
-        })
-      )
-      .toPromise();
-  }
-
-  postCrossChainDataToNear(
-    transactionHash: string,
-    toBackendBlockchain: string,
-    targetAddress: string,
-    secondPath: string[],
-    refRoutes: [RefFinanceRoute, RefFinanceRoute] | [RefFinanceRoute]
-  ): Observable<void> {
-    return this.httpService.post(
-      'trades/params',
-      {
-        fromTxHash: transactionHash,
-        network: toBackendBlockchain,
-        walletAddress: targetAddress,
-        secondPath,
-        pool: refRoutes?.map(el => el.pool.id) || []
-      },
-      BASE_URL
-    );
   }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@app/shared/models/blockchain/blockchain-name';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { BehaviorSubject, map } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { StoreService } from '../store/store.service';
+import { BlockchainName } from 'rubic-sdk';
 
 const MAX_LATEST_TRADES = 3;
 
