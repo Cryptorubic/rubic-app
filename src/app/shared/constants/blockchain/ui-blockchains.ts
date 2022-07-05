@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export interface Blockchain {
   key: BlockchainName;

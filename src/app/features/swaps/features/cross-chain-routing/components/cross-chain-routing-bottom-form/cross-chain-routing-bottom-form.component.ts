@@ -8,7 +8,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -23,11 +23,6 @@ import {
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  EthLikeBlockchainName
-} from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -42,8 +37,11 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { isEthLikeBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { BlockchainName } from 'rubic-sdk';
+import { switchTap } from '@shared/utils/utils';
+import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
+import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -119,7 +117,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   get showSmartRouting(): boolean {
-    return Boolean(this.smartRouting);
+    return Boolean(this.smartRouting) && this.crossChainRoutingService.crossChainTrade?.trade;
   }
 
   constructor(
@@ -156,11 +154,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
-        const { fromBlockchain, toBlockchain } = form;
-        this.crossChainRoutingService.setIsSupportedCelerBlockchainPair(
-          fromBlockchain as EthLikeBlockchainName,
-          toBlockchain as EthLikeBlockchainName
-        );
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -235,46 +228,45 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-          const calculateNeedApprove =
-            Boolean(this.authService.userAddress) && isEthLikeBlockchainName(fromBlockchain);
+          const { fromAmount } = this.swapFormService.inputValue;
+          const isUserAuthorized = Boolean(this.authService.userAddress);
           const crossChainTrade$ = from(
-            this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
+            this.crossChainRoutingService.calculateTrade(isUserAuthorized)
           );
           const balance$ = from(
             this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
           );
 
-          return forkJoin([crossChainTrade$, balance$]).pipe(
-            map(([{ toAmount, minAmountError, maxAmountError, needApprove }]) => {
+          return crossChainTrade$.pipe(
+            switchTap(() => balance$),
+            map(({ trade, error, needApprove }) => {
               if (
-                (minAmountError &&
-                  fromAmount.gte(minAmountError) &&
-                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
-                (maxAmountError && fromAmount.lte(maxAmountError))
+                error !== undefined &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
                 this.onCalculateTrade$.next('normal');
                 return;
               }
 
-              this.minError = minAmountError || false;
-              this.maxError = maxAmountError || false;
+              this.minError = error?.minAmount || false;
+              this.maxError = error?.maxAmount || false;
               this.errorText = '';
 
               this.needApprove = needApprove;
               this.withApproveButton = this.needApprove;
 
-              this.toAmount = toAmount;
+              this.toAmount = trade?.to?.tokenAmount;
               this.swapFormService.output.patchValue({
-                toAmount
+                toAmount: trade?.to.tokenAmount
               });
               this.smartRouting = this.crossChainRoutingService.smartRouting;
               this.hiddenTradeData = null;
 
-              if (this.minError || this.maxError || !toAmount?.gt(0)) {
+              if (this.minError || this.maxError || this.toAmount?.lte(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
-                this.tradeStatus = needApprove
+                this.tradeStatus = this.needApprove
                   ? TRADE_STATUS.READY_TO_APPROVE
                   : TRADE_STATUS.READY_TO_SWAP;
               }
@@ -307,26 +299,24 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
-          const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
+          const { fromAmount } = this.swapFormService.inputValue;
 
-          return forkJoin([crossChainTrade$]).pipe(
-            map(([{ toAmount, minAmountError, maxAmountError }]) => {
+          return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
+            map(({ trade, error }) => {
               if (
-                (minAmountError &&
-                  fromAmount.gte(minAmountError) &&
-                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
-                (maxAmountError && fromAmount.lte(maxAmountError))
+                error &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
                 this.onCalculateTrade$.next('hidden');
                 return;
               }
 
-              this.minError = minAmountError || false;
-              this.maxError = maxAmountError || false;
+              this.minError = error?.minAmount || false;
+              this.maxError = error?.maxAmount || false;
 
-              this.hiddenTradeData = { toAmount };
-              if (!toAmount.eq(this.toAmount)) {
+              this.hiddenTradeData = { toAmount: trade.to.tokenAmount };
+              if (!this.hiddenTradeData.toAmount.eq(this.toAmount)) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
             }),
@@ -407,10 +397,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
       await this.crossChainRoutingService.createTrade(() => {
-        if (fromBlockchain !== BLOCKCHAIN_NAME.NEAR) {
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
-        }
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.cdr.detectChanges();
       });
 
       this.conditionalCalculate('hidden');

@@ -8,7 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import {
   debounceTime,
@@ -21,8 +21,6 @@ import {
 import { HeaderStore } from '@core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
@@ -32,6 +30,8 @@ import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
+import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 type TokenType = 'from' | 'to';

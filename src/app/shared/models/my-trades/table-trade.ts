@@ -1,5 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { BlockchainName, TradeType } from 'rubic-sdk';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
@@ -12,7 +11,7 @@ export interface TableToken {
 }
 
 export type TableProvider =
-  | INSTANT_TRADE_PROVIDER
+  | TradeType
   | BRIDGE_PROVIDER
   | 'CROSS_CHAIN_ROUTING_PROVIDER'
   | 'GAS_REFUND_PROVIDER'

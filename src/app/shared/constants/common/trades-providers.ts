@@ -1,6 +1,6 @@
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
+import { TRADE_TYPE, TradeType } from 'rubic-sdk';
 
 export type Provider = {
   name: string;
@@ -21,102 +21,177 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   }
 };
 
-const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADE_PROVIDER, Provider> = {
-  [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: {
+const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
+  [TRADE_TYPE.UNI_SWAP_V3_ARBITRUM]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
-  [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: {
+  [TRADE_TYPE.UNI_SWAP_V3_POLYGON]: {
+    name: 'Uniswap V3',
+    image: `${imageBasePath}uniswap-3.svg`,
+    color: '#FD017A'
+  },
+  [TRADE_TYPE.UNI_SWAP_V3_ETHEREUM]: {
+    name: 'Uniswap V3',
+    image: `${imageBasePath}uniswap-3.svg`,
+    color: '#FD017A'
+  },
+  [TRADE_TYPE.UNISWAP_V2]: {
     name: 'Uniswap V2',
     image: `${imageBasePath}uniswap-2.svg`,
     color: '#F9DBEA'
   },
-  [INSTANT_TRADE_PROVIDER.ONEINCH]: {
+  [TRADE_TYPE.ONE_INCH_ARBITRUM]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`,
     color: '#94A6C3'
   },
-  [INSTANT_TRADE_PROVIDER.PANCAKESWAP]: {
+  [TRADE_TYPE.ONE_INCH_FANTOM]: {
+    name: '1inch',
+    image: `${imageBasePath}oneinch.svg`,
+    color: '#94A6C3'
+  },
+  [TRADE_TYPE.ONE_INCH_AVALANCHE]: {
+    name: '1inch',
+    image: `${imageBasePath}oneinch.svg`,
+    color: '#94A6C3'
+  },
+  [TRADE_TYPE.ONE_INCH_POLYGON]: {
+    name: '1inch',
+    image: `${imageBasePath}oneinch.svg`,
+    color: '#94A6C3'
+  },
+  [TRADE_TYPE.ONE_INCH_BSC]: {
+    name: '1inch',
+    image: `${imageBasePath}oneinch.svg`,
+    color: '#94A6C3'
+  },
+  [TRADE_TYPE.ONE_INCH_ETHEREUM]: {
+    name: '1inch',
+    image: `${imageBasePath}oneinch.svg`,
+    color: '#94A6C3'
+  },
+  [TRADE_TYPE.PANCAKE_SWAP]: {
     name: 'Pancakeswap',
     image: `${imageBasePath}pancakeswap.svg`,
     color: '#00ADE8'
   },
-  [INSTANT_TRADE_PROVIDER.QUICKSWAP]: {
+  [TRADE_TYPE.QUICK_SWAP]: {
     name: 'Quickswap',
     image: `${imageBasePath}quickswap.svg`,
     color: '#5389C5'
   },
-  [INSTANT_TRADE_PROVIDER.SUSHISWAP]: {
+  [TRADE_TYPE.SUSHI_SWAP_TELOS]: {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
   },
-  [INSTANT_TRADE_PROVIDER.PANGOLIN]: {
+  [TRADE_TYPE.SUSHI_SWAP_ARBITRUM]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_FANTOM]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_MOONRIVER]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_AVALANCHE]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_HARMONY]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_POLYGON]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_BSC]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.SUSHI_SWAP_ETHEREUM]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
+  [TRADE_TYPE.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`,
     color: '#FC5408;'
   },
-  [INSTANT_TRADE_PROVIDER.JOE]: {
+  [TRADE_TYPE.JOE]: {
     name: 'Joe',
     image: `${imageBasePath}joe.png`,
     color: '#6665DD'
   },
-  [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: {
+  [TRADE_TYPE.SPOOKY_SWAP]: {
     name: 'Spookyswap',
     image: `${imageBasePath}spookyswap.png`,
     color: '#59C3C8'
   },
-  [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: {
+  [TRADE_TYPE.SPIRIT_SWAP]: {
     name: 'Spiritswap',
     image: `${imageBasePath}spiritswap.png`,
     color: '#59C3C8'
   },
-  [INSTANT_TRADE_PROVIDER.WRAPPED]: {
+  [TRADE_TYPE.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`,
     color: '#FFFFFF'
   },
-  [INSTANT_TRADE_PROVIDER.ZRX]: {
+  [TRADE_TYPE.ZRX_ETHEREUM]: {
     name: '0x',
     image: `${imageBasePath}zrx.png`,
     color: '#FFFFFF'
   },
-  [INSTANT_TRADE_PROVIDER.SOLARBEAM]: {
+  [TRADE_TYPE.SOLAR_BEAM]: {
     name: 'Solarbeam',
     image: `${imageBasePath}solarbeam.png`,
     color: '#F2A272'
   },
-  [INSTANT_TRADE_PROVIDER.RAYDIUM]: {
+  [TRADE_TYPE.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`,
     color: '#3875FD'
   },
-  [INSTANT_TRADE_PROVIDER.REF]: {
+  [TRADE_TYPE.REF_FINANCE]: {
     name: 'Ref Finance',
     image: `${imageBasePath}ref-finance.svg`
   },
-  [INSTANT_TRADE_PROVIDER.ALGEBRA]: {
+  [TRADE_TYPE.ALGEBRA]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.webp`,
     color: '#00CAB2'
   },
-  [INSTANT_TRADE_PROVIDER.VIPER]: {
+  [TRADE_TYPE.VIPER_SWAP]: {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`,
     color: '#00805C'
   },
-  [INSTANT_TRADE_PROVIDER.TRISOLARIS]: {
+  [TRADE_TYPE.TRISOLARIS]: {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
     color: '#00F4FF'
   },
-  [INSTANT_TRADE_PROVIDER.WANNASWAP]: {
+  [TRADE_TYPE.WANNA_SWAP]: {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.svg`,
     color: '#FACB5B'
   },
-  [INSTANT_TRADE_PROVIDER.ZAPPY]: {
+  [TRADE_TYPE.ZAPPY]: {
     name: 'Zappy',
     image: `${imageBasePath}zappy.svg`,
     color: '#00e7e7'

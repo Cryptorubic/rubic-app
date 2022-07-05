@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName, EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
-import {
-  ItOptions,
-  ItProvider
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
-import { SHOULD_CALCULATE_GAS_BLOCKCHAIN } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TransactionReceipt } from 'web3-eth';
+import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import {
+  InstantTrade,
+  TradeType,
+  BlockchainName,
+  InstantTradeError,
+  EncodeTransactionOptions,
+  Web3Pure,
+  Web3Public
+} from 'rubic-sdk';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import {
   IT_PROXY_FEE_CONTRACT_ABI,
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
-import { InstantTradeProvidersService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade-providers.service';
-import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
+import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { GasService } from '@core/services/gas-service/gas.service';
+import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -34,64 +42,35 @@ export class InstantTradeService extends TradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
-  private readonly providers = this.instantTradeProvidersService.providers;
-
   constructor(
-    private readonly instantTradeProvidersService: InstantTradeProvidersService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
-    private readonly web3PrivateService: EthLikeWeb3PrivateService
+    private readonly settingsService: SettingsService,
+    private readonly sdk: RubicSdkService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService,
+    private readonly gasService: GasService
   ) {
     super('instant-trade');
   }
 
-  public getTargetContractAddress(
-    fromBlockchain: BlockchainName,
-    providerName: INSTANT_TRADE_PROVIDER
-  ): string {
-    return this.iframeService.isIframeWithFee(fromBlockchain, providerName)
-      ? IT_PROXY_FEE_CONTRACT_ADDRESS
-      : undefined;
+  public async needApprove(trade: InstantTrade): Promise<boolean> {
+    return trade.needApprove();
   }
 
-  public getAllowance(providersNames: INSTANT_TRADE_PROVIDER[]): Promise<boolean[]> {
-    const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-
-    const providers = providersNames.map(
-      providerName => this.providers[fromBlockchain][providerName]
-    );
-    const providerApproveData = providers.map(async (provider: ItProvider) => {
-      const targetContractAddress = this.getTargetContractAddress(
-        fromBlockchain,
-        provider.providerType
-      );
-      const allowance = await provider.getAllowance(fromToken.address, targetContractAddress);
-      return fromAmount.gt(allowance);
-    });
-
-    return Promise.all(providerApproveData);
-  }
-
-  public async approve(providerName: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async approve(trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
-
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    const targetContractAddress = this.getTargetContractAddress(fromBlockchain, providerName);
-
     let subscription$: Subscription;
     try {
-      await this.providers[trade.blockchain][providerName].approve(
-        trade.from.token.address,
-        {
-          onTransactionHash: () => {
-            subscription$ = this.notificationsService.showApproveInProgress();
-          }
+      await trade.approve({
+        onTransactionHash: () => {
+          subscription$ = this.notificationsService.showApproveInProgress();
         },
-        targetContractAddress
-      );
+        gasPrice: trade.gasFeeInfo?.gasPrice
+      });
 
       this.notificationsService.showApproveSuccessful();
     } finally {
@@ -99,7 +78,7 @@ export class InstantTradeService extends TradeService {
     }
   }
 
-  public getEthWethTrade(): InstantTrade | null {
+  public getEthWethTrade(): WrapTrade | null {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     if (
@@ -124,66 +103,81 @@ export class InstantTradeService extends TradeService {
   }
 
   public async calculateTrades(
-    providersNames: INSTANT_TRADE_PROVIDER[]
-  ): Promise<PromiseSettledResult<InstantTrade>[]> {
-    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
-    const providers = providersNames.map(
-      providerName => this.providers[fromBlockchain][providerName]
-    );
-    const shouldCalculateGas =
-      SHOULD_CALCULATE_GAS_BLOCKCHAIN[fromBlockchain as EthLikeBlockchainName];
-    const providersDataPromises = providers.map(provider =>
-      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas)
-    );
-
-    return Promise.allSettled(providersDataPromises);
+    fromToken: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    fromAmount: string,
+    toToken: {
+      address: string;
+      blockchain: BlockchainName;
+    }
+  ): Promise<Array<InstantTrade | InstantTradeError>> {
+    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
+      timeout: 10000,
+      slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
+    });
   }
 
   public async createTrade(
-    providerName: INSTANT_TRADE_PROVIDER,
-    trade: InstantTrade,
+    providerName: TradeType,
+    trade: InstantTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
+    const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
+      TradeParser.getItSwapParams(trade);
+
+    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
+    await blockchainAdapter.checkBalance(
+      { address: fromAddress, decimals: fromDecimals, symbol: fromSymbol },
+      fromAmount,
+      this.authService.userAddress
+    );
 
     let transactionHash: string;
     let subscription$: Subscription;
+
+    const gasPrice = shouldCalculateGas[blockchain];
     const options = {
-      onConfirm: async (hash: string) => {
+      onConfirm: (hash: string) => {
         transactionHash = hash;
         confirmCallback?.();
 
         this.notifyGtmAfterSignTx(
           transactionHash,
-          trade.from.token.symbol,
-          trade.to.token.symbol,
-          trade.from.amount.multipliedBy(trade.from.token.price)
+          fromSymbol,
+          toSymbol,
+          fromAmount.multipliedBy(fromPrice)
         );
         this.gtmService.checkGtm();
 
-        subscription$ = this.notifyTradeInProgress(hash, trade.blockchain);
+        subscription$ = this.notifyTradeInProgress(hash, blockchain);
 
-        await this.postTrade(hash, providerName, trade);
-      }
+        this.postTrade(hash, providerName, trade);
+      },
+      ...(Boolean(gasPrice) && {
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+      })
     };
 
     try {
       let receipt;
-      if (providerName === INSTANT_TRADE_PROVIDER.WRAPPED) {
-        receipt = await this.ethWethSwapProvider.createTrade(trade, options);
-      } else {
+      if (trade instanceof InstantTrade) {
         receipt = await this.checkFeeAndCreateTrade(providerName, trade, options);
+      } else {
+        receipt = await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
       subscription$.unsubscribe();
       this.showSuccessTrxNotification();
-
       this.updateTrade(transactionHash, true);
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
           provider: providerName,
-          blockchain: trade.blockchain,
+          blockchain,
           walletAddress: receipt.from,
           trade,
           txHash: transactionHash
@@ -201,31 +195,27 @@ export class InstantTradeService extends TradeService {
   }
 
   private async checkFeeAndCreateTrade(
-    providerName: INSTANT_TRADE_PROVIDER,
+    providerName: TradeType,
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
-    if (this.iframeService.isIframeWithFee(trade.blockchain, providerName)) {
-      return this.createTradeWithFee(providerName, trade, options);
+    await this.walletConnectorService.checkSettings(trade.from.blockchain);
+    if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
+      return this.createTradeWithFee(trade, options);
     }
 
-    return this.providers[trade.blockchain][providerName].createTrade(trade, options);
+    return trade.swap(options);
   }
 
   private async createTradeWithFee(
-    providerName: INSTANT_TRADE_PROVIDER,
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
-    const feeContractAddress = IT_PROXY_FEE_CONTRACT_ADDRESS;
-    const provider = this.providers[trade.blockchain][providerName];
-
-    const transactionOptions = await provider.checkAndEncodeTrade(
-      trade,
-      options,
-      feeContractAddress
-    );
-
+    const fullOptions: EncodeTransactionOptions = {
+      ...options,
+      fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS
+    };
+    const transactionOptions = await trade.encode(fullOptions);
     const { feeData } = this.iframeService;
     const fee = feeData.fee * 1000;
 
@@ -236,19 +226,18 @@ export class InstantTradeService extends TradeService {
       : IT_PROXY_FEE_CONTRACT_METHOD.SWAP;
 
     const methodArguments = [
-      trade.from.token.address,
-      trade.to.token.address,
-      Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
-      provider.contractAddress,
+      trade.from.address,
+      trade.to.address,
+      Web3Pure.toWei(trade.from.tokenAmount, trade.from.decimals),
+      trade,
       transactionOptions.data,
       [fee, feeData.feeTarget]
     ];
     if (promoterAddress) {
       methodArguments.push(promoterAddress);
     }
-
-    return this.web3PrivateService.tryExecuteContractMethod(
-      feeContractAddress,
+    return Injector.web3Private.tryExecuteContractMethod(
+      IT_PROXY_FEE_CONTRACT_ADDRESS,
       IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
       methodArguments,
@@ -258,12 +247,13 @@ export class InstantTradeService extends TradeService {
 
   private async postTrade(
     transactionHash: string,
-    providerName: INSTANT_TRADE_PROVIDER,
-    trade: InstantTrade
+    providerName: TradeType,
+    trade: InstantTrade | WrapTrade
   ): Promise<void> {
     let fee: number;
     let promoCode: string;
-    if (this.iframeService.isIframeWithFee(trade.blockchain, providerName)) {
+    const { blockchain } = TradeParser.getItSwapParams(trade);
+    if (this.iframeService.isIframeWithFee(blockchain, providerName)) {
       fee = this.iframeService.feeData.fee;
       promoCode = this.iframeService.promoCode;
     }

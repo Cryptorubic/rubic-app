@@ -129,8 +129,11 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     return this.window.location.pathname === url;
   }
 
-  public handleButtonClick(): void {
+  public handleButtonClick(item?: NavigationItem): void {
     this.gtmService.reloadGtmSession();
+    if (item) {
+      this.window.open(item.link, '_blank');
+    }
   }
 
   public openRecentTradesModal(): void {

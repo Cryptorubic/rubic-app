@@ -1,5 +1,5 @@
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 export interface BlockchainData<T = BlockchainName> {
   id: number;

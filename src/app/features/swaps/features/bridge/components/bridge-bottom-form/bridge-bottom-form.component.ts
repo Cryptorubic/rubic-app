@@ -27,7 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';

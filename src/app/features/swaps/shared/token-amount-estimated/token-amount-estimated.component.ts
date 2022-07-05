@@ -7,7 +7,7 @@ import {
   Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';

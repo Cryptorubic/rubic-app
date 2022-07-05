@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 
 @Component({

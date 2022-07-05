@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';

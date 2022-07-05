@@ -100,7 +100,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
       this.isEnabled = true;
       this.onNetworkChanges$.next(chainInfo);
       this.onAddressChanges$.next(address);
-      this.storeService.setItem('chainId', Number(this.selectedChain));
+      this.storeService.setItem('chainId', Number(chainInfo?.id));
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();

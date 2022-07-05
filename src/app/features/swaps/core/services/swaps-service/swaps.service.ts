@@ -6,7 +6,7 @@ import { filter, first, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import {
   BridgeToken,
   BridgeTokenPair

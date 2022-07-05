@@ -14,9 +14,9 @@ import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-intercep
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
-import { configLoader, httpLoaderFactory } from './app.loaders';
-import { ContentLoaderService } from './services/content-loader/content-loader.service';
+import { httpLoaderFactory, sdkLoader } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
+import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -24,8 +24,8 @@ import { ErrorsModule } from './errors/errors.module';
     CookieService,
     {
       provide: APP_INITIALIZER,
-      useFactory: configLoader,
-      deps: [ContentLoaderService],
+      useFactory: sdkLoader,
+      deps: [SdkLoaderService],
       multi: true
     },
     {

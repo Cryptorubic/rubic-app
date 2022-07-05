@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, Subscription, throwError, zip } from 'rxjs';
-import {
-  BLOCKCHAIN_NAME,
-  BLOCKCHAIN_NAMES,
-  BlockchainName
-} from '@shared/models/blockchain/blockchain-name';
 import { EthereumBinanceBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
@@ -12,7 +7,6 @@ import { catchError, first, map, mergeMap, switchMap, tap } from 'rxjs/operators
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { AuthService } from '@core/services/auth/auth.service';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { UndefinedError } from '@core/errors/models/undefined.error';
@@ -30,6 +24,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 @Injectable()
 export class BridgeService extends TradeService {
@@ -51,7 +47,6 @@ export class BridgeService extends TradeService {
     private readonly binancePolygonBridgeProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
@@ -86,9 +81,10 @@ export class BridgeService extends TradeService {
 
   private setTokens(): void {
     const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
+    const blockchains = Object.values(BLOCKCHAIN_NAME);
 
-    BLOCKCHAIN_NAMES.forEach(fromBlockchain => {
-      BLOCKCHAIN_NAMES.forEach(toBlockchain => {
+    blockchains.forEach(fromBlockchain => {
+      blockchains.forEach(toBlockchain => {
         const provider: BlockchainsBridgeProvider =
           this.blockchainsProviders[fromBlockchain]?.[toBlockchain];
 
@@ -267,7 +263,7 @@ export class BridgeService extends TradeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(fromBlockchain);
     return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
   }
 

@@ -1,17 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Subscription } from 'rxjs';
 import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { CELER_CONTRACT_ABI } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
-import { CELER_CONTRACT } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
-import {
-  BlockchainName,
-  EthLikeBlockchainName
-} from '../../../shared/models/blockchain/blockchain-name';
 import { CelerSwapStatus } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
 import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
 import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
@@ -21,7 +13,6 @@ import { decodeLogs } from '../../../shared/utils/decode-logs';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
-import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,6 +21,11 @@ import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { TransactionStuckError } from 'symbiosis-js-sdk';
+import { BlockchainName, Web3Public } from 'rubic-sdk';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
+import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Injectable()
 export class RecentTradesService {
@@ -46,22 +42,21 @@ export class RecentTradesService {
   }
 
   constructor(
-    private readonly web3Public: PublicBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly scannerLinkPipe: ScannerLinkPipe,
     private readonly headerStoreService: HeaderStore,
-    private readonly symbiosisService: SymbiosisService,
     private readonly errorService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly sdk: RubicSdkService
   ) {}
 
   public async getSymbiosisTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const isAverageTxTimeSpent = Date.now() - trade.timestamp > 120000;
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
-    const srcWeb3 = this.web3Public[trade.fromBlockchain] as EthLikeWeb3Public;
+    const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -105,7 +100,7 @@ export class RecentTradesService {
         uiTrade.statusTo = RecentTradeStatus.PENDING;
       } else {
         try {
-          const waitForCompleteResponse = this.symbiosisService.waitForComplete(
+          const waitForCompleteResponse = this.sdk.symbiosis.waitForComplete(
             trade.fromBlockchain,
             trade.toBlockchain,
             trade.toToken as TokenAmount,
@@ -132,8 +127,8 @@ export class RecentTradesService {
 
   public async getRubicTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
-    const srcWeb3 = this.web3Public[trade.fromBlockchain] as EthLikeWeb3Public;
-    const dstWeb3 = this.web3Public[trade.toBlockchain] as EthLikeWeb3Public;
+    const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
+    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -205,8 +200,8 @@ export class RecentTradesService {
 
   public async getCelerTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
-    const srcWeb3 = this.web3Public[trade.fromBlockchain] as EthLikeWeb3Public;
-    const dstWeb3 = this.web3Public[trade.toBlockchain] as EthLikeWeb3Public;
+    const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
+    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -247,11 +242,11 @@ export class RecentTradesService {
 
     if (statusFrom === RecentTradeStatus.SUCCESS) {
       try {
-        const [requestLog] = decodeLogs(CELER_CONTRACT_ABI, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
+        const [requestLog] = decodeLogs(celerContractAbi, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
         const dstTransactionStatus = Number(
           await dstWeb3.callContractMethod(
-            CELER_CONTRACT[trade.toBlockchain as EthLikeBlockchainName],
-            CELER_CONTRACT_ABI,
+            celerContract[trade.toBlockchain],
+            celerContractAbi,
             'txStatusById',
             {
               methodArguments: [requestLog.params.find(param => param.name === 'id').value]
@@ -279,10 +274,7 @@ export class RecentTradesService {
     return uiTrade;
   }
 
-  private async getTxReceipt(
-    srcTxHash: string,
-    web3: EthLikeWeb3Public
-  ): Promise<TransactionReceipt> {
+  private async getTxReceipt(srcTxHash: string, web3: Web3Public): Promise<TransactionReceipt> {
     let receipt: TransactionReceipt;
 
     try {
@@ -313,7 +305,7 @@ export class RecentTradesService {
     };
 
     try {
-      transactionReceipt = await this.symbiosisService.revertTrade(srcTxHash, onTransactionHash);
+      transactionReceipt = await this.sdk.symbiosis.revertTrade(srcTxHash, onTransactionHash);
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {

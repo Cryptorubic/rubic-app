@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { StakingService } from '../../services/staking.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -36,7 +36,7 @@ export class StakeComponent {
 
   public readonly needApprove$ = this.amount.valueChanges.pipe(
     switchMap(amount => this.stakingService.needApprove(new BigNumber(amount.split(',').join('')))),
-    // tap(needApprove => (this.approvedTokens = needApprove)),
+    tap(needApprove => (this.approvedTokens = needApprove)),
     takeUntil(this.destroy$)
   );
 

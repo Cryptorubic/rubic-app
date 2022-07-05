@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { StakingService } from '@features/staking/services/staking.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { Web3Pure } from 'rubic-sdk';
 
 /**
  * Withdraw form component.

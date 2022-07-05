@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { TradeType } from 'rubic-sdk';
 
 export interface CelerRubicTradeInfo {
   feePercent: number;
@@ -12,8 +12,8 @@ export interface CelerRubicTradeInfo {
   priceImpactFrom: number;
   priceImpactTo: number;
 
-  fromProvider: INSTANT_TRADE_PROVIDER;
-  toProvider: INSTANT_TRADE_PROVIDER;
+  fromProvider: TradeType;
+  toProvider: TradeType;
 
   fromPath: string[] | null; // null if `tokenIn` = `transitToken`
   toPath: string[] | null; // null if `tokenOut` = `transitToken`
@@ -25,8 +25,8 @@ export interface SymbiosisTradeInfo {
   estimatedGas: BigNumber; // in Eth units
 
   feePercent: number;
-  feeAmount: BigNumber;
   feeTokenSymbol: string;
+  feeAmount: BigNumber;
 
   networkFee: BigNumber;
   networkFeeSymbol: string;

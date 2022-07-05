@@ -1,4 +1,4 @@
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
+import { InstantTrade } from 'rubic-sdk';
 
 export interface InstantTradeInfo {
   trade: InstantTrade;

@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Cacheable } from 'ts-cacheable';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -31,10 +30,7 @@ export class CoingeckoApiService {
 
   private readonly tokenBlockchainId: Record<SupportedBlockchain, string>;
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly blockchainAdapterService: PublicBlockchainAdapterService
-  ) {
+  constructor(private readonly httpClient: HttpClient) {
     this.nativeCoinsCoingeckoIds = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binancecoin',
@@ -136,8 +132,7 @@ export class CoingeckoApiService {
     address: string;
     blockchain: BlockchainName;
   }): Observable<number | undefined> {
-    const blockchainAdapter = this.blockchainAdapterService[token.blockchain];
-    if (blockchainAdapter.isNativeAddress(token.address)) {
+    if (Web3Pure.isNativeAddress(token.address)) {
       return this.getNativeCoinPrice(token.blockchain);
     }
     return this.getCommonTokenPrice(token.blockchain, token.address);

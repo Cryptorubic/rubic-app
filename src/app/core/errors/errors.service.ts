@@ -11,6 +11,7 @@ import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
 import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicWarning } from '@core/errors/models/rubic-warning';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 interface Question {
   title: string;
@@ -54,10 +55,12 @@ export class ErrorsService {
 
   /**
    * Catch error, show console message and notification if it needed.
-   * @param error Caught error.
+   * @param err Caught error.
    */
-  public catch(error: RubicError<ERROR_TYPE>): void {
-    console.debug(error);
+  public catch(err: RubicError<ERROR_TYPE> | Error): void {
+    console.debug(err);
+
+    const error = RubicSdkErrorParser.parseError(err);
 
     if (
       error.displayError === false ||
