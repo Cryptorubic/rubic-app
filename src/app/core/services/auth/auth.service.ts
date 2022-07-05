@@ -163,11 +163,15 @@ export class AuthService {
     const isMetamaskBrowser = this.browserService.currentBrowser === BROWSER.METAMASK;
     try {
       this.isAuthProcess = true;
-      const permissions = !isMetamaskBrowser
-        ? (await this.walletConnectorService.requestPermissions()).find(
-            permission => permission.parentCapability === 'eth_accounts'
-          )
-        : true;
+      let permissions: boolean;
+      if (!isMetamaskBrowser) {
+        const walletPermissions = await this.walletConnectorService.requestPermissions();
+        permissions = walletPermissions.some(
+          permission => permission.parentCapability === 'eth_accounts'
+        );
+      } else {
+        permissions = true;
+      }
 
       if (permissions) {
         await this.walletConnectorService.activate();
