@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
-import BigNumber from 'bignumber.js';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { TradeType } from 'rubic-sdk';
 
 @Component({
   selector: 'app-smart-routing',
@@ -12,13 +11,10 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 })
 export class SmartRoutingComponent {
   @Input()
-  public fromProvider: INSTANT_TRADE_PROVIDER;
+  public fromProvider: TradeType;
 
   @Input()
-  public toProvider: INSTANT_TRADE_PROVIDER;
-
-  @Input()
-  public savings: BigNumber;
+  public toProvider: TradeType;
 
   @Input()
   public fromHasTrade: boolean;

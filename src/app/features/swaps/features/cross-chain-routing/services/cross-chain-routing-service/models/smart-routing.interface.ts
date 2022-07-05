@@ -1,10 +1,8 @@
-import BigNumber from 'bignumber.js';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { TradeType } from 'rubic-sdk';
 
 export interface SmartRouting {
-  fromProvider: INSTANT_TRADE_PROVIDER;
-  toProvider: INSTANT_TRADE_PROVIDER;
+  fromProvider: TradeType;
+  toProvider: TradeType;
   fromHasTrade: boolean;
   toHasTrade: boolean;
-  savings: BigNumber;
 }

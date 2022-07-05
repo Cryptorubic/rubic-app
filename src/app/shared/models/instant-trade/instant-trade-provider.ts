@@ -1,6 +1,6 @@
 export enum INSTANT_TRADE_PROVIDER {
   ONEINCH = 'oneinch',
-  UNISWAP_V2 = 'uniswap',
+  UNISWAP_V2 = 'UNISWAP_V2',
   UNISWAP_V3 = 'uniswap3',
   PANCAKESWAP = 'pancakeswap',
   QUICKSWAP = 'quickswap',

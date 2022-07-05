@@ -1,17 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { Provider, TRADES_PROVIDERS } from '@app/shared/constants/common/trades-providers';
-import {
-  BlockchainName,
-  EthLikeBlockchainName
-} from '@app/shared/models/blockchain/blockchain-name';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
-import {
-  CrossChainProvider,
-  CROSS_CHAIN_PROVIDER
-} from '../../services/cross-chain-routing-service/models/cross-chain-trade';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import {
   catchError,
@@ -33,16 +25,11 @@ import {
   of,
   takeUntil
 } from 'rxjs';
-import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { EthLikeWeb3Public } from '@app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TransactionReceipt } from 'web3-eth';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
 import { CelerSwapStatus } from '../../services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
-import { CELER_CONTRACT_ABI } from '../../services/cross-chain-routing-service/celer/constants/CELER_CONTRACT_ABI';
-import { CELER_CONTRACT } from '../../services/cross-chain-routing-service/celer/constants/CELER_CONTRACT';
 import { decodeLogs } from '@app/shared/utils/decode-logs';
-import { SymbiosisService } from '@app/core/services/symbiosis/symbiosis.service';
 import { TransactionStuckError } from 'symbiosis-js-sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
@@ -52,9 +39,19 @@ import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/p
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTradeStatus } from '@app/core/recent-trades/models/recent-trade-status.enum';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  Web3Public
+} from 'rubic-sdk';
+import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
+import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 enum MODAL_SWAP_STATUS {
   SUCCESS = 'SUCCESS',
@@ -85,15 +82,15 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public toBlockchain: Blockchain;
 
-  public crossChainProvider: CrossChainProvider;
+  public crossChainProvider: CrossChainTradeType;
 
   private srcTxHash: string;
 
   private srcTxReceipt: TransactionReceipt;
 
-  private srcWeb3Public: EthLikeWeb3Public;
+  private srcWeb3Public: Web3Public;
 
-  private dstWeb3Public: EthLikeWeb3Public;
+  private dstWeb3Public: Web3Public;
 
   private readonly _srcTxStatus$ = new BehaviorSubject<MODAL_SWAP_STATUS>(
     MODAL_SWAP_STATUS.PENDING
@@ -122,8 +119,6 @@ export class SwapSchemeModalComponent implements OnInit {
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   constructor(
-    private readonly web3Public: PublicBlockchainAdapterService,
-    private readonly symbiosisService: SymbiosisService,
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
     private readonly notificationService: NotificationsService,
@@ -133,7 +128,8 @@ export class SwapSchemeModalComponent implements OnInit {
     private readonly commonModalService: CommonModalService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
+    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
+    private readonly sdk: RubicSdkService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -198,18 +194,18 @@ export class SwapSchemeModalComponent implements OnInit {
         tap(() => this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING)),
         switchMap(() => {
           // TODO move switchMap callback to fabric
-          if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS) {
+          if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
             return this.getSymbiosisDstTxStatus();
           }
 
           return interval(10000).pipe(
             startWith(-1),
             switchMap(() => {
-              if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.RUBIC) {
+              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.RUBIC) {
                 return this.getRubicDstTxStatus();
               }
 
-              if (this.crossChainProvider === CROSS_CHAIN_PROVIDER.CELER) {
+              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.CELER) {
                 return this.getCelerDstTxStatus();
               }
             })
@@ -227,11 +223,11 @@ export class SwapSchemeModalComponent implements OnInit {
   private async getCelerDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
     try {
       const srcTransactionReceipt = await this.srcWeb3Public.getTransactionReceipt(this.srcTxHash);
-      const [requestLog] = decodeLogs(CELER_CONTRACT_ABI, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
+      const [requestLog] = decodeLogs(celerContractAbi, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
       const dstTransactionStatus = Number(
         await this.dstWeb3Public.callContractMethod(
-          CELER_CONTRACT[this.toBlockchain.key as EthLikeBlockchainName],
-          CELER_CONTRACT_ABI,
+          celerContract[this.toBlockchain.key],
+          celerContractAbi,
           'txStatusById',
           {
             methodArguments: [requestLog.params.find(param => param.name === 'id').value]
@@ -286,7 +282,7 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private getSymbiosisDstTxStatus(): Observable<MODAL_SWAP_STATUS> {
     return from(
-      this.symbiosisService.waitForComplete(
+      this.sdk.symbiosis.waitForComplete(
         this.fromBlockchain.key,
         this.toBlockchain.key,
         this.toToken,
@@ -347,7 +343,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this._revertBtnLoading$.next(true);
 
     try {
-      await this.symbiosisService.revertTrade(this.srcTxHash, onTransactionHash);
+      await this.sdk.symbiosis.revertTrade(this.srcTxHash, onTransactionHash);
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -400,7 +396,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this.dstWeb3Public = this.getWeb3Public(data.toBlockchain);
   }
 
-  private getWeb3Public(blockchain: BlockchainName): EthLikeWeb3Public {
-    return this.web3Public[blockchain] as EthLikeWeb3Public;
+  private getWeb3Public(blockchain: BlockchainName): Web3Public {
+    return Injector.web3PublicService.getWeb3Public(blockchain);
   }
 }

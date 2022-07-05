@@ -10,35 +10,41 @@ import {
 } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BlockchainName,
+  InstantTrade,
+  InstantTradeError,
+  SDK,
+  TRADE_TYPE,
+  TradeType,
+  Web3Pure
+} from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  map,
   startWith,
   switchMap,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
@@ -47,11 +53,12 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
+import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
+import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 
 interface SettledProviderTrade {
-  providerName: INSTANT_TRADE_PROVIDER;
+  providerName: TradeType;
 
   status: 'fulfilled' | 'rejected';
   value?: InstantTrade | null;
@@ -68,6 +75,8 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
+  @Input() sdk: SDK;
+
   // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
@@ -104,7 +113,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   private _selectedProvider: InstantTradeProviderData;
 
-  public ethWethTrade: InstantTrade | null;
+  public ethWethTrade: WrapTrade | null;
 
   public needApprove: boolean;
 
@@ -166,16 +175,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     if (!this.iframeService.isIframeWithFee(this.currentBlockchain, this.selectedProvider.name)) {
-      return this.selectedProvider.trade.to.amount;
+      return this.selectedProvider.trade.to.tokenAmount;
     }
 
-    return this.selectedProvider.trade.to.amount.multipliedBy(1 - IT_PROXY_FEE);
+    return this.selectedProvider.trade.to.tokenAmount.multipliedBy(1 - IT_PROXY_FEE);
   }
 
   public get isFromNative(): boolean {
-    return this.publicBlockchainAdapterService[this.currentBlockchain].isNativeAddress(
-      this.fromToken.address
-    );
+    return Web3Pure.isNativeAddress(this.fromToken.address);
   }
 
   constructor(
@@ -189,7 +196,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly iframeService: IframeService,
     private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isIframe = this.iframeService.isIframe;
@@ -326,31 +332,25 @@ export class InstantTradeBottomFormComponent implements OnInit {
           this.setProvidersStateCalculating();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const providersNames = this.providersData.map(provider => provider.name);
-          const providersApproveData$ = this.authService.user?.address
-            ? this.instantTradeService.getAllowance(providersNames)
-            : of(new Array(this.providersData.length).fill(null));
-          const providersTrades$ = this.instantTradeService.calculateTrades(providersNames);
+          const instantTrades$ = this.instantTradeService.calculateTrades(
+            this.fromToken,
+            this.fromAmount.toFixed(),
+            this.toToken
+          );
+
           const tokenBalance$ = this.tokensService.getAndUpdateTokenBalance(this.fromToken);
 
-          return forkJoin([providersApproveData$, providersTrades$, tokenBalance$]).pipe(
-            map(([providersApproveData, providersTrades]) => {
+          return forkJoin([instantTrades$, tokenBalance$]).pipe(
+            switchMap(([instantTrades]) => {
               this.hiddenProvidersTrades = null;
-
-              const settledProvidersTrades = providersTrades.map((trade, index) => ({
-                providerName: providersNames[index],
-                ...trade,
-                needApprove: providersApproveData[index]
-              }));
-              this.setupProviders(settledProvidersTrades);
-
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+              return this.setupProviders(instantTrades);
             })
           );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         this.cdr.markForCheck();
       });
   }
@@ -388,30 +388,47 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   /**
    * Sets to providers calculated trade data, approve data and trade status.
-   * @param settledProvidersTrades Calculated providers' trade data.
+   * @param trades Calculated providers' trade data.
    * If not provided, current approve data is chosen.
    */
-  private setupProviders(settledProvidersTrades: SettledProviderTrade[]): void {
-    this.providersData = this.providersData.map(provider => {
-      const settledProviderTrade = settledProvidersTrades.find(
-        trade => trade.providerName === provider.name
-      );
-      const providerTrade =
-        settledProviderTrade?.status === 'fulfilled' ? settledProviderTrade?.value : null;
+  private async setupProviders(trades: Array<InstantTrade | InstantTradeError>): Promise<void> {
+    const providersPromises = this.providersData.map(async provider => {
+      const settledTrade = trades.find(trade => trade?.type === provider.name);
+
+      const defaultProvider: InstantTradeProviderData = {
+        name: provider.name,
+        label: provider.label,
+        isSelected: false,
+        needApprove: false,
+        trade: null,
+        tradeStatus: INSTANT_TRADE_STATUS.ERROR,
+        error: new RubicError('Unknown error')
+      };
+      if (!settledTrade) {
+        return defaultProvider;
+      }
+      if ('error' in settledTrade) {
+        return {
+          ...defaultProvider,
+          error: settledTrade.error as RubicError<ERROR_TYPE.TEXT>
+        };
+      }
+
+      const needApprove = this.authService.user?.address
+        ? await this.instantTradeService.needApprove(settledTrade)
+        : false;
 
       return {
         ...provider,
         isSelected: false,
-        trade: providerTrade,
-        needApprove: settledProviderTrade.needApprove ?? provider.needApprove,
-        tradeStatus:
-          settledProviderTrade?.status === 'fulfilled'
-            ? INSTANT_TRADE_STATUS.APPROVAL
-            : INSTANT_TRADE_STATUS.ERROR,
-        error: settledProviderTrade?.status === 'rejected' ? settledProviderTrade?.reason : null
+        trade: settledTrade,
+        needApprove,
+        tradeStatus: INSTANT_TRADE_STATUS.APPROVAL,
+        error: null
       };
     });
 
+    this.providersData = await Promise.all(providersPromises);
     this.chooseBestProvider();
   }
 
@@ -432,8 +449,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.withApproveButton = this.needApprove;
 
       this.swapFormService.output.patchValue({
-        toAmount: this.selectedProvider.trade.to.amount
+        toAmount: this.selectedProvider.trade.to.tokenAmount
       });
+      this.cdr.detectChanges();
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.instantTradeInfoChange.emit(null);
@@ -459,13 +477,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!trade) {
       return new BigNumber(-Infinity);
     }
-
-    const { gasFeeInUsd, to } = trade;
-    if (!to.token.price) {
-      return to.amount;
+    const { gasFeeInfo, to } = trade;
+    if (!to.price) {
+      return to.tokenAmount;
     }
-    const amountInUsd = to.amount?.multipliedBy(to.token.price);
-    return amountInUsd.minus(gasFeeInUsd || 0);
+    const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
+    return amountInUsd.minus(gasFeeInfo?.gasFeeInUsd || 0);
   }
 
   /**
@@ -506,21 +523,20 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const providersNames = this.providersData.map(provider => provider.name);
-          const providersTrades$ = from(this.instantTradeService.calculateTrades(providersNames));
+          const instantTrades$ = this.instantTradeService.calculateTrades(
+            this.fromToken,
+            this.fromAmount.toFixed(),
+            this.toToken
+          );
 
-          return providersTrades$.pipe(
-            map(providersTrades => {
-              this.hiddenProvidersTrades = providersTrades.map((trade, index) => ({
-                providerName: providersNames[index],
-                ...trade
-              }));
+          return from(instantTrades$).pipe(
+            switchMap(instantTrades => this.getHiddenTradeAndApproveData(instantTrades)),
+            tap(hiddenTrades => {
+              this.hiddenProvidersTrades = hiddenTrades;
               this.checkSelectedProviderHiddenData();
-
-              this.cdr.markForCheck();
-
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-            })
+            }),
+            watch(this.cdr)
           );
         }),
         takeUntil(this.destroy$)
@@ -556,7 +572,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.withApproveButton = this.needApprove;
     }
     this.swapFormService.output.patchValue({
-      toAmount: this.selectedProvider.trade.to.amount
+      toAmount: this.selectedProvider.trade.to.tokenAmount
     });
 
     this.checkSelectedProviderHiddenData();
@@ -568,9 +584,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
         trade => trade.providerName === this.selectedProvider.name
       );
       const providerAmount =
-        providerData.status === 'fulfilled' ? providerData.value.to.amount : null;
+        providerData.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
 
-      if (!this.selectedProvider.trade.to.amount.eq(providerAmount)) {
+      if (!this.selectedProvider.trade.to.tokenAmount.eq(providerAmount)) {
         this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
       }
     }
@@ -580,7 +596,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Updates trade data with stored hidden data, after user clicked on update button.
    */
   public onSetHiddenData(): void {
-    this.setupProviders(this.hiddenProvidersTrades);
+    this.setupProviders(this.hiddenProvidersTrades?.map(el => el.value));
   }
 
   /**
@@ -607,7 +623,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
-    providerName: INSTANT_TRADE_PROVIDER,
+    providerName: TradeType,
     tradeStatus: TRADE_STATUS,
     providerState?: INSTANT_TRADE_STATUS,
     needApprove?: boolean
@@ -641,7 +657,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     const provider = this.selectedProvider;
     try {
-      await this.instantTradeService.approve(this.selectedProvider.name, provider.trade);
+      await this.selectedProvider.trade.approve();
 
       this.setProviderState(
         provider.name,
@@ -651,8 +667,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
-
-      await this.tokensService.updateNativeTokenBalance(provider.trade.blockchain);
+      await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
     } catch (err) {
       this.errorService.catch(err);
 
@@ -669,8 +684,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
-    let providerName: INSTANT_TRADE_PROVIDER;
-    let providerTrade: InstantTrade;
+    let providerName: TradeType;
+    let providerTrade: InstantTrade | WrapTrade;
     if (!this.ethWethTrade) {
       if (!this.selectedProvider) {
         this.errorService.catch(new NoSelectedProviderError());
@@ -679,7 +694,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       providerName = this.selectedProvider.name;
       providerTrade = this.selectedProvider.trade;
     } else {
-      providerName = INSTANT_TRADE_PROVIDER.WRAPPED;
+      providerName = TRADE_TYPE.WRAPPED;
       providerTrade = this.ethWethTrade;
     }
 
@@ -703,9 +718,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.conditionalCalculate('hidden');
 
+      const { fromAddress, blockchain } = TradeParser.getItSwapParams(providerTrade);
+
       await this.tokensService.updateTokenBalanceAfterSwap({
-        address: providerTrade.from.token.address,
-        blockchain: providerTrade.blockchain
+        address: fromAddress,
+        blockchain
       });
     } catch (err) {
       this.errorService.catch(err);
@@ -719,5 +736,29 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }
+  }
+
+  private async getHiddenTradeAndApproveData(
+    instantTrades: Array<InstantTrade | InstantTradeError>
+  ): Promise<SettledProviderTrade[]> {
+    const approveData: Array<boolean | null> = await Promise.all(
+      instantTrades.map(trade => ('error' in trade ? null : trade.needApprove()))
+    );
+    return instantTrades.map((trade, index) => {
+      if ('error' in trade) {
+        return {
+          providerName: trade.type,
+          value: null,
+          status: 'rejected',
+          reason: new RubicError(trade.error.message)
+        };
+      }
+      return {
+        providerName: trade.type,
+        value: trade,
+        status: 'fulfilled',
+        needApprove: approveData?.[index]
+      };
+    });
   }
 }

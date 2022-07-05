@@ -22,17 +22,17 @@ jobs:
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
-      - name: Set up npm
-        run: npm install
+      - name: Set up packages
+        run: yarn
 
       - name: Run lint
-        run: npm run lint
+        run: yarn run lint
 
       - name: Run lint css
-        run: npm run lint-css
+        run: yarn run lint-css
 
       - name: Run compile
-        run: npm run compile
+        run: yarn run compile
 
       - name: Run build
-        run: npm run build
+        run: yarn run build

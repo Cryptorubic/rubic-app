@@ -50,6 +50,12 @@
   }
 }
 
+@mixin hide-unused-ui {
+  :host-context(body.hide-unused-ui) & {
+    @content;
+  }
+}
+
 @mixin light-iframe {
   :host-context(html.iframe:not(.dark)) & {
     @content;

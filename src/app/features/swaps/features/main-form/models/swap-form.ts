@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapForm, ISwapFormInput, ISwapFormOutput } from '@shared/models/swaps/swap-form';

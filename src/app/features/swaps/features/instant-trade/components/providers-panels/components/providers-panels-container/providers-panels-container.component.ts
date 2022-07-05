@@ -15,6 +15,6 @@ export class ProvidersPanelsContainerComponent {
   public showAllProviders = false;
 
   public trackByFn(_index: number, item: InstantTradeProviderData): string {
-    return item.name + item.tradeStatus + item.isSelected + item.trade?.to.amount;
+    return item.name + item.tradeStatus + item.isSelected + item.trade?.to.tokenAmount;
   }
 }

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StakingService } from '@features/staking/services/staking.service';
 import { STAKE_LIMIT_MAX } from '@app/features/staking/constants/STAKING_LIMITS';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { ThemeService } from '@core/services/theme/theme.service';
 
 /**

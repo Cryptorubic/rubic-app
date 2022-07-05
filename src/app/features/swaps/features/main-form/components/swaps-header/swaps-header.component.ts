@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainItem } from '@features/swaps/features/main-form/models/blockchain-item';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { BLOCKCHAINS_LIST } from '@features/swaps/features/main-form/constants/blockchains-list';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';

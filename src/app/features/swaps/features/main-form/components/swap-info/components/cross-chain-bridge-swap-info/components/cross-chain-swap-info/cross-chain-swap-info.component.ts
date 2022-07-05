@@ -14,13 +14,11 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
-import { CROSS_CHAIN_PROVIDER } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { CROSS_CHAIN_TRADE_TYPE, TradeType, Web3Pure } from 'rubic-sdk';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -58,9 +56,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
-  private fromProvider: INSTANT_TRADE_PROVIDER;
+  private fromProvider: TradeType;
 
-  private toProvider: INSTANT_TRADE_PROVIDER;
+  private toProvider: TradeType;
 
   public fromPath: string[] | null;
 
@@ -108,7 +106,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -148,15 +145,14 @@ export class CrossChainSwapInfoComponent implements OnInit {
             this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
-              const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
               this.nativeCoinSymbol = tokens.find(
                 token =>
-                  token.blockchain === fromBlockchain &&
-                  blockchainAdapter?.isNativeAddress(token.address)
+                  token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
               ).symbol;
 
               if (
-                this.crossChainRoutingService.crossChainProvider === CROSS_CHAIN_PROVIDER.SYMBIOSIS
+                this.crossChainRoutingService.crossChainTrade.trade.type ===
+                CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
               ) {
                 this.isSymbiosis = true;
 
@@ -175,7 +171,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   nativeCoinPrice
                 );
               }
-
               this.swapInfoService.emitInfoCalculated();
             })
           );
@@ -222,7 +217,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.trade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;

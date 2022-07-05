@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const STAKING_TOKENS = [
   {

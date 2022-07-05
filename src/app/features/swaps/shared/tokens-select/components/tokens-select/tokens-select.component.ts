@@ -20,9 +20,7 @@ import {
   Subscription
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { BlockchainName, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -46,10 +44,11 @@ import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { TokensListComponent } from '@features/swaps/shared/tokens-select/components/tokens-list/tokens-list.component';
 import { TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 import { compareTokens } from '@shared/utils/utils';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/swaps/shared/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
+import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -196,9 +195,9 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
+    private readonly sdk: RubicSdkService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
@@ -481,44 +480,44 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Tries to parse custom token by search query requesting Web3.
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
-    if (this.searchQuery) {
-      const publicBlockchain = this.publicBlockchainAdapterService[this.blockchain];
-      if (!publicBlockchain.isAddressCorrect(this.searchQuery)) {
-        return null;
-      }
+    try {
+      if (this.searchQuery) {
+        if (!Web3Pure.isAddressCorrect(this.searchQuery)) {
+          return null;
+        }
 
-      const blockchainToken: BlockchainToken = await publicBlockchain
-        .getTokenInfo(this.searchQuery)
-        .catch(() => null);
+        const token = await this.sdk.tokens.createToken({
+          blockchain: this.blockchain,
+          address: this.searchQuery
+        });
 
-      if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
-        const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
-        const oppositeToken = this.form.value[oppositeTokenType];
+        if (token?.name && token?.symbol && token?.decimals != null) {
+          const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
+          const oppositeToken = this.form.value[oppositeTokenType];
 
-        const image = await this.fetchTokenImage(blockchainToken);
+          const image = await this.fetchTokenImage(token);
 
-        return {
-          ...blockchainToken,
-          image,
-          rank: 0,
-          amount: new BigNumber(NaN),
-          price: 0,
-          usedInIframe: true,
-          available:
-            !oppositeToken ||
-            this.blockchain === oppositeToken.blockchain ||
-            TokensSelectComponent.allowedInCrossChain(
-              blockchainToken.blockchain,
-              oppositeToken.blockchain
+          return {
+            ...token,
+            image,
+            rank: 0,
+            amount: new BigNumber(NaN),
+            price: 0,
+            usedInIframe: true,
+            available:
+              !oppositeToken ||
+              this.blockchain === oppositeToken.blockchain ||
+              TokensSelectComponent.allowedInCrossChain(token.blockchain, oppositeToken.blockchain),
+            favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+              compareTokens(favoriteToken, token)
             ),
-          favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
-            compareTokens(favoriteToken, blockchainToken)
-          ),
-          hasDirectPair: true
-        };
+            hasDirectPair: true
+          };
+        }
       }
+    } catch {
+      return null;
     }
-    return null;
   }
 
   /**
@@ -527,19 +526,23 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * @return Promise<string> Token image url.
    */
   private fetchTokenImage(token: BlockchainToken): Promise<string> {
-    const blockchains = {
+    const blockchains: Record<BlockchainName, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',
       [BLOCKCHAIN_NAME.AURORA]: 'aurora',
-      [BLOCKCHAIN_NAME.TELOS]: 'telos'
+      [BLOCKCHAIN_NAME.TELOS]: 'telos',
+      [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
+      [BLOCKCHAIN_NAME.SOLANA]: 'solana',
+      [BLOCKCHAIN_NAME.NEAR]: 'near'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]
-    }/assets/${EthLikeWeb3Public.toChecksumAddress(token.address)}/logo.png`;
+    }/assets/${Web3Pure.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient
       .get(image)

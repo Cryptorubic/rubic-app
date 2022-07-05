@@ -28,6 +28,8 @@ export class SettingsCcrComponent implements OnInit {
 
   public promoCode: PromoCode | null = null;
 
+  public readonly minimumSlippageTolerance = 3;
+
   constructor(private readonly settingsService: SettingsService) {
     this.defaultSlippageTolerance = this.settingsService.defaultCcrSettings.slippageTolerance;
   }
@@ -75,7 +77,10 @@ export class SettingsCcrComponent implements OnInit {
   }
 
   public onSlippageToleranceChange(slippageTolerance: number): void {
-    this.slippageTolerance = slippageTolerance;
+    this.slippageTolerance =
+      slippageTolerance < this.minimumSlippageTolerance
+        ? this.minimumSlippageTolerance
+        : slippageTolerance;
     this.crossChainRoutingForm.patchValue({
       autoSlippageTolerance: false,
       slippageTolerance: this.slippageTolerance

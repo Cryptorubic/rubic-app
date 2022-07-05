@@ -7,10 +7,9 @@ import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance
 import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
+import { BlockchainName, TradeType } from 'rubic-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -124,10 +123,7 @@ export class IframeService implements OnDestroy {
     );
   }
 
-  public isIframeWithFee(
-    blockchain: BlockchainName,
-    providerType: INSTANT_TRADE_PROVIDER
-  ): boolean {
+  public isIframeWithFee(blockchain: BlockchainName, providerType: TradeType): boolean {
     if (!this.isIframe || !this.iframeParameters.fee) {
       return false;
     }

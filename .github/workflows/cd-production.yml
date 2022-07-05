@@ -22,16 +22,23 @@ jobs:
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
-      - name: Set up npm
-        run: npm install
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
+      - name: Set up packages
+        run: yarn
 
       - name: Set up sshpass and npm
         run: |
           sudo apt-get install sshpass
-          npm install
+          yarn
 
       - name: Run build prod
-        run: npm run build
+        run: yarn run build
 
       - name: Deploy on prod server
         run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend

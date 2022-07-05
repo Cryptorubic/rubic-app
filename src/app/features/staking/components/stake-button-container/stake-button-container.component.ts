@@ -29,7 +29,7 @@ import {
 } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 type Limits = { max: number; min: number; maxWhitelist: number; minWhitelist: number };

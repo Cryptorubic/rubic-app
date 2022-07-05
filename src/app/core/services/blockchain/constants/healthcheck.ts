@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import ERC20_ABI from '@core/services/blockchain/constants/erc-20-abi';
 
 export const HEALTHCHECK = {

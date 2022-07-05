@@ -64,6 +64,7 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
+import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +98,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
     ChipsComponent,
     ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
+    IframeLogoutButtonComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -178,7 +180,8 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
     CopyContainerComponent,
     FunctionCallPipe,
     StatusBadgeComponent,
-    ChipsComponent
+    ChipsComponent,
+    IframeLogoutButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]

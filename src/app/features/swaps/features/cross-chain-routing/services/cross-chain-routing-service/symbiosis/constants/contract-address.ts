@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const SYMBIOSIS_CONTRACT_ADDRESS = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0x2CF985a54a3fe6c2DfaBe2f58a9Aae8cEbc8dfd3',

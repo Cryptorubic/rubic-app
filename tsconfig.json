@@ -36,5 +36,6 @@
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"]
     }
-  }
+  },
+  "exclude": ["rubic-sdk/*"]
 }

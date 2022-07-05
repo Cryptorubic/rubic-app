@@ -1,9 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 
-const blockchainsScanners = {
+type AddressTypeKeys = keyof typeof ADDRESS_TYPE;
+type AddressTypeFields = { [K in AddressTypeKeys]: string };
+
+interface ScannerObject extends AddressTypeFields {
+  baseUrl: string;
+  nativeCoinUrl: string;
+}
+
+const blockchainsScanners: Record<BlockchainName, ScannerObject> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     baseUrl: 'https://etherscan.io/',
     nativeCoinUrl: 'stat/supply/',

@@ -1,7 +1,7 @@
-import { EthLikeBlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 export default interface ConnectionLink {
-  blockchainName: EthLikeBlockchainName;
+  blockchainName: BlockchainName;
   rpcLink: string;
   additionalRpcLink: string;
 }

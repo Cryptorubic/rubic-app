@@ -9,14 +9,13 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -70,7 +69,6 @@ export class SwapButtonContainerErrorsService {
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
@@ -86,11 +84,10 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnSwapForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => {
+      .subscribe((form: SwapFormInput) => {
         const { fromAmount } = form;
         this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
-        this.checkSolanaErrors();
         this.checkWalletSupportsFromBlockchain();
         this.checkUserBlockchain();
         this.checkUserBalance();
@@ -137,32 +134,12 @@ export class SwapButtonContainerErrorsService {
   }
 
   /**
-   * Checks Solana errors.
-   */
-  private checkSolanaErrors(): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
-
-    this.errorType[ERROR_TYPE.SOLANA_UNAVAILABLE] =
-      (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) &&
-      fromBlockchain !== toBlockchain;
-
-    this.errorType[ERROR_TYPE.SOL_SWAP] =
-      fromToken &&
-      toToken &&
-      fromToken.address === TOKENS.WSOL.mintAddress &&
-      !this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].isNativeAddress(toToken.address);
-  }
-
-  /**
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !blockchainAdapter.isAddressCorrect(this.authService.userAddress);
+      !Web3Pure.isAddressCorrect(this.authService.userAddress);
   }
 
   /**
