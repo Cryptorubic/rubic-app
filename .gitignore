@@ -53,3 +53,6 @@ Thumbs.db
 /documentation/
 /src/test/enviroment.true.test.json
 /src/app/timestamp.ts
+
+# Rubic SDK
+/rubic-sdk/
