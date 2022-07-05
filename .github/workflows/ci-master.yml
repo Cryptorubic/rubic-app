@@ -26,10 +26,10 @@ jobs:
         run: yarn
 
       - name: Run lint
-        run: npm run lint
+        run: yarn run lint
 
       - name: Run lint css
-        run: npm run lint-css
+        run: yarn run lint-css
 
       - name: Run compile
-        run: npm run compile
+        run: yarn run compile
