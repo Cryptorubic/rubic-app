@@ -29,13 +29,13 @@ jobs:
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
 
-      - name: Set up npm
-        run: npm install
+      - name: Set up packages
+        run: yarn
 
       - name: Set up sshpass and npm
         run: |
           sudo apt-get install sshpass
-          npm install
+          yarn
 
       - name: Run build prod
         run: npm run build
