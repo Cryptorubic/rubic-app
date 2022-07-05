@@ -13790,10 +13790,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.2.1.tgz#8511e013e11abe2c735478910eb565034f4dc043"
-  integrity sha512-yhAnlLEx5z4neYiqrxrbIgWfZeNVA3q3MUnUi2IVFFiDZZZC/JdI87v7Z9u1bwH9hdChBEB/qpfWZOu6cWgXQg==
+rubic-sdk@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.2.2.tgz#e39e8ac70321877c3dca36dbc31fe26fbb9c736e"
+  integrity sha512-KhHIghT+dyhW1G3eDqOAPaA6Ue6f7WOeD1g+EWpL7TnolUOf2aVbsWnVKrif1J17ntwkxoj92+FkotnU9ibRyg==
   dependencies:
     assert "^2.0.0"
     axios "^0.26.1"
