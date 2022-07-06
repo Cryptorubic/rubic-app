@@ -103,29 +103,27 @@
   [priceImpact]="priceImpact"
 ></app-price-impact-info-line>
 
-<ng-container *ngIf="isSymbiosis || !usingCelerBridge">
-  <div
-    class="info-line"
-    *ngLet="
-      (minimumReceived
-        | bigNumberFormat
-        | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
-      ' ' +
-      toToken.symbol as minimumReceivedFormatted
-    "
-  >
-    <div class="info-line__title title">
-      <span class="title__text">Current slippage</span>
-      <img
-        src="assets/images/swaps/swaps-info/question-icon.svg"
-        alt="question"
-        [tuiHint]="
-          'Output is estimated. You will receive at least ' +
-          minimumReceivedFormatted +
-          ' or the transaction will revert.'
-        "
-      />
-    </div>
-    <div class="info-line__value">{{ slippage }}%</div>
+<div
+  class="info-line"
+  *ngLet="
+    (minimumReceived
+      | bigNumberFormat
+      | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
+    ' ' +
+    toToken.symbol as minimumReceivedFormatted
+  "
+>
+  <div class="info-line__title title">
+    <span class="title__text">Current slippage</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="
+        'Output is estimated. You will receive at least ' +
+        minimumReceivedFormatted +
+        ' or the transaction will revert.'
+      "
+    />
   </div>
-</ng-container>
+  <div class="info-line__value">{{ slippage }}%</div>
+</div>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, Input } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -10,7 +10,7 @@ import { UiRecentTrade } from './ui-recent-trade.interface';
 import { watch } from '@taiga-ui/cdk';
 
 @Directive()
-export abstract class CommonTrade {
+export abstract class CommonTrade implements OnInit, OnDestroy {
   @Input() trade: RecentTrade;
 
   @Input() mode: 'mobile' | 'table-row';
@@ -33,7 +33,7 @@ export abstract class CommonTrade {
 
   public abstract getTradeData(trade: RecentTrade): Promise<UiRecentTrade>;
 
-  protected ngOnInit(): void {
+  ngOnInit(): void {
     this.initTradeDataPolling();
   }
 
@@ -67,7 +67,7 @@ export abstract class CommonTrade {
     }
   }
 
-  protected ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.saveTradeOnDestroy();
   }
 }
