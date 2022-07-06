@@ -6,6 +6,8 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
+import { USER_AGENT } from '@ng-web-apis/common';
+import { isEdge, isEdgeOlderThan, isFirefox, isIE } from '@taiga-ui/cdk';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -39,10 +41,30 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly mobileDisplayStatus$: Observable<boolean>;
 
+  public get isChromium(): boolean {
+    if (isEdge(this.userAgent)) {
+      if (isEdgeOlderThan(13, this.userAgent)) {
+        return false;
+      }
+
+      return false;
+    }
+
+    if (isIE(this.userAgent)) {
+      return false;
+    }
+
+    return !isFirefox(this.userAgent);
+  }
+
   public get providers(): ReadonlyArray<WalletProvider> {
+    const isChromiumProviders = this.isChromium
+      ? this.allProviders
+      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
+
     const deviceFiltered = this.isMobile
-      ? this.allProviders.filter(provider => !provider.desktopOnly)
-      : this.allProviders.filter(provider => !provider.mobileOnly);
+      ? isChromiumProviders.filter(provider => !provider.desktopOnly)
+      : isChromiumProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
@@ -58,6 +80,8 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
+  private readonly bitkeepAppLink = 'https://bitkeep.com/download?type=0&theme=light';
+
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
     return (
       this.iframeService.isIframe &&
@@ -71,6 +95,7 @@ export class WalletsModalComponent implements OnInit {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: Window,
+    @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly translateService: TranslateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
@@ -103,6 +128,9 @@ export class WalletsModalComponent implements OnInit {
       case WALLET_NAME.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
         return true;
+      case WALLET_NAME.BITKEEP:
+        this.redirectToBitKeepBrowser();
+        return true;
       default:
         return false;
     }
@@ -110,6 +138,10 @@ export class WalletsModalComponent implements OnInit {
 
   private redirectToMetamaskBrowser(): void {
     this.window.location.assign(`${this.metamaskAppLink}${this.window.location.hostname}`);
+  }
+
+  private redirectToBitKeepBrowser(): void {
+    this.window.location.assign(`${this.bitkeepAppLink}`);
   }
 
   private redirectToCoinbaseBrowser(): void {
