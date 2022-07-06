@@ -64,12 +64,17 @@ export class InstantTradeService extends TradeService {
   public async approve(trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
+    const { blockchain } = TradeParser.getItSwapParams(trade);
+    const useRubicGasPrice = shouldCalculateGas[blockchain];
+
     try {
       await trade.approve({
         onTransactionHash: () => {
           subscription$ = this.notificationsService.showApproveInProgress();
         },
-        gasPrice: trade.gasFeeInfo?.gasPrice
+        ...(useRubicGasPrice && {
+          gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        })
       });
 
       this.notificationsService.showApproveSuccessful();

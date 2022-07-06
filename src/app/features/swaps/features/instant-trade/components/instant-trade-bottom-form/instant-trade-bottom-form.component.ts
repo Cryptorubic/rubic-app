@@ -652,12 +652,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
-
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
-
     const provider = this.selectedProvider;
     try {
-      await this.selectedProvider.trade.approve();
+      await this.instantTradeService.approve(provider.trade);
 
       this.setProviderState(
         provider.name,
