@@ -19,9 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { TransactionStuckError } from 'symbiosis-js-sdk';
-import { BlockchainName, Web3Public } from 'rubic-sdk';
+import { BlockchainName, Token, Web3Public } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
 import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
@@ -103,7 +102,7 @@ export class RecentTradesService {
           const waitForCompleteResponse = this.sdk.symbiosis.waitForComplete(
             trade.fromBlockchain,
             trade.toBlockchain,
-            trade.toToken as TokenAmount,
+            trade.toToken as unknown as Token, // @TODO change types
             srcTransactionReceipt
           );
 
@@ -305,7 +304,9 @@ export class RecentTradesService {
     };
 
     try {
-      transactionReceipt = await this.sdk.symbiosis.revertTrade(srcTxHash, onTransactionHash);
+      transactionReceipt = await this.sdk.symbiosis.revertTrade(srcTxHash, {
+        onConfirm: onTransactionHash
+      });
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {

@@ -226,7 +226,7 @@ export class StakingLpService {
         { methodArguments: [this.userAddress] }
       )
     ).pipe(
-      map((balance: BigNumber) =>
+      map((balance: string) =>
         Web3Pure.fromWei(balance, transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].decimals)
       )
     );
@@ -349,7 +349,7 @@ export class StakingLpService {
             this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
             return EMPTY;
           }),
-          map((balance: BigNumber) => Web3Pure.fromWei(balance))
+          map((balance: string) => Web3Pure.fromWei(balance))
         );
       });
 
@@ -515,7 +515,7 @@ export class StakingLpService {
           )
         ]);
       }),
-      map(([lpPoolBalance, tvlMultichain, stakingTokenUsdPrice]: [BigNumber, number, number]) => {
+      map(([lpPoolBalance, tvlMultichain, stakingTokenUsdPrice]: [string, number, number]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
         const tvl = lpPoolBalanceInTokens
           .plus(lpPoolBalanceInTokens.multipliedBy(stakingTokenUsdPrice))

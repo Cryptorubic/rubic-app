@@ -379,7 +379,7 @@ export class StakingService {
     const stakingContractAddress =
       this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
 
-    const privateAdapter: Web3Private = Injector.web3Private();
+    const privateAdapter: Web3Private = Injector.web3Private;
 
     return from(
       privateAdapter.tryExecuteContractMethod(
