@@ -48,6 +48,7 @@ import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-g
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
+import { Token } from '@shared/models/tokens/token';
 
 @Injectable({
   providedIn: 'root'
@@ -128,14 +129,28 @@ export class CrossChainRoutingService extends TradeService {
     }
     this.checkDeviceAndShowNotification();
 
+    const form = this.swapFormService.inputValue;
+
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
+      const fromToken = compareAddresses(
+        this.crossChainTrade?.trade?.from.address,
+        form.fromToken.address
+      )
+        ? form.fromToken
+        : (this.crossChainTrade?.trade?.from as unknown as Token); // @TODO change types
+      const toToken = compareAddresses(
+        this.crossChainTrade?.trade?.to.address,
+        form.toToken.address
+      )
+        ? form.toToken
+        : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
         toBlockchain: this.crossChainTrade?.trade.to?.blockchain,
-        fromToken: this.crossChainTrade?.trade?.from,
-        toToken: this.crossChainTrade?.trade?.to,
+        fromToken,
+        toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
         timestamp: Date.now()
       };
@@ -198,18 +213,18 @@ export class CrossChainRoutingService extends TradeService {
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
 
-      const feeAmount = toTrade.toTokenAmountMin.multipliedBy(feeInPercents).dividedBy(100);
+      const feeAmount = toTrade.fromToken.tokenAmount.multipliedBy(feeInPercents).dividedBy(100);
 
       const priceImpactFrom = PriceImpactService.calculatePriceImpact(
-        fromTrade.fromToken.price,
-        fromTrade.toToken.price,
+        fromTrade.fromToken.price.toNumber(),
+        fromTrade.toToken.price.toNumber(),
         fromTrade.fromToken.tokenAmount,
         fromTrade.toToken.tokenAmount
       );
 
       const priceImpactTo = PriceImpactService.calculatePriceImpact(
-        toTrade.fromToken.price,
-        toTrade.toToken.price,
+        toTrade.fromToken.price.toNumber(),
+        toTrade.toToken.price.toNumber(),
         toTrade.fromToken.tokenAmount,
         toTrade.toToken.tokenAmount
       );
@@ -224,8 +239,8 @@ export class CrossChainRoutingService extends TradeService {
       return {
         feePercent: feeInPercents,
         feeAmount,
-        feeTokenSymbol: cryptoFeeToken.symbol,
-        cryptoFee: cryptoFeeToken.tokenAmount,
+        feeTokenSymbol: toTrade.fromToken.symbol,
+        cryptoFee: cryptoFeeToken.tokenAmount.toNumber(),
         estimatedGas,
         priceImpactFrom: Number.isNaN(priceImpactFrom) ? 0 : priceImpactFrom,
         priceImpactTo: Number.isNaN(priceImpactTo) ? 0 : priceImpactTo,
@@ -253,16 +268,17 @@ export class CrossChainRoutingService extends TradeService {
         toHasTrade: true
       };
     } else {
+      const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
         fromHasTrade: !compareAddresses(
-          this.crossChainTrade.trade.fromTrade.fromToken.address,
-          this.crossChainTrade.trade.fromTrade.toToken.address
+          trade.fromTrade.fromToken.address,
+          trade.fromTrade.toToken.address
         ),
         toHasTrade: !compareAddresses(
-          this.crossChainTrade.trade.toTrade.fromToken.address,
-          this.crossChainTrade.trade.toTrade.toToken.address
+          trade.toTrade.fromToken.address,
+          trade.toTrade.toToken.address
         )
       };
     }
@@ -271,12 +287,20 @@ export class CrossChainRoutingService extends TradeService {
   public async approve(): Promise<void> {
     this.checkDeviceAndShowNotification();
     let approveInProgressSubscription$: Subscription;
-    const onTransactionHash = () => {
-      approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+
+    const blockchain = this.crossChainTrade?.trade?.from?.blockchain as BlockchainName;
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+    const swapOptions = {
+      onApprove: () => {
+        approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+      },
+      ...(Boolean(shouldCalculateGasPrice) && {
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+      })
     };
 
     try {
-      await this.crossChainTrade.trade.approve({ onTransactionHash });
+      await this.crossChainTrade.trade.approve(swapOptions);
       this.notificationsService.showApproveSuccessful();
     } finally {
       approveInProgressSubscription$?.unsubscribe();

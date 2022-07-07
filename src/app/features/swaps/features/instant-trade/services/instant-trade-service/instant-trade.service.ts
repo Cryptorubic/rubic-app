@@ -16,7 +16,8 @@ import {
   InstantTradeError,
   EncodeTransactionOptions,
   Web3Pure,
-  Web3Public
+  Web3Public,
+  TransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -64,12 +65,17 @@ export class InstantTradeService extends TradeService {
   public async approve(trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
+    const { blockchain } = TradeParser.getItSwapParams(trade);
+    const useRubicGasPrice = shouldCalculateGas[blockchain];
+
     try {
       await trade.approve({
         onTransactionHash: () => {
           subscription$ = this.notificationsService.showApproveInProgress();
         },
-        gasPrice: trade.gasFeeInfo?.gasPrice
+        ...(useRubicGasPrice && {
+          gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        })
       });
 
       this.notificationsService.showApproveSuccessful();
@@ -113,7 +119,7 @@ export class InstantTradeService extends TradeService {
       blockchain: BlockchainName;
     }
   ): Promise<Array<InstantTrade | InstantTradeError>> {
-    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
+    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
       gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
@@ -241,7 +247,7 @@ export class InstantTradeService extends TradeService {
       IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
       methodArguments,
-      transactionOptions
+      transactionOptions as TransactionOptions
     );
   }
 
