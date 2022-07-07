@@ -46,6 +46,7 @@ interface RubicApiResponse {
 }
 
 interface RubicTrade {
+  fromBlockchain: BlockchainName;
   token: {
     address: string;
     decimals: number;
@@ -186,15 +187,15 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     return from(
-      Injector.web3PublicService.getWeb3Public(bridgeTrade.fromBlockchain).getAllowance({
-        tokenAddress:
+      Injector.web3PublicService
+        .getWeb3Public(bridgeTrade.fromBlockchain)
+        .getAllowance(
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
             .rubicTokenAddress,
-        ownerAddress: this.walletConnectorService.address,
-        spenderAddress:
+          this.walletConnectorService.address,
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
             .swapContractAddress
-      })
+        )
     ).pipe(
       map((allowance: BigNumber) =>
         bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance)
@@ -235,6 +236,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     const tradeConfig =
       this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains];
     const trade: RubicTrade = {
+      fromBlockchain: bridgeTrade.fromBlockchain,
       token: {
         address: tradeConfig.rubicTokenAddress,
         decimals: tradeConfig.decimals,
@@ -275,11 +277,13 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     trade: RubicTrade,
     onApprove: (hash: string) => void
   ): Promise<void> {
-    const allowance = await Injector.web3PublicService.getWeb3Public().getAllowance({
-      tokenAddress: trade.token.address,
-      ownerAddress: this.walletConnectorService.address,
-      spenderAddress: trade.swapContractAddress
-    });
+    const allowance = await Injector.web3PublicService
+      .getWeb3Public(trade.fromBlockchain)
+      .getAllowance(
+        trade.token.address,
+        this.walletConnectorService.address,
+        trade.swapContractAddress
+      );
     if (trade.amount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
       await Injector.web3Private.approveTokens(

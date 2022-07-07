@@ -61,7 +61,7 @@ export class ProviderPanelComponent implements OnInit {
     this.tradePanelData = {
       blockchain: trade.from.blockchain,
       amount: trade.to.tokenAmount,
-      gasLimit: trade.gasFeeInfo?.gasLimit,
+      gasLimit: trade.gasFeeInfo?.gasLimit.toFixed(),
       gasFeeInUsd: trade.gasFeeInfo?.gasFeeInUsd,
       gasFeeInEth: trade.gasFeeInfo?.gasFeeInEth
     };

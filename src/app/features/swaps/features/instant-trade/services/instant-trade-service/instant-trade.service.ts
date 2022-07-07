@@ -16,7 +16,8 @@ import {
   InstantTradeError,
   EncodeTransactionOptions,
   Web3Pure,
-  Web3Public
+  Web3Public,
+  TransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -118,7 +119,7 @@ export class InstantTradeService extends TradeService {
       blockchain: BlockchainName;
     }
   ): Promise<Array<InstantTrade | InstantTradeError>> {
-    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken, {
+    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
       gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
@@ -246,7 +247,7 @@ export class InstantTradeService extends TradeService {
       IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
       methodArguments,
-      transactionOptions
+      transactionOptions as TransactionOptions
     );
   }
 
