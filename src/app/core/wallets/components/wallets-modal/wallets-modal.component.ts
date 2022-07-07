@@ -63,7 +63,9 @@ export class WalletsModalComponent implements OnInit {
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
     const deviceFiltered = this.isMobile
-      ? isChromiumProviders.filter(provider => !provider.desktopOnly)
+      ? isChromiumProviders.filter(
+          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+        )
       : isChromiumProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
