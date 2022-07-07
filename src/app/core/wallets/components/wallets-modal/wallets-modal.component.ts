@@ -82,8 +82,6 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
-  private readonly bitkeepAppLink = 'https://bitkeep.com/download?type=0&theme=light';
-
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
     return (
       this.iframeService.isIframe &&
@@ -130,9 +128,6 @@ export class WalletsModalComponent implements OnInit {
       case WALLET_NAME.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
         return true;
-      case WALLET_NAME.BITKEEP:
-        this.redirectToBitKeepBrowser();
-        return true;
       default:
         return false;
     }
@@ -140,10 +135,6 @@ export class WalletsModalComponent implements OnInit {
 
   private redirectToMetamaskBrowser(): void {
     this.window.location.assign(`${this.metamaskAppLink}${this.window.location.hostname}`);
-  }
-
-  private redirectToBitKeepBrowser(): void {
-    this.window.location.assign(`${this.bitkeepAppLink}`);
   }
 
   private redirectToCoinbaseBrowser(): void {
