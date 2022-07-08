@@ -7,7 +7,6 @@ import {
   OnInit
 } from '@angular/core';
 import { USER_AGENT } from '@ng-web-apis/common';
-import { isEdge, isEdgeOlderThan, isFirefox, isIE } from '@taiga-ui/cdk';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -27,6 +26,7 @@ import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/i
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets/components/wallets-modal/models/providers';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -41,32 +41,16 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly mobileDisplayStatus$: Observable<boolean>;
 
-  public get isChromium(): boolean {
-    if (isEdge(this.userAgent)) {
-      if (isEdgeOlderThan(13, this.userAgent)) {
-        return false;
-      }
-
-      return false;
-    }
-
-    if (isIE(this.userAgent)) {
-      return false;
-    }
-
-    return !isFirefox(this.userAgent);
-  }
-
   public get providers(): ReadonlyArray<WalletProvider> {
-    const isChromiumProviders = this.isChromium
+    const browserSupportedProviders = Boolean(this.window.chrome)
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
     const deviceFiltered = this.isMobile
-      ? isChromiumProviders.filter(
+      ? browserSupportedProviders.filter(
           provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
         )
-      : isChromiumProviders.filter(provider => !provider.mobileOnly);
+      : browserSupportedProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
@@ -94,7 +78,7 @@ export class WalletsModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(WINDOW) private readonly window: Window,
+    @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly translateService: TranslateService,
     private readonly walletConnectorService: WalletConnectorService,

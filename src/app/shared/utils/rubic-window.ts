@@ -11,4 +11,5 @@ export interface RubicWindow extends Window {
   dataLayer?: unknown[];
   ga?: Function | { create: Function; loaded: boolean };
   bitkeep?: { ethereum?: WalletLinkProvider };
+  chrome?: boolean;
 }

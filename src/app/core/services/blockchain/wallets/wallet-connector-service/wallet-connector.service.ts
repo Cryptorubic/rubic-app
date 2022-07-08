@@ -58,6 +58,8 @@ export class WalletConnectorService {
 
   private privateProvider: CommonWalletAdapter;
 
+  private readonly TIMEOUT_DELAY = 500;
+
   public get address(): string | undefined {
     return this.provider?.address;
   }
@@ -210,9 +212,11 @@ export class WalletConnectorService {
       this.provider = await this.createWalletAdapter(walletName, chainId);
       return true;
     } catch (e) {
+      //The error module is triggered before the translation is loaded
+      //TODO fix premature module loading before service load
       setTimeout(() => {
         this.errorService.catch(e);
-      }, 500);
+      }, this.TIMEOUT_DELAY);
 
       return false;
     }
