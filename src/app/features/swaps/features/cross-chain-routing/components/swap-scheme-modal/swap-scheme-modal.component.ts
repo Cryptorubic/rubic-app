@@ -46,6 +46,7 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
+  Token,
   Web3Public
 } from 'rubic-sdk';
 import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
@@ -285,7 +286,7 @@ export class SwapSchemeModalComponent implements OnInit {
       this.sdk.symbiosis.waitForComplete(
         this.fromBlockchain.key,
         this.toBlockchain.key,
-        this.toToken,
+        this.toToken as unknown as Token, // @TODO change types
         this.srcTxReceipt
       )
     ).pipe(
@@ -343,7 +344,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this._revertBtnLoading$.next(true);
 
     try {
-      await this.sdk.symbiosis.revertTrade(this.srcTxHash, onTransactionHash);
+      await this.sdk.symbiosis.revertTrade(this.srcTxHash, { onConfirm: onTransactionHash });
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {

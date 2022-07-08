@@ -117,7 +117,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   get showSmartRouting(): boolean {
-    return Boolean(this.smartRouting) && this.crossChainRoutingService.crossChainTrade?.trade;
+    return (
+      Boolean(this.smartRouting) && Boolean(this.crossChainRoutingService.crossChainTrade?.trade)
+    );
   }
 
   constructor(
@@ -249,8 +251,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error?.minAmount || false;
-              this.maxError = error?.maxAmount || false;
+              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
+              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
               this.errorText = '';
 
               this.needApprove = needApprove;
@@ -312,8 +314,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error?.minAmount || false;
-              this.maxError = error?.maxAmount || false;
+              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
+              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
 
               this.hiddenTradeData = { toAmount: trade.to.tokenAmount };
               if (!this.hiddenTradeData.toAmount.eq(this.toAmount)) {

@@ -589,9 +589,8 @@ export class TokensService {
       return foundToken?.symbol;
     }
 
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
     const token = await this.sdk.tokens.createToken({
-      blockchain: blockchainAdapter,
+      blockchain: blockchain,
       address: tokenAddress
     });
     return token.symbol;
