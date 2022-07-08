@@ -110,7 +110,9 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
       if (
         error.code === 4001 ||
         // metamask browser
-        error.message?.toLowerCase().includes('user denied message signature')
+        error.message?.toLowerCase().includes('user denied message signature') ||
+        // Bitkeep
+        error.message?.toLowerCase().includes('user rejected the request')
       ) {
         throw new SignRejectError();
       }

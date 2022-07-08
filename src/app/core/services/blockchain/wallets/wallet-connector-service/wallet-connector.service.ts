@@ -210,7 +210,10 @@ export class WalletConnectorService {
       this.provider = await this.createWalletAdapter(walletName, chainId);
       return true;
     } catch (e) {
-      this.errorService.catch(e);
+      setTimeout(() => {
+        this.errorService.catch(e);
+      }, 500);
+
       return false;
     }
   }
