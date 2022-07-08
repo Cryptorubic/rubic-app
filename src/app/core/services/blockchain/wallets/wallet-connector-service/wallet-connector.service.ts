@@ -212,8 +212,8 @@ export class WalletConnectorService {
       this.provider = await this.createWalletAdapter(walletName, chainId);
       return true;
     } catch (e) {
-      //The error module is triggered before the translation is loaded
-      //TODO fix premature module loading before service load
+      // The error module is triggered before the translation is loaded
+      // @TODO fix premature module loading before service load
       setTimeout(() => {
         this.errorService.catch(e);
       }, this.TIMEOUT_DELAY);
