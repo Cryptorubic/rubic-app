@@ -14,6 +14,17 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInVerticalMobileIframe: false
   },
   {
+    name: 'BitKeep',
+    value: WALLET_NAME.BITKEEP,
+    img: './assets/images/icons/wallets/bitkeep.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: false
+  },
+  {
     name: 'Trust Wallet',
     value: WALLET_NAME.TRUST_WALLET,
     img: './assets/images/icons/wallets/trust.svg',
