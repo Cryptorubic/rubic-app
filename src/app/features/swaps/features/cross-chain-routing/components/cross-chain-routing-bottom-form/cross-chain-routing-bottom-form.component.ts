@@ -319,7 +319,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => el === 'hidden' && Boolean(this.authService.userAddress)),
-        debounceTime(2000),
         switchMap(() => {
           if (!this.allowTrade) {
             return of(null);
@@ -330,7 +329,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           const { fromAmount } = this.swapFormService.inputValue;
 
           return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
-            map(({ trade, error }) => {
+            map(({ trade, error, currentProviders }) => {
+              if (currentProviders === 0) {
+                return;
+              }
               if (
                 error &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
@@ -343,10 +345,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
               this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
 
-              this.hiddenTradeData = { toAmount: trade.to?.tokenAmount };
+              this.hiddenTradeData = { toAmount: trade?.to?.tokenAmount };
               if (
                 this.hiddenTradeData?.toAmount &&
-                this.toAmount &&
+                this.toAmount?.isFinite() &&
                 !this.hiddenTradeData.toAmount.eq(this.toAmount)
               ) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
