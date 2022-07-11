@@ -93,6 +93,6 @@ export class HeaderStore {
   }
 
   public setMobileDisplayStatus(status: boolean): void {
-    this.isMobile$.next(this.forceDesktopResolution ? false : status);
+    this.isMobile$.next(this._forceDesktopResolution ? false : status);
   }
 }
