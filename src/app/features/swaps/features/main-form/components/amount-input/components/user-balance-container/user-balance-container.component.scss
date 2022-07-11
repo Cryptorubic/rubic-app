@@ -3,6 +3,13 @@
 .user-balance-container {
   margin-top: 10px;
 
+  @include hide-unused-ui {
+    margin-top: 0;
+    margin-right: 10px;
+
+    white-space: nowrap;
+  }
+
   @include iframe {
     margin-top: 0;
   }
