@@ -1,13 +1,16 @@
 <section class="bottom-form">
   <div class="bottom-form__container">
     <div class="bottom-form__estimate-container">
-      <app-rubic-tokens
-        [loading]="loading"
-        formType="to"
-        [tokens]="tokens"
-        [favoriteTokens]="favoriteTokens"
-        [formService]="swapFormService"
-      ></app-rubic-tokens>
+      <div>
+        <app-rubic-tokens
+          [loading]="loading"
+          formType="to"
+          [tokens]="tokens"
+          [favoriteTokens]="favoriteTokens"
+          [formService]="swapFormService"
+        ></app-rubic-tokens>
+        <app-providers-counter [calculatedProvider]="calculatedProviders"></app-providers-counter>
+      </div>
       <app-amount-estimated
         [loading]="tradeStatus === TRADE_STATUS.LOADING"
         [errorText]="errorText"

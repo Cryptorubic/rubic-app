@@ -1,0 +1,11 @@
+<ng-container *ngIf="showData">
+  <div @fadeAnimation class="calculated-providers">
+    Calculated providers: {{ calculatedProvider.current }}/{{ calculatedProvider.total }}
+    <img
+      *ngIf="calculatedProvider.total === calculatedProvider.current"
+      class="calculated-providers__success-icon"
+      src="assets/images/icons/checkmark/checkmark-thin-white.svg"
+      alt="Success calculating"
+    />
+  </div>
+</ng-container>

@@ -9,17 +9,17 @@ export default (
   targetOptions: TargetOptions
 ) => {
   if (targetOptions.configuration === 'sdk') {
-    const sdkDirectory = './rubic-sdk/';
+    const sdkDirectory = '../rubic-sdk/';
     const sdkDirectoryExists = fs.existsSync(sdkDirectory);
 
-    const sdkBundle = './rubic-sdk/dist/rubic-sdk.min.js';
+    const sdkBundle = '../rubic-sdk/dist/rubic-sdk.min.js';
     const sdkBundleExists = fs.existsSync(sdkBundle);
 
     if (sdkDirectoryExists) {
       if (sdkBundleExists) {
         config.resolve.alias = {
           ...config.resolve.alias,
-          'rubic-sdk': path.resolve(__dirname, '/rubic-sdk/')
+          'rubic-sdk': path.resolve(__dirname, sdkDirectory)
         };
       } else {
         throw new Error(
