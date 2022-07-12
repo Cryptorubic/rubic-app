@@ -373,20 +373,24 @@ export class CrossChainRoutingService extends TradeService {
   public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
-    this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: this.headerStore.isMobile ? 'page' : 'l',
-        data: {
-          fromToken,
-          fromBlockchain,
-          toToken,
-          toBlockchain,
-          srcProvider: this.crossChainTrade.trade.itType.from,
-          dstProvider: this.crossChainTrade.trade.itType.to,
-          crossChainProvider: provider,
-          srcTxHash: txHash
-        }
-      })
-      .subscribe();
+    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+      this.notifyTradeInProgress(txHash, fromBlockchain, CROSS_CHAIN_TRADE_TYPE.LIFI);
+    } else {
+      this.dialogService
+        .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+          size: this.headerStore.isMobile ? 'page' : 'l',
+          data: {
+            fromToken,
+            fromBlockchain,
+            toToken,
+            toBlockchain,
+            srcProvider: this.crossChainTrade.trade.itType.from,
+            dstProvider: this.crossChainTrade.trade.itType.to,
+            crossChainProvider: provider,
+            srcTxHash: txHash
+          }
+        })
+        .subscribe();
+    }
   }
 }

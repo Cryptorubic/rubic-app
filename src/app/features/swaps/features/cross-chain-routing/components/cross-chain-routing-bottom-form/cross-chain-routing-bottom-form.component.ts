@@ -301,7 +301,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           );
         }),
         tap(() => {
-          if (this.calculatedProviders.total === this.calculatedProviders.current) {
+          if (this.calculatedProviders?.total === this.calculatedProviders?.current) {
             this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
           }
         }),

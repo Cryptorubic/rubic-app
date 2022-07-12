@@ -213,10 +213,16 @@ const SYMBIOSIS_PROVIDER: Provider = {
   image: `${imageBasePath}symbiosis.png`
 };
 
+const LIFI_PROVIDER: Provider = {
+  name: 'Lifi',
+  image: `${imageBasePath}lifi.svg`
+};
+
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
   CROSS_CHAIN_ROUTING_PROVIDER,
   GAS_REFUND_PROVIDER,
-  SYMBIOSIS_PROVIDER
+  SYMBIOSIS_PROVIDER,
+  LIFI_PROVIDER
 };

@@ -65,8 +65,8 @@
     <div
       class="scheme"
       [class.scheme_failed]="
-        tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
-        tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED
+        tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
+        tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL
       "
     >
       <div class="scheme__src">
@@ -122,8 +122,8 @@
           class="scheme__line scheme__line_src"
           [ngClass]="{
             scheme__line_default:
-              tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
-              tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED,
+              tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
+              tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL,
             scheme__line_success: tradeData.srcStatus === MODAL_SWAP_STATUS.SUCCESS
           }"
         >
@@ -138,8 +138,8 @@
           class="scheme__line scheme__line_default scheme__line_dst"
           [ngClass]="{
             scheme__line_default:
-              tradeData.srcStatus === MODAL_SWAP_STATUS.FAILED ||
-              tradeData.dstStatus === MODAL_SWAP_STATUS.FAILED,
+              tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
+              tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL,
             scheme__line_success: tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
           }"
         >
