@@ -15,7 +15,10 @@
   </div>
 </div>
 
-<div class="info-line" *ngIf="cryptoFeeInEth || symbiosisOrLifiCryptoFee?.gt(0)">
+<div
+  class="info-line"
+  *ngIf="!isSymbiosisOrLifi || (isSymbiosisOrLifi && symbiosisOrLifiCryptoFee?.gt(0))"
+>
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img

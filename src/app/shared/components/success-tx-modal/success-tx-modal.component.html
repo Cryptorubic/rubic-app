@@ -27,7 +27,10 @@
             *noFrame
             class="modal__footer-text"
             [innerHTML]="
-              'modals.successTxModal.seeDetailsItBridge'
+              (type === 'cross-chain-routing' && ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER
+                ? 'modals.successTxModal.seeDetailsCCR'
+                : 'modals.successTxModal.seeDetailsItBridge'
+              )
                 | translate
                   : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
             "

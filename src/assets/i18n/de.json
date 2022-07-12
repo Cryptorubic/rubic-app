@@ -464,7 +464,7 @@
       "pageSoon": " -Seite sichtbar sein.",
       "title": "Die Transaktion wurde erfolgreich gestartet!",
       "ccrTitle": "Transaktion wurde erfolgreich im Ursprungsnetzwerk durchgeführt!",
-      "seeDetailsCCR": "Zu den <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'> Transaktionsdetails </a>. In Kürze auch unter <a class='modal__footer-link' href='./my-trades' target='_blank'>Meine Transaktionen</a> zu finden.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "<a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>Transaktionsdetails</a> ansehen.",
       "link": "Meine Transaktionen"
     },
