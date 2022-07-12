@@ -1,0 +1,18 @@
+@use 'src/scss/core' as *;
+
+.calculated-providers {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+
+  color: var(--form-dim-text-color);
+  font-size: 14px;
+  line-height: 120%;
+  letter-spacing: 0.08em;
+
+  &__success-icon {
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+  }
+}

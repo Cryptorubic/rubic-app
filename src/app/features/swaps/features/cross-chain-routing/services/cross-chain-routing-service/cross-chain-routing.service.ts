@@ -33,7 +33,7 @@ import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-rout
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
-import { Subscription } from 'rxjs';
+import { from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -50,6 +50,16 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { switchTap } from '@shared/utils/utils';
+
+type CrossChainProviderTrade = Observable<
+  WrappedCrossChainTrade & {
+    needApprove: boolean;
+    totalProviders: number;
+    currentProviders: number;
+  }
+>;
 
 @Injectable({
   providedIn: 'root'
@@ -86,10 +96,7 @@ export class CrossChainRoutingService extends TradeService {
     super('cross-chain-routing');
   }
 
-  public async calculateTrade(
-    userAuthorized: boolean
-  ): Promise<WrappedCrossChainTrade & { needApprove: boolean }> {
-    let needApprove = false;
+  public calculateTrade(userAuthorized: boolean): CrossChainProviderTrade {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -99,28 +106,44 @@ export class CrossChainRoutingService extends TradeService {
         slippageTolerance,
         timeout: this.defaultTimeout
       };
-      const trades = await this.sdk.crossChain.calculateTrade(
-        fromToken,
-        fromAmount.toString(),
-        toToken,
-        options
-      );
-      console.log('TRADES: ', trades);
-      console.log('BEST TRADE: ', trades?.[0]);
-      this.crossChainTrade = trades[0];
-      const { trade, error } = this.crossChainTrade;
-      needApprove = userAuthorized && (await trade?.needApprove());
-      await this.calculateSmartRouting();
-      if (!trade && error instanceof RubicSdkError) {
-        throw this.parseCalculationError(this.crossChainTrade.error);
-      }
+      return this.sdk.crossChain
+        .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
+        .pipe(
+          tap(tradeData => (this.crossChainTrade = tradeData.bestProvider)),
+          switchMap(tradeData => {
+            const trade = this.crossChainTrade?.trade;
+            const error = this.crossChainTrade?.error;
+
+            if (!trade && error) {
+              return of({
+                ...tradeData.bestProvider,
+                needApprove: false,
+                totalProviders: tradeData.totalProviders,
+                currentProviders: tradeData.calculatedProviders
+              });
+            }
+
+            return from(
+              userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
+            ).pipe(
+              switchTap(() => from(this.calculateSmartRouting())),
+              map(needApprove => {
+                return {
+                  ...tradeData.bestProvider,
+                  needApprove,
+                  totalProviders: tradeData.totalProviders,
+                  currentProviders: tradeData.calculatedProviders
+                };
+              })
+            );
+          })
+        );
     } catch (err) {
       console.debug(err);
       this.crossChainTrade = null;
       this.smartRouting = null;
       throw err;
     }
-    return { ...this.crossChainTrade, needApprove };
   }
 
   public async createTrade(confirmCallback?: () => void): Promise<void> {
@@ -307,14 +330,14 @@ export class CrossChainRoutingService extends TradeService {
     }
   }
 
-  private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+  public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
     }
-    return new RubicError('Unknown SDK error. Try to refresh the page');
+    return new RubicError('Unknown SDK error. Try to refresh the page'); //?
   }
 
   private checkDeviceAndShowNotification(): void {

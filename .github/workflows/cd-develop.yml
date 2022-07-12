@@ -66,7 +66,7 @@ jobs:
         run: yarn
 
       - name: Run build
-        run: yarn run build
+        run: yarn run build:${{ inputs.env_id }}
 
       - name: Deploy
         run: |
