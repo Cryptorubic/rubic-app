@@ -37,7 +37,7 @@
         </div>
 
         <div
-          *ngIf="errorText"
+          *ngIf="errorText && !loading"
           tuiHintMode="error"
           class="bottom-amount__hint bottom-amount__hint_error"
           [inlineSVG]="'/assets/images/icons/hint.svg'"
