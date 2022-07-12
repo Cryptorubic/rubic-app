@@ -466,7 +466,7 @@
       "pageSoon": " 내 거래.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },

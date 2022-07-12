@@ -569,7 +569,7 @@
       "pageSoon": " .",
       "title": "La transaction a été envoyée avec succès !",
       "ccrTitle": "Échange sur le réseau d'origine effectué !",
-      "seeDetailsCCR": "Voir les <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a> de la transaction. Ils s'afficheront bientôt sur la page <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a>.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "Voir les <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a> de la transaction.",
       "link": "Mes échanges"
     },
