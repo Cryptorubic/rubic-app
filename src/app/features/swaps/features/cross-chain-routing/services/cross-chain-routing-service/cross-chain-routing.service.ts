@@ -6,6 +6,7 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
+  LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
   Web3Pure
@@ -198,7 +199,22 @@ export class CrossChainRoutingService extends TradeService {
       })
     };
 
-    await this.crossChainTrade.trade.swap(swapOptions);
+    try {
+      await this.crossChainTrade.trade.swap(swapOptions);
+    } catch (err) {
+      if (
+        this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI &&
+        err.message.includes('Request failed with status code 500')
+      ) {
+        throw new RubicError(
+          ERROR_TYPE.TEXT,
+          undefined,
+          "Unfortunately, the provider couldn't generate the transaction. Please try again later."
+        );
+      }
+
+      throw err;
+    }
 
     this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
   }
@@ -214,15 +230,11 @@ export class CrossChainRoutingService extends TradeService {
     const trade = this.crossChainTrade.trade;
     const { estimatedGas } = trade;
 
-    if (
-      trade instanceof SymbiosisCrossChainTrade &&
-      trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-    ) {
+    if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
       return {
         estimatedGas,
         feeAmount: trade.fee,
         feeTokenSymbol: trade.feeSymbol,
-        // @TODO Get from contract
         feePercent: trade.feePercent,
         priceImpact: String(trade.priceImpact),
         networkFee: trade.networkFee,
@@ -283,7 +295,10 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = null;
       return;
     }
-    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+      this.smartRouting = null;
+    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: 'ONE_INCH_BSC',
         toProvider: 'ONE_INCH_ETHEREUM',
@@ -373,20 +388,24 @@ export class CrossChainRoutingService extends TradeService {
   public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
-    this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-        size: this.headerStore.isMobile ? 'page' : 'l',
-        data: {
-          fromToken,
-          fromBlockchain,
-          toToken,
-          toBlockchain,
-          srcProvider: this.crossChainTrade.trade.itType.from,
-          dstProvider: this.crossChainTrade.trade.itType.to,
-          crossChainProvider: provider,
-          srcTxHash: txHash
-        }
-      })
-      .subscribe();
+    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+      this.notifyTradeInProgress(txHash, fromBlockchain, CROSS_CHAIN_TRADE_TYPE.LIFI);
+    } else {
+      this.dialogService
+        .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+          size: this.headerStore.isMobile ? 'page' : 'l',
+          data: {
+            fromToken,
+            fromBlockchain,
+            toToken,
+            toBlockchain,
+            srcProvider: this.crossChainTrade.trade.itType.from,
+            dstProvider: this.crossChainTrade.trade.itType.to,
+            crossChainProvider: provider,
+            srcTxHash: txHash
+          }
+        })
+        .subscribe();
+    }
   }
 }

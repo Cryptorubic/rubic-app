@@ -15,7 +15,8 @@ export type TableProvider =
   | BRIDGE_PROVIDER
   | 'CROSS_CHAIN_ROUTING_PROVIDER'
   | 'GAS_REFUND_PROVIDER'
-  | 'SYMBIOSIS_PROVIDER';
+  | 'SYMBIOSIS_PROVIDER'
+  | 'LIFI_PROVIDER';
 
 export interface TableTrade {
   transactionId?: string;

@@ -465,7 +465,7 @@
       "pageSoon": "pronto.",
       "title": "¡La transacción se envió con éxito!",
       "ccrTitle": "Intercambio exitoso en la red de origen!",
-      "seeDetailsCCR": "Consulte transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>detalles</a>. Aparecerá en <a class='modal__footer-link' href='./mis operaciones' target='_blank'>Mi página de operaciones</a> pronto.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "Consulte transaction <a class='modal__footer-link' href ='{{explorerLink}}' target='_blank'>detalles</a>.",
       "link": "Mis operaciones"
     },

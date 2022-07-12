@@ -15,7 +15,10 @@
   </div>
 </div>
 
-<div class="info-line">
+<div
+  class="info-line"
+  *ngIf="!isSymbiosisOrLifi || (isSymbiosisOrLifi && symbiosisOrLifiCryptoFee?.gt(0))"
+>
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img
@@ -23,13 +26,13 @@
       alt="question"
       [tuiHint]="
         'Gas fee in target network taken in ' +
-        (!isSymbiosis ? 'native' : 'stable') +
+        (!isSymbiosisOrLifi ? 'native' : 'stable') +
         ' token of source network'
       "
     />
   </div>
 
-  <ng-container *ngIf="!isSymbiosis; else symbiosisCryptoFeeTemplate">
+  <ng-container *ngIf="!isSymbiosisOrLifi; else symbiosisCryptoFeeTemplate">
     <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
       {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
       <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
@@ -43,9 +46,9 @@
   </ng-container>
 
   <ng-template #symbiosisCryptoFeeTemplate>
-    <div class="info-line__value" *ngIf="symbiosisCryptoFee !== undefined">
-      {{ symbiosisCryptoFee | bigNumberFormat | withRound: 'toClosestValue' }}
-      {{ symbiosisCryptoFeeSymbol }}
+    <div class="info-line__value" *ngIf="symbiosisOrLifiCryptoFee !== undefined">
+      {{ symbiosisOrLifiCryptoFee | bigNumberFormat | withRound: 'toClosestValue' }}
+      {{ symbiosisOrLifiCryptoFeeSymbol }}
     </div>
   </ng-template>
 </div>
@@ -77,7 +80,7 @@
 <hr class="delimiter" />
 
 <app-price-impact-info-line
-  *ngIf="!isSymbiosis"
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in source network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -86,7 +89,7 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
-  *ngIf="!isSymbiosis"
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in target network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -95,7 +98,7 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
-  *ngIf="isSymbiosis"
+  *ngIf="isSymbiosisOrLifi"
   title="Price impact"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade.'
