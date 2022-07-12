@@ -6,6 +6,7 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
+  LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
   Web3Pure
@@ -191,15 +192,11 @@ export class CrossChainRoutingService extends TradeService {
     const trade = this.crossChainTrade.trade;
     const { estimatedGas } = trade;
 
-    if (
-      trade instanceof SymbiosisCrossChainTrade &&
-      trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-    ) {
+    if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
       return {
         estimatedGas,
         feeAmount: trade.fee,
         feeTokenSymbol: trade.feeSymbol,
-        // @TODO Get from contract
         feePercent: trade.feePercent,
         priceImpact: String(trade.priceImpact),
         networkFee: trade.networkFee,
@@ -260,7 +257,10 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = null;
       return;
     }
-    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+      this.smartRouting = null;
+    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: 'ONE_INCH_BSC',
         toProvider: 'ONE_INCH_ETHEREUM',

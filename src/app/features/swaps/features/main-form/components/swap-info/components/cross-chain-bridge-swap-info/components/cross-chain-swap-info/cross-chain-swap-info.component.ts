@@ -18,7 +18,8 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { CROSS_CHAIN_TRADE_TYPE, TradeType, Web3Pure } from 'rubic-sdk';
+import { LifiCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -68,7 +69,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public usingCelerBridge: boolean;
 
-  public isSymbiosis: boolean;
+  public isSymbiosisOrLifi: boolean;
 
   public symbiosisCryptoFee: BigNumber;
 
@@ -150,11 +151,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
               ).symbol;
 
+              const trade = this.crossChainRoutingService.crossChainTrade.trade;
+
               if (
-                this.crossChainRoutingService.crossChainTrade.trade.type ===
-                CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+                trade instanceof SymbiosisCrossChainTrade ||
+                trade instanceof LifiCrossChainTrade
               ) {
-                this.isSymbiosis = true;
+                this.isSymbiosisOrLifi = true;
 
                 this.estimateGasInEth = tradeInfo.estimatedGas;
                 this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
@@ -164,7 +167,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
                 this.setSymbiosisTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
               } else {
-                this.isSymbiosis = false;
+                this.isSymbiosisOrLifi = false;
 
                 this.setCelerRubicTradeInfoParameters(
                   tradeInfo as CelerRubicTradeInfo,

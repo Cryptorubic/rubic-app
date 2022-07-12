@@ -23,13 +23,13 @@
       alt="question"
       [tuiHint]="
         'Gas fee in target network taken in ' +
-        (!isSymbiosis ? 'native' : 'stable') +
+        (!isSymbiosisOrLifi ? 'native' : 'stable') +
         ' token of source network'
       "
     />
   </div>
 
-  <ng-container *ngIf="!isSymbiosis; else symbiosisCryptoFeeTemplate">
+  <ng-container *ngIf="!isSymbiosisOrLifi; else symbiosisCryptoFeeTemplate">
     <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
       {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
       <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
@@ -77,7 +77,7 @@
 <hr class="delimiter" />
 
 <app-price-impact-info-line
-  *ngIf="!isSymbiosis"
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in source network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -86,7 +86,7 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
-  *ngIf="!isSymbiosis"
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in target network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -95,7 +95,7 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
-  *ngIf="isSymbiosis"
+  *ngIf="isSymbiosisOrLifi"
   title="Price impact"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade.'
