@@ -30,7 +30,7 @@ jobs:
       - name: Set dev target path
         if: ${{ inputs.env_id == 'dev' }}
         run: |
-          echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
+          echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Set dev2 target path
         if: ${{ inputs.env_id == 'dev2' }}
@@ -71,5 +71,5 @@ jobs:
       - name: Deploy
         run: |
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
-          sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
+          sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzhw -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
