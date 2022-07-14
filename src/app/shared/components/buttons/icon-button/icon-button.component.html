@@ -6,7 +6,7 @@
   (click)="onClick()"
   [size]="buttonSize"
 >
-  <img [src]="icon" alt="" />
+  <img [src]="icon" [style.border-radius]="borderRadiusPercent + '%'" alt="" />
   <div class="label-container" *ngIf="label">
     <span class="label">{{ label }}</span>
   </div>
