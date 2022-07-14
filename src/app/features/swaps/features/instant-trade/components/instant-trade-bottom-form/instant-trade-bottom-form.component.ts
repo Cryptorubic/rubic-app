@@ -14,7 +14,6 @@ import {
   BlockchainName,
   InstantTrade,
   InstantTradeError,
-  SDK,
   TRADE_TYPE,
   TradeType,
   Web3Pure
@@ -75,8 +74,6 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  @Input() sdk: SDK;
-
   // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
