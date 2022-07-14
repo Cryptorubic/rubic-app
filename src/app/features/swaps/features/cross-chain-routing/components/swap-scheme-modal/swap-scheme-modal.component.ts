@@ -53,6 +53,7 @@ import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-a
 import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 
 enum MODAL_SWAP_STATUS {
   SUCCESS = 'SUCCESS',
@@ -257,7 +258,9 @@ export class SwapSchemeModalComponent implements OnInit {
     try {
       const statusTo = Number(
         await this.dstWeb3Public.callContractMethod(
-          CROSS_CHAIN_PROD.contractAddresses[this.toBlockchain.key],
+          CROSS_CHAIN_PROD.contractAddresses[
+            this.toBlockchain.key as SupportedCrossChainBlockchain
+          ],
           PROCESSED_TRANSACTION_METHOD_ABI,
           'processedTransactions',
           { methodArguments: [this.srcTxHash] }

@@ -525,7 +525,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * @param token Token to display.
    * @return Promise<string> Token image url.
    */
-  private fetchTokenImage(token: BlockchainToken): Promise<string> {
+  private async fetchTokenImage(token: BlockchainToken): Promise<string> {
     const blockchains: Record<BlockchainName, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
@@ -538,10 +538,22 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.TELOS]: 'telos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
       [BLOCKCHAIN_NAME.SOLANA]: 'solana',
-      [BLOCKCHAIN_NAME.NEAR]: 'near'
+      [BLOCKCHAIN_NAME.NEAR]: 'near',
+      [BLOCKCHAIN_NAME.OPTIMISM]: 'optimism',
+      [BLOCKCHAIN_NAME.CRONOS]: 'cronos',
+      [BLOCKCHAIN_NAME.OKE_X_CHAIN]: null,
+      [BLOCKCHAIN_NAME.GNOSIS]: 'xdai',
+      [BLOCKCHAIN_NAME.FUSE]: null,
+      [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
+      [BLOCKCHAIN_NAME.CELO]: 'celo'
     };
+
+    if (!blockchains[token.blockchain]) {
+      return DEFAULT_TOKEN_IMAGE;
+    }
+
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-      blockchains[token.blockchain as keyof typeof blockchains]
+      blockchains[token.blockchain]
     }/assets/${Web3Pure.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient

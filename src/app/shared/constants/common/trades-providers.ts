@@ -22,17 +22,7 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
 };
 
 const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
-  [TRADE_TYPE.UNI_SWAP_V3_ARBITRUM]: {
-    name: 'Uniswap V3',
-    image: `${imageBasePath}uniswap-3.svg`,
-    color: '#FD017A'
-  },
-  [TRADE_TYPE.UNI_SWAP_V3_POLYGON]: {
-    name: 'Uniswap V3',
-    image: `${imageBasePath}uniswap-3.svg`,
-    color: '#FD017A'
-  },
-  [TRADE_TYPE.UNI_SWAP_V3_ETHEREUM]: {
+  [TRADE_TYPE.UNI_SWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
@@ -42,32 +32,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: `${imageBasePath}uniswap-2.svg`,
     color: '#F9DBEA'
   },
-  [TRADE_TYPE.ONE_INCH_ARBITRUM]: {
-    name: '1inch',
-    image: `${imageBasePath}oneinch.svg`,
-    color: '#94A6C3'
-  },
-  [TRADE_TYPE.ONE_INCH_FANTOM]: {
-    name: '1inch',
-    image: `${imageBasePath}oneinch.svg`,
-    color: '#94A6C3'
-  },
-  [TRADE_TYPE.ONE_INCH_AVALANCHE]: {
-    name: '1inch',
-    image: `${imageBasePath}oneinch.svg`,
-    color: '#94A6C3'
-  },
-  [TRADE_TYPE.ONE_INCH_POLYGON]: {
-    name: '1inch',
-    image: `${imageBasePath}oneinch.svg`,
-    color: '#94A6C3'
-  },
-  [TRADE_TYPE.ONE_INCH_BSC]: {
-    name: '1inch',
-    image: `${imageBasePath}oneinch.svg`,
-    color: '#94A6C3'
-  },
-  [TRADE_TYPE.ONE_INCH_ETHEREUM]: {
+  [TRADE_TYPE.ONE_INCH]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`,
     color: '#94A6C3'
@@ -82,47 +47,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: `${imageBasePath}quickswap.svg`,
     color: '#5389C5'
   },
-  [TRADE_TYPE.SUSHI_SWAP_TELOS]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_ARBITRUM]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_FANTOM]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_MOONRIVER]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_AVALANCHE]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_HARMONY]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_POLYGON]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_BSC]: {
-    name: 'Sushiswap',
-    image: `${imageBasePath}sushiswap.svg`,
-    color: '#E05DAA'
-  },
-  [TRADE_TYPE.SUSHI_SWAP_ETHEREUM]: {
+  [TRADE_TYPE.SUSHI_SWAP]: {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
@@ -152,7 +77,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: `${imageBasePath}wrapped.png`,
     color: '#FFFFFF'
   },
-  [TRADE_TYPE.ZRX_ETHEREUM]: {
+  [TRADE_TYPE.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.png`,
     color: '#FFFFFF'
@@ -193,6 +118,41 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.ZAPPY]: {
     name: 'Zappy',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.PARA_SWAP]: {
+    name: 'Paraswap',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.OPEN_OCEAN]: {
+    name: 'OpenOcean',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.DODO]: {
+    name: 'Dodo',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.HONEY_SWAP]: {
+    name: 'Honeyswap',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.STELLA_SWAP]: {
+    name: 'Stellaswap',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.BEAM_SWAP]: {
+    name: 'Beamswap',
+    image: `${imageBasePath}zappy.svg`,
+    color: '#00e7e7'
+  },
+  [TRADE_TYPE.UBE_SWAP]: {
+    name: 'Ubeswap',
     image: `${imageBasePath}zappy.svg`,
     color: '#00e7e7'
   }

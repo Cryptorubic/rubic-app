@@ -6,24 +6,9 @@ export interface Blockchain {
   img: string;
 }
 
-type Blockchains = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: Blockchain;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Blockchain;
-  [BLOCKCHAIN_NAME.POLYGON]: Blockchain;
-  [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
-  [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
-  [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
-  [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
-  [BLOCKCHAIN_NAME.ARBITRUM]: Blockchain;
-  [BLOCKCHAIN_NAME.AURORA]: Blockchain;
-  [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
-  [BLOCKCHAIN_NAME.NEAR]: Blockchain;
-  [BLOCKCHAIN_NAME.TELOS]: Blockchain;
-};
-
 const imageBaseSrc = 'assets/images/icons/coins/';
 
-export const BLOCKCHAINS: Blockchains = {
+export const BLOCKCHAINS: Record<BlockchainName, Blockchain> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     key: BLOCKCHAIN_NAME.ETHEREUM,
     name: 'Ethereum',
@@ -82,6 +67,41 @@ export const BLOCKCHAINS: Blockchains = {
   [BLOCKCHAIN_NAME.TELOS]: {
     key: BLOCKCHAIN_NAME.TELOS,
     name: 'Telos EVM',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.OPTIMISM]: {
+    key: BLOCKCHAIN_NAME.OPTIMISM,
+    name: 'Optimism',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.CRONOS]: {
+    key: BLOCKCHAIN_NAME.CRONOS,
+    name: 'Cronos',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
+    key: BLOCKCHAIN_NAME.OKE_X_CHAIN,
+    name: 'OKExChain',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.GNOSIS]: {
+    key: BLOCKCHAIN_NAME.GNOSIS,
+    name: 'Telos EVM',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.FUSE]: {
+    key: BLOCKCHAIN_NAME.TELOS,
+    name: 'Gnosis',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.MOONBEAM]: {
+    key: BLOCKCHAIN_NAME.MOONBEAM,
+    name: 'Moonbeam',
+    img: `${imageBaseSrc}telos.svg`
+  },
+  [BLOCKCHAIN_NAME.CELO]: {
+    key: BLOCKCHAIN_NAME.CELO,
+    name: 'Celo',
     img: `${imageBaseSrc}telos.svg`
   }
 };

@@ -227,6 +227,122 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'TLOS',
       decimals: 18
     }
+  },
+  {
+    id: 10,
+    name: BLOCKCHAIN_NAME.OPTIMISM,
+    label: 'Optimism',
+    scannerUrl: 'https://optimistic.etherscan.io',
+    rpcLink:
+      'https://rpc.ankr.com/optimism/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.OPTIMISM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18
+    }
+  },
+  {
+    id: 25,
+    name: BLOCKCHAIN_NAME.CRONOS,
+    label: 'Cronos',
+    scannerUrl: 'https://cronos.org/explorer',
+    rpcLink: 'https://evm-cronos.crypto.org',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.CRONOS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Telos EVM',
+      symbol: 'TLOS',
+      decimals: 18
+    }
+  },
+  {
+    id: 66,
+    name: BLOCKCHAIN_NAME.OKE_X_CHAIN,
+    label: 'OKExChain',
+    scannerUrl: 'https://www.oklink.com/en/okc',
+    rpcLink: 'https://exchainrpc.okex.org',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.OKE_X_CHAIN,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'OKT',
+      symbol: 'OKT',
+      decimals: 18
+    }
+  },
+  {
+    id: 100,
+    name: BLOCKCHAIN_NAME.GNOSIS,
+    label: 'Gnosis',
+    scannerUrl: 'https://blockscout.com/xdai/mainnet',
+    rpcLink:
+      'https://rpc.ankr.com/gnosis/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.GNOSIS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'xDAI',
+      symbol: 'xDAI',
+      decimals: 18
+    }
+  },
+  {
+    id: 122,
+    name: BLOCKCHAIN_NAME.FUSE,
+    label: 'Fuse',
+    scannerUrl: 'https://explorer.fuse.io',
+    rpcLink: 'https://fuse.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FUSE,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FUSE',
+      symbol: 'FUSE',
+      decimals: 18
+    }
+  },
+  {
+    id: 1284,
+    name: BLOCKCHAIN_NAME.MOONBEAM,
+    label: 'Moonbeam',
+    scannerUrl: 'https://moonscan.io',
+    rpcLink:
+      'https://rpc.ankr.com/moonbeam/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.MOONBEAM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'GLMR',
+      symbol: 'GLMR',
+      decimals: 18
+    }
+  },
+  {
+    id: 42220,
+    name: BLOCKCHAIN_NAME.CELO,
+    label: 'Celo',
+    scannerUrl: 'https://explorer.celo.org',
+    rpcLink:
+      'https://rpc.ankr.com/celo/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/telos.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.CELO,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'CELO',
+      symbol: 'CELO',
+      decimals: 18
+    }
   }
 ];
 

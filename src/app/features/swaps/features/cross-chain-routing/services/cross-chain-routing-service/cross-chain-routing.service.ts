@@ -9,6 +9,7 @@ import {
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
+  TRADE_TYPE,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
@@ -300,8 +301,8 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = null;
     } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
-        fromProvider: 'ONE_INCH_BSC',
-        toProvider: 'ONE_INCH_ETHEREUM',
+        fromProvider: TRADE_TYPE.ONE_INCH,
+        toProvider: TRADE_TYPE.ONE_INCH,
         fromHasTrade: true,
         toHasTrade: true
       };
