@@ -239,7 +239,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
         distinctUntilChanged((prev, next) => {
           return (
             prev.rubicOptimisation === next.rubicOptimisation &&
-            prev.disableMultihops === next.disableMultihops
+            prev.disableMultihops === next.disableMultihops &&
+            prev.slippageTolerance === next.slippageTolerance
           );
         }),
         takeUntil(this.destroy$)
