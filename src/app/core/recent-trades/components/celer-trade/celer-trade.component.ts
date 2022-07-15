@@ -24,6 +24,6 @@ export class CelerTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradData(trade, CROSS_CHAIN_TRADE_TYPE.CELER);
+    return await this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.CELER);
   }
 }

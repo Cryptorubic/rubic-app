@@ -24,6 +24,6 @@ export class RubicTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return this.recentTradesService.getTradData(trade, CROSS_CHAIN_TRADE_TYPE.RUBIC);
+    return this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.RUBIC);
   }
 }

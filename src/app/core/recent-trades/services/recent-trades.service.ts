@@ -69,7 +69,7 @@ export class RecentTradesService {
     private readonly httpService: HttpService
   ) {}
 
-  public async getTradData(trade: RecentTrade, type: CrossChainTradeType): Promise<UiRecentTrade> {
+  public async getTradeData(trade: RecentTrade, type: CrossChainTradeType): Promise<UiRecentTrade> {
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
     const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);

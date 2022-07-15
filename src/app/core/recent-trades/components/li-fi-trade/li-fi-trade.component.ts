@@ -14,8 +14,6 @@ import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LiFiTradeComponent extends CommonTrade {
-  public String!: String;
-
   constructor(
     private readonly recentTradesService: RecentTradesService,
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -26,6 +24,6 @@ export class LiFiTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return this.recentTradesService.getTradData(trade, CROSS_CHAIN_TRADE_TYPE.LIFI);
+    return this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.LIFI);
   }
 }
