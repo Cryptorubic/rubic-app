@@ -37,7 +37,8 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
       TRADE_TYPE.SUSHI_SWAP,
       TRADE_TYPE.PARA_SWAP,
       TRADE_TYPE.OPEN_OCEAN,
-      TRADE_TYPE.DODO
+      TRADE_TYPE.DODO,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.POLYGON]: getDefaultStateByProviders([
       TRADE_TYPE.UNI_SWAP_V3,
@@ -48,7 +49,8 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
       TRADE_TYPE.PARA_SWAP,
       TRADE_TYPE.OPEN_OCEAN,
       TRADE_TYPE.DODO,
-      TRADE_TYPE.HONEY_SWAP
+      TRADE_TYPE.HONEY_SWAP,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
       TRADE_TYPE.SUSHI_SWAP,
@@ -60,7 +62,8 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
       TRADE_TYPE.JOE,
       TRADE_TYPE.ONE_INCH,
       TRADE_TYPE.PARA_SWAP,
-      TRADE_TYPE.OPEN_OCEAN
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
       TRADE_TYPE.SUSHI_SWAP,
@@ -72,7 +75,9 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
       TRADE_TYPE.SPIRIT_SWAP,
       TRADE_TYPE.SUSHI_SWAP,
       TRADE_TYPE.ONE_INCH,
-      TRADE_TYPE.OPEN_OCEAN
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.ARBITRUM]: getDefaultStateByProviders([
       TRADE_TYPE.ONE_INCH,
@@ -88,10 +93,10 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
     [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([TRADE_TYPE.RAYDIUM]),
     [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([TRADE_TYPE.REF_FINANCE]),
     [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP, TRADE_TYPE.ZAPPY]),
-    [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([TRADE_TYPE.ONE_INCH]),
+    [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([TRADE_TYPE.ZRX]),
     [BLOCKCHAIN_NAME.OKE_X_CHAIN]: getDefaultStateByProviders([
       TRADE_TYPE.SUSHI_SWAP,
-      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.J_SWAP,
       TRADE_TYPE.DODO
     ]),
     [BLOCKCHAIN_NAME.GNOSIS]: getDefaultStateByProviders([

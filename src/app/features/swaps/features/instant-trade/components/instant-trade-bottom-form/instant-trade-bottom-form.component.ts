@@ -475,7 +475,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return new BigNumber(-Infinity);
     }
     const { gasFeeInfo, to } = trade;
-    if (!to.price) {
+    if (!to.price.isFinite()) {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);

@@ -128,33 +128,38 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.OPEN_OCEAN]: {
     name: 'OpenOcean',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
   },
   [TRADE_TYPE.DODO]: {
     name: 'Dodo',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
   },
   [TRADE_TYPE.HONEY_SWAP]: {
     name: 'Honeyswap',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
   },
   [TRADE_TYPE.STELLA_SWAP]: {
     name: 'Stellaswap',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
   },
   [TRADE_TYPE.BEAM_SWAP]: {
     name: 'Beamswap',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
   },
   [TRADE_TYPE.UBE_SWAP]: {
     name: 'Ubeswap',
-    image: `${imageBasePath}zappy.svg`,
-    color: '#00e7e7'
+    image: ``,
+    color: ''
+  },
+  [TRADE_TYPE.J_SWAP]: {
+    name: 'Jswap',
+    image: ``,
+    color: ''
   }
 };
 

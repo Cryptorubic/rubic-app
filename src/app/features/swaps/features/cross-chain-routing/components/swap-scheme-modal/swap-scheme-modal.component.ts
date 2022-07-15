@@ -64,7 +64,7 @@ enum MODAL_SWAP_STATUS {
 }
 
 @Component({
-  selector: 'app-swap-scheme-modal',
+  selector: 'polymorpheus-swap-scheme-modal',
   templateUrl: './swap-scheme-modal.component.html',
   styleUrls: ['./swap-scheme-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
