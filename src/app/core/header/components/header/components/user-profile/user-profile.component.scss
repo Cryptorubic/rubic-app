@@ -48,6 +48,8 @@
     img {
       display: block;
       height: auto;
+
+      border-radius: 50%;
     }
   }
 
@@ -76,12 +78,12 @@
   position: absolute;
   
   &_profile {
-    top: 0px;
+    top: 0;
     right: 35px;
   }
 
   &_menu {
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
   }
 }
