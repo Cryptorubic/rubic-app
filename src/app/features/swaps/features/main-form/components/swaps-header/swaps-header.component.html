@@ -3,15 +3,15 @@
     <div class="swaps-header__icon-wrapper">
       <img
         class="swaps-header__blockchain-from"
-        [src]="fromBlockchainItem?.image"
-        [alt]="fromBlockchainItem?.visibleName"
+        [src]="fromBlockchainItem.imagePath"
+        [alt]="fromBlockchainItem.label"
       />
     </div>
     <div class="swaps-header__icon-wrapper">
       <img
         class="swaps-header__blockchain-to"
-        [src]="toBlockchainItem?.image"
-        [alt]="toBlockchainItem?.visibleName"
+        [src]="toBlockchainItem.imagePath"
+        [alt]="toBlockchainItem.label"
       />
     </div>
   </div>
@@ -20,9 +20,9 @@
       {{ swapType$ | async }}
     </div>
     <div class="swaps-header__name">
-      <span>{{ fromBlockchainItem?.visibleName }}</span>
+      <span>{{ fromBlockchainItem.label }}</span>
       {{ 'blockchainSwap.to' | translate }}
-      <span>{{ toBlockchainItem?.visibleName }}</span>
+      <span>{{ toBlockchainItem.label }}</span>
     </div>
   </div>
 </div>

@@ -191,6 +191,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.smartRouting = null;
     }
 
+    if (!CrossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)) {
+      this.errorText = 'Selected blockchains are not supported in Cross-Chain';
+      return;
+    }
+
     this.conditionalCalculate('normal');
   }
 

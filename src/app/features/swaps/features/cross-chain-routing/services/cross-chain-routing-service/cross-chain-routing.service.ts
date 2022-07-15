@@ -53,6 +53,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
+import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -66,19 +67,37 @@ type CrossChainProviderTrade = Observable<
   providedIn: 'root'
 })
 export class CrossChainRoutingService extends TradeService {
+  private static readonly crossChainProviders = [
+    RubicCrossChainTradeProvider,
+    CelerCrossChainTradeProvider,
+    SymbiosisCrossChainTradeProvider,
+    LifiCrossChainTradeProvider
+  ];
+
+  public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
+    return Boolean(
+      this.crossChainProviders.find(provider => provider.isSupportedBlockchain(blockchainName))
+    );
+  }
+
+  public static isSupportedBlockchains(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): boolean {
+    return Boolean(
+      this.crossChainProviders.find(
+        provider =>
+          provider.isSupportedBlockchain(fromBlockchain) &&
+          provider.isSupportedBlockchain(toBlockchain)
+      )
+    );
+  }
+
   private readonly defaultTimeout = 20_000;
 
   public crossChainTrade: WrappedCrossChainTrade;
 
   public smartRouting: SmartRouting;
-
-  public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
-    return (
-      RubicCrossChainTradeProvider.isSupportedBlockchain(blockchainName) ||
-      CelerCrossChainTradeProvider.isSupportedBlockchain(blockchainName) ||
-      SymbiosisCrossChainTradeProvider.isSupportedBlockchain(blockchainName)
-    );
-  }
 
   constructor(
     private readonly sdk: RubicSdkService,
