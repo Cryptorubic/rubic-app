@@ -134,8 +134,10 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.FANTOM,
     label: 'Fantom',
     scannerUrl: 'https://ftmscan.com',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
-    additionalRpcLink: 'https://rpc.ankr.com/fantom/',
+    rpcLink:
+      'https://rpc.ankr.com/fantom/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    additionalRpcLink:
+      'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet',
     imagePath: 'assets/images/icons/coins/fantom.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.FANTOM,
