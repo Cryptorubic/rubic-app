@@ -4,15 +4,15 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'functionCall'
 })
 export class FunctionCallPipe implements PipeTransform {
-  public transform(
+  public transform<T = unknown>(
     value: unknown,
     handler: (value: unknown) => unknown,
     context?: unknown
-  ): unknown {
+  ): T {
     if (context) {
       return handler.call(context, value);
     }
 
-    return handler(value);
+    return handler(value) as T;
   }
 }

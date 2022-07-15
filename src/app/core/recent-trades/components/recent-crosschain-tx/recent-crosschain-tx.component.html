@@ -31,6 +31,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
           ></tr>
+          <tr
+            li-fi-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
+          ></tr>
         </ng-container>
       </tbody>
     </table>

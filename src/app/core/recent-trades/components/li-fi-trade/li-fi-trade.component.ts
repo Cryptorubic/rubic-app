@@ -2,18 +2,20 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
-  selector: '[rubic-trade]',
-  templateUrl: './rubic-trade.component.html',
-  styleUrls: ['./rubic-trade.component.scss'],
+  selector: '[li-fi-trade]',
+  templateUrl: './li-fi-trade.component.html',
+  styleUrls: ['./li-fi-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RubicTradeComponent extends CommonTrade {
+export class LiFiTradeComponent extends CommonTrade {
+  public String!: String;
+
   constructor(
     private readonly recentTradesService: RecentTradesService,
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -24,6 +26,6 @@ export class RubicTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return this.recentTradesService.getTradData(trade, CROSS_CHAIN_TRADE_TYPE.RUBIC);
+    return this.recentTradesService.getTradData(trade, CROSS_CHAIN_TRADE_TYPE.LIFI);
   }
 }

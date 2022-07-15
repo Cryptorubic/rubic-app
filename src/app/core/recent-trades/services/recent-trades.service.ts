@@ -20,11 +20,27 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
 import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
 import { TransactionStuckError } from 'symbiosis-js-sdk';
-import { BlockchainName, Token, Web3Public } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  Token,
+  Web3Public
+} from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
 import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { HttpService } from '@core/services/http/http.service';
+import { LifiSwapStatus } from '@shared/models/swaps/lifi-swap-status';
+
+type SetupStatusFn = (
+  trade: RecentTrade,
+  uiTrade: UiRecentTrade,
+  srcTransactionReceipt: TransactionReceipt,
+  statusFrom: RecentTradeStatus
+) => Promise<void>;
 
 @Injectable()
 export class RecentTradesService {
@@ -49,11 +65,11 @@ export class RecentTradesService {
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    private readonly sdk: RubicSdkService
+    private readonly sdk: RubicSdkService,
+    private readonly httpService: HttpService
   ) {}
 
-  public async getSymbiosisTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const isAverageTxTimeSpent = Date.now() - trade.timestamp > 120000;
+  public async getTradData(trade: RecentTrade, type: CrossChainTradeType): Promise<UiRecentTrade> {
     const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
     const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
@@ -86,78 +102,13 @@ export class RecentTradesService {
 
     uiTrade.statusFrom = statusFrom;
 
-    if (statusFrom === RecentTradeStatus.PENDING) {
-      uiTrade.statusTo = RecentTradeStatus.PENDING;
-    }
-
-    if (statusFrom === RecentTradeStatus.FAIL) {
-      uiTrade.statusTo = RecentTradeStatus.FAIL;
-    }
-
-    if (statusFrom === RecentTradeStatus.SUCCESS) {
-      if (!isAverageTxTimeSpent) {
-        uiTrade.statusTo = RecentTradeStatus.PENDING;
-      } else {
-        try {
-          const waitForCompleteResponse = this.sdk.symbiosis.waitForComplete(
-            trade.fromBlockchain,
-            trade.toBlockchain,
-            trade.toToken as unknown as Token, // @TODO change types
-            srcTransactionReceipt
-          );
-
-          if (waitForCompleteResponse) {
-            console.debug('[Symbiosis] cross-chain completed', waitForCompleteResponse);
-            uiTrade.statusTo = RecentTradeStatus.SUCCESS;
-          }
-        } catch (error) {
-          console.debug('[Symbiosis] error retrieving tx status', error);
-          if (error instanceof TransactionStuckError) {
-            uiTrade.statusTo = RecentTradeStatus.REVERT;
-          } else {
-            uiTrade.statusTo = RecentTradeStatus.PENDING;
-          }
-        }
-      }
-    }
-
-    return uiTrade;
-  }
-
-  public async getRubicTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
-    const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
-    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
-    const srcTxLink = this.scannerLinkPipe.transform(
-      srcTxHash,
-      trade.fromBlockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
-    const uiTrade: UiRecentTrade = {
-      fromBlockchain: fromBlockchainInfo,
-      toBlockchain: toBlockchainInfo,
-      fromToken,
-      toToken,
-      timestamp,
-      srcTxLink,
-      srcTxHash,
-      crossChainProviderType
+    const tradeFn: Record<CrossChainTradeType, SetupStatusFn> = {
+      [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]: this.setupSymbiosisStatuses,
+      [CROSS_CHAIN_TRADE_TYPE.CELER]: this.setupCelerStatuses,
+      [CROSS_CHAIN_TRADE_TYPE.RUBIC]: this.setupRubicStatuses,
+      [CROSS_CHAIN_TRADE_TYPE.LIFI]: this.setupLifiStatuses
     };
 
-    if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
-      uiTrade.statusTo = trade.calculatedStatusTo;
-      uiTrade.statusFrom = trade.calculatedStatusFrom;
-
-      return uiTrade;
-    }
-
-    const srcTransactionReceipt = await this.getTxReceipt(srcTxHash, srcWeb3);
-    const statusFrom = this.getSrcTxStatus(srcTransactionReceipt);
-
-    uiTrade.statusFrom = statusFrom;
-
     if (statusFrom === RecentTradeStatus.PENDING) {
       uiTrade.statusTo = RecentTradeStatus.PENDING;
     }
@@ -165,110 +116,9 @@ export class RecentTradesService {
     if (statusFrom === RecentTradeStatus.FAIL) {
       uiTrade.statusTo = RecentTradeStatus.FAIL;
     }
+    const setupTradesStatus = tradeFn[type];
 
-    if (statusFrom === RecentTradeStatus.SUCCESS) {
-      try {
-        const statusTo = Number(
-          await dstWeb3.callContractMethod(
-            CROSS_CHAIN_PROD.contractAddresses[trade.toBlockchain],
-            PROCESSED_TRANSACTION_METHOD_ABI,
-            'processedTransactions',
-            { methodArguments: [srcTxHash] }
-          )
-        );
-
-        if (statusTo === RubicSwapStatus.NULL) {
-          uiTrade.statusTo = RecentTradeStatus.PENDING;
-        }
-
-        if (statusTo === RubicSwapStatus.PROCESSED) {
-          uiTrade.statusTo = RecentTradeStatus.SUCCESS;
-        }
-
-        if (statusTo === RubicSwapStatus.REVERTED) {
-          uiTrade.statusTo = RecentTradeStatus.FAIL;
-        }
-      } catch (error) {
-        console.debug('[Rubic] Error retrieving tx status', error);
-        uiTrade.statusTo = RecentTradeStatus.PENDING;
-      }
-    }
-
-    return uiTrade;
-  }
-
-  public async getCelerTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
-    const srcWeb3 = Injector.web3PublicService.getWeb3Public(trade.fromBlockchain);
-    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
-    const srcTxLink = this.scannerLinkPipe.transform(
-      srcTxHash,
-      trade.fromBlockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
-    const uiTrade: UiRecentTrade = {
-      fromBlockchain: fromBlockchainInfo,
-      toBlockchain: toBlockchainInfo,
-      fromToken,
-      toToken,
-      timestamp,
-      srcTxLink,
-      srcTxHash,
-      crossChainProviderType
-    };
-
-    if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
-      uiTrade.statusTo = trade.calculatedStatusTo;
-      uiTrade.statusFrom = trade.calculatedStatusFrom;
-
-      return uiTrade;
-    }
-
-    const srcTransactionReceipt = await this.getTxReceipt(srcTxHash, srcWeb3);
-    const statusFrom = this.getSrcTxStatus(srcTransactionReceipt);
-
-    uiTrade.statusFrom = statusFrom;
-
-    if (statusFrom === RecentTradeStatus.PENDING) {
-      uiTrade.statusTo = RecentTradeStatus.PENDING;
-    }
-
-    if (statusFrom === RecentTradeStatus.FAIL) {
-      uiTrade.statusTo = RecentTradeStatus.FAIL;
-    }
-
-    if (statusFrom === RecentTradeStatus.SUCCESS) {
-      try {
-        const [requestLog] = decodeLogs(celerContractAbi, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
-        const dstTransactionStatus = Number(
-          await dstWeb3.callContractMethod(
-            celerContract[trade.toBlockchain],
-            celerContractAbi,
-            'txStatusById',
-            {
-              methodArguments: [requestLog.params.find(param => param.name === 'id').value]
-            }
-          )
-        ) as CelerSwapStatus;
-
-        if (dstTransactionStatus === CelerSwapStatus.NULL) {
-          uiTrade.statusTo = RecentTradeStatus.PENDING;
-        }
-
-        if (dstTransactionStatus === CelerSwapStatus.FAILED) {
-          uiTrade.statusTo = RecentTradeStatus.FAIL;
-        }
-
-        if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
-          uiTrade.statusTo = RecentTradeStatus.SUCCESS;
-        }
-      } catch (error) {
-        console.debug('[Celer] error retrieving tx status', error);
-        uiTrade.statusTo = RecentTradeStatus.PENDING;
-      }
-    }
+    await setupTradesStatus(trade, uiTrade, srcTransactionReceipt, statusFrom);
 
     return uiTrade;
   }
@@ -351,4 +201,157 @@ export class RecentTradesService {
   public readAllTrades(): void {
     setTimeout(() => this.recentTradesStoreService.updateUnreadTrades(true), 0);
   }
+
+  private setupLifiStatuses: SetupStatusFn = async (
+    trade: RecentTrade,
+    uiTrade: UiRecentTrade,
+    srcTransactionReceipt: TransactionReceipt,
+    statusFrom: RecentTradeStatus
+  ) => {
+    if (statusFrom === RecentTradeStatus.SUCCESS) {
+      const bridgeType = trade?.bridgeType;
+      if (!bridgeType) {
+        uiTrade.statusTo = RecentTradeStatus.PENDING;
+        return;
+      }
+      const requestParams = {
+        bridge: trade.bridgeType,
+        fromChain: BlockchainsInfo.getBlockchainByName(trade.fromBlockchain).id,
+        toChain: BlockchainsInfo.getBlockchainByName(trade.toBlockchain).id,
+        txHash: srcTransactionReceipt.transactionHash
+      };
+      const status = (
+        await this.httpService
+          .get<{ status: LifiSwapStatus }>('status', requestParams, 'https://li.quest/v1/')
+          .toPromise()
+      ).status;
+
+      if (status === LifiSwapStatus.DONE) {
+        uiTrade.statusTo = RecentTradeStatus.SUCCESS;
+        return;
+      }
+      if (status === LifiSwapStatus.FAILED) {
+        uiTrade.statusTo = RecentTradeStatus.FAIL;
+        return;
+      }
+      if (
+        status === LifiSwapStatus.INVALID ||
+        status === LifiSwapStatus.NOT_FOUND ||
+        status === LifiSwapStatus.PENDING
+      ) {
+        uiTrade.statusTo = RecentTradeStatus.PENDING;
+        return;
+      }
+    }
+  };
+
+  private setupSymbiosisStatuses: SetupStatusFn = async (
+    trade: RecentTrade,
+    uiTrade: UiRecentTrade,
+    srcTransactionReceipt: TransactionReceipt,
+    statusFrom: RecentTradeStatus
+  ) => {
+    const isAverageTxTimeSpent = Date.now() - trade.timestamp > 120000;
+    if (statusFrom === RecentTradeStatus.SUCCESS) {
+      if (!isAverageTxTimeSpent) {
+        uiTrade.statusTo = RecentTradeStatus.PENDING;
+      } else {
+        try {
+          const waitForCompleteResponse = this.sdk.symbiosis.waitForComplete(
+            trade.fromBlockchain,
+            trade.toBlockchain,
+            trade.toToken as unknown as Token, // @TODO change types
+            srcTransactionReceipt
+          );
+
+          if (waitForCompleteResponse) {
+            console.debug('[Symbiosis] cross-chain completed', waitForCompleteResponse);
+            uiTrade.statusTo = RecentTradeStatus.SUCCESS;
+          }
+        } catch (error) {
+          console.debug('[Symbiosis] error retrieving tx status', error);
+          if (error instanceof TransactionStuckError) {
+            uiTrade.statusTo = RecentTradeStatus.REVERT;
+          } else {
+            uiTrade.statusTo = RecentTradeStatus.PENDING;
+          }
+        }
+      }
+    }
+  };
+
+  private setupCelerStatuses: SetupStatusFn = async (
+    trade: RecentTrade,
+    uiTrade: UiRecentTrade,
+    srcTransactionReceipt: TransactionReceipt,
+    statusFrom: RecentTradeStatus
+  ) => {
+    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
+    if (statusFrom === RecentTradeStatus.SUCCESS) {
+      try {
+        const [requestLog] = decodeLogs(celerContractAbi, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
+        const dstTransactionStatus = Number(
+          await dstWeb3.callContractMethod(
+            celerContract[trade.toBlockchain],
+            celerContractAbi,
+            'txStatusById',
+            {
+              methodArguments: [requestLog.params.find(param => param.name === 'id').value]
+            }
+          )
+        ) as CelerSwapStatus;
+
+        if (dstTransactionStatus === CelerSwapStatus.NULL) {
+          uiTrade.statusTo = RecentTradeStatus.PENDING;
+        }
+
+        if (dstTransactionStatus === CelerSwapStatus.FAILED) {
+          uiTrade.statusTo = RecentTradeStatus.FAIL;
+        }
+
+        if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
+          uiTrade.statusTo = RecentTradeStatus.SUCCESS;
+        }
+      } catch (error) {
+        console.debug('[Celer] error retrieving tx status', error);
+        uiTrade.statusTo = RecentTradeStatus.PENDING;
+      }
+    }
+  };
+
+  private setupRubicStatuses: SetupStatusFn = async (
+    trade: RecentTrade,
+    uiTrade: UiRecentTrade,
+    _srcTransactionReceipt: TransactionReceipt,
+    statusFrom: RecentTradeStatus
+  ) => {
+    const dstWeb3 = Injector.web3PublicService.getWeb3Public(trade.toBlockchain);
+    if (statusFrom === RecentTradeStatus.SUCCESS) {
+      try {
+        const statusTo = Number(
+          await dstWeb3.callContractMethod(
+            CROSS_CHAIN_PROD.contractAddresses[trade.toBlockchain],
+            PROCESSED_TRANSACTION_METHOD_ABI,
+            'processedTransactions',
+            { methodArguments: [trade.srcTxHash] }
+          )
+        );
+
+        if (statusTo === RubicSwapStatus.NULL) {
+          uiTrade.statusTo = RecentTradeStatus.PENDING;
+        }
+
+        if (statusTo === RubicSwapStatus.PROCESSED) {
+          uiTrade.statusTo = RecentTradeStatus.SUCCESS;
+        }
+
+        if (statusTo === RubicSwapStatus.REVERTED) {
+          uiTrade.statusTo = RecentTradeStatus.FAIL;
+        }
+      } catch (error) {
+        console.debug('[Rubic] Error retrieving tx status', error);
+        uiTrade.statusTo = RecentTradeStatus.PENDING;
+      }
+    }
+  };
 }
