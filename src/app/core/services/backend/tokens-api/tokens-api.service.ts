@@ -191,15 +191,24 @@ export class TokensApiService {
         map(wrappedTokens =>
           lifiChains
             .map(chainId =>
-              wrappedTokens.tokens[chainId].map(token => ({
-                ...token,
-                blockchain: BlockchainsInfo.getBlockchainById(chainId).name,
-                image: token.logoURI,
-                rank: 0,
-                price: NaN,
-                usedInIframe: false,
-                hasDirectPair: null
-              }))
+              wrappedTokens.tokens[chainId].map(token => {
+                const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
+                const name =
+                  blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
+                    ? token.name
+                    : token.name.slice(0, token.name.length - 8);
+
+                return {
+                  ...token,
+                  blockchain,
+                  name,
+                  image: token.logoURI,
+                  rank: 0,
+                  price: NaN,
+                  usedInIframe: false,
+                  hasDirectPair: null
+                };
+              })
             )
             .flat()
         )
