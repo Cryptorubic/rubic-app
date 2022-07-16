@@ -441,10 +441,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
       const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
-      const amountsDelta = bAmount
-        .multipliedBy(b.price)
-        .minus(aAmount.multipliedBy(a.price))
-        .toNumber();
+      const amountsDelta = bAmount.minus(aAmount).toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
     return tokens.sort(comparator);

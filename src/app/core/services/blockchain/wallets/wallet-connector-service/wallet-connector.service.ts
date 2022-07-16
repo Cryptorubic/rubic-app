@@ -346,7 +346,7 @@ export class WalletConnectorService {
         rpc: 'https://exchainrpc.okex.org'
       },
       [BLOCKCHAIN_NAME.GNOSIS]: {
-        name: 'Gnosis',
+        name: 'Gnosis Chain',
         rpc: 'https://rpc.gnosischain.com'
       },
       [BLOCKCHAIN_NAME.FUSE]: {

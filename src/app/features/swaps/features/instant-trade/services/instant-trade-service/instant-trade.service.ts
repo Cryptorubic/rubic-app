@@ -122,7 +122,7 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
     });
   }
 
@@ -145,7 +145,7 @@ export class InstantTradeService extends TradeService {
     let transactionHash: string;
     let subscription$: Subscription;
 
-    const gasPrice = shouldCalculateGas[blockchain];
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
     const options = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -163,7 +163,7 @@ export class InstantTradeService extends TradeService {
 
         this.postTrade(hash, providerName, trade);
       },
-      ...(Boolean(gasPrice) && {
+      ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       })
     };
