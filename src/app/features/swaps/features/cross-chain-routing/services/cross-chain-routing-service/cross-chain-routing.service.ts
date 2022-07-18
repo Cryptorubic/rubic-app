@@ -80,19 +80,6 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  public static isSupportedBlockchains(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): boolean {
-    return Boolean(
-      this.crossChainProviders.find(
-        provider =>
-          provider.isSupportedBlockchain(fromBlockchain) &&
-          provider.isSupportedBlockchain(toBlockchain)
-      )
-    );
-  }
-
   private readonly defaultTimeout = 20_000;
 
   public crossChainTrade: WrappedCrossChainTrade;
@@ -114,6 +101,17 @@ export class CrossChainRoutingService extends TradeService {
     private readonly authService: AuthService
   ) {
     super('cross-chain-routing');
+  }
+
+  public isSupportedBlockchains(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): boolean {
+    return Boolean(
+      Object.values(this.sdk.crossChain.tradeProviders).find(provider =>
+        provider.isSupportedBlockchains(fromBlockchain, toBlockchain)
+      )
+    );
   }
 
   public calculateTrade(userAuthorized: boolean): CrossChainProviderTrade {

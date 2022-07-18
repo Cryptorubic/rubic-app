@@ -194,7 +194,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     if (
       form.fromToken &&
       form.toToken &&
-      !CrossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
+      !this.crossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
     ) {
       this.errorText = 'Selected blockchains are not supported in Cross-Chain';
       return;
