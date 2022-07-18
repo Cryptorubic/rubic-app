@@ -87,9 +87,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
    */
   public withApproveButton: boolean;
 
-  public minError: false | BigNumber;
+  public minError: false | { amount: BigNumber; symbol: string };
 
-  public maxError: false | BigNumber;
+  public maxError: false | { amount: BigNumber; symbol: string };
 
   public errorText: string;
 
@@ -279,8 +279,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
-              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
+              this.minError =
+                error instanceof CrossChainMinAmountError
+                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
+                  : false;
+              this.maxError =
+                error instanceof CrossChainMaxAmountError
+                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
+                  : false;
               this.errorText = '';
 
               this.needApprove = needApprove;
@@ -351,8 +357,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
-              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
+              this.minError =
+                error instanceof CrossChainMinAmountError
+                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
+                  : false;
+              this.maxError =
+                error instanceof CrossChainMaxAmountError
+                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
+                  : false;
 
               this.hiddenTradeData = { toAmount: trade?.to?.tokenAmount };
               if (
