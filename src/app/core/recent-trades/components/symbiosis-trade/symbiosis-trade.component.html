@@ -31,7 +31,7 @@
     <a [href]="uiTrade?.srcTxLink" target="_blank" [class.tui-skeleton]="initialLoading">
       <app-status-badge
         [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-        [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
+        [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
         cursor="pointer"
       ></app-status-badge>
     </a>
@@ -59,7 +59,7 @@
   <td class="status-to">
     <app-status-badge
       [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-      [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
+      [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
       *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
       [class.tui-skeleton]="initialLoading"
     >
@@ -70,7 +70,7 @@
 <ng-template #mobile>
   <div class="tx">
     <div class="tx__row">
-      <div class="tx__row-label">Date</div>
+      <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         {{
           (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">From</div>
+      <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -97,19 +97,19 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">Status From</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusFrom' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <a class="tx__status-from" [href]="uiTrade?.srcTxLink" target="_blank">
           <app-status-badge
             [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-            [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
+            [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
           >
           </app-status-badge>
         </a>
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">To</div>
+      <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -128,11 +128,11 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">Status To</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-          [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
+          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
           *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
         >
         </app-status-badge>
@@ -143,11 +143,7 @@
 </ng-template>
 
 <ng-template #revert>
-  <app-rubic-button
-    appearance="secondary"
-    class="revert"
-    (onClick)="revertSymbiosis(uiTrade.srcTxHash, uiTrade.fromBlockchain.key)"
-  >
+  <app-rubic-button appearance="secondary" class="revert" (onClick)="revertSymbiosis()">
     {{ 'common.revert' | translate }}
   </app-rubic-button>
 </ng-template>

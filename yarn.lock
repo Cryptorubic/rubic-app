@@ -13825,10 +13825,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@^2.4.4-alpha.0:
-  version "2.4.4-alpha.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.4.4-alpha.0.tgz#273b58e8d4a516a42d1d4e3bf249c0f38c00b133"
-  integrity sha512-AR+Q9lU+RzU81pnGFswm0FkA1e0Y7BoFp5Kd+V85FJ3xQJD4IbmcIaauEr2IisgOIDINaO6UVcItu1aVCnOBfA==
+rubic-sdk@^2.4.5:
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.4.5.tgz#dfa85ab27446b604a7c1d47884d15158f46597db"
+  integrity sha512-IQdHpZs4UY8wqFegSvtf1XIXPaB0Wwm+FGAnB0xRSlrhYiPT1lzsHR+ScS5T3sgAK0I7idIutsbgLiJ+l3pjQA==
   dependencies:
     "@lifinance/sdk" "^1.0.0-beta.12"
     assert "^2.0.0"

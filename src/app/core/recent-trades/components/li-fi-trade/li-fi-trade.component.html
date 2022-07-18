@@ -69,7 +69,7 @@
 <ng-template #mobile>
   <div class="tx">
     <div class="tx__row">
-      <div class="tx__row-label">Date</div>
+      <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         {{
           (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">From</div>
+      <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -96,7 +96,7 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">Status From</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusFrom' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <a class="tx__status-from" [href]="uiTrade?.srcTxLink" target="_blank">
           <app-status-badge
@@ -108,7 +108,7 @@
       </div>
     </div>
     <div class="tx__row">
-      <div class="tx__row-label">To</div>
+      <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -126,8 +126,9 @@
         </div>
       </div>
     </div>
+
     <div class="tx__row">
-      <div class="tx__row-label">Status To</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"

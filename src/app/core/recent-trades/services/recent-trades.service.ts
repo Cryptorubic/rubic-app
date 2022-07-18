@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
@@ -34,6 +34,7 @@ import { celerContract } from '@core/recent-trades/constants/celer-contract-addr
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { HttpService } from '@core/services/http/http.service';
 import { LifiSwapStatus } from '@shared/models/swaps/lifi-swap-status';
+import { catchError } from 'rxjs/operators';
 
 type SetupStatusFn = (
   trade: RecentTrade,
@@ -223,6 +224,11 @@ export class RecentTradesService {
       const status = (
         await this.httpService
           .get<{ status: LifiSwapStatus }>('status', requestParams, 'https://li.quest/v1/')
+          .pipe(
+            catchError(() => {
+              return of({ status: LifiSwapStatus.PENDING });
+            })
+          )
           .toPromise()
       ).status;
 
