@@ -5,6 +5,7 @@ export interface LifiToken {
   decimals: number;
   chainId: number;
   logoURI: string;
+  priceUSD: string;
 }
 
 export interface LifiTokens {

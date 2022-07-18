@@ -24,7 +24,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainsInfo } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
 
 /**
@@ -191,24 +191,32 @@ export class TokensApiService {
         map(wrappedTokens =>
           lifiChains
             .map(chainId =>
-              wrappedTokens.tokens[chainId].map(token => {
-                const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
-                const name =
-                  blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
-                    ? token.name
-                    : token.name.slice(0, token.name.length - 8);
+              wrappedTokens.tokens[chainId]
+                .filter(token => {
+                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
+                  return !(
+                    blockchain === BLOCKCHAIN_NAME.OPTIMISM &&
+                    compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+                  );
+                })
+                .map(token => {
+                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
+                  const name =
+                    blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
+                      ? token.name
+                      : token.name.slice(0, token.name.length - 8);
 
-                return {
-                  ...token,
-                  blockchain,
-                  name,
-                  image: token.logoURI,
-                  rank: 0,
-                  price: NaN,
-                  usedInIframe: false,
-                  hasDirectPair: null
-                };
-              })
+                  return {
+                    ...token,
+                    blockchain,
+                    name,
+                    image: token.logoURI,
+                    rank: 0,
+                    price: parseFloat(token.priceUSD),
+                    usedInIframe: false,
+                    hasDirectPair: null
+                  };
+                })
             )
             .flat()
         )
