@@ -8,13 +8,15 @@ import { CelerTradeComponent } from './components/celer-trade/celer-trade.compon
 import { SymbiosisTradeComponent } from './components/symbiosis-trade/symbiosis-trade.component';
 import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { LiFiTradeComponent } from '@core/recent-trades/components/li-fi-trade/li-fi-trade.component';
 
 @NgModule({
   declarations: [
     RecentCrosschainTxComponent,
     CelerTradeComponent,
     SymbiosisTradeComponent,
-    RubicTradeComponent
+    RubicTradeComponent,
+    LiFiTradeComponent
   ],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],

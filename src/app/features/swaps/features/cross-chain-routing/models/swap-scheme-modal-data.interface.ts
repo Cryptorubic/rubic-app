@@ -10,4 +10,5 @@ export interface SwapSchemeModalData {
   toBlockchain: BlockchainName;
   crossChainProvider: CrossChainTradeType;
   srcTxHash: string;
+  bridgeType?: string;
 }

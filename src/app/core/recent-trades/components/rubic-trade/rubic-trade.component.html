@@ -27,7 +27,7 @@
     <a [href]="uiTrade?.srcTxLink" target="_blank">
       <app-status-badge
         [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-        [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
+        [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
         cursor="pointer"
       ></app-status-badge>
     </a>
@@ -55,7 +55,7 @@
   <td class="status-to" [class.tui-skeleton]="initialLoading">
     <app-status-badge
       [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-      [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
+      [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
     >
     </app-status-badge>
   </td>
@@ -65,7 +65,7 @@
   <div class="tx">
     <!-- Transaction date -->
     <div class="tx__row">
-      <div class="tx__row-label">Date</div>
+      <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         {{
           (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
@@ -75,7 +75,7 @@
 
     <!-- Src crypto-asset -->
     <div class="tx__row">
-      <div class="tx__row-label">From</div>
+      <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -96,12 +96,12 @@
 
     <!-- Status of src transaction -->
     <div class="tx__row">
-      <div class="tx__row-label">Status From</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusFrom' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <a class="tx__status-from" [href]="uiTrade?.srcTxLink" target="_blank">
           <app-status-badge
             [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-            [text]="uiTrade?.statusFrom | functionCall: getStatusBadgeText:this | translate"
+            [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
           >
           </app-status-badge>
         </a>
@@ -110,7 +110,7 @@
 
     <!-- Dst crypto-asset -->
     <div class="tx__row">
-      <div class="tx__row-label">To</div>
+      <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <div
           class="tx__token-image"
@@ -131,11 +131,11 @@
 
     <!-- Status of dst transaction -->
     <div class="tx__row">
-      <div class="tx__row-label">Status To</div>
+      <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-          [text]="uiTrade?.statusTo | functionCall: getStatusBadgeText:this | translate"
+          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
         >
         </app-status-badge>
       </div>

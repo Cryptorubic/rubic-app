@@ -21,11 +21,11 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
 
   public readonly RecentTradeStatus = RecentTradeStatus;
 
-  public readonly getStatusBadgeType = getStatusBadgeType;
+  public readonly getStatusBadgeType: (status: RecentTradeStatus) => string = getStatusBadgeType;
 
-  public readonly getStatusBadgeText = getStatusBadgeText;
+  public readonly getStatusBadgeText: (status: RecentTradeStatus) => string = getStatusBadgeText;
 
-  constructor(
+  protected constructor(
     protected readonly recentTradesStoreService: RecentTradesStoreService,
     protected readonly cdr: ChangeDetectorRef,
     protected readonly destroy$: TuiDestroyService
