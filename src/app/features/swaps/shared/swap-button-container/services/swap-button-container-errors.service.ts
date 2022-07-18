@@ -16,6 +16,8 @@ import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { isNil } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -66,6 +68,7 @@ export class SwapButtonContainerErrorsService {
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
+    private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -89,6 +92,7 @@ export class SwapButtonContainerErrorsService {
         this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
         this.checkWalletSupportsFromBlockchain();
+        this.checkSelectedToken();
         this.checkUserBlockchain();
         this.checkUserBalance();
 
@@ -162,6 +166,18 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
+  private checkSelectedToken(): void {
+    if (
+      isNil(this.swapFormService.inputValue?.fromToken) &&
+      isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
+      isNil(this.queryParamsService.currentQueryParams?.from)
+    ) {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = true;
+    } else {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = false;
+    }
+  }
+
   /**
    * Checks that user's selected blockchain is equal to from blockchain.
    */
@@ -230,6 +246,10 @@ export class SwapButtonContainerErrorsService {
         translateParams = { key: 'errors.multichainWallet' };
         break;
       }
+      case err[ERROR_TYPE.NO_SELECTED_TOKEN]:
+        type = ERROR_TYPE.NO_SELECTED_TOKEN;
+        translateParams = { key: 'errors.noSelectedToken' };
+        break;
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         type = ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {

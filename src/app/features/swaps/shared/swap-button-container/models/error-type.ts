@@ -10,5 +10,7 @@ export enum ERROR_TYPE {
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
 
   SOL_SWAP = 'Wrap SOL firstly',
-  SOLANA_UNAVAILABLE = 'Solana in unavailable'
+  SOLANA_UNAVAILABLE = 'Solana in unavailable',
+
+  NO_SELECTED_TOKEN = 'Select token'
 }

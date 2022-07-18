@@ -92,7 +92,8 @@
     "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。",
     "buttonLink": "學到更多",
     "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
-    "walletNotInstalled": "未安装钱包"
+    "walletNotInstalled": "未安装钱包",
+    "noSelectedToken": "选择令牌"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

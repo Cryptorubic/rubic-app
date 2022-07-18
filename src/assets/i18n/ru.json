@@ -92,7 +92,8 @@
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
     "buttonLink": "Узнать больше",
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
-    "walletNotInstalled": "Кошелек не установлен."
+    "walletNotInstalled": "Кошелек не установлен.",
+    "noSelectedToken": "Выберите токен"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
