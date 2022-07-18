@@ -219,22 +219,7 @@ export class CrossChainRoutingService extends TradeService {
       })
     };
 
-    try {
-      await this.crossChainTrade.trade.swap(swapOptions);
-    } catch (err) {
-      if (
-        this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI &&
-        err.message.includes('Request failed with status code 500')
-      ) {
-        throw new RubicError(
-          ERROR_TYPE.TEXT,
-          undefined,
-          "Unfortunately, the provider couldn't generate the transaction. Please try again later."
-        );
-      }
-
-      throw err;
-    }
+    await this.crossChainTrade.trade.swap(swapOptions);
 
     this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
   }
