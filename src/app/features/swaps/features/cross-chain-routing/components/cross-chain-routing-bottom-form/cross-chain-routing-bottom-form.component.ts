@@ -39,7 +39,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
@@ -283,6 +283,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               }
               if (
                 error !== undefined &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
                   (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
@@ -361,6 +362,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               }
               if (
                 error &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
                   (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
