@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { StoreService } from '../store/store.service';
 import { BlockchainName } from 'rubic-sdk';
 
-const MAX_LATEST_TRADES = 3;
+const MAX_LATEST_TRADES = 5;
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +87,7 @@ export class RecentTradesStoreService {
       return;
     }
 
-    if (currentUsersUnreadTrades === 3) {
+    if (currentUsersUnreadTrades === MAX_LATEST_TRADES) {
       return;
     }
 
