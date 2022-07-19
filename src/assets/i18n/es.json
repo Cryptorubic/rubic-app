@@ -91,7 +91,8 @@
     "rpcError": "Se produjo un error, para saber qué hacer para resolverlo, siga el enlace a continuación.",
     "buttonLink": "Más información",
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
-    "walletNotInstalled": "La billetera no está instalada."
+    "walletNotInstalled": "La billetera no está instalada.",
+    "noSelectedToken": "Seleccionar token"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

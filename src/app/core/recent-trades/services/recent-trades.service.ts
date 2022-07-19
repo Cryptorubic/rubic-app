@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { of, Subscription } from 'rxjs';
 import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
@@ -10,7 +10,7 @@ import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { RecentTradeStatus } from '../models/recent-trade-status.enum';
 import { decodeLogs } from '../../../shared/utils/decode-logs';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ErrorsService } from '@app/core/errors/errors.service';
@@ -32,6 +32,7 @@ import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
 import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { HttpService } from '@core/services/http/http.service';
 import { LifiSwapStatus } from '@shared/models/swaps/lifi-swap-status';
 import { catchError } from 'rxjs/operators';
@@ -65,7 +66,6 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly sdk: RubicSdkService,
     private readonly httpService: HttpService
   ) {}
@@ -336,7 +336,7 @@ export class RecentTradesService {
       try {
         const statusTo = Number(
           await dstWeb3.callContractMethod(
-            CROSS_CHAIN_PROD.contractAddresses[trade.toBlockchain],
+            CROSS_CHAIN_PROD.contractAddresses[trade.toBlockchain as SupportedCrossChainBlockchain],
             PROCESSED_TRANSACTION_METHOD_ABI,
             'processedTransactions',
             { methodArguments: [trade.srcTxHash] }

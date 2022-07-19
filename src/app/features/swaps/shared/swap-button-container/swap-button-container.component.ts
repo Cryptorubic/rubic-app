@@ -28,11 +28,15 @@ export class SwapButtonContainerComponent {
     return this.swapButtonContainerService.idPrefix;
   }
 
-  @Input() set minAmount(value: false | number | BigNumber) {
+  @Input() set minAmount(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ) {
     this.swapButtonContainerErrorsService.setMinAmountError(value);
   }
 
-  @Input() set maxAmount(value: false | number | BigNumber) {
+  @Input() set maxAmount(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ) {
     this.swapButtonContainerErrorsService.setMaxAmountError(value);
   }
 

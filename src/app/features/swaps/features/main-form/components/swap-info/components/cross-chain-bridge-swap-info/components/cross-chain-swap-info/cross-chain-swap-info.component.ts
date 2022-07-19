@@ -165,7 +165,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
                 this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
 
-                this.setSymbiosisTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
+                this.setSymbiosisOrLifiTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
               } else {
                 this.isSymbiosisOrLifi = false;
 
@@ -184,7 +184,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
       .subscribe();
   }
 
-  private setSymbiosisTradeInfoParameters(tradeInfo: SymbiosisTradeInfo): void {
+  private setSymbiosisOrLifiTradeInfoParameters(tradeInfo: SymbiosisTradeInfo): void {
     this.priceImpact = parseFloat(tradeInfo.priceImpact);
     this.priceImpactService.setPriceImpact(this.priceImpact);
 

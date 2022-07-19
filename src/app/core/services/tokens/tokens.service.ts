@@ -20,6 +20,7 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BlockchainName, Web3Pure } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -535,7 +536,23 @@ export class TokensService {
    * @param blockchain Tokens blockchain.
    */
   public fetchQueryTokens(query: string, blockchain: BlockchainName): Observable<List<Token>> {
+    query = query.toLowerCase();
     const isAddress = query.length >= 42;
+
+    const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
+    if (isLifiTokens) {
+      return of(
+        this.tokens.filter(
+          token =>
+            token.blockchain === blockchain &&
+            ((isAddress && compareAddresses(token.address, query)) ||
+              (!isAddress &&
+                (token.name.toLowerCase().includes(query) ||
+                  token.symbol.toLowerCase().includes(query))))
+        )
+      );
+    }
+
     const params: TokensRequestQueryOptions = {
       network: blockchain,
       ...(!isAddress && { symbol: query }),

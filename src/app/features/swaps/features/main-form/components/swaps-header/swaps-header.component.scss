@@ -25,6 +25,10 @@
     background: var(--main-form-background);
     border-radius: 50%;
 
+    img {
+      border-radius: 50%;
+    }
+
     &:last-child {
       margin-left: -15px;
     }

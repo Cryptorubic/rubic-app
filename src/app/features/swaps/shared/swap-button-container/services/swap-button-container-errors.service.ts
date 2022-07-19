@@ -16,6 +16,8 @@ import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { isNil } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -66,6 +68,7 @@ export class SwapButtonContainerErrorsService {
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
+    private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -89,6 +92,7 @@ export class SwapButtonContainerErrorsService {
         this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
         this.checkWalletSupportsFromBlockchain();
+        this.checkSelectedToken();
         this.checkUserBlockchain();
         this.checkUserBalance();
 
@@ -162,6 +166,18 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
+  private checkSelectedToken(): void {
+    if (
+      isNil(this.swapFormService.inputValue?.fromToken) &&
+      isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
+      isNil(this.queryParamsService.currentQueryParams?.from)
+    ) {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = true;
+    } else {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = false;
+    }
+  }
+
   /**
    * Checks that user's selected blockchain is equal to from blockchain.
    */
@@ -230,6 +246,10 @@ export class SwapButtonContainerErrorsService {
         translateParams = { key: 'errors.multichainWallet' };
         break;
       }
+      case err[ERROR_TYPE.NO_SELECTED_TOKEN]:
+        type = ERROR_TYPE.NO_SELECTED_TOKEN;
+        translateParams = { key: 'errors.noSelectedToken' };
+        break;
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         type = ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
@@ -298,8 +318,11 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
-  public setMinAmountError(minAmount: false | number | BigNumber): void {
-    if (minAmount) {
+  public setMinAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const minAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof minAmount === 'number') {
         this.minAmount = minAmount.toString();
       } else {
@@ -308,7 +331,12 @@ export class SwapButtonContainerErrorsService {
           'toClosestValue'
         );
       }
-      this.minAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.minAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
@@ -316,8 +344,11 @@ export class SwapButtonContainerErrorsService {
     this.updateError();
   }
 
-  public setMaxAmountError(maxAmount: false | number | BigNumber): void {
-    if (maxAmount) {
+  public setMaxAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const maxAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof maxAmount === 'number') {
         this.maxAmount = maxAmount.toString();
       } else {
@@ -327,7 +358,12 @@ export class SwapButtonContainerErrorsService {
           { roundingMode: BigNumber.ROUND_HALF_UP }
         );
       }
-      this.maxAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.maxAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;

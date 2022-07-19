@@ -87,9 +87,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
    */
   public withApproveButton: boolean;
 
-  public minError: false | BigNumber;
+  public minError: false | { amount: BigNumber; symbol: string };
 
-  public maxError: false | BigNumber;
+  public maxError: false | { amount: BigNumber; symbol: string };
 
   public errorText: string;
 
@@ -191,6 +191,26 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.smartRouting = null;
     }
 
+    if (
+      form.fromToken &&
+      form.toToken &&
+      !this.crossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
+    ) {
+      const unsupportedBlockchain = !CrossChainRoutingService.isSupportedBlockchain(
+        form.fromBlockchain
+      )
+        ? form.fromBlockchain
+        : !CrossChainRoutingService.isSupportedBlockchain(form.toBlockchain)
+        ? form.toBlockchain
+        : null;
+      if (unsupportedBlockchain) {
+        this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
+      } else {
+        this.errorText = 'Selected blockchains are not supported in Cross-Chain.';
+      }
+      return;
+    }
+
     this.conditionalCalculate('normal');
   }
 
@@ -270,8 +290,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
-              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
+              this.minError =
+                error instanceof CrossChainMinAmountError
+                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
+                  : false;
+              this.maxError =
+                error instanceof CrossChainMaxAmountError
+                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
+                  : false;
               this.errorText = '';
 
               this.needApprove = needApprove;
@@ -342,8 +368,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 return;
               }
 
-              this.minError = error instanceof CrossChainMinAmountError ? error.minAmount : false;
-              this.maxError = error instanceof CrossChainMaxAmountError ? error.maxAmount : false;
+              this.minError =
+                error instanceof CrossChainMinAmountError
+                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
+                  : false;
+              this.maxError =
+                error instanceof CrossChainMaxAmountError
+                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
+                  : false;
 
               this.hiddenTradeData = { toAmount: trade?.to?.tokenAmount };
               if (
