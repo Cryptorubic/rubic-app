@@ -17,7 +17,8 @@ import {
   EncodeTransactionOptions,
   Web3Pure,
   Web3Public,
-  TransactionOptions
+  TransactionOptions,
+  UnnecessaryApproveError
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -79,6 +80,11 @@ export class InstantTradeService extends TradeService {
       });
 
       this.notificationsService.showApproveSuccessful();
+    } catch (err) {
+      if (err instanceof UnnecessaryApproveError) {
+        return;
+      }
+      throw err;
     } finally {
       subscription$?.unsubscribe();
     }
