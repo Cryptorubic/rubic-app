@@ -91,7 +91,8 @@
     "rpcError": "Bir hata oluştu, bunu çözmek için ne yapacağınızı öğrenmek için aşağıdaki bağlantıyı takip edin.",
     "buttonLink": "Daha fazla bilgi edin",
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
-    "walletNotInstalled": "Cüzdan yüklü değil."
+    "walletNotInstalled": "Cüzdan yüklü değil.",
+    "noSelectedToken": "Token seç"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
