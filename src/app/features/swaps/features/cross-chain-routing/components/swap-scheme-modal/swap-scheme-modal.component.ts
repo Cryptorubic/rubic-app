@@ -44,6 +44,7 @@ import { CommonModalService } from '@app/core/services/modal/common-modal.servic
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   Token,
@@ -54,6 +55,8 @@ import { celerContract } from '@core/recent-trades/constants/celer-contract-addr
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
+import { LifiSwapStatus } from '@shared/models/swaps/lifi-swap-status';
+import { HttpService } from '@core/services/http/http.service';
 
 enum MODAL_SWAP_STATUS {
   SUCCESS = 'SUCCESS',
@@ -120,6 +123,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
+  private bridgeType: string | undefined;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -131,7 +136,8 @@ export class SwapSchemeModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    private readonly sdk: RubicSdkService
+    private readonly sdk: RubicSdkService,
+    private readonly httpService: HttpService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -210,6 +216,10 @@ export class SwapSchemeModalComponent implements OnInit {
               if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.CELER) {
                 return this.getCelerDstTxStatus();
               }
+
+              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+                return this.getLifiDstTxStatus();
+              }
             })
           );
         }),
@@ -220,6 +230,42 @@ export class SwapSchemeModalComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  private async getLifiDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
+    try {
+      const bridgeType = this.bridgeType;
+      if (!bridgeType) {
+        return MODAL_SWAP_STATUS.UNKNOWN;
+      }
+      const requestParams = {
+        bridge: bridgeType,
+        fromChain: BlockchainsInfo.getBlockchainByName(this.fromBlockchain.key).id,
+        toChain: BlockchainsInfo.getBlockchainByName(this.toBlockchain.key).id,
+        txHash: this.srcTxHash
+      };
+      const status = (
+        await this.httpService
+          .get<{ status: LifiSwapStatus }>('status', requestParams, 'https://li.quest/v1/')
+          .toPromise()
+      ).status;
+
+      if (status === LifiSwapStatus.DONE) {
+        return MODAL_SWAP_STATUS.SUCCESS;
+      }
+      if (status === LifiSwapStatus.FAILED) {
+        return MODAL_SWAP_STATUS.FAIL;
+      }
+      if (status === LifiSwapStatus.PENDING) {
+        return MODAL_SWAP_STATUS.PENDING;
+      }
+      if (status === LifiSwapStatus.INVALID || status === LifiSwapStatus.NOT_FOUND) {
+        return MODAL_SWAP_STATUS.UNKNOWN;
+      }
+    } catch (error) {
+      console.debug('[LI.FI] error retrieving dst tx status: ', error);
+      return MODAL_SWAP_STATUS.UNKNOWN;
+    }
   }
 
   private async getCelerDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
@@ -382,8 +428,8 @@ export class SwapSchemeModalComponent implements OnInit {
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.srcProvider = TRADES_PROVIDERS[data.srcProvider];
-    this.dstProvider = TRADES_PROVIDERS[data.dstProvider];
+    this.srcProvider = TRADES_PROVIDERS?.[data.srcProvider] || TRADES_PROVIDERS.LIFI_PROVIDER;
+    this.dstProvider = TRADES_PROVIDERS?.[data.dstProvider] || TRADES_PROVIDERS.LIFI_PROVIDER;
 
     this.fromBlockchain = BLOCKCHAINS[data.fromBlockchain];
     this.toBlockchain = BLOCKCHAINS[data.toBlockchain];
@@ -398,6 +444,8 @@ export class SwapSchemeModalComponent implements OnInit {
     this.srcWeb3Public = this.getWeb3Public(data.fromBlockchain);
 
     this.dstWeb3Public = this.getWeb3Public(data.toBlockchain);
+
+    this.bridgeType = data?.bridgeType;
   }
 
   private getWeb3Public(blockchain: BlockchainName): Web3Public {

@@ -175,6 +175,7 @@ export class CrossChainRoutingService extends TradeService {
 
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
+
       const fromToken = compareAddresses(
         this.crossChainTrade?.trade?.from.address,
         form.fromToken.address
@@ -187,6 +188,7 @@ export class CrossChainRoutingService extends TradeService {
       )
         ? form.toToken
         : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
+
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
@@ -194,7 +196,11 @@ export class CrossChainRoutingService extends TradeService {
         fromToken,
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        bridgeType:
+          this.crossChainTrade?.trade instanceof LifiCrossChainTrade
+            ? this.crossChainTrade?.trade?.subType
+            : undefined
       };
 
       confirmCallback?.();
@@ -391,24 +397,24 @@ export class CrossChainRoutingService extends TradeService {
   public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
-    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-      this.notifyTradeInProgress(txHash, fromBlockchain, CROSS_CHAIN_TRADE_TYPE.LIFI);
-    } else {
-      this.dialogService
-        .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
-          size: this.headerStore.isMobile ? 'page' : 'l',
-          data: {
-            fromToken,
-            fromBlockchain,
-            toToken,
-            toBlockchain,
-            srcProvider: this.crossChainTrade.trade.itType.from,
-            dstProvider: this.crossChainTrade.trade.itType.to,
-            crossChainProvider: provider,
-            srcTxHash: txHash
-          }
-        })
-        .subscribe();
-    }
+    this.dialogService
+      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+        size: this.headerStore.isMobile ? 'page' : 'l',
+        data: {
+          fromToken,
+          fromBlockchain,
+          toToken,
+          toBlockchain,
+          srcProvider: this.crossChainTrade.trade.itType?.from,
+          dstProvider: this.crossChainTrade.trade.itType?.to,
+          crossChainProvider: provider,
+          srcTxHash: txHash,
+          bridgeType:
+            this.crossChainTrade?.trade instanceof LifiCrossChainTrade
+              ? this.crossChainTrade?.trade?.subType
+              : undefined
+        }
+      })
+      .subscribe();
   }
 }

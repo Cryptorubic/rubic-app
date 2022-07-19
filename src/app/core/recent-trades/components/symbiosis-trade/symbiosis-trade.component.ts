@@ -6,6 +6,7 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
+import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -26,7 +27,7 @@ export class SymbiosisTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getSymbiosisTradeData(trade);
+    return await this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS);
   }
 
   public setUiTrade(uiTrade: UiRecentTrade): void {

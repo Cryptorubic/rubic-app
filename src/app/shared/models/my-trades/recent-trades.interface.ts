@@ -12,4 +12,5 @@ export interface RecentTrade {
   timestamp: number;
   calculatedStatusTo?: RecentTradeStatus;
   calculatedStatusFrom?: RecentTradeStatus;
+  bridgeType?: string;
 }
