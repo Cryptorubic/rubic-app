@@ -64,7 +64,8 @@ export class RubicSdkErrorParser {
     if (
       err.message.includes('insufficient funds for transfer') ||
       err.message.includes('execution reverted: MetaRouter: second swap failed') ||
-      err.message.includes('1inch sets increased costs on gas fee')
+      err.message.includes('1inch sets increased costs on gas fee') ||
+      err.message.includes('err: insufficient funds for gas * price + value')
     ) {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'

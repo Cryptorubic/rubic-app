@@ -38,7 +38,7 @@ export class TokensSelectService {
     allowedBlockchains: BlockchainName[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 'm';
+    const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
       {

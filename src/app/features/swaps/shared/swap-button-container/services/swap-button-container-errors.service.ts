@@ -318,8 +318,11 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
-  public setMinAmountError(minAmount: false | number | BigNumber): void {
-    if (minAmount) {
+  public setMinAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const minAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof minAmount === 'number') {
         this.minAmount = minAmount.toString();
       } else {
@@ -328,7 +331,12 @@ export class SwapButtonContainerErrorsService {
           'toClosestValue'
         );
       }
-      this.minAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.minAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
@@ -336,8 +344,11 @@ export class SwapButtonContainerErrorsService {
     this.updateError();
   }
 
-  public setMaxAmountError(maxAmount: false | number | BigNumber): void {
-    if (maxAmount) {
+  public setMaxAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const maxAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof maxAmount === 'number') {
         this.maxAmount = maxAmount.toString();
       } else {
@@ -347,7 +358,12 @@ export class SwapButtonContainerErrorsService {
           { roundingMode: BigNumber.ROUND_HALF_UP }
         );
       }
-      this.maxAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.maxAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;

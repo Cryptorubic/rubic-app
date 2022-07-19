@@ -17,7 +17,8 @@ import {
   EncodeTransactionOptions,
   Web3Pure,
   Web3Public,
-  TransactionOptions
+  TransactionOptions,
+  UnnecessaryApproveError
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -79,6 +80,11 @@ export class InstantTradeService extends TradeService {
       });
 
       this.notificationsService.showApproveSuccessful();
+    } catch (err) {
+      if (err instanceof UnnecessaryApproveError) {
+        return;
+      }
+      throw err;
     } finally {
       subscription$?.unsubscribe();
     }
@@ -122,7 +128,7 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] === true ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
     });
   }
 
@@ -145,7 +151,7 @@ export class InstantTradeService extends TradeService {
     let transactionHash: string;
     let subscription$: Subscription;
 
-    const gasPrice = shouldCalculateGas[blockchain];
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
     const options = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -163,7 +169,7 @@ export class InstantTradeService extends TradeService {
 
         this.postTrade(hash, providerName, trade);
       },
-      ...(Boolean(gasPrice) && {
+      ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       })
     };

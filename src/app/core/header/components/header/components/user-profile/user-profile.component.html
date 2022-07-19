@@ -10,7 +10,7 @@
     <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
       <img
         [src]="currentBlockchain?.imagePath"
-        alt="($currentBlockchain | async)?.name"
+        [alt]="currentBlockchain?.name"
         width="25"
         height="25"
       />
@@ -20,7 +20,7 @@
     </div>
     <app-notification-badge
       class="notification-counter notification-counter_profile"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
       size="xs"
       color="red"
       [value]="unreadTrades$ | async"
@@ -44,7 +44,7 @@
     {{ 'navigation.recentTrades' | translate }}
     <app-notification-badge
       class="notification-counter notification-counter_menu"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
       size="xs"
       color="red"
       [value]="unreadTrades$ | async"

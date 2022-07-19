@@ -332,6 +332,34 @@ export class WalletConnectorService {
       [BLOCKCHAIN_NAME.TELOS]: {
         name: 'Telos EVM Mainnet',
         rpc: 'https://mainnet.telos.net/evm'
+      },
+      [BLOCKCHAIN_NAME.OPTIMISM]: {
+        name: 'Optimism',
+        rpc: 'https://mainnet.optimism.io'
+      },
+      [BLOCKCHAIN_NAME.CRONOS]: {
+        name: 'Cronos Mainnet Beta',
+        rpc: 'https://evm.cronos.org'
+      },
+      [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
+        name: 'OKXChain Mainnet',
+        rpc: 'https://exchainrpc.okex.org'
+      },
+      [BLOCKCHAIN_NAME.GNOSIS]: {
+        name: 'Gnosis Chain',
+        rpc: 'https://rpc.gnosischain.com'
+      },
+      [BLOCKCHAIN_NAME.FUSE]: {
+        name: 'Fuse Mainnet',
+        rpc: 'https://rpc.fuse.io'
+      },
+      [BLOCKCHAIN_NAME.MOONBEAM]: {
+        name: 'Moonbeam',
+        rpc: 'https://rpc.api.moonbeam.network'
+      },
+      [BLOCKCHAIN_NAME.CELO]: {
+        name: 'Celo Mainnet',
+        rpc: 'https://forno.celo.org'
       }
     };
     const params = {
