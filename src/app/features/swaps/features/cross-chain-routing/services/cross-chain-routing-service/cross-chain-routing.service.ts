@@ -54,6 +54,7 @@ import { Token } from '@shared/models/tokens/token';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
+import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -108,7 +109,7 @@ export class CrossChainRoutingService extends TradeService {
     toBlockchain: BlockchainName
   ): boolean {
     return Boolean(
-      Object.values(this.sdk.crossChain.tradeProviders).find(provider =>
+      Object.values(this.sdk.crossChain.tradeProviders).find((provider: CrossChainTradeProvider) =>
         provider.isSupportedBlockchains(fromBlockchain, toBlockchain)
       )
     );
