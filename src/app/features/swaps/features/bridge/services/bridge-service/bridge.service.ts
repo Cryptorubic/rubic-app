@@ -26,6 +26,7 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { RubicBridgeSupportedBlockchains } from './blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 @Injectable()
 export class BridgeService extends TradeService {
@@ -124,13 +125,17 @@ export class BridgeService extends TradeService {
 
     return this.getCurrentBridgeToken().pipe(
       mergeMap(bridgeToken => {
-        const { toBlockchain, fromAmount } = this.swapFormService.inputValue;
+        const { fromBlockchain, toBlockchain, fromAmount } = this.swapFormService.inputValue;
 
         if (!bridgeToken || !fromAmount) {
           return of(null);
         }
 
-        return this.bridgeProvider.getFee(bridgeToken, toBlockchain, fromAmount);
+        return this.bridgeProvider.getFee(
+          fromBlockchain as RubicBridgeSupportedBlockchains,
+          toBlockchain as RubicBridgeSupportedBlockchains,
+          bridgeToken
+        );
       }),
       first()
     );
