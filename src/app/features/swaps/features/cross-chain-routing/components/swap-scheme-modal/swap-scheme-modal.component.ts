@@ -6,8 +6,16 @@ import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
-import { BehaviorSubject, from, interval, delay, Subscription, of, takeUntil } from 'rxjs';
-import { TransactionReceipt } from 'web3-eth';
+import {
+  BehaviorSubject,
+  from,
+  interval,
+  delay,
+  Subscription,
+  of,
+  takeUntil,
+  forkJoin
+} from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
@@ -44,8 +52,6 @@ export class SwapSchemeModalComponent implements OnInit {
   public crossChainProvider: CrossChainTradeType;
 
   private srcTxHash: string;
-
-  private srcTxReceipt: TransactionReceipt;
 
   private srcWeb3Public: Web3Public;
 
@@ -134,11 +140,14 @@ export class SwapSchemeModalComponent implements OnInit {
           return interval(7000).pipe(
             startWith(-1),
             switchMap(() => {
-              return from(this.srcWeb3Public.getBlockNumber()).pipe(
-                map(currentBlockNumber => {
+              return forkJoin([
+                this.srcWeb3Public.getBlockNumber(),
+                this.srcWeb3Public.getTransactionReceipt(this.srcTxHash)
+              ]).pipe(
+                map(([currentBlockNumber, srcTxReceipt]) => {
                   const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
 
-                  return currentBlockNumber - this.srcTxReceipt.blockNumber > diff
+                  return currentBlockNumber - srcTxReceipt.blockNumber > diff
                     ? CrossChainTxStatus.SUCCESS
                     : CrossChainTxStatus.PENDING;
                 })
