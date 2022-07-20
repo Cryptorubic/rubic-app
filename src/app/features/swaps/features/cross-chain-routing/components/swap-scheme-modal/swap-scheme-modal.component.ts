@@ -5,66 +5,20 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ThemeService } from '@app/core/services/theme/theme.service';
-import {
-  catchError,
-  filter,
-  map,
-  retry,
-  startWith,
-  switchMap,
-  takeWhile,
-  tap
-} from 'rxjs/operators';
-import {
-  BehaviorSubject,
-  from,
-  interval,
-  Observable,
-  delay,
-  Subscription,
-  of,
-  takeUntil
-} from 'rxjs';
+import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, interval, delay, Subscription, of, takeUntil } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { CROSS_CHAIN_PROD } from 'src/environments/constants/cross-chain';
-import { CelerSwapStatus } from '../../services/cross-chain-routing-service/celer/models/celer-swap-status.enum';
-import { decodeLogs } from '@app/shared/utils/decode-logs';
-import { TransactionStuckError } from 'symbiosis-js-sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { RubicSwapStatus } from '@app/shared/models/swaps/rubic-swap-status.enum';
-import { PROCESSED_TRANSACTION_METHOD_ABI } from '@app/shared/constants/common/processed-transaction-method-abi';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { RecentTradeStatus } from '@app/core/recent-trades/models/recent-trade-status.enum';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  BlockchainsInfo,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  Token,
-  Web3Public
-} from 'rubic-sdk';
-import { celerContractAbi } from '@core/recent-trades/constants/celer-contract-abi';
-import { celerContract } from '@core/recent-trades/constants/celer-contract-addresses';
+import { BLOCKCHAIN_NAME, CrossChainTradeType, Web3Public, CrossChainTxStatus } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
-import { LifiSwapStatus } from '@shared/models/swaps/lifi-swap-status';
-import { HttpService } from '@core/services/http/http.service';
-
-enum MODAL_SWAP_STATUS {
-  SUCCESS = 'SUCCESS',
-  PENDING = 'PENDING',
-  FAIL = 'FAIL',
-  UNKNOWN = 'UNKNOWN',
-  REVERT = 'REVERT'
-}
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -95,27 +49,25 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private srcWeb3Public: Web3Public;
 
-  private dstWeb3Public: Web3Public;
-
-  private readonly _srcTxStatus$ = new BehaviorSubject<MODAL_SWAP_STATUS>(
-    MODAL_SWAP_STATUS.PENDING
+  private readonly _srcTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
+    CrossChainTxStatus.PENDING
   );
 
   public readonly srcTxStatus$ = this._srcTxStatus$.asObservable();
 
-  private readonly _dstTxStatus$ = new BehaviorSubject<MODAL_SWAP_STATUS>(
-    MODAL_SWAP_STATUS.UNKNOWN
+  private readonly _dstTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
+    CrossChainTxStatus.UNKNOWN
   );
 
   public readonly dstTxStatus$ = this._dstTxStatus$.asObservable();
 
-  private readonly _tradeProcessingStatus$ = new BehaviorSubject<MODAL_SWAP_STATUS>(
-    MODAL_SWAP_STATUS.UNKNOWN
+  private readonly _tradeProcessingStatus$ = new BehaviorSubject<CrossChainTxStatus>(
+    CrossChainTxStatus.UNKNOWN
   );
 
   public readonly tradeProcessingStatus$ = this._tradeProcessingStatus$.asObservable();
 
-  public readonly MODAL_SWAP_STATUS = MODAL_SWAP_STATUS;
+  public readonly CrossChainTxStatus = CrossChainTxStatus;
 
   private readonly _revertBtnLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -136,8 +88,7 @@ export class SwapSchemeModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    private readonly sdk: RubicSdkService,
-    private readonly httpService: HttpService
+    private readonly sdk: RubicSdkService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -154,10 +105,21 @@ export class SwapSchemeModalComponent implements OnInit {
         delay(new Date(Date.now() + 2000)),
         startWith(-1),
         switchMap(() => {
-          return from(this.getSourceTxStatus(this.srcTxHash));
+          return from(
+            this.sdk.crossChainStatusManager.getCrossChainStatus(
+              {
+                fromBlockchain: this.fromBlockchain.key,
+                toBlockchain: this.toBlockchain.key,
+                srcTxHash: this.srcTxHash,
+                txTimestamp: Date.now(),
+                lifiBridgeType: this.bridgeType
+              },
+              this.crossChainProvider
+            )
+          );
         }),
-        tap(srcTxStatus => this._srcTxStatus$.next(srcTxStatus)),
-        takeWhile(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.PENDING),
+        tap(crossChainStatus => this._srcTxStatus$.next(crossChainStatus.srcTxStatus)),
+        takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === CrossChainTxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -166,8 +128,8 @@ export class SwapSchemeModalComponent implements OnInit {
   public initTradeProcessingStatusPolling(): void {
     this.srcTxStatus$
       .pipe(
-        filter(srcTxStatus => srcTxStatus === MODAL_SWAP_STATUS.SUCCESS),
-        tap(() => this._tradeProcessingStatus$.next(MODAL_SWAP_STATUS.PENDING)),
+        filter(srcTxStatus => srcTxStatus === CrossChainTxStatus.SUCCESS),
+        tap(() => this._tradeProcessingStatus$.next(CrossChainTxStatus.PENDING)),
         switchMap(() => {
           return interval(7000).pipe(
             startWith(-1),
@@ -177,19 +139,19 @@ export class SwapSchemeModalComponent implements OnInit {
                   const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
 
                   return currentBlockNumber - this.srcTxReceipt.blockNumber > diff
-                    ? MODAL_SWAP_STATUS.SUCCESS
-                    : MODAL_SWAP_STATUS.PENDING;
+                    ? CrossChainTxStatus.SUCCESS
+                    : CrossChainTxStatus.PENDING;
                 })
               );
             }),
             catchError((error: unknown) => {
               console.debug('[General] error getting current block number', error);
-              return of(MODAL_SWAP_STATUS.PENDING);
+              return of(CrossChainTxStatus.PENDING);
             }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
         }),
-        takeWhile(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING),
+        takeWhile(tradeProcessingStatus => tradeProcessingStatus === CrossChainTxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -198,183 +160,34 @@ export class SwapSchemeModalComponent implements OnInit {
   public initDstTxStatusPolling(): void {
     this.tradeProcessingStatus$
       .pipe(
-        filter(tradeProcessingStatus => tradeProcessingStatus === MODAL_SWAP_STATUS.SUCCESS),
-        tap(() => this._dstTxStatus$.next(MODAL_SWAP_STATUS.PENDING)),
+        filter(tradeProcessingStatus => tradeProcessingStatus === CrossChainTxStatus.SUCCESS),
+        tap(() => this._dstTxStatus$.next(CrossChainTxStatus.PENDING)),
         switchMap(() => {
-          // TODO move switchMap callback to fabric
-          if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-            return this.getSymbiosisDstTxStatus();
-          }
-
           return interval(10000).pipe(
             startWith(-1),
-            switchMap(() => {
-              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.RUBIC) {
-                return this.getRubicDstTxStatus();
-              }
-
-              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.CELER) {
-                return this.getCelerDstTxStatus();
-              }
-
-              if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-                return this.getLifiDstTxStatus();
-              }
-            })
+            switchMap(() =>
+              from(
+                this.sdk.crossChainStatusManager.getCrossChainStatus(
+                  {
+                    fromBlockchain: this.fromBlockchain.key,
+                    toBlockchain: this.toBlockchain.key,
+                    srcTxHash: this.srcTxHash,
+                    txTimestamp: Date.now(),
+                    lifiBridgeType: this.bridgeType
+                  },
+                  this.crossChainProvider
+                )
+              )
+            )
           );
         }),
-        tap(dstTxStatus => {
-          this._dstTxStatus$.next(dstTxStatus);
+        tap(crossChainStatus => {
+          this._dstTxStatus$.next(crossChainStatus.dstTxStatus);
         }),
-        takeWhile(dstTxStatus => dstTxStatus === MODAL_SWAP_STATUS.PENDING),
+        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === CrossChainTxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
-  }
-
-  private async getLifiDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
-    try {
-      const bridgeType = this.bridgeType;
-      if (!bridgeType) {
-        return MODAL_SWAP_STATUS.UNKNOWN;
-      }
-      const requestParams = {
-        bridge: bridgeType,
-        fromChain: BlockchainsInfo.getBlockchainByName(this.fromBlockchain.key).id,
-        toChain: BlockchainsInfo.getBlockchainByName(this.toBlockchain.key).id,
-        txHash: this.srcTxHash
-      };
-      const status = (
-        await this.httpService
-          .get<{ status: LifiSwapStatus }>('status', requestParams, 'https://li.quest/v1/')
-          .toPromise()
-      ).status;
-
-      if (status === LifiSwapStatus.DONE) {
-        return MODAL_SWAP_STATUS.SUCCESS;
-      }
-      if (status === LifiSwapStatus.FAILED) {
-        return MODAL_SWAP_STATUS.FAIL;
-      }
-      if (status === LifiSwapStatus.PENDING) {
-        return MODAL_SWAP_STATUS.PENDING;
-      }
-      if (status === LifiSwapStatus.INVALID || status === LifiSwapStatus.NOT_FOUND) {
-        return MODAL_SWAP_STATUS.UNKNOWN;
-      }
-    } catch (error) {
-      console.debug('[LI.FI] error retrieving dst tx status: ', error);
-      return MODAL_SWAP_STATUS.UNKNOWN;
-    }
-  }
-
-  private async getCelerDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
-    try {
-      const srcTransactionReceipt = await this.srcWeb3Public.getTransactionReceipt(this.srcTxHash);
-      const [requestLog] = decodeLogs(celerContractAbi, srcTransactionReceipt).filter(Boolean); // filter undecoded logs
-      const dstTransactionStatus = Number(
-        await this.dstWeb3Public.callContractMethod(
-          celerContract[this.toBlockchain.key],
-          celerContractAbi,
-          'txStatusById',
-          {
-            methodArguments: [requestLog.params.find(param => param.name === 'id').value]
-          }
-        )
-      ) as CelerSwapStatus;
-
-      if (dstTransactionStatus === CelerSwapStatus.NULL) {
-        return MODAL_SWAP_STATUS.PENDING;
-      }
-
-      if (dstTransactionStatus === CelerSwapStatus.FAILED) {
-        return MODAL_SWAP_STATUS.FAIL;
-      }
-
-      if (dstTransactionStatus === CelerSwapStatus.SUCСESS) {
-        return MODAL_SWAP_STATUS.SUCCESS;
-      }
-    } catch (error) {
-      console.debug('[Celer] error retrieving dst tx status: ', error);
-      return MODAL_SWAP_STATUS.PENDING;
-    }
-  }
-
-  private async getRubicDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
-    try {
-      const statusTo = Number(
-        await this.dstWeb3Public.callContractMethod(
-          CROSS_CHAIN_PROD.contractAddresses[
-            this.toBlockchain.key as SupportedCrossChainBlockchain
-          ],
-          PROCESSED_TRANSACTION_METHOD_ABI,
-          'processedTransactions',
-          { methodArguments: [this.srcTxHash] }
-        )
-      );
-
-      if (statusTo === RubicSwapStatus.NULL) {
-        return MODAL_SWAP_STATUS.PENDING;
-      }
-
-      if (statusTo === RubicSwapStatus.PROCESSED) {
-        return MODAL_SWAP_STATUS.SUCCESS;
-      }
-
-      if (statusTo === RubicSwapStatus.REVERTED) {
-        return MODAL_SWAP_STATUS.FAIL;
-      }
-    } catch (error) {
-      console.debug('[Rubic] error retrieving dst tx status: ', error);
-      return MODAL_SWAP_STATUS.PENDING;
-    }
-  }
-
-  private getSymbiosisDstTxStatus(): Observable<MODAL_SWAP_STATUS> {
-    return from(
-      this.sdk.symbiosis.waitForComplete(
-        this.fromBlockchain.key,
-        this.toBlockchain.key,
-        this.toToken as unknown as Token, // @TODO change types
-        this.srcTxReceipt
-      )
-    ).pipe(
-      retry(3),
-      map(response => {
-        console.debug('[Symbiosis] cross-chain completed: ', response);
-
-        if (response) {
-          return MODAL_SWAP_STATUS.SUCCESS;
-        }
-
-        return MODAL_SWAP_STATUS.PENDING;
-      }),
-      catchError((error: unknown) => {
-        console.debug('[Symbiosis] error retrieving dst tx status: ', error);
-
-        if (error instanceof TransactionStuckError) {
-          return of(MODAL_SWAP_STATUS.REVERT);
-        }
-
-        return of(MODAL_SWAP_STATUS.PENDING);
-      })
-    );
-  }
-
-  // TODO move method to fabric
-  private async getSourceTxStatus(txHash: string): Promise<MODAL_SWAP_STATUS> {
-    try {
-      this.srcTxReceipt = await this.srcWeb3Public.getTransactionReceipt(txHash);
-    } catch (error) {
-      console.debug('[General] error retrieving src tx status', { error, txHash });
-      this.srcTxReceipt = null;
-    }
-
-    if (this.srcTxReceipt === null) {
-      return MODAL_SWAP_STATUS.PENDING;
-    }
-
-    return this.srcTxReceipt.status ? MODAL_SWAP_STATUS.SUCCESS : MODAL_SWAP_STATUS.FAIL;
   }
 
   public async revertSymbiosisTrade(): Promise<void> {
@@ -404,8 +217,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
       this.recentTradesStoreService.updateTrade({
         ...this.recentTradesStoreService.getSpecificTrade(this.srcTxHash, this.fromBlockchain.key),
-        calculatedStatusFrom: RecentTradeStatus.SUCCESS,
-        calculatedStatusTo: RecentTradeStatus.FALLBACK
+        calculatedStatusFrom: CrossChainTxStatus.SUCCESS,
+        calculatedStatusTo: CrossChainTxStatus.FALLBACK
       });
 
       this.context.completeWith(true);
@@ -441,14 +254,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
     this.crossChainProvider = data.crossChainProvider;
 
-    this.srcWeb3Public = this.getWeb3Public(data.fromBlockchain);
-
-    this.dstWeb3Public = this.getWeb3Public(data.toBlockchain);
+    this.srcWeb3Public = Injector.web3PublicService.getWeb3Public(data.fromBlockchain);
 
     this.bridgeType = data?.bridgeType;
-  }
-
-  private getWeb3Public(blockchain: BlockchainName): Web3Public {
-    return Injector.web3PublicService.getWeb3Public(blockchain);
   }
 }

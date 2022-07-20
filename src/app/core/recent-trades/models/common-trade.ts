@@ -5,9 +5,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { interval } from 'rxjs';
 import { startWith, switchMap, tap, takeWhile, takeUntil } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../utils/recent-trades-utils';
-import { RecentTradeStatus } from './recent-trade-status.enum';
 import { UiRecentTrade } from './ui-recent-trade.interface';
 import { watch } from '@taiga-ui/cdk';
+import { CrossChainTxStatus } from 'rubic-sdk';
 
 @Directive()
 export abstract class CommonTrade implements OnInit, OnDestroy {
@@ -19,11 +19,11 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
 
   public initialLoading = true;
 
-  public readonly RecentTradeStatus = RecentTradeStatus;
+  public readonly CrossChainTxStatus = CrossChainTxStatus;
 
-  public readonly getStatusBadgeType: (status: RecentTradeStatus) => string = getStatusBadgeType;
+  public readonly getStatusBadgeType: (status: CrossChainTxStatus) => string = getStatusBadgeType;
 
-  public readonly getStatusBadgeText: (status: RecentTradeStatus) => string = getStatusBadgeText;
+  public readonly getStatusBadgeText: (status: CrossChainTxStatus) => string = getStatusBadgeText;
 
   protected constructor(
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -44,7 +44,7 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
         switchMap(() => this.getTradeData(this.trade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
-        takeWhile(uiTrade => uiTrade?.statusTo === RecentTradeStatus.PENDING),
+        takeWhile(uiTrade => uiTrade?.statusTo === CrossChainTxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -58,11 +58,11 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
   }
 
   protected saveTradeOnDestroy(): void {
-    if (this.uiTrade.statusTo === RecentTradeStatus.SUCCESS) {
+    if (this.uiTrade.statusTo === CrossChainTxStatus.SUCCESS) {
       this.recentTradesStoreService.updateTrade({
         ...this.trade,
-        calculatedStatusTo: RecentTradeStatus.SUCCESS,
-        calculatedStatusFrom: RecentTradeStatus.SUCCESS
+        calculatedStatusTo: CrossChainTxStatus.SUCCESS,
+        calculatedStatusFrom: CrossChainTxStatus.SUCCESS
       });
     }
   }
