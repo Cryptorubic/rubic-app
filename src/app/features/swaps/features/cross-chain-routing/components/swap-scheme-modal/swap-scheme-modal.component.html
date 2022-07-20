@@ -133,7 +133,7 @@
           ></div>
           <hr *ngIf="tradeData.srcStatus !== MODAL_SWAP_STATUS.PENDING" />
         </div>
-        <img src="assets/images/icons/providers/rubic.svg" class="scheme__pool-icon" />
+        <img [src]="bridgeType.image" class="scheme__pool-icon" alt="Bridge provider" />
         <div
           class="scheme__line scheme__line_default scheme__line_dst"
           [ngClass]="{
@@ -157,10 +157,7 @@
             "
           />
         </div>
-        <div class="scheme__pool-name">
-          Rubic<br />
-          <span>Smart Routing</span>
-        </div>
+        <div class="scheme__pool-name">{{ bridgeType.name }}<br /></div>
       </div>
       <div class="scheme__dst">
         <ng-container [ngSwitch]="tradeData.dstStatus">

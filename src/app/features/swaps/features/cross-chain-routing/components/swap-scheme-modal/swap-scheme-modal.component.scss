@@ -250,7 +250,7 @@
     &-dashed {
       height: 2px;
 
-      background: url('/assets/images/icons/dashed-line.svg');
+      background: url('src/assets/images/icons/dashed-line.svg');
     }
 
     hr {
@@ -291,7 +291,7 @@
 .caption {
   @include font(14px, 17px, 400, #525155);
   max-width: 575px;
-  margin: 0 auto;
+  margin: 0 auto 1.5em;
 
   text-align: center;
 

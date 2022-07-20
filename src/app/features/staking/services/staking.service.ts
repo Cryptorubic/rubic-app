@@ -489,7 +489,7 @@ export class StakingService {
       return publicAdapter.callContractMethod(
         contractAddress,
         this.stakingContractAbi,
-        'actualBalanceOf',
+        'transferFrom',
         {
           methodArguments: [this.walletAddress],
           from: this.walletAddress
