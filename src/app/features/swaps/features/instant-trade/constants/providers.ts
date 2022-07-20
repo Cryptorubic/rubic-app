@@ -94,6 +94,10 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTrad
     [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([TRADE_TYPE.REF_FINANCE]),
     [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP, TRADE_TYPE.ZAPPY]),
     [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([TRADE_TYPE.ZRX]),
+    [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.CRONA_SWAP
+    ]),
     [BLOCKCHAIN_NAME.OKE_X_CHAIN]: getDefaultStateByProviders([
       TRADE_TYPE.SUSHI_SWAP,
       TRADE_TYPE.J_SWAP,

@@ -160,6 +160,11 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     name: 'Jswap',
     image: ``,
     color: ''
+  },
+  [TRADE_TYPE.CRONA_SWAP]: {
+    name: 'Cronaswap',
+    image: ``,
+    color: ''
   }
 };
 
