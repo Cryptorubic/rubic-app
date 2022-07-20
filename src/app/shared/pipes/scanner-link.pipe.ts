@@ -117,7 +117,7 @@ const blockchainsScanners: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.CRONOS]: {
-    baseUrl: 'https://cronos.org/explorer/',
+    baseUrl: 'https://cronoscan.com/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
