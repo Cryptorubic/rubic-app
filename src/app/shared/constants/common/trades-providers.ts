@@ -1,10 +1,13 @@
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, TRADE_TYPE, TradeType } from 'rubic-sdk';
 import {
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  TRADE_TYPE,
+  TradeType,
   Li_FI_TRADE_SUBTYPE,
   LiFiTradeSubtype
-} from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/models/lifi-providers';
+} from 'rubic-sdk';
 
 export type Provider = {
   name: string;
