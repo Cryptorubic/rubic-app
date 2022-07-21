@@ -193,7 +193,7 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   }
 };
 
-const LIFI_BRIDGE_PROVIDER: Record<LiFiTradeSubtype, Provider> = {
+export const LIFI_BRIDGE_PROVIDER: Record<LiFiTradeSubtype, Provider> = {
   [Li_FI_TRADE_SUBTYPE.ACROSS]: {
     name: 'Across',
     image: `${imageBasePath}across.svg`,

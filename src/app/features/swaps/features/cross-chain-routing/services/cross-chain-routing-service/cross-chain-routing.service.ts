@@ -51,7 +51,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
@@ -130,6 +130,12 @@ export class CrossChainRoutingService extends TradeService {
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
+          filter(tradeData => {
+            return (
+              tradeData.totalProviders === tradeData.calculatedProviders ||
+              tradeData.calculatedProviders === 0
+            );
+          }),
           tap(tradeData => (this.crossChainTrade = tradeData.bestProvider)),
           switchMap(tradeData => {
             const trade = this.crossChainTrade?.trade;
@@ -168,10 +174,6 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async createTrade(confirmCallback?: () => void): Promise<void> {
-    this.openSwapSchemeModal(
-      this.crossChainTrade.tradeType,
-      '0x68c55336b084b9fb51daed132c79507dd82bf9c776a23fdce51845e5b686d058'
-    );
     await this.walletConnectorService.checkSettings(this.crossChainTrade.trade?.from?.blockchain);
     if (!this.crossChainTrade?.trade) {
       throw new RubicError('[RUBIC SDK] Cross chain trade object not found.');

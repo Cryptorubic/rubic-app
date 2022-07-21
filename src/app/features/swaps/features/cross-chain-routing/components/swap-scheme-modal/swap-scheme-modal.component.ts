@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { Provider } from '@app/shared/constants/common/trades-providers';
+import { LIFI_BRIDGE_PROVIDER, Provider } from '@app/shared/constants/common/trades-providers';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -234,7 +234,9 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private async getLifiDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
     try {
-      const bridgeType = this.bridgeType;
+      const bridgeType = Object.entries(LIFI_BRIDGE_PROVIDER).find(
+        ([, value]) => value.name === this.bridgeType?.name
+      )?.[0];
       if (!bridgeType) {
         return MODAL_SWAP_STATUS.UNKNOWN;
       }
