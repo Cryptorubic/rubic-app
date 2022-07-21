@@ -125,11 +125,7 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: [
-          CROSS_CHAIN_TRADE_TYPE.RUBIC,
-          CROSS_CHAIN_TRADE_TYPE.CELER,
-          CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-        ]
+        disabledProviders: []
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
