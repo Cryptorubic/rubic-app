@@ -51,10 +51,11 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
+import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -123,11 +124,18 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: this.defaultTimeout
+        timeout: this.defaultTimeout,
+        disabledProviders: []
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
+          filter(tradeData => {
+            return (
+              tradeData.totalProviders === tradeData.calculatedProviders ||
+              tradeData.calculatedProviders === 0
+            );
+          }),
           tap(tradeData => (this.crossChainTrade = tradeData.bestProvider)),
           switchMap(tradeData => {
             const trade = this.crossChainTrade?.trade;
@@ -307,27 +315,25 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-      this.smartRouting = null;
+      this.smartRouting = {
+        fromProvider: this.crossChainTrade.trade.itType.from,
+        toProvider: this.crossChainTrade.trade.itType.to,
+        bridgeProvider: this.crossChainTrade.trade.subType
+      };
     } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
-        fromHasTrade: true,
-        toHasTrade: true
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
     } else {
-      const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
-        fromHasTrade: !compareAddresses(
-          trade.fromTrade.fromToken.address,
-          trade.fromTrade.toToken.address
-        ),
-        toHasTrade: !compareAddresses(
-          trade.toTrade.fromToken.address,
-          trade.toTrade.toToken.address
-        )
+        bridgeProvider:
+          this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CELER
+            ? CROSS_CHAIN_TRADE_TYPE.CELER
+            : CROSS_CHAIN_TRADE_TYPE.RUBIC
       };
     }
   }
@@ -398,6 +404,21 @@ export class CrossChainRoutingService extends TradeService {
   public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
+    const routing = this.smartRouting;
+    const bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
+    const fromTradeProvider = routing.fromProvider
+      ? TRADES_PROVIDERS[routing.fromProvider]
+      : {
+          ...TRADES_PROVIDERS[routing.bridgeProvider],
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
+        };
+    const toTradeProvider = routing.toProvider
+      ? TRADES_PROVIDERS[routing.toProvider]
+      : {
+          ...TRADES_PROVIDERS[routing.bridgeProvider],
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
+        };
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -406,14 +427,11 @@ export class CrossChainRoutingService extends TradeService {
           fromBlockchain,
           toToken,
           toBlockchain,
-          srcProvider: this.crossChainTrade.trade.itType?.from,
-          dstProvider: this.crossChainTrade.trade.itType?.to,
+          srcProvider: fromTradeProvider,
+          dstProvider: toTradeProvider,
           crossChainProvider: provider,
           srcTxHash: txHash,
-          bridgeType:
-            this.crossChainTrade?.trade instanceof LifiCrossChainTrade
-              ? this.crossChainTrade?.trade?.subType
-              : undefined
+          bridgeType: bridgeProvider
         }
       })
       .subscribe();
