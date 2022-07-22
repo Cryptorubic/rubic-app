@@ -1,6 +1,7 @@
-import { BlockchainName, TradeType } from 'rubic-sdk';
+import { BlockchainName, CrossChainTradeType, TradeType } from 'rubic-sdk';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { LiFiTradeSubtype } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/models/lifi-providers';
 
 export interface TableToken {
   blockchain: BlockchainName;
@@ -13,10 +14,10 @@ export interface TableToken {
 export type TableProvider =
   | TradeType
   | BRIDGE_PROVIDER
+  | LiFiTradeSubtype
+  | CrossChainTradeType
   | 'CROSS_CHAIN_ROUTING_PROVIDER'
-  | 'GAS_REFUND_PROVIDER'
-  | 'SYMBIOSIS_PROVIDER'
-  | 'LIFI_PROVIDER';
+  | 'GAS_REFUND_PROVIDER';
 
 export interface TableTrade {
   transactionId?: string;
