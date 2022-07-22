@@ -1,6 +1,6 @@
-import { TRADE_TYPE } from 'rubic-sdk';
+import { TradeType, TRADE_TYPE } from 'rubic-sdk';
 
-export const BACKEND_PROVIDERS = {
+export const BACKEND_PROVIDERS: Record<TradeType, string> = {
   // Rubic integrated dexes
   [TRADE_TYPE.ALGEBRA]: 'algebra',
   [TRADE_TYPE.JOE]: 'joe',
