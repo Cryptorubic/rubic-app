@@ -51,11 +51,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   /**
-   * Removes carrot chat in iframe mode.
+   * Removes live chat in iframe mode.
    */
   private removeLiveChatInIframe(): void {
     const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementsByClassName('carrotquest-css-reset')[0];
+      const liveChat = this.document.getElementById('chat-widget-container');
       if (liveChat) {
         liveChat.remove();
         observer.disconnect();

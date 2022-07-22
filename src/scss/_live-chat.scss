@@ -1,0 +1,12 @@
+#chat-widget-container {
+  z-index: 1 !important;
+
+  visibility: initial !important;
+  opacity: initial !important;
+}
+
+.iframe {
+  #chat-widget-container {
+    display: none;
+  }
+}
