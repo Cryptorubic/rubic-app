@@ -30,8 +30,6 @@ import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 type TokenType = 'from' | 'to';
@@ -281,10 +279,6 @@ export class SwapsFormComponent implements OnInit {
 
     const availableTokens =
       tokenListType === 'default' ? this.availableTokens : this.availableFavoriteTokens;
-    const bridgePairsArray =
-      tokenListType === 'default'
-        ? this._bridgeTokenPairsByBlockchainsArray
-        : this._bridgeFavoriteTokenPairsByBlockchainsArray;
     const supportedTokens =
       tokenListType === 'default' ? this._supportedTokens : this._supportedFavoriteTokens;
 
@@ -297,8 +291,6 @@ export class SwapsFormComponent implements OnInit {
         .toArray();
     } else {
       const tokens: AvailableTokenAmount[] = [];
-      const blockchainKey = tokenType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-      const oppositeBlockchainKey = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
 
       const checkIsEqualTokenAndPush = (supportedToken: TokenAmount): void => {
         tokens.push({
@@ -309,45 +301,9 @@ export class SwapsFormComponent implements OnInit {
         });
       };
 
-      const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
-        const isAvailable = !!bridgePairsArray
-          .find(
-            pairsByBlockchains =>
-              pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&
-              pairsByBlockchains[blockchainKey] === supportedToken.blockchain
-          )
-          ?.tokenPairs.find(
-            tokenPair =>
-              tokenPair.tokenByBlockchain[oppositeToken.blockchain].address.toLowerCase() ===
-                oppositeToken.address.toLowerCase() &&
-              tokenPair.tokenByBlockchain[supportedToken.blockchain].address.toLowerCase() ===
-                supportedToken.address.toLowerCase()
-          );
-        tokens.push({
-          ...supportedToken,
-          available: isAvailable
-        });
-      };
-
-      if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        supportedTokens.forEach(supportedToken => {
-          if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
-            checkIsEqualTokenAndPush(supportedToken);
-          } else {
-            checkIsBridgeTokenPairAndPush(supportedToken);
-          }
-        });
-      } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        supportedTokens.forEach(supportedToken => {
-          if (oppositeToken.blockchain === supportedToken.blockchain) {
-            checkIsEqualTokenAndPush(supportedToken);
-          } else {
-            checkIsBridgeTokenPairAndPush(supportedToken);
-          }
-        });
-      } else {
-        supportedTokens.forEach(supportedToken => checkIsBridgeTokenPairAndPush(supportedToken));
-      }
+      supportedTokens.forEach(supportedToken => {
+        checkIsEqualTokenAndPush(supportedToken);
+      });
 
       availableTokens[tokenType] = tokens;
     }

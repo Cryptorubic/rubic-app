@@ -42,7 +42,7 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
             ],
-            "scripts": ["src/assets/analytics/carrot-quest.js"],
+            "scripts": ["src/assets/analytics/live-chat.js"],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -92,7 +92,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/carrot-quest.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/live-chat.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -132,7 +132,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "6mb",
-                  "maximumError": "12mb"
+                  "maximumError": "17mb"
                 },
                 {
                   "type": "anyComponentStyle",

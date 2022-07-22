@@ -91,7 +91,8 @@
     "rpcError": "Leider ist ein Fehler aufgetreten. Bitte folge dem unten stehenden Link, um Näheres zu erfahren.",
     "buttonLink": "Erfahre mehr",
     "wrongPromoterWallet": "Dein Wallet ist leider nicht mit Ethereum kompatibel. Bitte verbinde ein unterstütztes Wallet, z.B. MetaMask.",
-    "walletNotInstalled": "Kein Wallet installiert."
+    "walletNotInstalled": "Kein Wallet installiert.",
+    "noSelectedToken": "Token auswählen"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

@@ -92,7 +92,8 @@
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
     "buttonLink": "더 알아보기",
     "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
-    "walletNotInstalled": "지갑이 설치되지 않았습니다"
+    "walletNotInstalled": "지갑이 설치되지 않았습니다",
+    "noSelectedToken": "토큰 선택"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

@@ -14,7 +14,6 @@ import {
   BlockchainName,
   InstantTrade,
   InstantTradeError,
-  SDK,
   TRADE_TYPE,
   TradeType,
   Web3Pure
@@ -75,8 +74,6 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  @Input() sdk: SDK;
-
   // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
@@ -242,7 +239,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
         distinctUntilChanged((prev, next) => {
           return (
             prev.rubicOptimisation === next.rubicOptimisation &&
-            prev.disableMultihops === next.disableMultihops
+            prev.disableMultihops === next.disableMultihops &&
+            prev.slippageTolerance === next.slippageTolerance
           );
         }),
         takeUntil(this.destroy$)
@@ -478,7 +476,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return new BigNumber(-Infinity);
     }
     const { gasFeeInfo, to } = trade;
-    if (!to.price) {
+    if (!to.price.isFinite()) {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);

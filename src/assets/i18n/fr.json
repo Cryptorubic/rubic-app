@@ -91,7 +91,8 @@
     "rpcError": "Une erreur s'est produite, pour savoir quoi faire pour la résoudre suivez le lien ci-dessous.",
     "buttonLink": "En savoir plus",
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
-    "walletNotInstalled": "Le portefeuille n'est pas installé."
+    "walletNotInstalled": "Le portefeuille n'est pas installé.",
+    "noSelectedToken": "Sélectionnez le token"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

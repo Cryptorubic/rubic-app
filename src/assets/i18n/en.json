@@ -92,7 +92,8 @@
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
-    "walletNotInstalled": "Wallet is not installed."
+    "walletNotInstalled": "Wallet is not installed.",
+    "noSelectedToken": "Select token"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

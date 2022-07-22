@@ -12,5 +12,12 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.TELOS]: true,
   [BLOCKCHAIN_NAME.MOONRIVER]: false,
   [BLOCKCHAIN_NAME.SOLANA]: false,
-  [BLOCKCHAIN_NAME.NEAR]: false
+  [BLOCKCHAIN_NAME.NEAR]: false,
+  [BLOCKCHAIN_NAME.OPTIMISM]: false,
+  [BLOCKCHAIN_NAME.CRONOS]: true,
+  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: false,
+  [BLOCKCHAIN_NAME.GNOSIS]: false,
+  [BLOCKCHAIN_NAME.FUSE]: false,
+  [BLOCKCHAIN_NAME.MOONBEAM]: false,
+  [BLOCKCHAIN_NAME.CELO]: false
 };

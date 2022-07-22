@@ -441,10 +441,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
       const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
-      const amountsDelta = bAmount
-        .multipliedBy(b.price)
-        .minus(aAmount.multipliedBy(a.price))
-        .toNumber();
+      const amountsDelta = bAmount.minus(aAmount).toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
     return tokens.sort(comparator);
@@ -525,7 +522,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * @param token Token to display.
    * @return Promise<string> Token image url.
    */
-  private fetchTokenImage(token: BlockchainToken): Promise<string> {
+  private async fetchTokenImage(token: BlockchainToken): Promise<string> {
     const blockchains: Record<BlockchainName, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
@@ -538,10 +535,22 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.TELOS]: 'telos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
       [BLOCKCHAIN_NAME.SOLANA]: 'solana',
-      [BLOCKCHAIN_NAME.NEAR]: 'near'
+      [BLOCKCHAIN_NAME.NEAR]: 'near',
+      [BLOCKCHAIN_NAME.OPTIMISM]: 'optimism',
+      [BLOCKCHAIN_NAME.CRONOS]: 'cronos',
+      [BLOCKCHAIN_NAME.OKE_X_CHAIN]: null,
+      [BLOCKCHAIN_NAME.GNOSIS]: 'xdai',
+      [BLOCKCHAIN_NAME.FUSE]: null,
+      [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
+      [BLOCKCHAIN_NAME.CELO]: 'celo'
     };
+
+    if (!blockchains[token.blockchain]) {
+      return DEFAULT_TOKEN_IMAGE;
+    }
+
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-      blockchains[token.blockchain as keyof typeof blockchains]
+      blockchains[token.blockchain]
     }/assets/${Web3Pure.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient

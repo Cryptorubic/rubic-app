@@ -9,6 +9,7 @@ import {
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
+  TRADE_TYPE,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
@@ -52,6 +53,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
+import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
+import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -65,19 +68,24 @@ type CrossChainProviderTrade = Observable<
   providedIn: 'root'
 })
 export class CrossChainRoutingService extends TradeService {
+  private static readonly crossChainProviders = [
+    RubicCrossChainTradeProvider,
+    CelerCrossChainTradeProvider,
+    SymbiosisCrossChainTradeProvider,
+    LifiCrossChainTradeProvider
+  ];
+
+  public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
+    return Boolean(
+      this.crossChainProviders.find(provider => provider.isSupportedBlockchain(blockchainName))
+    );
+  }
+
   private readonly defaultTimeout = 20_000;
 
   public crossChainTrade: WrappedCrossChainTrade;
 
   public smartRouting: SmartRouting;
-
-  public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
-    return (
-      RubicCrossChainTradeProvider.isSupportedBlockchain(blockchainName) ||
-      CelerCrossChainTradeProvider.isSupportedBlockchain(blockchainName) ||
-      SymbiosisCrossChainTradeProvider.isSupportedBlockchain(blockchainName)
-    );
-  }
 
   constructor(
     private readonly sdk: RubicSdkService,
@@ -94,6 +102,17 @@ export class CrossChainRoutingService extends TradeService {
     private readonly authService: AuthService
   ) {
     super('cross-chain-routing');
+  }
+
+  public isSupportedBlockchains(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): boolean {
+    return Boolean(
+      Object.values(this.sdk.crossChain.tradeProviders).find((provider: CrossChainTradeProvider) =>
+        provider.isSupportedBlockchains(fromBlockchain, toBlockchain)
+      )
+    );
   }
 
   public calculateTrade(userAuthorized: boolean): CrossChainProviderTrade {
@@ -157,6 +176,7 @@ export class CrossChainRoutingService extends TradeService {
 
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
+
       const fromToken = compareAddresses(
         this.crossChainTrade?.trade?.from.address,
         form.fromToken.address
@@ -169,6 +189,7 @@ export class CrossChainRoutingService extends TradeService {
       )
         ? form.toToken
         : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
+
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
@@ -177,7 +198,10 @@ export class CrossChainRoutingService extends TradeService {
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
         timestamp: Date.now(),
-        bridgeType: this.crossChainTrade?.trade?.subType
+        bridgeType:
+          this.crossChainTrade?.trade instanceof LifiCrossChainTrade
+            ? this.crossChainTrade?.trade?.subType
+            : undefined
       };
 
       confirmCallback?.();
@@ -200,22 +224,7 @@ export class CrossChainRoutingService extends TradeService {
       })
     };
 
-    try {
-      await this.crossChainTrade.trade.swap(swapOptions);
-    } catch (err) {
-      if (
-        this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.LIFI &&
-        err.message.includes('Request failed with status code 500')
-      ) {
-        throw new RubicError(
-          ERROR_TYPE.TEXT,
-          undefined,
-          "Unfortunately, the provider couldn't generate the transaction. Please try again later."
-        );
-      }
-
-      throw err;
-    }
+    await this.crossChainTrade.trade.swap(swapOptions);
 
     this.showSuccessTrxNotification(this.crossChainTrade.tradeType);
   }
@@ -301,8 +310,8 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = null;
     } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
-        fromProvider: 'ONE_INCH_BSC',
-        toProvider: 'ONE_INCH_ETHEREUM',
+        fromProvider: TRADE_TYPE.ONE_INCH,
+        toProvider: TRADE_TYPE.ONE_INCH,
         fromHasTrade: true,
         toHasTrade: true
       };
@@ -401,7 +410,10 @@ export class CrossChainRoutingService extends TradeService {
           dstProvider: this.crossChainTrade.trade.itType?.to,
           crossChainProvider: provider,
           srcTxHash: txHash,
-          bridgeType: this.crossChainTrade?.trade?.subType
+          bridgeType:
+            this.crossChainTrade?.trade instanceof LifiCrossChainTrade
+              ? this.crossChainTrade?.trade?.subType
+              : undefined
         }
       })
       .subscribe();

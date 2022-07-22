@@ -5,4 +5,4 @@ export interface PaginatedPage {
   maxPage: number | null;
 }
 
-export type TokensNetworkState = Record<BlockchainName, PaginatedPage>;
+export type TokensNetworkState = Partial<Record<BlockchainName, PaginatedPage>>;

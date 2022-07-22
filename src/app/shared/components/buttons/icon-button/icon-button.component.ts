@@ -24,6 +24,8 @@ export class IconButtonComponent {
     this._border = border === '' || border;
   }
 
+  @Input() borderRadiusPercent = 0;
+
   @Output() iconButtonClick = new EventEmitter<void>();
 
   public _disabled = false;
