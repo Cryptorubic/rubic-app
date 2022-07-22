@@ -1,14 +1,12 @@
-import { TradeType } from 'rubic-sdk';
-
 interface InstantTradesUniswapAbstractApi {
   hash: string;
-  provider: TradeType;
+  provider: string;
   network: string;
 }
 
 interface InstantTradesOneInchApi {
   hash: string;
-  provider: TradeType;
+  provider: string;
   network: string;
   from_token: string;
   to_token: string;
@@ -18,7 +16,7 @@ interface InstantTradesOneInchApi {
 
 interface SolanaTradesApi {
   signature: string;
-  provider: TradeType;
+  provider: string;
   network: string;
   from_token: string;
   to_token: string;
