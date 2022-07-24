@@ -70,7 +70,7 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     PlatformTokensAmountComponent,
     SwapsHeaderComponent
   ],
-  exports: [],
+  exports: [TokenAmountInputComponent, VerticalIframeTokenAmountInputComponent],
   imports: [
     CommonModule,
     SharedModule,

@@ -347,11 +347,11 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
+    "$lockedRBC": "$ Locked RBC",
+    "stakingTvl": "Circ. RBC Locked",
+    "multichainTvl": "Est. Yield Per Week",
     "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
+    "totalTradingVolume": "APR"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",

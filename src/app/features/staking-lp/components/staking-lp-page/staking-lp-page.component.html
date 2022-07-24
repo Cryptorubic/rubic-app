@@ -1,11 +1,44 @@
-<app-statistics class="statistics"></app-statistics>
+<app-statistics *ngIf="!isShowStakeForm" class="statistics"></app-statistics>
 
-<div class="lp">
-  <div class="lp__title">Rubic Liquidity Providing</div>
-  <app-lp-rounds></app-lp-rounds>
+<!--&lt;!&ndash; Затычка для подключения кошелька &ndash;&gt;-->
+<!--<div *ngIf="!isShowStakeForm" class="connect-wallet-btn staking-btn__item">-->
+<!--  <span>Connect Wallet</span>-->
+<!--</div>-->
+
+<!-- Затычка для кнопок BUY и STAKE -->
+<div *ngIf="!isShowStakeForm" class="staking-btn">
+  <div class="staking-btn__item buy-btn">
+    <span class="staking-btn__text">BUY</span>
+  </div>
+  <div class="staking-btn__item stake-btn" (click)="showStakeFrom(true)">
+    <span class="staking-btn__text">STAKE</span>
+  </div>
 </div>
 
-<div class="staking">
-  <div class="staking__title">Rubic Staking</div>
-  <app-staking-rounds></app-staking-rounds>
+<app-stake-form *ngIf="isShowStakeForm"></app-stake-form>
+
+<div class="rules">
+  <a class="rules__link" href="#"> Staking Complete Rules </a>
+  <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+</div>
+<div *ngIf="!isShowStakeForm" class="lp">
+  <tui-accordion class="container">
+    <tui-accordion-item
+      [borders]="null"
+      [showArrow]="false"
+      (click)="showPastStaking(!isShowPastStaking)"
+    >
+      Past Staking Campaigns
+      <ng-template tuiAccordionItemContent>
+        <app-lp-rounds></app-lp-rounds>
+        <app-staking-rounds></app-staking-rounds>
+      </ng-template>
+      <img
+        class="lp__arrow"
+        src="assets/images/icons/arrow/long-arrow-up.svg"
+        alt="Arrow"
+        [style.transform]="isShowPastStaking ? 'rotate(360deg)' : 'rotate(180deg)'"
+      />
+    </tui-accordion-item>
+  </tui-accordion>
 </div>

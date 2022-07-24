@@ -19,7 +19,6 @@ import {
   take,
   tap
 } from 'rxjs/operators';
-import { AbiItem } from 'web3-utils';
 import { TradeVolumeByPeriod } from '@app/core/services/backend/volume-api/models/trade-volume-by-period';
 import { TtvFilters } from '../models/ttv-filters.enum';
 import { HttpClient } from '@angular/common/http';
@@ -29,12 +28,7 @@ import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { transitTokens } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-
-interface RoundContract {
-  address: string;
-  abi: AbiItem[];
-  active?: boolean;
-}
+import { RoundContract } from '@features/staking-lp/models/round-contract';
 
 @Injectable()
 export class StakingLpService {

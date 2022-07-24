@@ -1,23 +1,7 @@
 <div class="staking-card">
   <div class="title">
     <img src="assets/images/rbc-util-icon.png" alt="BRBC" />
-    Round {{ round }}
-  </div>
-  <div class="params">
-    <div class="params__param">
-      <span class="params__param-label">APR: </span>
-      <span class="params__param-value">{{ apr + '%' }}</span>
-    </div>
-    <div class="params__param">
-      <span class="params__param-label">Pool Limit: </span>
-      <span class="params__param-value">{{ poolLimit | bigNumberFormat }} RBC</span>
-    </div>
-    <div class="params__param">
-      <span class="params__param-label">Your Balance: </span>
-      <span class="params__param-value">
-        {{ balance ? (balance | bigNumberFormat: 2:true) : '--.--' }} RBC
-      </span>
-    </div>
+    Staking Round {{ round }}
   </div>
   <div class="statuses">
     <app-status-badge
@@ -26,13 +10,4 @@
       [type]="statusBadgeType[status]"
     ></app-status-badge>
   </div>
-  <app-rubic-button
-    appearance="secondary"
-    class="join"
-    (onClick)="onNavigate.emit(round)"
-    *ngIf="round === 2"
-    >{{
-      statuses && statuses.includes(roundStatus.CLOSED) ? 'Check' : 'Join Round'
-    }}</app-rubic-button
-  >
 </div>

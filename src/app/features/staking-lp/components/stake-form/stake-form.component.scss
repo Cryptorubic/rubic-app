@@ -1,0 +1,281 @@
+@use 'src/scss/core' as *;
+
+.stake-form {
+  position: relative;
+
+  max-width: 490px;
+  margin: 0 auto;
+  padding: 26px;
+
+  background: var(--rubic-base-22);
+  border-radius: 24px;
+
+  &__title {
+    @include font(18px, 22px, 500, white);
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-arrow {
+      position: absolute;
+      top: 50%;
+      left: 0;
+
+      width: 19px;
+
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+  }
+
+  &__amount {
+    display: flex;
+    justify-content: space-between;
+    min-height: 60px;
+    margin: 50px 0 20px;
+  }
+
+  &__token {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 103px;
+    padding: 12px;
+
+    background: var(--rubic-base-23);
+    border-radius: 100px;
+
+    &-icon {
+      display: flex;
+
+      ::ng-deep svg {
+        width: 26px;
+        height: 26px;
+
+        circle[fill='white'] {
+          fill: var(--main-green);
+        }
+
+        path[fill='#4AA956'] {
+          fill: white;
+        }
+
+        rect[fill='black'] {
+          fill: white;
+        }
+      }
+    }
+
+    &-title {
+      @include font(20px, 24px, 500, white);
+    }
+
+    &-max {
+      margin: 12px 0 0 10px;
+
+      &-text {
+        @include font(15px, 18px, 500, rgba(255, 255, 255, 0.6));
+      }
+    }
+  }
+
+  &__sum {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 300px;
+    height: 100%;
+
+
+    &-label {
+      width: 100%;
+      height: 35px;
+      margin-bottom: 5px;
+
+      ::placeholder {
+        letter-spacing: 0.6px;
+      }
+    }
+
+    &-input {
+      width: 100%;
+      height: 100%;
+
+      padding: 0;
+
+      color: var(--form-bright-text-color);
+      font-weight: 400;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      text-align: right;
+
+      background-color: transparent;
+
+      border: none;
+
+      @include iframe-horizontal {
+        padding-left: 0;
+
+        font-size: 20px;
+        text-align: left;
+      }
+    }
+  }
+
+  &__delimiter {
+    position: relative;
+
+    background-color: var(--main-background);
+
+    > * {
+      position: absolute;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      @include iframe-horizontal {
+        position: static;
+        left: unset;
+
+        transform: unset;
+      }
+
+      @include iframe-vertical {
+        position: static;
+        left: unset;
+
+        transform: none;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      top: 0;
+
+      display: block;
+      width: 100%;
+      height: 1px;
+
+      background-color: var(--rubic-delimiter);
+
+      opacity: 0.5;
+
+      content: '';
+
+      @include iframe-vertical {
+        display: none;
+      }
+    }
+  }
+
+  &__duration {
+    margin-top: 36px;
+
+    &-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &-bottom {
+      margin-top: 27px;
+      padding-bottom: 47px;
+
+      ::ng-deep {
+        tui-input-slider {
+          margin-bottom: 47px;
+
+          .dot:active {
+            background: var(--main-green);
+          }
+
+          .content {
+            display: none;
+          }
+
+          input {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &-currentDuration {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      &-text {
+        @include font(20px, 24px, 500, white);
+      }
+
+      &-num {
+        @include font(20px, 24px, 500, white);
+        padding: 8px 12px;
+
+        background: var(--main-background);
+        border-radius: 100px;
+      }
+    }
+
+    &-checkbox {
+      form {
+        display: flex;
+        gap: 36px;
+        align-items: center;
+
+        ::ng-deep {
+          tui-radio-labeled {
+            margin-bottom: 0;
+          }
+
+          tui-radio {
+            display: none;
+          }
+
+          .content {
+            @include font(16px, 19px, 500, white);
+            margin-left: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  &__warning {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+
+    background: rgba(243, 186, 47, 0.15);
+    border-radius: 12px;
+
+    &-icon {
+      width: 15px;
+    }
+
+    &-text {
+      @include font(14px, 17px, 500, #F3BA2F);
+    }
+  }
+
+  &__stake-btn {
+
+    @include font(16px, 19px, 500, white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+
+    background: var(--main-green);
+    border: 2px solid var(--main-green);
+    border-radius: 100px;
+
+    cursor: pointer;
+  }
+}

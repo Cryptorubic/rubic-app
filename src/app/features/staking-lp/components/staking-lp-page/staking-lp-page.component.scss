@@ -13,7 +13,6 @@
 
 .statistics {
   display: block;
-  margin-bottom: 12px;
 }
 
 .staking {
@@ -34,21 +33,116 @@
   }
 }
 
-.lp {
+.container {
   margin-bottom: 12px;
-  padding: 26px;
+  padding: 12px;
 
   background: var(--rubic-base-22);
   border-radius: 24px;
-  
-  &__title {
-    @include font(20px, 24px, 600, var(--rubic-base-02));
-    margin-bottom: 31px;  
+
+  ::ng-deep {
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .content {
+      padding: 0;
+    }
+  }
+}
+
+.staking-btn__item {
+
+  @include font(16px, 19px, 500, white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 398px;
+  margin: 30px auto 0;
+  padding: 10px 20px;
+
+  background: var(--main-green);
+  border: 2px solid var(--main-green);
+  border-radius: 100px;
+
+  cursor: pointer;
+}
+
+.staking-btn {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+
+  &__text {
+    position: relative;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: -27px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 8px;
+      height: 8px;
+      padding: 4px;
+
+      font-size: 12px;
+      line-height: 1;
+
+      border: 2px solid #fff;
+      border-radius: 50%;
+      transform: translateY(-50%);
+
+      content: '1';
+    }
   }
 
-  &__card:not(:last-child) {
-    display: block;
-    margin-bottom: 12px;
+  &:last-child {
+    &__text {
+      &::before {
+        content: '2';
+      }
+    }
+  }
+}
+
+.rules {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 0;
+
+  &__link {
+    @include font(16px, 19px, 400, var(--main-green));
+    text-decoration-line: underline;
+  }
+
+  &__icon {
+    display: flex;
+
+    ::ng-deep svg {
+      path[fill='black'] {
+        fill: var(--main-green);
+      }
+
+      rect[fill='black'] {
+        fill: var(--main-green);
+      }
+    }
+  }
+}
+
+.lp {
+  &__arrow {
+    cursor: pointer;
+
+    transition: all 0.2s linear;
   }
 }
 

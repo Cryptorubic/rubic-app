@@ -3,19 +3,30 @@
 .statistics {
   position: relative;
 
-  display: flex;
-  justify-content: space-between;
-
-  padding: 18px;
+  padding: 26px;
 
   background: var(--rubic-base-22);
   border-radius: 24px;
 
-  @include b($tablet) {
-    flex-direction: column;
-    padding: 28px 12px 12px;
+  &__head {
+    margin-bottom: 48px;
+  }
 
-    border-radius: 22px;
+  &__title {
+    @include font(18px, 22px, 600, white);
+  }
+
+  &__info {
+    display: flex;
+    justify-content: space-between;
+
+    @include b($tablet) {
+      flex-direction: column;
+      padding: 28px 12px 12px;
+
+      border-radius: 22px;
+    }
+
   }
 
   &__refresh {
@@ -32,7 +43,7 @@
   &__col {
     display: flex;
     flex-direction: column;
-    padding: 28px 45px;
+    padding: 0 45px;
 
     @include b($tablet) {
       flex-direction: row;
@@ -68,7 +79,6 @@
       align-items: center;
       justify-content: center;
 
-      border: 2px solid $rubic-primary;
       border-radius: 15px;
     }
 
@@ -122,18 +132,6 @@
 
       &_loading {
         opacity: 0.4;
-      }
-    }
-
-    &-hint {
-      display: flex;
-      align-items: center;
-      margin-left: 8px;
-
-      cursor: pointer;
-
-      @include b($tablet) {
-        margin-left: 3px;
       }
     }
   }

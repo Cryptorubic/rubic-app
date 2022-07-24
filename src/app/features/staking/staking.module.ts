@@ -33,6 +33,7 @@ import { StakingPageComponent } from './components/staking-page/staking-page.com
 import { RouterModule } from '@angular/router';
 import { StakingRoundResolver } from './services/staking-round.resolver';
 import { BridgeStakeNotificationComponent } from './components/bridge-stake-notification/bridge-stake-notification.component';
+import { HeaderModule } from '@core/header/header.module';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { BridgeStakeNotificationComponent } from './components/bridge-stake-noti
     TuiHintControllerModule,
     TuiHintModule,
     TuiProgressModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    HeaderModule
   ],
   providers: [StakingService, StakingApiService, StakingRoundResolver]
 })

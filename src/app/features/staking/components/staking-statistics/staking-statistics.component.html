@@ -26,6 +26,12 @@
     (iconClick)="reloadStakingStatistics()"
     [rotating]="loading$ | async"
   ></app-rotating-icon>
+  <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
+    <app-login-button class="rubic-header__login" *noFrame></app-login-button>
+  </ng-container>
+  <ng-template #loggedIn>
+    <h3>HELLO!!!</h3>
+  </ng-template>
 </div>
 
 <ng-template #zero> 0 BRBC </ng-template>

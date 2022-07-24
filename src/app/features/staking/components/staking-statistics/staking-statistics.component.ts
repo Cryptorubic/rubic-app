@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { StakingService } from '@features/staking/services/staking.service';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { UserInterface } from '@core/services/auth/models/user.interface';
+import { AuthService } from '@core/services/auth/auth.service';
 
 /**
  * Component shows staking statstics for user, those are
@@ -29,7 +31,14 @@ export class StakingStatisticsComponent {
 
   public readonly stakingRound = this.stakingService.stakingRound;
 
-  constructor(private readonly stakingService: StakingService) {}
+  public currentUser$: Observable<UserInterface>;
+
+  constructor(
+    private readonly stakingService: StakingService,
+    private readonly authService: AuthService
+  ) {
+    this.currentUser$ = this.authService.getCurrentUser();
+  }
 
   public reloadStakingStatistics(): void {
     this.stakingService.reloadStakingStatistics().subscribe();

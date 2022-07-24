@@ -3,9 +3,10 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject, combineLatest, EMPTY, of } from 'rxjs';
-import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TtvFilters } from '../../models/ttv-filters.enum';
 import { StakingLpService } from '../../services/staking-lp.service';
+import { StatisticsService } from '@features/staking-lp/services/statistics.service';
 
 const TTV_FILTERS_TEXT = {
   [TtvFilters.ALL_TIME]: 'All Time',
@@ -27,6 +28,16 @@ export class StatisticsComponent implements OnInit {
   public readonly lpBalance$ = this.stakingLpService.lpBalance$;
 
   public readonly totalBalanceInUsdc$ = this.stakingLpService.totalBalanceInUsdc$;
+
+  public readonly lockedRBC$ = this.statisticsService.lockedRBC$;
+
+  public readonly lockedRBCInDollars$ = this.statisticsService.lockedRBCInDollars$;
+
+  public readonly circRBCLocked$ = this.statisticsService.circRBCLocked$;
+
+  public readonly rewardPerSecond$ = this.statisticsService.rewardPerSecond$;
+
+  public readonly apr$ = this.statisticsService.apr$;
 
   public readonly stakingRewards$ = this.stakingLpService.stakingRewards$;
 
@@ -67,6 +78,7 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private readonly stakingLpService: StakingLpService,
+    private readonly statisticsService: StatisticsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
@@ -80,24 +92,8 @@ export class StatisticsComponent implements OnInit {
   }
 
   public refreshStatistics(): void {
-    this.stakingLpService
-      .getTotalBalanceAndRewards()
-      .pipe(take(1))
-      .subscribe(() => {
-        this.stakingLpService.toggleLoading('balanceAndRewards', false);
-      });
-
-    this.stakingLpService
-      .getTvlMultichain()
-      .pipe(
-        switchMap(() => this.stakingLpService.getTvlStaking()),
-        tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv()),
-        take(1)
-      )
-      .subscribe(() => {
-        this.stakingLpService.toggleLoading('tvlAndTtv', false);
-      });
+    this.statisticsService.updateStatistics();
+    this.stakingLpService.toggleLoading('balanceAndRewards', false);
   }
 
   public toggleHintsMobile(): void {
@@ -117,18 +113,19 @@ export class StatisticsComponent implements OnInit {
   }
 
   private getStatisticsData(): void {
-    this.stakingLpService
-      .getTvlMultichain()
-      .pipe(
-        switchMap(() => this.stakingLpService.getTvlStaking()),
-        tap(() => this.stakingLpService.getTotalTvl()),
-        switchMap(() => this.stakingLpService.getTtv()),
-        take(1)
-      )
-      .subscribe(() => {
-        this.stakingLpService.toggleLoading('tvlAndTtv', false);
-        this.cdr.markForCheck();
-      });
+    // this.stakingLpService
+    //   .getTvlMultichain()
+    //   .pipe(
+    //     switchMap(() => this.stakingLpService.getTvlStaking()),
+    //     tap(() => this.stakingLpService.getTotalTvl()),
+    //     switchMap(() => this.stakingLpService.getTtv()),
+    //     take(1)
+    //   )
+    //   .subscribe(() => {
+    //     this.stakingLpService.toggleLoading('tvlAndTtv', false);
+    //     this.cdr.markForCheck();
+    //   });
+    this.statisticsService.getLockedRBC();
   }
 
   private watchBalanceAndRewardsForCurrentUser(): void {

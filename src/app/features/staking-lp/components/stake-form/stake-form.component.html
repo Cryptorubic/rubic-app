@@ -1,0 +1,97 @@
+<div class="stake-form">
+  <div class="stake-form__title">
+    <img
+      class="stake-form__title-arrow"
+      src="assets/images/icons/arrow/long-arrow-left.svg"
+      alt="Back"
+    />
+    <span class="stake-form__title-text">New Position</span>
+  </div>
+  <div class="stake-form__amount">
+    <div class="stake-form__token-wrapper">
+      <div class="stake-form__token">
+        <div
+          class="stake-form__token-icon"
+          [inlineSVG]="'assets/images/icons/coins/brbc.svg'"
+        ></div>
+        <span class="stake-form__token-title">RBC</span>
+      </div>
+      <div class="stake-form__token-max">
+        <span class="stake-form__token-max-text">You have 271,248.38523</span>
+      </div>
+    </div>
+    <div class="stake-form__sum">
+      <label class="stake-form__sum-label">
+        <input
+          autocomplete="off"
+          class="stake-form__sum-input"
+          name="token-amount"
+          [placeholder]="'Enter amount'"
+          appTokenAmount
+          inputmode="decimal"
+          id="token-amount-input-element"
+        />
+      </label>
+    </div>
+  </div>
+  <div class="stake-form__delimiter"></div>
+  <div class="stake-form__duration">
+    <div class="stake-form__duration-top">
+      <div class="stake-form__duration-currentDuration">
+        <span class="stake-form__duration-currentDuration-text">Add Duration</span>
+        <div class="stake-form__duration-currentDuration-num">{{ control.value }} M</div>
+      </div>
+      <div class="stake-form__duration-checkbox">
+        <form [formGroup]="testForm">
+          <tui-radio-labeled
+            formControlName="testValue1"
+            class="tui-space_bottom-3"
+            [item]="items[0]"
+            (click)="setDuration(items[0].name)"
+          >
+            1 M
+          </tui-radio-labeled>
+          <tui-radio-labeled
+            formControlName="testValue1"
+            class="tui-space_bottom-3"
+            [item]="items[1]"
+            (click)="setDuration(items[1].name)"
+          >
+            3 M
+          </tui-radio-labeled>
+          <tui-radio-labeled
+            formControlName="testValue1"
+            [item]="items[2]"
+            (click)="setDuration(items[2].name)"
+          >
+            6 M
+          </tui-radio-labeled>
+        </form>
+      </div>
+    </div>
+    <div class="stake-form__duration-bottom">
+      <tui-input-slider
+        class="control"
+        [min]="min"
+        [max]="max"
+        [steps]="steps"
+        [quantum]="quantum"
+        [formControl]="control"
+      >
+      </tui-input-slider>
+    </div>
+  </div>
+  <div class="stake-form__warning">
+    <img
+      class="stake-form__warning-icon"
+      src="assets/images/icons/info-warning.svg"
+      alt="Warning"
+    />
+    <span class="stake-form__warning-text"
+      >0,00 MULTI заблокировано истечет через 14 дней<br />Заблокировано до 21.07.2022</span
+    >
+  </div>
+  <div class="stake-form__stake-btn">
+    <span>Stake</span>
+  </div>
+</div>

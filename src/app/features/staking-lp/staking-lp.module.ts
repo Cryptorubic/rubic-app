@@ -11,13 +11,25 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiDropdownControllerModule,
   TuiDropdownModule,
+  TuiHintControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule
+  TuiManualHintModule,
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { StakingRoundsComponent } from './components/staking-rounds/staking-rounds.component';
 import { LpRoundsComponent } from './components/lp-rounds/lp-rounds.component';
+import { StatisticsService } from '@features/staking-lp/services/statistics.service';
+import {
+  TuiAccordionModule,
+  TuiInputRangeModule,
+  TuiInputSliderModule,
+  TuiRadioLabeledModule
+} from '@taiga-ui/kit';
+import { StakeFormComponent } from '@features/staking-lp/components/stake-form/stake-form.component';
+import { SwapsModule } from '@features/swaps/swaps.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -26,7 +38,8 @@ import { LpRoundsComponent } from './components/lp-rounds/lp-rounds.component';
     StakingCardComponent,
     LpCardComponent,
     StakingRoundsComponent,
-    LpRoundsComponent
+    LpRoundsComponent,
+    StakeFormComponent
   ],
   imports: [
     CommonModule,
@@ -38,8 +51,16 @@ import { LpRoundsComponent } from './components/lp-rounds/lp-rounds.component';
     TuiDropdownControllerModule,
     TuiDropdownModule,
     TuiLoaderModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiAccordionModule,
+    SwapsModule,
+    ReactiveFormsModule,
+    TuiRadioLabeledModule,
+    TuiInputRangeModule,
+    TuiTextfieldControllerModule,
+    TuiInputSliderModule,
+    TuiHintControllerModule
   ],
-  providers: [StakingLpService]
+  providers: [StakingLpService, StatisticsService]
 })
 export class StakingLpModule {}

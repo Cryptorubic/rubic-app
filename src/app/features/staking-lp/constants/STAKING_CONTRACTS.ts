@@ -10,7 +10,6 @@ export const STAKING_CONTRACTS: RoundContract[] = [
   },
   {
     address: ENVIRONMENT.staking.roundTwoContractAddress,
-    abi: STAKING_CONTRACT_ABI_ROUND_TWO,
-    active: true
+    abi: STAKING_CONTRACT_ABI_ROUND_TWO
   }
 ];

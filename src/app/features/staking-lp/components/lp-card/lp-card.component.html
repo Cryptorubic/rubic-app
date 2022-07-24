@@ -2,25 +2,7 @@
   <div class="title">
     <img src="assets/images/usdc-util-icon.png" alt="USDC" />
     <img src="assets/images/rbc-util-icon.png" alt="BRBC" />
-    Round {{ round }}
-  </div>
-  <div class="params">
-    <div class="params__param">
-      <span class="params__param-label">APR: </span>
-      <span class="params__param-value">{{ apr || '--.--' }}%</span>
-    </div>
-    <div class="params__param">
-      <span class="params__param-label">Pool Limit: </span>
-      <span class="params__param-value">
-        {{ poolLimit ? (poolLimit | bigNumberFormat) : '--.--' }} USDC
-      </span>
-    </div>
-    <div class="params__param">
-      <span class="params__param-label">Your Balance: </span>
-      <span class="params__param-value">
-        {{ balance ? (balance | bigNumberFormat: 2:true) : '--.--' }} USDC
-      </span>
-    </div>
+    Liquidity Providing Round {{ round }}
   </div>
   <div class="statuses">
     <app-status-badge
@@ -34,17 +16,4 @@
       [type]="statusBadgeType[status]"
     ></app-status-badge>
   </div>
-  <app-rubic-button
-    appearance="secondary"
-    class="join"
-    *ngIf="isStarted"
-    (onClick)="onNavigate.emit(round)"
-    >{{
-      statuses && statuses.includes(roundStatus.CLOSED)
-        ? 'Check'
-        : balance > 0
-        ? 'Details'
-        : 'Join Round'
-    }}</app-rubic-button
-  >
 </div>

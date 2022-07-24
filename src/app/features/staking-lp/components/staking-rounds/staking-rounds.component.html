@@ -1,15 +1,6 @@
 <ng-container *ngLet="stakingBalanceByRound$ | async as stakingBalances">
   <app-staking-card
     class="staking__card"
-    [round]="2"
-    [apr]="30"
-    [poolLimit]="7000000"
-    [balance]="stakingBalances.roundTwo"
-    [statuses]="[roundStatus.CLOSED]"
-    (onNavigate)="navigateToStaking($event)"
-  ></app-staking-card>
-  <app-staking-card
-    class="staking__card"
     [round]="1"
     [apr]="82"
     [poolLimit]="7000000"
@@ -18,4 +9,13 @@
     (onNavigate)="navigateToStaking($event)"
   >
   </app-staking-card>
+  <app-staking-card
+    class="staking__card"
+    [round]="2"
+    [apr]="30"
+    [poolLimit]="7000000"
+    [balance]="stakingBalances.roundTwo"
+    [statuses]="[roundStatus.CLOSED]"
+    (onNavigate)="navigateToStaking($event)"
+  ></app-staking-card>
 </ng-container>

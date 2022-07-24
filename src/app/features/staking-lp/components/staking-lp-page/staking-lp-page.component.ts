@@ -7,5 +7,17 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingLpPageComponent {
+  public isShowPastStaking: boolean = false;
+
+  public isShowStakeForm: boolean = false;
+
   constructor() {}
+
+  public showPastStaking(isShow: boolean): void {
+    this.isShowPastStaking = isShow;
+  }
+
+  public showStakeFrom(isShow: boolean): void {
+    this.isShowStakeForm = isShow;
+  }
 }

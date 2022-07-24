@@ -1,9 +1,11 @@
 @use 'src/scss/core' as *;
 
 .lp-card {
-  position: relative;
-
-  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 18px;
 
   background: var(--rubic-base-23);
   border-radius: 16px;
@@ -14,10 +16,6 @@
 }
 
 .statuses {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-
   display: flex;
 
   @include b($tablet) {
@@ -36,12 +34,11 @@
 }
 
 .title {
-  @include font(18px, 21px, 600, var(--rubic-base-02));
+  @include font(15px, 18px, 500, var(--rubic-base-02));
   position: relative;
 
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
 
   @include b($tablet) {
     margin-bottom: 18px;
