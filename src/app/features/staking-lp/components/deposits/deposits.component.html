@@ -1,0 +1,58 @@
+<div class="deposits__wrapper">
+  <div class="deposits__head">
+    <div class="deposits__title">
+      <span class="deposits__title-text">Your Deposits</span>
+      <button class="deposits__refresh-btn">
+        <img
+          class="deposits__refresh-btn-icon"
+          src="assets/images/icons/reload.svg"
+          alt="Refresh"
+        />
+      </button>
+    </div>
+    <button class="deposits__new-deposit-btn">+ New Position</button>
+  </div>
+  <div class="deposits__body">
+    <table>
+      <thead>
+        <tr>
+          <td>NFT ID</td>
+          <td>BRBC</td>
+          <td>Rewards</td>
+          <td>APY</td>
+          <td>End Date</td>
+        </tr>
+      </thead>
+      <tbody>
+        <app-deposit
+          nftId="172"
+          brbc="1.003"
+          rewards="0.4515"
+          apy="14.3"
+          endDate="03.04.2022"
+        ></app-deposit>
+        <app-deposit
+          nftId="728"
+          brbc="1,948"
+          rewards="198.41"
+          apy="10.9"
+          endDate="06.12.2022"
+        ></app-deposit>
+        <app-deposit
+          nftId="190"
+          brbc="1,938.4837"
+          rewards="1,498.4"
+          apy="12.5"
+          endDate="12.08.2024"
+        ></app-deposit>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><span class="deposits__footer-text">TOTAL</span></td>
+          <td><span class="deposits__footer-text">3,887.49</span></td>
+          <td><span class="deposits__footer-text">1,697.272</span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

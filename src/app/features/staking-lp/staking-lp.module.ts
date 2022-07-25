@@ -30,6 +30,8 @@ import {
 import { StakeFormComponent } from '@features/staking-lp/components/stake-form/stake-form.component';
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DepositsComponent } from '@features/staking-lp/components/deposits/deposits.component';
+import { DepositComponent } from '@features/staking-lp/components/deposits/components/deposit/deposit.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     LpCardComponent,
     StakingRoundsComponent,
     LpRoundsComponent,
-    StakeFormComponent
+    StakeFormComponent,
+    DepositsComponent,
+    DepositComponent
   ],
   imports: [
     CommonModule,
