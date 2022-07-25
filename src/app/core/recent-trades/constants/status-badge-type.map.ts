@@ -5,5 +5,6 @@ export const STATUS_BADGE_TYPE: Partial<Record<CrossChainTxStatus, StatusBadgeTy
   [CrossChainTxStatus.FAIL]: 'error',
   [CrossChainTxStatus.PENDING]: 'info',
   [CrossChainTxStatus.SUCCESS]: 'active',
-  [CrossChainTxStatus.FALLBACK]: 'info'
+  [CrossChainTxStatus.FALLBACK]: 'info',
+  [CrossChainTxStatus.UNKNOWN]: 'inactive'
 };
