@@ -24,8 +24,24 @@
     align-items: center;
     padding: 0 14px;
 
+    @include b(480) {
+      padding: 0 14px 0 0;
+    }
+
     &-text {
       @include font(18px, 22px, 500, white);
+      white-space: nowrap;
+
+      @include b(480) {
+        @include font(16px, 19px, 500, white);
+      }
+    }
+  }
+
+  &__refresh-btn-icon {
+    @include b(480) {
+      width: 15px;
+      height: 15px;
     }
   }
 
@@ -35,42 +51,56 @@
 
     letter-spacing: 1px;
 
+    white-space: nowrap;
+
     background: var(--main-green);
     border-radius: 100px;
+
+    @include b(480) {
+      @include font(14px, 15px, 500, white);
+    }
   }
 
   &__body {
     table {
       display: grid;
-    }
 
-    tbody {
-      display: grid;
-      gap: 12px;
-    }
+      thead tr td {
+        @include font(16px, 19px, 500, rgba(255, 255, 255, 0.6));
+        width: max-content;
 
-    thead tr td {
-      @include font(16px, 19px, 500, rgba(255, 255, 255, 0.6));
-      width: max-content;
+        white-space: nowrap;
 
-      white-space: nowrap;
-
-      @include b(480) {
-        @include font(12px, 15px, 500, rgba(255, 255, 255, 0.6));
-        width: 100%;
-      }
-    }
-
-    thead tr {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 85px));
-
-      @include b(850) {
-        grid-template-columns: repeat(5, 1fr);
+        @include b(480) {
+          @include font(12px, 15px, 500, rgba(255, 255, 255, 0.6));
+          width: 100%;
+        }
       }
 
-      @include b(480) {
-        width: min-content;
+      thead tr {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 85px));
+
+        @include b(850) {
+          grid-template-columns: repeat(5, 1fr);
+        }
+
+        @include b(480) {
+          width: min-content;
+        }
+      }
+
+      tbody {
+        display: grid;
+        gap: 12px;
+      }
+
+      tfoot {
+        margin-top: 26px;
+
+        tr td {
+          padding: 0 15px;
+        }
       }
     }
 
@@ -79,13 +109,11 @@
     }
   }
 
-  &__footer {
-    display: flex;
-    align-items: center;
-    margin-top: 26px;
+  &__footer-text {
+    @include font(16px, 19px, 500, var(--main-green));
 
-    &-text {
-      @include font(16px, 19px, 500, var(--main-green));
+    @include b(480) {
+      @include font(12px, 15px, 500, var(--main-green));
     }
   }
 }

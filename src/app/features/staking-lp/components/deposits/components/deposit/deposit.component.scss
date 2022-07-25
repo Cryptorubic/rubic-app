@@ -26,9 +26,9 @@
       align-items: flex-start;
     }
 
-    @include b(480) {
-      width: min-content;
-    }
+    //@include b(410) {
+    //  width: min-content;
+    //}
   }
 
   &__ceil {
