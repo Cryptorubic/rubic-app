@@ -46,7 +46,11 @@
 
     <div class="pair">
       <div class="pair__from">
-        <img [src]="fromToken.image" alt="" class="pair__token-image" />
+        <img
+          [src]="fromToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          alt=""
+          class="pair__token-image"
+        />
         <div class="pair__data">
           <div class="pair__symbol">{{ fromToken.symbol }}</div>
           <div class="pair__blockchain">{{ fromBlockchain.name }}</div>
@@ -54,7 +58,11 @@
       </div>
       <img src="assets/images/icons/arrow/long-arrow-right-grey.svg" class="pair__arrow" alt="" />
       <div class="pair__to">
-        <img [src]="toToken.image" alt="" class="pair__token-image" />
+        <img
+          [src]="toToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          alt=""
+          class="pair__token-image"
+        />
         <div class="pair__data">
           <div class="pair__symbol">{{ toToken.symbol }}</div>
           <div class="pair__blockchain">{{ toBlockchain.name }}</div>
