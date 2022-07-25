@@ -8,10 +8,12 @@
 <!-- Затычка для кнопок BUY и STAKE -->
 <div *ngIf="!isShowStakeForm" class="staking-btn">
   <div class="staking-btn__item buy-btn">
-    <span class="staking-btn__text">BUY</span>
+    <div class="staking-btn__text-num">1</div>
+    <span class="staking-btn__text">BUY BRBC</span>
   </div>
   <div class="staking-btn__item stake-btn" (click)="showStakeFrom(true)">
-    <span class="staking-btn__text">STAKE</span>
+    <div class="staking-btn__text-num">2</div>
+    <span class="staking-btn__text">STAKE BRBC</span>
   </div>
 </div>
 
@@ -26,7 +28,7 @@
     <tui-accordion-item
       [borders]="null"
       [showArrow]="false"
-      (click)="showPastStaking(!isShowPastStaking)"
+      (click)="pastStakingVisibilityToggle(!isShowPastStaking)"
     >
       Past Staking Campaigns
       <ng-template tuiAccordionItemContent>

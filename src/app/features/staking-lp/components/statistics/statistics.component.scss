@@ -27,6 +27,10 @@
       border-radius: 22px;
     }
 
+    @include b($mobile-sm-plus) {
+      padding: 0;
+    }
+
   }
 
   &__refresh {
@@ -64,14 +68,28 @@
 
       &:nth-child(2) {
         order: 1;
-        margin-bottom: 52px;
+        margin-bottom: 26px;
         padding: 0 22px;
       }
 
       &:nth-child(3) {
         order: 2;
         margin-bottom: 26px;
-        padding: 0px 22px;
+        padding: 0 22px;
+      }
+    }
+
+    @include b($mobile-sm-plus) {
+      &:first-child {
+        padding: 0;
+      }
+
+      &:nth-child(2) {
+        padding: 0;
+      }
+
+      &:nth-child(3) {
+        padding: 0;
       }
     }
 
@@ -94,6 +112,10 @@
   &__param {
     @include b($tablet) {
       width: 50%;
+    }
+
+    @include b($mobile-sm-plus) {
+      overflow: hidden;
     }
 
     &-label {

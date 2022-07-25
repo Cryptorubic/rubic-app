@@ -13,7 +13,7 @@ export class StakingLpPageComponent {
 
   constructor() {}
 
-  public showPastStaking(isShow: boolean): void {
+  public pastStakingVisibilityToggle(isShow: boolean): void {
     this.isShowPastStaking = isShow;
   }
 

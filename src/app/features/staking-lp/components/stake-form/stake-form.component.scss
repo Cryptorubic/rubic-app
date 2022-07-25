@@ -31,10 +31,51 @@
   }
 
   &__amount {
-    display: flex;
-    justify-content: space-between;
     min-height: 60px;
     margin: 50px 0 20px;
+
+    @include b($mobile-sm) {
+      margin: 50px 0 40px;
+    }
+
+    &-label {
+      width: 100%;
+      height: 35px;
+
+      ::placeholder {
+        letter-spacing: 0.6px;
+      }
+    }
+
+    &-input {
+      width: 100%;
+      height: 100%;
+
+      padding: 0;
+
+      color: var(--form-bright-text-color);
+      font-weight: 400;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      text-align: right;
+
+      background-color: transparent;
+
+      border: none;
+
+      @include iframe-horizontal {
+        padding-left: 0;
+
+        font-size: 20px;
+        text-align: left;
+      }
+    }
+  }
+
+  &__token-wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
   }
 
   &__token {
@@ -70,58 +111,30 @@
     }
 
     &-title {
-      @include font(20px, 24px, 500, white);
-    }
-
-    &-max {
-      margin: 12px 0 0 10px;
-
-      &-text {
-        @include font(15px, 18px, 500, rgba(255, 255, 255, 0.6));
-      }
+      @include font(18px, 24px, 500, white);
     }
   }
 
-  &__sum {
+  &__balance {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    max-width: 300px;
     height: 100%;
+    margin: 12px 0 0 10px;
 
+    &-max {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
 
-    &-label {
-      width: 100%;
-      height: 35px;
-      margin-bottom: 5px;
-
-      ::placeholder {
-        letter-spacing: 0.6px;
+      &-text {
+        @include font(15px, 18px, 500, rgba(255, 255, 255, 0.6));
+        white-space: nowrap;
       }
     }
 
-    &-input {
-      width: 100%;
-      height: 100%;
-
-      padding: 0;
-
-      color: var(--form-bright-text-color);
-      font-weight: 400;
-      font-size: 22px;
-      letter-spacing: 0.1em;
+    &-dollars {
+      @include font(15px, 18px, 500, rgba(255, 255, 255, 0.6));
       text-align: right;
-
-      background-color: transparent;
-
-      border: none;
-
-      @include iframe-horizontal {
-        padding-left: 0;
-
-        font-size: 20px;
-        text-align: left;
-      }
     }
   }
 
@@ -174,10 +187,20 @@
   &__duration {
     margin-top: 36px;
 
+    @include b($mobile-sm) {
+      margin-top: 60px;
+    }
+
     &-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      @include b(500) {
+        display: grid;
+        grid-template-columns: 100%;
+        gap: 30px;
+      }
     }
 
     &-bottom {
@@ -190,6 +213,16 @@
 
           .dot:active {
             background: var(--main-green);
+          }
+
+          .bar {
+            margin-left: 0 !important;
+
+            border-radius: 3px !important;
+          }
+
+          .wrapper {
+            height: 6px;
           }
 
           .content {
@@ -207,17 +240,42 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      justify-content: center;
 
       &-text {
-        @include font(20px, 24px, 500, white);
+        @include font(18px, 24px, 500, white);
+        white-space: nowrap;
+
+        @include b(380) {
+          font-size: 15px;
+        }
       }
 
       &-num {
-        @include font(20px, 24px, 500, white);
+        @include font(18px, 24px, 500, white);
         padding: 8px 12px;
+
+        white-space: nowrap;
 
         background: var(--main-background);
         border-radius: 100px;
+
+        @include b(380) {
+          font-size: 15px;
+        }
+      }
+
+      &-max {
+        @include font(14px, 17px, 500, var(--form-rubic-text-color));
+        padding: 0;
+
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        text-transform: uppercase;
+
+        @include b($mobile-sm) {
+          font-size: 18px;
+        }
       }
     }
 
@@ -226,10 +284,42 @@
         display: flex;
         gap: 36px;
         align-items: center;
+        justify-content: space-between;
+
+        @include b(480) {
+          gap: 18px;
+        }
+
+        @include b($mobile-sm) {
+          gap: 10px;
+        }
 
         ::ng-deep {
           tui-radio-labeled {
             margin-bottom: 0;
+          }
+
+          tui-radio-labeled.isSelected {
+            position: relative;
+
+            &::before {
+              position: absolute;
+              top: -46%;
+              left: -67%;
+
+              width: 61px;
+              height: 35px;
+
+              background: transparent;
+              border: 1px solid var(--main-green);
+              border-radius: 100px;
+
+              content: '';
+
+              @include b($mobile-sm) {
+                left: -82%;
+              }
+            }
           }
 
           tui-radio {
@@ -239,6 +329,16 @@
           .content {
             @include font(16px, 19px, 500, white);
             margin-left: 0 !important;
+
+            white-space: nowrap;
+
+            @include b($mobile-sm) {
+              font-size: 14px;
+            }
+
+            &:hover {
+              color: var(--main-green);
+            }
           }
         }
       }
