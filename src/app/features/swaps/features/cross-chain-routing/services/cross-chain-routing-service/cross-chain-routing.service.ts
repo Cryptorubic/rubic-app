@@ -251,12 +251,12 @@ export class CrossChainRoutingService extends TradeService {
     if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
       return {
         estimatedGas,
-        feeAmount: trade.fee,
-        feeTokenSymbol: trade.feeSymbol,
-        feePercent: trade.feePercent,
+        feeAmount: new BigNumber(0),
+        feeTokenSymbol: 'TEST',
+        feePercent: 0,
         priceImpact: String(trade.priceImpact),
-        networkFee: trade.networkFee,
-        networkFeeSymbol: trade.networkFeeSymbol
+        networkFee: new BigNumber(0),
+        networkFeeSymbol: 'TEST2'
       };
     }
 
@@ -382,8 +382,9 @@ export class CrossChainRoutingService extends TradeService {
 
     let fee: BigNumber;
     if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-      const trade = this.crossChainTrade.trade as SymbiosisCrossChainTrade;
-      fee = trade.fee;
+      // const trade = this.crossChainTrade.trade as SymbiosisCrossChainTrade;
+      // @TOD FIXED FEE
+      // fee = trade.fee;
     } else {
       // @TODO SDK.
       // const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
