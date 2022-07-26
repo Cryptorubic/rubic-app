@@ -26,10 +26,7 @@
       <app-smart-routing
         *noFrame
         [class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"
-        [fromProvider]="smartRouting.fromProvider"
-        [toProvider]="smartRouting.toProvider"
-        [fromHasTrade]="smartRouting.fromHasTrade"
-        [toHasTrade]="smartRouting.toHasTrade"
+        [smartRouting]="smartRouting"
       ></app-smart-routing>
     </ng-container>
   </div>

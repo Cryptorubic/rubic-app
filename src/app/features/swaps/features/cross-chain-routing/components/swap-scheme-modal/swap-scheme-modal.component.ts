@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { Provider, TRADES_PROVIDERS } from '@app/shared/constants/common/trades-providers';
+import { LIFI_BRIDGE_PROVIDER, Provider } from '@app/shared/constants/common/trades-providers';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -123,7 +123,7 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
-  private bridgeType: string | undefined;
+  public bridgeType: Provider;
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -234,7 +234,9 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private async getLifiDstTxStatus(): Promise<MODAL_SWAP_STATUS> {
     try {
-      const bridgeType = this.bridgeType;
+      const bridgeType = Object.entries(LIFI_BRIDGE_PROVIDER).find(
+        ([, value]) => value.name === this.bridgeType?.name
+      )?.[0];
       if (!bridgeType) {
         return MODAL_SWAP_STATUS.UNKNOWN;
       }
@@ -428,8 +430,8 @@ export class SwapSchemeModalComponent implements OnInit {
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.srcProvider = TRADES_PROVIDERS?.[data.srcProvider] || TRADES_PROVIDERS.LIFI_PROVIDER;
-    this.dstProvider = TRADES_PROVIDERS?.[data.dstProvider] || TRADES_PROVIDERS.LIFI_PROVIDER;
+    this.srcProvider = data.srcProvider;
+    this.dstProvider = data.dstProvider;
 
     this.fromBlockchain = BLOCKCHAINS[data.fromBlockchain];
     this.toBlockchain = BLOCKCHAINS[data.toBlockchain];
