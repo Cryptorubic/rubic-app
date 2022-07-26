@@ -59,7 +59,11 @@
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="Protocol fee"
-      [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'"
+      [tuiHint]="
+        isSymbiosisOrLifi
+          ? 'Platform\'s comission charges in source network native coin.'
+          : 'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'
+      "
     />
   </div>
 
@@ -70,7 +74,7 @@
       {{ feeTokenSymbol }}
     </ng-container>
     <ng-template #zero>
-      <ng-container *ngIf="feeAmount?.isFinite(); else fullZero"> ~ 1 USD </ng-container>
+      <ng-container *ngIf="feeAmount?.isFinite(); else fullZero"> ~ 1 USD</ng-container>
       <ng-template #fullZero> 0% </ng-template>
     </ng-template>
   </div>

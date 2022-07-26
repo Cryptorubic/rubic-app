@@ -124,8 +124,7 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: this.defaultTimeout,
-        disabledProviders: []
+        timeout: this.defaultTimeout
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -380,17 +379,8 @@ export class CrossChainRoutingService extends TradeService {
   private notifyGtmAfterSignTx(txHash: string): void {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
 
-    let fee: BigNumber;
-    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-      // const trade = this.crossChainTrade.trade as SymbiosisCrossChainTrade;
-      // @TOD FIXED FEE
-      // fee = trade.fee;
-    } else {
-      // @TODO SDK.
-      // const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
-      // fee = trade.from.tokenAmount.multipliedBy(trade.transitTokenFee / 100);
-      fee = new BigNumber(0);
-    }
+    // @TODO remove hardcode
+    const fee = new BigNumber(1);
 
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
