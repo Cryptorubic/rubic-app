@@ -1,7 +1,7 @@
 <div class="deposits__wrapper">
   <div class="deposits__head">
     <div class="deposits__title">
-      <span class="deposits__title-text">Your Deposits</span>
+      <span class="deposits__title-text">{{ 'staking.deposits.yourDeposits' | translate }} </span>
       <button class="deposits__refresh-btn">
         <img
           class="deposits__refresh-btn-icon"
@@ -10,7 +10,9 @@
         />
       </button>
     </div>
-    <button class="deposits__new-deposit-btn">+ New Position</button>
+    <button class="deposits__new-deposit-btn">
+      {{ 'staking.deposits.newPosition' | translate }}
+    </button>
   </div>
   <div class="deposits__body">
     <table>

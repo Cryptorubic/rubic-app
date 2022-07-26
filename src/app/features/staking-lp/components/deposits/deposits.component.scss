@@ -1,15 +1,15 @@
 @use 'src/scss/core' as *;
 
-.deposits__wrapper {
-  position: relative;
-
-  padding: 26px 12px;
-
-  background: var(--rubic-base-22);
-  border-radius: 24px;
-}
-
 .deposits {
+  &__wrapper {
+    position: relative;
+
+    padding: 26px 12px;
+
+    background: var(--rubic-base-22);
+    border-radius: $border-radius-2;
+  }
+
   &__head {
     display: flex;
     align-items: center;
@@ -54,7 +54,7 @@
     white-space: nowrap;
 
     background: var(--main-green);
-    border-radius: 100px;
+    border-radius: $border-radius-3;
 
     @include b(480) {
       @include font(14px, 15px, 500, white);
@@ -81,7 +81,7 @@
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 85px));
 
-        @include b(850) {
+        @include b($tablet) {
           grid-template-columns: repeat(5, 1fr);
         }
 

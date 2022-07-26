@@ -41,9 +41,7 @@
     <div class="stake-form__duration-top">
       <div class="stake-form__duration-currentDuration">
         <span class="stake-form__duration-currentDuration-text">Choose the Duration</span>
-        <div class="stake-form__duration-currentDuration-num">
-          {{ sliderConfig.control.value }} M
-        </div>
+        <div class="stake-form__duration-currentDuration-num">{{ control.value }} M</div>
         <button class="stake-form__duration-currentDuration-max" (click)="setMaxDuration()">
           max
         </button>
@@ -51,7 +49,7 @@
       <div class="stake-form__duration-checkbox">
         <form [formGroup]="durationRadioButtonForm">
           <tui-radio-labeled
-            formControlName="durationForm"
+            formControlName="duration"
             class="tui-space_bottom-3"
             [ngClass]="{ isSelected: durations[0].selected }"
             [item]="durations[0]"
@@ -60,7 +58,7 @@
             {{ durations[0].name }}
           </tui-radio-labeled>
           <tui-radio-labeled
-            formControlName="durationForm"
+            formControlName="duration"
             class="tui-space_bottom-3"
             [ngClass]="{ isSelected: durations[1].selected }"
             [item]="durations[1]"
@@ -69,7 +67,7 @@
             {{ durations[1].name }}
           </tui-radio-labeled>
           <tui-radio-labeled
-            formControlName="durationForm"
+            formControlName="duration"
             [ngClass]="{ isSelected: durations[2].selected }"
             [item]="durations[2]"
             (click)="setDuration(durations[2].value, 2)"
@@ -86,7 +84,7 @@
         [max]="sliderConfig.max"
         [steps]="steps"
         [quantum]="sliderConfig.quantum"
-        [formControl]="sliderConfig.control"
+        [formControl]="control"
       >
       </tui-input-slider>
     </div>

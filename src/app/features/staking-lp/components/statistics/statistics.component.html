@@ -2,18 +2,13 @@
   <div class="statistics__head">
     <span class="statistics__title">Overview</span>
     <app-rotating-icon
-      *ngLet="{
-        balanceAndRewardsLoading: balanceAndRewardsLoading$ | async,
-        tvlAndTtvLoading: tvlAndTtvLoading$ | async
-      } as loading"
       class="statistics__refresh"
       (iconClick)="refreshStatistics()"
-      [rotating]="loading.balanceAndRewardsLoading || loading.tvlAndTtvLoading"
     ></app-rotating-icon>
   </div>
   <div class="statistics__info">
-    <div class="statistics__col" (click)="toggleHintsMobile()">
-      <tui-loader [overlay]="true" [showLoader]="balanceAndRewardsLoading$ | async">
+    <div class="statistics__col">
+      <tui-loader [overlay]="true">
         <div class="statistics__param">
           <div class="statistics__param-label">Locked RBC</div>
           <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
@@ -24,12 +19,8 @@
         </div>
         <div class="statistics__param">
           <div class="statistics__param-label">Avg. Lock Time (month)</div>
-          <div class="statistics__param-value" *ngLet="totalRewardsInUsdc$ | async as totalRewards">
-            {{
-              totalRewards && totalRewards?.isFinite()
-                ? (totalRewards | bigNumberFormat: 0:true)
-                : '--.--'
-            }}
+          <div class="statistics__param-value">
+            {{ '--.--' }}
           </div>
         </div>
       </tui-loader>

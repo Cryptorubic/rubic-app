@@ -9,11 +9,11 @@
 <div *ngIf="!isShowStakeForm" class="staking-btn">
   <div class="staking-btn__item buy-btn">
     <div class="staking-btn__text-num">1</div>
-    <span class="staking-btn__text">BUY BRBC</span>
+    <span class="staking-btn__text">{{ 'staking.stake.buyBRBC' | translate }}</span>
   </div>
   <div class="staking-btn__item stake-btn" (click)="showStakeFrom(true)">
     <div class="staking-btn__text-num">2</div>
-    <span class="staking-btn__text">STAKE BRBC</span>
+    <span class="staking-btn__text">{{ 'staking.stake.stakeBRBC' | translate }}</span>
   </div>
 </div>
 
@@ -22,7 +22,7 @@
 <app-deposits></app-deposits>
 
 <div class="rules">
-  <a class="rules__link" href="#"> Staking Complete Rules </a>
+  <a class="rules__link" href="#">{{ 'staking.stake.rules' | translate }}</a>
   <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
 </div>
 <div *ngIf="!isShowStakeForm" class="lp">
@@ -32,7 +32,7 @@
       [showArrow]="false"
       (click)="pastStakingVisibilityToggle(!isShowPastStaking)"
     >
-      Past Staking Campaigns
+      {{ 'staking.stake.pastStaking' | translate }}
       <ng-template tuiAccordionItemContent>
         <app-lp-rounds></app-lp-rounds>
         <app-staking-rounds></app-staking-rounds>

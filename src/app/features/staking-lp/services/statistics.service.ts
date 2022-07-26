@@ -35,16 +35,18 @@ export class StatisticsService {
     )
   );
 
-  private readonly TOTAL_SUPPLY = new BigNumber(124_000_000);
+  private readonly totalSupply = new BigNumber(124_000_000);
 
-  private readonly NUMBER_OF_SECONDS_PER_WEEK = 604_800;
+  private readonly numberOfSecondsPerWeek = 604_800;
+
+  private readonly numberOfWeekPerYear = 52;
 
   public readonly rewardPerSecond$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.getCurrentEpochId().pipe(
+      StatisticsService.getCurrentEpochId().pipe(
         switchMap(currentEpochId => this.getCurrentEpochInfo(currentEpochId)),
         map(epochInfo =>
-          Web3Pure.fromWei(epochInfo.rewardPerSecond).multipliedBy(this.NUMBER_OF_SECONDS_PER_WEEK)
+          Web3Pure.fromWei(epochInfo.rewardPerSecond).multipliedBy(this.numberOfSecondsPerWeek)
         )
       )
     )
@@ -53,14 +55,16 @@ export class StatisticsService {
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
       this.rewardPerSecond$.pipe(
-        map(value => value.multipliedBy(new BigNumber(52).dividedBy(this.TOTAL_SUPPLY)))
+        map(value =>
+          value.multipliedBy(new BigNumber(this.numberOfWeekPerYear).dividedBy(this.totalSupply))
+        )
       )
     )
   );
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.TOTAL_SUPPLY)))
+      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.totalSupply)))
     )
   );
 
@@ -97,7 +101,7 @@ export class StatisticsService {
     );
   }
 
-  private getCurrentEpochId(): Observable<number> {
+  private static getCurrentEpochId(): Observable<number> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<number>(
         STAKING_ROUND_THREE.REWARDS.address,

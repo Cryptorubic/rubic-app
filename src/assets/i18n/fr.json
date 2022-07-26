@@ -507,7 +507,11 @@
       "calculateProfitability": "Calculer le profit",
       "refillTime": "{{hours}} heures {{minutes}} minutes",
       "addXbrbc": "Ajouter le jeton xBRBC",
-      "canUnstake": "{{amount}} peuvent être retiré\n"
+      "canUnstake": "{{amount}} peuvent être retiré\n",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Staking Complete Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "APR d'hier",
@@ -527,6 +531,12 @@
       "stakeTokens": "Déposez 1000 - 100'000 RBC/BRBC/wRBC pour être récompensé en BRBC",
       "teamBuybacks": "Rachats de l'équipe",
       "chainFeeUsage": "0.5% de nos 0.6% de frais multi-chaînes seront utilisés pour les rachats de RBC à destination des pools de récompenses\n"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {

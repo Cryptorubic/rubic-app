@@ -1,6 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
+interface Durations {
+  value: number;
+  name: string;
+  selected: boolean;
+}
+
+interface Duration {
+  id: number;
+  month: number;
+}
+
 @Component({
   selector: 'app-stake-form',
   templateUrl: './stake-form.component.html',
@@ -10,30 +21,32 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class StakeFormComponent {
   constructor() {}
 
-  public durations: { value: number; name: string; selected: boolean }[] = [
+  public durations: Durations[] = [
     { value: 1, name: '1 M', selected: false },
     { value: 3, name: '3 M', selected: true },
     { value: 6, name: '6 M', selected: false }
   ];
 
-  public duration: { id: number; month: number } = { id: 1, month: this.durations[1].value };
+  public duration: Duration = { id: 1, month: this.durations[1].value };
 
   public durationRadioButtonForm = new FormGroup({
-    durationForm: new FormControl(this.durations[1].name)
+    duration: new FormControl(this.durations[1].name)
   });
 
-  readonly sliderConfig = {
+  public readonly sliderConfig = {
     min: 1,
     max: 12,
     sliderStep: 1,
-    quantum: 0.01,
-    control: new FormControl(this.duration.month)
+    quantum: 0.01
   };
 
-  readonly steps = (this.sliderConfig.max - this.sliderConfig.min) / this.sliderConfig.sliderStep;
+  public readonly control = new FormControl(this.duration.month);
+
+  public readonly steps =
+    (this.sliderConfig.max - this.sliderConfig.min) / this.sliderConfig.sliderStep;
 
   public setDuration(newDuration: number, id: number): void {
-    this.sliderConfig.control.setValue(newDuration);
+    this.control.setValue(newDuration);
     this.durations[this.duration.id].selected = false;
     this.durations[id].selected = true;
     this.duration.id = id;
@@ -41,7 +54,7 @@ export class StakeFormComponent {
   }
 
   public setMaxDuration(): void {
-    this.sliderConfig.control.setValue(12);
+    this.control.setValue(12);
     this.durations[this.duration.id].selected = false;
     this.duration.month = 12;
   }

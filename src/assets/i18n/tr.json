@@ -538,7 +538,11 @@
       "calculateProfitability": "Karlılığı hesaplayın",
       "refillTime": "{{hours}} hours {{minutes}} minutes",
       "addXbrbc": "Add xBRBC",
-      "canUnstake": "Kaldırılabilir stake {{amount}}"
+      "canUnstake": "Kaldırılabilir stake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Staking Complete Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "Dünün APR",
@@ -558,6 +562,12 @@
       "stakeTokens": "BRBC'de ödüller almak için 1.000 - 100.000 RBC/BRBC/wRBC yatırın",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "%0,6 Çoklu Zincir ücretimizin %0,5'i RBC'yi geri almak ve ödül havuzuna dağıtmak için kullanılacak"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
