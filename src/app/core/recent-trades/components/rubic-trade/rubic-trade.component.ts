@@ -5,7 +5,6 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
   selector: '[rubic-trade]',
@@ -24,6 +23,6 @@ export class RubicTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.RUBIC);
+    return this.recentTradesService.getTradeData(trade);
   }
 }

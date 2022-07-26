@@ -5,7 +5,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CommonTrade } from '../../models/common-trade';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { RecentTradesService } from '../../services/recent-trades.service';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
   selector: '[celer-trade]',
@@ -24,6 +23,6 @@ export class CelerTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.CELER);
+    return await this.recentTradesService.getTradeData(trade);
   }
 }
