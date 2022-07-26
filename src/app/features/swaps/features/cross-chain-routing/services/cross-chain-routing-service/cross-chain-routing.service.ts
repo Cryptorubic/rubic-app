@@ -251,12 +251,12 @@ export class CrossChainRoutingService extends TradeService {
     if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
       return {
         estimatedGas,
-        feeAmount: new BigNumber(0),
-        feeTokenSymbol: 'TEST',
-        feePercent: 0,
+        feeAmount: new BigNumber(1),
+        feeTokenSymbol: 'USDC',
+        feePercent: trade.feeInfo.platformFee.percent,
         priceImpact: String(trade.priceImpact),
-        networkFee: new BigNumber(0),
-        networkFeeSymbol: 'TEST2'
+        networkFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount),
+        networkFeeSymbol: trade.feeInfo?.cryptoFee?.tokenSymbol
       };
     }
 
