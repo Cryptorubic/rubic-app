@@ -66,7 +66,7 @@
     "ng-inline-svg-2": "^14.0.1",
     "ngx-cookie-service": "^2.4.0",
     "rubic-app-maticjs": "^2.0.56",
-    "rubic-sdk": "^2.5.0",
+    "rubic-sdk": "^2.6.1",
     "rxjs": "^7.5.5",
     "symbiosis-js-sdk": "^2.7.7",
     "ts-cacheable": "^1.0.5",

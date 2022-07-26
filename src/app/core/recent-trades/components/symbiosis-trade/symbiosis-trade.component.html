@@ -60,7 +60,7 @@
     <app-status-badge
       [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
       [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-      *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
+      *ngIf="uiTrade?.statusTo !== CrossChainTxStatus.REVERT; else revert"
       [class.tui-skeleton]="initialLoading"
     >
     </app-status-badge>
@@ -133,7 +133,7 @@
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
           [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-          *ngIf="uiTrade?.statusTo !== RecentTradeStatus.REVERT; else revert"
+          *ngIf="uiTrade?.statusTo !== CrossChainTxStatus.REVERT; else revert"
         >
         </app-status-badge>
       </div>

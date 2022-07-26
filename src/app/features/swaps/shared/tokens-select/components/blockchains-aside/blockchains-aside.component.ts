@@ -33,10 +33,15 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.TELOS,
     BLOCKCHAIN_NAME.CELO,
     BLOCKCHAIN_NAME.OKE_X_CHAIN,
-    BLOCKCHAIN_NAME.SOLANA,
-    BLOCKCHAIN_NAME.NEAR,
+    BLOCKCHAIN_NAME.CRONOS,
     BLOCKCHAIN_NAME.HARMONY
-    // BLOCKCHAIN_NAME.CRONOS, @TODO add after lifi update
+
+    // @TODO return after Near & Solana fix
+    // BLOCKCHAIN_NAME.NEAR,
+    // BLOCKCHAIN_NAME.SOLANA
+
+    // @TODO add after lifi update
+    // BLOCKCHAIN_NAME.CRONOS
   ];
 
   public blockchainImages = Object.fromEntries(

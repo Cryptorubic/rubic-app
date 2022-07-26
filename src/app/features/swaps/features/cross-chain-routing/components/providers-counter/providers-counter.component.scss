@@ -10,6 +10,26 @@
   line-height: 120%;
   letter-spacing: 0.08em;
 
+  &__dashes {
+    display: inline-block;
+    width: 15px;
+
+    &::after {
+      display: inline-block;
+
+      animation: dotty steps(1, end) 2s infinite;
+
+      content: '';
+    }
+
+    @keyframes dotty {
+      0% { content: '.'; }
+      33% { content: '..'; }
+      66% { content: '...'; }
+      100% { content: '.'; }
+    }
+  }
+
   &__success-icon {
     width: 14px;
     height: 14px;
