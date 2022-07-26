@@ -344,7 +344,7 @@ export class CrossChainRoutingService extends TradeService {
     const blockchain = this.crossChainTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
     const swapOptions = {
-      onApprove: () => {
+      onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
       },
       ...(Boolean(shouldCalculateGasPrice) && {
