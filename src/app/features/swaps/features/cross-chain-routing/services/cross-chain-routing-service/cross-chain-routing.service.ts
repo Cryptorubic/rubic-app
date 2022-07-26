@@ -124,8 +124,7 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: this.defaultTimeout,
-        disabledProviders: []
+        timeout: this.defaultTimeout
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -251,12 +250,12 @@ export class CrossChainRoutingService extends TradeService {
     if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
       return {
         estimatedGas,
-        feeAmount: trade.fee,
-        feeTokenSymbol: trade.feeSymbol,
-        feePercent: trade.feePercent,
+        feeAmount: new BigNumber(1),
+        feeTokenSymbol: 'USDC',
+        feePercent: trade.feeInfo.platformFee.percent,
         priceImpact: String(trade.priceImpact),
-        networkFee: trade.networkFee,
-        networkFeeSymbol: trade.networkFeeSymbol
+        networkFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount),
+        networkFeeSymbol: trade.feeInfo?.cryptoFee?.tokenSymbol
       };
     }
 
@@ -290,7 +289,7 @@ export class CrossChainRoutingService extends TradeService {
       // const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
 
       return {
-        feePercent: feeInPercents,
+        feePercent: 0,
         feeAmount,
         feeTokenSymbol: toTrade.fromToken.symbol,
         cryptoFee: cryptoFeeToken.tokenAmount.toNumber(),
@@ -380,16 +379,8 @@ export class CrossChainRoutingService extends TradeService {
   private notifyGtmAfterSignTx(txHash: string): void {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
 
-    let fee: BigNumber;
-    if (this.crossChainTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-      const trade = this.crossChainTrade.trade as SymbiosisCrossChainTrade;
-      fee = trade.fee;
-    } else {
-      // @TODO SDK.
-      // const trade = this.crossChainTrade.trade as CelerRubicCrossChainTrade;
-      // fee = trade.from.tokenAmount.multipliedBy(trade.transitTokenFee / 100);
-      fee = new BigNumber(0);
-    }
+    // @TODO remove hardcode
+    const fee = new BigNumber(1);
 
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
