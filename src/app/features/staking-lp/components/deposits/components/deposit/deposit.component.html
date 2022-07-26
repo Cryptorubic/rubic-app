@@ -11,7 +11,15 @@
       <span class="deposit__rewards">{{ rewards }}</span>
     </td>
     <td class="deposit__ceil">
-      <span class="deposit__apy">{{ apy }}%</span>
+      <span
+        class="deposit__apy"
+        [tuiHint]="apy + '%'"
+        [tuiManualHint]="apy"
+        [tuiManualHintShow]="false"
+        [tuiHintDirection]="'top-left'"
+        [tuiHintShowDelay]="50"
+        >{{ apy }}%</span
+      >
     </td>
     <td class="deposit__ceil">
       <span class="deposit__end-date">{{ endDate }}</span>

@@ -72,6 +72,10 @@
     }
   }
 
+  &__apy {
+    cursor: pointer;
+  }
+
   &__claim-rewards-btn {
     background: var(--main-green);
     border-radius: 100px;
