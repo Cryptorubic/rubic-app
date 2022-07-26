@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import SDK, {
   Configuration,
   CrossChainManager,
+  CrossChainStatusManager,
   InstantTradesManager,
   TokensManager
 } from 'rubic-sdk';
@@ -38,6 +39,10 @@ export class RubicSdkService {
 
   public get crossChain(): CrossChainManager {
     return this.SDK.crossChain;
+  }
+
+  public get crossChainStatusManager(): CrossChainStatusManager {
+    return this.SDK.crossChainStatusManager;
   }
 
   private set SDK(value: SDK) {
