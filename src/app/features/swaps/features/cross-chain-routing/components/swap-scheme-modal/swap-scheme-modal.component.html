@@ -9,8 +9,8 @@
     <div class="title">
       <ng-container
         *ngIf="
-          tradeData.srcStatus === MODAL_SWAP_STATUS.SUCCESS &&
-          tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
+          tradeData.srcStatus === CrossChainTxStatus.SUCCESS &&
+          tradeData.dstStatus === CrossChainTxStatus.SUCCESS
         "
       >
         {{ 'crossChainPage.swapSchemeModal.transactionCompleted' | translate }}
@@ -18,10 +18,10 @@
 
       <ng-container
         *ngIf="
-          tradeData.srcStatus === MODAL_SWAP_STATUS.PENDING ||
-          tradeData.dstStatus === MODAL_SWAP_STATUS.PENDING ||
-          tradeData.tradeProcessingStatus === MODAL_SWAP_STATUS.PENDING ||
-          tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
+          tradeData.srcStatus === CrossChainTxStatus.PENDING ||
+          tradeData.dstStatus === CrossChainTxStatus.PENDING ||
+          tradeData.tradeProcessingStatus === CrossChainTxStatus.PENDING ||
+          tradeData.dstStatus === CrossChainTxStatus.REVERT
         "
       >
         {{ 'crossChainPage.swapSchemeModal.transactionIsBeingProcessed' | translate }}
@@ -29,8 +29,8 @@
 
       <ng-container
         *ngIf="
-          tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
-          tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL
+          tradeData.srcStatus === CrossChainTxStatus.FAIL ||
+          tradeData.dstStatus === CrossChainTxStatus.FAIL
         "
       >
         {{ 'crossChainPage.swapSchemeModal.transactionNotCompleted' | translate }}
@@ -46,7 +46,11 @@
 
     <div class="pair">
       <div class="pair__from">
-        <img [src]="fromToken.image" alt="" class="pair__token-image" />
+        <img
+          [src]="fromToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          alt=""
+          class="pair__token-image"
+        />
         <div class="pair__data">
           <div class="pair__symbol">{{ fromToken.symbol }}</div>
           <div class="pair__blockchain">{{ fromBlockchain.name }}</div>
@@ -54,7 +58,11 @@
       </div>
       <img src="assets/images/icons/arrow/long-arrow-right-grey.svg" class="pair__arrow" alt="" />
       <div class="pair__to">
-        <img [src]="toToken.image" alt="" class="pair__token-image" />
+        <img
+          [src]="toToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          alt=""
+          class="pair__token-image"
+        />
         <div class="pair__data">
           <div class="pair__symbol">{{ toToken.symbol }}</div>
           <div class="pair__blockchain">{{ toBlockchain.name }}</div>
@@ -65,14 +73,14 @@
     <div
       class="scheme"
       [class.scheme_failed]="
-        tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
-        tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL
+        tradeData.srcStatus === CrossChainTxStatus.FAIL ||
+        tradeData.dstStatus === CrossChainTxStatus.FAIL
       "
     >
       <div class="scheme__src">
         <ng-container [ngSwitch]="tradeData.srcStatus">
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            *ngSwitchCase="CrossChainTxStatus.PENDING"
             class="scheme__status-icon scheme__status-icon_rotating"
             [src]="
               isDarkTheme
@@ -82,7 +90,7 @@
             alt=""
           />
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            *ngSwitchCase="CrossChainTxStatus.SUCCESS"
             class="scheme__status-icon"
             [src]="
               isDarkTheme
@@ -98,7 +106,7 @@
       <div class="scheme__pool">
         <ng-container [ngSwitch]="tradeData.tradeProcessingStatus">
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            *ngSwitchCase="CrossChainTxStatus.PENDING"
             class="scheme__status-icon scheme__status-icon_rotating"
             [src]="
               isDarkTheme
@@ -108,7 +116,7 @@
             alt=""
           />
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            *ngSwitchCase="CrossChainTxStatus.SUCCESS"
             class="scheme__status-icon"
             [src]="
               isDarkTheme
@@ -122,38 +130,38 @@
           class="scheme__line scheme__line_src"
           [ngClass]="{
             scheme__line_default:
-              tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
-              tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL,
-            scheme__line_success: tradeData.srcStatus === MODAL_SWAP_STATUS.SUCCESS
+              tradeData.srcStatus === CrossChainTxStatus.FAIL ||
+              tradeData.dstStatus === CrossChainTxStatus.FAIL,
+            scheme__line_success: tradeData.srcStatus === CrossChainTxStatus.SUCCESS
           }"
         >
           <div
             class="scheme__line-dashed"
-            *ngIf="tradeData.srcStatus === MODAL_SWAP_STATUS.PENDING"
+            *ngIf="tradeData.srcStatus === CrossChainTxStatus.PENDING"
           ></div>
-          <hr *ngIf="tradeData.srcStatus !== MODAL_SWAP_STATUS.PENDING" />
+          <hr *ngIf="tradeData.srcStatus !== CrossChainTxStatus.PENDING" />
         </div>
         <img [src]="bridgeType.image" class="scheme__pool-icon" alt="Bridge provider" />
         <div
           class="scheme__line scheme__line_default scheme__line_dst"
           [ngClass]="{
             scheme__line_default:
-              tradeData.srcStatus === MODAL_SWAP_STATUS.FAIL ||
-              tradeData.dstStatus === MODAL_SWAP_STATUS.FAIL,
-            scheme__line_success: tradeData.dstStatus === MODAL_SWAP_STATUS.SUCCESS
+              tradeData.srcStatus === CrossChainTxStatus.FAIL ||
+              tradeData.dstStatus === CrossChainTxStatus.FAIL,
+            scheme__line_success: tradeData.dstStatus === CrossChainTxStatus.SUCCESS
           }"
         >
           <div
             class="scheme__line-dashed"
             *ngIf="
-              tradeData.dstStatus === MODAL_SWAP_STATUS.PENDING ||
-              tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT
+              tradeData.dstStatus === CrossChainTxStatus.PENDING ||
+              tradeData.dstStatus === CrossChainTxStatus.REVERT
             "
           ></div>
           <hr
             *ngIf="
-              tradeData.dstStatus !== MODAL_SWAP_STATUS.PENDING &&
-              tradeData.dstStatus !== MODAL_SWAP_STATUS.REVERT
+              tradeData.dstStatus !== CrossChainTxStatus.PENDING &&
+              tradeData.dstStatus !== CrossChainTxStatus.REVERT
             "
           />
         </div>
@@ -162,7 +170,7 @@
       <div class="scheme__dst">
         <ng-container [ngSwitch]="tradeData.dstStatus">
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.PENDING"
+            *ngSwitchCase="CrossChainTxStatus.PENDING"
             class="scheme__status-icon scheme__status-icon_rotating"
             [src]="
               isDarkTheme
@@ -172,7 +180,7 @@
             alt=""
           />
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.REVERT"
+            *ngSwitchCase="CrossChainTxStatus.REVERT"
             class="scheme__status-icon scheme__status-icon_rotating"
             [src]="
               isDarkTheme
@@ -182,7 +190,7 @@
             alt=""
           />
           <img
-            *ngSwitchCase="MODAL_SWAP_STATUS.SUCCESS"
+            *ngSwitchCase="CrossChainTxStatus.SUCCESS"
             class="scheme__status-icon"
             [src]="
               isDarkTheme
@@ -204,7 +212,7 @@
       >.
     </div>
     <app-rubic-button
-      *ngIf="tradeData.dstStatus === MODAL_SWAP_STATUS.REVERT"
+      *ngIf="tradeData.dstStatus === CrossChainTxStatus.REVERT"
       appearance="secondary"
       (onClick)="revertSymbiosisTrade()"
       [loading]="revertBtnLoading$ | async"

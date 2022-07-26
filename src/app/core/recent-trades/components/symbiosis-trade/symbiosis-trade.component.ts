@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { RecentTradesService } from '../../services/recent-trades.service';
-import { RecentTradeStatus } from '../../models/recent-trade-status.enum';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { CrossChainTxStatus } from 'rubic-sdk';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -27,11 +26,11 @@ export class SymbiosisTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradeData(trade, CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS);
+    return await this.recentTradesService.getTradeData(trade);
   }
 
   public setUiTrade(uiTrade: UiRecentTrade): void {
-    if (!this.uiTrade || this.uiTrade?.statusTo !== RecentTradeStatus.FALLBACK) {
+    if (!this.uiTrade || this.uiTrade?.statusTo !== CrossChainTxStatus.FALLBACK) {
       this.uiTrade = uiTrade;
 
       if (this.initialLoading) {
@@ -49,7 +48,7 @@ export class SymbiosisTradeComponent extends CommonTrade {
     );
 
     if (revertTxReceipt.status) {
-      this.uiTrade.statusTo = RecentTradeStatus.FALLBACK;
+      this.uiTrade.statusTo = CrossChainTxStatus.FALLBACK;
       this.revertBtnLoading = false;
       this.cdr.detectChanges();
     }
