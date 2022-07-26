@@ -250,15 +250,15 @@ const networks: ReadonlyArray<Network> = [
     id: 25,
     name: BLOCKCHAIN_NAME.CRONOS,
     label: 'Cronos',
-    scannerUrl: 'https://cronos.org/explorer',
+    scannerUrl: 'https://cronoscan.com',
     rpcLink: 'https://evm-cronos.crypto.org',
     additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/cronos.png',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.CRONOS,
       address: NATIVE_TOKEN_ADDRESS,
-      name: 'Telos EVM',
-      symbol: 'TLOS',
+      name: 'CRO',
+      symbol: 'CRO',
       decimals: 18
     }
   },

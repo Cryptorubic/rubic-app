@@ -271,10 +271,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return crossChainTrade$.pipe(
             debounceTime(200),
             switchTap(() => balance$),
-            tap(({ totalProviders, currentProviders }) => {
+            tap(({ totalProviders, currentProviders, trade }) => {
               this.calculatedProviders = {
                 current: currentProviders,
-                total: totalProviders
+                total: totalProviders,
+                hasBestTrade: Boolean(trade)
               };
             }),
             map(({ trade, error, needApprove, totalProviders, currentProviders }) => {

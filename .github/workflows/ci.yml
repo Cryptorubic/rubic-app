@@ -1,13 +1,14 @@
-name: Check code quality before merge to develop
+name: Check code quality
 
 on:
   pull_request:
     branches:
+      - master
       - develop
 
 jobs:
   lint:
-    name:  Check code base before merge to develop
+    name: Check code quality
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +34,3 @@ jobs:
 
       - name: Run compile
         run: yarn run compile
-
-      - name: Run build
-        run: yarn run build

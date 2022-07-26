@@ -17,6 +17,7 @@ import { AuthService } from '../../auth/auth.service';
 import { BlockchainName, BLOCKCHAIN_NAME, InstantTrade, TradeType, Web3Pure } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { BACKEND_PROVIDERS } from './constants/backend-providers';
 
 type HashObject = { hash: string } | { signature: string };
 
@@ -88,7 +89,7 @@ export class InstantTradesApiService {
     const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
-      provider,
+      provider: BACKEND_PROVIDERS[provider],
       from_token: options.fromAddress,
       to_token: options.toAddress,
       from_amount: options.fromAmount,

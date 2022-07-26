@@ -33,6 +33,7 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.TELOS,
     BLOCKCHAIN_NAME.CELO,
     BLOCKCHAIN_NAME.OKE_X_CHAIN,
+    BLOCKCHAIN_NAME.CRONOS,
     BLOCKCHAIN_NAME.HARMONY
 
     // @TODO return after Near & Solana fix
