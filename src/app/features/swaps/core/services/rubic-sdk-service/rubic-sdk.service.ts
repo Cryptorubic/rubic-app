@@ -9,6 +9,8 @@ import SDK, {
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
 import { CrossChainSymbiosisManager } from 'rubic-sdk/lib/features/cross-chain/cross-chain-symbiosis-manager';
+import { SdkHttpClient } from '@features/swaps/core/services/rubic-sdk-service/utils/sdk-http-client';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class RubicSdkService {
@@ -49,11 +51,14 @@ export class RubicSdkService {
     this._SDK = value;
   }
 
-  private readonly defaultConfig = rubicSdkDefaultConfig;
+  private readonly defaultConfig = {
+    ...rubicSdkDefaultConfig,
+    httpClient: new SdkHttpClient(this.angularHttpClient)
+  };
 
   private currentConfig: Configuration;
 
-  constructor() {
+  constructor(private readonly angularHttpClient: HttpClient) {
     this._SDK = null;
   }
 
