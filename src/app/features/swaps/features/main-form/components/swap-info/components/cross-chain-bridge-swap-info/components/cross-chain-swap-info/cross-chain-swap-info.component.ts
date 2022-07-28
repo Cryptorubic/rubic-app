@@ -207,7 +207,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
     this.cryptoFeeInEth = tradeInfo.cryptoFee;
-    this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice);
+    const usdCryptoFee = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice).minus(1);
+    this.cryptoFeeInUsd = usdCryptoFee.isPositive() ? usdCryptoFee : new BigNumber(0);
     this.feePercent = tradeInfo.feePercent;
     this.feeAmount = tradeInfo.feeAmount;
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
