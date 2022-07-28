@@ -11,7 +11,7 @@ export const STAKING_ROUND_THREE: {
     abi: []
   },
   NFT: {
-    address: '0x3BBF11E07cE979769da5f263Cb4f66dC88B5bBea',
+    address: '0xC457Cb68DedCFCb2201f9455707E4Fd833B2E3D4',
     abi: [
       {
         inputs: [{ internalType: 'address', name: 'token_addr', type: 'address' }],
@@ -533,6 +533,13 @@ export const STAKING_ROUND_THREE: {
         type: 'function'
       },
       {
+        inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
+        name: 'viewTokensByOwner',
+        outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
+        stateMutability: 'view',
+        type: 'function'
+      },
+      {
         inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
         name: 'voted',
         outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
@@ -563,7 +570,7 @@ export const STAKING_ROUND_THREE: {
     ] as AbiItem[]
   },
   REWARDS: {
-    address: '0xF9f0331C98c8Dc122BF722784fC60646B47250b2',
+    address: '0xA3052f4701a24e0FBe109A92Cf3fc44B32dD4A3F',
     abi: [
       {
         inputs: [
