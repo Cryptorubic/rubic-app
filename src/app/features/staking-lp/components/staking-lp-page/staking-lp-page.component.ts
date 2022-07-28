@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-staking-lp-page',
@@ -11,13 +12,13 @@ export class StakingLpPageComponent {
 
   public isShowStakeForm: boolean = false;
 
-  constructor() {}
+  constructor(private readonly router: Router) {}
 
   public pastStakingVisibilityToggle(isShow: boolean): void {
     this.isShowPastStaking = isShow;
   }
 
-  public showStakeFrom(isShow: boolean): void {
-    this.isShowStakeForm = isShow;
+  public navigateToStakeForm(): void {
+    this.router.navigate(['staking-lp', 'new-position']);
   }
 }

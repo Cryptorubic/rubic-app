@@ -25,13 +25,16 @@ import {
   TuiAccordionModule,
   TuiInputRangeModule,
   TuiInputSliderModule,
-  TuiRadioLabeledModule
+  TuiRadioLabeledModule,
+  TuiSliderModule
 } from '@taiga-ui/kit';
-import { StakeFormComponent } from '@features/staking-lp/components/stake-form/stake-form.component';
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from '@features/staking-lp/components/deposits/deposits.component';
 import { DepositComponent } from '@features/staking-lp/components/deposits/components/deposit/deposit.component';
+import { StakingService } from './services/staking.service';
+import { StakeFormComponent } from './components/stake-form/stake-form.component';
+import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 
 @NgModule({
   declarations: [
@@ -41,9 +44,10 @@ import { DepositComponent } from '@features/staking-lp/components/deposits/compo
     LpCardComponent,
     StakingRoundsComponent,
     LpRoundsComponent,
-    StakeFormComponent,
     DepositsComponent,
-    DepositComponent
+    DepositComponent,
+    StakeFormComponent,
+    StakeButtonComponent
   ],
   imports: [
     CommonModule,
@@ -63,8 +67,9 @@ import { DepositComponent } from '@features/staking-lp/components/deposits/compo
     TuiInputRangeModule,
     TuiTextfieldControllerModule,
     TuiInputSliderModule,
-    TuiHintControllerModule
+    TuiHintControllerModule,
+    TuiSliderModule
   ],
-  providers: [StakingLpService, StatisticsService]
+  providers: [StakingLpService, StatisticsService, StakingService]
 })
 export class StakingLpModule {}

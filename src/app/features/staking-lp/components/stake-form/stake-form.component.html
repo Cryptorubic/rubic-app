@@ -1,107 +1,90 @@
-<div class="stake-form">
-  <div class="stake-form__title">
-    <img
-      class="stake-form__title-arrow"
-      src="assets/images/icons/arrow/long-arrow-left.svg"
-      alt="Back"
+<div class="title">
+  <button class="title__back" (click)="back()">
+    <img src="assets/images/icons/arrow/long-arrow-left.svg" alt="" />
+  </button>
+  <div class="title__text">New Position</div>
+</div>
+
+<div class="token">
+  <div class="token__data-and-amount">
+    <div class="token__data">
+      <img src="assets/images/rbc-util-icon.png" class="token__data-icon" alt="" />
+      RBC
+    </div>
+    <input
+      type="text"
+      class="token__amount"
+      name="rbc-amount"
+      autocomplete="off"
+      [placeholder]="'Enter an amount'"
+      [formControl]="rbcAmountCtrl"
+      appTokenAmount
+      inputmode="decimal"
+      [decimals]="18"
     />
-    <span class="stake-form__title-text">New Position</span>
   </div>
-  <div class="stake-form__amount">
-    <div class="stake-form__token-wrapper">
-      <div class="stake-form__token">
-        <div
-          class="stake-form__token-icon"
-          [inlineSVG]="'assets/images/icons/coins/brbc.svg'"
-        ></div>
-        <span class="stake-form__token-title">RBC</span>
-      </div>
-      <label class="stake-form__amount-label">
-        <input
-          autocomplete="off"
-          class="stake-form__amount-input"
-          name="token-amount"
-          [placeholder]="'Enter amount'"
-          appTokenAmount
-          inputmode="decimal"
-          id="token-amount-input-element"
-        />
-      </label>
+
+  <div class="token__balance-and-price">
+    <div class="token__balance" *ngLet="rbcTokenBalance$ | async as rbcTokenBalance">
+      You have {{ rbcTokenBalance ? (rbcTokenBalance | bigNumberFormat: 2:true) : '--.--' }}
+      <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
     </div>
-    <div class="stake-form__balance">
-      <div class="stake-form__balance-max">
-        <span class="stake-form__balance-max-text">You have 2,712.38</span>
-        <button class="stake-form__duration-currentDuration-max">max</button>
-      </div>
-      <span class="stake-form__balance-dollars">$68,218.16</span>
+    <div class="token__price" *ngLet="usdAmount$ | async as usdAmount">
+      $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '--.--' }}
     </div>
-  </div>
-  <div class="stake-form__delimiter"></div>
-  <div class="stake-form__duration">
-    <div class="stake-form__duration-top">
-      <div class="stake-form__duration-currentDuration">
-        <span class="stake-form__duration-currentDuration-text">Choose the Duration</span>
-        <div class="stake-form__duration-currentDuration-num">
-          {{ sliderConfig.control.value }} M
-        </div>
-        <button class="stake-form__duration-currentDuration-max" (click)="setMaxDuration()">
-          max
-        </button>
-      </div>
-      <div class="stake-form__duration-checkbox">
-        <form [formGroup]="durationRadioButtonForm">
-          <tui-radio-labeled
-            formControlName="durationForm"
-            class="tui-space_bottom-3"
-            [ngClass]="{ isSelected: durations[0].selected }"
-            [item]="durations[0]"
-            (click)="setDuration(durations[0].value, 0)"
-          >
-            {{ durations[0].name }}
-          </tui-radio-labeled>
-          <tui-radio-labeled
-            formControlName="durationForm"
-            class="tui-space_bottom-3"
-            [ngClass]="{ isSelected: durations[1].selected }"
-            [item]="durations[1]"
-            (click)="setDuration(durations[1].value, 1)"
-          >
-            {{ durations[1].name }}
-          </tui-radio-labeled>
-          <tui-radio-labeled
-            formControlName="durationForm"
-            [ngClass]="{ isSelected: durations[2].selected }"
-            [item]="durations[2]"
-            (click)="setDuration(durations[2].value, 2)"
-          >
-            {{ durations[2].name }}
-          </tui-radio-labeled>
-        </form>
-      </div>
-    </div>
-    <div class="stake-form__duration-bottom">
-      <tui-input-slider
-        class="control"
-        [min]="sliderConfig.min"
-        [max]="sliderConfig.max"
-        [steps]="steps"
-        [quantum]="sliderConfig.quantum"
-        [formControl]="sliderConfig.control"
-      >
-      </tui-input-slider>
-    </div>
-  </div>
-  <div class="stake-form__warning">
-    <img
-      class="stake-form__warning-icon"
-      src="assets/images/icons/info-warning.svg"
-      alt="Warning"
-    />
-    <span class="stake-form__warning-text"
-      >0,00 MULTI заблокировано истечет через 14 дней<br />Заблокировано до 21.07.2022</span
-    >
-  </div>
-  <div class="stake-form__stake-btn">
-    <span>Stake</span>
   </div>
 </div>
+
+<hr class="divider" />
+
+<div class="duration">
+  <div class="duration__title">Choose the Duration</div>
+  <div class="duration__current-value">{{ durationSliderCtrl.value }}M</div>
+  <div class="duration__common">
+    <ng-container *ngFor="let duration of DURATIONS">
+      <button
+        class="duration__common-chip"
+        [class.duration__common-chip_selected]="durationSliderCtrl.value === duration.value"
+        (click)="setDuration(duration.value)"
+      >
+        {{ duration.label }}
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="duration-slider">
+  <input
+    tuiSlider
+    type="range"
+    [min]="1"
+    [max]="12"
+    [step]="1"
+    [formControl]="durationSliderCtrl"
+  />
+</div>
+
+<div class="hint">
+  <div class="hint__icon">
+    <img src="assets/images/icons/info-warning.svg" alt="" />
+  </div>
+  <div class="hint__text">
+    {{ rbcAmountCtrl.value || '--.--' }} RBC locked expires in 13 days. Locked until
+    {{ unlockDate | date: 'mediumDate' }}
+  </div>
+</div>
+
+<app-stake-button
+  [rbcAmount]="rbcAmount$ | async"
+  [rbcBalance]="rbcTokenBalance$ | async"
+  [needLogin]="needLogin$ | async"
+  [needSwitchNetwork]="needSwitchNetwork$ | async"
+  [minRbcAmount]="10"
+  [approveLoading]="approveLoading"
+  [rbcAllowance]="rbcAllowance$ | async"
+  [stakeLoading]="stakeLoading"
+  (onLogin)="login()"
+  (onSwitchNetwork)="switchNetwork()"
+  (onStake)="stake()"
+  (onApprove)="approve()"
+></app-stake-button>
