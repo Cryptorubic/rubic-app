@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
-import { startWith, filter, tap, BehaviorSubject, from, map, Observable } from 'rxjs';
+import { switchMap, startWith, filter, tap, BehaviorSubject, from, map, Observable } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
@@ -23,9 +23,9 @@ export class StakingService {
   // public readonly RBC_TOKEN_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a'; // real rbc
   public readonly RBC_TOKEN_ADDRESS = '0xd452d01C6348D3d5B35FA1d5500d23F8Ae65D6eA';
 
-  public readonly NFT_CONTRACT_ADDRESS = '0x3BBF11E07cE979769da5f263Cb4f66dC88B5bBea';
+  public readonly NFT_CONTRACT_ADDRESS = '0xC457Cb68DedCFCb2201f9455707E4Fd833B2E3D4';
 
-  public readonly REWARDS_CONTRACT_ADDRESS = '0xF9f0331C98c8Dc122BF722784fC60646B47250b2';
+  public readonly REWARDS_CONTRACT_ADDRESS = '0xA3052f4701a24e0FBe109A92Cf3fc44B32dD4A3F';
 
   public readonly user$ = this.authService.getCurrentUser();
 
@@ -33,9 +33,17 @@ export class StakingService {
 
   public readonly rbcTokenBalance$ = this._rbcTokenBalance$.asObservable();
 
+  get rbcTokenBalance(): BigNumber {
+    return this._rbcTokenBalance$.getValue();
+  }
+
   private readonly _rbcAllowance$ = new BehaviorSubject<BigNumber>(null);
 
   public readonly rbcAllowance$ = this._rbcAllowance$.asObservable();
+
+  get rbcAllowance(): BigNumber {
+    return this._rbcAllowance$.getValue();
+  }
 
   public get walletAddress(): string {
     return this.authService.userAddress;
@@ -63,7 +71,15 @@ export class StakingService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly notificationService: NotificationsService,
     private readonly translate: TranslateService
-  ) {}
+  ) {
+    this.user$
+      .pipe(
+        filter(user => Boolean(user?.address)),
+        switchMap(() => this.getAllowance()),
+        switchMap(() => this.getRbcTokenBalance())
+      )
+      .subscribe();
+  }
 
   public async getRbcAmountPrice(amount: BigNumber): Promise<BigNumber> {
     const price = await this.tokensService.getAndUpdateTokenPrice(
@@ -89,8 +105,16 @@ export class StakingService {
         console.log('allowance', allowance.toNumber());
         return Web3Pure.fromWei(allowance);
       }),
-      tap((allowance: BigNumber) => this._rbcAllowance$.next(allowance))
+      tap((allowance: BigNumber) => this.setAllowance(allowance))
     );
+  }
+
+  public setAllowance(allowance: BigNumber | 'Infinity'): void {
+    if (allowance === 'Infinity') {
+      this._rbcAllowance$.next(new BigNumber(2).pow(256).minus(1));
+    } else {
+      this._rbcAllowance$.next(allowance);
+    }
   }
 
   public getRbcTokenBalance(): Observable<BigNumber> {
@@ -115,7 +139,7 @@ export class StakingService {
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
     const amountInWei = Web3Pure.toWei(amount);
-    const durationInSeconds = duration * 2592000;
+    const durationInSeconds = duration * 30 * 86400;
     console.log({ duration, amount, durationInSeconds, amountInWei });
     return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,

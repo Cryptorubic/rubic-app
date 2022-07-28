@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  EventEmitter,
-  Component,
-  Output,
-  Input,
-  OnChanges,
-  SimpleChanges
-} from '@angular/core';
+import { ChangeDetectionStrategy, EventEmitter, Component, Output, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
@@ -24,7 +16,7 @@ export enum StakeError {
   styleUrls: ['./stake-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakeButtonComponent implements OnChanges {
+export class StakeButtonComponent {
   @Input() rbcAmount: BigNumber;
 
   @Input() minRbcAmount: number;
@@ -41,6 +33,8 @@ export class StakeButtonComponent implements OnChanges {
 
   @Input() rbcAllowance: BigNumber;
 
+  @Input() error: StakeError;
+
   @Output() public readonly onLogin = new EventEmitter<void>();
 
   @Output() public readonly onSwitchNetwork = new EventEmitter<void>();
@@ -51,38 +45,7 @@ export class StakeButtonComponent implements OnChanges {
 
   public readonly errors = StakeError;
 
-  public error: StakeError = StakeError.EMPTY_AMOUNT;
-
   public readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
   constructor() {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log({ changes });
-    // debugger;
-
-    if (changes.rbcAllowance && changes.rbcAllowance.currentValue) {
-      if (changes.rbcAllowance.currentValue.lt(10000000)) {
-        this.error = StakeError.NEED_APPROVE;
-      }
-    } else {
-      if (changes.rbcAmount && changes.rbcAmount.currentValue) {
-        if (!changes?.rbcAmount?.currentValue?.toNumber()) {
-          this.error = StakeError.EMPTY_AMOUNT;
-          return;
-        }
-        if (changes.rbcAmount.currentValue.lt(this.minRbcAmount)) {
-          this.error = StakeError.LESS_THEN_MINIMUM;
-          return;
-        }
-        if (this.rbcBalance.lt(changes.rbcAmount.currentValue)) {
-          this.error = StakeError.INSUFFICIENT_BALANCE_RBC;
-          return;
-        } else {
-          this.error = StakeError.NULL;
-          return;
-        }
-      }
-    }
-  }
 }
