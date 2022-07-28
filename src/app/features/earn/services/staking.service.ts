@@ -117,7 +117,7 @@ export class StakingService {
     const amountInWei = Web3Pure.toWei(amount);
     const durationInSeconds = duration * 2592000;
     console.log({ duration, amount, durationInSeconds, amountInWei });
-    return await this.web3Private.tryExecuteContractMethod(
+    return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
       'create_lock',
