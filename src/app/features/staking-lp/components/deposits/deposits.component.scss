@@ -4,6 +4,8 @@
   &__wrapper {
     position: relative;
 
+    margin-top: 30px;
+
     padding: 26px 12px;
 
     background: var(--rubic-base-22);
@@ -79,7 +81,7 @@
 
       thead tr {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 85px));
+        grid-template-columns: repeat(5, minmax(0, 95px));
 
         @include b($tablet) {
           grid-template-columns: repeat(5, 1fr);

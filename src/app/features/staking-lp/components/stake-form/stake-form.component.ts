@@ -23,8 +23,8 @@ export class StakeFormComponent {
 
   public durations: Durations[] = [
     { value: 1, name: '1 M', selected: false },
-    { value: 3, name: '3 M', selected: true },
-    { value: 6, name: '6 M', selected: false }
+    { value: 6, name: '6 M', selected: true },
+    { value: 12, name: '12 M', selected: false }
   ];
 
   public duration: Duration = { id: 1, month: this.durations[1].value };
