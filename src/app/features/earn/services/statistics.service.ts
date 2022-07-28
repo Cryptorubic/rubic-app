@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, forkJoin, from, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { STAKING_CONTRACTS } from '@features/earn/constants/STAKING_CONTRACTS';
@@ -29,11 +29,15 @@ export class StatisticsService {
 
   public readonly lockedRBCInDollars$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      forkJoin([this.lockedRBC$, this.getRBCPrice()]).pipe(
+      combineLatest([this.lockedRBC$, this.getRBCPrice()]).pipe(
         map(([lockedRbcAmount, rbcPrice]) => lockedRbcAmount.multipliedBy(rbcPrice))
       )
     )
   );
+
+  private readonly _totalNFTSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
+
+  public readonly totalNFTSupply$ = this._totalNFTSupply$.asObservable();
 
   private readonly totalSupply = new BigNumber(124_000_000);
 
@@ -41,12 +45,16 @@ export class StatisticsService {
 
   private readonly numberOfWeekPerYear = 52;
 
+  private readonly reward_multiplier = new BigNumber(10_000_000);
+
   public readonly rewardPerSecond$ = this.updateStatistics$.pipe(
     switchMap(() =>
       StatisticsService.getCurrentEpochId().pipe(
         switchMap(currentEpochId => this.getCurrentEpochInfo(currentEpochId)),
         map(epochInfo =>
-          Web3Pure.fromWei(epochInfo.rewardPerSecond).multipliedBy(this.numberOfSecondsPerWeek)
+          Web3Pure.fromWei(epochInfo.rewardPerSecond)
+            .multipliedBy(this.numberOfSecondsPerWeek)
+            .dividedBy(this.reward_multiplier)
         )
       )
     )
@@ -54,9 +62,9 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.rewardPerSecond$.pipe(
-        map(value =>
-          value.multipliedBy(new BigNumber(this.numberOfWeekPerYear).dividedBy(this.totalSupply))
+      combineLatest([this.rewardPerSecond$, this.getTotalNFTSupply()]).pipe(
+        map(([rewardPerSecond, totalNFTSupply]) =>
+          rewardPerSecond.multipliedBy(this.numberOfWeekPerYear).dividedBy(totalNFTSupply)
         )
       )
     )
@@ -76,6 +84,16 @@ export class StatisticsService {
 
   private static get blockchainAdapter(): Web3Public {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+  }
+
+  public getTotalNFTSupply(): Observable<BigNumber> {
+    return from(
+      StatisticsService.blockchainAdapter.callContractMethod<string>(
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
+        'totalSupply'
+      )
+    ).pipe(map(value => Web3Pure.fromWei(value, 13)));
   }
 
   public getLockedRBC(): void {

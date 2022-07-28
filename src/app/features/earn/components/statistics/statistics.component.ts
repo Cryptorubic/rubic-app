@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { HeaderStore } from '@app/core/header/services/header.store';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '@features/earn/services/statistics.service';
 
@@ -22,13 +20,7 @@ export class StatisticsComponent implements OnInit {
 
   public readonly apr$ = this.statisticsService.apr$;
 
-  constructor(
-    private readonly statisticsService: StatisticsService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly headerStore: HeaderStore,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly destroy$: TuiDestroyService
-  ) {}
+  constructor(private readonly statisticsService: StatisticsService) {}
 
   ngOnInit(): void {
     this.getStatisticsData();
