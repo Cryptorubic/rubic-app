@@ -54,14 +54,7 @@
 </div>
 
 <div class="duration-slider">
-  <input
-    tuiSlider
-    type="range"
-    [min]="1"
-    [max]="12"
-    [step]="1"
-    [formControl]="durationSliderCtrl"
-  />
+  <tui-slider [formControl]="durationSliderCtrl" [max]="12" [min]="1" [steps]="11"></tui-slider>
 </div>
 
 <div class="hint">
