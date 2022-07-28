@@ -2,37 +2,24 @@
   <div class="statistics__head">
     <span class="statistics__title">Overview</span>
     <app-rotating-icon
-      *ngLet="{
-        balanceAndRewardsLoading: balanceAndRewardsLoading$ | async,
-        tvlAndTtvLoading: tvlAndTtvLoading$ | async
-      } as loading"
       class="statistics__refresh"
       (iconClick)="refreshStatistics()"
-      [rotating]="loading.balanceAndRewardsLoading || loading.tvlAndTtvLoading"
     ></app-rotating-icon>
   </div>
   <div class="statistics__info">
-    <div class="statistics__col" (click)="toggleHintsMobile()">
-      <tui-loader [overlay]="true" [showLoader]="balanceAndRewardsLoading$ | async">
-        <div class="statistics__param">
-          <div class="statistics__param-label">Locked RBC</div>
-          <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
-            {{
-              lockedRBC && lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--'
-            }}
-          </div>
+    <div class="statistics__col">
+      <div class="statistics__param">
+        <div class="statistics__param-label">Locked RBC</div>
+        <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
+          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--' }}
         </div>
-        <div class="statistics__param">
-          <div class="statistics__param-label">Avg. Lock Time (month)</div>
-          <div class="statistics__param-value" *ngLet="totalRewardsInUsdc$ | async as totalRewards">
-            {{
-              totalRewards && totalRewards?.isFinite()
-                ? (totalRewards | bigNumberFormat: 0:true)
-                : '--.--'
-            }}
-          </div>
+      </div>
+      <div class="statistics__param">
+        <div class="statistics__param-label">Avg. Lock Time (month)</div>
+        <div class="statistics__param-value">
+          {{ '--.--' }}
         </div>
-      </tui-loader>
+      </div>
     </div>
     <div class="statistics__col">
       <div class="statistics__param">
@@ -43,21 +30,13 @@
           [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
         >
           $
-          {{
-            lockedRBCInDollars && lockedRBCInDollars?.isFinite()
-              ? (lockedRBCInDollars | bigNumberFormat: 0)
-              : '--.--'
-          }}
+          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">
         <div class="statistics__param-label">{{ 'earn.multichainTvl' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{
-            rewardPerSecond && rewardPerSecond?.isFinite()
-              ? (rewardPerSecond | bigNumberFormat: 0)
-              : '--.--'
-          }}
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
         </div>
       </div>
     </div>
@@ -69,11 +48,7 @@
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{
-            circRBCLocked && circRBCLocked?.isFinite()
-              ? (circRBCLocked | bigNumberFormat: 2:true)
-              : '--.--'
-          }}
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
           %
         </div>
       </div>

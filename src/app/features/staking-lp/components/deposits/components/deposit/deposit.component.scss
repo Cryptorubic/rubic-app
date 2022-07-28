@@ -2,33 +2,30 @@
 
 .deposit {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 15px;
 
-  @include b(850) {
+  @include b($tablet) {
     grid-template-columns: repeat(5, 1fr);
     width: 100%;
   }
 
   &__wrapper {
     display: flex;
+    gap: 15px;
     align-items: center;
     justify-content: space-between;
 
     padding: 15px;
 
-    background: #202622;
+    background: var(--main-background);
     border-radius: 14px;
 
-    @include b(850) {
+    @include b($tablet) {
       flex-direction: column;
       gap: 15px;
       align-items: flex-start;
     }
-
-    //@include b(410) {
-    //  width: min-content;
-    //}
   }
 
   &__ceil {
@@ -72,15 +69,19 @@
     }
   }
 
+  &__apy {
+    cursor: pointer;
+  }
+
   &__claim-rewards-btn {
     background: var(--main-green);
-    border-radius: 100px;
+    border-radius: $border-radius-3;
   }
 
   &__manage-btn,
   &__out-btn {
     background: #303a36;
-    border-radius: 100px;
+    border-radius: $border-radius-3;
   }
 
   &__out-btn {
