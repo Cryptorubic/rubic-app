@@ -62,8 +62,9 @@
     <img src="assets/images/icons/info-warning.svg" alt="" />
   </div>
   <div class="hint__text">
-    {{ rbcAmountCtrl.value || '--.--' }} RBC locked expires in 13 days. Locked until
-    {{ unlockDate | date: 'mediumDate' }}
+    {{ rbcAmountCtrl.value || '--.--' }} RBC locked expires in
+    {{ durationSliderCtrl.value }} months. <br />
+    Locked until {{ unlockDate | date: 'mediumDate' }}
   </div>
 </div>
 
