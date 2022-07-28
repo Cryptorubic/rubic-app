@@ -79,6 +79,8 @@ export class StakeFormComponent implements OnInit {
 
   public unlockDate: number;
 
+  public selectedDuration: number;
+
   constructor(
     private readonly stakingService: StakingService,
     private readonly router: Router,
@@ -103,6 +105,7 @@ export class StakeFormComponent implements OnInit {
           return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
         }),
         tap(([duration, timestamp]) => {
+          this.selectedDuration = duration;
           this.unlockDate =
             ((timestamp * 1000 + duration * MONTH_MILLISECONDS) / MONTH_MILLISECONDS) *
             MONTH_MILLISECONDS;
