@@ -30,8 +30,9 @@
     >
       {{ 'staking.stake.pastStaking' | translate }}
       <ng-template tuiAccordionItemContent>
-        <app-lp-rounds></app-lp-rounds>
-        <app-staking-rounds></app-staking-rounds>
+        <app-lp-card [round]="1" [statuses]="[RoundStatus.CLOSED]"></app-lp-card>
+        <app-staking-card [round]="1" [statuses]="[RoundStatus.CLOSED]"> </app-staking-card>
+        <app-staking-card [round]="2" [statuses]="[RoundStatus.CLOSED]"> </app-staking-card>
       </ng-template>
       <img
         class="lp__arrow"

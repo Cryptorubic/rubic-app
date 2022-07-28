@@ -118,8 +118,8 @@ export class ErrorsService {
     currentError: RubicError<ERROR_TYPE>
   ): boolean {
     return (
-      currentError.message.includes(rpcError.code) ||
-      currentError.message.toLocaleLowerCase().includes(rpcError.message.toLocaleLowerCase()) ||
+      currentError?.message?.includes(rpcError.code) ||
+      currentError?.message?.toLocaleLowerCase()?.includes(rpcError.message.toLocaleLowerCase()) ||
       (currentError?.code && String(currentError.code) === rpcError.code)
     );
   }

@@ -58,7 +58,7 @@ export class StakeButtonComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log({ changes });
+    console.log({ changes });
     // debugger;
 
     if (changes.rbcAllowance && changes.rbcAllowance.currentValue) {

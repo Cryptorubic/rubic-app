@@ -6,11 +6,6 @@
   </div>
   <div class="statuses">
     <app-status-badge
-      *ngIf="start | functionCall: isInPast:this"
-      type="inactive"
-      [text]="'Start: ' + (start | date: (isMobile ? 'mediumDate' : 'LLL dd, HH:mm'))"
-    ></app-status-badge>
-    <app-status-badge
       *ngFor="let status of statuses"
       [text]="statusBadgeText[status]"
       [type]="statusBadgeType[status]"

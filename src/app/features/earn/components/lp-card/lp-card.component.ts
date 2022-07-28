@@ -31,7 +31,7 @@ export class LpCardComponent {
 
   @Input() start: Date;
 
-  @Input() statuses: RoundStatus[];
+  @Input() statuses: RoundStatus[] = [RoundStatus.CLOSED];
 
   @Input() isStarted: boolean;
 

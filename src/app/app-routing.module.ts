@@ -37,8 +37,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.STAKING_LP,
-    loadChildren: () =>
-      import('./features/staking-lp/staking-lp.module').then(m => m.StakingLpModule)
+    loadChildren: () => import('./features/earn/earn.module').then(m => m.EarnModule)
   },
   {
     path: ROUTE_PATH.LIQUIDITY_PROVIDING,

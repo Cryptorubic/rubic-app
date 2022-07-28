@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StakingLpPageComponent } from './components/staking-lp-page/staking-lp-page.component';
-import { StakingLpService } from './services/staking-lp.service';
-import { StakingLpRoutingModule } from './staking-lp-routing.module';
+import { EarnPageComponent } from './components/earn-page/earn-page.component';
+import { EarnRoutingModule } from './earn-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { StakingCardComponent } from './components/staking-card/staking-card.component';
@@ -18,9 +17,7 @@ import {
   TuiManualHintModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { StakingRoundsComponent } from './components/staking-rounds/staking-rounds.component';
-import { LpRoundsComponent } from './components/lp-rounds/lp-rounds.component';
-import { StatisticsService } from '@features/staking-lp/services/statistics.service';
+import { StatisticsService } from '@features/earn/services/statistics.service';
 import {
   TuiAccordionModule,
   TuiInputRangeModule,
@@ -30,20 +27,18 @@ import {
 } from '@taiga-ui/kit';
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DepositsComponent } from '@features/staking-lp/components/deposits/deposits.component';
-import { DepositComponent } from '@features/staking-lp/components/deposits/components/deposit/deposit.component';
+import { DepositsComponent } from '@features/earn/components/deposits/deposits.component';
+import { DepositComponent } from '@features/earn/components/deposits/components/deposit/deposit.component';
 import { StakingService } from './services/staking.service';
 import { StakeFormComponent } from './components/stake-form/stake-form.component';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 
 @NgModule({
   declarations: [
-    StakingLpPageComponent,
+    EarnPageComponent,
     StatisticsComponent,
     StakingCardComponent,
     LpCardComponent,
-    StakingRoundsComponent,
-    LpRoundsComponent,
     DepositsComponent,
     DepositComponent,
     StakeFormComponent,
@@ -51,7 +46,7 @@ import { StakeButtonComponent } from './components/stake-button/stake-button.com
   ],
   imports: [
     CommonModule,
-    StakingLpRoutingModule,
+    EarnRoutingModule,
     SharedModule,
     InlineSVGModule,
     TuiManualHintModule,
@@ -70,6 +65,6 @@ import { StakeButtonComponent } from './components/stake-button/stake-button.com
     TuiHintControllerModule,
     TuiSliderModule
   ],
-  providers: [StakingLpService, StatisticsService, StakingService]
+  providers: [StatisticsService, StakingService]
 })
-export class StakingLpModule {}
+export class EarnModule {}

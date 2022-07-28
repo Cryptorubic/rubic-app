@@ -100,9 +100,9 @@ export class StakingService {
     );
   }
 
-  public async getCurrentTime(): Promise<number> {
+  public async getCurrentTimeInSeconds(): Promise<number> {
     const currentBlock = await this.web3Public.getBlock();
-    return Number(currentBlock.timestamp) * 1000;
+    return Number(currentBlock.timestamp);
   }
 
   public async approveRbc(): Promise<TransactionReceipt> {
@@ -115,8 +115,8 @@ export class StakingService {
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
     const amountInWei = Web3Pure.toWei(amount);
-    const durationInSeconds = duration * 2592000000;
-
+    const durationInSeconds = duration * 2592000;
+    console.log({ duration, amount, durationInSeconds, amountInWei });
     return await this.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,

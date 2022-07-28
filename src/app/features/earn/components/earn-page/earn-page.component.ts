@@ -1,16 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { RoundStatus } from '../../models/round-status.enum';
 @Component({
-  selector: 'app-staking-lp-page',
-  templateUrl: './staking-lp-page.component.html',
-  styleUrls: ['./staking-lp-page.component.scss'],
+  selector: 'app-earn',
+  templateUrl: './earn-page.component.html',
+  styleUrls: ['./earn-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingLpPageComponent {
+export class EarnPageComponent {
   public isShowPastStaking: boolean = false;
 
   public isShowStakeForm: boolean = false;
+
+  public readonly RoundStatus = RoundStatus;
 
   constructor(private readonly router: Router) {}
 

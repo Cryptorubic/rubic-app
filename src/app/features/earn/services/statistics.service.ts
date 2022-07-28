@@ -4,10 +4,10 @@ import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, from, Observable, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
-import { STAKING_CONTRACTS } from '@features/staking-lp/constants/STAKING_CONTRACTS';
-import { RoundContract } from '@features/staking-lp/models/round-contract';
+import { STAKING_CONTRACTS } from '@features/earn/constants/STAKING_CONTRACTS';
+import { RoundContract } from '@features/earn/models/round-contract';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
-import { STAKING_ROUND_THREE } from '@features/staking-lp/constants/STAKING_ROUND_THREE';
+import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 
 interface EpochInfo {
   startTime: string;

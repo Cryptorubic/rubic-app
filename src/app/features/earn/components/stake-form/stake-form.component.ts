@@ -7,10 +7,22 @@ import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.se
 import { FormControl } from '@ngneat/reactive-forms';
 import { watch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
-import { zip, of, debounceTime, map, switchMap, filter, startWith, from, catchError } from 'rxjs';
+import {
+  tap,
+  zip,
+  of,
+  debounceTime,
+  map,
+  switchMap,
+  filter,
+  startWith,
+  from,
+  catchError
+} from 'rxjs';
 import { StakingService } from '../../services/staking.service';
 
-const MONTH_TIMESTAMP = 2592000000;
+const MONTH_MILLISECONDS = 2592000000;
+// const MONTH_SECONDS = 2592000;
 
 @Component({
   selector: 'app-stake-form',
@@ -53,6 +65,14 @@ export class StakeFormComponent implements OnInit {
 
   public readonly needSwitchNetwork$ = this.stakingService.needSwitchNetwork$;
 
+  // private readonly _stakeBtnLoading$ = new BehaviorSubject<boolean>(false);
+
+  // public readonly stakeBtnLoading$ = this._stakeBtnLoading$.asObservable();
+
+  // private readonly _approveBtnLoading$ = new BehaviorSubject<boolean>(false);
+
+  // public readonly approveBtnLoading$ = this._approveBtnLoading$.asObservable();
+
   public approveLoading = false;
 
   public stakeLoading = false;
@@ -80,13 +100,16 @@ export class StakeFormComponent implements OnInit {
       .pipe(
         startWith(this.durationSliderCtrl.value),
         switchMap(duration => {
-          return zip(of(duration), this.stakingService.getCurrentTime());
-        })
+          return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
+        }),
+        tap(([duration, timestamp]) => {
+          this.unlockDate =
+            ((timestamp * 1000 + duration * MONTH_MILLISECONDS) / MONTH_MILLISECONDS) *
+            MONTH_MILLISECONDS;
+        }),
+        watch(this.cdr)
       )
-      .subscribe(([duration, timestamp]) => {
-        this.unlockDate =
-          ((timestamp + duration * MONTH_TIMESTAMP) / MONTH_TIMESTAMP) * MONTH_TIMESTAMP;
-      });
+      .subscribe();
   }
 
   public setMaxAmount(amount: BigNumber): void {
@@ -127,24 +150,26 @@ export class StakeFormComponent implements OnInit {
       });
   }
 
-  public async stake(): Promise<void> {
+  public stake(): void {
     this.stakeLoading = true;
     const duration = this.durationSliderCtrl.value;
     const amount = this.rbcAmountCtrl.value;
-    console.log({ duration, amount });
 
-    try {
-      const stakeTx = await this.stakingService.stake(amount, duration);
-      if (stakeTx.status) {
-        this.stakingService.showSuccessDepositNotification();
-        this.stakingService.getRbcTokenBalance().subscribe();
-        this.rbcAmountCtrl.patchValue(null);
-      }
-    } catch (error) {
-      this.errorsService.catchAnyError(error);
-    } finally {
-      this.stakeLoading = false;
-    }
+    from(this.stakingService.stake(amount, duration))
+      .pipe(
+        catchError((error: unknown) => {
+          this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+          return of(null);
+        }),
+        switchMap(() => {
+          this.stakeLoading = false;
+          return this.stakingService.getRbcTokenBalance();
+        }),
+        watch(this.cdr)
+      )
+      .subscribe(() => {
+        this.stakeLoading = false;
+      });
   }
 
   public back(): void {
