@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { STAKING_CONTRACTS } from '@features/staking-lp/constants/STAKING_CONTRACTS';
@@ -29,7 +29,7 @@ export class StatisticsService {
 
   public readonly lockedRBCInDollars$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.lockedRBC$, this.getRBCPrice()]).pipe(
+      forkJoin([this.lockedRBC$, this.getRBCPrice()]).pipe(
         map(([lockedRbcAmount, rbcPrice]) => lockedRbcAmount.multipliedBy(rbcPrice))
       )
     )
