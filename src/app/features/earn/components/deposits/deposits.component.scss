@@ -1,5 +1,57 @@
 @use 'src/scss/core' as *;
 
+.tui-table {
+  .tui-table__tr:first-child {
+    border-bottom: none;
+  }
+
+  .tui-table__tr.data-row {
+    background: #202622;
+    border-bottom: none;
+
+    .tui-table__td:first-child {
+      border-top-left-radius: 14px;
+      border-bottom-left-radius: 14px;
+    }
+
+    .tui-table__td:last-child {
+      border-top-right-radius: 14px;
+      border-bottom-right-radius: 14px;
+    }
+  }
+
+  .tui-table__td {
+    &-id {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 26px;
+        height: 26px;
+        margin-right: 8px;
+      }
+    }
+
+    &-actions {
+      display: flex;
+
+      app-rubic-button:first-child {
+        margin-right: 8px;
+      }
+
+      ::ng-deep app-rubic-button {
+        button {
+          height: 27px;
+        }
+
+        .wrapper {
+          padding: 0 10px;
+        }
+      }
+    }
+  }
+}
+
 .deposits {
   &__wrapper {
     position: relative;
@@ -60,54 +112,6 @@
 
     @include b(480) {
       @include font(14px, 15px, 500, white);
-    }
-  }
-
-  &__body {
-    table {
-      display: grid;
-
-      thead tr td {
-        @include font(16px, 19px, 500, rgba(255, 255, 255, 0.6));
-        width: max-content;
-
-        white-space: nowrap;
-
-        @include b(480) {
-          @include font(12px, 15px, 500, rgba(255, 255, 255, 0.6));
-          width: 100%;
-        }
-      }
-
-      thead tr {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 95px));
-
-        @include b($tablet) {
-          grid-template-columns: repeat(5, 1fr);
-        }
-
-        @include b(480) {
-          width: min-content;
-        }
-      }
-
-      tbody {
-        display: grid;
-        gap: 12px;
-      }
-
-      tfoot {
-        margin-top: 26px;
-
-        tr td {
-          padding: 0 15px;
-        }
-      }
-    }
-
-    td {
-      padding: 15px;
     }
   }
 

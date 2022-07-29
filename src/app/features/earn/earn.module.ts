@@ -32,6 +32,7 @@ import { DepositComponent } from '@features/earn/components/deposits/components/
 import { StakingService } from './services/staking.service';
 import { StakeFormComponent } from './components/stake-form/stake-form.component';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
+import { StakingModalService } from './services/staking-modal.service';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,6 @@ import { StakeButtonComponent } from './components/stake-button/stake-button.com
     TuiHintControllerModule,
     TuiSliderModule
   ],
-  providers: [StatisticsService, StakingService]
+  providers: [StatisticsService, StakingService, StakingModalService]
 })
 export class EarnModule {}

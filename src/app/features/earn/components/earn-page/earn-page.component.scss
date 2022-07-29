@@ -119,7 +119,7 @@
   gap: 5px;
   align-items: center;
   justify-content: center;
-  margin: 30px 0;
+  margin-bottom: 30px;
 
   &__link {
     @include font(16px, 19px, 400, var(--main-green));
@@ -147,6 +147,11 @@
 
     transition: all 0.2s linear;
   }
+}
+
+app-deposits {
+  display: block;
+  margin-bottom: 22px;
 }
 
 @include b($tablet) {

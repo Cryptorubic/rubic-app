@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { STAKING_CONTRACTS } from '@features/earn/constants/STAKING_CONTRACTS';
@@ -37,6 +37,8 @@ export class StatisticsService {
 
   private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
+  public readonly totalSupply$ = this._totalSupply$.asObservable();
+
   private readonly supply = new BigNumber(124_000_000);
 
   private readonly numberOfSecondsPerWeek = 604_800;
@@ -44,6 +46,8 @@ export class StatisticsService {
   private readonly numberOfWeekPerYear = 52;
 
   private readonly reward_multiplier = new BigNumber(10_000_000);
+
+  private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
   public readonly rewardPerSecond$ = this.updateStatistics$.pipe(
     switchMap(() =>
@@ -53,7 +57,8 @@ export class StatisticsService {
           Web3Pure.fromWei(epochInfo.rewardPerSecond)
             .multipliedBy(this.numberOfSecondsPerWeek)
             .dividedBy(this.reward_multiplier)
-        )
+        ),
+        tap(rewardPerSecond => this._rewardPerSecond$.next(rewardPerSecond))
       )
     )
   );
@@ -70,6 +75,13 @@ export class StatisticsService {
       )
     )
   );
+
+  get apr(): BigNumber {
+    let apr;
+    this.apr$.subscribe(value => (apr = value));
+
+    return apr;
+  }
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>

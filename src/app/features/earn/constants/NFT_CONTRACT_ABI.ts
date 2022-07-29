@@ -510,6 +510,13 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
+    name: 'viewTokensByOwner',
+    outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'voted',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { FormControl } from '@ngneat/reactive-forms';
 import { watch } from '@taiga-ui/cdk';
@@ -21,9 +22,6 @@ import {
 } from 'rxjs';
 import { StakingService } from '../../services/staking.service';
 import { StakeError } from '../stake-button/stake-button.component';
-
-const MONTH_MILLISECONDS = 2592000000;
-// const MONTH_SECONDS = 2592000;
 
 @Component({
   selector: 'app-stake-form',
@@ -46,11 +44,7 @@ export class StakeFormComponent implements OnInit {
 
   public readonly rbcAmount$ = this.rbcAmountCtrl.valueChanges.pipe(
     map(value => {
-      if (value) {
-        return new BigNumber(String(value).split(',').join(''));
-      } else {
-        return new BigNumber(NaN);
-      }
+      return this.stakingService.parseAmountToBn(value);
     })
   );
 
@@ -88,6 +82,7 @@ export class StakeFormComponent implements OnInit {
     private readonly stakingService: StakingService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef
   ) {}
@@ -102,8 +97,9 @@ export class StakeFormComponent implements OnInit {
         tap(([duration, timestamp]) => {
           this.selectedDuration = duration;
           this.unlockDate =
-            ((timestamp * 1000 + duration * MONTH_MILLISECONDS) / MONTH_MILLISECONDS) *
-            MONTH_MILLISECONDS;
+            Math.trunc((timestamp * 1000 + duration * 4 * 7 * 86400 * 1000) / 604800000) *
+            604800 *
+            1000;
         }),
         watch(this.cdr)
       )
@@ -140,6 +136,7 @@ export class StakeFormComponent implements OnInit {
 
   public async switchNetwork(): Promise<void> {
     this.stakingService.switchNetwork();
+    this.cdr.detectChanges();
   }
 
   private checkErrors(rbcAmount: BigNumber, rbcTokenBalance: BigNumber): StakeError {
@@ -147,11 +144,11 @@ export class StakeFormComponent implements OnInit {
       return StakeError.EMPTY_AMOUNT;
     }
 
-    if (rbcTokenBalance.lt(rbcAmount)) {
+    if (rbcTokenBalance?.lt(rbcAmount)) {
       return StakeError.INSUFFICIENT_BALANCE_RBC;
     }
 
-    if (rbcAmount.lt(10)) {
+    if (rbcAmount?.lt(10)) {
       return StakeError.LESS_THEN_MINIMUM;
     }
 
@@ -182,22 +179,25 @@ export class StakeFormComponent implements OnInit {
   public stake(): void {
     this.stakeLoading = true;
     const duration = this.durationSliderCtrl.value;
-    const amount = this.rbcAmountCtrl.value;
+    const amount = this.stakingService.parseAmountToBn(this.rbcAmountCtrl.value);
 
     from(this.stakingService.stake(amount, duration))
       .pipe(
-        catchError((error: unknown) => {
-          this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-          return of(null);
-        }),
         switchMap(() => {
           this.stakeLoading = false;
           return this.stakingService.getRbcTokenBalance();
         }),
+        catchError((error: unknown) => {
+          this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+          return of(null);
+        }),
         watch(this.cdr)
       )
-      .subscribe(() => {
+      .subscribe(result => {
         this.stakeLoading = false;
+        if (result) {
+          this.stakingService.showSuccessDepositNotification();
+        }
       });
   }
 
