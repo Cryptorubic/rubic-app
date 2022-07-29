@@ -64,7 +64,10 @@ export class StatisticsService {
     switchMap(() =>
       combineLatest([this.rewardPerSecond$, this.getTotalNFTSupply()]).pipe(
         map(([rewardPerSecond, totalNFTSupply]) =>
-          rewardPerSecond.multipliedBy(this.numberOfWeekPerYear).dividedBy(totalNFTSupply)
+          rewardPerSecond
+            .multipliedBy(this.numberOfWeekPerYear)
+            .dividedBy(totalNFTSupply)
+            .multipliedBy(100)
         )
       )
     )
@@ -93,7 +96,7 @@ export class StatisticsService {
         STAKING_ROUND_THREE.NFT.abi,
         'totalSupply'
       )
-    ).pipe(map(value => Web3Pure.fromWei(value, 13)));
+    ).pipe(map(value => Web3Pure.fromWei(value)));
   }
 
   public getLockedRBC(): void {
