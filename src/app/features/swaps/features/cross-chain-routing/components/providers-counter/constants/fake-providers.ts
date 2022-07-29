@@ -1,6 +1,7 @@
 export const fakeProviders = [
   'Celer',
   'Symbiosis',
+  'deBridge',
   'Connext',
   'Hop',
   'Multichain',

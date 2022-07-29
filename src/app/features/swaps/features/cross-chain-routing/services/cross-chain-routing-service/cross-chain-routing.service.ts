@@ -56,6 +56,7 @@ import { switchTap } from '@shared/utils/utils';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -247,13 +248,17 @@ export class CrossChainRoutingService extends TradeService {
     const trade = this.crossChainTrade.trade;
     const { estimatedGas } = trade;
 
-    if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
+    if (
+      trade instanceof SymbiosisCrossChainTrade ||
+      trade instanceof LifiCrossChainTrade ||
+      trade instanceof DebridgeCrossChainTrade
+    ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
         feePercent: trade.feeInfo.platformFee.percent,
-        priceImpact: String(trade.priceImpact),
+        priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo?.cryptoFee?.tokenSymbol
       };
@@ -324,6 +329,12 @@ export class CrossChainRoutingService extends TradeService {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+      };
+    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
+      this.smartRouting = {
+        fromProvider: TRADE_TYPE.ONE_INCH,
+        toProvider: TRADE_TYPE.ONE_INCH,
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
       };
     } else {
       this.smartRouting = {
