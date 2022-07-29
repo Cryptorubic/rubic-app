@@ -247,16 +247,12 @@ export class StakingService {
 
         return from(this.getTokensByOwner(user.address)).pipe(
           switchMap((nftIds: string[]) => {
-            const apr = this.statisticsService.currentStakingApr;
-
             return forkJoin(
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
-                const nftVotingPower = await this.getNftVotingPower(id);
-                const tokenApr = apr.multipliedBy(
-                  new BigNumber(nftVotingPower).dividedBy(nftInfo.amount)
-                );
+                // const nftVotingPower = await this.getNftVotingPower(id);
+                const tokenApr = new BigNumber(0);
                 return { ...nftInfo, ...nftRewards, id, tokenApr };
               })
             );
