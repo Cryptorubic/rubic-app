@@ -193,6 +193,11 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
     name: 'Celer',
     image: `${imageBasePath}celer.svg`,
     color: 'white'
+  },
+  [CROSS_CHAIN_TRADE_TYPE.DEBRIDGE]: {
+    name: 'DeBridge',
+    image: `${imageBasePath}debridge.svg`,
+    color: '#bf38ee'
   }
 };
 
