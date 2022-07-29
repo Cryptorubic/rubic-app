@@ -169,8 +169,8 @@ export class StakingService {
     );
   }
 
-  public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
-    const amountInWei = Web3Pure.toWei(amount);
+  public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
+    const amountInWei = Web3Pure.toWei(this.parseAmountToBn(amount));
     const durationInSeconds = duration * 30 * 86400;
     console.log({ duration, amount, durationInSeconds, amountInWei });
     return Injector.web3Private.tryExecuteContractMethod(

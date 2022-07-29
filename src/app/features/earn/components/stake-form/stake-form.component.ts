@@ -178,10 +178,8 @@ export class StakeFormComponent implements OnInit {
 
   public stake(): void {
     this.stakeLoading = true;
-    const duration = this.durationSliderCtrl.value;
-    const amount = this.stakingService.parseAmountToBn(this.rbcAmountCtrl.value);
 
-    from(this.stakingService.stake(amount, duration))
+    from(this.stakingService.stake(this.rbcAmountCtrl.value, this.durationSliderCtrl.value))
       .pipe(
         switchMap(() => {
           this.stakeLoading = false;
