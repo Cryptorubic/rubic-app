@@ -17,12 +17,12 @@
   </div>
 </div>
 
+<app-deposits></app-deposits>
+
 <div class="rules">
   <a class="rules__link" href="#">{{ 'staking.stake.rules' | translate }}</a>
   <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
 </div>
-
-<app-deposits></app-deposits>
 
 <div *ngIf="!isShowStakeForm" class="lp">
   <tui-accordion class="container">

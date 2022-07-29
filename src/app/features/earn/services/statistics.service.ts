@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { STAKING_CONTRACTS } from '@features/earn/constants/STAKING_CONTRACTS';
@@ -39,6 +39,16 @@ export class StatisticsService {
 
   public readonly totalNFTSupply$ = this._totalNFTSupply$.asObservable();
 
+  public get totalNFTSupply(): BigNumber {
+    return this._totalNFTSupply$.getValue();
+  }
+
+  private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  public get rewardPerSecond(): BigNumber {
+    return this._rewardPerSecond$.getValue();
+  }
+
   private readonly totalSupply = new BigNumber(124_000_000);
 
   private readonly numberOfSecondsPerWeek = 604_800;
@@ -55,7 +65,8 @@ export class StatisticsService {
           Web3Pure.fromWei(epochInfo.rewardPerSecond)
             .multipliedBy(this.numberOfSecondsPerWeek)
             .dividedBy(this.reward_multiplier)
-        )
+        ),
+        tap(rewardPerSecond => this._rewardPerSecond$.next(rewardPerSecond))
       )
     )
   );
@@ -93,7 +104,12 @@ export class StatisticsService {
         STAKING_ROUND_THREE.NFT.abi,
         'totalSupply'
       )
-    ).pipe(map(value => Web3Pure.fromWei(value, 13)));
+    ).pipe(
+      map(value => Web3Pure.fromWei(value, 13)),
+      tap(totalSupply => {
+        this._totalNFTSupply$.next(totalSupply);
+      })
+    );
   }
 
   public getLockedRBC(): void {

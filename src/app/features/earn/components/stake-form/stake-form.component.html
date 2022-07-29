@@ -30,7 +30,7 @@
       <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
     </div>
     <div class="token__price" *ngLet="usdAmount$ | async as usdAmount">
-      $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '--.--' }}
+      $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '0.00' }}
     </div>
   </div>
 </div>
@@ -62,45 +62,44 @@
     <img src="assets/images/icons/info-warning.svg" alt="" />
   </div>
   <div class="hint__text">
-    {{ rbcAmountCtrl.value ? (rbcAmountCtrl.value | bigNumberFormat) : '--.--' }} RBC locked expires
-    in {{ selectedDuration }} months. <br />
+    {{ rbcAmountCtrl.value ? (rbcAmountCtrl.value | bigNumberFormat: 2:true) : '0.00' }} RBC locked
+    expires in {{ selectedDuration }} months. <br />
     Locked until {{ unlockDate | date: 'mediumDate' }}
   </div>
 </div>
 
 <div class="button-container">
-  <ng-container *ngIf="needLogin$ | async; else switchNetwork">
-    <app-rubic-button appearance="secondary" (onClick)="login()">Connect wallet</app-rubic-button>
-  </ng-container>
-  <ng-template #switchNetwork>
-    <ng-container
-      *ngLet="{
-        needApprove: needApprove$ | async,
-        needSwitchNetwork: needSwitchNetwork$ | async
-      } as data"
+  <ng-container
+    *ngLet="{
+      needApprove: needApprove$ | async,
+      needSwitchNetwork: needSwitchNetwork$ | async,
+      needLogin: needLogin$ | async
+    } as data"
+  >
+    <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin"
+      >Connect wallet</app-rubic-button
     >
-      <app-rubic-button
-        appearance="secondary"
-        (onClick)="switchNetwork()"
-        *ngIf="data.needSwitchNetwork"
-        >Switch network</app-rubic-button
-      >
-      <app-rubic-button
-        appearance="secondary"
-        (onClick)="approve()"
-        *ngIf="data.needApprove && !data.needSwitchNetwork"
-        [disabled]="approveLoading"
-        [loading]="approveLoading"
-        >Approve</app-rubic-button
-      >
-      <app-stake-button
-        appearance="secondary"
-        *ngIf="!data.needApprove && !data.needSwitchNetwork"
-        [error]="error"
-        [minRbcAmount]="10"
-        [stakeLoading]="stakeLoading"
-        (onStake)="stake()"
-      ></app-stake-button>
-    </ng-container>
-  </ng-template>
+    <app-rubic-button
+      appearance="secondary"
+      (onClick)="switchNetwork()"
+      *ngIf="!data.needLogin && data.needSwitchNetwork"
+      >Switch network
+    </app-rubic-button>
+    <app-rubic-button
+      appearance="secondary"
+      (onClick)="approve()"
+      *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+      [disabled]="approveLoading"
+      [loading]="approveLoading"
+      >Approve</app-rubic-button
+    >
+    <app-stake-button
+      appearance="secondary"
+      *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+      [error]="error"
+      [minRbcAmount]="10"
+      [stakeLoading]="stakeLoading"
+      (onStake)="stake()"
+    ></app-stake-button>
+  </ng-container>
 </div>

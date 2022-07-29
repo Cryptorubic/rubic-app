@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export const REWARDS_CONTRACT_ADDRESS = [
+export const REWARDS_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_ve_', type: 'address' },
@@ -132,17 +132,17 @@ export const REWARDS_CONTRACT_ADDRESS = [
     stateMutability: 'nonpayable',
     type: 'function'
   },
-  {
-    inputs: [
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: 'startEpoch', type: 'uint256' },
-      { internalType: 'uint256', name: 'endEpoch', type: 'uint256' }
-    ],
-    name: 'claimReward',
-    outputs: [{ internalType: 'uint256', name: 'reward', type: 'uint256' }],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
+  // {
+  //   inputs: [
+  //     { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+  //     { internalType: 'uint256', name: 'startEpoch', type: 'uint256' },
+  //     { internalType: 'uint256', name: 'endEpoch', type: 'uint256' }
+  //   ],
+  //   name: 'claimReward',
+  //   outputs: [{ internalType: 'uint256', name: 'reward', type: 'uint256' }],
+  //   stateMutability: 'nonpayable',
+  //   type: 'function'
+  // },
   {
     inputs: [
       { internalType: 'uint256[]', name: 'tokenIds', type: 'uint256[]' },
