@@ -247,14 +247,12 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 .notification-counter {
   position: absolute;
 
-  top: -5px;
-  right: 0;
+  top: 0px;
+  right: -5px;
 
-  display: none;
-
-  &_my-trades {
-    top: 0;
-    right: -10px;
+  &_menu {
+    top: -4px;
+    right: 8px;
   }
 }
 
@@ -262,14 +260,14 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   .notification-counter {
     position: absolute;
 
-    top: -13px;
-    right: -7px;
+    top: 0px;
+    right: -5px;
 
     display: none;
 
-    &_my-trades {
-      top: 0;
-      right: -10px;
+    &_menu {
+      top: -4px;
+      right: 8px;
     }
   }
 }

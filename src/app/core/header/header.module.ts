@@ -12,9 +12,9 @@ import {
   TuiDropdownControllerModule,
   TuiGroupModule,
   TuiHintModule,
-  TuiHostedDropdownModule
+  TuiHostedDropdownModule,
+  TuiLoaderModule
 } from '@taiga-ui/core';
-import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
 import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
@@ -35,6 +35,7 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,6 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    IframeLogoutButtonComponent,
     IframeSettingsButtonComponent,
     HeaderSettingsComponent,
     SettingsElementComponent,
@@ -74,7 +74,9 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     PolymorpheusModule,
     TuiDropdownControllerModule,
     TuiToggleModule,
-    FormsModule
+    FormsModule,
+    TuiLoaderModule,
+    RecentTradesModule
   ],
   exports: [HeaderComponent, LoginButtonComponent]
 })

@@ -1,7 +1,6 @@
 import { SupportedCrossChainBlockchain } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/swaps/features/instant-trade/models/instant-trade-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export type TransitTokens = Record<SupportedCrossChainBlockchain, InstantTradeToken>;
 
@@ -52,9 +51,9 @@ export const transitTokens: TransitTokens = {
     symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
-    address: TOKENS.USDC.mintAddress,
-    decimals: TOKENS.USDC.decimals,
-    symbol: TOKENS.USDC.symbol
+    address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    decimals: 6,
+    symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.NEAR]: {
     address: 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',

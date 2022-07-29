@@ -3,7 +3,12 @@
     <main class="modal__body">
       <img
         class="modal__success-image"
-        src="assets/images/bridge/success-image.svg"
+        [src]="
+          'assets/images/bridge/' +
+          (ccrProviderType !== CROSS_CHAIN_PROVIDER.SYMBIOSIS
+            ? 'success-image.svg'
+            : 'warning-image.svg')
+        "
         alt="Success"
       />
       <h3 *noFrame="'horizontal'" class="modal__title">
@@ -17,18 +22,36 @@
     </main>
     <footer class="modal__footer">
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
-        <div
-          *noFrame
-          class="modal__footer-text"
-          [innerHTML]="
-            (type === 'cross-chain-routing'
-              ? 'modals.successTxModal.seeDetailsCCR'
-              : 'modals.successTxModal.seeDetailsItBridge'
-            )
-              | translate
-                : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
-          "
-        ></div>
+        <ng-container *ngIf="ccrProviderType !== CROSS_CHAIN_PROVIDER.SYMBIOSIS">
+          <div
+            *noFrame
+            class="modal__footer-text"
+            [innerHTML]="
+              (type === 'cross-chain-routing' && ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER
+                ? 'modals.successTxModal.seeDetailsCCR'
+                : 'modals.successTxModal.seeDetailsItBridge'
+              )
+                | translate
+                  : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
+            "
+          ></div>
+        </ng-container>
+
+        <ng-container *ngIf="ccrProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS">
+          <div class="modal__footer-text">
+            You've completed a swap through Symbiosis. Please use the
+            <strong>Revert</strong> function found in the
+            <a class="text-nowrap" href="/my-trades" target="_blank">My Trades</a> table if your
+            transaction is stuck.<br />
+            See transaction
+            <a
+              class="modal__footer-link"
+              [href]="txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
+              target="_blank"
+              >details</a
+            >.
+          </div>
+        </ng-container>
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{

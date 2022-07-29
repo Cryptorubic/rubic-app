@@ -51,11 +51,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   /**
-   * Removes carrot chat in iframe mode.
+   * Removes live chat in iframe mode.
    */
   private removeLiveChatInIframe(): void {
     const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementsByClassName('carrotquest-css-reset')[0];
+      const liveChat = this.document.getElementById('chat-widget-container');
       if (liveChat) {
         liveChat.remove();
         observer.disconnect();
@@ -103,6 +103,9 @@ export class AppComponent implements AfterViewInit {
       (queryParams: QueryParams) => {
         try {
           this.queryParamsService.setupQueryParams(queryParams);
+          if (queryParams?.hideUnusedUI) {
+            this.setupUISettings(queryParams);
+          }
         } catch (err) {
           this.errorService.catch(err);
         }
@@ -122,5 +125,14 @@ export class AppComponent implements AfterViewInit {
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
+  }
+
+  private setupUISettings(queryParams: QueryParams): void {
+    const hideUI = queryParams.hideUnusedUI === 'true';
+
+    if (hideUI) {
+      this.document.body.classList.add('hide-unused-ui');
+      this.removeLiveChatInIframe();
+    }
   }
 }

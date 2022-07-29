@@ -50,7 +50,7 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
       throw new MetamaskError();
     }
 
-    // installed coinbase chrome extension
+    // installed coinbase Chrome extension
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }

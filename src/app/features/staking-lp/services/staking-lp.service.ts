@@ -5,11 +5,8 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { UserInterface } from '@app/core/services/auth/models/user.interface';
 import { VolumeApiService } from '@app/core/services/backend/volume-api/volume-api.service';
-import { Web3Pure } from '@app/core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { PublicBlockchainAdapterService } from '@app/core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
 import {
@@ -30,6 +27,8 @@ import { STAKING_CONTRACTS } from '../constants/STAKING_CONTRACTS';
 import { LP_CONTRACTS } from '../constants/LP_CONTRACTS';
 import { parseWeb3Percent } from '@app/shared/utils/utils';
 import { transitTokens } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
+import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 interface RoundContract {
   address: string;
@@ -164,7 +163,6 @@ export class StakingLpService {
   }
 
   constructor(
-    private readonly web3PublicService: PublicBlockchainAdapterService,
     private readonly volumeApiService: VolumeApiService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
@@ -197,8 +195,11 @@ export class StakingLpService {
   }
 
   private getActiveStakingRoundBalance(userAddress: string): Observable<BigNumber> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod<string>(
+      blockchainAdapter.callContractMethod<string>(
         this.activeStakingContract.address,
         this.activeStakingContract.abi,
         'userEnteredAmount',
@@ -209,20 +210,23 @@ export class StakingLpService {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(balance => Web3Pure.fromWei(balance))
+      map((balance: BigNumber) => Web3Pure.fromWei(balance))
     );
   }
 
   private getLpBalance(): Observable<BigNumber> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.activeLpContract.address,
         this.activeLpContract.abi,
         'viewUSDCAmountOf',
         { methodArguments: [this.userAddress] }
       )
     ).pipe(
-      map(balance =>
+      map((balance: string) =>
         Web3Pure.fromWei(balance, transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].decimals)
       )
     );
@@ -246,8 +250,11 @@ export class StakingLpService {
 
   private getStakingRewards(): Observable<BigNumber> {
     const usersDeposit = this._stakingBalance$.getValue();
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.activeStakingContract.address,
         this.activeStakingContract.abi,
         'canReceive',
@@ -258,15 +265,18 @@ export class StakingLpService {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(canReceive => {
+      map((canReceive: BigNumber) => {
         return Web3Pure.fromWei(canReceive).minus(usersDeposit);
       })
     );
   }
 
   private getLpRewards(): Observable<BigNumber> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.activeLpContract.address,
         this.activeLpContract.abi,
         'viewRewardsTotal',
@@ -277,7 +287,7 @@ export class StakingLpService {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(rewards => {
+      map((rewards: BigNumber) => {
         const bscUSDCToken = transitTokens[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
         return Web3Pure.fromWei(rewards, bscUSDCToken.decimals);
       })
@@ -322,10 +332,13 @@ export class StakingLpService {
   }
 
   public getStakingBalanceByRound(): Observable<BigNumber[]> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     const balanceRequests = (userAddress: string) =>
       this.stakingContracts.map(contract => {
         return from(
-          this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+          blockchainAdapter.callContractMethod(
             contract.address,
             contract.abi,
             'userEnteredAmount',
@@ -336,7 +349,7 @@ export class StakingLpService {
             this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
             return EMPTY;
           }),
-          map(balance => Web3Pure.fromWei(balance))
+          map((balance: string) => Web3Pure.fromWei(balance))
         );
       });
 
@@ -353,16 +366,19 @@ export class StakingLpService {
   }
 
   private checkIsLpRoundStartedOrEnded(): Observable<boolean> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return forkJoin([
       from(
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        blockchainAdapter.callContractMethod(
           this.activeLpContract.address,
           this.activeLpContract.abi,
           'startTime'
         )
       ),
       from(
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        blockchainAdapter.callContractMethod(
           this.activeLpContract.address,
           this.activeLpContract.abi,
           'endTime'
@@ -387,7 +403,10 @@ export class StakingLpService {
   public getLpBalanceByRound(): Observable<BigNumber[]> {
     const balanceRequests$ = (userAddress: string): Array<Promise<string>> => {
       return this.lpContracts.map(contract => {
-        return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        const publicAdapter = Injector.web3PublicService.getWeb3Public(
+          BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+        );
+        return publicAdapter.callContractMethod(
           contract.address,
           contract.abi,
           'viewUSDCAmountOf',
@@ -418,13 +437,12 @@ export class StakingLpService {
   }
 
   public getLpAprByRound(): Observable<number[]> {
-    const aprRequests$ = this.lpContracts.map(contract => {
-      return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        contract.address,
-        contract.abi,
-        'apr'
-      );
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+    const aprRequests$ = this.lpContracts.map(contract =>
+      blockchainAdapter.callContractMethod(contract.address, contract.abi, 'apr')
+    );
 
     return forkJoin(aprRequests$).pipe(
       map(aprByRound => aprByRound.map(parseWeb3Percent)),
@@ -471,12 +489,15 @@ export class StakingLpService {
     this.toggleLoading('tvlAndTtv', true);
 
     const defiLamaTvlApiUrl = 'https://api.llama.fi/tvl/rubic';
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
 
     return this.httpClient.get<number>(defiLamaTvlApiUrl).pipe(
       switchMap(tvlMultichain => {
         return forkJoin([
           from(
-            this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+            blockchainAdapter.callContractMethod(
               this.activeLpContract.address,
               this.activeLpContract.abi,
               'poolUSDC'
@@ -494,7 +515,7 @@ export class StakingLpService {
           )
         ]);
       }),
-      map(([lpPoolBalance, tvlMultichain, stakingTokenUsdPrice]) => {
+      map(([lpPoolBalance, tvlMultichain, stakingTokenUsdPrice]: [string, number, number]) => {
         const lpPoolBalanceInTokens = Web3Pure.fromWei(lpPoolBalance);
         const tvl = lpPoolBalanceInTokens
           .plus(lpPoolBalanceInTokens.multipliedBy(stakingTokenUsdPrice))
@@ -510,8 +531,11 @@ export class StakingLpService {
   }
 
   public getTvlStaking(): Observable<BigNumber> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      blockchainAdapter.callContractMethod(
         this.activeStakingContract.address,
         this.activeStakingContract.abi,
         'totalRBCEntered'
@@ -521,7 +545,7 @@ export class StakingLpService {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(totalRbcEntered => {
+      map((totalRbcEntered: string) => {
         const totalRbcEnteredInTokens = Web3Pure.fromWei(totalRbcEntered);
         return totalRbcEnteredInTokens.multipliedBy(this.stakingTokenUsdPrice);
       }),

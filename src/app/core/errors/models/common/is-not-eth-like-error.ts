@@ -1,5 +1,5 @@
 import CustomError from '@core/errors/models/custom-error';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 class IsNotEthLikeError extends CustomError {
   constructor(blockchain: BlockchainName) {

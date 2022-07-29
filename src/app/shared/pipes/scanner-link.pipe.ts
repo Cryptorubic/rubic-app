@@ -1,9 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 
-const blockchainsScanners = {
+type AddressTypeKeys = keyof typeof ADDRESS_TYPE;
+type AddressTypeFields = { [K in AddressTypeKeys]: string };
+
+interface ScannerObject extends AddressTypeFields {
+  baseUrl: string;
+  nativeCoinUrl: string;
+}
+
+const blockchainsScanners: Record<BlockchainName, ScannerObject> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     baseUrl: 'https://etherscan.io/',
     nativeCoinUrl: 'stat/supply/',
@@ -94,6 +102,62 @@ const blockchainsScanners = {
   },
   [BLOCKCHAIN_NAME.TELOS]: {
     baseUrl: 'https://www.teloscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.OPTIMISM]: {
+    baseUrl: 'https://optimistic.etherscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.CRONOS]: {
+    baseUrl: 'https://cronoscan.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
+    baseUrl: 'https://www.oklink.com/en/okc/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.GNOSIS]: {
+    baseUrl: 'https://blockscout.com/xdai/mainnet/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.FUSE]: {
+    baseUrl: 'https://explorer.fuse.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.MOONBEAM]: {
+    baseUrl: 'https://moonscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.CELO]: {
+    baseUrl: 'https://explorer.celo.org/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',

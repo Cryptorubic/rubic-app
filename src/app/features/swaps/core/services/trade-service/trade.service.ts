@@ -3,20 +3,23 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { inject, Injectable } from '@angular/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
 import { Observable, Subscription } from 'rxjs';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
 
 @Injectable()
 export abstract class TradeService {
-  protected showSuccessTrxNotification = (): void => {
+  protected showSuccessTrxNotification = (
+    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.RUBIC
+  ): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000,
       data: {
-        type: this.successTxModalType
+        type: this.successTxModalType,
+        ccrProviderType
       }
     });
   };
@@ -41,12 +44,14 @@ export abstract class TradeService {
 
   protected notifyTradeInProgress(
     transactionHash: string,
-    blockchain: BlockchainName
+    blockchain: BlockchainName,
+    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.RUBIC
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,
       blockchain,
       this.successTxModalType,
+      ccrProviderType,
       this.showTrxInProgressTrxNotification
     );
   }

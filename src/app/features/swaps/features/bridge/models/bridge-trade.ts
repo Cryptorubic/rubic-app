@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 

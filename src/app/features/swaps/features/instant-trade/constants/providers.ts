@@ -1,8 +1,8 @@
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { TRADE_TYPE, TradeType } from 'rubic-sdk';
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,
@@ -11,9 +11,7 @@ const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   needApprove: false
 };
 
-function getDefaultStateByProviders(
-  providers: INSTANT_TRADE_PROVIDER[]
-): InstantTradeProviderData[] {
+function getDefaultStateByProviders(providers: TradeType[]): InstantTradeProviderData[] {
   return providers.map(provider => ({
     ...defaultState,
     name: provider,
@@ -24,55 +22,97 @@ function getDefaultStateByProviders(
 export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTradeProviderData[]>> =
   {
     [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.UNISWAP_V3,
-      INSTANT_TRADE_PROVIDER.ONEINCH,
-      INSTANT_TRADE_PROVIDER.UNISWAP_V2,
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.ZRX
+      TRADE_TYPE.UNI_SWAP_V3,
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.UNISWAP_V2,
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.DODO,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.ONEINCH,
-      INSTANT_TRADE_PROVIDER.PANCAKESWAP,
-      INSTANT_TRADE_PROVIDER.SUSHISWAP
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.PANCAKE_SWAP,
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.DODO,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.POLYGON]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.UNISWAP_V3,
-      INSTANT_TRADE_PROVIDER.ALGEBRA,
-      INSTANT_TRADE_PROVIDER.ONEINCH,
-      INSTANT_TRADE_PROVIDER.QUICKSWAP,
-      INSTANT_TRADE_PROVIDER.SUSHISWAP
+      TRADE_TYPE.UNI_SWAP_V3,
+      TRADE_TYPE.ALGEBRA,
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.QUICK_SWAP,
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.DODO,
+      TRADE_TYPE.HONEY_SWAP,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.VIPER
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.VIPER_SWAP
     ]),
     [BLOCKCHAIN_NAME.AVALANCHE]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.PANGOLIN,
-      INSTANT_TRADE_PROVIDER.JOE
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.PANGOLIN,
+      TRADE_TYPE.JOE,
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.SOLARBEAM
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.SOLAR_BEAM,
+      TRADE_TYPE.DODO
     ]),
     [BLOCKCHAIN_NAME.FANTOM]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.SPOOKYSWAP,
-      INSTANT_TRADE_PROVIDER.SPIRITSWAP,
-      INSTANT_TRADE_PROVIDER.SUSHISWAP
+      TRADE_TYPE.SPOOKY_SWAP,
+      TRADE_TYPE.SPIRIT_SWAP,
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.PARA_SWAP,
+      TRADE_TYPE.ZRX
     ]),
     [BLOCKCHAIN_NAME.ARBITRUM]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.ONEINCH,
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.UNISWAP_V3
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.UNI_SWAP_V3,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.DODO
     ]),
     [BLOCKCHAIN_NAME.AURORA]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.TRISOLARIS,
-      INSTANT_TRADE_PROVIDER.WANNASWAP
+      TRADE_TYPE.TRISOLARIS,
+      TRADE_TYPE.WANNA_SWAP
     ]),
-    [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.RAYDIUM]),
-    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([INSTANT_TRADE_PROVIDER.REF]),
-    [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
-      INSTANT_TRADE_PROVIDER.SUSHISWAP,
-      INSTANT_TRADE_PROVIDER.ZAPPY
-    ])
+    [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([TRADE_TYPE.RAYDIUM]),
+    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([TRADE_TYPE.REF_FINANCE]),
+    [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP, TRADE_TYPE.ZAPPY]),
+    [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([TRADE_TYPE.ZRX]),
+    [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.CRONA_SWAP
+    ]),
+    [BLOCKCHAIN_NAME.OKE_X_CHAIN]: getDefaultStateByProviders([
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.J_SWAP,
+      TRADE_TYPE.DODO
+    ]),
+    [BLOCKCHAIN_NAME.GNOSIS]: getDefaultStateByProviders([
+      TRADE_TYPE.SUSHI_SWAP,
+      TRADE_TYPE.ONE_INCH,
+      TRADE_TYPE.OPEN_OCEAN,
+      TRADE_TYPE.HONEY_SWAP
+    ]),
+    [BLOCKCHAIN_NAME.FUSE]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP]),
+    [BLOCKCHAIN_NAME.MOONBEAM]: getDefaultStateByProviders([
+      TRADE_TYPE.STELLA_SWAP,
+      TRADE_TYPE.BEAM_SWAP
+    ]),
+    [BLOCKCHAIN_NAME.CELO]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP, TRADE_TYPE.UBE_SWAP])
   };

@@ -10,7 +10,7 @@
     <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
       <img
         [src]="currentBlockchain?.imagePath"
-        alt="($currentBlockchain | async)?.name"
+        [alt]="currentBlockchain?.name"
         width="25"
         height="25"
       />
@@ -18,6 +18,13 @@
     <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
       {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
     </div>
+    <app-notification-badge
+      class="notification-counter notification-counter_profile"
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
+      size="xs"
+      color="red"
+      [value]="unreadTrades$ | async"
+    ></app-notification-badge>
     <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
   </div>
 </ng-template>
@@ -29,14 +36,20 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <a
+  <button
     *noFrame
-    class="rubic-header__profile-trades button-link"
-    routerLink="my-trades"
-    routerLinkActive="button-link_active"
+    class="user-profile__dropdown-item button-link"
+    (click)="openRecentTradesModal()"
   >
-    {{ 'navigation.myTrades' | translate }}
-  </a>
+    {{ 'navigation.recentTrades' | translate }}
+    <app-notification-badge
+      class="notification-counter notification-counter_menu"
+      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
+      size="xs"
+      color="red"
+      [value]="unreadTrades$ | async"
+    ></app-notification-badge>
+  </button>
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>

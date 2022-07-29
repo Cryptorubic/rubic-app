@@ -9,14 +9,15 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { TOKENS } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { isNil } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -67,10 +68,10 @@ export class SwapButtonContainerErrorsService {
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
+    private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
@@ -86,12 +87,12 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnSwapForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => {
+      .subscribe((form: SwapFormInput) => {
         const { fromAmount } = form;
         this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
-        this.checkSolanaErrors();
         this.checkWalletSupportsFromBlockchain();
+        this.checkSelectedToken();
         this.checkUserBlockchain();
         this.checkUserBalance();
 
@@ -137,32 +138,12 @@ export class SwapButtonContainerErrorsService {
   }
 
   /**
-   * Checks Solana errors.
-   */
-  private checkSolanaErrors(): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
-
-    this.errorType[ERROR_TYPE.SOLANA_UNAVAILABLE] =
-      (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) &&
-      fromBlockchain !== toBlockchain;
-
-    this.errorType[ERROR_TYPE.SOL_SWAP] =
-      fromToken &&
-      toToken &&
-      fromToken.address === TOKENS.WSOL.mintAddress &&
-      !this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].isNativeAddress(toToken.address);
-  }
-
-  /**
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !blockchainAdapter.isAddressCorrect(this.authService.userAddress);
+      !Web3Pure.isAddressCorrect(this.authService.userAddress);
   }
 
   /**
@@ -182,6 +163,18 @@ export class SwapButtonContainerErrorsService {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = fromToken.amount.lt(fromAmount);
     } else {
       this._errorLoading$.next(true);
+    }
+  }
+
+  private checkSelectedToken(): void {
+    if (
+      isNil(this.swapFormService.inputValue?.fromToken) &&
+      isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
+      isNil(this.queryParamsService.currentQueryParams?.from)
+    ) {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = true;
+    } else {
+      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = false;
     }
   }
 
@@ -253,6 +246,10 @@ export class SwapButtonContainerErrorsService {
         translateParams = { key: 'errors.multichainWallet' };
         break;
       }
+      case err[ERROR_TYPE.NO_SELECTED_TOKEN]:
+        type = ERROR_TYPE.NO_SELECTED_TOKEN;
+        translateParams = { key: 'errors.noSelectedToken' };
+        break;
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         type = ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
@@ -321,8 +318,11 @@ export class SwapButtonContainerErrorsService {
     }
   }
 
-  public setMinAmountError(minAmount: false | number | BigNumber): void {
-    if (minAmount) {
+  public setMinAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const minAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof minAmount === 'number') {
         this.minAmount = minAmount.toString();
       } else {
@@ -331,7 +331,12 @@ export class SwapButtonContainerErrorsService {
           'toClosestValue'
         );
       }
-      this.minAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.minAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
@@ -339,8 +344,11 @@ export class SwapButtonContainerErrorsService {
     this.updateError();
   }
 
-  public setMaxAmountError(maxAmount: false | number | BigNumber): void {
-    if (maxAmount) {
+  public setMaxAmountError(
+    value: false | number | BigNumber | { amount: BigNumber; symbol: string }
+  ): void {
+    if (value) {
+      const maxAmount = typeof value === 'object' && 'amount' in value ? value.amount : value;
       if (typeof maxAmount === 'number') {
         this.maxAmount = maxAmount.toString();
       } else {
@@ -350,7 +358,12 @@ export class SwapButtonContainerErrorsService {
           { roundingMode: BigNumber.ROUND_HALF_UP }
         );
       }
-      this.maxAmountTokenSymbol = this.swapFormService.inputValue.fromToken.symbol;
+
+      this.maxAmountTokenSymbol =
+        typeof value === 'object' && 'symbol' in value
+          ? value.symbol
+          : this.swapFormService.inputValue.fromToken.symbol;
+
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;

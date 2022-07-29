@@ -1,19 +1,13 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { BlockchainName, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { EMPTY, forkJoin, from, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
 import { BridgeApiService } from '@core/services/backend/bridge-api/bridge-api.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TransactionReceipt } from 'web3-eth';
-import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import CustomError from '@core/errors/models/custom-error';
-import { HttpService } from '@core/services/http/http.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
@@ -24,13 +18,11 @@ import {
   RubicBridgeSupportedBlockchains
 } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/models/types';
 import {
-  FromBackendBlockchain,
-  TO_BACKEND_BLOCKCHAINS
-} from '@shared/constants/blockchain/backend-blockchains';
-import {
   RUBIC_BRIDGE_CONTRACT_ADDRESS,
   RUBIC_TOKEN_ADDRESS
 } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import { BRIDGE_BLOCKCHAIN_NUM } from './constants/bridge-blockchain-num';
 
 interface RubicConfig {
   maxAmount: number;
@@ -41,15 +33,8 @@ interface RubicConfig {
   decimals: number;
 }
 
-interface RubicApiResponse {
-  min_amount: string;
-  token_address: string;
-  swap_address: string;
-  fee: string;
-  network: FromBackendBlockchain;
-}
-
 interface RubicTrade {
+  fromBlockchain: BlockchainName;
   token: {
     address: string;
     decimals: number;
@@ -60,17 +45,9 @@ interface RubicTrade {
 }
 
 export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvider {
-  private readonly apiUrl = 'https://bridge-api.rubic.exchange/api/v1/';
-
   private readonly contractAbi = rubicBridgeContractAbi;
 
   // Injected services
-  private readonly httpService = inject(HttpService);
-
-  private readonly web3PrivateService = inject(EthLikeWeb3PrivateService);
-
-  private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
-
   private readonly bridgeApiService = inject(BridgeApiService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
@@ -90,38 +67,42 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
   }
 
   private async loadRubicTokenInfo(): Promise<void> {
-    this.httpService
-      .get('networks/', {}, this.apiUrl)
+    forkJoin([
+      this.getMinTokenAmount(this.defaultConfig.from.blockchainName),
+      this.getMinTokenAmount(this.defaultConfig.to.blockchainName)
+    ])
       .pipe(
-        timeout(3000),
         catchError((e: unknown) => {
           console.error(e);
           this._tokenPairs$.next(List([]));
           return EMPTY;
         })
       )
-      .subscribe((response: RubicApiResponse[]) => {
-        if (!response) {
+      .subscribe(([fromMinTokenAmount, toMinTokenAmount]) => {
+        if (!fromMinTokenAmount || !toMinTokenAmount) {
           this._tokenPairs$.next(List([]));
           return;
         }
-        const bridgeTokenPair = this.getTokenPairs(response);
+
+        const bridgeTokenPair = this.getTokenPairs(fromMinTokenAmount, toMinTokenAmount);
 
         this._tokenPairs$.next(List([bridgeTokenPair]));
       });
   }
 
-  private getTokenPairs(response: RubicApiResponse[]): BridgeTokenPair {
-    const firstContractData = response.find(
-      data =>
-        data.network.toLowerCase() ===
-        TO_BACKEND_BLOCKCHAINS[this.defaultConfig.from.blockchainName]
-    );
-    const secondContractData = response.find(
-      data =>
-        data.network.toLowerCase() === TO_BACKEND_BLOCKCHAINS[this.defaultConfig.to.blockchainName]
-    );
+  private async getMinTokenAmount(blockchain: RubicBridgeSupportedBlockchains): Promise<number> {
+    const minSwapAmountInWei = await Injector.web3PublicService
+      .getWeb3Public(blockchain)
+      .callContractMethod(
+        RUBIC_BRIDGE_CONTRACT_ADDRESS[blockchain],
+        rubicBridgeContractAbi,
+        'minTokenAmount'
+      );
 
+    return Web3Pure.fromWei(minSwapAmountInWei).toNumber();
+  }
+
+  private getTokenPairs(fromMinTokenAmount: number, toMinTokenAmount: number): BridgeTokenPair {
     const fromBlockchain = this.defaultConfig.from.blockchainName;
     const toBlockchain = this.defaultConfig.to.blockchainName;
 
@@ -140,7 +121,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           name: fromConfig.name,
           symbol: fromConfig.symbol,
           decimals: fromConfig.decimals,
-          minAmount: parseFloat(firstContractData.min_amount),
+          minAmount: fromMinTokenAmount,
           maxAmount: fromConfig.maxAmount
         },
         [toBlockchain]: {
@@ -149,12 +130,10 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           name: toConfig.name,
           symbol: toConfig.symbol,
           decimals: toConfig.decimals,
-          minAmount: parseFloat(secondContractData.min_amount),
+          minAmount: toMinTokenAmount,
           maxAmount: toConfig.maxAmount
         }
-      },
-      fromEthFee: parseFloat(firstContractData.fee),
-      toEthFee: parseFloat(secondContractData.fee)
+      }
     };
   }
 
@@ -162,11 +141,20 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
-    if (toBlockchain === this.defaultConfig.from.blockchainName) {
-      return of(tokenPair.fromEthFee);
-    }
-    return of(tokenPair.toEthFee);
+  public getFee(
+    fromBlockchain: RubicBridgeSupportedBlockchains,
+    toBlockchain: RubicBridgeSupportedBlockchains
+  ): Observable<number> {
+    return from(
+      Injector.web3PublicService
+        .getWeb3Public(fromBlockchain)
+        .callContractMethod(
+          RUBIC_BRIDGE_CONTRACT_ADDRESS[fromBlockchain],
+          rubicBridgeContractAbi,
+          'feeAmountOfBlockchain',
+          { methodArguments: [BRIDGE_BLOCKCHAIN_NUM[toBlockchain]] }
+        )
+    ).pipe(map((fee: string) => Web3Pure.fromWei(fee).toNumber()));
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
@@ -191,24 +179,22 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
-    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     return from(
-      blockchainAdapter.getAllowance({
-        tokenAddress:
+      Injector.web3PublicService
+        .getWeb3Public(bridgeTrade.fromBlockchain)
+        .getAllowance(
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
             .rubicTokenAddress,
-        ownerAddress: this.walletConnectorService.address,
-        spenderAddress:
+          this.walletConnectorService.address,
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
             .swapContractAddress
-      })
+        )
     ).pipe(
-      map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
+      map((allowance: BigNumber) =>
+        bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance)
+      )
     );
   }
 
@@ -225,27 +211,27 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           console.error('You should check bridge trade allowance before approve');
           return throwError(new UndefinedError());
         }
-        return from(
-          this.web3PrivateService.approveTokens(tokenFrom.address, spenderAddress, 'infinity', {
+        const request$: Promise<TransactionReceipt> = Injector.web3Private.approveTokens(
+          tokenFrom.address,
+          spenderAddress,
+          'infinity',
+          {
             onTransactionHash: bridgeTrade.onTransactionHash
-          })
+          }
         );
+        return from(request$);
       })
     );
   }
 
   private async createRubicTrade(bridgeTrade: BridgeTrade): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const blockchainAdapter =
-      this.publicBlockchainAdapterService[
-        bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains
-      ];
-
     const fromDecimals = token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals;
 
     const tradeConfig =
       this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains];
     const trade: RubicTrade = {
+      fromBlockchain: bridgeTrade.fromBlockchain,
       token: {
         address: tradeConfig.rubicTokenAddress,
         decimals: tradeConfig.decimals,
@@ -255,8 +241,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
       amount: bridgeTrade.amount.multipliedBy(10 ** fromDecimals)
     };
 
-    const onApprove = bridgeTrade.onTransactionHash;
-    await this.provideAllowance(trade, blockchainAdapter, onApprove);
+    await this.provideAllowance(trade, bridgeTrade.onTransactionHash);
 
     const blockchain = this.contracts[bridgeTrade.toBlockchain as RubicBridgeSupportedBlockchains];
 
@@ -272,7 +257,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
       );
     };
 
-    return this.web3PrivateService.executeContractMethod(
+    return Injector.web3Private.executeContractMethod(
       trade.swapContractAddress,
       this.contractAbi,
       'transferToOtherBlockchain',
@@ -285,17 +270,18 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   private async provideAllowance(
     trade: RubicTrade,
-    web3Public: EthLikeWeb3Public,
     onApprove: (hash: string) => void
   ): Promise<void> {
-    const allowance = await web3Public.getAllowance({
-      tokenAddress: trade.token.address,
-      ownerAddress: this.walletConnectorService.address,
-      spenderAddress: trade.swapContractAddress
-    });
+    const allowance = await Injector.web3PublicService
+      .getWeb3Public(trade.fromBlockchain)
+      .getAllowance(
+        trade.token.address,
+        this.walletConnectorService.address,
+        trade.swapContractAddress
+      );
     if (trade.amount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3PrivateService.approveTokens(
+      await Injector.web3Private.approveTokens(
         trade.token.address,
         trade.swapContractAddress,
         uintInfinity,

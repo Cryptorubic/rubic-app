@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
@@ -10,10 +10,7 @@ import { WarningModalComponent } from '../components/warning-modal/warning-modal
 
 @Injectable()
 export class LiquidityProvidingModalService {
-  constructor(
-    private readonly dialogService: TuiDialogService,
-    private readonly injector: Injector
-  ) {}
+  constructor(private readonly dialogService: TuiDialogService) {}
 
   public showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {

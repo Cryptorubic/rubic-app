@@ -37,14 +37,16 @@
     "transactionDetails": "交易明细",
     "approveToken": "批准 {{symbol}}",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
     "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
+    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase 浏览器扩展与 Metamask 扩展冲突。 请禁用或删除 Conibase 扩展以继续，或选择另一个钱包进行连接。",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
@@ -80,7 +82,6 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "糟糕，出了點問題，請嘗試重新加載頁面。 如果您在重新加載後仍然遇到此問題，請聯繫我們的支持。",
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "交易不可用",
@@ -91,9 +92,11 @@
     "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。",
     "buttonLink": "學到更多",
     "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
-    "walletNotInstalled": "未安装钱包"
+    "walletNotInstalled": "未安装钱包",
+    "noSelectedToken": "选择令牌"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "关于",
     "faq": "常见问题解答",
     "features": "特点",
@@ -103,7 +106,6 @@
     "sdk": "SDK",
     "team": "團隊",
     "login": "連接錢包",
-    "myTrades": "我的行业",
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
@@ -237,6 +239,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": "~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -247,8 +257,22 @@
     "notAvailableBefore": "交易 ",
     "notAvailableAfter": " 不可用。"
   },
-  "myTrades": {
-    "title": "我的行业"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "天然氣退款",
@@ -443,7 +467,7 @@
       "pageSoon": " 我的交易.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
@@ -526,7 +550,12 @@
       "link": "今天試試!"
     },
     "external": {
-      "text": "以 0% 的協議費用交換任何代幣。立即交易！"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {

@@ -37,14 +37,16 @@
     "transactionDetails": "Transaction details",
     "approveToken": "Approve {{symbol}}",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
     "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on",
+    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "The Coinbase browser extension conflicts with the Metamask extension. Please disable or remove the Conibase extension to continue, or choose another wallet to connect.",
     "wrongNetwork": "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
     "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our",
@@ -80,7 +82,6 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading.",
     "rubicOptimisation": "Insufficient liquidity for this trade. Try to disable rubic optimisation.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Trading is not available",
@@ -91,9 +92,11 @@
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
-    "walletNotInstalled": "Wallet is not installed."
+    "walletNotInstalled": "Wallet is not installed.",
+    "noSelectedToken": "Select token"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "About",
     "faq": "FAQ",
     "features": "Features",
@@ -103,7 +106,6 @@
     "sdk": "SDK",
     "team": "Team",
     "login": "Connect Wallet",
-    "myTrades": "My Trades",
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
@@ -236,6 +238,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": " ~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -246,8 +256,22 @@
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
   },
-  "myTrades": {
-    "title": "My Trades"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Gas Refund",
@@ -442,7 +466,7 @@
       "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
@@ -525,7 +549,12 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Swap any token with 0% protocol fees. Trade now!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {

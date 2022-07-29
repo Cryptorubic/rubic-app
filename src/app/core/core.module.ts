@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
-import { MyTradesModule } from 'src/app/features/my-trades/my-trades.module';
 import { WalletsModule } from 'src/app/core/wallets/wallets.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
@@ -15,9 +14,9 @@ import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-intercep
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
-import { configLoader, httpLoaderFactory } from './app.loaders';
-import { ContentLoaderService } from './services/content-loader/content-loader.service';
+import { httpLoaderFactory, sdkLoader } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
+import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -25,8 +24,8 @@ import { ErrorsModule } from './errors/errors.module';
     CookieService,
     {
       provide: APP_INITIALIZER,
-      useFactory: configLoader,
-      deps: [ContentLoaderService],
+      useFactory: sdkLoader,
+      deps: [SdkLoaderService],
       multi: true
     },
     {
@@ -54,8 +53,7 @@ import { ErrorsModule } from './errors/errors.module';
         deps: [HttpClient]
       }
     }),
-    SwapsModule,
-    MyTradesModule
+    SwapsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })

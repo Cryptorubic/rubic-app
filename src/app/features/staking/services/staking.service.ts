@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector } from '@angular/core';
+import { Inject, Injectable, Injector as AngularInjector } from '@angular/core';
 import {
   BehaviorSubject,
   combineLatest,
@@ -24,17 +24,14 @@ import {
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME, Web3Pure, Web3Private, Web3Public } from 'rubic-sdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TransactionReceipt } from 'web3-eth';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
@@ -53,6 +50,7 @@ import { BridgeStakeNotificationComponent } from '../components/bridge-stake-not
 import { ROUND_ONE_STAKING_CONTRACT_ABI } from '../constants/ROUND_ONE_STAKING_CONTRACT_ABI';
 import { ROUND_TWO_STAKING_CONTRACT_ABI } from '../constants/ROUND_TWO_STAKING_CONTRACT_ABI';
 import { AbiItem } from 'web3-utils';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 @Injectable()
 export class StakingService {
@@ -249,8 +247,6 @@ export class StakingService {
   );
 
   constructor(
-    private readonly web3PublicService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: PrivateBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly stakingApiService: StakingApiService,
     private readonly tokensService: TokensService,
@@ -262,7 +258,7 @@ export class StakingService {
     private readonly translateService: TranslateService,
     private readonly router: Router,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: AngularInjector
   ) {
     this._stakingContractAddress$
       .asObservable()
@@ -350,14 +346,14 @@ export class StakingService {
       );
 
       return from(
-        this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
+        Injector.web3Private.tryExecuteContractMethod(
           this.stakingContractAddress,
           this.stakingContractAbi,
           enterStakeMethod,
           [amountInWei]
         )
       ).pipe(
-        switchMap(receipt => {
+        switchMap((receipt: TransactionReceipt) => {
           stakeNotification$.unsubscribe();
           return this.updateUsersDeposit(amountInWei, receipt.transactionHash);
         }),
@@ -383,8 +379,10 @@ export class StakingService {
     const stakingContractAddress =
       this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
 
+    const privateAdapter: Web3Private = Injector.web3Private;
+
     return from(
-      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
+      privateAdapter.tryExecuteContractMethod(
         stakingContractAddress,
         this.stakingContractAbi,
         'leave',
@@ -405,13 +403,17 @@ export class StakingService {
    * @return Observable<boolean>
    */
   public needApprove(amount: BigNumber): Observable<boolean> {
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      this.selectedToken.blockchain
+    );
+
     if (this.walletAddress) {
       return from(
-        this.web3PublicService[this.selectedToken.blockchain].getAllowance({
-          tokenAddress: this.selectedToken.address,
-          ownerAddress: this.walletAddress,
-          spenderAddress: this.stakingContractAddress
-        })
+        publicAdapter.getAllowance(
+          this.selectedToken.address,
+          this.walletAddress,
+          this.stakingContractAddress
+        )
       ).pipe(map(allowance => allowance.lt(Web3Pure.fromWei(amount))));
     } else {
       return of(true);
@@ -423,13 +425,12 @@ export class StakingService {
    * @return Observable<TransactionReceipt>
    */
   public approveTokens(): Observable<TransactionReceipt> {
-    return from(
-      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].approveTokens(
-        this.selectedToken.address,
-        this.stakingContractAddress,
-        'infinity'
-      )
-    ).pipe(
+    const approveRequest$: Promise<TransactionReceipt> = Injector.web3Private.approveTokens(
+      this.selectedToken.address,
+      this.stakingContractAddress,
+      'infinity'
+    );
+    return from(approveRequest$).pipe(
       catchError((error: unknown) => {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
@@ -470,10 +471,10 @@ export class StakingService {
   }
 
   private getBalanceRequest(contractAddress: string): Promise<BigNumber> {
-    return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getTokenBalance(
-      this.walletAddress,
-      contractAddress
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
     );
+    return publicAdapter.getTokenBalance(this.walletAddress, contractAddress);
   }
 
   /**
@@ -481,8 +482,11 @@ export class StakingService {
    * @return Observable<BigNumber>
    */
   public getMaxAmountForWithdraw(): Observable<BigNumber> {
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     const getRequestFn = (contractAddress: string) => {
-      return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      return publicAdapter.callContractMethod(
         contractAddress,
         this.stakingContractAbi,
         'actualBalanceOf',
@@ -561,14 +565,13 @@ export class StakingService {
    * @return Observable<BigNumber>
    */
   private getSelectedTokenBalance(token: MinimalToken): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[token.blockchain].getTokenBalance(this.walletAddress, token.address)
-    ).pipe(
+    const publicAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
+    return from(publicAdapter.getTokenBalance(this.walletAddress, token.address)).pipe(
       catchError((error: unknown) => {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      map(balance => Web3Pure.fromWei(balance))
+      map((balance: BigNumber) => Web3Pure.fromWei(balance))
     );
   }
 
@@ -581,8 +584,11 @@ export class StakingService {
     if (amount.isZero()) {
       return of(new BigNumber(0));
     }
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      publicAdapter.callContractMethod(
         this.stakingContractAddress,
         this.stakingContractAbi,
         'canReceive',
@@ -725,8 +731,11 @@ export class StakingService {
    * @return Observable<number>
    */
   private getUserEnteredAmount(): Observable<number> {
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      publicAdapter.callContractMethod(
         this.stakingContractAddress,
         this.stakingContractAbi,
         'userEnteredAmount',
@@ -750,8 +759,11 @@ export class StakingService {
    * @return Observable<string>
    */
   private getTotalRBCEntered(): Observable<string> {
+    const publicAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+      publicAdapter.callContractMethod(
         this.stakingContractAddress,
         this.stakingContractAbi,
         this.stakingRound === 1 ? 'totalRBCEntered' : 'total'

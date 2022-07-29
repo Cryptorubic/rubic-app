@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
-import BigNumber from 'bignumber.js';
-import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { Provider, TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 
 @Component({
   selector: 'app-smart-routing',
@@ -11,20 +10,27 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SmartRoutingComponent {
-  @Input()
-  public fromProvider: INSTANT_TRADE_PROVIDER;
+  public fromTradeProvider: Provider;
 
-  @Input()
-  public toProvider: INSTANT_TRADE_PROVIDER;
+  public bridgeProvider: Provider;
 
-  @Input()
-  public savings: BigNumber;
+  public toTradeProvider: Provider;
 
-  @Input()
-  public fromHasTrade: boolean;
-
-  @Input()
-  public toHasTrade: boolean;
+  @Input() set smartRouting(routing: SmartRouting) {
+    this.bridgeProvider = this.tradesProviders[routing.bridgeProvider];
+    this.fromTradeProvider = routing.fromProvider
+      ? this.tradesProviders[routing.fromProvider]
+      : {
+          ...this.tradesProviders[routing.bridgeProvider],
+          name: this.tradesProviders[routing.bridgeProvider].name + ' Pool'
+        };
+    this.toTradeProvider = routing.toProvider
+      ? this.tradesProviders[routing.toProvider]
+      : {
+          ...this.tradesProviders[routing.bridgeProvider],
+          name: this.tradesProviders[routing.bridgeProvider].name + ' Pool'
+        };
+  }
 
   public readonly tradesProviders = TRADES_PROVIDERS;
 

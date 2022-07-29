@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const RUBIC_BRIDGE_CONTRACT_ADDRESS = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0x3645Dca27D9f5Cf5ee0d6f52EE53ae366e4ceAc2',

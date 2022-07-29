@@ -20,7 +20,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
@@ -30,7 +30,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -85,7 +84,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
-    private readonly myTradesService: MyTradesService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -93,7 +91,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone
   ) {
-    this.loadUser();
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.getCurrentUser();
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
@@ -124,18 +121,6 @@ export class HeaderComponent implements AfterViewInit {
     const offset = 90;
     const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
     this.document.documentElement.style.setProperty('--scroll-size', pixelOffset);
-  }
-
-  private async loadUser(): Promise<void> {
-    const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
-    if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch (err) {
-        this.errorService.catch(err);
-      }
-    }
   }
 
   /**

@@ -1,42 +1,28 @@
 <div class="route">
-  <div class="dex" *ngIf="fromHasTrade; else rubicPool">
-    <div class="dex__icon">
-      <img [src]="tradesProviders[fromProvider].image" alt="Provider" />
-    </div>
-    <div class="dex__name">
-      {{ tradesProviders[fromProvider].name }}
-    </div>
-  </div>
-  <div
-    class="route__line route__line_left"
-    [style.border-color]="fromHasTrade ? tradesProviders[fromProvider].color : '#4aa956'"
-  ></div>
   <div class="dex">
     <div class="dex__icon">
-      <img src="assets/images/icons/providers/rubic.svg" alt="Provider" />
+      <img [src]="fromTradeProvider?.image" alt="Source trade provider" />
     </div>
-    <div class="dex__name">Rubic</div>
-    <div class="dex__cap">Smart Routing</div>
+    <div class="dex__name">{{ fromTradeProvider?.name }}</div>
   </div>
-  <div
-    class="route__line route__line_right"
-    [style.border-color]="toHasTrade ? tradesProviders[toProvider].color : '#4aa956'"
-  ></div>
-  <div class="dex" *ngIf="toHasTrade; else rubicPool">
+
+  <div class="route__line route__line_left" [style.border-color]="fromTradeProvider?.color"></div>
+
+  <div class="dex">
     <div class="dex__icon">
-      <img [src]="tradesProviders[toProvider].image" alt="Provider" />
+      <img class="dex" [src]="bridgeProvider.image" alt="Bridge provider" />
+    </div>
+    <div class="dex__name">{{ bridgeProvider.name }}</div>
+  </div>
+
+  <div class="route__line route__line_right" [style.border-color]="toTradeProvider?.color"></div>
+
+  <div class="dex">
+    <div class="dex__icon">
+      <img [src]="toTradeProvider?.image" alt="Target trade provider" />
     </div>
     <div class="dex__name">
-      {{ tradesProviders[toProvider].name }}
+      {{ toTradeProvider?.name }}
     </div>
   </div>
 </div>
-
-<ng-template #rubicPool>
-  <div class="dex">
-    <div class="dex__icon">
-      <img src="assets/images/icons/providers/rubic.svg" alt="Provider" />
-    </div>
-    <div class="dex__name">Rubic pool</div>
-  </div>
-</ng-template>

@@ -1,4 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 
 export const BLOCKCHAIN_LABEL: Partial<Record<BlockchainName, string>> = {
   ETH: 'Ethereum',

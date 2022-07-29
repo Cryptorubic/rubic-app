@@ -1,4 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 
@@ -31,6 +31,8 @@ interface AllQueryParams {
   fee: string;
   feeTarget: string;
   promoCode: string;
+  hideUnusedUI: string;
+  isDesktop: string;
   // Near specific query params.
   // Transaction.
   nearLogin: string;

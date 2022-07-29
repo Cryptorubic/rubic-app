@@ -1,11 +1,10 @@
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { InstantTrade, TradeType } from 'rubic-sdk';
 
 export interface InstantTradeProviderData {
-  readonly name: INSTANT_TRADE_PROVIDER;
+  readonly name: TradeType;
   trade: InstantTrade | null;
   tradeStatus: INSTANT_TRADE_STATUS;
   needApprove: boolean;

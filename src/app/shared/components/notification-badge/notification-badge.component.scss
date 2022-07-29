@@ -1,14 +1,18 @@
+@use 'src/scss/core' as *;
+
 tui-badge {
+  @include font(10px, 16px, 500, #fff, 0.03em);
+
   &[data-tui-host-status='default'] {
-    color: white;
+    width: 14px;
+    height: 14px;
 
-    background-color: var(--main-green);
-  }
+    &.red {
+      background-color: #f35e42;
+    }
 
-  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
-    padding: 2px 3px 0 2px;
-
-    line-height: 20px;
-    text-align: center;
+    &.green {
+      background-color: var(--main-green);
+    }
   }
 }
