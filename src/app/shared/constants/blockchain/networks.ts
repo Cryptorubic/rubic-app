@@ -82,7 +82,7 @@ const networks: ReadonlyArray<Network> = [
   {
     id: 1666600000,
     name: BLOCKCHAIN_NAME.HARMONY,
-    label: 'HARMONY',
+    label: 'Harmony',
     scannerUrl: 'https://explorer.harmony.one/#/',
     rpcLink: 'https://api.harmony.one',
     additionalRpcLink: 'https://api.s0.t.hmny.io/',
