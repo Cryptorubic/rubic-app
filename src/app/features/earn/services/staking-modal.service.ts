@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { Observable } from 'rxjs';
+import BigNumber from 'bignumber.js';
+import { NewPositionModalComponent } from '../components/new-position-modal/new-position-modal.component';
 // import { DepositModalComponent } from '../components/deposit-modal/deposit-modal.component';
 // import { RequestWithdrawModalComponent } from '../components/request-withdraw-modal/request-withdraw-modal.component';
 // import { SuccessModalComponent } from '../components/success-modal/success-modal.component';
@@ -9,14 +13,21 @@ import { TuiDialogService } from '@taiga-ui/core';
 export class StakingModalService {
   constructor(private readonly dialogService: TuiDialogService) {}
 
-  //   public showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
-  //     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {
-  //       data: {
-  //         brbcAmount,
-  //         usdcAmount
-  //       }
-  //     });
-  //   }
+  public showDepositModal(
+    amount: BigNumber,
+    duration: number,
+    unlockDate: number
+  ): Observable<boolean> {
+    return this.dialogService.open<boolean>(new PolymorpheusComponent(NewPositionModalComponent), {
+      closeable: false,
+      size: 'm',
+      data: {
+        amount,
+        duration,
+        unlockDate
+      }
+    });
+  }
 
   //   public showWithdrawModal(usdcAmount: BigNumber, brbcAmount: BigNumber): Observable<boolean> {
   //     return this.dialogService.open<boolean>(

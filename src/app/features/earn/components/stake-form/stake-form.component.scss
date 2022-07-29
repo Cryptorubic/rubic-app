@@ -1,14 +1,30 @@
 @use 'src/scss/core' as *;
-@import '~@taiga-ui/core/styles/taiga-ui-local';
 
 :host {
+  --tui-text-font: var(--main-font);
+  display: block;
+
+  @include b($tablet) {
+    padding: 0 12px;
+  }
+}
+
+.form-container {
   display: block;
   max-width: 490px;
-  margin: 0 auto 36px;
+  margin: 9px auto 20px;
   padding: 26px;
 
-  background: #181a19;
+  background: var(--rubic-base-22);
   border-radius: 24px;
+
+  @include b($tablet) {
+    max-width: 100%;
+    margin: 9px auto 16px;
+    padding: 20px;
+
+    border-radius: 16px;
+  }
 }
 
 .title {
@@ -22,16 +38,43 @@
     left: 0;
 
     cursor: pointer;
+
+    @include b($tablet) {
+      margin-bottom: 32px;
+
+      ::ng-deep div svg {
+        width: 13px;
+        height: 12px;
+      }
+    }
+
+    ::ng-deep div svg path {
+      fill: #000;
+
+      @include dark {
+        fill: #fff;
+      }
+    }
   }
 
   &__text {
     @include font(18px, 22px, 600, var(--rubic-base-02));
     text-align: center;
+
+    @include b($tablet) {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+    }
   }
 }
 
 .token {
   margin-bottom: 36px;
+
+  @include b($tablet) {
+    margin-bottom: 32px;
+  }
 
   &__data-and-amount,
   &__balance-and-price {
@@ -42,10 +85,19 @@
     
   &__data-and-amount {
     margin-bottom: 12px;
+
+    @include b($tablet) {
+      margin-bottom: 14px;
+    }
   }
 
   &__balance-and-price {
     @include font(15px, 18px, 500, var(--rubic-base-25));
+
+    @include b($tablet) {
+      font-size: 12px;
+      line-height: 14px;
+    }
   }
 
   &__data {
@@ -56,13 +108,26 @@
     margin-right: 12px;
     padding: 8px 12px;
 
-    background: #202622;
+    background: var(--rubic-base-23);
     border-radius: 100px;
 
+    @include b($tablet) {
+      padding: 7px 12px;
+
+      font-size: 14px;
+      line-height: 16px;
+    }
+    
     &-icon {
       width: 26px;
       height: 26px;
       margin-right: 12px;
+
+      @include b($tablet) {
+        width: 22px;
+        height: 22px;
+        margin-right: 8px;
+      }
     }
   }
 
@@ -79,8 +144,8 @@
     border: none;
     
     @include b($tablet) {
-      font-size: 30px;
-      line-height: 36px;
+      font-size: 20px;
+      line-height: 24px;
     }
   }
 
@@ -90,6 +155,10 @@
     color: $rubic-primary;
 
     cursor: pointer;
+
+    @include b($tablet) {
+      margin-left: 10px;
+    }
   }
 }
 
@@ -98,6 +167,10 @@
   margin-bottom: 34px;
 
   background: #3e413f;
+
+  @include b($tablet) {
+    margin-bottom: 40px;
+  }
 }
 
 .duration {
@@ -108,6 +181,13 @@
   &__title {
     @include font(18px, 22px, 500, var(--form-bright-text-color));
     margin-right: 12px;
+
+    @include b($tablet) {
+      margin-right: 8px;
+
+      font-size: 13px;
+      line-height: 16px;
+    }
   }
 
   &__current-value {
@@ -115,9 +195,17 @@
     margin-right: 21px;
     padding: 8px 12px;
 
-    background: #202622;
+    background: var(--rubic-base-23);
     border-radius: 100px;
     cursor: default;
+
+    @include b($tablet) {
+      margin-right: 0;
+      padding: 7px;
+
+      font-size: 14px;
+      line-height: 17px;
+    }
   }
 
   &__common {
@@ -135,6 +223,13 @@
       border-radius: 100px;
       cursor: pointer;
 
+      @include b($tablet) {
+        padding: 8px;
+
+        font-size: 12px;
+        line-height: 14px;
+      }
+
       &_selected {
         border: 1px solid $rubic-primary;
       }
@@ -144,6 +239,10 @@
 
 .duration-slider {
   margin-bottom: 43px;
+
+  @include b($tablet) {
+    margin-bottom: 39px;
+  }
 }
 
 .hint {
@@ -152,12 +251,16 @@
   margin-bottom: 20px;
   padding: 12px;
 
-  word-break: break-all;
+  word-break: break-word;
 
   background: rgba(243, 186, 47, 0.15);
   border-radius: 12px;
 
   @include b($tablet) {
+    margin-bottom: 16px;
+
+    font-size: 12px;
+    line-height: 14px;
 
     border-radius: 14px;
 
@@ -168,5 +271,36 @@
 
   &__icon {
     margin-right: 12px;
+  }
+}
+
+.rules {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+
+  &__link {
+    @include font(16px, 19px, 400, var(--main-green));
+    text-decoration-line: underline;
+
+    @include b($tablet) {
+      font-size: 13px;
+      line-height: 16px;
+    }
+  }
+
+  &__icon {
+    display: flex;
+
+    ::ng-deep svg {
+      path[fill='black'] {
+        fill: var(--main-green);
+      }
+
+      rect[fill='black'] {
+        fill: var(--main-green);
+      }
+    }
   }
 }

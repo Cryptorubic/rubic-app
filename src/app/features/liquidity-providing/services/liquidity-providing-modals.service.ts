@@ -14,6 +14,7 @@ export class LiquidityProvidingModalService {
 
   public showDepositModal(brbcAmount: BigNumber, usdcAmount: BigNumber): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(DepositModalComponent), {
+      closeable: true,
       data: {
         brbcAmount,
         usdcAmount

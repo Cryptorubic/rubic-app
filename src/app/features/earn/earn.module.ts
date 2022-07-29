@@ -33,6 +33,7 @@ import { StakingService } from './services/staking.service';
 import { StakeFormComponent } from './components/stake-form/stake-form.component';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 import { StakingModalService } from './services/staking-modal.service';
+import { NewPositionModalComponent } from './components/new-position-modal/new-position-modal.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { StakingModalService } from './services/staking-modal.service';
     DepositsComponent,
     DepositComponent,
     StakeFormComponent,
-    StakeButtonComponent
+    StakeButtonComponent,
+    NewPositionModalComponent
   ],
   imports: [
     CommonModule,

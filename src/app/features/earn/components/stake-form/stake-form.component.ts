@@ -18,8 +18,10 @@ import {
   startWith,
   from,
   catchError,
-  withLatestFrom
+  withLatestFrom,
+  BehaviorSubject
 } from 'rxjs';
+import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingService } from '../../services/staking.service';
 import { StakeError } from '../stake-button/stake-button.component';
 
@@ -51,7 +53,7 @@ export class StakeFormComponent implements OnInit {
   public readonly rbcAllowance$ = this.stakingService.rbcAllowance$;
 
   public readonly usdAmount$ = this.rbcAmount$.pipe(
-    debounceTime(500),
+    debounceTime(100),
     switchMap((amount: BigNumber) => this.stakingService.getRbcAmountPrice(amount)),
     map(amount => amount.toNumber())
   );
@@ -60,9 +62,13 @@ export class StakeFormComponent implements OnInit {
 
   public readonly needSwitchNetwork$ = this.stakingService.needSwitchNetwork$;
 
-  public approveLoading = false;
+  private readonly _stakeLoading$ = new BehaviorSubject<boolean>(false);
 
-  public stakeLoading = false;
+  public readonly stakeLoading$ = this._stakeLoading$.asObservable();
+
+  private readonly _approveLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly approveLoading$ = this._approveLoading$.asObservable();
 
   public unlockDate: number;
 
@@ -83,46 +89,17 @@ export class StakeFormComponent implements OnInit {
     private readonly walletsModalService: WalletsModalService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorsService: ErrorsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly stakingModalService: StakingModalService
   ) {}
 
-  ngOnInit(): void {
-    this.durationSliderCtrl.valueChanges
-      .pipe(
-        startWith(this.durationSliderCtrl.value),
-        switchMap(duration => {
-          return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
-        }),
-        tap(([duration, timestamp]) => {
-          this.selectedDuration = duration;
-          this.unlockDate =
-            Math.trunc((timestamp * 1000 + duration * 4 * 7 * 86400 * 1000) / 604800000) *
-            604800 *
-            1000;
-        }),
-        watch(this.cdr)
-      )
-      .subscribe();
-
-    this.checkErr();
+  public ngOnInit(): void {
+    this.handleStakeDurationChange();
+    this.checkStakeParams();
   }
 
   public setMaxAmount(amount: BigNumber): void {
     this.rbcAmountCtrl.patchValue(amount.toFixed(2));
-  }
-
-  public checkErr(): void {
-    this.rbcAmount$
-      .pipe(
-        startWith(this.rbcAmountCtrl.value),
-        withLatestFrom(this.rbcTokenBalance$),
-        map(([rbcAmount, rbcTokenBalance]) => {
-          return this.checkErrors(rbcAmount, rbcTokenBalance);
-        })
-      )
-      .subscribe(error => {
-        this.error = error;
-      });
   }
 
   public setDuration(duration: number): void {
@@ -136,6 +113,97 @@ export class StakeFormComponent implements OnInit {
   public async switchNetwork(): Promise<void> {
     this.stakingService.switchNetwork();
     this.cdr.detectChanges();
+  }
+
+  public approve(): void {
+    this._approveLoading$.next(true);
+
+    from(this.stakingService.approveRbc())
+      .pipe(
+        catchError((error: unknown) => {
+          this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+          return of(null);
+        })
+      )
+      .subscribe(receipt => {
+        this._approveLoading$.next(false);
+
+        if (receipt && receipt.status) {
+          this.stakingService.showSuccessApproveNotification();
+          this.stakingService.setAllowance('Infinity');
+        }
+
+        this.cdr.detectChanges();
+      });
+  }
+
+  public stake(): void {
+    const amount = this.rbcAmountCtrl.value;
+    const duration = this.durationSliderCtrl.value;
+
+    this._stakeLoading$.next(true);
+
+    this.stakingModalService
+      .showDepositModal(amount, duration, this.unlockDate)
+      .pipe(
+        switchMap(result => {
+          if (result) {
+            return from(this.stakingService.stake(amount, duration)).pipe(
+              switchMap(() => {
+                return this.stakingService.getRbcTokenBalance();
+              }),
+              catchError((error: unknown) => {
+                this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
+                return of(null);
+              }),
+              watch(this.cdr)
+            );
+          } else {
+            return of(null);
+          }
+        })
+      )
+      .subscribe(result => {
+        this._stakeLoading$.next(false);
+
+        if (result) {
+          this.stakingService.showSuccessDepositNotification();
+        }
+      });
+  }
+
+  public back(): void {
+    this.router.navigate(['/staking-lp']);
+  }
+
+  private handleStakeDurationChange(): void {
+    this.durationSliderCtrl.valueChanges
+      .pipe(
+        startWith(this.durationSliderCtrl.value),
+        switchMap(duration => {
+          return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
+        }),
+        tap(([duration, blockTimestamp]) => {
+          this.selectedDuration = duration;
+          this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
+        }),
+        watch(this.cdr)
+      )
+      .subscribe();
+  }
+
+  private checkStakeParams(): void {
+    this.rbcAmount$
+      .pipe(
+        startWith(this.rbcAmountCtrl.value),
+        withLatestFrom(this.rbcTokenBalance$),
+        map(([rbcAmount, rbcTokenBalance]) => {
+          return this.checkErrors(rbcAmount, rbcTokenBalance);
+        })
+      )
+      .subscribe(error => {
+        this.error = error;
+      });
   }
 
   private checkErrors(rbcAmount: BigNumber, rbcTokenBalance: BigNumber): StakeError {
@@ -154,51 +222,9 @@ export class StakeFormComponent implements OnInit {
     return StakeError.NULL;
   }
 
-  public approve(): void {
-    this.approveLoading = true;
-    from(this.stakingService.approveRbc())
-      .pipe(
-        catchError((error: unknown) => {
-          this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
-          return of(null);
-        })
-      )
-      .subscribe(receipt => {
-        this.approveLoading = false;
-
-        if (receipt && receipt.status) {
-          this.stakingService.showSuccessApproveNotification();
-          this.stakingService.setAllowance('Infinity');
-        }
-
-        this.cdr.detectChanges();
-      });
-  }
-
-  public stake(): void {
-    this.stakeLoading = true;
-
-    from(this.stakingService.stake(this.rbcAmountCtrl.value, this.durationSliderCtrl.value))
-      .pipe(
-        switchMap(() => {
-          this.stakeLoading = false;
-          return this.stakingService.getRbcTokenBalance();
-        }),
-        catchError((error: unknown) => {
-          this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-          return of(null);
-        }),
-        watch(this.cdr)
-      )
-      .subscribe(result => {
-        this.stakeLoading = false;
-        if (result) {
-          this.stakingService.showSuccessDepositNotification();
-        }
-      });
-  }
-
-  public back(): void {
-    this.router.navigate(['/staking-lp']);
+  private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {
+    return (
+      Math.trunc((blockTimestamp * 1000 + duration * 30 * 86400 * 1000) / 604800000) * 604800 * 1000
+    );
   }
 }

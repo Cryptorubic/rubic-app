@@ -1,0 +1,10 @@
+<div class="close" inlineSVG="assets/images/icons/crosshair.svg" (click)="close()"></div>
+<div class="title">NEW POSITION</div>
+<div class="text">
+  {{ amount | bigNumberFormat: 2:true }} BRBC locked expires in {{ duration }} months <br />Locked
+  until
+  {{ unlockDate | date: 'mediumDate' }}
+</div>
+<app-rubic-button appearance="secondary" class="agree" (onClick)="agree()"
+  >Ok, I agree</app-rubic-button
+>

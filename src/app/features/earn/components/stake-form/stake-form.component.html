@@ -1,104 +1,111 @@
-<div class="title">
-  <button class="title__back" (click)="back()">
-    <img src="assets/images/icons/arrow/long-arrow-left.svg" alt="" />
-  </button>
-  <div class="title__text">New Position</div>
-</div>
-
-<div class="token">
-  <div class="token__data-and-amount">
-    <div class="token__data">
-      <img src="assets/images/rbc-util-icon.png" class="token__data-icon" alt="" />
-      RBC
-    </div>
-    <input
-      autocomplete="off"
-      class="token__amount"
-      name="token-amount"
-      placeholder="Enter an amount"
-      appTokenAmount
-      [formControl]="rbcAmountCtrl"
-      [decimals]="18"
-      inputmode="decimal"
-    />
+<div class="form-container">
+  <div class="title">
+    <button class="title__back" (click)="back()">
+      <div inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"></div>
+    </button>
+    <div class="title__text">New Position</div>
   </div>
 
-  <div class="token__balance-and-price">
-    <div class="token__balance" *ngLet="rbcTokenBalance$ | async as rbcTokenBalance">
-      You have {{ rbcTokenBalance ? (rbcTokenBalance | bigNumberFormat: 2:true) : '--.--' }}
-      <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
+  <div class="token">
+    <div class="token__data-and-amount">
+      <div class="token__data">
+        <img src="assets/images/rbc-util-icon.png" class="token__data-icon" alt="" />
+        BRBC
+      </div>
+      <input
+        autocomplete="off"
+        class="token__amount"
+        name="token-amount"
+        placeholder="Enter an amount"
+        appTokenAmount
+        [formControl]="rbcAmountCtrl"
+        [decimals]="18"
+        inputmode="decimal"
+      />
     </div>
-    <div class="token__price" *ngLet="usdAmount$ | async as usdAmount">
-      $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '0.00' }}
+
+    <div class="token__balance-and-price">
+      <div class="token__balance" *ngLet="rbcTokenBalance$ | async as rbcTokenBalance">
+        You have {{ rbcTokenBalance ? (rbcTokenBalance | bigNumberFormat: 2:true) : '--.--' }}
+        <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
+      </div>
+      <div class="token__price" *ngLet="usdAmount$ | async as usdAmount">
+        $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '0.00' }}
+      </div>
     </div>
   </div>
-</div>
 
-<hr class="divider" />
+  <hr class="divider" />
 
-<div class="duration">
-  <div class="duration__title">Choose the Duration</div>
-  <div class="duration__current-value">{{ durationSliderCtrl.value }}M</div>
-  <div class="duration__common">
-    <ng-container *ngFor="let duration of DURATIONS">
-      <button
-        class="duration__common-chip"
-        [class.duration__common-chip_selected]="durationSliderCtrl.value === duration.value"
-        (click)="setDuration(duration.value)"
+  <div class="duration">
+    <div class="duration__title">Choose the Duration</div>
+    <div class="duration__current-value">{{ durationSliderCtrl.value }}M</div>
+    <div class="duration__common">
+      <ng-container *ngFor="let duration of DURATIONS">
+        <button
+          class="duration__common-chip"
+          [class.duration__common-chip_selected]="durationSliderCtrl.value === duration.value"
+          (click)="setDuration(duration.value)"
+        >
+          {{ duration.label }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="duration-slider">
+    <tui-slider [formControl]="durationSliderCtrl" [max]="12" [min]="1" [steps]="11"></tui-slider>
+  </div>
+
+  <div class="hint">
+    <div class="hint__icon">
+      <img src="assets/images/icons/info-warning.svg" alt="" />
+    </div>
+    <div class="hint__text">
+      {{ rbcAmountCtrl.value ? (rbcAmountCtrl.value | bigNumberFormat: 2:true) : '0.00' }} BRBC
+      locked expires in {{ selectedDuration }} months. <br />
+      Locked until {{ unlockDate | date: 'mediumDate' }}
+    </div>
+  </div>
+
+  <div class="button-container">
+    <ng-container
+      *ngLet="{
+        needApprove: needApprove$ | async,
+        needSwitchNetwork: needSwitchNetwork$ | async,
+        needLogin: needLogin$ | async
+      } as data"
+    >
+      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin"
+        >Connect wallet
+      </app-rubic-button>
+      <app-rubic-button
+        appearance="secondary"
+        (onClick)="switchNetwork()"
+        *ngIf="!data.needLogin && data.needSwitchNetwork"
+        >Switch network
+      </app-rubic-button>
+      <app-rubic-button
+        appearance="secondary"
+        (onClick)="approve()"
+        *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+        [disabled]="approveLoading$ | async"
+        [loading]="approveLoading$ | async"
+        >Approve</app-rubic-button
       >
-        {{ duration.label }}
-      </button>
+      <app-stake-button
+        appearance="secondary"
+        *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+        [error]="error"
+        [minRbcAmount]="10"
+        [stakeLoading]="stakeLoading$ | async"
+        (onStake)="stake()"
+      ></app-stake-button>
     </ng-container>
   </div>
 </div>
 
-<div class="duration-slider">
-  <tui-slider [formControl]="durationSliderCtrl" [max]="12" [min]="1" [steps]="11"></tui-slider>
-</div>
-
-<div class="hint">
-  <div class="hint__icon">
-    <img src="assets/images/icons/info-warning.svg" alt="" />
-  </div>
-  <div class="hint__text">
-    {{ rbcAmountCtrl.value ? (rbcAmountCtrl.value | bigNumberFormat: 2:true) : '0.00' }} RBC locked
-    expires in {{ selectedDuration }} months. <br />
-    Locked until {{ unlockDate | date: 'mediumDate' }}
-  </div>
-</div>
-
-<div class="button-container">
-  <ng-container
-    *ngLet="{
-      needApprove: needApprove$ | async,
-      needSwitchNetwork: needSwitchNetwork$ | async,
-      needLogin: needLogin$ | async
-    } as data"
-  >
-    <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin"
-      >Connect wallet</app-rubic-button
-    >
-    <app-rubic-button
-      appearance="secondary"
-      (onClick)="switchNetwork()"
-      *ngIf="!data.needLogin && data.needSwitchNetwork"
-      >Switch network
-    </app-rubic-button>
-    <app-rubic-button
-      appearance="secondary"
-      (onClick)="approve()"
-      *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
-      [disabled]="approveLoading"
-      [loading]="approveLoading"
-      >Approve</app-rubic-button
-    >
-    <app-stake-button
-      appearance="secondary"
-      *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
-      [error]="error"
-      [minRbcAmount]="10"
-      [stakeLoading]="stakeLoading"
-      (onStake)="stake()"
-    ></app-stake-button>
-  </ng-container>
+<div class="rules">
+  <a class="rules__link" href="#">{{ 'staking.stake.rules' | translate }}</a>
+  <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
 </div>

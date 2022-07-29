@@ -1,0 +1,47 @@
+@use 'src/scss/core' as *;
+
+:host {
+  position: relative;
+
+  display: block;
+  padding: 67px 0 55px;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 12px;
+  height: 12px;
+
+  cursor: pointer;
+
+  ::ng-deep svg path {
+    stroke: #000;
+    
+    @include dark {
+      stroke: #fff;
+    }
+  }
+}
+
+.title {
+  @include font(32px, 38px, 700, var(--rubic-base-02));
+  margin-bottom: 52px;
+
+  text-align: center;
+}
+
+.text {
+  @include font(22px, 26px, 500, var(--rubic-base-02));
+  margin: 0 auto 65px;
+
+  text-align: center;
+}
+
+.agree {
+  display: block;
+  max-width: 275px;
+  margin: 0 auto;
+}

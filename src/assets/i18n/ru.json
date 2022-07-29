@@ -348,9 +348,9 @@
     "receive": "Получить"
   },
   "earn": {
-    "lockedRBC": "Locked RBC",
-    "$lockedRBC": "$ Locked RBC",
-    "circRBCLocked": "Circ. RBC Locked",
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
     "estYieldPerWeek": "Est. Yield Per Week",
     "avgLockTime": "Avg. Lock Time (month)",
     "apr": "APR"
