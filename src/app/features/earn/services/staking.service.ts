@@ -170,14 +170,18 @@ export class StakingService {
   }
 
   public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
-    const amountInWei = Web3Pure.toWei(this.parseAmountToBn(amount));
     const durationInSeconds = duration * 30 * 86400;
-    console.log({ duration, amount, durationInSeconds, amountInWei });
+    console.log({
+      duration,
+      amount,
+      durationInSeconds,
+      amountInWei: Web3Pure.toWei(new BigNumber(amount.split(',').join('')), 18)
+    });
     return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
       'create_lock',
-      [amountInWei, String(durationInSeconds)]
+      [Web3Pure.toWei(new BigNumber(amount.split(',').join('')), 18), String(durationInSeconds)]
     );
   }
 

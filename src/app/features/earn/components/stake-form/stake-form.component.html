@@ -12,13 +12,13 @@
       RBC
     </div>
     <input
-      type="text"
-      class="token__amount"
-      name="rbc-amount"
       autocomplete="off"
-      [placeholder]="'Enter an amount'"
-      [formControl]="rbcAmountCtrl"
+      class="token__amount"
+      name="token-amount"
+      placeholder="Enter an amount"
       appTokenAmount
+      [formControl]="rbcAmountCtrl"
+      [decimals]="18"
       inputmode="decimal"
     />
   </div>

@@ -71,7 +71,6 @@ export class StakeFormComponent implements OnInit {
   public needApprove$ = this.rbcAllowance$.pipe(
     tap(v => console.log(v, 'allowance')),
     map(allowance => {
-      console.log(allowance?.lt(10000000));
       return allowance?.lt(10000000);
     })
   );
