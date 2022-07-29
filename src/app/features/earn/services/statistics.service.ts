@@ -37,8 +37,6 @@ export class StatisticsService {
 
   private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
-  public readonly totalSupply$ = this._totalSupply$.asObservable();
-
   private readonly supply = new BigNumber(124_000_000);
 
   private readonly numberOfSecondsPerWeek = 604_800;
@@ -46,6 +44,8 @@ export class StatisticsService {
   private readonly numberOfWeekPerYear = 52;
 
   private readonly reward_multiplier = new BigNumber(10_000_000);
+
+  public currentStakingApr = new BigNumber(0);
 
   private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
@@ -66,22 +66,17 @@ export class StatisticsService {
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
       combineLatest([this.rewardPerSecond$, this.getTotalSupply()]).pipe(
-        map(([rewardPerSecond, totalSupply]) =>
-          rewardPerSecond
+        map(([rewardPerSecond, totalSupply]) => {
+          this.currentStakingApr = rewardPerSecond
             .multipliedBy(this.numberOfWeekPerYear)
             .dividedBy(totalSupply)
-            .multipliedBy(100)
-        )
+            .multipliedBy(100);
+
+          return this.currentStakingApr;
+        })
       )
     )
   );
-
-  get apr(): BigNumber {
-    let apr;
-    this.apr$.subscribe(value => (apr = value));
-
-    return apr;
-  }
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
