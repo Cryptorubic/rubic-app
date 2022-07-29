@@ -247,9 +247,7 @@ export class StakingService {
 
         return from(this.getTokensByOwner(user.address)).pipe(
           switchMap((nftIds: string[]) => {
-            const apr = this.statisticsService.rewardPerSecond
-              .multipliedBy(52)
-              .dividedBy(this.statisticsService.totalNFTSupply);
+            const apr = this.statisticsService.currentStakingApr;
 
             return forkJoin(
               nftIds.map(async id => {

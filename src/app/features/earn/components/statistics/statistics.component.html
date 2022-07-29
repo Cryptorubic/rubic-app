@@ -9,13 +9,13 @@
   <div class="statistics__info">
     <div class="statistics__col">
       <div class="statistics__param">
-        <div class="statistics__param-label">Locked RBC</div>
+        <div class="statistics__param-label">{{ 'earn.lockedRBC' | translate }}</div>
         <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
           {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">
-        <div class="statistics__param-label">Avg. Lock Time (month)</div>
+        <div class="statistics__param-label">{{ 'earn.avgLockTime' | translate }}</div>
         <div class="statistics__param-value">
           {{ '--.--' }}
         </div>
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="statistics__param">
-        <div class="statistics__param-label">{{ 'earn.multichainTvl' | translate }}</div>
+        <div class="statistics__param-label">{{ 'earn.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
           {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
         </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="statistics__col">
       <div class="statistics__param">
-        <div class="statistics__param-label">{{ 'earn.stakingTvl' | translate }}</div>
+        <div class="statistics__param-label">{{ 'earn.circRBCLocked' | translate }}</div>
         <div
           class="statistics__param-value"
           *ngLet="circRBCLocked$ | async as circRBCLocked"
@@ -53,9 +53,11 @@
         </div>
       </div>
       <div class="statistics__param">
-        <div class="statistics__param-label statistics__param-label_btn">APR</div>
+        <div class="statistics__param-label statistics__param-label_btn">
+          {{ 'earn.apr' | translate }}
+        </div>
         <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          {{ apr ? (apr | bigNumberFormat: 5:true) : '--.--' }} %
+          {{ apr ? (apr | bigNumberFormat: 0:true) : '--.--' }} %
         </div>
       </div>
     </div>

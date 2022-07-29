@@ -35,27 +35,19 @@ export class StatisticsService {
     )
   );
 
-  private readonly _totalNFTSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
+  private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
-  public readonly totalNFTSupply$ = this._totalNFTSupply$.asObservable();
-
-  public get totalNFTSupply(): BigNumber {
-    return this._totalNFTSupply$.getValue();
-  }
-
-  private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
-
-  public get rewardPerSecond(): BigNumber {
-    return this._rewardPerSecond$.getValue();
-  }
-
-  private readonly totalSupply = new BigNumber(124_000_000);
+  private readonly supply = new BigNumber(124_000_000);
 
   private readonly numberOfSecondsPerWeek = 604_800;
 
   private readonly numberOfWeekPerYear = 52;
 
   private readonly reward_multiplier = new BigNumber(10_000_000);
+
+  public currentStakingApr = new BigNumber(0);
+
+  private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
   public readonly rewardPerSecond$ = this.updateStatistics$.pipe(
     switchMap(() =>
@@ -73,17 +65,22 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.rewardPerSecond$, this.getTotalNFTSupply()]).pipe(
-        map(([rewardPerSecond, totalNFTSupply]) =>
-          rewardPerSecond.multipliedBy(this.numberOfWeekPerYear).dividedBy(totalNFTSupply)
-        )
+      combineLatest([this.rewardPerSecond$, this.getTotalSupply()]).pipe(
+        map(([rewardPerSecond, totalSupply]) => {
+          this.currentStakingApr = rewardPerSecond
+            .multipliedBy(this.numberOfWeekPerYear)
+            .dividedBy(totalSupply)
+            .multipliedBy(100);
+
+          return this.currentStakingApr;
+        })
       )
     )
   );
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.totalSupply)))
+      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply)))
     )
   );
 
@@ -97,7 +94,7 @@ export class StatisticsService {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
-  public getTotalNFTSupply(): Observable<BigNumber> {
+  public getTotalSupply(): Observable<BigNumber> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
@@ -105,9 +102,9 @@ export class StatisticsService {
         'totalSupply'
       )
     ).pipe(
-      map(value => Web3Pure.fromWei(value, 13)),
-      tap(totalSupply => {
-        this._totalNFTSupply$.next(totalSupply);
+      map(value => {
+        this._totalSupply$.next(Web3Pure.fromWei(value));
+        return Web3Pure.fromWei(value);
       })
     );
   }

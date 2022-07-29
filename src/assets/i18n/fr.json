@@ -451,11 +451,12 @@
     "rateIsUpdated": "Le prix est à jour, cliquez pour rafraîchir le prix"
   },
   "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
+    "lockedRBC": "Locked RBC",
+    "$lockedRBC": "$ Locked RBC",
+    "circRBCLocked": "Circ. RBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
