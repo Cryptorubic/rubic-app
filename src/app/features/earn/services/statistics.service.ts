@@ -35,11 +35,9 @@ export class StatisticsService {
     )
   );
 
-  private readonly _totalNFTSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
+  private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
-  public readonly totalNFTSupply$ = this._totalNFTSupply$.asObservable();
-
-  private readonly totalSupply = new BigNumber(124_000_000);
+  private readonly supply = new BigNumber(124_000_000);
 
   private readonly numberOfSecondsPerWeek = 604_800;
 
@@ -62,11 +60,11 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.rewardPerSecond$, this.getTotalNFTSupply()]).pipe(
-        map(([rewardPerSecond, totalNFTSupply]) =>
+      combineLatest([this.rewardPerSecond$, this.getTotalSupply()]).pipe(
+        map(([rewardPerSecond, totalSupply]) =>
           rewardPerSecond
             .multipliedBy(this.numberOfWeekPerYear)
-            .dividedBy(totalNFTSupply)
+            .dividedBy(totalSupply)
             .multipliedBy(100)
         )
       )
@@ -75,7 +73,7 @@ export class StatisticsService {
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.totalSupply)))
+      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply)))
     )
   );
 
@@ -89,14 +87,19 @@ export class StatisticsService {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
-  public getTotalNFTSupply(): Observable<BigNumber> {
+  public getTotalSupply(): Observable<BigNumber> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'totalSupply'
       )
-    ).pipe(map(value => Web3Pure.fromWei(value)));
+    ).pipe(
+      map(value => {
+        this._totalSupply$.next(Web3Pure.fromWei(value));
+        return Web3Pure.fromWei(value);
+      })
+    );
   }
 
   public getLockedRBC(): void {
