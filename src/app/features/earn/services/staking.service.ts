@@ -40,9 +40,9 @@ export class StakingService {
   // public readonly RBC_TOKEN_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a'; // real rbc
   public readonly RBC_TOKEN_ADDRESS = '0xd452d01C6348D3d5B35FA1d5500d23F8Ae65D6eA';
 
-  public readonly NFT_CONTRACT_ADDRESS = '0xC457Cb68DedCFCb2201f9455707E4Fd833B2E3D4';
+  public readonly NFT_CONTRACT_ADDRESS = '0x8d4d15bd366a633F9b4975d5a09230F3Debf7233';
 
-  public readonly REWARDS_CONTRACT_ADDRESS = '0xA3052f4701a24e0FBe109A92Cf3fc44B32dD4A3F';
+  public readonly REWARDS_CONTRACT_ADDRESS = '0x5cB4CC7258c1DEa16799e2cb46a96810efA409fB';
 
   public readonly user$ = this.authService.getCurrentUser();
 
