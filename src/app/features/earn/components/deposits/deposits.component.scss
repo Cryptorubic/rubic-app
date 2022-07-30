@@ -6,7 +6,7 @@
   }
 
   .tui-table__tr.data-row {
-    background: #202622;
+    background: var(--rubic-base-23);
     border-bottom: none;
 
     .tui-table__td:first-child {
@@ -56,8 +56,6 @@
   &__wrapper {
     position: relative;
 
-    margin-top: 30px;
-
     padding: 26px 12px;
 
     background: var(--rubic-base-22);
@@ -70,6 +68,10 @@
     justify-content: space-between;
 
     margin-bottom: 26px;
+
+    @include b($tablet) {
+      padding-left: 10px;
+    }
   }
 
   &__title {
@@ -120,6 +122,104 @@
 
     @include b(480) {
       @include font(12px, 15px, 500, var(--main-green));
+    }
+  }
+}
+
+.connect-wallet {
+  display: block;
+  max-width: 396px;
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 0 25px;
+
+  @include b($tablet) {
+    flex-direction: column;
+    margin-bottom: 16px;
+    padding: 0;
+  }
+
+  app-rubic-button {
+    flex: 1;
+
+    @include b($tablet) {
+      width: 100%;
+
+      ::ng-deep button[data-size='l'] {
+        height: 44px;
+      }
+    }
+
+    svg {
+      margin-right: 8px;
+    }
+  }
+}
+
+.mobile-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__head {
+    display: flex;
+    padding: 0 14px;
+
+    > .mobile-table__cell {
+      @include font(12px, 15px, 500, var(--rubic-base-24));
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 14px;
+
+    background: var(--rubic-base-23);
+    border-radius: 10px;
+  }
+
+  &__cell {
+    @include font(12px, 14px, 400, var(--rubic-base-02));
+    display: flex;
+    align-items: center;
+    width: calc(100% / 5);
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+    }
+  }
+
+  &__row > &__cell {
+    &:last-child {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      margin-top: 17px;
+    
+      ::ng-deep app-rubic-button {
+        button {
+          height: 27px;
+
+          font-size: 12px;
+          line-height: 14px;
+        }
+    
+        .wrapper {
+          padding: 0 10px;
+        }
+      }
     }
   }
 }

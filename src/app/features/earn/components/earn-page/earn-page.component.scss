@@ -11,8 +11,22 @@
   }
 }
 
-.statistics {
+app-statistics {
   display: block;
+  margin-bottom: 22px;
+
+  @include b($tablet) {
+    margin-bottom: 16px;
+  }
+}
+
+app-deposits {
+  display: block;
+  margin-bottom: 20px;
+
+  @include b($tablet) {
+    margin-bottom: 16px;
+  }
 }
 
 .staking {
@@ -59,7 +73,7 @@
   align-items: center;
   justify-content: center;
   width: 398px;
-  margin: 30px auto 0;
+  margin: 0 auto;
   padding: 10px 20px;
 
   background: var(--main-green);
@@ -141,17 +155,41 @@
   }
 }
 
-.lp {
+.past-campaings {
+  ::ng-deep tui-accordion {
+    --tui-base-02: transparent;
+
+    @include b($tablet) {
+      .header {
+        min-height: 30px;
+        padding: 0.55rem 1.25rem;
+
+        font-size: 14px;
+        line-height: 17px;
+      }
+    }
+  }
+
   &__arrow {
+    display: flex;
+
     cursor: pointer;
 
     transition: all 0.2s linear;
-  }
-}
 
-app-deposits {
-  display: block;
-  margin-bottom: 22px;
+    svg path { 
+      fill: #000;
+
+      @include dark {
+        fill: rgba(255, 255, 255, 0.6); 
+      }
+    }
+  }
+
+  &__card:not(:last-child) {
+    display: block;
+    margin-bottom: 12px;
+  }
 }
 
 @include b($tablet) {
@@ -187,4 +225,10 @@ app-deposits {
 
     border-radius: 22px;
   }
+}
+
+.connect-wallet {
+  display: block;
+  max-width: 396px;
+  margin: 0 auto 20px;
 }

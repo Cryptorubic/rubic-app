@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { RoundStatus } from '../../models/round-status.enum';
+import { StakingService } from '../../services/staking.service';
+
 @Component({
   selector: 'app-earn',
   templateUrl: './earn-page.component.html',
@@ -9,19 +11,28 @@ import { RoundStatus } from '../../models/round-status.enum';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EarnPageComponent {
-  public isShowPastStaking: boolean = false;
-
-  public isShowStakeForm: boolean = false;
+  public accordionState = false;
 
   public readonly RoundStatus = RoundStatus;
 
-  constructor(private readonly router: Router) {}
+  public readonly needLogin$ = this.stakingService.needLogin$;
 
-  public pastStakingVisibilityToggle(isShow: boolean): void {
-    this.isShowPastStaking = isShow;
+  constructor(
+    private readonly router: Router,
+    private readonly stakingService: StakingService,
+    private readonly walletsModalService: WalletsModalService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  public toggleAccordion(): void {
+    this.accordionState = !this.accordionState;
   }
 
   public navigateToStakeForm(): void {
     this.router.navigate(['staking-lp', 'new-position']);
+  }
+
+  public login(): void {
+    this.walletsModalService.open().subscribe();
   }
 }

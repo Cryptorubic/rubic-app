@@ -1,48 +1,48 @@
-<app-statistics *ngIf="!isShowStakeForm" class="statistics"></app-statistics>
+<app-statistics></app-statistics>
 
-<!--&lt;!&ndash; Затычка для подключения кошелька &ndash;&gt;-->
-<!--<div *ngIf="!isShowStakeForm" class="connect-wallet-btn staking-btn__item">-->
-<!--  <span>Connect Wallet</span>-->
-<!--</div>-->
-
-<!-- Затычка для кнопок BUY и STAKE -->
-<div *ngIf="!isShowStakeForm" class="staking-btn">
-  <div class="staking-btn__item buy-btn">
-    <div class="staking-btn__text-num">1</div>
-    <span class="staking-btn__text">{{ 'staking.stake.buyBRBC' | translate }}</span>
-  </div>
-  <div class="staking-btn__item stake-btn" (click)="navigateToStakeForm()">
-    <div class="staking-btn__text-num">2</div>
-    <span class="staking-btn__text">{{ 'staking.stake.stakeBRBC' | translate }}</span>
-  </div>
-</div>
-
-<app-deposits></app-deposits>
+<ng-container *ngIf="(needLogin$ | async) === false; else connectWallet">
+  <app-deposits></app-deposits>
+</ng-container>
 
 <div class="rules">
   <a class="rules__link" href="#">{{ 'staking.stake.rules' | translate }}</a>
   <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
 </div>
 
-<div *ngIf="!isShowStakeForm" class="lp">
+<div class="past-campaings">
   <tui-accordion class="container">
-    <tui-accordion-item
-      [borders]="null"
-      [showArrow]="false"
-      (click)="pastStakingVisibilityToggle(!isShowPastStaking)"
-    >
+    <tui-accordion-item [borders]="null" [showArrow]="false" (click)="toggleAccordion()">
       {{ 'staking.stake.pastStaking' | translate }}
       <ng-template tuiAccordionItemContent>
-        <app-lp-card [round]="1" [statuses]="[RoundStatus.CLOSED]"></app-lp-card>
-        <app-staking-card [round]="1" [statuses]="[RoundStatus.CLOSED]"> </app-staking-card>
-        <app-staking-card [round]="2" [statuses]="[RoundStatus.CLOSED]"> </app-staking-card>
+        <app-lp-card
+          class="past-campaings__card"
+          [round]="1"
+          [statuses]="[RoundStatus.CLOSED]"
+        ></app-lp-card>
+        <app-staking-card
+          class="past-campaings__card"
+          [round]="1"
+          [statuses]="[RoundStatus.CLOSED]"
+        >
+        </app-staking-card>
+        <app-staking-card
+          class="past-campaings__card"
+          [round]="2"
+          [statuses]="[RoundStatus.CLOSED]"
+        >
+        </app-staking-card>
       </ng-template>
-      <img
+      <div
         class="lp__arrow"
-        src="assets/images/icons/arrow/long-arrow-up.svg"
-        alt="Arrow"
-        [style.transform]="isShowPastStaking ? 'rotate(360deg)' : 'rotate(180deg)'"
-      />
+        inlineSVG="assets/images/icons/arrow/long-arrow-up.svg"
+        [style.transform]="accordionState ? 'rotate(360deg)' : 'rotate(180deg)'"
+      ></div>
     </tui-accordion-item>
   </tui-accordion>
 </div>
+
+<ng-template #connectWallet>
+  <app-rubic-button class="connect-wallet" appearance="secondary" (onClick)="login()"
+    >Connect wallet
+  </app-rubic-button>
+</ng-template>

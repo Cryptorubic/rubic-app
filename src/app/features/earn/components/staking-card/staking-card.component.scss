@@ -40,69 +40,20 @@
   align-items: center;
 
   @include b($tablet) {
-    margin-bottom: 18px;
-
-    font-size: 18px;
-    line-height: 21.6px;
+    font-size: 12px;
+    line-height: 14px;
   }
 
   img {
     width: 26px;
     height: 26px;
     margin-right: 10px;
-  }
-}
-
-.params {
-  display: flex;
-
-  &__param {
-    @include font(15px, 18px, 500, var(--rubic-base-02), 0.03em);
 
     @include b($tablet) {
-      display: flex;
-      flex-direction: column;
-
-      font-size: 14px;
-      line-height: 24px;
-    }
-
-    &-label {
-      color: var(--rubic-base-25);
-    }
-
-    &:not(:last-child) {
-      margin-right: 32px;
-
-      @include b($tablet) {
-        margin-right: 30px;
-      }
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
     }
   }
 }
 
-.join {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-
-  @include b($tablet) {
-    position: relative;
-    right: unset;
-    bottom: unset;
-
-    display: block;
-    width: 100%;
-    margin-top: 16px;
-  }
-
-  ::ng-deep {
-    button {
-      height: 32px;
-    }
-
-    .wrapper {
-      padding: 6px 14px;
-    }
-  }
-}
