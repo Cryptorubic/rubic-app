@@ -12,9 +12,13 @@
             (iconClick)="refreshDeposits()"
           ></app-rotating-icon>
         </div>
-        <button class="deposits__new-deposit-btn" (click)="navigateToStakeForm()">
-          {{ 'staking.deposits.newPosition' | translate }}
-        </button>
+        <app-rubic-button
+          class="deposits__head-btn"
+          appearance="secondary"
+          (onClick)="navigateToStakeForm()"
+        >
+          + New Position
+        </app-rubic-button>
       </div>
       <div class="deposits__body" *ngIf="deposits.length; else noDeposits">
         <table class="tui-table" *ngIf="!isMobile; else mobileTable">
@@ -35,21 +39,31 @@
                     {{ deposit.id }}
                   </div>
                 </td>
-                <td class="tui-table__td">{{ deposit.amount | bigNumberFormat: 0:true }}</td>
                 <td class="tui-table__td">
-                  {{ deposit.totalNftRewards | bigNumberFormat: 2:true }}
+                  {{ deposit.amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 0 } }}
                 </td>
                 <td class="tui-table__td">
-                  <!-- {{ deposit.tokenApr | bigNumberFormat }}% -->
-                  0%
+                  {{
+                    deposit.totalNftRewards
+                      | bigNumberFormat
+                      | withRound: 'fixedValue':{ decimals: 2 }
+                  }}
                 </td>
+                <td class="tui-table__td">{{ deposit.tokenApr | bigNumberFormat: 2 }}%</td>
                 <td class="tui-table__td">{{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}</td>
                 <td class="tui-table__td">
                   <div class="tui-table__td-actions">
-                    <app-rubic-button appearance="secondary" (onClick)="claim(deposit)"
+                    <app-rubic-button
+                      appearance="secondary"
+                      (onClick)="claim(deposit)"
+                      [disabled]="deposit.totalNftRewards.isZero()"
+                      [loading]="(claimingId$ | async) === deposit.id"
                       >Claim Rewards</app-rubic-button
                     >
-                    <app-rubic-button (onClick)="withdraw(deposit)">
+                    <app-rubic-button
+                      (onClick)="withdraw(deposit)"
+                      [loading]="(withdrawingId$ | async) === deposit.id"
+                    >
                       <img
                         [src]="
                           isDarkTheme
@@ -64,6 +78,23 @@
               </tr>
               <tr style="height: 12px"></tr>
             </ng-container>
+            <tr class="tui-table__tr" *ngLet="total$ | async as total">
+              <td class="tui-table__td">TOTAL</td>
+              <td class="tui-table__td">
+                {{
+                  total.balance
+                    ? (total.balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+                    : '0.00'
+                }}
+              </td>
+              <td class="tui-table__td">
+                {{
+                  total.rewards
+                    ? (total.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+                    : '0.00'
+                }}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -84,21 +115,53 @@
             {{ deposit.id }}
           </div>
           <div class="mobile-table__cell">
-            {{ deposit.amount | bigNumberFormat: 0:true }}
+            {{ deposit.amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 0 } }}
           </div>
           <div class="mobile-table__cell">
-            {{ deposit.totalNftRewards | bigNumberFormat: 2:true }}
+            {{
+              deposit.totalNftRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 }
+            }}
           </div>
           <div class="mobile-table__cell">0%</div>
           <div class="mobile-table__cell">
             {{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}
           </div>
           <div class="mobile-table__cell">
-            <app-rubic-button appearance="secondary" (onClick)="claim(deposit)"
+            <app-rubic-button
+              appearance="secondary"
+              (onClick)="claim(deposit)"
+              [disabled]="deposit.totalNftRewards.isZero()"
+              [loading]="(claimingId$ | async) === deposit.id"
               >Claim Rewards</app-rubic-button
             >
-            <app-rubic-button (onClick)="withdraw(deposit)"> Withdraw </app-rubic-button>
+            <app-rubic-button
+              (onClick)="withdraw(deposit)"
+              [loading]="(withdrawingId$ | async) === deposit.id"
+            >
+              Withdraw
+            </app-rubic-button>
           </div>
+        </div>
+        <div class="mobile-table__row" *ngLet="total$ | async as total">
+          <div class="mobile-table__cell">TOTAL</div>
+          <div class="mobile-table__cell">
+            {{
+              total.balance
+                ? (total.balance | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+                : '0.00'
+            }}
+          </div>
+          <div class="mobile-table__cell">
+            {{
+              total.rewards
+                ? (total.rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
+                : '0.00'
+            }}
+          </div>
+          <!-- <div class="mobile-table__cell"></div>
+          <div class="mobile-table__cell"></div>
+          <div class="mobile-table__cell"></div>
+          <div class="mobile-table__cell"></div> -->
         </div>
       </div>
     </ng-template>

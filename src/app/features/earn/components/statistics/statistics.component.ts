@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '@features/earn/services/statistics.service';
 
@@ -20,14 +20,24 @@ export class StatisticsComponent implements OnInit {
 
   public readonly apr$ = this.statisticsService.apr$;
 
-  constructor(private readonly statisticsService: StatisticsService) {}
+  public loading = false;
+
+  constructor(
+    private readonly statisticsService: StatisticsService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.getStatisticsData();
   }
 
   public refreshStatistics(): void {
+    this.loading = true;
     this.statisticsService.updateStatistics();
+    setTimeout(() => {
+      this.loading = false;
+      this.cdr.detectChanges();
+    }, 2000);
   }
 
   private getStatisticsData(): void {

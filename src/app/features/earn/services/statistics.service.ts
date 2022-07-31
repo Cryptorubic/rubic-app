@@ -4,8 +4,6 @@ import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
 import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
-import { STAKING_CONTRACTS } from '@features/earn/constants/STAKING_CONTRACTS';
-import { RoundContract } from '@features/earn/models/round-contract';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 
@@ -83,10 +81,6 @@ export class StatisticsService {
       this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply)))
     )
   );
-
-  get activeStakingContract(): RoundContract {
-    return STAKING_CONTRACTS.find(contract => contract.active);
-  }
 
   constructor(private readonly coingeckoApiService: CoingeckoApiService) {}
 

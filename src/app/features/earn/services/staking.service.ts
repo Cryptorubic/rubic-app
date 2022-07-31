@@ -23,17 +23,11 @@ import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
-import { TuiNotification } from '@taiga-ui/core';
 import { REWARDS_CONTRACT_ABI } from '../constants/REWARDS_CONTRACT_ABI';
 import { IntervalReward } from '../models/interval-rewards.interface';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
-
-const SUCCESS_NOTIFICATION_OPTIONS = {
-  status: TuiNotification.Success,
-  autoClose: 3000
-};
 
 @Injectable()
 export class StakingService {
@@ -85,6 +79,17 @@ export class StakingService {
   private readonly _deposits$ = new BehaviorSubject<Deposit[]>([]);
 
   public readonly deposits$ = this._deposits$.asObservable();
+
+  private readonly _total$ = new BehaviorSubject<{ balance: BigNumber; rewards: BigNumber }>({
+    balance: null,
+    rewards: null
+  });
+
+  public readonly total$ = this._total$.asObservable();
+
+  private get total(): { balance: BigNumber; rewards: BigNumber } {
+    return this._total$.getValue();
+  }
 
   private get deposits(): Deposit[] {
     return this._deposits$.getValue();
@@ -197,12 +202,15 @@ export class StakingService {
         ]
       );
       if (receipt.status) {
-        const updatedDeposit = { ...deposit, totalNftRewards: new BigNumber(0) };
-        this.updateDepositById(deposit.id, updatedDeposit);
+        this._total$.next({
+          ...this.total,
+          rewards: this.total.rewards.minus(deposit.totalNftRewards)
+        });
+        this.updateDepositById(deposit.id, { ...deposit, totalNftRewards: new BigNumber(0) });
       }
       return receipt;
     } catch (error) {
-      this.errorService.catchAnyError(error);
+      this.errorService.catch(error);
     }
   }
 
@@ -228,12 +236,16 @@ export class StakingService {
       if (receipt.status) {
         const updatedDeposits = this.deposits.filter(item => item.id !== deposit.id);
         this.ngZone.run(() => {
+          this._total$.next({
+            ...this.total,
+            balance: this.total.rewards.minus(deposit.amount)
+          });
           this._deposits$.next(updatedDeposits);
         });
       }
       return receipt;
     } catch (error) {
-      this.errorService.catchAnyError(error);
+      this.errorService.catch(error);
     }
   }
 
@@ -251,8 +263,10 @@ export class StakingService {
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
-                // const nftVotingPower = await this.getNftVotingPower(id);
-                const tokenApr = new BigNumber(0);
+                const nftVotingPower = await this.getNftVotingPower(id);
+                const tokenApr = new BigNumber(nftVotingPower)
+                  .dividedBy(Web3Pure.toWei(nftInfo.amount))
+                  .multipliedBy(this.statisticsService.currentStakingApr);
                 return { ...nftInfo, ...nftRewards, id, tokenApr };
               })
             );
@@ -263,11 +277,26 @@ export class StakingService {
         console.debug(error);
         return of([]);
       }),
-      tap(deposits => {
+      tap((deposits: Deposit[]) => {
+        const totalBalance = deposits
+          .map(deposit => deposit.amount)
+          .reduce((prev, curr) => {
+            return prev.plus(curr);
+          }, new BigNumber(0));
+
+        const totalRewards = deposits
+          .map(deposit => deposit.totalNftRewards)
+          .reduce((prev, curr) => {
+            return prev.plus(curr);
+          }, new BigNumber(0));
+
         console.log('deposits:', deposits);
+
         this.setDepositsLoading(false);
+
         this.ngZone.run(() => {
           this._deposits$.next(deposits);
+          this._total$.next({ balance: totalBalance, rewards: totalRewards });
         });
       })
     );
@@ -332,17 +361,6 @@ export class StakingService {
       'balanceOfNFT',
       { methodArguments: [nftId] }
     );
-  }
-
-  public showSuccessDepositNotification(): void {
-    this.notificationService.show(
-      this.translate.instant('notifications.successfulStake'),
-      SUCCESS_NOTIFICATION_OPTIONS
-    );
-  }
-
-  public showSuccessApproveNotification(): void {
-    this.notificationService.show('Successful RBC approve', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public parseAmountToBn(value: string): BigNumber {

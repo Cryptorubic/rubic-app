@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { Router } from '@angular/router';
 import { Deposit } from '../../models/deposit.inteface';
 import { StakingService } from '../../services/staking.service';
-import { map, take } from 'rxjs/operators';
+import { filter, map, take, switchMap } from 'rxjs/operators';
 import { watch } from '@taiga-ui/cdk';
 import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
@@ -13,6 +13,10 @@ import BigNumber from 'bignumber.js';
 import { SwapFormInput } from '@app/features/swaps/features/main-form/models/swap-form';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
+import { StakingModalService } from '../../services/staking-modal.service';
+import { StakingNotificationService } from '../../services/staking-notification.service';
+import { DatePipe } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-deposits',
@@ -25,9 +29,19 @@ export class DepositsComponent implements OnInit {
 
   public readonly depositsLoading$ = this.stakingService.depositsLoading$;
 
+  public readonly total$ = this.stakingService.total$;
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   public readonly isMobile = this.headerStore.isMobile;
+
+  private readonly _claimingId$ = new BehaviorSubject<string>('');
+
+  public readonly claimingId$ = this._claimingId$.asObservable();
+
+  private readonly _withdrawingId$ = new BehaviorSubject<string>('');
+
+  public readonly withdrawingId$ = this._withdrawingId$.asObservable();
 
   constructor(
     private readonly router: Router,
@@ -36,7 +50,9 @@ export class DepositsComponent implements OnInit {
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly stakingModalService: StakingModalService,
+    private readonly stakingNotificationService: StakingNotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -44,11 +60,58 @@ export class DepositsComponent implements OnInit {
   }
 
   public async claim(deposit: Deposit): Promise<void> {
-    await this.stakingService.claim(deposit);
+    this.stakingModalService
+      .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$)
+      .pipe(
+        filter(Boolean),
+        switchMap(() => {
+          this._claimingId$.next(deposit.id);
+          return this.stakingService.claim(deposit);
+        })
+      )
+      .subscribe(() => {
+        this._claimingId$.next('');
+      });
   }
 
   public async withdraw(deposit: Deposit): Promise<void> {
-    await this.stakingService.withdraw(deposit);
+    if (Date.now() < deposit.endTimestamp) {
+      this.stakingNotificationService.showNftLockedError(
+        new DatePipe('en-US').transform(deposit.endTimestamp, 'mediumDate')
+      );
+    } else {
+      if (deposit.totalNftRewards.isZero()) {
+        this.stakingModalService
+          .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+          .pipe(
+            filter(Boolean),
+            switchMap(() => {
+              this._withdrawingId$.next(deposit.id);
+              return this.stakingService.withdraw(deposit);
+            })
+          )
+          .subscribe(() => this._withdrawingId$.next(''));
+      } else {
+        this.stakingModalService
+          .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$)
+          .pipe(
+            filter(Boolean),
+            switchMap(() => {
+              this._withdrawingId$.next(deposit.id);
+              return this.stakingService.claim(deposit);
+            }),
+            switchMap(() =>
+              this.stakingModalService
+                .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+                .pipe(
+                  filter(Boolean),
+                  switchMap(() => this.stakingService.withdraw(deposit))
+                )
+            )
+          )
+          .subscribe(() => this._withdrawingId$.next(''));
+      }
+    }
   }
 
   public refreshDeposits(): void {

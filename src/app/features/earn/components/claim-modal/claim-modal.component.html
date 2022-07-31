@@ -1,0 +1,24 @@
+<div
+  class="close"
+  inlineSVG="assets/images/icons/crosshair.svg"
+  (click)="context.completeWith(false)"
+></div>
+<div class="title">CLAIM REWARDS</div>
+<div class="text">
+  {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} BRBC
+</div>
+<ng-container *ngIf="needSwitchNetwork$ | async; else claim">
+  <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
+    >Switch to BSC network</app-rubic-button
+  >
+</ng-container>
+
+<ng-template #claim>
+  <app-rubic-button
+    appearance="secondary"
+    class="action-btn"
+    (onClick)="context.completeWith(true)"
+  >
+    Claim Reward
+  </app-rubic-button>
+</ng-template>

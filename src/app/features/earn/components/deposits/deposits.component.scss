@@ -5,6 +5,17 @@
     border-bottom: none;
   }
 
+  .tui-table__tr:last-child {
+    border-bottom: none;
+
+    .tui-table__td {
+      height: auto;
+      padding: 0 1rem;
+
+      color: $rubic-primary;
+    }
+  }
+
   .tui-table__tr.data-row {
     background: var(--rubic-base-23);
     border-bottom: none;
@@ -34,6 +45,7 @@
 
     &-actions {
       display: flex;
+      justify-content: flex-end;
 
       app-rubic-button:first-child {
         margin-right: 8px;
@@ -71,6 +83,30 @@
 
     @include b($tablet) {
       padding-left: 10px;
+    }
+
+    ::ng-deep .deposits__head-btn {
+      width: 144px;
+
+      @include b($tablet) {
+        width: 121px;
+      }
+
+      button {
+        height: 27px;
+
+        @include b($tablet) {
+          font-size: 12px;
+        }
+      }
+
+      .wrapper {
+        padding: 0 14px !important;
+
+        @include b($tablet) {
+          padding: 10px !important;
+        }
+      }
     }
   }
 
@@ -182,8 +218,14 @@
     flex-wrap: wrap;
     padding: 14px;
 
-    background: var(--rubic-base-23);
-    border-radius: 10px;
+    &:not(:last-child) {
+      background: var(--rubic-base-23);
+      border-radius: 10px;
+    }
+
+    &:last-child .mobile-table__cell {
+      color: $rubic-primary;
+    }
   }
 
   &__cell {
@@ -199,7 +241,7 @@
     }
   }
 
-  &__row > &__cell {
+  &__row:not(:last-child) > &__cell {
     &:last-child {
       display: flex;
       flex: 1;

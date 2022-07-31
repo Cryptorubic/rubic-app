@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { FormControl } from '@ngneat/reactive-forms';
 import { watch } from '@taiga-ui/cdk';
@@ -22,6 +21,7 @@ import {
   BehaviorSubject
 } from 'rxjs';
 import { StakingModalService } from '../../services/staking-modal.service';
+import { StakingNotificationService } from '../../services/staking-notification.service';
 import { StakingService } from '../../services/staking.service';
 import { StakeError } from '../stake-button/stake-button.component';
 
@@ -45,6 +45,7 @@ export class StakeFormComponent implements OnInit {
   public readonly rbcAmountCtrl = new FormControl(null);
 
   public readonly rbcAmount$ = this.rbcAmountCtrl.valueChanges.pipe(
+    startWith(this.rbcAmountCtrl.value),
     map(value => {
       return this.stakingService.parseAmountToBn(value);
     })
@@ -87,10 +88,10 @@ export class StakeFormComponent implements OnInit {
     private readonly stakingService: StakingService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly stakingModalService: StakingModalService
+    private readonly stakingModalService: StakingModalService,
+    private readonly stakingNotificationService: StakingNotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -129,7 +130,7 @@ export class StakeFormComponent implements OnInit {
         this._approveLoading$.next(false);
 
         if (receipt && receipt.status) {
-          this.stakingService.showSuccessApproveNotification();
+          this.stakingNotificationService.showSuccessApproveNotification();
           this.stakingService.setAllowance('Infinity');
         }
 
@@ -167,7 +168,7 @@ export class StakeFormComponent implements OnInit {
         this._stakeLoading$.next(false);
 
         if (result) {
-          this.stakingService.showSuccessDepositNotification();
+          this.stakingNotificationService.showSuccessDepositNotification();
         }
       });
   }
@@ -195,7 +196,6 @@ export class StakeFormComponent implements OnInit {
   private checkStakeParams(): void {
     this.rbcAmount$
       .pipe(
-        startWith(this.rbcAmountCtrl.value),
         withLatestFrom(this.rbcTokenBalance$),
         map(([rbcAmount, rbcTokenBalance]) => {
           return this.checkErrors(rbcAmount, rbcTokenBalance);

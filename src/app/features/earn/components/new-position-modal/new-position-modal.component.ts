@@ -27,12 +27,4 @@ export class NewPositionModalComponent {
     this.duration = this.context.data.duration;
     this.unlockDate = this.context.data.unlockDate;
   }
-
-  public agree(): void {
-    this.context.completeWith(true);
-  }
-
-  public close(): void {
-    this.context.completeWith(false);
-  }
 }

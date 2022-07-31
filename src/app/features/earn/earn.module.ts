@@ -28,12 +28,15 @@ import {
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from '@features/earn/components/deposits/deposits.component';
-import { DepositComponent } from '@features/earn/components/deposits/components/deposit/deposit.component';
 import { StakingService } from './services/staking.service';
 import { StakeFormComponent } from './components/stake-form/stake-form.component';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 import { StakingModalService } from './services/staking-modal.service';
 import { NewPositionModalComponent } from './components/new-position-modal/new-position-modal.component';
+import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
+import { ClaimModalComponent } from './components/claim-modal/claim-modal.component';
+import { StakingNotificationService } from './services/staking-notification.service';
+import { FormatAmountPipe } from './pipes/format-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -42,10 +45,12 @@ import { NewPositionModalComponent } from './components/new-position-modal/new-p
     StakingCardComponent,
     LpCardComponent,
     DepositsComponent,
-    DepositComponent,
     StakeFormComponent,
     StakeButtonComponent,
-    NewPositionModalComponent
+    NewPositionModalComponent,
+    WithdrawModalComponent,
+    ClaimModalComponent,
+    FormatAmountPipe
   ],
   imports: [
     CommonModule,
@@ -68,6 +73,6 @@ import { NewPositionModalComponent } from './components/new-position-modal/new-p
     TuiHintControllerModule,
     TuiSliderModule
   ],
-  providers: [StatisticsService, StakingService, StakingModalService]
+  providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })
 export class EarnModule {}
