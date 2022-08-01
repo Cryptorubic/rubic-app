@@ -74,7 +74,7 @@ export class StakingService {
 
   private readonly web3Private = Injector.web3Private;
 
-  private readonly _deposits$ = new BehaviorSubject<Deposit[]>([]);
+  private readonly _deposits$ = new BehaviorSubject<Deposit[]>(undefined);
 
   public readonly deposits$ = this._deposits$.asObservable();
 

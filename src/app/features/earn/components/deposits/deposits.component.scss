@@ -265,3 +265,21 @@
     }
   }
 }
+
+.animate {
+  animation-name: fade;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

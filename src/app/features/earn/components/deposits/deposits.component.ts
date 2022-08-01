@@ -83,7 +83,8 @@ export class DepositsComponent implements OnInit {
   }
 
   public async withdraw(deposit: Deposit): Promise<void> {
-    if (Date.now() < deposit.endTimestamp) {
+    // if (Date.now() < deposit.endTimestamp) {
+    if (false) {
       this.stakingNotificationService.showNftLockedError(
         new DatePipe('en-US').transform(deposit.endTimestamp, 'mediumDate')
       );
