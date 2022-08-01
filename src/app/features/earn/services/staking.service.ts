@@ -255,6 +255,10 @@ export class StakingService {
 
         return from(this.getTokensByOwner(user.address)).pipe(
           switchMap((nftIds: string[]) => {
+            if (nftIds.length === 0) {
+              return of([]);
+            }
+
             return forkJoin(
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);

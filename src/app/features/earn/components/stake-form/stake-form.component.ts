@@ -110,7 +110,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public setMaxAmount(amount: BigNumber): void {
-    this.rbcAmountCtrl.patchValue(amount.dp(2, 3).toNumber());
+    this.rbcAmountCtrl.patchValue(amount.dp(2, 3).toFixed(2));
   }
 
   public setDuration(duration: number): void {
