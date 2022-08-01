@@ -17,13 +17,11 @@ import {
   tap,
   zip,
   of,
-  debounceTime,
   map,
   switchMap,
   startWith,
   from,
   catchError,
-  withLatestFrom,
   BehaviorSubject,
   filter,
   takeUntil
@@ -62,12 +60,6 @@ export class StakeFormComponent implements OnInit {
 
   public readonly rbcAllowance$ = this.stakingService.rbcAllowance$;
 
-  public readonly usdAmount$ = this.rbcAmount$.pipe(
-    debounceTime(100),
-    switchMap((amount: BigNumber) => this.stakingService.getRbcAmountPrice(amount)),
-    map(amount => amount.toNumber())
-  );
-
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   public readonly needSwitchNetwork$ = this.stakingService.needSwitchNetwork$;
@@ -83,6 +75,10 @@ export class StakeFormComponent implements OnInit {
   public unlockDate: number;
 
   public selectedDuration: number = 6;
+
+  public selectedAmount: string;
+
+  public rbcUsdPrice: number;
 
   public needApprove$ = this.rbcAllowance$.pipe(
     tap(v => console.log(v, 'allowance')),
@@ -102,11 +98,40 @@ export class StakeFormComponent implements OnInit {
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
-  ) {}
+  ) {
+    this.stakingService.getRbcAmountPrice().subscribe(price => (this.rbcUsdPrice = price));
+  }
 
   public ngOnInit(): void {
     this.handleStakeDurationChange();
-    this.checkStakeParams();
+    // this.checkStakeParams();
+  }
+
+  public calculateUsdPrice(amount: string): string {
+    return amount === ''
+      ? '0.00'
+      : this.stakingService.parseAmountToBn(amount).multipliedBy(this.rbcUsdPrice).toFixed(2);
+  }
+
+  public onAmountChange(rbcAmount: string): void {
+    this.selectedAmount = rbcAmount;
+
+    if (rbcAmount === '') {
+      this.error = StakeButtonError.EMPTY_AMOUNT;
+      return;
+    }
+
+    if (this.stakingService.rbcTokenBalance?.lt(this.stakingService.parseAmountToBn(rbcAmount))) {
+      this.error = StakeButtonError.INSUFFICIENT_BALANCE_RBC;
+      return;
+    }
+
+    if (this.stakingService.parseAmountToBn(rbcAmount).lt(10)) {
+      this.error = StakeButtonError.LESS_THEN_MINIMUM;
+      return;
+    }
+
+    this.error = StakeButtonError.NULL;
   }
 
   public setMaxAmount(amount: BigNumber): void {
@@ -196,31 +221,31 @@ export class StakeFormComponent implements OnInit {
       .subscribe();
   }
 
-  private checkStakeParams(): void {
-    this.rbcAmount$
-      .pipe(
-        withLatestFrom(this.rbcTokenBalance$),
-        map(([rbcAmount, rbcTokenBalance]) => {
-          if (!rbcAmount || !rbcAmount.toNumber()) {
-            return StakeButtonError.EMPTY_AMOUNT;
-          }
+  // private checkStakeParams(): void {
+  //   this.rbcAmount$
+  //     .pipe(
+  //       withLatestFrom(this.rbcTokenBalance$),
+  //       map(([rbcAmount, rbcTokenBalance]) => {
+  //         if (!rbcAmount || !rbcAmount.toNumber()) {
+  //           return StakeButtonError.EMPTY_AMOUNT;
+  //         }
 
-          if (rbcTokenBalance?.lt(rbcAmount)) {
-            return StakeButtonError.INSUFFICIENT_BALANCE_RBC;
-          }
+  //         if (rbcTokenBalance?.lt(rbcAmount)) {
+  //           return StakeButtonError.INSUFFICIENT_BALANCE_RBC;
+  //         }
 
-          if (rbcAmount?.lt(10)) {
-            return StakeButtonError.LESS_THEN_MINIMUM;
-          }
+  //         if (rbcAmount?.lt(10)) {
+  //           return StakeButtonError.LESS_THEN_MINIMUM;
+  //         }
 
-          return StakeButtonError.NULL;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(error => {
-        this.error = error;
-      });
-  }
+  //         return StakeButtonError.NULL;
+  //       }),
+  //       takeUntil(this.destroy$)
+  //     )
+  //     .subscribe(error => {
+  //       this.error = error;
+  //     });
+  // }
 
   public back(): void {
     this.router.navigate(['/earn']);

@@ -42,7 +42,7 @@ export class StakingService {
 
   public readonly rbcTokenBalance$ = this._rbcTokenBalance$.asObservable();
 
-  get rbcTokenBalance(): BigNumber {
+  public get rbcTokenBalance(): BigNumber {
     return this._rbcTokenBalance$.getValue();
   }
 
@@ -114,16 +114,16 @@ export class StakingService {
       .subscribe();
   }
 
-  public async getRbcAmountPrice(amount: BigNumber): Promise<BigNumber> {
-    const price = await this.tokensService.getAndUpdateTokenPrice(
-      {
-        address: '0x8e3bcc334657560253b83f08331d85267316e08a',
-        blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-      },
-      true
+  public getRbcAmountPrice(): Observable<number> {
+    return from(
+      this.tokensService.getAndUpdateTokenPrice(
+        {
+          address: '0x8e3bcc334657560253b83f08331d85267316e08a',
+          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+        },
+        true
+      )
     );
-
-    return amount.multipliedBy(price);
   }
 
   public getAllowance(): Observable<BigNumber> {

@@ -21,6 +21,7 @@
         [formControl]="rbcAmountCtrl"
         [decimals]="18"
         inputmode="decimal"
+        (amountChange)="onAmountChange($event)"
       />
     </div>
 
@@ -34,9 +35,7 @@
         }}
         <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
       </div>
-      <div class="token__price" *ngLet="usdAmount$ | async as usdAmount">
-        $ {{ usdAmount ? (usdAmount | bigNumberFormat: 2:true) : '0.00' }}
-      </div>
+      <div class="token__price">$ {{ selectedAmount | functionCall: calculateUsdPrice:this }}</div>
     </div>
   </div>
 
@@ -67,11 +66,12 @@
       <img src="assets/images/icons/info-warning.svg" alt="" />
     </div>
     <div class="hint__text">
-      {{
+      {{ selectedAmount || '0.00' }}
+      <!-- {{
         rbcAmountCtrl.value
           ? (rbcAmountCtrl.value | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
           : '0.00'
-      }}
+      }} -->
       BRBC locked expires in {{ selectedDuration }} months. <br />
       Locked until {{ unlockDate | date: 'mediumDate' }}
     </div>
