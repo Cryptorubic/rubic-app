@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { RoundStatus } from '../../models/round-status.enum';
@@ -20,8 +20,7 @@ export class EarnPageComponent {
   constructor(
     private readonly router: Router,
     private readonly stakingService: StakingService,
-    private readonly walletsModalService: WalletsModalService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly walletsModalService: WalletsModalService
   ) {}
 
   public toggleAccordion(): void {
@@ -29,7 +28,7 @@ export class EarnPageComponent {
   }
 
   public navigateToStakeForm(): void {
-    this.router.navigate(['staking-lp', 'new-position']);
+    this.router.navigate(['earn', 'new-position']);
   }
 
   public login(): void {

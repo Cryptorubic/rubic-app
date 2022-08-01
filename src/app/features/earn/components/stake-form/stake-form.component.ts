@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { FormControl } from '@ngneat/reactive-forms';
-import { watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
   tap,
@@ -18,18 +24,21 @@ import {
   from,
   catchError,
   withLatestFrom,
-  BehaviorSubject
+  BehaviorSubject,
+  filter,
+  takeUntil
 } from 'rxjs';
+import { StakeButtonError } from '../../models/stake-button-error.enum';
 import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { StakingService } from '../../services/staking.service';
-import { StakeError } from '../stake-button/stake-button.component';
 
 @Component({
   selector: 'app-stake-form',
   templateUrl: './stake-form.component.html',
   styleUrls: ['./stake-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class StakeFormComponent implements OnInit {
   public readonly DURATIONS = [
@@ -82,7 +91,7 @@ export class StakeFormComponent implements OnInit {
     })
   );
 
-  public error: StakeError = StakeError.EMPTY_AMOUNT;
+  public error: StakeButtonError = StakeButtonError.EMPTY_AMOUNT;
 
   constructor(
     private readonly stakingService: StakingService,
@@ -91,7 +100,8 @@ export class StakeFormComponent implements OnInit {
     private readonly errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly stakingModalService: StakingModalService,
-    private readonly stakingNotificationService: StakingNotificationService
+    private readonly stakingNotificationService: StakingNotificationService,
+    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
@@ -113,7 +123,6 @@ export class StakeFormComponent implements OnInit {
 
   public async switchNetwork(): Promise<void> {
     this.stakingService.switchNetwork();
-    this.cdr.detectChanges();
   }
 
   public approve(): void {
@@ -142,26 +151,22 @@ export class StakeFormComponent implements OnInit {
     const amount = this.rbcAmountCtrl.value;
     const duration = this.durationSliderCtrl.value;
 
-    this._stakeLoading$.next(true);
-
     this.stakingModalService
       .showDepositModal(amount, duration, this.unlockDate)
       .pipe(
-        switchMap(result => {
-          if (result) {
-            return from(this.stakingService.stake(amount, duration)).pipe(
-              switchMap(() => {
-                return this.stakingService.getRbcTokenBalance();
-              }),
-              catchError((error: unknown) => {
-                this.errorsService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
-                return of(null);
-              }),
-              watch(this.cdr)
-            );
-          } else {
-            return of(null);
-          }
+        filter(Boolean),
+        switchMap(() => {
+          this._stakeLoading$.next(true);
+          return from(this.stakingService.stake(amount, duration)).pipe(
+            switchMap(() => {
+              return this.stakingService.getRbcTokenBalance();
+            }),
+            catchError((error: unknown) => {
+              this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+              return of(null);
+            }),
+            watch(this.cdr)
+          );
         })
       )
       .subscribe(result => {
@@ -169,12 +174,9 @@ export class StakeFormComponent implements OnInit {
 
         if (result) {
           this.stakingNotificationService.showSuccessDepositNotification();
+          this.back();
         }
       });
-  }
-
-  public back(): void {
-    this.router.navigate(['/staking-lp']);
   }
 
   private handleStakeDurationChange(): void {
@@ -188,7 +190,8 @@ export class StakeFormComponent implements OnInit {
           this.selectedDuration = duration;
           this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
         }),
-        watch(this.cdr)
+        watch(this.cdr),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -198,28 +201,29 @@ export class StakeFormComponent implements OnInit {
       .pipe(
         withLatestFrom(this.rbcTokenBalance$),
         map(([rbcAmount, rbcTokenBalance]) => {
-          return this.checkErrors(rbcAmount, rbcTokenBalance);
-        })
+          if (!rbcAmount || !rbcAmount.toNumber()) {
+            return StakeButtonError.EMPTY_AMOUNT;
+          }
+
+          if (rbcTokenBalance?.lt(rbcAmount)) {
+            return StakeButtonError.INSUFFICIENT_BALANCE_RBC;
+          }
+
+          if (rbcAmount?.lt(10)) {
+            return StakeButtonError.LESS_THEN_MINIMUM;
+          }
+
+          return StakeButtonError.NULL;
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe(error => {
         this.error = error;
       });
   }
 
-  private checkErrors(rbcAmount: BigNumber, rbcTokenBalance: BigNumber): StakeError {
-    if (!rbcAmount || !rbcAmount.toNumber()) {
-      return StakeError.EMPTY_AMOUNT;
-    }
-
-    if (rbcTokenBalance?.lt(rbcAmount)) {
-      return StakeError.INSUFFICIENT_BALANCE_RBC;
-    }
-
-    if (rbcAmount?.lt(10)) {
-      return StakeError.LESS_THEN_MINIMUM;
-    }
-
-    return StakeError.NULL;
+  public back(): void {
+    this.router.navigate(['/earn']);
   }
 
   private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {

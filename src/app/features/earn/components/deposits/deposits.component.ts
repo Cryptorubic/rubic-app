@@ -1,9 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Deposit } from '../../models/deposit.inteface';
 import { StakingService } from '../../services/staking.service';
-import { filter, map, take, switchMap } from 'rxjs/operators';
-import { watch } from '@taiga-ui/cdk';
+import { filter, map, take, switchMap, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
@@ -22,7 +28,8 @@ import { BehaviorSubject } from 'rxjs';
   selector: 'app-deposits',
   templateUrl: './deposits.component.html',
   styleUrls: ['./deposits.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class DepositsComponent implements OnInit {
   public readonly deposits$ = this.stakingService.deposits$;
@@ -52,11 +59,12 @@ export class DepositsComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
     private readonly stakingModalService: StakingModalService,
-    private readonly stakingNotificationService: StakingNotificationService
+    private readonly stakingNotificationService: StakingNotificationService,
+    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
-    this.stakingService.loadDeposits().pipe(watch(this.cdr)).subscribe();
+    this.stakingService.loadDeposits().pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
   }
 
   public async claim(deposit: Deposit): Promise<void> {
@@ -163,6 +171,6 @@ export class DepositsComponent implements OnInit {
   }
 
   public navigateToStakeForm(): void {
-    this.router.navigate(['staking-lp', 'new-position']);
+    this.router.navigate(['earn', 'new-position']);
   }
 }

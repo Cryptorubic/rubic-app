@@ -103,7 +103,6 @@
         >Approve</app-rubic-button
       >
       <app-stake-button
-        appearance="secondary"
         *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
         [error]="error"
         [minRbcAmount]="10"
@@ -115,6 +114,6 @@
 </div>
 
 <div class="rules">
-  <a class="rules__link" href="#">{{ 'staking.stake.rules' | translate }}</a>
+  <a class="rules__link" href="#" target="_blank">{{ 'staking.stake.rules' | translate }}</a>
   <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
 </div>

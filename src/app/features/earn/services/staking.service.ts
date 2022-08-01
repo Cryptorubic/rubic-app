@@ -21,8 +21,6 @@ import {
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
 import { REWARDS_CONTRACT_ABI } from '../constants/REWARDS_CONTRACT_ABI';
 import { IntervalReward } from '../models/interval-rewards.interface';
 import { Deposit } from '../models/deposit.inteface';
@@ -104,8 +102,6 @@ export class StakingService {
     private readonly tokensService: TokensService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly notificationService: NotificationsService,
-    private readonly translate: TranslateService,
     private readonly errorService: ErrorsService,
     private readonly ngZone: NgZone
   ) {
