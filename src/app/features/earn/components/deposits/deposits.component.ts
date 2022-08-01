@@ -22,7 +22,7 @@ import { ThemeService } from '@app/core/services/theme/theme.service';
 import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { DatePipe } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-deposits',
@@ -83,8 +83,8 @@ export class DepositsComponent implements OnInit {
   }
 
   public async withdraw(deposit: Deposit): Promise<void> {
-    // if (Date.now() < deposit.endTimestamp) {
-    if (false) {
+    const isStakingFinished = await this.stakingService.getIsStakingFinished();
+    if (Date.now() < deposit.endTimestamp && !isStakingFinished) {
       this.stakingNotificationService.showNftLockedError(
         new DatePipe('en-US').transform(deposit.endTimestamp, 'mediumDate')
       );
@@ -104,19 +104,33 @@ export class DepositsComponent implements OnInit {
         this.stakingModalService
           .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$)
           .pipe(
-            filter(Boolean),
-            switchMap(() => {
-              this._withdrawingId$.next(deposit.id);
-              return this.stakingService.claim(deposit);
+            switchMap(claimModalResult => {
+              if (claimModalResult) {
+                this._withdrawingId$.next(deposit.id);
+                return this.stakingService.claim(deposit);
+              } else {
+                return EMPTY;
+              }
             }),
-            switchMap(() =>
-              this.stakingModalService
-                .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
-                .pipe(
-                  filter(Boolean),
-                  switchMap(() => this.stakingService.withdraw(deposit))
-                )
-            )
+            switchMap(claiModalResult => {
+              if (claiModalResult) {
+                return this.stakingModalService
+                  .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+                  .pipe(
+                    switchMap(withdrawModalResult => {
+                      if (withdrawModalResult) {
+                        return this.stakingService.withdraw(deposit);
+                      } else {
+                        this._withdrawingId$.next('');
+                        return EMPTY;
+                      }
+                    })
+                  );
+              } else {
+                this._withdrawingId$.next('');
+                return EMPTY;
+              }
+            })
           )
           .subscribe(() => this._withdrawingId$.next(''));
       }
