@@ -333,26 +333,31 @@ export class StakingService {
   public async getNftRewardsInfo(
     nftId: string
   ): Promise<{ totalNftRewards: BigNumber; rewardIntervals: IntervalReward[] }> {
-    const currentEpoch = await this.web3Public.callContractMethod(
-      this.REWARDS_CONTRACT_ADDRESS,
-      REWARDS_CONTRACT_ABI,
-      'getCurrentEpochId'
-    );
-    const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
-      this.REWARDS_CONTRACT_ADDRESS,
-      REWARDS_CONTRACT_ABI,
-      'pendingReward',
-      {
-        methodArguments: [nftId, 0, currentEpoch]
-      }
-    );
-    const totalNftRewards = rewardIntervals
-      .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
-      .reduce((prev: BigNumber, curr: BigNumber) => {
-        return prev.plus(curr);
-      }, new BigNumber(0));
+    try {
+      const currentEpoch = await this.web3Public.callContractMethod(
+        this.REWARDS_CONTRACT_ADDRESS,
+        REWARDS_CONTRACT_ABI,
+        'getCurrentEpochId'
+      );
+      console.log(currentEpoch);
+      const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
+        this.REWARDS_CONTRACT_ADDRESS,
+        REWARDS_CONTRACT_ABI,
+        'pendingReward',
+        {
+          methodArguments: [nftId, 0, currentEpoch]
+        }
+      );
+      const totalNftRewards = rewardIntervals
+        .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
+        .reduce((prev: BigNumber, curr: BigNumber) => {
+          return prev.plus(curr);
+        }, new BigNumber(0));
 
-    return { totalNftRewards, rewardIntervals };
+      return { totalNftRewards, rewardIntervals };
+    } catch (error) {
+      return { totalNftRewards: new BigNumber(0), rewardIntervals: [] };
+    }
   }
 
   public async switchNetwork(): Promise<boolean> {
