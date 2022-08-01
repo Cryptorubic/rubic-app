@@ -9,7 +9,7 @@
   </ng-container>
 </div>
 <div class="text">
-  {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} BRBC
+  {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 } }} BRBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">
   <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
