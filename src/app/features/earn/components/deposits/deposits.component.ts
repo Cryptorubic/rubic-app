@@ -102,7 +102,7 @@ export class DepositsComponent implements OnInit {
           .subscribe(() => this._withdrawingId$.next(''));
       } else {
         this.stakingModalService
-          .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$)
+          .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$, true)
           .pipe(
             switchMap(claimModalResult => {
               if (claimModalResult) {

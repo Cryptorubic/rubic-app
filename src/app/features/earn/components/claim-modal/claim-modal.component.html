@@ -3,7 +3,11 @@
   inlineSVG="assets/images/icons/crosshair.svg"
   (click)="context.completeWith(false)"
 ></div>
-<div class="title">CLAIM REWARDS</div>
+<div class="title">
+  <ng-container *ngIf="beforeWithdraw; else claimTitle">
+    Please claim your rewards before proceeding to the withdrawal
+  </ng-container>
+</div>
 <div class="text">
   {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} BRBC
 </div>
@@ -19,6 +23,8 @@
     class="action-btn"
     (onClick)="context.completeWith(true)"
   >
-    Claim Reward
+    Claim
   </app-rubic-button>
 </ng-template>
+
+<ng-template #claimTitle>CLAIM REWARDS</ng-template>

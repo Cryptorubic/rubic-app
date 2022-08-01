@@ -18,7 +18,7 @@ export class StakingModalService {
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(NewPositionModalComponent), {
       closeable: false,
-      size: 'm',
+      size: 's',
       data: {
         amount,
         duration,
@@ -33,7 +33,7 @@ export class StakingModalService {
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(WithdrawModalComponent), {
       closeable: false,
-      size: 'm',
+      size: 's',
       data: {
         amount,
         needSwitchNetwork$
@@ -43,12 +43,13 @@ export class StakingModalService {
 
   public showClaimModal(
     rewards: BigNumber,
-    needSwitchNetwork$: Observable<boolean>
+    needSwitchNetwork$: Observable<boolean>,
+    beforeWithdraw = false
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(ClaimModalComponent), {
       closeable: false,
-      size: 'm',
-      data: { rewards, needSwitchNetwork$ }
+      size: 's',
+      data: { rewards, needSwitchNetwork$, beforeWithdraw }
     });
   }
 }

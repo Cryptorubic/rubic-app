@@ -4,7 +4,7 @@
   position: relative;
 
   display: block;
-  padding: 67px 0 55px;
+  padding: 40px 0 36px;
 }
 
 .close {
@@ -27,15 +27,15 @@
 }
 
 .title {
-  @include font(32px, 38px, 700, var(--rubic-base-02));
-  margin-bottom: 52px;
+  @include font(24px, 29px, 600, var(--rubic-base-02));
+  margin-bottom: 26px;
 
   text-align: center;
 }
 
 .text {
-  @include font(22px, 26px, 500, var(--rubic-base-02));
-  margin: 0 auto 65px;
+  @include font(20px, 29px, 600, var(--rubic-base-25));
+  margin: 0 auto 48px;
 
   text-align: center;
 }

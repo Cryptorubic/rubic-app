@@ -26,6 +26,7 @@ import { IntervalReward } from '../models/interval-rewards.interface';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
+import { StakingNotificationService } from './staking-notification.service';
 
 @Injectable()
 export class StakingService {
@@ -103,7 +104,8 @@ export class StakingService {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
-    private readonly ngZone: NgZone
+    private readonly ngZone: NgZone,
+    private readonly stakingNotificationService: StakingNotificationService
   ) {
     this.user$
       .pipe(
@@ -198,6 +200,7 @@ export class StakingService {
         ]
       );
       if (receipt.status) {
+        this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
           ...this.total,
           rewards: this.total.rewards.minus(deposit.totalNftRewards)
@@ -231,6 +234,7 @@ export class StakingService {
         [deposit.id]
       );
       if (receipt.status) {
+        this.stakingNotificationService.showSuccessWithdrawNotification();
         const updatedDeposits = this.deposits.filter(item => item.id !== deposit.id);
         this.ngZone.run(() => {
           this._total$.next({

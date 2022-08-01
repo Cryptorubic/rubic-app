@@ -15,7 +15,9 @@ import { Observable } from 'rxjs';
 export class ClaimModalComponent {
   public rewards: BigNumber;
 
-  public readonly needSwitchNetwork$: Observable<boolean>;
+  public needSwitchNetwork$: Observable<boolean>;
+
+  public beforeWithdraw: boolean;
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
@@ -23,11 +25,12 @@ export class ClaimModalComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     public readonly context: TuiDialogContext<
       boolean,
-      { rewards: BigNumber; needSwitchNetwork$: Observable<boolean> }
+      { rewards: BigNumber; needSwitchNetwork$: Observable<boolean>; beforeWithdraw: boolean }
     >
   ) {
     this.rewards = this.context.data.rewards;
     this.needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
+    this.beforeWithdraw = this.context.data.beforeWithdraw;
   }
 
   public async switchNetwork(): Promise<void> {
