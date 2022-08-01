@@ -10,6 +10,10 @@
 
   &__head {
     margin-bottom: 48px;
+
+    @include b($mobile-sm-plus) {
+      margin-bottom: 30px;
+    }
   }
 
   &__title {
@@ -22,15 +26,10 @@
 
     @include b($tablet) {
       flex-direction: column;
-      padding: 28px 12px 12px;
+      padding: 0;
 
       border-radius: 22px;
     }
-
-    @include b($mobile-sm-plus) {
-      padding: 0;
-    }
-
   }
 
   &__refresh {
@@ -47,15 +46,15 @@
   &__col {
     display: flex;
     flex-direction: column;
+    gap: 10px;
     padding: 0 45px;
 
     @include b($tablet) {
       flex-direction: row;
-      padding: 26px 22px;
+      padding: 0;
 
       &:first-child {
         order: 3;
-        padding: 26px 22px;
 
         ::ng-deep tui-loader {
           width: 100%;
@@ -69,28 +68,16 @@
       &:nth-child(2) {
         order: 1;
         margin-bottom: 26px;
-        padding: 0 22px;
       }
 
       &:nth-child(3) {
         order: 2;
         margin-bottom: 26px;
-        padding: 0 22px;
       }
     }
 
     @include b($mobile-sm-plus) {
-      &:first-child {
-        padding: 0;
-      }
-
-      &:nth-child(2) {
-        padding: 0;
-      }
-
-      &:nth-child(3) {
-        padding: 0;
-      }
+      padding: 0;
     }
 
     .statistics__param:first-child {
@@ -143,6 +130,10 @@
       @include b($tablet) {
         font-size: 20px;
         line-height: 24px;
+      }
+
+      @include b($mobile-sm-plus) {
+        font-size: 18px;
       }
 
       &_loading {
