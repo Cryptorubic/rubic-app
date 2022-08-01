@@ -239,7 +239,7 @@ export class StakingService {
         this.ngZone.run(() => {
           this._total$.next({
             ...this.total,
-            balance: this.total.rewards.minus(deposit.amount)
+            balance: this.total.balance.minus(deposit.amount)
           });
           this._deposits$.next(updatedDeposits);
         });
