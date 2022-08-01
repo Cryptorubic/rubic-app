@@ -12,11 +12,11 @@ export const STAKING_ROUND_THREE: {
     abi: []
   },
   NFT: {
-    address: '0xC457Cb68DedCFCb2201f9455707E4Fd833B2E3D4',
+    address: '0x67dE69B8b8C0301F8439b041de862752DC596CB1',
     abi: NFT_CONTRACT_ABI
   },
   REWARDS: {
-    address: '0xA3052f4701a24e0FBe109A92Cf3fc44B32dD4A3F',
+    address: '0x4E474Af6D95b51dd1192b61e72A8Cc8E68d92e8E',
     abi: REWARDS_CONTRACT_ABI
   }
 };
