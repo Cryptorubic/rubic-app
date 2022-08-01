@@ -559,8 +559,7 @@
     }
   },
   "referralBanner": {
-    "takePartInOur": "우리의 참여 ",
-    "referralProgram": "추천 프로그램 및 보상을 받으세요!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "더 알아보기"
   },
   "volume": {

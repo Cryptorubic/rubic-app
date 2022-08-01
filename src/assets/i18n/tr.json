@@ -735,8 +735,7 @@
     }
   },
   "referralBanner": {
-    "takePartInOur": "katılmak",
-    "referralProgram": "Tavsiye Programı ve ödüller kazanın!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Daha fazla bilgi edin"
   },
   "volume": {
