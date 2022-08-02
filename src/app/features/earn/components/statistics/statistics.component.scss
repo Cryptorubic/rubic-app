@@ -9,7 +9,7 @@
   border-radius: 24px;
 
   @include b($mobile-sm-plus) {
-    padding: 22px;
+    padding: 22px 22px 0;
   }
 
   &__head {
