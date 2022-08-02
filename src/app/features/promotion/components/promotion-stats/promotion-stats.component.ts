@@ -30,7 +30,7 @@ export class PromotionStatsComponent implements OnInit {
 
   public readonly isEthLikeWalletConnected$: Observable<boolean>;
 
-  public readonly statistics$: Observable<PromotionStatistics>;
+  public readonly statistics$: Observable<PromotionStatistics> = this.promotionService.statistics$;
 
   public readonly isStatisticsLoading$: Observable<boolean>;
 
@@ -55,7 +55,6 @@ export class PromotionStatsComponent implements OnInit {
         )
       );
 
-    this.statistics$ = promotionService.statistics$;
     this.isStatisticsLoading$ = promotionService.isStatisticsLoading$;
     this.promoLink$ = promotionService.promoLink$;
     this.isPromoLinkLoading$ = promotionService.isPromoLinkLoading$;
