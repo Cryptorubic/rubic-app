@@ -54,7 +54,7 @@
   &__col {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 20px;
     padding: 0 45px;
 
     @include b($tablet) {
