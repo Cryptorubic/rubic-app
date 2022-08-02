@@ -34,9 +34,11 @@
               {{ 'promotionPage.statistics.totalRewards' | translate }}
             </span>
             <span class="item__amount" [class.tui-skeleton]="statistics === null">
-              <ng-container *ngIf="statistics !== null">{{
-                '$ ' + statistics.totalRewards
-              }}</ng-container>
+              <ng-container *ngIf="statistics !== null"
+                >${{
+                  statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true
+                }}</ng-container
+              >
             </span>
           </li>
           <li class="statistics__item item">
@@ -44,9 +46,11 @@
               {{ 'promotionPage.statistics.instantRewards' | translate }}
             </span>
             <span class="item__amount" [class.tui-skeleton]="statistics === null">
-              <ng-container *ngIf="statistics !== null">{{
-                (statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true) + ' BRBC'
-              }}</ng-container>
+              <ng-container *ngIf="statistics !== null"
+                >{{
+                  statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true
+                }}BRBC</ng-container
+              >
             </span>
           </li>
         </ul>
