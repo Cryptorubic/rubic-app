@@ -10,11 +10,11 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewPositionModalComponent {
-  public amount: BigNumber;
+  public readonly amount: BigNumber;
 
-  public duration: number;
+  public readonly duration: number;
 
-  public unlockDate: number;
+  public readonly unlockDate: number;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)

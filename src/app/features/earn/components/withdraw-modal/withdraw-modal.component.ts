@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WithdrawModalComponent {
-  public amount: BigNumber;
+  public readonly amount: BigNumber;
 
   public readonly needSwitchNetwork$: Observable<boolean>;
 

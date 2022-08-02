@@ -142,24 +142,3 @@
     }
   }
 }
-
-.filters {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: fit-content;
-  padding: 16px;
-
-  &__filter {
-    @include font(16px, 19px, 500, white);
-    cursor: pointer;
-
-    &:not(:last-child) {
-      margin-bottom: 18px;
-    }
-
-    &_active {
-      color: $rubic-primary;
-    }
-  }
-}

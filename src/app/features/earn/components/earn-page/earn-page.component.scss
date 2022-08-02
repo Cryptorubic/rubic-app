@@ -129,14 +129,13 @@ app-deposits {
 }
 
 .rules {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 30px;
-
   &__link {
     @include font(16px, 19px, 400, var(--main-green));
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
     text-decoration-line: underline;
   }
 
@@ -158,31 +157,16 @@ app-deposits {
 .past-campaings {
   ::ng-deep tui-accordion {
     --tui-base-02: transparent;
-
+    
     @include b($tablet) {
       .header {
         min-height: 30px;
         padding: 0.55rem 1.25rem;
-
-        font-size: 14px;
-        line-height: 17px;
       }
     }
-  }
 
-  &__arrow {
-    display: flex;
-
-    cursor: pointer;
-
-    transition: all 0.2s linear;
-
-    svg path { 
-      fill: #000;
-
-      @include dark {
-        fill: rgba(255, 255, 255, 0.6); 
-      }
+    .header .title {
+      @include font(18px, 22px, 600, var(--rubic-base-02));
     }
   }
 

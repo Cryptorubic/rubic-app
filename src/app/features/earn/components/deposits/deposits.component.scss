@@ -152,20 +152,79 @@
       @include font(14px, 15px, 500, --rubic-base-02);
     }
   }
-
-  &__footer-text {
-    @include font(16px, 19px, 500, var(--main-green));
-
-    @include b(480) {
-      @include font(12px, 15px, 500, var(--main-green));
-    }
-  }
 }
 
 .connect-wallet {
   display: block;
   max-width: 396px;
   margin: 0 auto;
+}
+
+.mobile-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__head {
+    display: flex;
+    padding: 0 14px;
+
+    >.mobile-table__cell {
+      @include font(12px, 15px, 500, var(--rubic-base-24));
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 14px;
+
+    &:not(:last-child) {
+      background: var(--rubic-base-23);
+      border-radius: 10px;
+    }
+
+    &:last-child .mobile-table__cell {
+      color: $rubic-primary;
+    }
+  }
+
+  &__cell {
+    @include font(12px, 14px, 400, var(--rubic-base-02));
+    display: flex;
+    align-items: center;
+    width: calc(100% / 5);
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+    }
+  }
+
+  &__row:not(:last-child)>&__cell {
+    &:last-child {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      margin-top: 17px;
+
+      ::ng-deep app-rubic-button {
+        button {
+          height: 27px;
+
+          font-size: 12px;
+          line-height: 14px;
+        }
+
+        .wrapper {
+          padding: 0 10px;
+        }
+      }
+    }
+  }
 }
 
 .actions {
@@ -199,82 +258,15 @@
   }
 }
 
-.mobile-table {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  &__head {
-    display: flex;
-    padding: 0 14px;
-
-    > .mobile-table__cell {
-      @include font(12px, 15px, 500, var(--rubic-base-24));
-    }
-  }
-
-  &__row {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 14px;
-
-    &:not(:last-child) {
-      background: var(--rubic-base-23);
-      border-radius: 10px;
-    }
-
-    &:last-child .mobile-table__cell {
-      color: $rubic-primary;
-    }
-  }
-
-  &__cell {
-    @include font(12px, 14px, 400, var(--rubic-base-02));
-    display: flex;
-    align-items: center;
-    width: calc(100% / 5);
-
-    img {
-      width: 20px;
-      height: 20px;
-      margin-right: 6px;
-    }
-  }
-
-  &__row:not(:last-child) > &__cell {
-    &:last-child {
-      display: flex;
-      flex: 1;
-      gap: 8px;
-      align-items: center;
-      width: 100%;
-      margin-top: 17px;
-    
-      ::ng-deep app-rubic-button {
-        button {
-          height: 27px;
-
-          font-size: 12px;
-          line-height: 14px;
-        }
-    
-        .wrapper {
-          padding: 0 10px;
-        }
-      }
-    }
-  }
-}
-
-.animate {
-  animation-name: fade;
+.fade-in {
+  animation-name: fade-in;
   animation-duration: 0.4s;
   animation-timing-function: ease-in;
   animation-delay: 0s;
   animation-fill-mode: forwards;
 }
 
-@keyframes fade {
+@keyframes fade-in {
   0% {
     opacity: 0;
   }

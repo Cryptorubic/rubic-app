@@ -17,7 +17,10 @@ import {
   Observable,
   forkJoin,
   of,
-  catchError
+  catchError,
+  Subject,
+  combineLatest,
+  takeUntil
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
@@ -27,15 +30,16 @@ import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class StakingService {
-  public readonly RBC_TOKEN_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a';
-  // public readonly RBC_TOKEN_ADDRESS = '0xd452d01C6348D3d5B35FA1d5500d23F8Ae65D6eA'; //fake rbc
+  public readonly RBC_TOKEN_ADDRESS = ENVIRONMENT.staking.rbcToken;
 
-  public readonly NFT_CONTRACT_ADDRESS = '0x3b67942461E2B487701748f63c1d24De7C72591E';
+  public readonly NFT_CONTRACT_ADDRESS = ENVIRONMENT.staking.nftContractAddress;
 
-  public readonly REWARDS_CONTRACT_ADDRESS = '0x3d9aBCdf76bc969a860175E13Fe4Fc791E836D08';
+  public readonly REWARDS_CONTRACT_ADDRESS = ENVIRONMENT.staking.rewardsContractAddress;
 
   public readonly user$ = this.authService.getCurrentUser();
 
@@ -73,8 +77,6 @@ export class StakingService {
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   );
 
-  private readonly web3Private = Injector.web3Private;
-
   private readonly _deposits$ = new BehaviorSubject<Deposit[]>(undefined);
 
   public readonly deposits$ = this._deposits$.asObservable();
@@ -98,6 +100,8 @@ export class StakingService {
 
   public readonly depositsLoading$ = this._depositsLoading$.asObservable();
 
+  private readonly _stopWatchUserBalanceAndAllowance$ = new Subject<void>();
+
   constructor(
     private readonly statisticsService: StatisticsService,
     private readonly tokensService: TokensService,
@@ -105,15 +109,10 @@ export class StakingService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
     private readonly ngZone: NgZone,
-    private readonly stakingNotificationService: StakingNotificationService
+    private readonly stakingNotificationService: StakingNotificationService,
+    private readonly router: Router
   ) {
-    this.user$
-      .pipe(
-        filter(user => Boolean(user?.address)),
-        switchMap(() => this.getAllowance()),
-        switchMap(() => this.getRbcTokenBalance())
-      )
-      .subscribe();
+    this.watchUserBalanceAndAllowance();
   }
 
   public getRbcAmountPrice(): Observable<number> {
@@ -126,6 +125,22 @@ export class StakingService {
         true
       )
     );
+  }
+
+  public watchUserBalanceAndAllowance(): void {
+    const routerEvents$ = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
+    const userBalanceAndAllowance$ = this.user$.pipe(
+      filter(user => Boolean(user?.address)),
+      switchMap(() => this.getAllowance()),
+      switchMap(() => this.getRbcTokenBalance())
+    );
+    combineLatest([routerEvents$, userBalanceAndAllowance$])
+      .pipe(takeUntil(this._stopWatchUserBalanceAndAllowance$))
+      .subscribe(([event]: [NavigationEnd, BigNumber]) => {
+        if (!event.url.includes('earn')) {
+          this._stopWatchUserBalanceAndAllowance$.next();
+        }
+      });
   }
 
   public getAllowance(): Observable<BigNumber> {
@@ -165,11 +180,23 @@ export class StakingService {
   }
 
   public async approveRbc(): Promise<TransactionReceipt> {
-    return await Injector.web3Private.approveTokens(
-      this.RBC_TOKEN_ADDRESS,
-      this.NFT_CONTRACT_ADDRESS,
-      'infinity'
-    );
+    try {
+      const receipt = await Injector.web3Private.approveTokens(
+        this.RBC_TOKEN_ADDRESS,
+        this.NFT_CONTRACT_ADDRESS,
+        'infinity'
+      );
+
+      if (receipt && receipt.status) {
+        this.stakingNotificationService.showSuccessApproveNotification();
+        this.setAllowance('Infinity');
+      }
+
+      return receipt;
+    } catch (error) {
+      this.errorService.catch(error);
+      return null;
+    }
   }
 
   public async stake(amount: string, duration: number): Promise<TransactionReceipt> {

@@ -7,24 +7,9 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { StakingCardComponent } from './components/staking-card/staking-card.component';
 import { LpCardComponent } from './components/lp-card/lp-card.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import {
-  TuiDropdownControllerModule,
-  TuiDropdownModule,
-  TuiHintControllerModule,
-  TuiHintModule,
-  TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiManualHintModule,
-  TuiTextfieldControllerModule
-} from '@taiga-ui/core';
+import { TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { StatisticsService } from '@features/earn/services/statistics.service';
-import {
-  TuiAccordionModule,
-  TuiInputRangeModule,
-  TuiInputSliderModule,
-  TuiRadioLabeledModule,
-  TuiSliderModule
-} from '@taiga-ui/kit';
+import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from '@features/earn/components/deposits/deposits.component';
@@ -36,7 +21,6 @@ import { NewPositionModalComponent } from './components/new-position-modal/new-p
 import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
 import { ClaimModalComponent } from './components/claim-modal/claim-modal.component';
 import { StakingNotificationService } from './services/staking-notification.service';
-import { FormatAmountPipe } from './pipes/format-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -49,28 +33,18 @@ import { FormatAmountPipe } from './pipes/format-amount.pipe';
     StakeButtonComponent,
     NewPositionModalComponent,
     WithdrawModalComponent,
-    ClaimModalComponent,
-    FormatAmountPipe
+    ClaimModalComponent
   ],
   imports: [
     CommonModule,
     EarnRoutingModule,
     SharedModule,
     InlineSVGModule,
-    TuiManualHintModule,
-    TuiHostedDropdownModule,
-    TuiDropdownControllerModule,
-    TuiDropdownModule,
     TuiLoaderModule,
-    TuiHintModule,
     TuiAccordionModule,
     SwapsModule,
     ReactiveFormsModule,
-    TuiRadioLabeledModule,
-    TuiInputRangeModule,
     TuiTextfieldControllerModule,
-    TuiInputSliderModule,
-    TuiHintControllerModule,
     TuiSliderModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]

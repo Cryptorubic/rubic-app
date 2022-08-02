@@ -100,6 +100,14 @@
     }
   }
 
+  &__price {
+    max-width: 100px;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &__data {
     @include font(20px, 24px, 500, var(--form-bright-text-color));
     display: flex;
@@ -275,19 +283,14 @@
 }
 
 .rules {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-
   &__link {
     @include font(16px, 19px, 400, var(--main-green));
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
     text-decoration-line: underline;
-
-    @include b($tablet) {
-      font-size: 13px;
-      line-height: 16px;
-    }
   }
 
   &__icon {

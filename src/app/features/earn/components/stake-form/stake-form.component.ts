@@ -104,7 +104,6 @@ export class StakeFormComponent implements OnInit {
 
   public ngOnInit(): void {
     this.handleStakeDurationChange();
-    // this.checkStakeParams();
   }
 
   public calculateUsdPrice(amount: string): string {
@@ -153,23 +152,10 @@ export class StakeFormComponent implements OnInit {
   public approve(): void {
     this._approveLoading$.next(true);
 
-    from(this.stakingService.approveRbc())
-      .pipe(
-        catchError((error: unknown) => {
-          this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
-          return of(null);
-        })
-      )
-      .subscribe(receipt => {
-        this._approveLoading$.next(false);
-
-        if (receipt && receipt.status) {
-          this.stakingNotificationService.showSuccessApproveNotification();
-          this.stakingService.setAllowance('Infinity');
-        }
-
-        this.cdr.detectChanges();
-      });
+    from(this.stakingService.approveRbc()).subscribe(() => {
+      this._approveLoading$.next(false);
+      this.cdr.detectChanges();
+    });
   }
 
   public stake(): void {
@@ -220,32 +206,6 @@ export class StakeFormComponent implements OnInit {
       )
       .subscribe();
   }
-
-  // private checkStakeParams(): void {
-  //   this.rbcAmount$
-  //     .pipe(
-  //       withLatestFrom(this.rbcTokenBalance$),
-  //       map(([rbcAmount, rbcTokenBalance]) => {
-  //         if (!rbcAmount || !rbcAmount.toNumber()) {
-  //           return StakeButtonError.EMPTY_AMOUNT;
-  //         }
-
-  //         if (rbcTokenBalance?.lt(rbcAmount)) {
-  //           return StakeButtonError.INSUFFICIENT_BALANCE_RBC;
-  //         }
-
-  //         if (rbcAmount?.lt(10)) {
-  //           return StakeButtonError.LESS_THEN_MINIMUM;
-  //         }
-
-  //         return StakeButtonError.NULL;
-  //       }),
-  //       takeUntil(this.destroy$)
-  //     )
-  //     .subscribe(error => {
-  //       this.error = error;
-  //     });
-  // }
 
   public back(): void {
     this.router.navigate(['/earn']);

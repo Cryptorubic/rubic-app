@@ -13,11 +13,11 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimModalComponent {
-  public rewards: BigNumber;
+  public readonly rewards: BigNumber;
 
-  public needSwitchNetwork$: Observable<boolean>;
+  public readonly needSwitchNetwork$: Observable<boolean>;
 
-  public beforeWithdraw: boolean;
+  public readonly beforeWithdraw: boolean;
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,

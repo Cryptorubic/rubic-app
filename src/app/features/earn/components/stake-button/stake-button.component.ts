@@ -15,6 +15,4 @@ export class StakeButtonComponent {
   @Output() public readonly onStake = new EventEmitter<void>();
 
   public readonly errors = StakeButtonError;
-
-  constructor() {}
 }
