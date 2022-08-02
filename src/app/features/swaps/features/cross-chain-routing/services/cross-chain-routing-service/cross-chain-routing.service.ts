@@ -198,6 +198,8 @@ export class CrossChainRoutingService extends TradeService {
         ? form.toToken
         : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
 
+      const timestamp = Date.now();
+
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
@@ -205,7 +207,7 @@ export class CrossChainRoutingService extends TradeService {
         fromToken,
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
-        timestamp: Date.now(),
+        timestamp,
         bridgeType:
           this.crossChainTrade?.trade instanceof LifiCrossChainTrade
             ? this.crossChainTrade?.trade?.subType
@@ -215,7 +217,7 @@ export class CrossChainRoutingService extends TradeService {
       confirmCallback?.();
 
       if (this.crossChainTrade?.tradeType) {
-        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash);
+        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash, timestamp);
       }
 
       this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
@@ -403,7 +405,11 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
+  public openSwapSchemeModal(
+    provider: CrossChainTradeType,
+    txHash: string,
+    timestamp: number
+  ): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     const routing = this.smartRouting;
@@ -433,7 +439,8 @@ export class CrossChainRoutingService extends TradeService {
           dstProvider: toTradeProvider,
           crossChainProvider: provider,
           srcTxHash: txHash,
-          bridgeType: bridgeProvider
+          bridgeType: bridgeProvider,
+          timestamp
         }
       })
       .subscribe();
