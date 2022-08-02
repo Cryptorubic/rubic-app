@@ -23,14 +23,20 @@
             <span class="item__label">
               {{ 'promotionPage.statistics.invitedProjects' | translate }}
             </span>
-            <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
+            <span class="item__amount">
+              {{ statistics === null ? '--' : statistics.integratedProjectsNumber }}</span
+            >
           </li>
           <li class="statistics__item item">
             <span class="item__label">
               {{ 'promotionPage.statistics.totalRewards' | translate }}
             </span>
             <span class="item__amount">
-              ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true }}
+              ${{
+                statistics === null
+                  ? '--'
+                  : (statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true)
+              }}
             </span>
           </li>
           <li class="statistics__item item">
@@ -38,7 +44,12 @@
               {{ 'promotionPage.statistics.instantRewards' | translate }}
             </span>
             <span class="item__amount">
-              {{ statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true }} BRBC
+              {{
+                statistics === null
+                  ? '--'
+                  : (statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true)
+              }}
+              BRBC
             </span>
           </li>
         </ul>
