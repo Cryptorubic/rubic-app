@@ -8,6 +8,10 @@
   background: var(--rubic-base-22);
   border-radius: 24px;
 
+  @include b($mobile-sm-plus) {
+    padding: 22px;
+  }
+
   &__head {
     margin-bottom: 48px;
 
@@ -51,29 +55,8 @@
 
     @include b($tablet) {
       flex-direction: row;
+      margin-bottom: 26px;
       padding: 0;
-
-      &:first-child {
-        order: 3;
-
-        ::ng-deep tui-loader {
-          width: 100%;
-
-          fieldset {
-            display: flex;
-          }
-        }
-      }
-
-      &:nth-child(2) {
-        order: 1;
-        margin-bottom: 26px;
-      }
-
-      &:nth-child(3) {
-        order: 2;
-        margin-bottom: 26px;
-      }
     }
 
     @include b($mobile-sm-plus) {

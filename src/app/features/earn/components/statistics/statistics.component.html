@@ -15,15 +15,13 @@
           {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--' }}
         </div>
       </div>
-      <div class="statistics__param">
+      <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'earn.avgLockTime' | translate }}</div>
         <div class="statistics__param-value">
           {{ '--.--' }}
         </div>
       </div>
-    </div>
-    <div class="statistics__col">
-      <div class="statistics__param">
+      <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'earn.$lockedRBC' | translate }}</div>
         <div
           class="statistics__param-value"
@@ -34,16 +32,33 @@
           {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
         </div>
       </div>
-      <div class="statistics__param">
+    </div>
+    <div class="statistics__col">
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'earn.$lockedRBC' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="lockedRBCInDollars$ | async as lockedRBCInDollars"
+          [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
+        >
+          $
+          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'earn.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
           {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
         </div>
       </div>
-    </div>
-    <div class="statistics__col">
-      <div class="statistics__param">
-        <div class="statistics__param-label">{{ 'earn.circRBCLocked' | translate }}</div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'earn.avgLockTime' | translate }}</div>
+        <div class="statistics__param-value">
+          {{ '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">% {{ 'earn.circRBCLocked' | translate }}</div>
         <div
           class="statistics__param-value"
           *ngLet="circRBCLocked$ | async as circRBCLocked"
@@ -51,6 +66,25 @@
         >
           {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
           %
+        </div>
+      </div>
+    </div>
+    <div class="statistics__col">
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">% {{ 'earn.circRBCLocked' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="circRBCLocked$ | async as circRBCLocked"
+          [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
+        >
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
+          %
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'earn.estYieldPerWeek' | translate }}</div>
+        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">

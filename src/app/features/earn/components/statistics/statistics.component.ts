@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '@features/earn/services/statistics.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-statistics',
@@ -22,10 +23,15 @@ export class StatisticsComponent implements OnInit {
 
   public loading = false;
 
+  public readonly isMobile: boolean = false;
+
   constructor(
     private readonly statisticsService: StatisticsService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    private readonly headerStore: HeaderStore
+  ) {
+    this.isMobile = this.headerStore.isMobile;
+  }
 
   ngOnInit(): void {
     this.getStatisticsData();
