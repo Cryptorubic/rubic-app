@@ -8,4 +8,5 @@ export interface Deposit {
   totalNftRewards: BigNumber;
   rewardIntervals: IntervalReward[];
   tokenApr: BigNumber;
+  canWithdraw: boolean;
 }

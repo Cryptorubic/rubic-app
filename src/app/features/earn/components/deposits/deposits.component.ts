@@ -10,8 +10,6 @@ import { Deposit } from '../../models/deposit.inteface';
 import { StakingService } from '../../services/staking.service';
 import { filter, map, take, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { StakingModalService } from '../../services/staking-modal.service';
@@ -49,8 +47,6 @@ export class DepositsComponent implements OnInit {
     private readonly router: Router,
     private readonly stakingService: StakingService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
     private readonly stakingModalService: StakingModalService,

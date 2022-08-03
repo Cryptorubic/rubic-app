@@ -280,12 +280,13 @@ export class StakingService {
   public loadDeposits(): Observable<Deposit[]> {
     return this.user$.pipe(
       tap(() => this.setDepositsLoading(true)),
-      switchMap(user => {
-        if (!user?.address) {
+      switchMap(() => from(this.getIsStakingFinished())),
+      switchMap(isStakingFinished => {
+        if (!this.authService?.user?.address) {
           return of([]);
         }
 
-        return from(this.getTokensByOwner(user.address)).pipe(
+        return from(this.getTokensByOwner(this.authService.user.address)).pipe(
           switchMap((nftIds: string[]) => {
             if (nftIds.length === 0) {
               return of([]);
@@ -299,7 +300,13 @@ export class StakingService {
                 const tokenApr = new BigNumber(nftVotingPower)
                   .dividedBy(Web3Pure.toWei(nftInfo.amount))
                   .multipliedBy(this.statisticsService.currentStakingApr);
-                return { ...nftInfo, ...nftRewards, id, tokenApr };
+                return {
+                  ...nftInfo,
+                  ...nftRewards,
+                  id,
+                  tokenApr,
+                  canWithdraw: isStakingFinished || Date.now() > nftInfo.endTimestamp
+                };
               })
             );
           })

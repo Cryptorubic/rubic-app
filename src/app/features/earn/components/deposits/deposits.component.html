@@ -149,6 +149,7 @@
                 >Claim Rewards</app-rubic-button
               >
               <app-rubic-button
+                [appearance]="deposit.canWithdraw ? 'secondary' : 'primary'"
                 (onClick)="withdraw(deposit)"
                 [loading]="(withdrawingId$ | async) === deposit.id"
               >
