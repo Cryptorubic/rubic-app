@@ -94,16 +94,22 @@
       <app-rubic-button
         appearance="secondary"
         (onClick)="approve()"
-        *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+        *ngIf="
+          data.needApprove &&
+          !data.needSwitchNetwork &&
+          !data.needLogin &&
+          error === errors.NEED_APPROVE
+        "
         [disabled]="approveLoading$ | async"
         [loading]="approveLoading$ | async"
       >
         Approve
       </app-rubic-button>
+
       <app-stake-button
-        *ngIf="!data.needSwitchNetwork && !data.needLogin && !data.needApprove"
+        *ngIf="!data.needSwitchNetwork && !data.needLogin && error !== errors.NEED_APPROVE"
         [error]="error"
-        [minRbcAmount]="10"
+        [minStakeAmount]="MIN_STAKE_AMOUNT"
         [stakeLoading]="stakeLoading$ | async"
         (onStake)="stake()"
       ></app-stake-button>

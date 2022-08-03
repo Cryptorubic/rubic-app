@@ -45,6 +45,8 @@ export class StakeFormComponent implements OnInit {
     { value: 12, label: '12M' }
   ];
 
+  public readonly MIN_STAKE_AMOUNT = this.stakingService.MIN_STAKE_AMOUNT;
+
   public readonly rbcTokenBalance$ = this.stakingService.rbcTokenBalance$;
 
   public readonly durationSliderCtrl = new FormControl(6);
@@ -127,8 +129,16 @@ export class StakeFormComponent implements OnInit {
       return;
     }
 
-    if (this.stakingService.parseAmountToBn(rbcAmount).lt(10)) {
+    if (this.stakingService.parseAmountToBn(rbcAmount).lt(this.MIN_STAKE_AMOUNT)) {
       this.error = StakeButtonError.LESS_THEN_MINIMUM;
+      return;
+    }
+
+    if (
+      this.stakingService.rbcAllowance.isFinite() &&
+      this.stakingService.rbcAllowance.lt(10000000)
+    ) {
+      this.error = StakeButtonError.NEED_APPROVE;
       return;
     }
 
@@ -156,6 +166,7 @@ export class StakeFormComponent implements OnInit {
 
     from(this.stakingService.approveRbc()).subscribe(() => {
       this._approveLoading$.next(false);
+      this.rbcAmountCtrl.patchValue(this.rbcAmountCtrl);
       this.cdr.detectChanges();
     });
   }

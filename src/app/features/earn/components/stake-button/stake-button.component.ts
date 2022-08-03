@@ -12,6 +12,8 @@ export class StakeButtonComponent {
 
   @Input() error: StakeButtonError;
 
+  @Input() minStakeAmount: number;
+
   @Output() public readonly onStake = new EventEmitter<void>();
 
   public readonly errors = StakeButtonError;

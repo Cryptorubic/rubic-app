@@ -41,6 +41,8 @@ export class StakingService {
 
   public readonly REWARDS_CONTRACT_ADDRESS = ENVIRONMENT.staking.rewardsContractAddress;
 
+  public readonly MIN_STAKE_AMOUNT = 10;
+
   public readonly user$ = this.authService.getCurrentUser();
 
   private readonly _rbcTokenBalance$ = new BehaviorSubject<BigNumber>(null);
