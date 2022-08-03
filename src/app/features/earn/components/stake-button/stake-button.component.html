@@ -1,10 +1,11 @@
 <app-rubic-button
-  [disabled]="error !== errors.NULL"
+  [disabled]="error !== errors.NULL && error !== errors.NEED_APPROVE"
   appearance="secondary"
-  (onClick)="onStake.emit()"
-  [loading]="stakeLoading"
+  (onClick)="handleClick()"
+  [loading]="stakeLoading || approveLoading"
 >
   <ng-container [ngSwitch]="error">
+    <ng-container *ngSwitchCase="errors.NEED_APPROVE"> Approve </ng-container>
     <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_RBC">
       Insufficient balance
     </ng-container>

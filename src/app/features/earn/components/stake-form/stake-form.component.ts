@@ -82,13 +82,6 @@ export class StakeFormComponent implements OnInit {
 
   public rbcUsdPrice: number;
 
-  public needApprove$ = this.rbcAllowance$.pipe(
-    tap(v => console.log(v, 'allowance')),
-    map(allowance => {
-      return allowance?.lt(10000000);
-    })
-  );
-
   public error: StakeButtonError = StakeButtonError.EMPTY_AMOUNT;
 
   public readonly errors = StakeButtonError;
@@ -166,7 +159,7 @@ export class StakeFormComponent implements OnInit {
 
     from(this.stakingService.approveRbc()).subscribe(() => {
       this._approveLoading$.next(false);
-      this.rbcAmountCtrl.patchValue(this.rbcAmountCtrl);
+      this.rbcAmountCtrl.patchValue(this.rbcAmountCtrl.value);
       this.cdr.detectChanges();
     });
   }

@@ -29,25 +29,7 @@ app-deposits {
   }
 }
 
-.staking {
-  padding: 26px;
-
-  background: var(--rubic-base-22);
-  border-radius: 24px;
-
-
-  &__title {
-    @include font(20px, 24px, 600, var(--rubic-base-02));
-    margin-bottom: 26px;  
-  }
-
-  &__card:not(:last-child) {
-    display: block;
-    margin-bottom: 12px;
-  }
-}
-
-.container {
+.accordion {
   margin-bottom: 12px;
   padding: 12px;
 
@@ -63,67 +45,6 @@ app-deposits {
 
     .content {
       padding: 0;
-    }
-  }
-}
-
-.staking-btn__item {
-  @include font(16px, 19px, 500, white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 398px;
-  margin: 0 auto;
-  padding: 10px 20px;
-
-  background: var(--main-green);
-  border: 2px solid var(--main-green);
-  border-radius: 100px;
-
-  cursor: pointer;
-
-  @include b(480) {
-    width: 100%;
-    padding: 15px 20px;
-
-    &:nth-child(2) {
-      margin: 0 auto;
-    }
-
-    &:first-child {
-      margin: 15px auto 0;
-    }
-  }
-}
-
-.staking-btn {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-
-  @include b(480) {
-    display: grid;
-    grid-template-columns: 100%;
-    gap: 15px;
-  }
-
-  &__text {
-    position: relative;
-
-    &-num {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      margin-right: 6px;
-
-      font-size: 12px;
-      line-height: 1;
-
-      border: 2px solid #fff;
-      border-radius: 50%;
     }
   }
 }

@@ -75,7 +75,6 @@
   <div class="button-container">
     <ng-container
       *ngLet="{
-        needApprove: needApprove$ | async,
         needSwitchNetwork: needSwitchNetwork$ | async,
         needLogin: needLogin$ | async
       } as data"
@@ -83,6 +82,7 @@
       <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin">
         Connect wallet
       </app-rubic-button>
+
       <app-rubic-button
         appearance="secondary"
         (onClick)="switchNetwork()"
@@ -91,26 +91,13 @@
         Switch to BSC network
       </app-rubic-button>
 
-      <app-rubic-button
-        appearance="secondary"
-        (onClick)="approve()"
-        *ngIf="
-          data.needApprove &&
-          !data.needSwitchNetwork &&
-          !data.needLogin &&
-          error === errors.NEED_APPROVE
-        "
-        [disabled]="approveLoading$ | async"
-        [loading]="approveLoading$ | async"
-      >
-        Approve
-      </app-rubic-button>
-
       <app-stake-button
-        *ngIf="!data.needSwitchNetwork && !data.needLogin && error !== errors.NEED_APPROVE"
+        *ngIf="!data.needSwitchNetwork && !data.needLogin"
         [error]="error"
         [minStakeAmount]="MIN_STAKE_AMOUNT"
         [stakeLoading]="stakeLoading$ | async"
+        [approveLoading]="approveLoading$ | async"
+        (onApprove)="approve()"
         (onStake)="stake()"
       ></app-stake-button>
     </ng-container>
