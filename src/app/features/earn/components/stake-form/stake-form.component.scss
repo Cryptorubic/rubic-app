@@ -251,6 +251,14 @@
   @include b($tablet) {
     margin-bottom: 39px;
   }
+
+  ::ng-deep {
+    --tui-primary-active: #4aa956;
+
+    .wrapper {
+      height: 6px;
+    }
+  }
 }
 
 .hint {
