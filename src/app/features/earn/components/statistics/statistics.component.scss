@@ -8,6 +8,10 @@
   background: var(--rubic-base-22);
   border-radius: 24px;
 
+  @include b($mobile-sm-plus) {
+    padding: 22px 22px 0;
+  }
+
   &__head {
     margin-bottom: 48px;
 
@@ -18,6 +22,10 @@
 
   &__title {
     @include font(18px, 22px, 600, var(--rubic-base-02));
+
+    @include b($mobile-sm-plus) {
+      @include font(16px, 22px, 500, var(--rubic-base-02));
+    }
   }
 
   &__info {
@@ -46,34 +54,13 @@
   &__col {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     padding: 0 45px;
 
     @include b($tablet) {
       flex-direction: row;
+      margin-bottom: 26px;
       padding: 0;
-
-      &:first-child {
-        order: 3;
-
-        ::ng-deep tui-loader {
-          width: 100%;
-
-          fieldset {
-            display: flex;
-          }
-        }
-      }
-
-      &:nth-child(2) {
-        order: 1;
-        margin-bottom: 26px;
-      }
-
-      &:nth-child(3) {
-        order: 2;
-        margin-bottom: 26px;
-      }
     }
 
     @include b($mobile-sm-plus) {

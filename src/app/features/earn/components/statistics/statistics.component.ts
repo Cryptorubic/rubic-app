@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '@features/earn/services/statistics.service';
+import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { skip } from 'rxjs';
 
@@ -24,9 +25,12 @@ export class StatisticsComponent implements OnInit {
 
   public loading = false;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly statisticsService: StatisticsService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService
   ) {}
 
@@ -34,7 +38,6 @@ export class StatisticsComponent implements OnInit {
     this.getStatisticsData();
 
     this.walletConnectorService.addressChange$.pipe(skip(1)).subscribe(() => {
-      console.log('regresh');
       this.refreshStatistics();
     });
   }
