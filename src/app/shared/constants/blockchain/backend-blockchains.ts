@@ -22,7 +22,7 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   celo: BLOCKCHAIN_NAME.CELO
 };
 
-export const TO_BACKEND_BLOCKCHAINS: Partial<Record<BlockchainName, string>> = {
+export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
