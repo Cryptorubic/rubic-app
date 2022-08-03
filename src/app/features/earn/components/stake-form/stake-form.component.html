@@ -80,25 +80,28 @@
         needLogin: needLogin$ | async
       } as data"
     >
-      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin"
-        >Connect wallet
+      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin">
+        Connect wallet
       </app-rubic-button>
       <app-rubic-button
         appearance="secondary"
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
-        >Switch to BSC network
+      >
+        Switch to BSC network
       </app-rubic-button>
+
       <app-rubic-button
         appearance="secondary"
         (onClick)="approve()"
         *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
         [disabled]="approveLoading$ | async"
         [loading]="approveLoading$ | async"
-        >Approve</app-rubic-button
       >
+        Approve
+      </app-rubic-button>
       <app-stake-button
-        *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+        *ngIf="!data.needSwitchNetwork && !data.needLogin && !data.needApprove"
         [error]="error"
         [minRbcAmount]="10"
         [stakeLoading]="stakeLoading$ | async"

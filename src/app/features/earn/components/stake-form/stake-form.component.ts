@@ -89,6 +89,8 @@ export class StakeFormComponent implements OnInit {
 
   public error: StakeButtonError = StakeButtonError.EMPTY_AMOUNT;
 
+  public readonly errors = StakeButtonError;
+
   constructor(
     private readonly stakingService: StakingService,
     private readonly router: Router,
