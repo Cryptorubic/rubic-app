@@ -67,11 +67,6 @@
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      <!-- {{
-        rbcAmountCtrl.value
-          ? (rbcAmountCtrl.value | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 })
-          : '0.00'
-      }} -->
       BRBC locked expires in {{ selectedDuration }} months. <br />
       Locked until {{ unlockDate | date: 'mediumDate' }}
     </div>
@@ -85,25 +80,28 @@
         needLogin: needLogin$ | async
       } as data"
     >
-      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin"
-        >Connect wallet
+      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin">
+        Connect wallet
       </app-rubic-button>
       <app-rubic-button
         appearance="secondary"
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
-        >Switch network
+      >
+        Switch to BSC network
       </app-rubic-button>
+
       <app-rubic-button
         appearance="secondary"
         (onClick)="approve()"
         *ngIf="data.needApprove && !data.needSwitchNetwork && !data.needLogin"
         [disabled]="approveLoading$ | async"
         [loading]="approveLoading$ | async"
-        >Approve</app-rubic-button
       >
+        Approve
+      </app-rubic-button>
       <app-stake-button
-        *ngIf="!data.needApprove && !data.needSwitchNetwork && !data.needLogin"
+        *ngIf="!data.needSwitchNetwork && !data.needLogin && !data.needApprove"
         [error]="error"
         [minRbcAmount]="10"
         [stakeLoading]="stakeLoading$ | async"
@@ -114,6 +112,12 @@
 </div>
 
 <div class="rules">
-  <a class="rules__link" href="#" target="_blank">{{ 'staking.stake.rules' | translate }}</a>
-  <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+  <a
+    class="rules__link"
+    href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
+    target="_blank"
+  >
+    {{ 'staking.stake.rules' | translate }}
+    <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+  </a>
 </div>

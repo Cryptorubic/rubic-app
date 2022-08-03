@@ -4,11 +4,12 @@
   (click)="context.completeWith(false)"
 ></div>
 <div class="title">
-  <ng-container *ngIf="beforeWithdraw; else claimTitle">
-    Please claim your rewards before proceeding to the withdrawal
-  </ng-container>
+  <ng-container *ngIf="beforeWithdraw; else claimTitle"> WITHDRAWAL </ng-container>
 </div>
 <div class="text">
+  <div class="text__warn" *ngIf="beforeWithdraw">
+    Please claim your rewards before proceeding to the withdrawal
+  </div>
   {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 } }} BRBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">

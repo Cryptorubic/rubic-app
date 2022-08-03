@@ -92,7 +92,7 @@
           {{ 'earn.apr' | translate }}
         </div>
         <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          <ng-container *ngIf="apr === 0; else actualApr"> Est. up to 58% </ng-container>
+          <ng-container *ngIf="!apr; else actualApr"> Est. up to 58% </ng-container>
           <ng-template #actualApr>
             {{ apr ? (apr | bigNumberFormat: 0:true) : '--.--' }} %
           </ng-template>

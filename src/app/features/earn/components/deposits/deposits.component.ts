@@ -11,12 +11,7 @@ import { StakingService } from '../../services/staking.service';
 import { filter, map, take, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
-import { compareTokens } from '@app/shared/utils/utils';
-import BigNumber from 'bignumber.js';
-import { SwapFormInput } from '@app/features/swaps/features/main-form/models/swap-form';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { StakingModalService } from '../../services/staking-modal.service';
@@ -142,47 +137,19 @@ export class DepositsComponent implements OnInit {
   }
 
   public async navigateToCcrForm(): Promise<void> {
-    const form = this.swapFormService.commonTrade.controls.input;
-    const from = this.tokensService.tokens.find(token =>
-      compareTokens(
-        {
-          address: NATIVE_TOKEN_ADDRESS,
-          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        },
-        token
-      )
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/'], {
+        queryParams: {
+          from: 'BNB',
+          to: 'BRBC',
+          fromChain: 'BSC',
+          toChain: 'BSC',
+          amount: 1
+        }
+      })
     );
-    const to = this.tokensService.tokens.find(token =>
-      compareTokens(
-        {
-          address: '0x8e3bcc334657560253b83f08331d85267316e08a',
-          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        },
-        token
-      )
-    );
-    const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      fromToken: from,
-      toToken: to,
-      fromAmount: new BigNumber(1)
-    } as SwapFormInput;
 
-    form.patchValue(params);
-
-    await this.router.navigate(['/'], {
-      queryParams: {
-        fromChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        amount: '1',
-        from: from,
-        to: to
-      },
-      queryParamsHandling: 'merge'
-    });
-
-    await this.router.navigate(['/']);
+    window.open(url, '_blank');
   }
 
   public navigateToStakeForm(): void {

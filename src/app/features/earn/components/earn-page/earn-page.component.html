@@ -5,13 +5,19 @@
 </ng-container>
 
 <div class="rules">
-  <a class="rules__link" href="#" target="_blank">{{ 'staking.stake.rules' | translate }}</a>
-  <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+  <a
+    class="rules__link"
+    href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
+    target="_blank"
+  >
+    {{ 'staking.stake.rules' | translate }}
+    <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
+  </a>
 </div>
 
 <div class="past-campaings">
   <tui-accordion class="container">
-    <tui-accordion-item [borders]="null" [showArrow]="false" (click)="toggleAccordion()">
+    <tui-accordion-item [borders]="null" [showArrow]="true" (click)="toggleAccordion()">
       {{ 'staking.stake.pastStaking' | translate }}
       <ng-template tuiAccordionItemContent>
         <app-lp-card
@@ -32,11 +38,6 @@
         >
         </app-staking-card>
       </ng-template>
-      <div
-        class="lp__arrow"
-        inlineSVG="assets/images/icons/arrow/long-arrow-up.svg"
-        [style.transform]="accordionState ? 'rotate(360deg)' : 'rotate(180deg)'"
-      ></div>
     </tui-accordion-item>
   </tui-accordion>
 </div>
