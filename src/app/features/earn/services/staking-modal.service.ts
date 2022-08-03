@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { NewPositionModalComponent } from '../components/new-position-modal/new-position-modal.component';
 import { WithdrawModalComponent } from '../components/withdraw-modal/withdraw-modal.component';
 import { ClaimModalComponent } from '../components/claim-modal/claim-modal.component';
+
+const STAKING_MODAL_OPTIONS = {
+  closeable: false,
+  size: 's' as TuiDialogSize
+};
 
 @Injectable()
 export class StakingModalService {
@@ -17,8 +22,7 @@ export class StakingModalService {
     unlockDate: number
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(NewPositionModalComponent), {
-      closeable: false,
-      size: 's',
+      ...STAKING_MODAL_OPTIONS,
       data: {
         amount,
         duration,
@@ -32,8 +36,7 @@ export class StakingModalService {
     needSwitchNetwork$: Observable<boolean>
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(WithdrawModalComponent), {
-      closeable: false,
-      size: 's',
+      ...STAKING_MODAL_OPTIONS,
       data: {
         amount,
         needSwitchNetwork$
@@ -47,8 +50,7 @@ export class StakingModalService {
     beforeWithdraw = false
   ): Observable<boolean> {
     return this.dialogService.open<boolean>(new PolymorpheusComponent(ClaimModalComponent), {
-      closeable: false,
-      size: 's',
+      ...STAKING_MODAL_OPTIONS,
       data: { rewards, needSwitchNetwork$, beforeWithdraw }
     });
   }
