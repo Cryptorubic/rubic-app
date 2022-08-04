@@ -10,11 +10,11 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewPositionModalComponent {
-  public readonly amount: BigNumber;
+  public readonly amount = this.context.data.amount;
 
-  public readonly duration: number;
+  public readonly duration = this.context.data.duration;
 
-  public readonly unlockDate: number;
+  public readonly unlockDate = this.context.data.unlockDate;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -22,9 +22,5 @@ export class NewPositionModalComponent {
       boolean,
       { amount: BigNumber; duration: number; unlockDate: number }
     >
-  ) {
-    this.amount = this.context.data.amount;
-    this.duration = this.context.data.duration;
-    this.unlockDate = this.context.data.unlockDate;
-  }
+  ) {}
 }

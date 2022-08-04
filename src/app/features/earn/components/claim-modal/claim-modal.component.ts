@@ -13,11 +13,11 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimModalComponent {
-  public readonly rewards: BigNumber;
+  public readonly rewards = this.context.data.rewards;
 
-  public readonly needSwitchNetwork$: Observable<boolean>;
+  public readonly needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
 
-  public readonly beforeWithdraw: boolean;
+  public readonly beforeWithdraw = this.context.data.beforeWithdraw;
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
@@ -27,11 +27,7 @@ export class ClaimModalComponent {
       boolean,
       { rewards: BigNumber; needSwitchNetwork$: Observable<boolean>; beforeWithdraw: boolean }
     >
-  ) {
-    this.rewards = this.context.data.rewards;
-    this.needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
-    this.beforeWithdraw = this.context.data.beforeWithdraw;
-  }
+  ) {}
 
   public async switchNetwork(): Promise<void> {
     this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);

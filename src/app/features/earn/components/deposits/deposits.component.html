@@ -22,7 +22,7 @@
         </div>
         <div class="deposits__body" *ngIf="deposits.length; else noDeposits">
           <table class="tui-table" *ngIf="!isMobile; else mobileTable">
-            <tbody>
+            <thead>
               <tr class="tui-table__tr">
                 <th class="tui-table__th">NFT ID</th>
                 <th class="tui-table__th">BRBC</th>
@@ -31,6 +31,8 @@
                 <th class="tui-table__th">End Date</th>
                 <th class="tui-table__th">&nbsp;</th>
               </tr>
+            </thead>
+            <tbody>
               <ng-container *ngFor="let deposit of deposits">
                 <tr class="tui-table__tr data-row">
                   <td class="tui-table__td">

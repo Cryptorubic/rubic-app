@@ -21,7 +21,7 @@
         [formControl]="rbcAmountCtrl"
         [decimals]="18"
         inputmode="decimal"
-        (amountChange)="onAmountChange($event)"
+        (amountChange)="handleErrors($event)"
       />
     </div>
 

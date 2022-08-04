@@ -375,7 +375,6 @@ export class StakingService {
         REWARDS_CONTRACT_ABI,
         'getCurrentEpochId'
       );
-      console.log(currentEpoch);
       const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
         this.REWARDS_CONTRACT_ADDRESS,
         REWARDS_CONTRACT_ABI,

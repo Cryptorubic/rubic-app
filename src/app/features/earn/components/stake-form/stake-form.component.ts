@@ -109,7 +109,7 @@ export class StakeFormComponent implements OnInit {
       : this.stakingService.parseAmountToBn(amount).multipliedBy(this.rbcUsdPrice).toFixed(2);
   }
 
-  public onAmountChange(rbcAmount: string): void {
+  public handleErrors(rbcAmount: string): void {
     this.selectedAmount = rbcAmount;
 
     if (rbcAmount === '') {
