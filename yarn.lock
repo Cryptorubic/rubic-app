@@ -8908,7 +8908,7 @@ global-prefix@^3.0.0:
     kind-of "^6.0.2"
     which "^1.3.1"
 
-global@~4.4.0:
+global@^4.4.0, global@~4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/global/-/global-4.4.0.tgz#3e7b105179006a323ed71aafca3e9c57a5cc6406"
   integrity sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==
@@ -9479,10 +9479,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-husky@^7.0.2:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-7.0.4.tgz#242048245dc49c8fb1bf0cc7cfb98dd722531535"
-  integrity sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==
+husky@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.1.tgz#511cb3e57de3e3190514ae49ed50f6bc3f50b3e9"
+  integrity sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==
 
 i18next@^21.6.11:
   version "21.8.14"
@@ -14517,10 +14517,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@^2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.7.0.tgz#32779b6b3a36e3ff17acbd74754f8e1cea6ae5f4"
-  integrity sha512-svupqhi1SZwqmK/c+lYvl/idS86C7Ei3rcOOI5WJkJbacZ8/Ie4lk+n/mNNLtUwAy7JBs2n+EMHKeQKtQoGIHw==
+rubic-sdk@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.8.1.tgz#42e9b244c627f451ee76a5f2a223e62cc2d426a7"
+  integrity sha512-7S5eA5M0jXgnmvwstIDMHSU3SXjgNjsustrRcYgOuiSR3PenEafEFAkG8p5qIIyGeVL6g8a1+88mE9QAT3Q1mA==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     assert "^2.0.0"

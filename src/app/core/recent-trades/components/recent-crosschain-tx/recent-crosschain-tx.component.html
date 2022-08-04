@@ -37,6 +37,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
           ></tr>
+          <tr
+            de-bridge-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
