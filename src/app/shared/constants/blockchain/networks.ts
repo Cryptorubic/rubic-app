@@ -150,7 +150,7 @@ const networks: ReadonlyArray<Network> = [
   {
     id: 42161,
     name: BLOCKCHAIN_NAME.ARBITRUM,
-    label: 'Arbitrum One',
+    label: 'Arbitrum',
     scannerUrl: 'https://arbiscan.io',
     rpcLink:
       'https://late-white-sky.arbitrum-mainnet.quiknode.pro/84da6c33a092bf64d9d72bc52c5db62aac00c81c/',
