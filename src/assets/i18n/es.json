@@ -567,8 +567,7 @@
     }
   },
   "referralBanner": {
-    "takePartInOur": "Participa en nuestro ",
-    "referralProgram": "¡Programa de referencias y obtén recompensas!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Aprende más"
   },
   "volume": {

@@ -56,6 +56,7 @@ import { switchTap } from '@shared/utils/utils';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -197,6 +198,8 @@ export class CrossChainRoutingService extends TradeService {
         ? form.toToken
         : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
 
+      const timestamp = Date.now();
+
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
@@ -204,7 +207,7 @@ export class CrossChainRoutingService extends TradeService {
         fromToken,
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
-        timestamp: Date.now(),
+        timestamp,
         bridgeType:
           this.crossChainTrade?.trade instanceof LifiCrossChainTrade
             ? this.crossChainTrade?.trade?.subType
@@ -214,7 +217,7 @@ export class CrossChainRoutingService extends TradeService {
       confirmCallback?.();
 
       if (this.crossChainTrade?.tradeType) {
-        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash);
+        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash, timestamp);
       }
 
       this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
@@ -247,13 +250,17 @@ export class CrossChainRoutingService extends TradeService {
     const trade = this.crossChainTrade.trade;
     const { estimatedGas } = trade;
 
-    if (trade instanceof SymbiosisCrossChainTrade || trade instanceof LifiCrossChainTrade) {
+    if (
+      trade instanceof SymbiosisCrossChainTrade ||
+      trade instanceof LifiCrossChainTrade ||
+      trade instanceof DebridgeCrossChainTrade
+    ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
         feePercent: trade.feeInfo.platformFee.percent,
-        priceImpact: String(trade.priceImpact),
+        priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo?.cryptoFee?.tokenSymbol
       };
@@ -325,6 +332,12 @@ export class CrossChainRoutingService extends TradeService {
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
+    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
+      this.smartRouting = {
+        fromProvider: TRADE_TYPE.ONE_INCH,
+        toProvider: TRADE_TYPE.ONE_INCH,
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
+      };
     } else {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
@@ -392,7 +405,11 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
+  public openSwapSchemeModal(
+    provider: CrossChainTradeType,
+    txHash: string,
+    timestamp: number
+  ): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     const routing = this.smartRouting;
@@ -422,7 +439,8 @@ export class CrossChainRoutingService extends TradeService {
           dstProvider: toTradeProvider,
           crossChainProvider: provider,
           srcTxHash: txHash,
-          bridgeType: bridgeProvider
+          bridgeType: bridgeProvider,
+          timestamp
         }
       })
       .subscribe();
