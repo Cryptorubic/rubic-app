@@ -139,7 +139,7 @@ export class StakingService {
     combineLatest([routerEvents$, userBalanceAndAllowance$])
       .pipe(takeUntil(this._stopWatchUserBalanceAndAllowance$))
       .subscribe(([event]: [NavigationEnd, BigNumber]) => {
-        if (!event.url.includes('earn')) {
+        if (!event.url.includes('staking')) {
           this._stopWatchUserBalanceAndAllowance$.next();
         }
       });

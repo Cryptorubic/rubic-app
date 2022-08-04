@@ -32,8 +32,9 @@ const routes: Routes = [
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
-    path: ROUTE_PATH.EARN,
-    loadChildren: () => import('./features/earn/earn.module').then(m => m.EarnModule)
+    path: ROUTE_PATH.STAKING,
+    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
+    // canLoad: [TimeGuard]
   },
   {
     path: ROUTE_PATH.PROMOTION,

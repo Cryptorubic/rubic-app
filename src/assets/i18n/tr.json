@@ -523,6 +523,12 @@
     "liquidityTime": "Liquidity time"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Çekmek",
@@ -623,14 +629,6 @@
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
     }
-  },
-  "earn": {
-    "lockedRBC": "Locked BRBC",
-    "$lockedRBC": "$ Locked BRBC",
-    "circRBCLocked": "Circ. BRBC Locked",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time (month)",
-    "apr": "APR"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",

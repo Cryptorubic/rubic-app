@@ -345,14 +345,6 @@
     "tradingNotAvailable": "Nicht verfügbar",
     "rateIsUpdated": "Aktuelle Konditionen. Um sie neu abzurufen, bitte klicken."
   },
-  "earn": {
-    "lockedRBC": "Locked BRBC",
-    "$lockedRBC": "$ Locked BRBC",
-    "circRBCLocked": "Circ. BRBC Locked",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time (month)",
-    "apr": "APR"
-  },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
     "currentlyAvailable": "Currently Available",
@@ -388,6 +380,12 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Auszahlen",

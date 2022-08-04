@@ -214,7 +214,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public back(): void {
-    this.router.navigate(['/earn']);
+    this.router.navigate(['/staking']);
   }
 
   private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {

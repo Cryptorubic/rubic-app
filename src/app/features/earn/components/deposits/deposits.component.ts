@@ -149,6 +149,6 @@ export class DepositsComponent implements OnInit {
   }
 
   public navigateToStakeForm(): void {
-    this.router.navigate(['earn', 'new-position']);
+    this.router.navigate(['staking', 'new-position']);
   }
 }

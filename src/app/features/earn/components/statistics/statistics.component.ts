@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { StatisticsService } from '@features/earn/services/statistics.service';
+import { StatisticsService } from '../../services/statistics.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { skip } from 'rxjs';

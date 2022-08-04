@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { EarnPageComponent } from './components/earn-page/earn-page.component';
 import { StakeFormComponent } from './components/stake-form/stake-form.component';
+import { StakingPageComponent } from './components/staking-page/staking-page.component';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: EarnPageComponent
+        component: StakingPageComponent
       },
       {
         path: 'new-position',
@@ -24,4 +24,4 @@ const routes: Routes = [
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class EarnRoutingModule {}
+export class StakingRoutingModule {}

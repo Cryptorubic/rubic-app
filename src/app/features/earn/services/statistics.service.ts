@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
-import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
+import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
 
 interface EpochInfo {
   startTime: string;

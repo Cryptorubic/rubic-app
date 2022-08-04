@@ -5,12 +5,12 @@ import { RoundStatus } from '../../models/round-status.enum';
 import { StakingService } from '../../services/staking.service';
 
 @Component({
-  selector: 'app-earn',
-  templateUrl: './earn-page.component.html',
-  styleUrls: ['./earn-page.component.scss'],
+  selector: 'app-staking',
+  templateUrl: './staking-page.component.html',
+  styleUrls: ['./staking-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EarnPageComponent {
+export class StakingPageComponent {
   public accordionState = false;
 
   public readonly RoundStatus = RoundStatus;
@@ -28,7 +28,7 @@ export class EarnPageComponent {
   }
 
   public navigateToStakeForm(): void {
-    this.router.navigate(['earn', 'new-position']);
+    this.router.navigate(['staking', 'new-position']);
   }
 
   public login(): void {
