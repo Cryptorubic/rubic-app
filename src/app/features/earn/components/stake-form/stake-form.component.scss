@@ -58,11 +58,10 @@
   }
 
   &__text {
-    @include font(18px, 22px, 600, var(--rubic-base-02));
+    @include font(18px, 22px, 500, var(--rubic-base-02));
     text-align: center;
 
     @include b($tablet) {
-      font-weight: 500;
       font-size: 16px;
       line-height: 19px;
     }

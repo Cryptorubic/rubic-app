@@ -13,6 +13,8 @@
   }
 
   &__head {
+    position: relative;
+
     margin-bottom: 48px;
 
     @include b($mobile-sm-plus) {
@@ -42,8 +44,8 @@
 
   &__refresh {
     position: absolute;
-    top: 22px;
-    right: 22px;
+    top: 0;
+    right: 0;
 
     @include b($tablet) {
       top: 24px;

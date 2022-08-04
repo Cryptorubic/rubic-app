@@ -12,7 +12,7 @@ import { LoadResult } from '@shared/guards/models/types';
 export class TimeGuard implements CanLoad {
   private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
 
-  private readonly expiredDateUTC = Date.UTC(2022, 7, 4, 9, 35);
+  private readonly expiredDateUTC = Date.UTC(2022, 7, 4, 8, 15);
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
