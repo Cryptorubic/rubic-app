@@ -13,7 +13,7 @@
     "copy": "Copy",
     "accept": "Accept",
     "copyright": "Copyright",
-    "privacyPolicy": "Privacy policy",
+    "privacyPolicy": "Privacy Policy",
     "close": "Close",
     "send": "Send",
     "left": "Left",
@@ -405,7 +405,7 @@
       "canUnstake": "Can unstake {{amount}}",
       "buyBRBC": "BUY BRBC",
       "stakeBRBC": "STAKE BRBC",
-      "rules": "Staking Complete Rules",
+      "rules": "Complete Staking Rules",
       "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
