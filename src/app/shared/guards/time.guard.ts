@@ -11,7 +11,7 @@ import { ActivationResult } from '@shared/guards/models/types';
 export class TimeGuard implements CanActivate {
   private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
 
-  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 10, 20);
+  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 10, 30);
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
