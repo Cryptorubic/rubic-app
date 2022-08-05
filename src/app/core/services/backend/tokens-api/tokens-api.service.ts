@@ -222,8 +222,26 @@ export class TokensApiService {
         )
       );
 
-    return forkJoin([backendTokens$, lifiTokens$]).pipe(
-      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
+    const fixedTokens$ = of([
+      {
+        address: '0x66a2a913e447d6b4bf33efbec43aaef87890fbbc',
+        name: 'USDC',
+        symbol: 'USDC',
+        decimals: 6,
+        blockchain: BLOCKCHAIN_NAME.BOBA,
+        chainId: 288,
+        image: '',
+        rank: 1,
+        price: 1,
+        usedInIframe: true,
+        hasDirectPair: null
+      }
+    ]);
+
+    return forkJoin([backendTokens$, lifiTokens$, fixedTokens$]).pipe(
+      map(([backendTokens, lifiTokens, fixedTokens]) =>
+        backendTokens.concat(lifiTokens).concat(fixedTokens)
+      )
     );
   }
 

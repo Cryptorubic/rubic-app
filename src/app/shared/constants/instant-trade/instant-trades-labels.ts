@@ -29,5 +29,6 @@ export const instantTradesLabels: Record<TradeType, string> = {
   [TRADE_TYPE.BEAM_SWAP]: 'Beamswap',
   [TRADE_TYPE.UBE_SWAP]: 'Ubeswap',
   [TRADE_TYPE.J_SWAP]: 'Jswap',
-  [TRADE_TYPE.CRONA_SWAP]: 'Cronaswap'
+  [TRADE_TYPE.CRONA_SWAP]: 'Cronaswap',
+  [TRADE_TYPE.OOLONG_SWAP]: 'Oolongswap'
 };
