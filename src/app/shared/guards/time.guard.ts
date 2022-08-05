@@ -12,7 +12,7 @@ import { ActivationResult } from '@shared/guards/models/types';
 export class TimeGuard implements CanActivate {
   private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
 
-  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 9, 30);
+  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 9, 40);
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
@@ -31,9 +31,8 @@ export class TimeGuard implements CanActivate {
       .pipe(
         switchMap(({ fulldate }) => {
           const currentTimestamp = new Date(fulldate).getTime();
-          const difference = this.expiredDateUTC - currentTimestamp;
 
-          if (difference > 1000) {
+          if (currentTimestamp < this.expiredDateUTC) {
             this.window.location.assign(this.redirectUrl);
             return of(false);
           }
