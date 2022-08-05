@@ -78,7 +78,9 @@ export class StatisticsService {
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.lockedRBC$.pipe(map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply)))
+      this.lockedRBC$.pipe(
+        map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply).multipliedBy(100))
+      )
     )
   );
 
