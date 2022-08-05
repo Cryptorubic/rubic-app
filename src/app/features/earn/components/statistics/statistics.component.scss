@@ -46,11 +46,6 @@
     position: absolute;
     top: 0;
     right: 0;
-
-    @include b($tablet) {
-      top: 24px;
-      right: 24px;
-    }
   }
 
   &__col {

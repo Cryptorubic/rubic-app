@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 export class TimeGuard implements CanActivate, CanLoad {
   private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
 
-  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 11, 0);
+  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 14, 0);
 
   constructor(@Inject(WINDOW) private readonly window: RubicWindow) {}
 

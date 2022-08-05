@@ -27,7 +27,7 @@ export class StatisticsComponent implements OnInit {
 
   public readonly aprExists$ = this._currentTimestamp$.asObservable().pipe(
     map(timestamp => {
-      return timestamp > Date.UTC(2022, 7, 5, 11, 5);
+      return timestamp > Date.UTC(2022, 7, 8, 14, 0, 30);
     })
   );
 

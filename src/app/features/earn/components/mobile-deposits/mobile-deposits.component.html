@@ -6,7 +6,7 @@
     <div class="mobile-table__cell">APR</div>
     <div class="mobile-table__cell">End Date</div>
   </div>
-  <div class="mobile-table__row" *ngFor="let deposit of deposits">
+  <div class="mobile-table__row" *ngFor="let deposit of deposits; let i = index; trackBy: trackBy">
     <div class="mobile-table__cell">
       <img src="assets/images/rbc-util-icon.png" alt="" />
       {{ deposit.id }}

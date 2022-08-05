@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let deposit of deposits">
+    <ng-container *ngFor="let deposit of deposits; trackBy: trackBy">
       <tr class="tui-table__tr data-row">
         <td class="tui-table__td">
           <div class="tui-table__td-id">

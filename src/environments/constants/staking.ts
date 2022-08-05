@@ -6,7 +6,7 @@ export const STAKING_CONFIG_DEVELOP = {
 };
 
 export const STAKING_CONFIG_PROD = {
-  nftContractAddress: '0x345C19973B58F9a57AB768ce2Dd5f527D5Fb82BE',
-  rewardsContractAddress: '0x9835d4A1399fF4A67876605f9Dc06f6ADcf14606',
-  rbcToken: '0x8e3bcc334657560253b83f08331d85267316e08a' // real rbc
+  nftContractAddress: '0x3333B155fa21A972D179921718792f1036370333',
+  rewardsContractAddress: '0x333C28fca941b5B229fbAEC7D1385Ae7139da333',
+  rbcToken: '0x8e3bcc334657560253b83f08331d85267316e08a'
 };
