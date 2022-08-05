@@ -184,7 +184,7 @@ export class SwapSchemeModalComponent implements OnInit {
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
-                    lifiBridgeType: this.bridgeType.name
+                    lifiBridgeType: this.bridgeType.name.toLowerCase()
                   },
                   this.crossChainProvider
                 )
