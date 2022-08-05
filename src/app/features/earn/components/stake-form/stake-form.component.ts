@@ -10,6 +10,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
+import { MILLISECONDS_IN_MONTH, MILLISECONDS_IN_WEEK } from '@app/shared/constants/time/time';
 import { FormControl } from '@ngneat/reactive-forms';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
@@ -219,7 +220,9 @@ export class StakeFormComponent implements OnInit {
 
   private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {
     return (
-      Math.trunc((blockTimestamp * 1000 + duration * 30 * 86400 * 1000) / 604800000) * 604800 * 1000
+      Math.trunc(
+        (blockTimestamp * 1000 + duration * MILLISECONDS_IN_MONTH) / MILLISECONDS_IN_WEEK
+      ) * MILLISECONDS_IN_WEEK
     );
   }
 }

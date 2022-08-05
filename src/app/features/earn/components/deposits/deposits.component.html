@@ -33,7 +33,7 @@
               </tr>
             </thead>
             <tbody>
-              <ng-container *ngFor="let deposit of deposits">
+              <ng-container *ngFor="let deposit of deposits; trackBy: deposit.id">
                 <tr class="tui-table__tr data-row">
                   <td class="tui-table__td">
                     <div class="tui-table__td-id">
@@ -120,7 +120,7 @@
             <div class="mobile-table__cell">APR</div>
             <div class="mobile-table__cell">End Date</div>
           </div>
-          <div class="mobile-table__row" *ngFor="let deposit of deposits">
+          <div class="mobile-table__row" *ngFor="let deposit of deposits; trackBy: deposit.id">
             <div class="mobile-table__cell">
               <img src="assets/images/rbc-util-icon.png" alt="" />
               {{ deposit.id }}

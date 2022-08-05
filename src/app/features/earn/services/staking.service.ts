@@ -32,6 +32,7 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 
 @Injectable()
 export class StakingService {
@@ -202,7 +203,7 @@ export class StakingService {
   }
 
   public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
-    const durationInSeconds = duration * 30 * 86400;
+    const durationInSeconds = duration * SECONDS_IN_MONTH;
     console.log({
       duration,
       amount,
