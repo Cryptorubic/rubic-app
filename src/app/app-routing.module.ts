@@ -35,7 +35,8 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.STAKING,
     loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule),
-    canActivate: [TimeGuard]
+    canActivate: [TimeGuard],
+    canLoad: [TimeGuard]
   },
   {
     path: ROUTE_PATH.PROMOTION,
