@@ -3,7 +3,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '../../services/statistics.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { skip } from 'rxjs';
+import { BehaviorSubject, map, skip } from 'rxjs';
 
 @Component({
   selector: 'app-statistics',
@@ -22,6 +22,14 @@ export class StatisticsComponent implements OnInit {
   public readonly rewardPerSecond$ = this.statisticsService.rewardPerSecond$;
 
   public readonly apr$ = this.statisticsService.apr$;
+
+  private readonly _currentTimestamp$ = new BehaviorSubject<number>(Date.now());
+
+  public readonly aprExists$ = this._currentTimestamp$.asObservable().pipe(
+    map(timestamp => {
+      return timestamp > Date.UTC(2022, 7, 5, 8, 30);
+    })
+  );
 
   public loading = false;
 
@@ -44,6 +52,7 @@ export class StatisticsComponent implements OnInit {
 
   public refreshStatistics(): void {
     this.loading = true;
+    this._currentTimestamp$.next(Date.now());
     this.statisticsService.updateStatistics();
     setTimeout(() => {
       this.loading = false;

@@ -91,11 +91,13 @@
         <div class="statistics__param-label statistics__param-label_btn">
           {{ 'staking.apr' | translate }}
         </div>
-        <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          <ng-container *ngIf="!apr || apr.isZero(); else actualApr"> Est. up to 58% </ng-container>
-          <ng-template #actualApr>
-            {{ apr ? (apr | bigNumberFormat: 0:true) : '--.--' }} %
-          </ng-template>
+        <div class="statistics__param-value">
+          <ng-container *ngIf="aprExists$ | async; else estimate">
+            <ng-container *ngLet="apr$ | async as apr">
+              {{ apr ? (apr | bigNumberFormat: 0:true) : '--.--' }} %
+            </ng-container>
+          </ng-container>
+          <ng-template #estimate> Est. up to 58% </ng-template>
         </div>
       </div>
     </div>
