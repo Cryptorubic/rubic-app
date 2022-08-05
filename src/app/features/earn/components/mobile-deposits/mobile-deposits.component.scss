@@ -1,0 +1,72 @@
+@use 'src/scss/core' as *;
+
+.mobile-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__head {
+    display: flex;
+    padding: 0 14px;
+
+    >.mobile-table__cell {
+      @include font(12px, 15px, 500, var(--rubic-base-24));
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 14px;
+
+    &:not(:last-child) {
+      background: var(--rubic-base-23);
+      border-radius: 10px;
+    }
+
+    &:last-child .mobile-table__cell {
+      color: $rubic-primary;
+    }
+  }
+
+  &__cell {
+    @include font(12px, 14px, 400, var(--rubic-base-02));
+    display: flex;
+    align-items: center;
+    width: calc(100% / 5);
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+    }
+  }
+
+  &__row:not(:last-child) > &__cell {
+    &:last-child {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      margin-top: 17px;
+
+      ::ng-deep app-rubic-button {
+        button {
+          height: 27px;
+
+          font-size: 12px;
+          line-height: 14px;
+
+          .t-loader[data-tui-element-size='m'] {
+            font-size: unset;
+          }
+
+          .wrapper {
+            padding: 0 10px;
+          }
+        }
+      }
+    }
+  }
+}

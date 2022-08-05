@@ -21,6 +21,8 @@ import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-mod
 import { ClaimModalComponent } from './components/claim-modal/claim-modal.component';
 import { StakingNotificationService } from './services/staking-notification.service';
 import { StakingPageComponent } from './components/staking-page/staking-page.component';
+import { DesktopDepositsComponent } from './components/desktop-deposits/desktop-deposits.component';
+import { MobileDepositsComponent } from './components/mobile-deposits/mobile-deposits.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { StakingPageComponent } from './components/staking-page/staking-page.com
     StakeButtonComponent,
     NewPositionModalComponent,
     WithdrawModalComponent,
-    ClaimModalComponent
+    ClaimModalComponent,
+    DesktopDepositsComponent,
+    MobileDepositsComponent
   ],
   imports: [
     CommonModule,

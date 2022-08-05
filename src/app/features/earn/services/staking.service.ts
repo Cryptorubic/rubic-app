@@ -33,6 +33,7 @@ import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { TableTotal } from '../models/table-total.interface';
 
 @Injectable()
 export class StakingService {
@@ -84,14 +85,14 @@ export class StakingService {
 
   public readonly deposits$ = this._deposits$.asObservable();
 
-  private readonly _total$ = new BehaviorSubject<{ balance: BigNumber; rewards: BigNumber }>({
+  private readonly _total$ = new BehaviorSubject<TableTotal>({
     balance: null,
     rewards: null
   });
 
   public readonly total$ = this._total$.asObservable();
 
-  private get total(): { balance: BigNumber; rewards: BigNumber } {
+  private get total(): TableTotal {
     return this._total$.getValue();
   }
 
