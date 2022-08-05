@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@angular/core';
-import { CanLoad } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { LoadResult } from '@shared/guards/models/types';
+import { ActivationResult } from '@shared/guards/models/types';
 
 @Injectable()
-export class TimeGuard implements CanLoad {
+export class TimeGuard implements CanActivate {
   private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
 
   private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 9, 30);
@@ -19,8 +19,8 @@ export class TimeGuard implements CanLoad {
     private readonly httpClient: HttpClient
   ) {}
 
-  canLoad(): LoadResult {
-    return this.redirectIfExpired() as LoadResult;
+  canActivate(): ActivationResult {
+    return this.redirectIfExpired() as ActivationResult;
   }
 
   private redirectIfExpired(): Observable<Boolean> {
