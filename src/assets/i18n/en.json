@@ -13,7 +13,7 @@
     "copy": "Copy",
     "accept": "Accept",
     "copyright": "Copyright",
-    "privacyPolicy": "Privacy policy",
+    "privacyPolicy": "Privacy Policy",
     "close": "Close",
     "send": "Send",
     "left": "Left",
@@ -346,13 +346,6 @@
     "tradingNotAvailable": "Trading is not available",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
-  },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
     "currentlyAvailable": "Currently Available",
@@ -388,6 +381,12 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Withdraw",
@@ -403,7 +402,11 @@
       "calculateProfitability": "Calculate profitability",
       "refillTime": "{{hours}} hours {{minutes}} minutes",
       "addXbrbc": "Add xBRBC",
-      "canUnstake": "Can unstake {{amount}}"
+      "canUnstake": "Can unstake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "Yesterday's APR",
@@ -423,6 +426,12 @@
       "stakeTokens": "Stake 1,000 - 100,000 RBC/BRBC/wRBC to get rewards in BRBC",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
