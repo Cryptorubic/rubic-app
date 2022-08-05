@@ -28,8 +28,8 @@
             [claiminId]="claimingId$ | async"
             [withdrawingId]="withdrawingId$ | async"
             [isDarkTheme]="isDarkTheme"
-            (onClaim)="claim($event)"
-            (onWithdraw)="withdraw($event)"
+            (onClaim)="startClaim($event)"
+            (onWithdraw)="startWithdraw($event)"
           ></app-desktop-deposits>
         </div>
       </div>
@@ -41,8 +41,8 @@
           [claiminId]="claimingId$ | async"
           [withdrawingId]="withdrawingId$ | async"
           [isDarkTheme]="isDarkTheme"
-          (onClaim)="claim($event)"
-          (onWithdraw)="withdraw($event)"
+          (onClaim)="startClaim($event)"
+          (onWithdraw)="startWithdraw($event)"
         ></app-mobile-deposits>
       </ng-template>
     </ng-container>

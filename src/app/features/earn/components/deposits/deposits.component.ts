@@ -16,6 +16,7 @@ import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { DatePipe } from '@angular/common';
 import { BehaviorSubject, EMPTY } from 'rxjs';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-deposits',
@@ -51,6 +52,7 @@ export class DepositsComponent implements OnInit {
     private readonly themeService: ThemeService,
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
+    @Inject(WINDOW) private readonly window: Window,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -58,7 +60,7 @@ export class DepositsComponent implements OnInit {
     this.stakingService.loadDeposits().pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
   }
 
-  public async claim(deposit: Deposit): Promise<void> {
+  public async startClaim(deposit: Deposit): Promise<void> {
     this.stakingModalService
       .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$)
       .pipe(
@@ -73,7 +75,7 @@ export class DepositsComponent implements OnInit {
       });
   }
 
-  public async withdraw(deposit: Deposit): Promise<void> {
+  public async startWithdraw(deposit: Deposit): Promise<void> {
     const isStakingFinished = await this.stakingService.getIsStakingFinished();
     if (Date.now() < deposit.endTimestamp && !isStakingFinished) {
       this.stakingNotificationService.showNftLockedError(
@@ -81,51 +83,59 @@ export class DepositsComponent implements OnInit {
       );
     } else {
       if (deposit.totalNftRewards.isZero()) {
-        this.stakingModalService
-          .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
-          .pipe(
-            filter(Boolean),
-            switchMap(() => {
-              this._withdrawingId$.next(deposit.id);
-              return this.stakingService.withdraw(deposit);
-            })
-          )
-          .subscribe(() => this._withdrawingId$.next(''));
+        this.withdraw(deposit);
       } else {
-        this.stakingModalService
-          .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$, true)
-          .pipe(
-            switchMap(claimModalResult => {
-              if (claimModalResult) {
-                this._withdrawingId$.next(deposit.id);
-                return this.stakingService.claim(deposit);
-              } else {
-                return EMPTY;
-              }
-            }),
-            switchMap(claiModalResult => {
-              if (claiModalResult) {
-                return this.stakingModalService
-                  .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
-                  .pipe(
-                    switchMap(withdrawModalResult => {
-                      if (withdrawModalResult) {
-                        return this.stakingService.withdraw(deposit);
-                      } else {
-                        this._withdrawingId$.next('');
-                        return EMPTY;
-                      }
-                    })
-                  );
-              } else {
-                this._withdrawingId$.next('');
-                return EMPTY;
-              }
-            })
-          )
-          .subscribe(() => this._withdrawingId$.next(''));
+        this.claimAndWithdraw(deposit);
       }
     }
+  }
+
+  private claimAndWithdraw(deposit: Deposit): void {
+    this.stakingModalService
+      .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$, true)
+      .pipe(
+        switchMap(claimModalResult => {
+          if (claimModalResult) {
+            this._withdrawingId$.next(deposit.id);
+            return this.stakingService.claim(deposit);
+          } else {
+            return EMPTY;
+          }
+        }),
+        switchMap(claiModalResult => {
+          if (claiModalResult) {
+            return this.stakingModalService
+              .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+              .pipe(
+                switchMap(withdrawModalResult => {
+                  if (withdrawModalResult) {
+                    return this.stakingService.withdraw(deposit);
+                  } else {
+                    this._withdrawingId$.next('');
+                    return EMPTY;
+                  }
+                })
+              );
+          } else {
+            this._withdrawingId$.next('');
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe(() => this._withdrawingId$.next(''));
+  }
+
+  private withdraw(deposit: Deposit): void {
+    this.stakingModalService
+      .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+      .pipe(
+        filter(Boolean),
+        switchMap(() => {
+          this._withdrawingId$.next(deposit.id);
+          return this.stakingService.withdraw(deposit);
+        })
+      )
+      .subscribe(() => this._withdrawingId$.next(''));
   }
 
   public refreshDeposits(): void {
@@ -145,7 +155,7 @@ export class DepositsComponent implements OnInit {
       })
     );
 
-    window.open(url, '_blank');
+    this.window.open(url, '_blank');
   }
 
   public navigateToStakeForm(): void {
