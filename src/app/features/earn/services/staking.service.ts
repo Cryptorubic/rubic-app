@@ -41,7 +41,7 @@ export class StakingService {
 
   public readonly REWARDS_CONTRACT_ADDRESS = ENVIRONMENT.staking.rewardsContractAddress;
 
-  public readonly MIN_STAKE_AMOUNT = 10;
+  public readonly MIN_STAKE_AMOUNT = 1;
 
   public readonly user$ = this.authService.getCurrentUser();
 
