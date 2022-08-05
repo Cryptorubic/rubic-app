@@ -19,7 +19,7 @@ export class TimeGuard implements CanActivate, CanLoad {
 
   public canActivate(): Observable<boolean> {
     if (Date.now() < this.expiredDateUTC) {
-      this.window.location.assign(this.redirectUrl);
+      this.window.location.href = this.redirectUrl;
       return of(false);
     } else {
       return of(true);
@@ -28,7 +28,7 @@ export class TimeGuard implements CanActivate, CanLoad {
 
   public canLoad(): Observable<boolean> {
     if (Date.now() < this.expiredDateUTC) {
-      this.window.location.assign(this.redirectUrl);
+      this.window.location.href = this.redirectUrl;
       return of(false);
     } else {
       return of(true);
