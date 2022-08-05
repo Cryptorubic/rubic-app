@@ -48,7 +48,7 @@ export class CustomTokenComponent {
    */
   public onImportClick(): void {
     this.dialogService
-      .open(new PolymorpheusComponent(CustomTokenWarningModalComponent, this.injector), {
+      .open<boolean>(new PolymorpheusComponent(CustomTokenWarningModalComponent, this.injector), {
         data: { token: this.token },
         dismissible: true,
         label: this.translateService.instant('modals.confirmImportModal.title'),

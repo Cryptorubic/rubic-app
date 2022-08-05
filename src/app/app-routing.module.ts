@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
+import { TimeGuard } from './shared/guards/time.guard';
 
 const routes: Routes = [
   {
@@ -33,19 +34,9 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.STAKING,
-    loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule)
-  },
-  {
-    path: ROUTE_PATH.STAKING_LP,
-    loadChildren: () =>
-      import('./features/staking-lp/staking-lp.module').then(m => m.StakingLpModule)
-  },
-  {
-    path: ROUTE_PATH.LIQUIDITY_PROVIDING,
-    loadChildren: () =>
-      import('./features/liquidity-providing/liquidity-providing.module').then(
-        m => m.LiquidityProvidingModule
-      )
+    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule),
+    canActivate: [TimeGuard],
+    canLoad: [TimeGuard]
   },
   {
     path: ROUTE_PATH.PROMOTION,

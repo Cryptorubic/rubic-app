@@ -15,6 +15,7 @@ import { SignRejectError } from '@core/errors/models/provider/sign-reject-error'
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
+import { NgZone } from '@angular/core';
 
 export class BitkeepWalletAdapter extends CommonWalletAdapter {
   public get isMultiChainWallet(): boolean {
@@ -33,9 +34,10 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     web3: Web3,
     onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsService,
+    zone: NgZone
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$);
+    super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
 
     const ethereum = (window as RubicWindow).bitkeep?.ethereum;
     BitkeepWalletAdapter.checkErrors(ethereum);
@@ -66,14 +68,18 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        this.zone.run(() => {
+          this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        });
         console.info('Chain changed', chain);
       }
     });
     this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
+        this.zone.run(() => {
+          this.onAddressChanges$.next(this.selectedAddress);
+        });
         console.info('Selected account changed to', accounts[0]);
       }
       if (!this.selectedAddress) {

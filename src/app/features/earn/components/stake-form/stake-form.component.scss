@@ -1,0 +1,318 @@
+@use 'src/scss/core' as *;
+
+:host {
+  --tui-text-font: var(--main-font);
+  display: block;
+
+  @include b($tablet) {
+    padding: 0 12px;
+  }
+}
+
+.form-container {
+  display: block;
+  max-width: 490px;
+  margin: 9px auto 20px;
+  padding: 26px;
+
+  background: var(--rubic-base-22);
+  border-radius: 24px;
+
+  @include b($tablet) {
+    max-width: 100%;
+    margin: 9px auto 16px;
+    padding: 20px;
+
+    border-radius: 16px;
+  }
+}
+
+.title {
+  position: relative;
+
+  margin-bottom: 36px;
+
+  &__back {
+    @include clearbtn();
+    position: absolute;
+    left: 0;
+
+    cursor: pointer;
+
+    @include b($tablet) {
+      margin-bottom: 32px;
+
+      ::ng-deep div svg {
+        width: 13px;
+        height: 12px;
+      }
+    }
+
+    ::ng-deep div svg path {
+      fill: #000;
+
+      @include dark {
+        fill: #fff;
+      }
+    }
+  }
+
+  &__text {
+    @include font(18px, 22px, 500, var(--rubic-base-02));
+    text-align: center;
+
+    @include b($tablet) {
+      font-size: 16px;
+      line-height: 19px;
+    }
+  }
+}
+
+.token {
+  margin-bottom: 36px;
+
+  @include b($tablet) {
+    margin-bottom: 32px;
+  }
+
+  &__data-and-amount,
+  &__balance-and-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+    
+  &__data-and-amount {
+    margin-bottom: 12px;
+
+    @include b($tablet) {
+      margin-bottom: 14px;
+    }
+  }
+
+  &__balance-and-price {
+    @include font(15px, 18px, 500, var(--rubic-base-25));
+
+    @include b($tablet) {
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
+
+  &__price {
+    max-width: 100px;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__data {
+    @include font(20px, 24px, 500, var(--form-bright-text-color));
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-right: 12px;
+    padding: 8px 12px;
+
+    background: var(--rubic-base-23);
+    border-radius: 100px;
+
+    @include b($tablet) {
+      padding: 7px 12px;
+
+      font-size: 14px;
+      line-height: 16px;
+    }
+    
+    &-icon {
+      width: 26px;
+      height: 26px;
+      margin-right: 12px;
+
+      @include b($tablet) {
+        width: 22px;
+        height: 22px;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &__amount {
+    @include font(26px, 31px, 400, var(--form-bright-text-color));
+    flex-grow: 1;
+    width: 100%;
+    height: 31px;
+
+    text-align: right;
+    
+    background-color: transparent;
+    
+    border: none;
+    
+    @include b($tablet) {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+
+  &__max {
+    margin-left: 12px;
+
+    color: $rubic-primary;
+
+    cursor: pointer;
+
+    @include b($tablet) {
+      margin-left: 10px;
+    }
+  }
+}
+
+.divider {
+  height: 1px;
+  margin-bottom: 34px;
+
+  background: #3e413f;
+
+  @include b($tablet) {
+    margin-bottom: 40px;
+  }
+}
+
+.duration {
+  display: flex;
+  align-items: center;
+  margin-bottom: 36px;
+
+  &__title {
+    @include font(18px, 22px, 500, var(--form-bright-text-color));
+    margin-right: 12px;
+
+    @include b($tablet) {
+      margin-right: 8px;
+
+      font-size: 13px;
+      line-height: 16px;
+    }
+  }
+
+  &__current-value {
+    @include font(20px, 24px, 500, var(--form-bright-text-color));
+    margin-right: 21px;
+    padding: 8px 12px;
+
+    background: var(--rubic-base-23);
+    border-radius: 100px;
+    cursor: default;
+
+    @include b($tablet) {
+      margin-right: 0;
+      padding: 7px;
+
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+
+  &__common {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-end;
+
+    &-chip {
+      @include clearbtn();
+      @include font(16px, 19px, 500, var(--form-bright-text-color));
+      padding: 8px 12px;
+
+      border: 1px solid transparent;
+      border-radius: 100px;
+      cursor: pointer;
+
+      @include b($tablet) {
+        padding: 8px;
+
+        font-size: 12px;
+        line-height: 14px;
+      }
+
+      &_selected {
+        border: 1px solid $rubic-primary;
+      }
+    }
+  }
+}
+
+.duration-slider {
+  margin-bottom: 43px;
+
+  @include b($tablet) {
+    margin-bottom: 39px;
+  }
+
+  ::ng-deep {
+    --tui-primary-active: #4aa956;
+
+    .wrapper {
+      height: 6px;
+    }
+  }
+}
+
+.hint {
+  @include font(14px, 16px, 500, #f3ba2f);
+  display: flex;
+  margin-bottom: 20px;
+  padding: 12px;
+
+  word-break: break-word;
+
+  background: rgba(243, 186, 47, 0.15);
+  border-radius: 12px;
+
+  @include b($tablet) {
+    margin-bottom: 16px;
+
+    font-size: 12px;
+    line-height: 14px;
+
+    border-radius: 14px;
+
+    &__icon {
+      margin-right: 9px;
+    }
+  }
+
+  &__icon {
+    margin-right: 12px;
+  }
+}
+
+.rules {
+  &__link {
+    @include font(16px, 19px, 400, var(--main-green));
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto 30px;
+    margin-bottom: 30px;
+    text-decoration-line: underline;
+  }
+
+  &__icon {
+    display: flex;
+
+    ::ng-deep svg {
+      path[fill='black'] {
+        fill: var(--main-green);
+      }
+
+      rect[fill='black'] {
+        fill: var(--main-green);
+      }
+    }
+  }
+}

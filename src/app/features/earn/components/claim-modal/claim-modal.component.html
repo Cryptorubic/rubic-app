@@ -1,0 +1,31 @@
+<div
+  class="close"
+  inlineSVG="assets/images/icons/crosshair.svg"
+  (click)="context.completeWith(false)"
+></div>
+<div class="title">
+  <ng-container *ngIf="beforeWithdraw; else claimTitle"> WITHDRAWAL </ng-container>
+</div>
+<div class="text">
+  <div class="text__warn" *ngIf="beforeWithdraw">
+    Please claim your rewards before proceeding to the withdrawal
+  </div>
+  {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 } }} BRBC
+</div>
+<ng-container *ngIf="needSwitchNetwork$ | async; else claim">
+  <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
+    >Switch to BSC network</app-rubic-button
+  >
+</ng-container>
+
+<ng-template #claim>
+  <app-rubic-button
+    appearance="secondary"
+    class="action-btn"
+    (onClick)="context.completeWith(true)"
+  >
+    Claim
+  </app-rubic-button>
+</ng-template>
+
+<ng-template #claimTitle>CLAIM REWARDS</ng-template>
