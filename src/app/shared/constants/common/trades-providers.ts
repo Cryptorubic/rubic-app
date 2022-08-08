@@ -217,7 +217,11 @@ export const LIFI_BRIDGE_PROVIDER: Record<LiFiTradeSubtype, Provider> = {
     image: `${imageBasePath}avalanche-bridge.svg`,
     color: '#323232'
   },
-  [Li_FI_TRADE_SUBTYPE.CELER_BRIDGE]: CROSS_CHAIN_TRADE_PROVIDER.CELER,
+  [Li_FI_TRADE_SUBTYPE.CELER_BRIDGE]: {
+    name: 'cBridge',
+    image: `${imageBasePath}celer.svg`,
+    color: 'white'
+  },
   [Li_FI_TRADE_SUBTYPE.CONNECT]: {
     name: 'Connext',
     image: `${imageBasePath}connext.svg`,

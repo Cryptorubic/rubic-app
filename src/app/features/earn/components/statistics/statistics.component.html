@@ -1,0 +1,103 @@
+<div class="statistics">
+  <div class="statistics__head">
+    <span class="statistics__title">Overview</span>
+    <app-rotating-icon
+      class="statistics__refresh"
+      (iconClick)="refreshStatistics()"
+      [rotating]="loading"
+    ></app-rotating-icon>
+  </div>
+  <div class="statistics__info">
+    <div class="statistics__col">
+      <div class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.lockedRBC' | translate }}</div>
+        <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
+          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
+        <div class="statistics__param-value">10</div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="lockedRBCInDollars$ | async as lockedRBCInDollars"
+          [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
+        >
+          $
+          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
+        </div>
+      </div>
+    </div>
+    <div class="statistics__col">
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="lockedRBCInDollars$ | async as lockedRBCInDollars"
+          [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
+        >
+          $
+          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
+        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
+        <div class="statistics__param-value">
+          {{ '--.--' }}
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">% {{ 'staking.circRBCLocked' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="circRBCLocked$ | async as circRBCLocked"
+          [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
+        >
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
+          %
+        </div>
+      </div>
+    </div>
+    <div class="statistics__col">
+      <div *ngIf="!isMobile" class="statistics__param">
+        <div class="statistics__param-label">% {{ 'staking.circRBCLocked' | translate }}</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="circRBCLocked$ | async as circRBCLocked"
+          [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
+        >
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
+          %
+        </div>
+      </div>
+      <div *ngIf="isMobile" class="statistics__param">
+        <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
+        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
+        </div>
+      </div>
+      <div class="statistics__param">
+        <div class="statistics__param-label statistics__param-label_btn">
+          {{ 'staking.apr' | translate }}
+        </div>
+        <div class="statistics__param-value">
+          <ng-container *ngIf="aprExists$ | async; else estimate">
+            <ng-container *ngLet="apr$ | async as apr">
+              {{ apr ? (apr | bigNumberFormat: 0:true) : '--.--' }} %
+            </ng-container>
+          </ng-container>
+          <ng-template #estimate> Est. up to 58% </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

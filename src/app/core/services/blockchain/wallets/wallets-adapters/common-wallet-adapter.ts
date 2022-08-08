@@ -9,6 +9,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { isBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
+import { NgZone } from '@angular/core';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   protected selectedAddress: string;
@@ -85,7 +86,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   protected constructor(
     protected readonly errorsService: ErrorsService,
     protected readonly onAddressChanges$: BehaviorSubject<string>,
-    protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>
+    protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    protected readonly zone: NgZone
   ) {
     this.isEnabled = false;
   }

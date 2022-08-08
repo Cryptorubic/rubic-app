@@ -12,10 +12,17 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   aurora: BLOCKCHAIN_NAME.AURORA,
   solana: BLOCKCHAIN_NAME.SOLANA,
   near: BLOCKCHAIN_NAME.NEAR,
-  'telos-evm': BLOCKCHAIN_NAME.TELOS
+  'telos-evm': BLOCKCHAIN_NAME.TELOS,
+  optimism: BLOCKCHAIN_NAME.OPTIMISM,
+  cronos: BLOCKCHAIN_NAME.CRONOS,
+  okxchain: BLOCKCHAIN_NAME.OKE_X_CHAIN,
+  gnosis: BLOCKCHAIN_NAME.GNOSIS,
+  fuse: BLOCKCHAIN_NAME.FUSE,
+  moonbeam: BLOCKCHAIN_NAME.MOONBEAM,
+  celo: BLOCKCHAIN_NAME.CELO
 };
 
-export const TO_BACKEND_BLOCKCHAINS: Partial<Record<BlockchainName, string>> = {
+export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -27,7 +34,14 @@ export const TO_BACKEND_BLOCKCHAINS: Partial<Record<BlockchainName, string>> = {
   [BLOCKCHAIN_NAME.AURORA]: 'aurora',
   [BLOCKCHAIN_NAME.SOLANA]: 'solana',
   [BLOCKCHAIN_NAME.NEAR]: 'near',
-  [BLOCKCHAIN_NAME.TELOS]: 'telos-evm'
+  [BLOCKCHAIN_NAME.TELOS]: 'telos-evm',
+  [BLOCKCHAIN_NAME.OPTIMISM]: 'optimism',
+  [BLOCKCHAIN_NAME.CRONOS]: 'cronos',
+  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: 'okxchain',
+  [BLOCKCHAIN_NAME.GNOSIS]: 'gnosis',
+  [BLOCKCHAIN_NAME.FUSE]: 'fuse',
+  [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
+  [BLOCKCHAIN_NAME.CELO]: 'celo'
 };
 
 export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;
