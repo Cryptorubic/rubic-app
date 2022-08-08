@@ -106,7 +106,6 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
-      this.setLanguage(queryParams);
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
 
@@ -332,6 +331,7 @@ export class QueryParamsService {
 
   private setIframeInfo(queryParams: QueryParams): void {
     if (queryParams.hideUnusedUI) {
+      this.setLanguage(queryParams);
       this.setHideSelectionStatus(queryParams);
     }
 
