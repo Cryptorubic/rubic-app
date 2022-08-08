@@ -2156,6 +2156,11 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.1.tgz#c056d9b7166c1e7387a7453c2aff199bf7d88e5f"
   integrity sha512-Lkp9+NijmV7eSVZqiUvt3UCuuHeJpUVmRrvh430gyJjJiuJMqkeHf6/A9lQ/smmbWV/0spDeJscscPzyB4waZg==
 
+"@noble/hashes@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
+  integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -2453,6 +2458,20 @@
     elliptic "^6.5.4"
     ethers "^5.6.8"
 
+"@renproject/chains-ethereum@^3.4.3":
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/@renproject/chains-ethereum/-/chains-ethereum-3.4.4.tgz#e29fea242cafad8d2ce2d51736371d6ac0fa8462"
+  integrity sha512-G4E77axbA5DOBkbTJj/YaH/LhRh4utvJ/TkcUQY6UPRpQkF9dXrhQCEhkpfbjp3POWoLyNjDFA4ls2HiPW3D5w==
+  dependencies:
+    "@ethersproject/abi" "^5.6.4"
+    "@ethersproject/bytes" "^5.6.1"
+    "@ethersproject/providers" "^5.6.8"
+    "@renproject/utils" "^3.4.4"
+    "@types/elliptic" "^6.4.14"
+    bignumber.js "^9.0.2"
+    elliptic "^6.5.4"
+    ethers "^5.6.9"
+
 "@renproject/chains-filecoin@^3.4.2":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@renproject/chains-filecoin/-/chains-filecoin-3.4.2.tgz#3eba8a4d749f927fc6eb02d9bf430f23a1279bed"
@@ -2538,6 +2557,19 @@
   integrity sha512-D4/zITmiR6dgkEUEyl4NcR3ACK99kHpGwflivvHSncA5h9NZb8pEgHPGfIRMT9gjIjBp5KnBE2hKL2AfL1AF8w==
   dependencies:
     "@noble/hashes" "1.1.1"
+    "@types/events" "3.0.0"
+    axios "^0.27.2"
+    base64-js "^1.5.1"
+    bignumber.js "^9.0.2"
+    events "^3.3.0"
+    immutable "^4.1.0"
+
+"@renproject/utils@^3.4.4":
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/@renproject/utils/-/utils-3.4.4.tgz#6ecd2638538804a327bcdea73948aa44a7d6456e"
+  integrity sha512-vVgnYe+VvIub/qBdoUZ1WGsSGBw09ZD6Qa3hD6b5lyACC0YzXDgnpl/OhEJh5fRe7dw+LhEGEz0pmwHviUEl1w==
+  dependencies:
+    "@noble/hashes" "1.1.2"
     "@types/events" "3.0.0"
     axios "^0.27.2"
     base64-js "^1.5.1"
@@ -14517,10 +14549,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@^2.8.2-alpha.4:
-  version "2.8.2-alpha.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.8.2-alpha.4.tgz#a1280c898b16c7a453b865f91c247663f90db497"
-  integrity sha512-cBzNJ0dppbQhX12lH/ZTjZlIKwI9vFbsFMvjfvtk2LkD1vby9AkE8IPlPOJi2pL3UH7ZB9kOpTw9UAs50GfWfw==
+rubic-sdk@^2.8.2-alpha.5:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.8.2.tgz#461978ac0b1ba7a8bcd8d723cfd1775e9161e336"
+  integrity sha512-ullyWW4jkGTwYitM/X758JLUw2gRcnsuoTkn5S/qVTjRhXzLKgrPjwJZ0Z7/OvpVjt6+CxCp2TvPlRCp3oKXcA==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     assert "^2.0.0"
@@ -14528,7 +14560,7 @@ rubic-sdk@^2.8.2-alpha.4:
     bignumber.js "^9.0.1"
     ethers "^5.6.8"
     rxjs "^7.5.5"
-    symbiosis-js-sdk "^2.7.7"
+    symbiosis-js-sdk "^2.8.9"
     web3 "~1.7.3"
 
 run-async@^2.4.0:
@@ -15935,6 +15967,24 @@ symbiosis-js-sdk@^2.7.7:
   integrity sha512-RxSSvHbqjwpuO0EgncZCEiNA5n23JeQBjEmCSIjokMWfliW4JMPRT/mgMLjkfg5zQ5sMwB2k9clGwa+QuowQOg==
   dependencies:
     "@renproject/chains" "~3.4.0"
+    "@renproject/ren" "~3.3.0"
+    big.js "^5.2.2"
+    bignumber.js "^9.0.1"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    lodash.flatmap "^4.5.0"
+    node-fetch-native "~0.1.0"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
+symbiosis-js-sdk@^2.8.9:
+  version "2.8.10"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.10.tgz#ae6df1561f3344d555fc70292766805a16bef9ed"
+  integrity sha512-Y5ElmqvSlHt9r3mH0LtOXt6e2UKXTUHiwB03Dj48ZsJ+6gvQumhfHrR8FVKx/jitD3dBMxkokiGnx/3+Uv/U7w==
+  dependencies:
+    "@renproject/chains-bitcoin" "^3.4.2"
+    "@renproject/chains-ethereum" "^3.4.3"
     "@renproject/ren" "~3.3.0"
     big.js "^5.2.2"
     bignumber.js "^9.0.1"
