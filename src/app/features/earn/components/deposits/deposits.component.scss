@@ -1,0 +1,146 @@
+@use 'src/scss/core' as *;
+
+.deposits {
+  &__wrapper {
+    position: relative;
+
+    padding: 26px 12px;
+
+    background: var(--rubic-base-22);
+    border-radius: $border-radius-2;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 26px;
+
+    @include b($tablet) {
+      padding-left: 10px;
+    }
+
+    ::ng-deep .deposits__head-btn {
+      width: 144px;
+
+      @include b($tablet) {
+        width: 121px;
+      }
+
+      button {
+        height: 27px;
+
+        @include b($tablet) {
+          font-size: 12px;
+        }
+      }
+
+      .wrapper {
+        padding: 0 14px !important;
+
+        @include b($tablet) {
+          padding: 10px !important;
+        }
+      }
+    }
+  }
+
+  &__title {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 0 14px;
+
+    @include b(480) {
+      padding: 0 14px 0 0;
+    }
+
+    &-text {
+      @include font(18px, 22px, 500, var(--rubic-base-02));
+      white-space: nowrap;
+
+      @include b(480) {
+        @include font(16px, 19px, 500, var(--rubic-base-02));
+      }
+    }
+  }
+
+  &__refresh-btn-icon {
+    @include b(480) {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  &__new-deposit-btn {
+    @include font(16px, 19px, 500, --rubic-base-02);
+    padding: 6px 14px;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+
+    background: var(--main-green);
+    border-radius: $border-radius-3;
+
+    @include b(480) {
+      @include font(14px, 15px, 500, --rubic-base-02);
+    }
+  }
+}
+
+.connect-wallet {
+  display: block;
+  max-width: 396px;
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 0 25px;
+
+  @include b($tablet) {
+    flex-direction: column;
+    margin-bottom: 16px;
+    padding: 0;
+  }
+
+  app-rubic-button {
+    flex: 1;
+
+    @include b($tablet) {
+      width: 100%;
+
+      ::ng-deep button[data-size='l'] {
+        height: 44px;
+      }
+    }
+
+    svg {
+      margin-right: 8px;
+    }
+  }
+}
+
+.fade-in {
+  animation-name: fade-in;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, Subject } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -144,7 +144,8 @@ export class WalletConnectorService {
     private readonly iframeService: IframeService,
     private readonly sdk: RubicSdkService,
     @Inject(WINDOW) private readonly window: RubicWindow,
-    @Inject(TUI_IS_IOS) private readonly isIos: boolean
+    @Inject(TUI_IS_IOS) private readonly isIos: boolean,
+    private readonly zone: NgZone
   ) {
     this.web3 = new Web3();
   }
@@ -235,21 +236,24 @@ export class WalletConnectorService {
           this.errorService,
           this.isIos,
           this.window,
-          this.transactionEmitter$
+          this.transactionEmitter$,
+          this.zone
         ),
       [WALLET_NAME.WALLET_CONNECT]: async () =>
         new WalletConnectAdapter(
           this.web3,
           this.networkChangeSubject$,
           this.addressChangeSubject$,
-          this.errorService
+          this.errorService,
+          this.zone
         ),
       [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(
           this.web3,
           this.networkChangeSubject$,
           this.addressChangeSubject$,
-          this.errorService
+          this.errorService,
+          this.zone
         );
         await metamaskWalletAdapter.setupDefaultValues();
         return metamaskWalletAdapter as CommonWalletAdapter;
@@ -259,7 +263,8 @@ export class WalletConnectorService {
           this.web3,
           this.networkChangeSubject$,
           this.addressChangeSubject$,
-          this.errorService
+          this.errorService,
+          this.zone
         );
         await bitkeepWalletAdapter.setupDefaultValues();
         return bitkeepWalletAdapter as CommonWalletAdapter;
@@ -271,6 +276,7 @@ export class WalletConnectorService {
           this.addressChangeSubject$,
           this.errorService,
           this.storage,
+          this.zone,
           chainId
         )
     };
