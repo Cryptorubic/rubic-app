@@ -83,7 +83,7 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  private readonly defaultTimeout = 20_000;
+  private readonly defaultTimeout = 25_000;
 
   public crossChainTrade: WrappedCrossChainTrade;
 
@@ -324,7 +324,7 @@ export class CrossChainRoutingService extends TradeService {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
-        bridgeProvider: this.crossChainTrade.trade.subType
+        bridgeProvider: (this.crossChainTrade.trade as LifiCrossChainTrade).subType
       };
     } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
