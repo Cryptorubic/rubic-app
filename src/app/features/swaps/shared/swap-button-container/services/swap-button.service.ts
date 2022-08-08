@@ -9,6 +9,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Injectable()
 export class SwapButtonService {
@@ -32,14 +33,16 @@ export class SwapButtonService {
   public readonly loading$ = combineLatest([
     this.swapButtonContainerErrorsService.errorLoading$,
     this.swapButtonContainerService.tradeStatus$,
-    this._priceImpactLoading$
+    this._priceImpactLoading$,
+    this.sdkService.sdkLoading$
   ]).pipe(
     map(
-      ([errorLoading, tradeStatus, priceImpactLoading]) =>
+      ([errorLoading, tradeStatus, priceImpactLoading, sdkLoading]) =>
         errorLoading ||
         tradeStatus === TRADE_STATUS.LOADING ||
         tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS ||
-        (tradeStatus === TRADE_STATUS.READY_TO_SWAP && priceImpactLoading)
+        (tradeStatus === TRADE_STATUS.READY_TO_SWAP && priceImpactLoading) ||
+        sdkLoading
     )
   );
 
@@ -108,7 +111,8 @@ export class SwapButtonService {
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly iframeService: IframeService,
     private readonly swapsService: SwapsService,
-    private readonly priceImpactService: PriceImpactService
+    private readonly priceImpactService: PriceImpactService,
+    private readonly sdkService: RubicSdkService
   ) {
     this.setupPriceImpactCalculation();
   }

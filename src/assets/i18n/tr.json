@@ -36,14 +36,16 @@
     "bridge": "Köprü",
     "transactionDetails": "Ödeme Detayları",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
     "noMetamaskInstalled": "Lütfen metamask eklentisinin kurulu ve kilidinin açık olduğundan emin olun.\n İndirebilirsiniz",
+    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase tarayıcı uzantısı Metamask uzantısıyla çakışıyor. Devam etmek için lütfen Conibase uzantısını devre dışı bırakın veya kaldırın veya bağlanmak için başka bir cüzdan seçin.",
     "wrongNetwork": "Yanlış ağı seçtiniz. Lütfen MetaMask'tan {{ networkToChoose }} öğesini seçin..",
     "OverQueryLimit": "Kısa bir süre içinde çok fazla işlem gerçekleştirmeye çalıştınız ve 30 dakika içinde maksimum 3 işlem olan Binance köprü kısıtlamalarını aştınız.\nLütfen bekleyin ve tekrar deneyin, hala sorun yaşıyorsanız lütfen bizimle iletişime geçin.",
@@ -79,7 +81,6 @@
     "multichainWallet": "Rubic henüz çok zincirli cüzdanları desteklemiyor. Şu anda yalnızca Ethereum ağında işlem yapabilirsiniz.",
     "unknown": "Hata, bir şeyler ters gitti, lütfen tekrar deneyin",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Hata! Bir şeyler ters gitti, lütfen sayfayı yeniden yüklemeyi deneyin. Yeniden yükledikten sonra hala bu sorunu yaşıyorsanız desteğimizle iletişime geçin. ",
     "rubicOptimisation": "Bu ticaret için yetersiz likidite. Rubik optimizasyonunu devre dışı bırakmayı deneyin..",
     "partialTradesData": "Sunucudan işlem verilerini alma sorunu ile karşı karşıyayız. Lütfen sayfayı yeniden yükleyin veya sorun devam ederse desteğe başvurun.",
     "tradingIsNotAvailable": "Ticaret yapılamıyor",
@@ -90,9 +91,11 @@
     "rpcError": "Bir hata oluştu, bunu çözmek için ne yapacağınızı öğrenmek için aşağıdaki bağlantıyı takip edin.",
     "buttonLink": "Daha fazla bilgi edin",
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
-    "walletNotInstalled": "Cüzdan yüklü değil."
+    "walletNotInstalled": "Cüzdan yüklü değil.",
+    "noSelectedToken": "Token seç"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "Hakkında",
     "faq": "FAQ",
     "features": "Özellikler",
@@ -102,7 +105,6 @@
     "sdk": "SDK",
     "team": "Takım",
     "login": "Cüzdan Bağla",
-    "myTrades": "Ticaretlerim",
     "logout": "çıkıç yap",
     "logoutMessage": "Gerçekten Oturumu Kapatmak istiyor musunuz?",
     "notAvailable": "Yapım Aşamasında - UX Yeniden Tasarımı.",
@@ -409,6 +411,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": "~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -419,8 +429,22 @@
     "notAvailableBefore": "Trading on",
     "notAvailableAfter": "mevcut değil."
   },
-  "myTrades": {
-    "title": "My Trades"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Gas Refund",
@@ -499,6 +523,12 @@
     "liquidityTime": "Liquidity time"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Çekmek",
@@ -514,7 +544,11 @@
       "calculateProfitability": "Karlılığı hesaplayın",
       "refillTime": "{{hours}} hours {{minutes}} minutes",
       "addXbrbc": "Add xBRBC",
-      "canUnstake": "Kaldırılabilir stake {{amount}}"
+      "canUnstake": "Kaldırılabilir stake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "Dünün APR",
@@ -534,6 +568,12 @@
       "stakeTokens": "BRBC'de ödüller almak için 1.000 - 100.000 RBC/BRBC/wRBC yatırın",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "%0,6 Çoklu Zincir ücretimizin %0,5'i RBC'yi geri almak ve ödül havuzuna dağıtmak için kullanılacak"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
@@ -577,7 +617,7 @@
       "pageSoon": "yakında sayfa.",
       "title": "İşlem başarıyla gönderildi!",
       "ccrTitle": "Kaynak ağda başarılı takas!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
@@ -589,13 +629,6 @@
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
     }
-  },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
@@ -701,13 +734,17 @@
       "link": "bugün dene!"
     },
     "external": {
-      "text": "Herhangi bir jetonu %0 protokol ücretiyle değiştirin. Şimdi ticaret yap!",
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!",
       "link": ""
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {
-    "takePartInOur": "katılmak",
-    "referralProgram": "Tavsiye Programı ve ödüller kazanın!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Daha fazla bilgi edin"
   },
   "volume": {

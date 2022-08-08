@@ -13,6 +13,7 @@ import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-ex
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { NgZone } from '@angular/core';
 
 export class MetamaskWalletAdapter extends CommonWalletAdapter {
   public get isMultiChainWallet(): boolean {
@@ -31,9 +32,10 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     web3: Web3,
     onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsService,
+    zone: NgZone
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$);
+    super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
     const { ethereum } = window;
     MetamaskWalletAdapter.checkErrors(ethereum);
     web3.setProvider(ethereum);
@@ -50,7 +52,7 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
       throw new MetamaskError();
     }
 
-    // installed coinbase chrome extension
+    // installed coinbase Chrome extension
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }
@@ -63,14 +65,18 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        this.zone.run(() => {
+          this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        });
         console.info('Chain changed', chain);
       }
     });
     this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
+        this.zone.run(() => {
+          this.onAddressChanges$.next(this.selectedAddress);
+        });
         console.info('Selected account changed to', accounts[0]);
       }
       if (!this.selectedAddress) {

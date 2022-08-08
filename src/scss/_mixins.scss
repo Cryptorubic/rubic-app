@@ -50,6 +50,12 @@
   }
 }
 
+@mixin hide-unused-ui {
+  :host-context(body.hide-unused-ui) & {
+    @content;
+  }
+}
+
 @mixin light-iframe {
   :host-context(html.iframe:not(.dark)) & {
     @content;
@@ -183,4 +189,16 @@
   font-size: $fontSize;
   line-height: $lineHeight;
   letter-spacing: $letterSpacing;
+}
+
+@mixin clearbtn() {
+  padding: 0;
+
+  font-size: inherit;
+  line-height: inherit;
+
+  background: none;
+  border: 0;
+
+  appearance: none;
 }

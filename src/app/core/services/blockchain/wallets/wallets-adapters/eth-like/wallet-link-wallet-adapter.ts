@@ -17,6 +17,7 @@ import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
+import { NgZone } from '@angular/core';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
   private isMobileMode: boolean = false;
@@ -41,9 +42,10 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     onAddressChanges$: BehaviorSubject<string>,
     errorService: ErrorsService,
     private readonly storeService: StoreService,
+    zone: NgZone,
     blockchainId?: number
   ) {
-    super(errorService, onAddressChanges$, onNetworkChanges$);
+    super(errorService, onAddressChanges$, onNetworkChanges$, zone);
     this.wallet = this.getWallet(blockchainId);
     web3.setProvider(this.wallet);
   }
@@ -98,9 +100,11 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
       this.selectedAddress = address;
       this.selectedChain = chainInfo.name;
       this.isEnabled = true;
-      this.onNetworkChanges$.next(chainInfo);
-      this.onAddressChanges$.next(address);
-      this.storeService.setItem('chainId', Number(this.selectedChain));
+      this.zone.run(() => {
+        this.onNetworkChanges$.next(chainInfo);
+        this.onAddressChanges$.next(address);
+      });
+      this.storeService.setItem('chainId', Number(chainInfo?.id));
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();

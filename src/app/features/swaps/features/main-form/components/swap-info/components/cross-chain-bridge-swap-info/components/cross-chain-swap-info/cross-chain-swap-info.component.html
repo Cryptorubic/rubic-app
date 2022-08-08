@@ -15,21 +15,42 @@
   </div>
 </div>
 
-<div class="info-line">
+<div
+  class="info-line"
+  *ngIf="!isSymbiosisOrLifi || (isSymbiosisOrLifi && symbiosisOrLifiCryptoFee?.gt(0))"
+>
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'Gas fee in target network taken in native token of source network'"
+      [tuiHint]="
+        'Gas fee in target network taken in ' +
+        (!isSymbiosisOrLifi ? 'native' : 'stable') +
+        ' token of source network'
+      "
     />
   </div>
-  <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
-    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }} ≈
-    ${{
-      cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
-    }}
-  </div>
+
+  <ng-container *ngIf="!isSymbiosisOrLifi; else symbiosisCryptoFeeTemplate">
+    <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
+      {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }}
+      <ng-container *ngIf="cryptoFeeInUsd.gt(0)">
+        ≈ ${{
+          cryptoFeeInUsd
+            | bigNumberFormat
+            | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
+        }}
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #symbiosisCryptoFeeTemplate>
+    <div class="info-line__value" *ngIf="symbiosisOrLifiCryptoFee !== undefined">
+      {{ symbiosisOrLifiCryptoFee | bigNumberFormat | withRound: 'toClosestValue' }}
+      {{ symbiosisOrLifiCryptoFeeSymbol }}
+    </div>
+  </ng-template>
 </div>
 
 <div class="info-line">
@@ -37,20 +58,28 @@
     <span class="title__text">Protocol fee</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
-      alt="question"
-      [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'"
+      alt="Protocol fee"
+      [tuiHint]="'Platform\'s comission charges in source network native coin.'"
     />
   </div>
-  <div class="info-line__value" *ngIf="feePercent !== undefined">
-    {{ feePercent }}% ≈
-    {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-    {{ feeTokenSymbol }}
+
+  <div class="info-line__value">
+    <ng-container *ngIf="feePercent !== 0; else zero">
+      {{ feePercent }}% ≈
+      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
+      {{ feeTokenSymbol }}
+    </ng-container>
+    <ng-template #zero>
+      <ng-container *ngIf="feeAmount?.isFinite(); else fullZero"> ~ 1 USD</ng-container>
+      <ng-template #fullZero> 0% </ng-template>
+    </ng-template>
   </div>
 </div>
 
 <hr class="delimiter" />
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in source network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
@@ -59,11 +88,21 @@
 ></app-price-impact-info-line>
 
 <app-price-impact-info-line
+  *ngIf="!isSymbiosisOrLifi"
   title="Price impact in target network"
   [hint]="
     'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
   "
   [priceImpact]="priceImpactTo"
+></app-price-impact-info-line>
+
+<app-price-impact-info-line
+  *ngIf="isSymbiosisOrLifi"
+  title="Price impact"
+  [hint]="
+    'Correlation between an incoming order and the change in the price of the asset involved caused by the trade.'
+  "
+  [priceImpact]="priceImpact"
 ></app-price-impact-info-line>
 
 <div
@@ -77,7 +116,7 @@
   "
 >
   <div class="info-line__title title">
-    <span class="title__text"> {{ 'crossChainPage.swapInfo.minimumReceived' | translate }}</span>
+    <span class="title__text">Current slippage</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
@@ -88,7 +127,5 @@
       "
     />
   </div>
-  <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
-    {{ minimumReceivedFormatted }}
-  </div>
+  <div class="info-line__value">{{ slippage }}%</div>
 </div>

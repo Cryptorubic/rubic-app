@@ -63,6 +63,9 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
+import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
+import { TimeGuard } from './guards/time.guard';
 
 @NgModule({
   declarations: [
@@ -95,6 +98,8 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     StatusBadgeComponent,
     ChipsComponent,
     ProgressTrxNotificationComponent,
+    SymbiosisWarningTxModalComponent,
+    IframeLogoutButtonComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -176,9 +181,10 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
     CopyContainerComponent,
     FunctionCallPipe,
     StatusBadgeComponent,
-    ChipsComponent
+    ChipsComponent,
+    IframeLogoutButtonComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
 })
 export class SharedModule {}

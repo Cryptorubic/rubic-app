@@ -8,9 +8,10 @@
       </div>
       <app-notification-badge
         class="notification-counter"
-        *ngIf="(countUnread$ | async) && (currentUser$ | async) && !isOpened"
-        size="s"
-        [value]="countUnread$ | async"
+        *ngIf="isMobile && (unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
       ></app-notification-badge>
     </app-rubic-button-circle>
   </div>
@@ -23,9 +24,19 @@
         <ng-container *ngFor="let item of navigationList">
           <a
             *ngIf="item.type === 'internal'"
-            [routerLink]="item.link"
             (click)="closeMenu()"
             routerLinkActive="data-list__link_active"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+          <a
+            *ngIf="item.type === 'external'"
+            [href]="item.link"
+            target="_blank"
             class="data-list__link"
           >
             <button tuiOption class="data-list__option" (click)="handleButtonClick()">
@@ -33,26 +44,7 @@
               {{ item.translateKey | translate }}
             </button>
           </a>
-          <a *ngIf="item.type === 'external'" [href]="item.link" class="data-list__link">
-            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
-              {{ item.translateKey | translate }}
-            </button>
-          </a>
         </ng-container>
-        <a
-          (click)="menuClickHandler('bridge')"
-          [class.data-list__link_active]="bridgeActive"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">
-            <div
-              class="data-list__option-image"
-              [inlineSVG]="'assets/images/icons/swap-types/bridge.svg'"
-            ></div>
-            Rubic Bridge
-          </button>
-        </a>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">
@@ -64,11 +56,7 @@
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
 
-        <a
-          routerLink="/staking-lp"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
+        <a routerLink="/staking" routerLinkActive="data-list__link_active" class="data-list__link">
           <button tuiOption class="data-list__option">
             {{ 'navigation.stakingLp' | translate }}
           </button>
@@ -88,21 +76,16 @@
           {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
         </button>
 
-        <a
-          routerLink="my-trades"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link data-list__link_my-trades"
-        >
+        <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
           <button tuiOption class="data-list__option">
-            {{ 'navigation.myTrades' | translate }}
+            {{ 'navigation.recentTrades' | translate }}
           </button>
-
           <app-notification-badge
-            class="notification-counter notification-counter_my-trades"
-            *ngIf="(countUnread$ | async) && (currentUser$ | async) && isOpened"
-            size="s"
-            [value]="countUnread$ | async"
+            class="notification-counter notification-counter_menu"
+            *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && isOpened"
+            size="xs"
+            color="red"
+            [value]="unreadTrades$ | async"
           ></app-notification-badge>
         </a>
 

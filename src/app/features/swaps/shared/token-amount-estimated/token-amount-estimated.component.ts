@@ -7,7 +7,7 @@ import {
   Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -70,7 +70,7 @@ export class AmountEstimatedComponent implements OnInit {
       });
 
     this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      if (!form?.toAmount.isFinite()) {
+      if (!form?.toAmount?.isFinite()) {
         this.tokenAmount = null;
         this.usdPrice = null;
         this.cdr.markForCheck();

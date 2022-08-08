@@ -1,5 +1,5 @@
-import InstantTrade from '@features/swaps/features/instant-trade/models/instant-trade';
 import BigNumber from 'bignumber.js';
+import { InstantTrade } from 'rubic-sdk';
 
 export interface TradeAndToAmount {
   trade: InstantTrade | null;

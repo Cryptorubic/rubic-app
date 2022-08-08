@@ -72,6 +72,7 @@
     width: 100%;
     min-width: 200px;
     overflow: auto;
+    justify-content: flex-end;
 
     font-weight: 400;
     font-size: 22px;
@@ -82,6 +83,10 @@
     text-align: right;
 
     transition: opacity ease-in-out 0.3s;
+
+    @include b($mobile-sm) {
+      justify-content: flex-start;
+    }
 
     @include iframe-horizontal {
       margin-bottom: 0;
@@ -190,5 +195,25 @@
     &__tokens-container {
       text-align: left;
     }
+  }
+}
+
+.blink-animation {
+  animation: blink 2s ease-in-out infinite;
+  opacity: 1;
+  color: var(--tui-text-01);
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 1;
   }
 }

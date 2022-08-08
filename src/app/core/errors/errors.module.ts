@@ -18,6 +18,7 @@ import { InsufficientFundsOneinchErrorComponent } from './components/insufficien
 import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/token-with-fee-error.component';
 import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-ccr/unsupported-token-ccr.component';
 import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
+import { BitKeepErrorComponent } from './components/bitkeep-error/bitkeep-error.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
+    BitKeepErrorComponent,
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,
@@ -42,6 +44,7 @@ import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
+    BitKeepErrorComponent,
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,

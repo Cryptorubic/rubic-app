@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { startWith } from 'rxjs/operators';
 
@@ -38,11 +38,16 @@ export class TargetNetworkAddressService {
     this.formService.input.valueChanges
       .pipe(startWith(this.formService.inputValue))
       .subscribe(form => {
-        this._displayAddress$.next(
+        const needDisplayAddress =
           (this.networksRequiresAddress.includes(form.fromBlockchain) ||
             this.networksRequiresAddress.includes(form.toBlockchain)) &&
-            Boolean(form.fromToken && form.toToken)
-        );
+          Boolean(form.fromToken && form.toToken);
+
+        this._displayAddress$.next(needDisplayAddress);
+
+        if (!needDisplayAddress) {
+          this._targetNetworkAddress$.next(null);
+        }
       });
   }
 }

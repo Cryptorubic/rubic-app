@@ -1,20 +1,20 @@
 import InputToken from '@shared/models/tokens/input-token';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { TradeType } from 'rubic-sdk';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
 }
 
 interface InstantTradesEthLikeContract {
-  name: INSTANT_TRADE_PROVIDER;
+  name: TradeType;
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }
 
 interface SolanaITContract {
-  name: INSTANT_TRADE_PROVIDER;
+  name: TradeType;
   address: string;
   blockchain_network: {
     title: 'solana';

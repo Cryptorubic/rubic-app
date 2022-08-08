@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { TuiSizeL, TuiSizeS } from '@taiga-ui/core';
+import { TuiSizeL, TuiSizeS, TuiSizeXS } from '@taiga-ui/core';
 
 /**
  * Display count of notifications.
@@ -19,7 +19,12 @@ export class NotificationBadgeComponent {
   /**
    * Size of the notification component.
    */
-  @Input() size: TuiSizeS | TuiSizeL;
+  @Input() size: TuiSizeS | TuiSizeL | TuiSizeXS;
+
+  /**
+   * Background color of notification component
+   */
+  @Input() color: 'red' | 'green';
 
   constructor() {}
 }

@@ -9,7 +9,7 @@
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
-          'bottom-amount__tokens-container_loading': loading,
+          'bottom-amount__tokens-container_loading': loading && tokenAmount,
           'bottom-amount__tokens-container_error': errorText,
           'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
@@ -20,9 +20,12 @@
             'bottom-amount__output_error-text': errorText
           }"
         >
-          <ng-container *ngIf="errorText">
+          <ng-container *ngIf="errorText && !loading">
             {{ 'errors.tradingIsNotAvailable' | translate }}
           </ng-container>
+          <ng-container *ngIf="loading && !tokenAmount"
+            ><span class="blink-animation">Loading</span></ng-container
+          >
           <ng-container *ngIf="tokenAmount?.gt(0)">
             {{
               tokenAmount
@@ -34,7 +37,7 @@
         </div>
 
         <div
-          *ngIf="errorText"
+          *ngIf="errorText && !loading"
           tuiHintMode="error"
           class="bottom-amount__hint bottom-amount__hint_error"
           [inlineSVG]="'/assets/images/icons/hint.svg'"

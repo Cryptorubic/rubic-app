@@ -9,15 +9,17 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
-import { CelerService } from './services/cross-chain-routing-service/celer/celer.service';
-import { CelerApiService } from './services/cross-chain-routing-service/celer/celer-api.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-scheme-modal.component';
+import { ProvidersCounterComponent } from './components/providers-counter/providers-counter.component';
 
 @NgModule({
   declarations: [
     CrossChainRoutingBottomFormComponent,
     TargetNetworkAddressComponent,
-    SmartRoutingComponent
+    SmartRoutingComponent,
+    SwapSchemeModalComponent,
+    ProvidersCounterComponent
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,6 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
     SwapsSharedModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
-  providers: [CelerService, CelerApiService]
+  providers: []
 })
 export class CrossChainModule {}

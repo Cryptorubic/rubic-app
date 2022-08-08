@@ -1,10 +1,8 @@
-import BigNumber from 'bignumber.js';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { CrossChainTradeType, TradeType } from 'rubic-sdk';
+import { LiFiTradeSubtype } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/models/lifi-providers';
 
 export interface SmartRouting {
-  fromProvider: INSTANT_TRADE_PROVIDER;
-  toProvider: INSTANT_TRADE_PROVIDER;
-  fromHasTrade: boolean;
-  toHasTrade: boolean;
-  savings: BigNumber;
+  fromProvider: TradeType | undefined;
+  toProvider: TradeType | undefined;
+  bridgeProvider: Exclude<CrossChainTradeType, 'LIFI'> | LiFiTradeSubtype;
 }

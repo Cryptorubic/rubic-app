@@ -1,5 +1,4 @@
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { BlockchainName, TradeType } from 'rubic-sdk';
 
 export interface InstantTradeBotRequest {
   txHash: string;
@@ -10,5 +9,5 @@ export interface InstantTradeBotRequest {
   toSymbol: string;
   blockchain: BlockchainName;
   price: number;
-  provider: INSTANT_TRADE_PROVIDER;
+  provider: TradeType;
 }

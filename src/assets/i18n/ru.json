@@ -37,14 +37,16 @@
     "transactionDetails": "Детали транзакции",
     "approveToken": "Утвердить {{symbol}}",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
     "noMetamaskInstalled": "Убедитесь, что у вас установлен и разблокирован плагин Metamask. Вы можете скачать его на",
+    "noBitKeepInstalled": "Убедитесь, что у вас установлен и разблокирован плагин BitKeep. Вы можете скачать его на",
     "removeCoinbaseExtension": "Браузерное расширение Coinbase конфликтует с расширением Метамаск. Пожалуйста, отключите или удалите расширение Coinbase чтобы продолжить, либо выберите другой кошелек для подключения.",
     "wrongNetwork": "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
     "OverQueryLimit": "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу",
@@ -80,7 +82,6 @@
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Торговля недоступна",
@@ -91,9 +92,11 @@
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
     "buttonLink": "Узнать больше",
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
-    "walletNotInstalled": "Кошелек не установлен."
+    "walletNotInstalled": "Кошелек не установлен.",
+    "noSelectedToken": "Выберите токен"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
@@ -103,7 +106,6 @@
     "sdk": "SDK",
     "team": "Команда",
     "login": "Подключить кошелек",
-    "myTrades": "Мои Сделки",
     "logout": "Выйти",
     "logoutMessage": "Вы действительно хотите выйти?",
     "notAvailable": "В работе. UX редизайн.",
@@ -237,6 +239,14 @@
       "save": "Save ${{amount}} with Smart Routing",
       "estTime": "Est. time ~ 80 sec",
       "estTimeMobile": "~ 80 sec"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -247,8 +257,22 @@
     "notAvailableBefore": "Торговля на ",
     "notAvailableAfter": " недоступно."
   },
-  "myTrades": {
-    "title": "Мои Сделки"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "tradePage": {
     "getBefore": "You will get",
@@ -323,13 +347,6 @@
     "noData": "У вас еще нет сделок",
     "receive": "Получить"
   },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
-  },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
     "currentlyAvailable": "Currently Available",
@@ -365,6 +382,12 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Withdraw",
@@ -380,7 +403,11 @@
       "calculateProfitability": "Calculate profitability",
       "refillTime": "{{hours}} hours {{minutes}} minutes",
       "addXbrbc": "Add xBRBC",
-      "canUnstake": "Can unstake {{amount}}"
+      "canUnstake": "Can unstake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "Yesterday's APY",
@@ -400,6 +427,12 @@
       "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
@@ -443,7 +476,7 @@
       "pageSoon": " page soon.",
       "title": "Транзакция успешно отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
-      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
@@ -526,12 +559,16 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+    },
+    "zeroFees": {
+      "zeroFee": "Кросс-чейны обмены с 0% комиссией протокола",
+      "period": "C 6 по 27 июня обменивайте токены между блокчейнами с 0 комиссией протокола",
+      "excluded": "*Telos, Aurora, Moonriver, Harmony, Solana, NEAR не участвуют в акции"
     }
   },
   "referralBanner": {
-    "takePartInOur": "Примите участие в нашей ",
-    "referralProgram": "Реферальной программе и получите награды!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Узнать больше"
   },
   "volume": {

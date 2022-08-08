@@ -19,7 +19,7 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "aot": true,
             "outputPath": "dist/rubic",
@@ -42,7 +42,7 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
             ],
-            "scripts": ["src/assets/analytics/carrot-quest.js"],
+            "scripts": ["src/assets/analytics/live-chat.js"],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -58,6 +58,17 @@
             "namedChunks": true
           },
           "configurations": {
+            "sdk": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.sdk.ts"
+                }
+              ],
+              "customWebpackConfig": {
+                "path": "./custom-webpack.config.ts"
+              }
+            },
             "dev2": {
               "fileReplacements": [
                 {
@@ -81,7 +92,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/carrot-quest.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/live-chat.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -94,7 +105,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "6mb",
-                  "maximumError": "8mb"
+                  "maximumError": "18mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -121,7 +132,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "6mb",
-                  "maximumError": "8mb"
+                  "maximumError": "17mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -133,13 +144,16 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "rubic:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "rubic:build:production"
+            },
+            "sdk": {
+              "browserTarget": "rubic:build:sdk"
             },
             "dev2": {
               "browserTarget": "rubic:build:dev2"

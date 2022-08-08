@@ -1,11 +1,10 @@
 import { List } from 'immutable';
 import { Observable, Subject } from 'rxjs';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import BigNumber from 'bignumber.js';
+import { RubicBridgeSupportedBlockchains } from './rubic-bridge/models/types';
 
 export abstract class BlockchainsBridgeProvider {
   protected _tokenPairs$ = new Subject<List<BridgeTokenPair>>();
@@ -25,14 +24,15 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * get price blockchain provider's fee
    * @param tokenPair bridge token pair
+   * @param fromBlockchain source blockchain
    * @param toBlockchain destination blockchain
    * @param amount swap input amount
    * @return observable number fee price
    */
   public abstract getFee(
-    tokenPair: BridgeTokenPair,
-    toBlockchain: BlockchainName,
-    amount?: BigNumber
+    fromBlockchain: RubicBridgeSupportedBlockchains,
+    toBlockchain: RubicBridgeSupportedBlockchains,
+    tokenPair?: BridgeTokenPair
   ): Observable<number>;
 
   /**

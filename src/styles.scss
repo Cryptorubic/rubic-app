@@ -13,10 +13,10 @@
 @use 'scss/elements/buttons' as *;
 
 /* TaigaUI custom styles */
-@use 'scss/taiga-slyles' as *;
+@use 'scss/taiga-styles' as *;
 
 /* External libs styles */
-@use 'scss/carrot-quest' as *;
+@use 'scss/live-chat' as *;
 @use 'scss/libs' as *;
 
 * {
@@ -243,4 +243,8 @@ html.dark {
   [id^='tui-hint_price-impact'] {
     background: rgb(56, 56, 56) !important;
   }
+}
+
+.text-nowrap {
+  white-space: nowrap;
 }

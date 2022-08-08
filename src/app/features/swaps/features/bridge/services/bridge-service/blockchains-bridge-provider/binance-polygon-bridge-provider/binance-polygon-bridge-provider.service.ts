@@ -3,12 +3,12 @@ import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/servi
 import { first } from 'rxjs/operators';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { BinancePolygonRubicBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
+import { RubicBridgeSupportedBlockchains } from '../common/rubic-bridge/models/types';
 
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
@@ -26,9 +26,13 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     throw new UnknownError();
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
+  public getFee(
+    fromBlockchain: RubicBridgeSupportedBlockchains,
+    toBlockchain: RubicBridgeSupportedBlockchains,
+    tokenPair: BridgeTokenPair
+  ): Observable<number> {
     if (this.isRBCToken(tokenPair.symbol)) {
-      return this.rubicBridgeProvider.getFee(tokenPair, toBlockchain);
+      return this.rubicBridgeProvider.getFee(fromBlockchain, toBlockchain);
     }
     throw new UnknownError();
   }

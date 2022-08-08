@@ -13,6 +13,7 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletconnectError } from '@core/errors/models/provider/walletconnect-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
+import { NgZone } from '@angular/core';
 
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected isEnabled: boolean;
@@ -40,9 +41,10 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     chainChange$: BehaviorSubject<BlockchainData>,
     accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService,
-    providerConfig: IWalletConnectProviderOptions
+    providerConfig: IWalletConnectProviderOptions,
+    zone: NgZone
   ) {
-    super(errorsService, accountChange$, chainChange$);
+    super(errorsService, accountChange$, chainChange$, zone);
     this.wallet = new WalletConnect({
       rpc: this.getNetworksProviders(),
       ...providerConfig
@@ -56,14 +58,18 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        this.zone.run(() => {
+          this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+        });
         console.info('Chain changed', chain);
       }
     });
     this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
+        this.zone.run(() => {
+          this.onAddressChanges$.next(this.selectedAddress);
+        });
         console.info('Selected account changed to', accounts[0]);
       }
     });

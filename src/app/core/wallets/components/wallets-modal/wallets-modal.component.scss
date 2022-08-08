@@ -9,6 +9,10 @@
 
   border-radius: 10px;
 
+  @include hide-unused-ui {
+    padding: 0 20px 20px;
+  }
+
   @include iframe-horizontal {
     position: absolute;
     top: 0;
@@ -58,6 +62,10 @@
   &__header,
   &__body {
     margin-bottom: 30px;
+
+    @include hide-unused-ui {
+      margin-bottom: 15px;
+    }
   }
 
   &__footer {
@@ -69,7 +77,7 @@
     flex-direction: column;
     align-items: center;
 
-    padding: 0 10px;
+    padding: 10px 37px 0 10px;
 
     @include iframe-horizontal {
       flex-direction: row;

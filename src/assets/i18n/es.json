@@ -36,14 +36,16 @@
     "bridge": "Puente",
     "transactionDetails": "Detalles de la transacción",
     "tagline": {
-      "firstText": "Multi-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps for ",
       "numbers": "15,000+ ",
       "secondText": "Assets"
-    }
+    },
+    "revert": "Revert"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
     "noMetamaskInstalled": "Por favor, asegúrese de que tiene instalado y desbloqueado la extensión de metamask.\nSe puede descargar en",
+    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "La extensión de navegador de Coinbase entra en conflicto con la extensión de Metamask. Desactive o elimine la extensión de Coinbase para continuar, o elija otra billetera para conectarse.",
     "wrongNetwork": "Ha seleccionado la red equivocada. Por favor, elija {{ networkToChoose }} desde MetaMask.",
     "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del Binance bridge de un máximo de 3 operaciones en 30 minutos.\nPor favor, espere e inténtelo nuevamente más tarde, si aún tiene problemas, comuníquese con nosotros",
@@ -79,7 +81,6 @@
     "multichainWallet": "Rubic aún no es compatible con billeteras de múltiples cadenas. Actualmente, solo puedes operar en la red de Ethereum",
     "unknown": "Oops, algo salió mal, por favor, inténtalo de nuevo",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, algo salió mal, por favor intente recargar la página. Póngase en contacto con nuestro soporte si sigue teniendo este problema después de recargar.",
     "rubicOptimisation": "Liquidez insuficiente para este comercio. Intenta desactivar la optimización de rubic.",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Por favor, vuelva a cargar la página o póngase en contacto con soporte si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
@@ -90,9 +91,11 @@
     "rpcError": "Se produjo un error, para saber qué hacer para resolverlo, siga el enlace a continuación.",
     "buttonLink": "Más información",
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
-    "walletNotInstalled": "La billetera no está instalada."
+    "walletNotInstalled": "La billetera no está instalada.",
+    "noSelectedToken": "Seleccionar token"
   },
-  "navigation": {
+  "navigation": { 
+    "recentTrades": "Recent cross-chain tx",
     "about": "Sobre",
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
@@ -102,7 +105,6 @@
     "sdk": "SDK",
     "team": "Equipo",
     "login": "Conectar Cartera",
-    "myTrades": "Mis comercios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿De verdad quieres cerrar sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
@@ -236,6 +238,14 @@
       "save": "Ahorra ${{amount}} con Enrutamiento inteligente",
       "estTime": "Tiempo estimado ~ 80 segundos",
       "estTimeMobile": "~ 80 segundos"
+    },
+    "swapSchemeModal": {
+      "transactionCompleted": "Transaction completed successfully!",
+      "transactionIsBeingProcessed": "Your Transaction is Being Processed!",
+      "transactionNotCompleted": "Your transaction has not been completed!",
+      "transactionCanBeTracked": "Transaction status can also be tracked in",
+      "ifTransactionNotCompleted": "If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at",
+      "recentTrades": "Recent Trades"
     }
   },
   "instantTrades": {
@@ -246,8 +256,22 @@
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " no está disponible."
   },
-  "myTrades": {
-    "title": "Mis operaciones"
+  "recentTrades": {
+    "title": "Recent Cross-Chain Tx",
+    "description": "History of your latest Crosschain Transactions:",
+    "swapNow": "Swap Now",
+    "noTransactions": "You don't have any Cross-Chain transactions yet",
+    "revert": "Revert",
+    "date": "Date",
+    "from": "From",
+    "statusFrom": "Status From",
+    "to": "To",
+    "statusTo": "Status To",
+    "fail": "Fail",
+    "pending": "Pending",
+    "success": "Success",
+    "fallback": "Fallback",
+    "unknown": "Unknown"
   },
   "gasRefund": {
     "title": "Reembolso de Gas",
@@ -322,13 +346,6 @@
     "tradingNotAvailable": "El trading no está disponible",
     "rateIsUpdated": "La tarifa está actualizada, toque para obtener las últimas tarifas"
   },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
-  },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
     "currentlyAvailable": "Currently Available",
@@ -364,6 +381,12 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Retirar",
@@ -379,7 +402,11 @@
       "calculateProfitability": "Calcular la rentabilidad",
       "refillTime": "{{hours}} horas {{minutes}} minutos",
       "addXbrbc": "Añadir xBRBC",
-      "canUnstake": "Puede unstake {{amount}}"
+      "canUnstake": "Puede unstake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "APR de ayer",
@@ -399,6 +426,12 @@
       "stakeTokens": "Stake de 1.000 a 100.000 RBC / BRBC / wRBC para obtener recompensas en BRBC",
       "teamBuybacks": "Recompras del Equipos",
       "chainFeeUsage": "el 0,5% de nuestra tarifa de cadena múltiple del 0,6% se utilizará para comprar y distribuir RBC al fondo de recompensas"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
@@ -442,7 +475,7 @@
       "pageSoon": "pronto.",
       "title": "¡La transacción se envió con éxito!",
       "ccrTitle": "Intercambio exitoso en la red de origen!",
-      "seeDetailsCCR": "Consulte transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>detalles</a>. Aparecerá en <a class='modal__footer-link' href='./mis operaciones' target='_blank'>Mi página de operaciones</a> pronto.",
+      "seeDetailsCCR": " If your transaction seems to be taking longer than normal (more than 30 minutes), please contact our Support Team at <a class='modal__footer-link' href='mailto:support@rubic.exchange' target='_blank'>support@rubic.exchange</a>",
       "seeDetailsItBridge": "Consulte transaction <a class='modal__footer-link' href ='{{explorerLink}}' target='_blank'>detalles</a>.",
       "link": "Mis operaciones"
     },
@@ -525,12 +558,16 @@
       "link": "¡Pruébalo hoy!"
     },
     "external": {
-      "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Comercia ahora!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+    },
+    "zeroFees": {
+      "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
+      "period": "Trade between Blockchains with 0% Protocol Fees from June 6th to June 27th",
+      "excluded": "*The terms of the campaign don’t include Telos, Aurora, Moonriver, Harmony, Solana, or NEAR"
     }
   },
   "referralBanner": {
-    "takePartInOur": "Participa en nuestro ",
-    "referralProgram": "¡Programa de referencias y obtén recompensas!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Aprende más"
   },
   "volume": {

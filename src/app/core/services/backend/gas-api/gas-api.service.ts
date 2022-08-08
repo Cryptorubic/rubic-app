@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { Observable, of } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';

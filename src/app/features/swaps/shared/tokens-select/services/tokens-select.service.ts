@@ -5,7 +5,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -38,7 +38,7 @@ export class TokensSelectService {
     allowedBlockchains: BlockchainName[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 'm';
+    const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
       {

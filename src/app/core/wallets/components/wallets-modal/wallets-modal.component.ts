@@ -6,6 +6,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
+import { USER_AGENT } from '@ng-web-apis/common';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -14,7 +15,7 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from 'rubic-sdk';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
@@ -25,6 +26,7 @@ import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/i
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets/components/wallets-modal/models/providers';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -40,9 +42,15 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$: Observable<boolean>;
 
   public get providers(): ReadonlyArray<WalletProvider> {
+    const browserSupportedProviders = Boolean(this.window.chrome)
+      ? this.allProviders
+      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
+
     const deviceFiltered = this.isMobile
-      ? this.allProviders.filter(provider => !provider.desktopOnly)
-      : this.allProviders.filter(provider => !provider.mobileOnly);
+      ? browserSupportedProviders.filter(
+          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+        )
+      : browserSupportedProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
@@ -70,7 +78,8 @@ export class WalletsModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(WINDOW) private readonly window: Window,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly translateService: TranslateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,

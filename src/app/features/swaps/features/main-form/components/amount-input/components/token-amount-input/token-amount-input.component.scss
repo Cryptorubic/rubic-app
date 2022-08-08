@@ -44,6 +44,16 @@
     max-width: 300px;
     height: 100%;
 
+    @include hide-unused-ui {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+      justify-content: initial;
+      max-width: 300px;
+      height: 100%;
+    }
+
     @include iframe-horizontal {
       justify-content: center;
 
