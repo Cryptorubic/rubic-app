@@ -106,6 +106,7 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+      this.setLanguage(queryParams);
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
 
@@ -437,10 +438,6 @@ export class QueryParamsService {
   }
 
   private setLanguage(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
     const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
     this.translateService.use(language);
   }
