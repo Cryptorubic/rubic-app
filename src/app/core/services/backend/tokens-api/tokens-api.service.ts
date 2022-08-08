@@ -124,7 +124,18 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    const backendNetworks: BlockchainName[] = [BLOCKCHAIN_NAME.ETHEREUM];
+    const backendNetworks: BlockchainName[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      BLOCKCHAIN_NAME.POLYGON,
+      BLOCKCHAIN_NAME.AVALANCHE,
+      BLOCKCHAIN_NAME.FANTOM,
+      BLOCKCHAIN_NAME.ARBITRUM,
+      BLOCKCHAIN_NAME.AURORA,
+      BLOCKCHAIN_NAME.MOONRIVER,
+      BLOCKCHAIN_NAME.TELOS,
+      BLOCKCHAIN_NAME.HARMONY
+    ];
     const backendTokens$ = this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)
       .pipe(
