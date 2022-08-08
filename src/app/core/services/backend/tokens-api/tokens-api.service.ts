@@ -24,7 +24,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
 
 /**
@@ -124,9 +124,27 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    return this.httpService
-      .get(ENDPOINTS.IFRAME_TOKENS, params)
-      .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+    const backendNetworks: BlockchainName[] = [BLOCKCHAIN_NAME.ETHEREUM];
+    const backendTokens$ = this.httpService
+      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)
+      .pipe(
+        map(backendTokens =>
+          backendTokens.filter(token => {
+            const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
+            return backendNetworks.includes(network);
+          })
+        ),
+        map(backendTokens => TokensApiService.prepareTokens(backendTokens))
+      );
+
+    const lifiTokens$ = this.getLiFinanceTokens().pipe(
+      map(blockchains => blockchains.map(tokens => tokens.slice(0, 7))),
+      map(blockchains => blockchains.flat())
+    );
+
+    return forkJoin([backendTokens$, lifiTokens$]).pipe(
+      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
+    );
   }
 
   /**
@@ -175,6 +193,14 @@ export class TokensApiService {
       })
     );
 
+    const lifiTokens$ = this.getLiFinanceTokens().pipe(map(blockchains => blockchains.flat()));
+
+    return forkJoin([backendTokens$, lifiTokens$]).pipe(
+      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
+    );
+  }
+
+  private getLiFinanceTokens(): Observable<Token[][]> {
     const lifiChains = [
       BLOCKCHAIN_NAME.OPTIMISM,
       BLOCKCHAIN_NAME.CRONOS,
@@ -185,46 +211,40 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.CELO
     ].map(blockchain => BlockchainsInfo.getBlockchainByName(blockchain).id);
 
-    const lifiTokens$: Observable<Token[]> = this.httpService
+    return this.httpService
       .get<LifiTokens>('v1/tokens', { chains: lifiChains.join(',') }, 'https://li.quest/')
       .pipe(
         map(wrappedTokens =>
-          lifiChains
-            .map(chainId =>
-              wrappedTokens.tokens[chainId]
-                .filter(token => {
-                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
-                  return !(
-                    blockchain === BLOCKCHAIN_NAME.OPTIMISM &&
-                    compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
-                  );
-                })
-                .map(token => {
-                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
-                  const name =
-                    blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
-                      ? token.name
-                      : token.name.slice(0, token.name.length - 8);
+          lifiChains.map(chainId =>
+            wrappedTokens.tokens[chainId]
+              .filter(token => {
+                const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
+                return !(
+                  blockchain === BLOCKCHAIN_NAME.OPTIMISM &&
+                  compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+                );
+              })
+              .map(token => {
+                const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
+                const name =
+                  blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
+                    ? token.name
+                    : token.name.slice(0, token.name.length - 8);
 
-                  return {
-                    ...token,
-                    blockchain,
-                    name,
-                    image: token.logoURI,
-                    rank: 0,
-                    price: parseFloat(token.priceUSD),
-                    usedInIframe: false,
-                    hasDirectPair: null
-                  };
-                })
-            )
-            .flat()
+                return {
+                  ...token,
+                  blockchain,
+                  name,
+                  image: token.logoURI,
+                  rank: 0,
+                  price: parseFloat(token.priceUSD),
+                  usedInIframe: false,
+                  hasDirectPair: null
+                };
+              })
+          )
         )
       );
-
-    return forkJoin([backendTokens$, lifiTokens$]).pipe(
-      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
-    );
   }
 
   /**
