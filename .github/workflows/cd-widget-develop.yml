@@ -1,4 +1,4 @@
-name: Deploy to dev server
+name: Deploy to widget dev server
 
 on:
   workflow_dispatch:
