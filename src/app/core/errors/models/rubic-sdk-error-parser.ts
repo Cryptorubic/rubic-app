@@ -44,7 +44,7 @@ export class RubicSdkErrorParser {
         BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
       );
     }
-    if (err.stack.includes('InsufficientFundsGasPriceValueError')) {
+    if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
