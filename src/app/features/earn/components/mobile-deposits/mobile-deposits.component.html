@@ -23,7 +23,7 @@
           : '0.00'
       }}
     </div>
-    <div class="mobile-table__cell">0%</div>
+    <div class="mobile-table__cell">{{ deposit.tokenApr | bigNumberFormat: 2 }}%</div>
     <div class="mobile-table__cell">
       {{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}
     </div>
