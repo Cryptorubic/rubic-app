@@ -46,7 +46,9 @@ export class RubicSdkErrorParser {
       );
     }
     if (err instanceof InsufficientFundsGasPriceValueError) {
-      return new RubicError('Insufficient funds for swap');
+      return new RubicError(
+        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
+      );
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
