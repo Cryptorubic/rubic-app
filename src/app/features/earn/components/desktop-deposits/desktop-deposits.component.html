@@ -22,15 +22,6 @@
           {{ deposit.amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 0 } }}
         </td>
         <td class="tui-table__td">
-          {{
-            !deposit.totalNftRewards.isZero()
-              ? deposit.totalNftRewards.lt(0.01)
-                ? '< 0.01'
-                : (deposit.totalNftRewards
-                  | bigNumberFormat
-                  | withRound: 'fixedValue':{ decimals: 2 })
-              : '0.00'
-          }}
           <span
             [tuiHint]="
               deposit.totalNftRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 }
@@ -41,10 +32,17 @@
             [tuiManualHintShow]="false"
             [tuiHintDirection]="'top-left'"
             [tuiHintShowDelay]="50"
-            >{{
-              deposit.totalNftRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 }
-            }}</span
           >
+            {{
+              !deposit.totalNftRewards.isZero()
+                ? deposit.totalNftRewards.lt(0.01)
+                  ? '< 0.01'
+                  : (deposit.totalNftRewards
+                    | bigNumberFormat
+                    | withRound: 'fixedValue':{ decimals: 2 })
+                : '0.00'
+            }}
+          </span>
         </td>
         <td class="tui-table__td">{{ deposit.tokenApr | bigNumberFormat: 2 }}%</td>
         <td class="tui-table__td">{{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}</td>
