@@ -12,7 +12,7 @@
   </div>
   {{
     rewards.lt(0.0001)
-      ? '<0.0001'
+      ? '< 0.0001'
       : (rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 })
   }}
   BRBC

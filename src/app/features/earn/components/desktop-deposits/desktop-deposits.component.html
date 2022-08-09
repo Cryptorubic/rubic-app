@@ -24,10 +24,18 @@
         <td class="tui-table__td">
           <span
             [tuiHint]="
-              deposit.totalNftRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 }
+              deposit.totalNftRewards.lt(0.0001)
+                ? '< 0.0001'
+                : (deposit.totalNftRewards
+                  | bigNumberFormat
+                  | withRound: 'fixedValue':{ decimals: 4 })
             "
             [tuiManualHint]="
-              deposit.totalNftRewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 }
+              deposit.totalNftRewards.lt(0.0001)
+                ? '< 0.0001'
+                : (deposit.totalNftRewards
+                  | bigNumberFormat
+                  | withRound: 'fixedValue':{ decimals: 4 })
             "
             [tuiManualHintShow]="false"
             [tuiHintDirection]="'top-left'"
