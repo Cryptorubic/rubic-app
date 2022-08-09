@@ -20,7 +20,10 @@ import {
   catchError,
   Subject,
   combineLatest,
-  takeUntil
+  takeUntil,
+  MonoTypeOperatorFunction,
+  switchMapTo,
+  timer
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
@@ -176,6 +179,14 @@ export class StakingService {
       map((balance: string) => Web3Pure.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
+  }
+
+  private poll<T>(pollInterval: number): MonoTypeOperatorFunction<T> {
+    return source$ => timer(0, pollInterval).pipe(switchMapTo(source$));
+  }
+
+  public pollRbcTokens(): Observable<number | BigNumber> {
+    return this.getRbcTokenBalance().pipe(this.poll(15000));
   }
 
   public async getCurrentTimeInSeconds(): Promise<number> {

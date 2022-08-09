@@ -98,6 +98,7 @@ export class StakeFormComponent implements OnInit {
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
   ) {
     this.stakingService.getRbcAmountPrice().subscribe(price => (this.rbcUsdPrice = price));
+    this.stakingService.pollRbcTokens().pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   public ngOnInit(): void {
