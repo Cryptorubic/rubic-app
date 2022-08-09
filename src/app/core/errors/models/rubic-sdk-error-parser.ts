@@ -16,6 +16,7 @@ import { RubicSdkError } from 'rubic-sdk';
 import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } from 'rubic-sdk';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import InsufficientFundsGasPriceValueError from './cross-chain-routing/insufficient-funds-gas-price-value';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -42,6 +43,11 @@ export class RubicSdkErrorParser {
     if (err instanceof SdkInsufficientFundsOneinchError) {
       return new InsufficientFundsOneinchError(
         BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
+      );
+    }
+    if (err instanceof InsufficientFundsGasPriceValueError) {
+      return new RubicError(
+        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
     }
 
