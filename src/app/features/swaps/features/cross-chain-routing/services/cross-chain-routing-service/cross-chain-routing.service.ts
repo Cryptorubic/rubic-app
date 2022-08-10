@@ -58,6 +58,7 @@ import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/prov
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -200,6 +201,8 @@ export class CrossChainRoutingService extends TradeService {
         ? form.toToken
         : (this.crossChainTrade?.trade?.to as unknown as Token); // @TODO change types
 
+      const timestamp = Date.now();
+
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
         fromBlockchain: this.crossChainTrade?.trade.from?.blockchain,
@@ -207,7 +210,7 @@ export class CrossChainRoutingService extends TradeService {
         fromToken,
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
-        timestamp: Date.now(),
+        timestamp,
         bridgeType:
           this.crossChainTrade?.trade instanceof LifiCrossChainTrade
             ? this.crossChainTrade?.trade?.subType
@@ -217,7 +220,7 @@ export class CrossChainRoutingService extends TradeService {
       confirmCallback?.();
 
       if (this.crossChainTrade?.tradeType) {
-        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash);
+        this.openSwapSchemeModal(this.crossChainTrade.tradeType, txHash, timestamp);
       }
 
       this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
@@ -227,7 +230,9 @@ export class CrossChainRoutingService extends TradeService {
 
     const blockchain = this.crossChainTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+    const receiverAddress: string | undefined = (window as RubicAny).receiverAddress;
     const swapOptions = {
+      ...(receiverAddress && { receiverAddress }),
       onConfirm: onTransactionHash,
       ...(Boolean(shouldCalculateGasPrice) && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
@@ -395,7 +400,11 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  public openSwapSchemeModal(provider: CrossChainTradeType, txHash: string): void {
+  public openSwapSchemeModal(
+    provider: CrossChainTradeType,
+    txHash: string,
+    timestamp: number
+  ): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     const routing = this.smartRouting;
@@ -425,7 +434,8 @@ export class CrossChainRoutingService extends TradeService {
           dstProvider: toTradeProvider,
           crossChainProvider: provider,
           srcTxHash: txHash,
-          bridgeType: bridgeProvider
+          bridgeType: bridgeProvider,
+          timestamp
         }
       })
       .subscribe();
