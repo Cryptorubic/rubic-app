@@ -21,8 +21,6 @@ import {
   Subject,
   combineLatest,
   takeUntil,
-  MonoTypeOperatorFunction,
-  switchMapTo,
   timer
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
@@ -175,18 +173,18 @@ export class StakingService {
   }
 
   public getRbcTokenBalance(): Observable<BigNumber> {
-    return from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS)).pipe(
+    const amount$ = this.walletAddress
+      ? from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS))
+      : of('0');
+    return amount$.pipe(
       map((balance: string) => Web3Pure.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
   }
 
-  private poll<T>(pollInterval: number): MonoTypeOperatorFunction<T> {
-    return source$ => timer(0, pollInterval).pipe(switchMapTo(source$));
-  }
-
-  public pollRbcTokens(): Observable<number | BigNumber> {
-    return this.getRbcTokenBalance().pipe(this.poll(15000));
+  public pollRbcTokens(): Observable<BigNumber> {
+    const pollInterval = 15_000;
+    return timer(0, pollInterval).pipe(switchMap(() => this.getRbcTokenBalance()));
   }
 
   public async getCurrentTimeInSeconds(): Promise<number> {
