@@ -157,7 +157,6 @@ export class StakingService {
       )
     ).pipe(
       map((allowance: BigNumber) => {
-        console.log('allowance', allowance.toNumber());
         return Web3Pure.fromWei(allowance);
       }),
       tap((allowance: BigNumber) => this.setAllowance(allowance))
@@ -214,12 +213,6 @@ export class StakingService {
 
   public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    console.log({
-      duration,
-      amount,
-      durationInSeconds,
-      amountInWei: Web3Pure.toWei(new BigNumber(amount.split(',').join('')), 18)
-    });
     return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
@@ -341,8 +334,6 @@ export class StakingService {
           .reduce((prev, curr) => {
             return prev.plus(curr);
           }, new BigNumber(0));
-
-        console.log('deposits:', deposits);
 
         this.setDepositsLoading(false);
 
