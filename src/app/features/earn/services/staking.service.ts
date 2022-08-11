@@ -156,9 +156,7 @@ export class StakingService {
         this.NFT_CONTRACT_ADDRESS
       )
     ).pipe(
-      map((allowance: BigNumber) => {
-        return Web3Pure.fromWei(allowance);
-      }),
+      map((allowance: BigNumber) => Web3Pure.fromWei(allowance)),
       tap((allowance: BigNumber) => this.setAllowance(allowance))
     );
   }
