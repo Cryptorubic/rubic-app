@@ -5,13 +5,15 @@ import { RoundStatus } from '../../models/round-status.enum';
 const STATUS_BADGE_TYPE = {
   [RoundStatus.ACTIVE]: 'active',
   [RoundStatus.CLOSED]: 'error',
-  [RoundStatus.FULL]: 'warning'
+  [RoundStatus.FULL]: 'warning',
+  [RoundStatus.INACTIVE]: 'inactive'
 };
 
 const STATUS_BADGE_TEXT = {
   [RoundStatus.ACTIVE]: 'Active',
   [RoundStatus.CLOSED]: 'Closed',
-  [RoundStatus.FULL]: 'Full'
+  [RoundStatus.FULL]: 'Full',
+  [RoundStatus.INACTIVE]: 'inactive'
 };
 
 @Component({

@@ -6,7 +6,12 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { StakingCardComponent } from './components/staking-card/staking-card.component';
 import { LpCardComponent } from './components/lp-card/lp-card.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiManualHintModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
 import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
 import { SwapsModule } from '@features/swaps/swaps.module';
@@ -49,7 +54,9 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     SwapsModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
-    TuiSliderModule
+    TuiSliderModule,
+    TuiHintModule,
+    TuiManualHintModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })

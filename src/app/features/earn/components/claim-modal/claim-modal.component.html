@@ -10,7 +10,12 @@
   <div class="text__warn" *ngIf="beforeWithdraw">
     Please claim your rewards before proceeding to the withdrawal
   </div>
-  {{ rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 5 } }} BRBC
+  {{
+    rewards.lt(0.0001)
+      ? '< 0.0001'
+      : (rewards | bigNumberFormat | withRound: 'fixedValue':{ decimals: 4 })
+  }}
+  BRBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">
   <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"

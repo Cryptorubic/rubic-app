@@ -67,6 +67,7 @@ export class RubicSdkErrorParser {
       );
     }
     if (
+      err.message.includes('Ok(OutOfFund)') ||
       err.message.includes('insufficient funds for transfer') ||
       err.message.includes('execution reverted: MetaRouter: second swap failed') ||
       err.message.includes('1inch sets increased costs on gas fee') ||

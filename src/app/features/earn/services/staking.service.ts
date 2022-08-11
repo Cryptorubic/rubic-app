@@ -20,7 +20,8 @@ import {
   catchError,
   Subject,
   combineLatest,
-  takeUntil
+  takeUntil,
+  timer
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
@@ -155,10 +156,7 @@ export class StakingService {
         this.NFT_CONTRACT_ADDRESS
       )
     ).pipe(
-      map((allowance: BigNumber) => {
-        console.log('allowance', allowance.toNumber());
-        return Web3Pure.fromWei(allowance);
-      }),
+      map((allowance: BigNumber) => Web3Pure.fromWei(allowance)),
       tap((allowance: BigNumber) => this.setAllowance(allowance))
     );
   }
@@ -172,10 +170,18 @@ export class StakingService {
   }
 
   public getRbcTokenBalance(): Observable<BigNumber> {
-    return from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS)).pipe(
-      map((balance: BigNumber) => Web3Pure.fromWei(balance)),
+    const amount$: Observable<BigNumber> = this.walletAddress
+      ? from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS))
+      : of(new BigNumber(0));
+    return amount$.pipe(
+      map(balance => Web3Pure.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
+  }
+
+  public pollRbcTokens(): Observable<BigNumber> {
+    const pollInterval = 15_000;
+    return timer(0, pollInterval).pipe(switchMap(() => this.getRbcTokenBalance()));
   }
 
   public async getCurrentTimeInSeconds(): Promise<number> {
@@ -205,12 +211,6 @@ export class StakingService {
 
   public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    console.log({
-      duration,
-      amount,
-      durationInSeconds,
-      amountInWei: Web3Pure.toWei(new BigNumber(amount.split(',').join('')), 18)
-    });
     return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
@@ -332,8 +332,6 @@ export class StakingService {
           .reduce((prev, curr) => {
             return prev.plus(curr);
           }, new BigNumber(0));
-
-        console.log('deposits:', deposits);
 
         this.setDepositsLoading(false);
 
