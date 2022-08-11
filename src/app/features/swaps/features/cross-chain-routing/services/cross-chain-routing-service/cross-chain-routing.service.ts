@@ -57,6 +57,7 @@ import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
+import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -74,7 +75,8 @@ export class CrossChainRoutingService extends TradeService {
     RubicCrossChainTradeProvider,
     CelerCrossChainTradeProvider,
     SymbiosisCrossChainTradeProvider,
-    LifiCrossChainTradeProvider
+    LifiCrossChainTradeProvider,
+    DebridgeCrossChainTradeProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -267,12 +269,9 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     if (trade instanceof CelerRubicCrossChainTrade) {
-      const { fromTrade, toTrade, feeInPercents, cryptoFeeToken } =
-        trade as CelerRubicCrossChainTrade;
+      const { fromTrade, toTrade } = trade as CelerRubicCrossChainTrade;
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
-
-      const feeAmount = toTrade.fromToken.tokenAmount.multipliedBy(feeInPercents).dividedBy(100);
 
       const priceImpactFrom = PriceImpactService.calculatePriceImpact(
         fromTrade.fromToken.price.toNumber(),
@@ -288,25 +287,18 @@ export class CrossChainRoutingService extends TradeService {
         toTrade.toToken.tokenAmount
       );
 
-      const fromPath: null = null;
-      const toPath: null = null;
-
-      // @TODO SDK
-      // const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
-      // const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
-
       return {
-        feePercent: 0,
-        feeAmount,
-        feeTokenSymbol: toTrade.fromToken.symbol,
-        cryptoFee: cryptoFeeToken.tokenAmount.toNumber(),
+        feePercent: trade.feeInfo.platformFee.percent,
+        feeAmount: new BigNumber(1),
+        feeTokenSymbol: 'USDC',
+        cryptoFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount).toNumber(),
         estimatedGas,
         priceImpactFrom: Number.isNaN(priceImpactFrom) ? 0 : priceImpactFrom,
         priceImpactTo: Number.isNaN(priceImpactTo) ? 0 : priceImpactTo,
         fromProvider,
         toProvider,
-        fromPath,
-        toPath,
+        fromPath: null,
+        toPath: null,
         usingCelerBridge: trade.type === CROSS_CHAIN_TRADE_TYPE.CELER
       };
     }
@@ -320,25 +312,34 @@ export class CrossChainRoutingService extends TradeService {
       return;
     }
 
-    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+    if (
+      this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI &&
+      this.crossChainTrade.trade instanceof LifiCrossChainTrade
+    ) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
         bridgeProvider: this.crossChainTrade.trade.subType
       };
-    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+      return;
+    }
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
-    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
+      return;
+    }
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
       };
-    } else {
+      return;
+    }
+    if (this.crossChainTrade.trade instanceof CelerRubicCrossChainTrade) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
@@ -347,7 +348,9 @@ export class CrossChainRoutingService extends TradeService {
             ? CROSS_CHAIN_TRADE_TYPE.CELER
             : CROSS_CHAIN_TRADE_TYPE.RUBIC
       };
+      return;
     }
+    this.smartRouting = null;
   }
 
   public async approve(): Promise<void> {

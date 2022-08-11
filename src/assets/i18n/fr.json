@@ -450,13 +450,6 @@
     "tradingNotAvailable": "Échanges non disponibles",
     "rateIsUpdated": "Le prix est à jour, cliquez pour rafraîchir le prix"
   },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
-  },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
     "currentlyAvailable": "Currently Available",
@@ -492,6 +485,12 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Retrait",
@@ -507,7 +506,11 @@
       "calculateProfitability": "Calculer le profit",
       "refillTime": "{{hours}} heures {{minutes}} minutes",
       "addXbrbc": "Ajouter le jeton xBRBC",
-      "canUnstake": "{{amount}} peuvent être retiré\n"
+      "canUnstake": "{{amount}} peuvent être retiré\n",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "APR d'hier",
@@ -527,6 +530,12 @@
       "stakeTokens": "Déposez 1000 - 100'000 RBC/BRBC/wRBC pour être récompensé en BRBC",
       "teamBuybacks": "Rachats de l'équipe",
       "chainFeeUsage": "0.5% de nos 0.6% de frais multi-chaînes seront utilisés pour les rachats de RBC à destination des pools de récompenses\n"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {

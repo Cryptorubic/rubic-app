@@ -44,6 +44,11 @@ export class RubicSdkErrorParser {
         BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
       );
     }
+    if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
+      return new RubicError(
+        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
+      );
+    }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
@@ -62,6 +67,7 @@ export class RubicSdkErrorParser {
       );
     }
     if (
+      err.message.includes('Ok(OutOfFund)') ||
       err.message.includes('insufficient funds for transfer') ||
       err.message.includes('execution reverted: MetaRouter: second swap failed') ||
       err.message.includes('1inch sets increased costs on gas fee') ||

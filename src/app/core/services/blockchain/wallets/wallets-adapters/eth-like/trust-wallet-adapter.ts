@@ -6,6 +6,7 @@ import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { NgZone } from '@angular/core';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   private deepLink: string;
@@ -25,13 +26,14 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     errorsService: ErrorsService,
     isIos: boolean,
     window: RubicWindow,
-    transactionEmitter$: Observable<void>
+    transactionEmitter$: Observable<void>,
+    zone: NgZone
   ) {
     const providerConfig: IWalletConnectProviderOptions = {
       bridge: 'https://bridge.walletconnect.org',
       qrcode: false
     };
-    super(web3, chainChange$, accountChange$, errorsService, providerConfig);
+    super(web3, chainChange$, accountChange$, errorsService, providerConfig, zone);
     this.window = window;
     this.isIos = isIos;
     this.initDisplaySubscription();

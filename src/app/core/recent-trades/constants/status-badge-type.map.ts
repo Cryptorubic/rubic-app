@@ -1,7 +1,6 @@
-import { StatusBadgeType } from '@app/shared/components/status-badge/status-badge.component';
 import { CrossChainTxStatus } from 'rubic-sdk';
 
-export const STATUS_BADGE_TYPE: Partial<Record<CrossChainTxStatus, StatusBadgeType>> = {
+export const STATUS_BADGE_TYPE: Partial<Record<CrossChainTxStatus, string>> = {
   [CrossChainTxStatus.FAIL]: 'error',
   [CrossChainTxStatus.PENDING]: 'info',
   [CrossChainTxStatus.SUCCESS]: 'active',
