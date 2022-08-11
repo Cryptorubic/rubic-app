@@ -1,0 +1,37 @@
+name: Update widget production server
+
+on:
+  push:
+    branches:
+      - widget
+
+jobs:
+  deploy:
+    name: Deploy on widget production server
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      - name: Set up packages
+        run: yarn
+
+      - name: Set up sshpass and yarn
+        run: |
+          sudo apt-get install sshpass
+          yarn --prefer-offline
+
+      - name: Run build prod
+        run: yarn run build
+
+      - name: Deploy on prod server
+        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend_widgets

@@ -1,0 +1,128 @@
+@use 'src/scss/core' as *;
+
+.statistics {
+  position: relative;
+
+  padding: 26px;
+
+  background: var(--rubic-base-22);
+  border-radius: 24px;
+
+  @include b($mobile-sm-plus) {
+    padding: 22px 22px 0;
+  }
+
+  &__head {
+    position: relative;
+
+    margin-bottom: 48px;
+
+    @include b($mobile-sm-plus) {
+      margin-bottom: 30px;
+    }
+  }
+
+  &__title {
+    @include font(18px, 22px, 500, var(--rubic-base-02));
+
+    @include b($mobile-sm-plus) {
+      @include font(16px, 22px, 500, var(--rubic-base-02));
+    }
+  }
+
+  &__info {
+    display: flex;
+    justify-content: space-between;
+
+    @include b($tablet) {
+      flex-direction: column;
+      padding: 0;
+
+      border-radius: 22px;
+    }
+  }
+
+  &__refresh {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 45px;
+
+    @include b($tablet) {
+      flex-direction: row;
+      margin-bottom: 26px;
+      padding: 0;
+    }
+
+    @include b($mobile-sm-plus) {
+      padding: 0;
+    }
+
+    .statistics__param:first-child {
+      margin-bottom: 40px;
+
+      @include b($tablet) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__param {
+    @include b($tablet) {
+      width: 50%;
+    }
+
+    @include b($mobile-sm-plus) {
+      overflow: hidden;
+    }
+
+    &-label {
+      @include font(16px, 19px, 500, var(--rubic-base-24));
+      display: flex;
+      align-items: center;
+      margin-bottom: 7px;
+
+      @include b($tablet) {
+        margin-bottom: 4px;
+
+        font-size: 14px;
+        line-height: 17px;
+      }
+
+      &_btn {
+
+        cursor: pointer;
+
+        img {
+          width: 15px;
+          height: 9px;
+          margin-left: 6px;
+        }
+      }
+    }
+
+    &-value {
+      @include font(22px, 26px, 500, var(--rubic-base-02));
+      transition: 0.4s opacity ease-in-out;
+
+      @include b($tablet) {
+        font-size: 20px;
+        line-height: 24px;
+      }
+
+      @include b($mobile-sm-plus) {
+        font-size: 18px;
+      }
+
+      &_loading {
+        opacity: 0.4;
+      }
+    }
+  }
+}

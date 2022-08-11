@@ -1,0 +1,51 @@
+@use 'src/scss/core' as *;
+
+:host {
+  position: relative;
+
+  display: block;
+  padding: 40px 0 36px;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 12px;
+  height: 12px;
+
+  cursor: pointer;
+
+  ::ng-deep svg path {
+    stroke: #000;
+
+    @include dark {
+      stroke: #fff;
+    }
+  }
+}
+
+.title {
+  @include font(24px, 29px, 600, var(--rubic-base-02));
+  margin-bottom: 26px;
+
+  text-align: center;
+}
+
+.text {
+  @include font(24px, 29px, 600,var(--rubic-base-25));
+  margin: 0 auto 48px;
+
+  text-align: center;
+
+  &__warn {
+    margin-bottom: 16px;
+  }
+}
+
+.action-btn {
+  display: block;
+  max-width: 275px;
+  margin: 0 auto;
+}

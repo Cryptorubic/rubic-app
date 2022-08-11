@@ -523,6 +523,12 @@
     "liquidityTime": "Liquidity time"
   },
   "staking": {
+    "lockedRBC": "Locked BRBC",
+    "$lockedRBC": "$ Locked BRBC",
+    "circRBCLocked": "Circ. BRBC Locked",
+    "estYieldPerWeek": "Est. Yield Per Week",
+    "avgLockTime": "Avg. Lock Time (month)",
+    "apr": "APR",
     "stake": {
       "stake": "Stake",
       "withdraw": "Çekmek",
@@ -538,7 +544,11 @@
       "calculateProfitability": "Karlılığı hesaplayın",
       "refillTime": "{{hours}} hours {{minutes}} minutes",
       "addXbrbc": "Add xBRBC",
-      "canUnstake": "Kaldırılabilir stake {{amount}}"
+      "canUnstake": "Kaldırılabilir stake {{amount}}",
+      "buyBRBC": "BUY BRBC",
+      "stakeBRBC": "STAKE BRBC",
+      "rules": "Complete Staking Rules",
+      "pastStaking": "Past Staking Campaigns"
     },
     "stats": {
       "profitTime": "Dünün APR",
@@ -558,6 +568,12 @@
       "stakeTokens": "BRBC'de ödüller almak için 1.000 - 100.000 RBC/BRBC/wRBC yatırın",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "%0,6 Çoklu Zincir ücretimizin %0,5'i RBC'yi geri almak ve ödül havuzuna dağıtmak için kullanılacak"
+    },
+    "deposits": {
+      "yourDeposits": "Your Deposits",
+      "newPosition": "+ New Position",
+      "claimRewards": "Claim Rewards",
+      "manage": "Manage"
     }
   },
   "maintenance": {
@@ -613,13 +629,6 @@
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
     }
-  },
-  "earn": {
-    "tvl": "TVL",
-    "stakingTvl": "Staking TVL",
-    "multichainTvl": "Multi-Chain TVL",
-    "joinRound": "Join Round",
-    "totalTradingVolume": "Total Trading Volume"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
@@ -735,8 +744,7 @@
     }
   },
   "referralBanner": {
-    "takePartInOur": "katılmak",
-    "referralProgram": "Tavsiye Programı ve ödüller kazanın!",
+    "text": "Stake BRBC for up to 58% APR",
     "link": "Daha fazla bilgi edin"
   },
   "volume": {

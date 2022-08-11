@@ -23,22 +23,34 @@
             <span class="item__label">
               {{ 'promotionPage.statistics.invitedProjects' | translate }}
             </span>
-            <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
+            <span class="item__amount" [class.tui-skeleton]="statistics === null">
+              <ng-container *ngIf="statistics !== null">{{
+                statistics.integratedProjectsNumber
+              }}</ng-container>
+            </span>
           </li>
           <li class="statistics__item item">
             <span class="item__label">
               {{ 'promotionPage.statistics.totalRewards' | translate }}
             </span>
-            <span class="item__amount">
-              ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true }}
+            <span class="item__amount" [class.tui-skeleton]="statistics === null">
+              <ng-container *ngIf="statistics !== null"
+                >${{
+                  statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true
+                }}</ng-container
+              >
             </span>
           </li>
           <li class="statistics__item item">
             <span class="item__label">
               {{ 'promotionPage.statistics.instantRewards' | translate }}
             </span>
-            <span class="item__amount">
-              {{ statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true }} BRBC
+            <span class="item__amount" [class.tui-skeleton]="statistics === null">
+              <ng-container *ngIf="statistics !== null"
+                >{{
+                  statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true
+                }}BRBC</ng-container
+              >
             </span>
           </li>
         </ul>
