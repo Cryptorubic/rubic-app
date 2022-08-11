@@ -312,25 +312,34 @@ export class CrossChainRoutingService extends TradeService {
       return;
     }
 
-    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+    if (
+      this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI &&
+      this.crossChainTrade.trade instanceof LifiCrossChainTrade
+    ) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
         bridgeProvider: this.crossChainTrade.trade.subType
       };
-    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+      return;
+    }
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
-    } else if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
+      return;
+    }
+    if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,
         toProvider: TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
       };
-    } else {
+      return;
+    }
+    if (this.crossChainTrade.trade instanceof CelerRubicCrossChainTrade) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
@@ -339,7 +348,9 @@ export class CrossChainRoutingService extends TradeService {
             ? CROSS_CHAIN_TRADE_TYPE.CELER
             : CROSS_CHAIN_TRADE_TYPE.RUBIC
       };
+      return;
     }
+    this.smartRouting = null;
   }
 
   public async approve(): Promise<void> {

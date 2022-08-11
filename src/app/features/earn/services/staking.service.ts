@@ -170,11 +170,11 @@ export class StakingService {
   }
 
   public getRbcTokenBalance(): Observable<BigNumber> {
-    const amount$ = this.walletAddress
+    const amount$: Observable<BigNumber> = this.walletAddress
       ? from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS))
-      : of('0');
+      : of(new BigNumber(0));
     return amount$.pipe(
-      map((balance: string) => Web3Pure.fromWei(balance)),
+      map(balance => Web3Pure.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
   }
@@ -357,12 +357,10 @@ export class StakingService {
   }
 
   public async getNftInfo(nftId: string): Promise<{ amount: BigNumber; endTimestamp: number }> {
-    const { amount, end } = await this.web3Public.callContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
-      'locked',
-      { methodArguments: [nftId] }
-    );
+    const { amount, end } = await this.web3Public.callContractMethod<{
+      amount: string;
+      end: string;
+    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'locked', { methodArguments: [nftId] });
     return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000 };
   }
 
