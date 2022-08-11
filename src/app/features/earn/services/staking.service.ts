@@ -173,7 +173,7 @@ export class StakingService {
 
   public getRbcTokenBalance(): Observable<BigNumber> {
     return from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS)).pipe(
-      map(balance => Web3Pure.fromWei(balance)),
+      map((balance: BigNumber) => Web3Pure.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
   }
