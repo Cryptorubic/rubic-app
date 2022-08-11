@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let deposit of deposits; trackBy: trackBy">
+    <ng-container *ngFor="let deposit of deposits; let id = index; trackBy: trackBy">
       <tr class="tui-table__tr data-row">
         <td class="tui-table__td">
           <div class="tui-table__td-id">
@@ -22,15 +22,27 @@
           {{ deposit.amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 0 } }}
         </td>
         <td class="tui-table__td">
-          {{
-            !deposit.totalNftRewards.isZero()
-              ? deposit.totalNftRewards.lt(0.01)
-                ? '< 0.01'
-                : (deposit.totalNftRewards
+          <span
+            [tuiHint]="
+              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
+                ? (deposit.totalNftRewards
                   | bigNumberFormat
-                  | withRound: 'fixedValue':{ decimals: 2 })
-              : '0.00'
-          }}
+                  | withRound: 'fixedValue':{ decimals: 4 })
+                : '< 0.0001'
+            "
+            [tuiManualHint]="
+              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
+                ? (deposit.totalNftRewards
+                  | bigNumberFormat
+                  | withRound: 'fixedValue':{ decimals: 4 })
+                : '< 0.0001'
+            "
+            [tuiManualHintShow]="false"
+            [tuiHintDirection]="'top-left'"
+            [tuiHintShowDelay]="50"
+          >
+            {{ getTotalNftRewards(id) }}
+          </span>
         </td>
         <td class="tui-table__td">{{ deposit.tokenApr | bigNumberFormat: 2 }}%</td>
         <td class="tui-table__td">{{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}</td>
