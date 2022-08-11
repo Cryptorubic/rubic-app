@@ -1,0 +1,68 @@
+name: Deploy to widget dev server
+
+on:
+  workflow_dispatch:
+    inputs:
+      env_id:
+        description: 'Widget environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - dev2
+        - stage
+
+jobs:
+  deploy:
+    name: Deploy on ${{ inputs.env_id }} widget server
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set SSH credentials
+        run: |
+          echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
+          echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
+          
+      - name: Set dev widget target path
+        if: ${{ inputs.env_id == 'dev' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.DEV_WIDGET_TARGET_PATH }}" >> $GITHUB_ENV
+          
+      - name: Set dev2 widget target path
+        if: ${{ inputs.env_id == 'dev2' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.DEV2_WIDGET_TARGET_PATH }}" >> $GITHUB_ENV
+          
+      - name: Set stage widget target path
+        if: ${{ inputs.env_id == 'stage' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.STAGE_WIDGET_TARGET_PATH }}" >> $GITHUB_ENV
+          
+      - name: Install sshpass
+        run: |
+          sudo apt-get install sshpass
+          
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Set Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      - name: Install dependencies
+        run: yarn --prefer-offline
+
+      - name: Run build
+        run: yarn run build:${{ inputs.env_id }}
+
+      - name: Deploy
+        run: |
+          sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
+          sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
+          sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
