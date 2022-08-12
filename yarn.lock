@@ -14185,10 +14185,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@^2.9.7:
-  version "2.9.7"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.9.7.tgz#b533eaf9d6c720c5254b8ef166e48695ef5a4751"
-  integrity sha512-jV2E/qfBOnEmIe0up2wifL1BKSea4398dpujU3ub1rBsK58fcUDnD/j2FfCErhwNyb2NoINZ4NYi5p5cjM3c+w==
+rubic-sdk@^2.9.8:
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.9.8.tgz#8a732368d550311c51d5f34e7aea83b1eea710fc"
+  integrity sha512-ht0cU1xk8KOnfUjp08oAEnH/9mgGgKxaUDvwFGw/lp4BPXe+11iJdHWT2nhinbN16IsYlZeRDqoM9HcgX/VVng==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     assert "^2.0.0"
