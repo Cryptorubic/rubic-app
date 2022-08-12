@@ -34,12 +34,11 @@ import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
@@ -325,7 +324,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               }
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
+            catchError((err: RubicSdkError | undefined) => this.onCalculateError(err))
           );
         }),
         tap(() => {
@@ -390,7 +389,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               }
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
+            catchError((err: RubicSdkError) => this.onCalculateError(err))
           );
         }),
         tap(() => this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED)),
@@ -400,8 +399,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .subscribe();
   }
 
-  public onCalculateError(error: RubicError<ERROR_TYPE>): Observable<null> {
-    const err = this.crossChainRoutingService.parseCalculationError(error);
+  public onCalculateError(error: RubicSdkError | undefined): Observable<null> {
+    const err = error
+      ? this.crossChainRoutingService.parseCalculationError(error)
+      : new RubicError(
+          'The swap between this pair of tokens is currently unavaible. Please try again later.'
+        );
     this.errorText = err.translateKey || err.message;
 
     this.toAmount = new BigNumber(NaN);
