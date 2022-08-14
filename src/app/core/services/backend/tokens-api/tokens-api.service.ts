@@ -26,6 +26,7 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -233,6 +234,19 @@ export class TokensApiService {
         image: '',
         rank: 1,
         price: 1,
+        usedInIframe: true,
+        hasDirectPair: null
+      },
+      {
+        address: EMPTY_ADDRESS,
+        name: 'ETH',
+        symbol: 'ETH',
+        decimals: 18,
+        blockchain: BLOCKCHAIN_NAME.BOBA,
+        chainId: 288,
+        image: '',
+        rank: 1,
+        price: 2000,
         usedInIframe: true,
         hasDirectPair: null
       }
