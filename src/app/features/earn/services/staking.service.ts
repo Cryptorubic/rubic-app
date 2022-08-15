@@ -209,7 +209,7 @@ export class StakingService {
     }
   }
 
-  public async stake(amount: string, duration: number): Promise<TransactionReceipt> {
+  public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
     return Injector.web3Private.tryExecuteContractMethod(
       this.NFT_CONTRACT_ADDRESS,
