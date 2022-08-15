@@ -215,7 +215,7 @@ export class StakingService {
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
       'create_lock',
-      [Web3Pure.toWei(new BigNumber(amount.split(',').join('')), 18), String(durationInSeconds)]
+      [Web3Pure.toWei(amount, 18), String(durationInSeconds)]
     );
   }
 
