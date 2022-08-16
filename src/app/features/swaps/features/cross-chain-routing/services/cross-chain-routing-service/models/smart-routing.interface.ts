@@ -1,8 +1,7 @@
-import { CrossChainTradeType, TradeType } from 'rubic-sdk';
-import { LiFiTradeSubtype } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/models/lifi-providers';
+import { BridgeType, CrossChainTradeType, TradeType } from 'rubic-sdk';
 
 export interface SmartRouting {
   fromProvider: TradeType | undefined;
   toProvider: TradeType | undefined;
-  bridgeProvider: Exclude<CrossChainTradeType, 'LIFI'> | LiFiTradeSubtype;
+  bridgeProvider: Exclude<CrossChainTradeType, 'LIFI' | 'VIA'> | BridgeType;
 }

@@ -58,6 +58,7 @@ import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/prov
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
+import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -211,8 +212,9 @@ export class CrossChainRoutingService extends TradeService {
         crossChainProviderType: this.crossChainTrade.tradeType,
         timestamp,
         bridgeType:
-          this.crossChainTrade?.trade instanceof LifiCrossChainTrade
-            ? this.crossChainTrade?.trade?.subType
+          this.crossChainTrade?.trade instanceof LifiCrossChainTrade ||
+          this.crossChainTrade?.trade instanceof ViaCrossChainTrade
+            ? this.crossChainTrade?.trade?.bridgeType
             : undefined
       };
 
@@ -255,7 +257,8 @@ export class CrossChainRoutingService extends TradeService {
     if (
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
-      trade instanceof DebridgeCrossChainTrade
+      trade instanceof DebridgeCrossChainTrade ||
+      trade instanceof ViaCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -313,13 +316,13 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     if (
-      this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI &&
-      this.crossChainTrade.trade instanceof LifiCrossChainTrade
+      this.crossChainTrade.trade instanceof LifiCrossChainTrade ||
+      this.crossChainTrade.trade instanceof ViaCrossChainTrade
     ) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
-        bridgeProvider: (this.crossChainTrade.trade as LifiCrossChainTrade).subType
+        bridgeProvider: this.crossChainTrade.trade.bridgeType
       };
       return;
     }

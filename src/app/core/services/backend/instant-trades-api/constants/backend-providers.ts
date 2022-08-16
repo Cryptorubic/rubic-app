@@ -1,5 +1,6 @@
 import { TradeType, TRADE_TYPE } from 'rubic-sdk';
 
+// @ts-ignore @TODO add later
 export const BACKEND_PROVIDERS: Record<TradeType, string> = {
   // Rubic integrated dexes
   [TRADE_TYPE.ALGEBRA]: 'algebra',
