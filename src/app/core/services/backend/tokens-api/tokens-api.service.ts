@@ -26,7 +26,6 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -149,7 +148,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.SOLANA,
       BLOCKCHAIN_NAME.NEAR,
-      BLOCKCHAIN_NAME.TELOS
+      BLOCKCHAIN_NAME.TELOS,
+      BLOCKCHAIN_NAME.BOBA
     ].map(blockchain => TO_BACKEND_BLOCKCHAINS[blockchain]);
 
     const requests$ = blockchainsToFetch.map((network: FromBackendBlockchain) =>
@@ -223,39 +223,8 @@ export class TokensApiService {
         )
       );
 
-    const fixedTokens$ = of([
-      {
-        address: '0x66a2a913e447d6b4bf33efbec43aaef87890fbbc',
-        name: 'USDC',
-        symbol: 'USDC',
-        decimals: 6,
-        blockchain: BLOCKCHAIN_NAME.BOBA,
-        chainId: 288,
-        image: '',
-        rank: 1,
-        price: 1,
-        usedInIframe: true,
-        hasDirectPair: null
-      },
-      {
-        address: EMPTY_ADDRESS,
-        name: 'ETH',
-        symbol: 'ETH',
-        decimals: 18,
-        blockchain: BLOCKCHAIN_NAME.BOBA,
-        chainId: 288,
-        image: '',
-        rank: 1,
-        price: 2000,
-        usedInIframe: true,
-        hasDirectPair: null
-      }
-    ]);
-
-    return forkJoin([backendTokens$, lifiTokens$, fixedTokens$]).pipe(
-      map(([backendTokens, lifiTokens, fixedTokens]) =>
-        backendTokens.concat(lifiTokens).concat(fixedTokens)
-      )
+    return forkJoin([backendTokens$, lifiTokens$]).pipe(
+      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
     );
   }
 
