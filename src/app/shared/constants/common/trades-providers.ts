@@ -227,7 +227,7 @@ export const LIFI_BRIDGE_PROVIDER: Record<LiFiTradeSubtype, Provider> = {
     image: `${imageBasePath}celer.svg`,
     color: 'white'
   },
-  [Li_FI_TRADE_SUBTYPE.CONNECT]: {
+  [Li_FI_TRADE_SUBTYPE.CONNEXT]: {
     name: 'Connext',
     image: `${imageBasePath}connext.svg`,
     color: '#8e28fe'
