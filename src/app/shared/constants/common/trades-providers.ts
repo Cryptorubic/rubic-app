@@ -165,13 +165,13 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.J_SWAP]: {
     name: 'Jswap',
-    image: `${imageBasePath}ubeswap.svg`,
-    color: '##5b55e3'
+    image: `${imageBasePath}jswap.jpg`,
+    color: '#5b55e3'
   },
   [TRADE_TYPE.CRONA_SWAP]: {
     name: 'Cronaswap',
-    image: ``,
-    color: ''
+    image: `${imageBasePath}cronaswap.webp`,
+    color: '#020426'
   },
   [TRADE_TYPE.OOLONG_SWAP]: {
     name: 'Oolongswap',

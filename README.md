@@ -1,8 +1,6 @@
 ![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/src/assets/images/rubic-logo.svg "Rubic — Multichain DeFi platform")
 
 # Multichain DeFi platform
-[![develop](https://github.com/Cryptorubic/rubic-app/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/Cryptorubic/rubic-app/actions/workflows/develop.yml)
-
 [Try our platform](https://app.rubic.exchange/)
 
 [Read more about us](https://rubic.exchange/)
