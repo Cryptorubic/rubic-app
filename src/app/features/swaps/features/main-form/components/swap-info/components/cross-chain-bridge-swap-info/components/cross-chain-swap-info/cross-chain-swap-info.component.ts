@@ -147,10 +147,12 @@ export class CrossChainSwapInfoComponent implements OnInit {
             this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
-              this.nativeCoinSymbol = tokens.find(
+              const nativeToken = tokens.find(
                 token =>
                   token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
-              ).symbol;
+              );
+
+              this.nativeCoinSymbol = nativeToken.symbol;
 
               const trade = this.crossChainRoutingService.crossChainTrade.trade;
 
