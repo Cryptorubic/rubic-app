@@ -230,7 +230,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.OSMOSIS_SWAP]: {
     name: 'OsmosisSwap',
-    image: `${imageBasePath}osmosisswap.svg`,
+    image: `${imageBasePath}osmosis.svg`,
     color: '#5E12A0'
   },
 
@@ -429,7 +429,7 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.VIA]: {
     name: 'Via',
-    image: `${imageBasePath}`
+    image: ``
   }
 };
 
@@ -441,7 +441,8 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   },
   [BRIDGE_TYPE.ANY_SWAP]: {
     name: 'AnySwap',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}anyswap.svg`,
+    color: '#5F6BFB'
   },
   [BRIDGE_TYPE.ARBITRUM_BRIDGE]: {
     name: 'Arbitrum Bridge',
@@ -451,13 +452,13 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
-    color: '#323232'
+    color: ''
   },
 
   [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}celer.svg`,
-    color: 'white'
+    color: ''
   },
   [BRIDGE_TYPE.CONNEXT]: {
     name: 'Connext',
@@ -467,7 +468,8 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.DE_BRIDGE]: {
     name: 'DeBridge',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}debridge.svg`,
+    color: '#bf38ee'
   },
 
   [BRIDGE_TYPE.HOP]: {
@@ -484,7 +486,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   [BRIDGE_TYPE.MAKERS_WORMHOLE]: {
     name: `Maker's wormhole`,
     image: `${imageBasePath}wormhole.svg`,
-    color: 'white'
+    color: ''
   },
   [BRIDGE_TYPE.MULTICHAIN]: {
     name: 'Multichain',
@@ -495,11 +497,12 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   [BRIDGE_TYPE.OPTIMISM_GATEWAY]: {
     name: 'Optimism Gateway',
     image: `${imageBasePath}optimism-gateway.svg`,
-    color: 'white'
+    color: '#FF0420'
   },
   [BRIDGE_TYPE.OSMOSIS_BRIDGE]: {
     name: 'Osmosis Bridge',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}osmosis.svg`,
+    color: '#5E12A0'
   },
 
   [BRIDGE_TYPE.POLYGON]: {
@@ -510,21 +513,24 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.REFUEL]: {
     name: 'Refuel',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}refuel.png`,
+    color: '#FEA700'
   },
 
   [BRIDGE_TYPE.SATELLITE]: {
     name: 'Satellite',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}satellite.svg`,
+    color: '#3C82F9'
   },
   [BRIDGE_TYPE.STARGATE]: {
     name: 'Stargate',
     image: `${imageBasePath}stargate.svg`,
-    color: 'grey'
+    color: '#999999'
   },
   [BRIDGE_TYPE.SYMBIOSIS]: {
     name: 'Symbiosis',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}symbiosis.png`,
+    color: '#0dc449'
   },
   [BRIDGE_TYPE.SYNAPSE]: {
     name: 'Synapse',
@@ -534,18 +540,20 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.THORCHAIN]: {
     name: 'Thorchain',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}thorchain.svg`,
+    color: '#33FF99'
   },
 
   [BRIDGE_TYPE.WORMHOLE]: {
     name: 'Wormhole',
     image: `${imageBasePath}wormhole.svg`,
-    color: 'white'
+    color: ''
   },
 
   [BRIDGE_TYPE.YPOOL]: {
     name: 'YPool',
-    image: `${imageBasePath}`
+    image: `${imageBasePath}ypool.svg`,
+    color: '#15D9E1'
   }
 };
 
