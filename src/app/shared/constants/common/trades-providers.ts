@@ -31,37 +31,44 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
 const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   [TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',
-    image: ``
+    image: `${imageBasePath}acryptos.png`,
+    color: '#FF0A1C'
   },
   [TRADE_TYPE.ALDRIN_EXCHANGE]: {
     name: 'AldrinExchange',
-    image: ``
+    image: `${imageBasePath}aldrin.svg`,
+    color: ''
   },
   [TRADE_TYPE.ALGEBRA]: {
     name: 'Algebra',
-    image: `${imageBasePath}algebra.webp`,
+    image: `${imageBasePath}algebra.svg`,
     color: '#00CAB2'
   },
   [TRADE_TYPE.ANNEX]: {
     name: 'Annex',
-    image: ``
+    image: `${imageBasePath}annex.webp`,
+    color: '#FFAD4F'
   },
   [TRADE_TYPE.APE_SWAP]: {
     name: 'Acryptos',
-    image: ``
+    image: `${imageBasePath}ape.svg`,
+    color: '#A16552'
   },
   [TRADE_TYPE.ARTH_SWAP]: {
     name: 'ArthSwap',
-    image: ``
+    image: `${imageBasePath}arth.png`,
+    color: '#00C6EE'
   },
 
   [TRADE_TYPE.BABY_SWAP]: {
     name: 'BabySwap',
-    image: ``
+    image: `${imageBasePath}babyswap.svg`,
+    color: '#E89B37'
   },
   [TRADE_TYPE.BALANCER]: {
     name: 'Balancer',
-    image: ``
+    image: `${imageBasePath}balancer.svg`,
+    color: ''
   },
   [TRADE_TYPE.BEAM_SWAP]: {
     name: 'BeamSwap',
@@ -70,12 +77,14 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.BI_SWAP]: {
     name: 'BiSwap',
-    image: ``
+    image: `${imageBasePath}biswap.svg`,
+    color: ''
   },
 
   [TRADE_TYPE.CREMA_FINANCE]: {
     name: 'CremaFinance',
-    image: ``
+    image: `${imageBasePath}cremafinance.ico`,
+    color: '#6AE2DC'
   },
   [TRADE_TYPE.CRONA_SWAP]: {
     name: 'CronaSwap',
@@ -84,32 +93,39 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.CROPPER_FINANCE]: {
     name: 'CropperFinance',
-    image: ``
+    image: `${imageBasePath}cropperfinance.ico`,
+    color: '#9B5FE3'
   },
   [TRADE_TYPE.CROW_FI]: {
     name: 'CrowFi',
-    image: ``
+    image: `${imageBasePath}crowfi.png`,
+    color: ''
   },
   [TRADE_TYPE.CRO_DEX]: {
     name: 'CroDex',
-    image: ``
+    image: `${imageBasePath}crodex.png`,
+    color: '#F05A28'
   },
   [TRADE_TYPE.CURVE]: {
     name: 'Curve',
-    image: ``
+    image: `${imageBasePath}curve.svg`,
+    color: ''
   },
 
   [TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
-    image: ``
+    image: `${imageBasePath}defiplaza.png`,
+    color: '#5D10C0'
   },
   [TRADE_TYPE.DEFI_SWAP]: {
     name: 'DefiSwap',
-    image: ``
+    image: `${imageBasePath}defiswap.webp`,
+    color: '#012C70'
   },
   [TRADE_TYPE.DFYN]: {
     name: 'Dfyn',
-    image: ``
+    image: `${imageBasePath}dfyn.svg`,
+    color: '#828CBE'
   },
   [TRADE_TYPE.DODO]: {
     name: 'Dodo',
@@ -118,7 +134,8 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.DYSTOPIA]: {
     name: 'Dystopia',
-    image: ``
+    image: `${imageBasePath}dystopia.png`,
+    color: '#085F8E'
   },
 
   [TRADE_TYPE.HONEY_SWAP]: {
@@ -129,7 +146,8 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
 
   [TRADE_TYPE.JET_SWAP]: {
     name: 'JetSwap',
-    image: ``
+    image: `${imageBasePath}jetswap.png`,
+    color: '#F7C415'
   },
   [TRADE_TYPE.JOE]: {
     name: 'Joe',
@@ -144,33 +162,40 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
 
   [TRADE_TYPE.KYBER_SWAP]: {
     name: 'KyberSwap',
-    image: ``
+    image: `${imageBasePath}kyberswap.svg`,
+    color: '#31CB9E'
   },
 
   [TRADE_TYPE.LUA_SWAP]: {
     name: 'LuaSwap',
-    image: ``
+    image: `${imageBasePath}luaswap.png`,
+    color: '#FABD45'
   },
 
   [TRADE_TYPE.MAVERICK]: {
     name: 'Maverick',
-    image: ``
+    image: `${imageBasePath}maverick.png`,
+    color: '#6401FF'
   },
   [TRADE_TYPE.MDEX]: {
     name: 'MDEX',
-    image: ``
+    image: `${imageBasePath}mdex.svg`,
+    color: '#50B0E4'
   },
   [TRADE_TYPE.MESH_SWAP]: {
     name: 'MeshSwap',
-    image: ``
+    image: `${imageBasePath}meshswap.svg`,
+    color: '#BF96FF'
   },
   [TRADE_TYPE.MM_FINANCE]: {
     name: 'MMFinance',
-    image: ``
+    image: `${imageBasePath}mmfinance.png`,
+    color: '#F0BC82'
   },
   [TRADE_TYPE.MOJITO_SWAP]: {
     name: 'MojitoSwap',
-    image: ``
+    image: `${imageBasePath}mojitoswap.svg`,
+    color: '#0AC4DD'
   },
 
   [TRADE_TYPE.ONE_INCH]: {
@@ -180,15 +205,18 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.ONE_MOON]: {
     name: 'OneMoon',
-    image: ``
+    image: `${imageBasePath}onemoon.ico`,
+    color: '#0B86FF'
   },
   [TRADE_TYPE.ONE_SOL]: {
     name: '1sol',
-    image: ``
+    image: `${imageBasePath}onesol.png`,
+    color: ''
   },
   [TRADE_TYPE.OOLONG_SWAP]: {
     name: 'OolongSwap',
-    image: ``
+    image: `${imageBasePath}oolongswap.png`,
+    color: '#F5A14A'
   },
   [TRADE_TYPE.OPEN_OCEAN]: {
     name: 'Open Ocean',
@@ -197,11 +225,13 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.ORCA_SWAP]: {
     name: 'OrcaSwap',
-    image: ``
+    image: `${imageBasePath}orcaswap.svg`,
+    color: '#F2C45B'
   },
   [TRADE_TYPE.OSMOSIS_SWAP]: {
     name: 'OsmosisSwap',
-    image: ``
+    image: `${imageBasePath}osmosisswap.svg`,
+    color: '#5E12A0'
   },
 
   [TRADE_TYPE.PANCAKE_SWAP]: {
@@ -212,7 +242,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   [TRADE_TYPE.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`,
-    color: '#FC5408;'
+    color: '#FC5408'
   },
   [TRADE_TYPE.PARA_SWAP]: {
     name: 'ParaSwap',
@@ -221,13 +251,14 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.POLYDEX]: {
     name: 'Polydex',
-    image: ``
+    image: `${imageBasePath}polydex.png`,
+    color: '#0D2866'
   },
 
   [TRADE_TYPE.QUICK_SWAP]: {
     name: 'QuickSwap',
     image: `${imageBasePath}quickswap.svg`,
-    color: '#5389C5'
+    color: '#36C2EA'
   },
 
   [TRADE_TYPE.RAYDIUM]: {
@@ -242,27 +273,32 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
 
   [TRADE_TYPE.SABER_STABLE_SWAP]: {
     name: 'SaberStableSwap',
-    image: ``
+    image: `${imageBasePath}`,
+    color: '#5156C0'
   },
   [TRADE_TYPE.SAROS_SWAP]: {
     name: 'SarosSwap',
-    image: ``
+    image: `${imageBasePath}sarosswap.png`,
+    color: '#6CBCCE'
   },
   [TRADE_TYPE.SERUM]: {
     name: 'Serum',
-    image: ``
+    image: `${imageBasePath}serum.png`,
+    color: '#38B9CC'
   },
   [TRADE_TYPE.SHIBA_SWAP]: {
     name: 'ShibaSwap',
-    image: ``
+    image: `${imageBasePath}shibaswap.svg`,
+    color: '#6CBCCE'
   },
   [TRADE_TYPE.SMOOTHY]: {
     name: 'Smoothy',
-    image: ``
+    image: `${imageBasePath}smoothy.png`,
+    color: '#BC2723'
   },
   [TRADE_TYPE.SOLAR_BEAM]: {
     name: 'SolarBeam',
-    image: `${imageBasePath}solarbeam.png`,
+    image: `${imageBasePath}solarbeam.svg`,
     color: '#F2A272'
   },
   [TRADE_TYPE.SPIRIT_SWAP]: {
@@ -272,11 +308,12 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.SPL_TOKEN_SWAP]: {
     name: 'SplTokenSwap',
-    image: ``
+    image: `${imageBasePath}`,
+    color: '#15F095'
   },
   [TRADE_TYPE.SPOOKY_SWAP]: {
     name: 'SpookySwap',
-    image: `${imageBasePath}spookyswap.png`,
+    image: `${imageBasePath}spookyswap.svg`,
     color: '#59C3C8'
   },
   [TRADE_TYPE.STELLA_SWAP]: {
@@ -319,11 +356,13 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.VOLTAGE_SWAP]: {
     name: 'VoltageSwap',
-    image: ``
+    image: `${imageBasePath}voltageswap.png`,
+    color: '#23A863'
   },
   [TRADE_TYPE.VVS_FINANCE]: {
     name: 'VVSFinance',
-    image: ``
+    image: `${imageBasePath}vvsfinance.png`,
+    color: '#2B3852'
   },
 
   [TRADE_TYPE.WANNA_SWAP]: {
@@ -333,16 +372,18 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.WAULT_SWAP]: {
     name: 'WaultSwap',
-    image: ``
+    image: `${imageBasePath}waultswap.png`,
+    color: '#1E7C77'
   },
   [TRADE_TYPE.WOO_FI]: {
     name: 'WooFi',
-    image: ``
+    image: `${imageBasePath}woofi.png`,
+    color: '#72BEF4'
   },
   [TRADE_TYPE.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`,
-    color: '#FFFFFF'
+    color: ''
   },
 
   [TRADE_TYPE.ZAPPY]: {
@@ -352,12 +393,13 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.ZIP_SWAP]: {
     name: 'ZipSwap',
-    image: ``
+    image: `${imageBasePath}zipswap.svg`,
+    color: '#34A5F5'
   },
   [TRADE_TYPE.ZRX]: {
     name: '0x',
-    image: `${imageBasePath}zrx.png`,
-    color: '#FFFFFF'
+    image: `${imageBasePath}zrx.svg`,
+    color: ''
   }
 };
 
@@ -387,7 +429,7 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.VIA]: {
     name: 'Via',
-    image: ``
+    image: `${imageBasePath}`
   }
 };
 
@@ -399,7 +441,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   },
   [BRIDGE_TYPE.ANY_SWAP]: {
     name: 'AnySwap',
-    image: ``
+    image: `${imageBasePath}`
   },
   [BRIDGE_TYPE.ARBITRUM_BRIDGE]: {
     name: 'Arbitrum Bridge',
@@ -425,7 +467,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.DE_BRIDGE]: {
     name: 'DeBridge',
-    image: ``
+    image: `${imageBasePath}`
   },
 
   [BRIDGE_TYPE.HOP]: {
@@ -457,7 +499,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   },
   [BRIDGE_TYPE.OSMOSIS_BRIDGE]: {
     name: 'Osmosis Bridge',
-    image: ``
+    image: `${imageBasePath}`
   },
 
   [BRIDGE_TYPE.POLYGON]: {
@@ -468,12 +510,12 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.REFUEL]: {
     name: 'Refuel',
-    image: ``
+    image: `${imageBasePath}`
   },
 
   [BRIDGE_TYPE.SATELLITE]: {
     name: 'Satellite',
-    image: ``
+    image: `${imageBasePath}`
   },
   [BRIDGE_TYPE.STARGATE]: {
     name: 'Stargate',
@@ -482,7 +524,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   },
   [BRIDGE_TYPE.SYMBIOSIS]: {
     name: 'Symbiosis',
-    image: ``
+    image: `${imageBasePath}`
   },
   [BRIDGE_TYPE.SYNAPSE]: {
     name: 'Synapse',
@@ -492,7 +534,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.THORCHAIN]: {
     name: 'Thorchain',
-    image: ``
+    image: `${imageBasePath}`
   },
 
   [BRIDGE_TYPE.WORMHOLE]: {
@@ -503,7 +545,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
 
   [BRIDGE_TYPE.YPOOL]: {
     name: 'YPool',
-    image: ``
+    image: `${imageBasePath}`
   }
 };
 
