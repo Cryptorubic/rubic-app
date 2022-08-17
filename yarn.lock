@@ -14185,10 +14185,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@2.10.1:
-  version "2.10.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.10.1.tgz#978b7b32fd50e9f0e0f9a04514c3278ebb77f187"
-  integrity sha512-8dUWmEFIkYTkJt8P/uJfTyqkwERIFEeZR+bRudGzvgYY/AEUHv2606jB9qLI6c/Cf8Q9UiiwcCIhOr8/UJOX2Q==
+rubic-sdk@2.10.2:
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.10.2.tgz#a099a89d6cb1ea4256614fb3ba12a796960dd754"
+  integrity sha512-lg/FdTSLseKbbgXUXd03GltlFLYaU8Af5jG6gg6E8NwQ6Mvumw5BXa07H2DzKMtJlGuqTOd6L3T2pHBnP/KR+w==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     assert "^2.0.0"
@@ -15570,10 +15570,28 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.7.7, symbiosis-js-sdk@^2.8.9:
+symbiosis-js-sdk@^2.7.7:
   version "2.8.10"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.10.tgz#ae6df1561f3344d555fc70292766805a16bef9ed"
   integrity sha512-Y5ElmqvSlHt9r3mH0LtOXt6e2UKXTUHiwB03Dj48ZsJ+6gvQumhfHrR8FVKx/jitD3dBMxkokiGnx/3+Uv/U7w==
+  dependencies:
+    "@renproject/chains-bitcoin" "^3.4.2"
+    "@renproject/chains-ethereum" "^3.4.3"
+    "@renproject/ren" "~3.3.0"
+    big.js "^5.2.2"
+    bignumber.js "^9.0.1"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    lodash.flatmap "^4.5.0"
+    node-fetch-native "~0.1.0"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
+symbiosis-js-sdk@^2.8.9:
+  version "2.8.11"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.11.tgz#ddf801c5916ede0485af416d6805b120c51c9f82"
+  integrity sha512-0rWnx7TKYe/tXy47KZbGD8Xu0o+zFVN4xLQeEEHuryACahMgitcqgvn4mG+qt1GUKRAwgcST9sf3AabiZCX/AA==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
