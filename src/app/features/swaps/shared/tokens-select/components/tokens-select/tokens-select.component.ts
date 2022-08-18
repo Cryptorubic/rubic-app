@@ -542,7 +542,9 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.GNOSIS]: 'xdai',
       [BLOCKCHAIN_NAME.FUSE]: null,
       [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
-      [BLOCKCHAIN_NAME.CELO]: 'celo'
+      [BLOCKCHAIN_NAME.CELO]: 'celo',
+      [BLOCKCHAIN_NAME.BOBA]: 'boba',
+      [BLOCKCHAIN_NAME.ASTAR]: 'astar'
     };
 
     if (!blockchains[token.blockchain]) {

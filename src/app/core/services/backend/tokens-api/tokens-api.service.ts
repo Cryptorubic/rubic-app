@@ -148,7 +148,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.SOLANA,
       BLOCKCHAIN_NAME.NEAR,
-      BLOCKCHAIN_NAME.TELOS
+      BLOCKCHAIN_NAME.TELOS,
+      BLOCKCHAIN_NAME.BOBA
     ].map(blockchain => TO_BACKEND_BLOCKCHAINS[blockchain]);
 
     const requests$ = blockchainsToFetch.map((network: FromBackendBlockchain) =>

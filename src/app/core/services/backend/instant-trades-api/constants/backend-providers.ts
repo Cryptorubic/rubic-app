@@ -22,6 +22,7 @@ export const BACKEND_PROVIDERS: Record<TradeType, string> = {
   [TRADE_TYPE.WRAPPED]: 'wrapped',
   [TRADE_TYPE.ZAPPY]: 'zappy',
   [TRADE_TYPE.ZRX]: 'zerox',
+  [TRADE_TYPE.OOLONG_SWAP]: 'oolong',
 
   // Li-fi dexes
   [TRADE_TYPE.CRONA_SWAP]: 'lifi',
