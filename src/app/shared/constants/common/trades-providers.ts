@@ -8,6 +8,10 @@ import {
   Li_FI_TRADE_SUBTYPE,
   LiFiTradeSubtype
 } from 'rubic-sdk';
+import {
+  RangoTradeSubtype,
+  RANGO_TRADE_SUBTYPE
+} from 'rubic-sdk/lib/features/cross-chain/providers/rango-trade-provider/models/rango-providers';
 
 export type Provider = {
   name: string;
@@ -173,10 +177,45 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: `${imageBasePath}cronaswap.webp`,
     color: '#020426'
   },
-  [TRADE_TYPE.OOLONG_SWAP]: {
-    name: 'Oolongswap',
-    image: `${imageBasePath}ubeswap.svg`,
-    color: '##5b55e3'
+  [TRADE_TYPE.AURORA_SWAP]: {
+    name: 'Auroraswap',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.MM_FINANCE]: {
+    name: 'MMFinance',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.VVS_FINANCE]: {
+    name: 'VVSFinance',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.VOLTAGE_SWAP]: {
+    name: 'Voltageswap',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.JUPITER]: {
+    name: 'Jupiter',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.ACROSS]: {
+    name: 'Across',
+    image: '',
+    color: ''
+  },
+  [TRADE_TYPE.ANYSWAP]: {
+    name: 'Anyswap',
+    image: '',
+    color: ''
+  },
+  OOLONG_SWAP: {
+    name: '',
+    image: '',
+    color: ''
   }
 };
 
@@ -203,6 +242,84 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
     name: 'DeBridge',
     image: `${imageBasePath}debridge.svg`,
     color: '#bf38ee'
+  },
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
+    name: 'Rango',
+    image: `${imageBasePath}debridge.svg`,
+    color: '#bf38ee'
+  }
+};
+
+export const RANGO_BRIDGE_PROVIDER: Record<RangoTradeSubtype, Provider> = {
+  [RANGO_TRADE_SUBTYPE.ACROSS]: {
+    name: 'Across',
+    image: `${imageBasePath}across.svg`,
+    color: '#29a98b'
+  },
+  [RANGO_TRADE_SUBTYPE.ARBITRUM_BRIDGE]: {
+    name: 'Arbitrum Bridge',
+    image: `${imageBasePath}arbitrum-bridge.svg`,
+    color: '#1275b7'
+  },
+  [RANGO_TRADE_SUBTYPE.AVALANCHE_BRIDGE]: {
+    name: 'Avalanche Bridge',
+    image: `${imageBasePath}avalanche-bridge.svg`,
+    color: '#323232'
+  },
+  [RANGO_TRADE_SUBTYPE.CELER_BRIDGE]: {
+    name: 'cBridge',
+    image: `${imageBasePath}celer.svg`,
+    color: 'white'
+  },
+  [RANGO_TRADE_SUBTYPE.HOP]: {
+    name: 'Hop',
+    image: `${imageBasePath}hop.svg`,
+    color: '#de7fb8'
+  },
+  [RANGO_TRADE_SUBTYPE.HYPHEN]: {
+    name: 'Hyphen',
+    image: `${imageBasePath}hyphen.svg`,
+    color: '#353392'
+  },
+  [RANGO_TRADE_SUBTYPE.OPTIMISM_BRIDGE]: {
+    name: 'Optimism Gateway',
+    image: `${imageBasePath}optimism-gateway.svg`,
+    color: 'white'
+  },
+  [RANGO_TRADE_SUBTYPE.STARGATE]: {
+    name: 'Stargate',
+    image: `${imageBasePath}stargate.svg`,
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.ANYSWAP_AGGREGATOR]: {
+    name: 'Anyswap Aggregator',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.ANYSWAP_BRIDGE]: {
+    name: 'Anyswap Bridge',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.CBRIDGE_AGGREGATOR]: {
+    name: 'Cbridge Aggregator',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.OPENOCEAN]: {
+    name: 'Openocean',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.OSMOSIS]: {
+    name: 'Osmosis',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
+  },
+  [RANGO_TRADE_SUBTYPE.RAINBOW_BRIDGE]: {
+    name: 'Rainbow Bridge',
+    image: '${imageBasePath}stargate.svg',
+    color: 'grey'
   }
 };
 
@@ -293,6 +410,7 @@ export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
   ...LIFI_BRIDGE_PROVIDER,
+  ...RANGO_BRIDGE_PROVIDER,
   ...CROSS_CHAIN_TRADE_PROVIDER,
   CROSS_CHAIN_ROUTING_PROVIDER,
   GAS_REFUND_PROVIDER

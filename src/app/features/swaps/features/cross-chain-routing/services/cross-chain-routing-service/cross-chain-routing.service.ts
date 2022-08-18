@@ -10,11 +10,10 @@ import {
   LowSlippageError,
   RubicSdkError,
   TRADE_TYPE,
-  Web3Pure
+  Web3Pure,
+  RangoCrossChainTradeProvider,
+  RangoCrossChainTrade
 } from 'rubic-sdk';
-import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
-import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
-import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -53,11 +52,9 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
-import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
-import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -72,11 +69,12 @@ type CrossChainProviderTrade = Observable<
 })
 export class CrossChainRoutingService extends TradeService {
   private static readonly crossChainProviders = [
-    RubicCrossChainTradeProvider,
-    CelerCrossChainTradeProvider,
-    SymbiosisCrossChainTradeProvider,
-    LifiCrossChainTradeProvider,
-    DebridgeCrossChainTradeProvider
+    // RubicCrossChainTradeProvider,
+    // CelerCrossChainTradeProvider,
+    // SymbiosisCrossChainTradeProvider,
+    // LifiCrossChainTradeProvider,
+    // DebridgeCrossChainTradeProvider,
+    RangoCrossChainTradeProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -210,6 +208,7 @@ export class CrossChainRoutingService extends TradeService {
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
         timestamp,
+        requestId: (this.crossChainTrade.trade as RangoCrossChainTrade)?.requestId,
         bridgeType:
           this.crossChainTrade?.trade instanceof LifiCrossChainTrade
             ? this.crossChainTrade?.trade?.subType
@@ -255,7 +254,8 @@ export class CrossChainRoutingService extends TradeService {
     if (
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
-      trade instanceof DebridgeCrossChainTrade
+      trade instanceof DebridgeCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -323,6 +323,15 @@ export class CrossChainRoutingService extends TradeService {
       };
       return;
     }
+
+    if (this.crossChainTrade.trade instanceof RangoCrossChainTrade) {
+      this.smartRouting = {
+        fromProvider: this.crossChainTrade.trade.itType.from,
+        toProvider: this.crossChainTrade.trade.itType.to,
+        bridgeProvider: (this.crossChainTrade.trade as RangoCrossChainTrade).subType
+      };
+    }
+
     if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       this.smartRouting = {
         fromProvider: TRADE_TYPE.ONE_INCH,

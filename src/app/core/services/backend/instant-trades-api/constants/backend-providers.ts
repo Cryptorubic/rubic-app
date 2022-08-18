@@ -21,6 +21,13 @@ export const BACKEND_PROVIDERS: Record<TradeType, string> = {
   [TRADE_TYPE.WRAPPED]: 'wrapped',
   [TRADE_TYPE.ZAPPY]: 'zappy',
   [TRADE_TYPE.ZRX]: 'zerox',
+  [TRADE_TYPE.ACROSS]: '',
+  [TRADE_TYPE.AURORA_SWAP]: '',
+  [TRADE_TYPE.MM_FINANCE]: '',
+  [TRADE_TYPE.VVS_FINANCE]: '',
+  [TRADE_TYPE.VOLTAGE_SWAP]: '',
+  [TRADE_TYPE.JUPITER]: '',
+  [TRADE_TYPE.ANYSWAP]: '',
   [TRADE_TYPE.OOLONG_SWAP]: 'oolong',
 
   // Li-fi dexes

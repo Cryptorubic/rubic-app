@@ -18,7 +18,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { LifiCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import { LifiCrossChainTrade, RangoCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 
@@ -159,7 +159,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
               if (
                 trade instanceof SymbiosisCrossChainTrade ||
                 trade instanceof LifiCrossChainTrade ||
-                trade instanceof DebridgeCrossChainTrade
+                trade instanceof DebridgeCrossChainTrade ||
+                trade instanceof RangoCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 
