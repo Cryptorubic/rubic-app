@@ -360,6 +360,22 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'ETH',
       decimals: 18
     }
+  },
+  {
+    id: 592,
+    name: BLOCKCHAIN_NAME.ASTAR,
+    label: 'Astar',
+    scannerUrl: 'https://astar.subscan.io',
+    rpcLink: 'https://rpc.astar.network:8545',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/astar.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.ASTAR,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ASTR',
+      symbol: 'ASTR',
+      decimals: 18
+    }
   }
 ];
 
