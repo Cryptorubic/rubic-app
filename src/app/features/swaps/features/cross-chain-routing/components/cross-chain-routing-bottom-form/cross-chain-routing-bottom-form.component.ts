@@ -28,10 +28,7 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
-import {
-  CrossChainProviderTrade,
-  CrossChainRoutingService
-} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -45,6 +42,7 @@ import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
+import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 

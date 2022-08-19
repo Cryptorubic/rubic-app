@@ -57,13 +57,7 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 import { CrossChainTrade } from 'rubic-sdk/lib/features';
-
-export type CrossChainProviderTrade = WrappedCrossChainTrade & {
-  needApprove: boolean;
-  totalProviders: number;
-  currentProviders: number;
-  smartRouting: SmartRouting | null;
-};
+import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 
 @Injectable({
   providedIn: 'root'
