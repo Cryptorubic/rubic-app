@@ -380,10 +380,15 @@ export class CrossChainRoutingService extends TradeService {
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
+    if (error.message.includes('Representation of ')) {
+      return new RubicError('The swap between this pair of blockchains is currently unavaible.');
+    }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
     }
-    return new RubicError('Unknown SDK error. Try to refresh the page'); //?
+    return new RubicError(
+      'The swap between this pair of tokens is currently unavaible. Please try again later.'
+    );
   }
 
   private checkDeviceAndShowNotification(): void {

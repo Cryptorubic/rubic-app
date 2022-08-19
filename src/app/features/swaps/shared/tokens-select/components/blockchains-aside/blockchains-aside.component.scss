@@ -50,6 +50,17 @@
       }
     }
 
+    &_clearfix {
+      &::after {
+        width: 62px;
+        height: 48px;
+
+        visibility: hidden;
+
+        content: '';
+      }
+    }
+
     li {
       margin: 0 5px 14px;
       margin-bottom: 0;
