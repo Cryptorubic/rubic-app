@@ -281,7 +281,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 hasBestTrade: Boolean(trade)
               };
             }),
-            map(({ trade, error, needApprove, totalProviders, currentProviders, smartRouting }) => {
+            map(providerTrade => {
+              this.crossChainProviderTrade = providerTrade;
+              const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
+                providerTrade;
               if (currentProviders === 0) {
                 return;
               }
@@ -424,6 +427,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     if (this.toAmount?.isFinite()) {
       this.errorText = '';
 
+      this.crossChainProviderTrade = this.hiddenTradeData;
       this.crossChainRoutingService.crossChainTrade = this.hiddenTradeData.trade;
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
