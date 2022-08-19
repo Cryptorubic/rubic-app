@@ -3,9 +3,8 @@ import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  FromBackendBlockchain,
   TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchain
+  BackendBlockchain
 } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
 import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
@@ -24,8 +23,6 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
-import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -98,7 +95,7 @@ export class TokensApiService {
    */
   public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
-      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
+      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
       user: this.authService.userAddress
     };
@@ -111,7 +108,7 @@ export class TokensApiService {
    */
   public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
-      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
+      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
       user: this.authService.userAddress
     };
@@ -136,23 +133,9 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchainsToFetch = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY,
-      BLOCKCHAIN_NAME.AVALANCHE,
-      BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.FANTOM,
-      BLOCKCHAIN_NAME.ARBITRUM,
-      BLOCKCHAIN_NAME.AURORA,
-      BLOCKCHAIN_NAME.SOLANA,
-      BLOCKCHAIN_NAME.NEAR,
-      BLOCKCHAIN_NAME.TELOS,
-      BLOCKCHAIN_NAME.BOBA
-    ].map(blockchain => TO_BACKEND_BLOCKCHAINS[blockchain]);
+    const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
 
-    const requests$ = blockchainsToFetch.map((network: FromBackendBlockchain) =>
+    const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }).pipe(
         tap(networkTokens => {
           const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
@@ -169,62 +152,11 @@ export class TokensApiService {
         })
       )
     );
-    const backendTokens$ = forkJoin(requests$).pipe(
+    return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
         return TokensApiService.prepareTokens(backendTokens);
       })
-    );
-
-    const lifiChains = [
-      BLOCKCHAIN_NAME.OPTIMISM,
-      BLOCKCHAIN_NAME.CRONOS,
-      BLOCKCHAIN_NAME.OKE_X_CHAIN,
-      BLOCKCHAIN_NAME.GNOSIS,
-      BLOCKCHAIN_NAME.FUSE,
-      BLOCKCHAIN_NAME.MOONBEAM,
-      BLOCKCHAIN_NAME.CELO
-    ].map(blockchain => BlockchainsInfo.getBlockchainByName(blockchain).id);
-
-    const lifiTokens$: Observable<Token[]> = this.httpService
-      .get<LifiTokens>('v1/tokens', { chains: lifiChains.join(',') }, 'https://li.quest/')
-      .pipe(
-        map(wrappedTokens =>
-          lifiChains
-            .map(chainId =>
-              wrappedTokens.tokens[chainId]
-                .filter(token => {
-                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
-                  return !(
-                    blockchain === BLOCKCHAIN_NAME.OPTIMISM &&
-                    compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
-                  );
-                })
-                .map(token => {
-                  const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
-                  const name =
-                    blockchain !== BLOCKCHAIN_NAME.GNOSIS || !token.name.includes(' on xDai')
-                      ? token.name
-                      : token.name.slice(0, token.name.length - 8);
-
-                  return {
-                    ...token,
-                    blockchain,
-                    name,
-                    image: token.logoURI,
-                    rank: 0,
-                    price: parseFloat(token.priceUSD),
-                    usedInIframe: false,
-                    hasDirectPair: null
-                  };
-                })
-            )
-            .flat()
-        )
-      );
-
-    return forkJoin([backendTokens$, lifiTokens$]).pipe(
-      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
     );
   }
 
@@ -242,8 +174,8 @@ export class TokensApiService {
     return this.httpService
       .get(ENDPOINTS.TOKENS, options)
       .pipe(
-        map((tokensResponse: BackendToken[]) =>
-          tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List()
+        map((tokensResponse: TokensBackendResponse) =>
+          tokensResponse.count ? TokensApiService.prepareTokens(tokensResponse.results) : List()
         )
       );
   }

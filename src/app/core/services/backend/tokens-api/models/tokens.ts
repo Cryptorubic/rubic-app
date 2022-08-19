@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
-import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
@@ -19,7 +19,7 @@ export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchainNetwork: FromBackendBlockchain;
+  blockchainNetwork: BackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
