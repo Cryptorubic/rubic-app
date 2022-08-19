@@ -52,12 +52,14 @@
 
     &_clearfix {
       &::after {
-        width: 62px;
-        height: 96px;
+        @media (orientation: portrait) {
+          width: 62px;
+          height: 96px;
 
-        visibility: hidden;
+          visibility: hidden;
 
-        content: '';
+          content: '';
+        }
       }
     }
 
