@@ -34,7 +34,6 @@ import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
@@ -400,11 +399,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public onCalculateError(error: RubicSdkError | undefined): Observable<null> {
-    const err = error
-      ? this.crossChainRoutingService.parseCalculationError(error)
-      : new RubicError(
-          'The swap between this pair of tokens is currently unavaible. Please try again later.'
-        );
+    const err = this.crossChainRoutingService.parseCalculationError(error);
     this.errorText = err.translateKey || err.message;
 
     this.toAmount = new BigNumber(NaN);

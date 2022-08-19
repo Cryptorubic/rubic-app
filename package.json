@@ -54,7 +54,7 @@
     "@tinkoff/ng-polymorpheus": "3.1.12",
     "@walletconnect/web3-provider": "^1.6.6",
     "angular-google-tag-manager": "1.4.0",
-    "bignumber.js": "^9.0.1",
+    "bignumber.js": "9.1.0",
     "bn.js": "^5.2.0",
     "borsh": "^0.7.0",
     "buffer-layout": "^1.2.2",
