@@ -42,6 +42,7 @@ import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
+import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -93,7 +94,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private readonly onCalculateTrade$ = new Subject<CalculateTradeType>();
 
-  private hiddenTradeData: { toAmount: BigNumber } = null;
+  private hiddenTradeData: CrossChainProviderTrade | null = null;
 
   private calculateTradeSubscription$: Subscription;
 
@@ -102,6 +103,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
   public smartRouting: SmartRouting = null;
+
+  private crossChainProviderTrade: CrossChainProviderTrade;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -120,7 +123,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   get showSmartRouting(): boolean {
     return (
-      Boolean(this.smartRouting) && Boolean(this.crossChainRoutingService.crossChainTrade?.trade)
+      Boolean(this.smartRouting) && Boolean(this.swapFormService.outputValue.toAmount?.isFinite())
     );
   }
 
@@ -276,7 +279,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 hasBestTrade: Boolean(trade)
               };
             }),
-            map(({ trade, error, needApprove, totalProviders, currentProviders }) => {
+            map(providerTrade => {
+              this.crossChainProviderTrade = providerTrade;
+              const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
+                providerTrade;
               if (currentProviders === 0) {
                 return;
               }
@@ -305,10 +311,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
               if (trade?.to?.tokenAmount) {
                 this.toAmount = trade?.to?.tokenAmount;
+                this.crossChainRoutingService.crossChainTrade = trade;
                 this.swapFormService.output.patchValue({
                   toAmount: trade?.to.tokenAmount
                 });
-                this.smartRouting = this.crossChainRoutingService.smartRouting;
+                this.smartRouting = smartRouting;
                 this.hiddenTradeData = null;
 
                 if (this.minError || this.maxError || this.toAmount?.lte(0)) {
@@ -355,7 +362,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           const { fromAmount } = this.swapFormService.inputValue;
 
           return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
-            map(({ trade, error, currentProviders }) => {
+            map(providerTrade => {
+              const { trade, error, currentProviders } = providerTrade;
               if (currentProviders === 0) {
                 return;
               }
@@ -378,11 +386,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                   ? { amount: error.maxAmount, symbol: error.tokenSymbol }
                   : false;
 
-              this.hiddenTradeData = { toAmount: trade?.to?.tokenAmount };
+              this.hiddenTradeData = providerTrade;
+              const hiddenToAmount = trade?.to?.tokenAmount;
               if (
-                this.hiddenTradeData?.toAmount &&
+                hiddenToAmount &&
                 this.toAmount?.isFinite() &&
-                !this.hiddenTradeData.toAmount.eq(this.toAmount)
+                !hiddenToAmount.eq(this.toAmount)
               ) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
@@ -411,15 +420,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public onSetHiddenData(): void {
-    this.toAmount = this.hiddenTradeData.toAmount;
+    this.toAmount = this.hiddenTradeData.trade?.to?.tokenAmount;
 
     if (this.toAmount?.isFinite()) {
       this.errorText = '';
 
+      this.crossChainProviderTrade = this.hiddenTradeData;
+      this.crossChainRoutingService.crossChainTrade = this.hiddenTradeData.trade;
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
       });
-      this.smartRouting = this.crossChainRoutingService.smartRouting;
+      this.smartRouting = this.hiddenTradeData.smartRouting;
 
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -437,7 +448,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      await this.crossChainRoutingService.approve();
+      await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = false;
@@ -461,7 +472,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
-      await this.crossChainRoutingService.createTrade(() => {
+      await this.crossChainRoutingService.createTrade(this.crossChainProviderTrade, () => {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.cdr.detectChanges();
       });
