@@ -19,7 +19,8 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   gnosis: BLOCKCHAIN_NAME.GNOSIS,
   fuse: BLOCKCHAIN_NAME.FUSE,
   moonbeam: BLOCKCHAIN_NAME.MOONBEAM,
-  celo: BLOCKCHAIN_NAME.CELO
+  celo: BLOCKCHAIN_NAME.CELO,
+  boba: BLOCKCHAIN_NAME.BOBA
 };
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
@@ -41,7 +42,8 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.GNOSIS]: 'gnosis',
   [BLOCKCHAIN_NAME.FUSE]: 'fuse',
   [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
-  [BLOCKCHAIN_NAME.CELO]: 'celo'
+  [BLOCKCHAIN_NAME.CELO]: 'celo',
+  [BLOCKCHAIN_NAME.BOBA]: 'boba'
 };
 
 export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;

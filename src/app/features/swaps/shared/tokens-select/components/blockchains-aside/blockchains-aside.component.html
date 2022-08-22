@@ -1,6 +1,9 @@
 <aside class="blockchain-aside">
   <tui-scrollbar class="blockchain-aside__scroll">
-    <ul class="blockchain-aside__blockchains-list">
+    <ul
+      class="blockchain-aside__blockchains-list"
+      [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
+    >
       <li *ngFor="let blockchainName of blockchains" [id]="idPrefix + 'Network_' + blockchainName">
         <app-icon-button
           [icon]="blockchainImages[blockchainName]"

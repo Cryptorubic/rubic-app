@@ -10,9 +10,9 @@
 
   <div class="dex">
     <div class="dex__icon">
-      <img class="dex" [src]="bridgeProvider.image" alt="Bridge provider" />
+      <img class="dex" [src]="bridgeProvider?.image" alt="Bridge provider" />
     </div>
-    <div class="dex__name">{{ bridgeProvider.name }}</div>
+    <div class="dex__name">{{ bridgeProvider?.name }}</div>
   </div>
 
   <div class="route__line route__line_right" [style.border-color]="toTradeProvider?.color"></div>

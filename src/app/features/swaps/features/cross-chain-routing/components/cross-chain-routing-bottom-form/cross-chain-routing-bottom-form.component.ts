@@ -34,16 +34,15 @@ import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
+import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -95,7 +94,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private readonly onCalculateTrade$ = new Subject<CalculateTradeType>();
 
-  private hiddenTradeData: { toAmount: BigNumber } = null;
+  private hiddenTradeData: CrossChainProviderTrade | null = null;
 
   private calculateTradeSubscription$: Subscription;
 
@@ -104,6 +103,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
   public smartRouting: SmartRouting = null;
+
+  private crossChainProviderTrade: CrossChainProviderTrade;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -122,7 +123,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   get showSmartRouting(): boolean {
     return (
-      Boolean(this.smartRouting) && Boolean(this.crossChainRoutingService.crossChainTrade?.trade)
+      Boolean(this.smartRouting) && Boolean(this.swapFormService.outputValue.toAmount?.isFinite())
     );
   }
 
@@ -278,7 +279,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 hasBestTrade: Boolean(trade)
               };
             }),
-            map(({ trade, error, needApprove, totalProviders, currentProviders }) => {
+            map(providerTrade => {
+              this.crossChainProviderTrade = providerTrade;
+              const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
+                providerTrade;
               if (currentProviders === 0) {
                 return;
               }
@@ -307,10 +311,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
               if (trade?.to?.tokenAmount) {
                 this.toAmount = trade?.to?.tokenAmount;
+                this.crossChainRoutingService.crossChainTrade = trade;
                 this.swapFormService.output.patchValue({
                   toAmount: trade?.to.tokenAmount
                 });
-                this.smartRouting = this.crossChainRoutingService.smartRouting;
+                this.smartRouting = smartRouting;
                 this.hiddenTradeData = null;
 
                 if (this.minError || this.maxError || this.toAmount?.lte(0)) {
@@ -325,7 +330,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               }
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
+            catchError((err: RubicSdkError | undefined) => this.onCalculateError(err))
           );
         }),
         tap(() => {
@@ -357,7 +362,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           const { fromAmount } = this.swapFormService.inputValue;
 
           return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
-            map(({ trade, error, currentProviders }) => {
+            map(providerTrade => {
+              const { trade, error, currentProviders } = providerTrade;
               if (currentProviders === 0) {
                 return;
               }
@@ -380,17 +386,18 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                   ? { amount: error.maxAmount, symbol: error.tokenSymbol }
                   : false;
 
-              this.hiddenTradeData = { toAmount: trade?.to?.tokenAmount };
+              this.hiddenTradeData = providerTrade;
+              const hiddenToAmount = trade?.to?.tokenAmount;
               if (
-                this.hiddenTradeData?.toAmount &&
+                hiddenToAmount &&
                 this.toAmount?.isFinite() &&
-                !this.hiddenTradeData.toAmount.eq(this.toAmount)
+                !hiddenToAmount.eq(this.toAmount)
               ) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicError<ERROR_TYPE>) => this.onCalculateError(err))
+            catchError((err: RubicSdkError) => this.onCalculateError(err))
           );
         }),
         tap(() => this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED)),
@@ -400,7 +407,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .subscribe();
   }
 
-  public onCalculateError(error: RubicError<ERROR_TYPE>): Observable<null> {
+  public onCalculateError(error: RubicSdkError | undefined): Observable<null> {
     const err = this.crossChainRoutingService.parseCalculationError(error);
     this.errorText = err.translateKey || err.message;
 
@@ -413,15 +420,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public onSetHiddenData(): void {
-    this.toAmount = this.hiddenTradeData.toAmount;
+    this.toAmount = this.hiddenTradeData.trade?.to?.tokenAmount;
 
     if (this.toAmount?.isFinite()) {
       this.errorText = '';
 
+      this.crossChainProviderTrade = this.hiddenTradeData;
+      this.crossChainRoutingService.crossChainTrade = this.hiddenTradeData.trade;
       this.swapFormService.output.patchValue({
         toAmount: this.toAmount
       });
-      this.smartRouting = this.crossChainRoutingService.smartRouting;
+      this.smartRouting = this.hiddenTradeData.smartRouting;
 
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -439,7 +448,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      await this.crossChainRoutingService.approve();
+      await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = false;
@@ -463,7 +472,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
-      await this.crossChainRoutingService.createTrade(() => {
+      await this.crossChainRoutingService.createTrade(this.crossChainProviderTrade, () => {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.cdr.detectChanges();
       });

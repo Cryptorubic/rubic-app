@@ -147,12 +147,14 @@ export class CrossChainSwapInfoComponent implements OnInit {
             this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
-              this.nativeCoinSymbol = tokens.find(
+              const nativeToken = tokens.find(
                 token =>
                   token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
-              ).symbol;
+              );
 
-              const trade = this.crossChainRoutingService.crossChainTrade.trade;
+              this.nativeCoinSymbol = nativeToken.symbol;
+
+              const trade = this.crossChainRoutingService.crossChainTrade;
 
               if (
                 trade instanceof SymbiosisCrossChainTrade ||
@@ -209,8 +211,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
     this.cryptoFeeInEth = tradeInfo.cryptoFee;
-    const usdCryptoFee = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice).minus(1);
-    this.cryptoFeeInUsd = usdCryptoFee.isPositive() ? usdCryptoFee : new BigNumber(0);
+    this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice);
     this.feePercent = tradeInfo.feePercent;
     this.feeAmount = tradeInfo.feeAmount;
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
@@ -223,7 +224,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.trade.toTokenAmountMin;
+    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;

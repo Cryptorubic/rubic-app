@@ -50,6 +50,19 @@
       }
     }
 
+    &_clearfix {
+      &::after {
+        @media (orientation: portrait) {
+          width: 62px;
+          height: 86px;
+
+          visibility: hidden;
+
+          content: '';
+        }
+      }
+    }
+
     li {
       margin: 0 5px 14px;
       margin-bottom: 0;

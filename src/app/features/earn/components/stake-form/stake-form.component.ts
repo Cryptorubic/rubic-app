@@ -102,6 +102,7 @@ export class StakeFormComponent implements OnInit {
 
   public ngOnInit(): void {
     this.handleStakeDurationChange();
+    this.stakingService.pollRbcTokens().pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   public calculateUsdPrice(amount: string): string {
@@ -140,7 +141,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public setMaxAmount(amount: BigNumber): void {
-    this.rbcAmountCtrl.patchValue(amount.dp(2, 3).toFixed(2));
+    this.rbcAmountCtrl.patchValue(amount);
   }
 
   public setDuration(duration: number): void {

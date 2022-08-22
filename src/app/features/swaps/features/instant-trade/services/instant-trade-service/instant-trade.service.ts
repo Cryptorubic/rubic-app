@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -18,7 +18,8 @@ import {
   Web3Pure,
   Web3Public,
   TransactionOptions,
-  UnnecessaryApproveError
+  UnnecessaryApproveError,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -269,8 +270,21 @@ export class InstantTradeService extends TradeService {
       fee = this.iframeService.feeData.fee;
       promoCode = this.iframeService.promoCode;
     }
-    await this.instantTradesApiService
-      .createTrade(transactionHash, providerName, trade, fee, promoCode)
+
+    // Boba is too fast, status does not have time to get into the database.
+    const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
+    await timer(waitTime)
+      .pipe(
+        switchMap(() =>
+          this.instantTradesApiService.createTrade(
+            transactionHash,
+            providerName,
+            trade,
+            fee,
+            promoCode
+          )
+        )
+      )
       .toPromise();
   }
 

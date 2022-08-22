@@ -344,6 +344,22 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'CELO',
       decimals: 18
     }
+  },
+  {
+    id: 288,
+    name: BLOCKCHAIN_NAME.BOBA,
+    label: 'Boba',
+    scannerUrl: 'https://bobascan.com/',
+    rpcLink: 'https://mainnet.boba.network',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/boba.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.BOBA,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18
+    }
   }
 ];
 

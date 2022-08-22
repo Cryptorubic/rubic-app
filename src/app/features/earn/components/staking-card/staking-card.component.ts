@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { StatusBadgeType } from '@app/shared/components/status-badge/status-badge.component';
 import BigNumber from 'bignumber.js';
 import { RoundStatus } from '../../models/round-status.enum';
 
-const STATUS_BADGE_TYPE: Partial<Record<RoundStatus, StatusBadgeType>> = {
+const STATUS_BADGE_TYPE: Partial<Record<RoundStatus, string>> = {
   [RoundStatus.ACTIVE]: 'active',
   [RoundStatus.CLOSED]: 'error',
   [RoundStatus.FULL]: 'warning'
