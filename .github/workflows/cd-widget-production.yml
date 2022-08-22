@@ -37,4 +37,4 @@ jobs:
         run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} ssh -tt "${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}" "sudo chmod 777 -R /var/www/rubic_exchange/frontend_widgets"
 
       - name: Deploy on prod server
-        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend_widgets
+        run: sshpass -p ${{ secrets.PROD_WIDGET_SERVER_PASS }} rsync -e "ssh -p ${{ secrets.PROD_WIDGET_SERVER_PORT }} -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_WIDGET_SERVER_USER }}@${{ secrets.PROD_WIDGET_SERVER_HOST }}:/var/www/rubic_app
