@@ -392,7 +392,9 @@ export class CrossChainRoutingService extends TradeService {
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
     }
-    return new RubicError('Unknown SDK error. Try to refresh the page'); //?
+    return new RubicError(
+      'The swap between this pair of tokens is currently unavailable. Please try again later.'
+    );
   }
 
   private checkDeviceAndShowNotification(): void {
