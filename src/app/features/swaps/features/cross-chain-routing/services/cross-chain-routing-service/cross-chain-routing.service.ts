@@ -215,7 +215,9 @@ export class CrossChainRoutingService extends TradeService {
           providerTrade?.trade instanceof LifiCrossChainTrade ||
           providerTrade?.trade instanceof ViaCrossChainTrade
             ? providerTrade?.trade?.bridgeType
-            : undefined
+            : undefined,
+        viaUuid:
+          providerTrade?.trade instanceof ViaCrossChainTrade ? providerTrade?.trade.uuid : undefined
       };
 
       confirmCallback?.();
@@ -435,6 +437,9 @@ export class CrossChainRoutingService extends TradeService {
           name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
         };
 
+    const viaUuid =
+      providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined;
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -448,6 +453,7 @@ export class CrossChainRoutingService extends TradeService {
           crossChainProvider: providerTrade.tradeType,
           srcTxHash: txHash,
           bridgeType: bridgeProvider,
+          viaUuid,
           timestamp
         }
       })

@@ -5,17 +5,14 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { CrossChainTxStatus } from 'rubic-sdk';
 
 @Component({
-  selector: '[symbiosis-trade]',
-  templateUrl: './symbiosis-trade.component.html',
-  styleUrls: ['./symbiosis-trade.component.scss'],
+  selector: '[via-trade]',
+  templateUrl: './via-trade.component.html',
+  styleUrls: ['./via-trade.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SymbiosisTradeComponent extends CommonTrade {
-  public revertBtnLoading = false;
-
+export class ViaTradeComponent extends CommonTrade {
   constructor(
     private readonly recentTradesService: RecentTradesService,
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -27,30 +24,5 @@ export class SymbiosisTradeComponent extends CommonTrade {
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     return this.recentTradesService.getTradeData(trade);
-  }
-
-  public setUiTrade(uiTrade: UiRecentTrade): void {
-    if (!this.uiTrade || this.uiTrade?.statusTo !== CrossChainTxStatus.FALLBACK) {
-      this.uiTrade = uiTrade;
-
-      if (this.initialLoading) {
-        this.initialLoading = false;
-      }
-    }
-  }
-
-  public async revertSymbiosis(): Promise<void> {
-    this.revertBtnLoading = true;
-
-    const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
-      this.trade.srcTxHash,
-      this.trade.fromBlockchain
-    );
-
-    if (revertTxReceipt.status) {
-      this.uiTrade.statusTo = CrossChainTxStatus.FALLBACK;
-      this.revertBtnLoading = false;
-      this.cdr.detectChanges();
-    }
   }
 }
