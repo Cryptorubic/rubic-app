@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output
+} from '@angular/core';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { USER_AGENT } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -59,6 +68,16 @@ export class BlockchainsAsideComponent {
     ])
   );
 
+  public get showClearFix(): boolean {
+    const safariDetector: RegExp = /iPhone/i;
+    const chromeDetector: RegExp = /Chrome/i;
+    return (
+      this.isIos &&
+      this.isMobile &&
+      (safariDetector.test(this.userAgent) || chromeDetector.test(this.userAgent))
+    );
+  }
+
   get blockchains(): BlockchainName[] {
     if (this.allowedBlockchains) {
       return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
@@ -66,7 +85,11 @@ export class BlockchainsAsideComponent {
     return this.allBlockchains;
   }
 
-  constructor() {}
+  constructor(
+    @Inject(TUI_IS_IOS) private readonly isIos: boolean,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
+    @Inject(USER_AGENT) private readonly userAgent: string
+  ) {}
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.blockchain = blockchainName;
