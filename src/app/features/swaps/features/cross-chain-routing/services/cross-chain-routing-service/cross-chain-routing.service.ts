@@ -55,6 +55,11 @@ import { switchTap } from '@shared/utils/utils';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
+import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
+import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
+import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
+import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
+import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 
 type CrossChainProviderTrade = Observable<
   WrappedCrossChainTrade & {
@@ -69,11 +74,11 @@ type CrossChainProviderTrade = Observable<
 })
 export class CrossChainRoutingService extends TradeService {
   private static readonly crossChainProviders = [
-    // RubicCrossChainTradeProvider,
-    // CelerCrossChainTradeProvider,
-    // SymbiosisCrossChainTradeProvider,
-    // LifiCrossChainTradeProvider,
-    // DebridgeCrossChainTradeProvider,
+    RubicCrossChainTradeProvider,
+    CelerCrossChainTradeProvider,
+    SymbiosisCrossChainTradeProvider,
+    LifiCrossChainTradeProvider,
+    DebridgeCrossChainTradeProvider,
     RangoCrossChainTradeProvider
   ];
 
