@@ -310,16 +310,6 @@ export const RANGO_BRIDGE_PROVIDER: Record<RangoTradeSubtype, Provider> = {
     name: 'Openocean',
     image: '${imageBasePath}stargate.svg',
     color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.OSMOSIS]: {
-    name: 'Osmosis',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.RAINBOW_BRIDGE]: {
-    name: 'Rainbow Bridge',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
   }
 };
 
