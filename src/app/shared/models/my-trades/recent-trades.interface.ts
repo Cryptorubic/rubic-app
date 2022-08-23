@@ -12,5 +12,5 @@ export interface RecentTrade {
   calculatedStatusTo?: CrossChainTxStatus;
   calculatedStatusFrom?: CrossChainTxStatus;
   bridgeType?: string;
-  requestId?: string;
+  rangoRequestId?: string;
 }

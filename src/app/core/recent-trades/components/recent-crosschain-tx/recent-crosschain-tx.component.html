@@ -43,6 +43,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
           ></tr>
+          <tr
+            rango-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
@@ -68,6 +74,24 @@
           [trade]="trade"
           mode="mobile"
           *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
+        ></div>
+        <div
+          de-bridge-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
+        ></div>
+        <div
+          li-fi-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
+        ></div>
+        <div
+          rango-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
         ></div>
       </ng-container>
     </div>

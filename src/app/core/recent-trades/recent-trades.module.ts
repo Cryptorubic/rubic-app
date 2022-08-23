@@ -10,6 +10,7 @@ import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.compon
 import { TranslateModule } from '@ngx-translate/core';
 import { LiFiTradeComponent } from '@core/recent-trades/components/li-fi-trade/li-fi-trade.component';
 import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge-trade/de-bridge-trade.component';
+import { RangoTradeComponent } from './components/rango-trade/rango-trade.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge
     SymbiosisTradeComponent,
     RubicTradeComponent,
     LiFiTradeComponent,
-    DeBridgeTradeComponent
+    DeBridgeTradeComponent,
+    RangoTradeComponent
   ],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],

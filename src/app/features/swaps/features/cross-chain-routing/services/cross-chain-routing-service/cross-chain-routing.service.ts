@@ -125,7 +125,8 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: this.defaultTimeout
+        timeout: this.defaultTimeout,
+        disabledProviders: ['CELER', 'LIFI', 'RUBIC', 'SYMBIOSIS']
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -208,9 +209,10 @@ export class CrossChainRoutingService extends TradeService {
         toToken,
         crossChainProviderType: this.crossChainTrade.tradeType,
         timestamp,
-        requestId: (this.crossChainTrade.trade as RangoCrossChainTrade)?.requestId,
+        rangoRequestId: (this.crossChainTrade.trade as RangoCrossChainTrade)?.requestId,
         bridgeType:
-          this.crossChainTrade?.trade instanceof LifiCrossChainTrade
+          this.crossChainTrade?.trade instanceof LifiCrossChainTrade ||
+          this.crossChainTrade?.trade instanceof RangoCrossChainTrade
             ? this.crossChainTrade?.trade?.subType
             : undefined
       };
@@ -324,12 +326,16 @@ export class CrossChainRoutingService extends TradeService {
       return;
     }
 
-    if (this.crossChainTrade.trade instanceof RangoCrossChainTrade) {
+    if (
+      this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.RANGO &&
+      this.crossChainTrade.trade instanceof RangoCrossChainTrade
+    ) {
       this.smartRouting = {
         fromProvider: this.crossChainTrade.trade.itType.from,
         toProvider: this.crossChainTrade.trade.itType.to,
         bridgeProvider: (this.crossChainTrade.trade as RangoCrossChainTrade).subType
       };
+      return;
     }
 
     if (this.crossChainTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
@@ -452,7 +458,8 @@ export class CrossChainRoutingService extends TradeService {
           crossChainProvider: provider,
           srcTxHash: txHash,
           bridgeType: bridgeProvider,
-          timestamp
+          timestamp,
+          rangoRequestId: (this.crossChainTrade.trade as RangoCrossChainTrade)?.requestId
         }
       })
       .subscribe();

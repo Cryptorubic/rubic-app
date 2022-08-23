@@ -15,7 +15,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { BlockchainName, CrossChainTxStatus } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { HttpService } from '@core/services/http/http.service';
 
 @Injectable()
 export class RecentTradesService {
@@ -39,8 +38,7 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly sdk: RubicSdkService,
-    private readonly httpService: HttpService
+    private readonly sdk: RubicSdkService
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
@@ -76,7 +74,8 @@ export class RecentTradesService {
         toBlockchain: trade.toBlockchain,
         srcTxHash: srcTxHash,
         txTimestamp: trade.timestamp,
-        lifiBridgeType: trade.bridgeType
+        lifiBridgeType: trade.bridgeType,
+        rangoRequestId: trade.rangoRequestId
       },
       trade.crossChainProviderType
     );

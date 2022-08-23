@@ -85,6 +85,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private timestamp: number;
 
+  private rangoRequestId: string;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -120,7 +122,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 toBlockchain: this.toBlockchain.key,
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
-                lifiBridgeType: this.bridgeType.name
+                lifiBridgeType: this.bridgeType.name,
+                rangoRequestId: this.rangoRequestId
               },
               this.crossChainProvider
             )
@@ -184,7 +187,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
-                    lifiBridgeType: this.bridgeType.name.toLowerCase()
+                    lifiBridgeType: this.bridgeType.name.toLowerCase(),
+                    rangoRequestId: this.rangoRequestId
                   },
                   this.crossChainProvider
                 )
@@ -270,5 +274,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this.bridgeType = data?.bridgeType;
 
     this.timestamp = data.timestamp;
+
+    this.rangoRequestId = data.rangoRequestId;
   }
 }
