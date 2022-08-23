@@ -154,7 +154,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
               this.nativeCoinSymbol = nativeToken.symbol;
 
-              const trade = this.crossChainRoutingService.crossChainTrade.trade;
+              const trade = this.crossChainRoutingService.crossChainTrade;
 
               if (
                 trade instanceof SymbiosisCrossChainTrade ||
@@ -225,7 +225,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.trade.toTokenAmountMin;
+    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;

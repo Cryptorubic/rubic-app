@@ -4282,7 +4282,7 @@ bigint-buffer@^1.1.5:
   dependencies:
     bindings "^1.3.0"
 
-bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.0.2:
+bignumber.js@9.1.0, bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.0.2:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.0.tgz#8d340146107fe3a6cb8d40699643c302e8773b62"
   integrity sha512-4LwHK4nfDOraBCtst+wOWIHbu1vhvAPJK8g8nROd4iuc3PSEjWif/qwbkh8jwCJz6yDBvtU4KPynETgrfh7y3A==
@@ -14185,10 +14185,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.10.0.tgz#ffb39bf552e22cc8a6e28302a39973f7c1dfe8df"
-  integrity sha512-WtL0iRicuENpF7N4QJqzjXsFWv1Zkn5BuS/VoWcZdKCLAaBn/L6N6JKOVtohtLU0yMox8n5yZhzI9ZQ+e1WyFQ==
+rubic-sdk@2.10.6:
+  version "2.10.6"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.10.6.tgz#3f2dfef905617c6803e2e69bea671bd5f5a02867"
+  integrity sha512-YOtWkpmSWmjTH8bSThxoaxSkdejzEycL2802CSbx1wdbmBtKHyr+XLXRjqKzQjIJ1Gyo6Pw4IKpeO7TYycRKHQ==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     assert "^2.0.0"
@@ -15570,10 +15570,28 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.7.7, symbiosis-js-sdk@^2.8.9:
+symbiosis-js-sdk@^2.7.7:
   version "2.8.10"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.10.tgz#ae6df1561f3344d555fc70292766805a16bef9ed"
   integrity sha512-Y5ElmqvSlHt9r3mH0LtOXt6e2UKXTUHiwB03Dj48ZsJ+6gvQumhfHrR8FVKx/jitD3dBMxkokiGnx/3+Uv/U7w==
+  dependencies:
+    "@renproject/chains-bitcoin" "^3.4.2"
+    "@renproject/chains-ethereum" "^3.4.3"
+    "@renproject/ren" "~3.3.0"
+    big.js "^5.2.2"
+    bignumber.js "^9.0.1"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    lodash.flatmap "^4.5.0"
+    node-fetch-native "~0.1.0"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
+symbiosis-js-sdk@^2.8.9:
+  version "2.8.11"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.11.tgz#ddf801c5916ede0485af416d6805b120c51c9f82"
+  integrity sha512-0rWnx7TKYe/tXy47KZbGD8Xu0o+zFVN4xLQeEEHuryACahMgitcqgvn4mG+qt1GUKRAwgcST9sf3AabiZCX/AA==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
