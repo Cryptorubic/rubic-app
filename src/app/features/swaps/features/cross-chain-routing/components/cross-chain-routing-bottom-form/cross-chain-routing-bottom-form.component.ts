@@ -3,6 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
+  Injector,
+  INJECTOR,
   Input,
   OnInit,
   Output,
@@ -43,6 +46,10 @@ import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chai
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -137,7 +144,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly dialogService: TuiDialogService,
+    @Inject(INJECTOR) private readonly injector: Injector,
+    private readonly iframeService: IframeService
   ) {}
 
   ngOnInit() {
@@ -467,6 +477,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
+    if (!this.isSlippageCorrect()) {
+      return;
+    }
+
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
@@ -491,5 +505,21 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }
+  }
+
+  private isSlippageCorrect(): boolean {
+    if (
+      !this.crossChainProviderTrade ||
+      this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA ||
+      this.settingsService.crossChainRoutingValue.autoSlippageTolerance
+    ) {
+      return true;
+    }
+    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    this.dialogService
+      .open(new PolymorpheusComponent(ViaSlippageWarningModalComponent, this.injector), {
+        size
+      })
+      .subscribe();
   }
 }

@@ -1,0 +1,22 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+    </main>
+
+    <div class="modal__footer">
+      <div class="modal__footer-text">
+        Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Autoslippage
+        setting in the settings.
+      </div>
+
+      <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>
