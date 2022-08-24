@@ -129,7 +129,7 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: ['CELER', 'LIFI', 'RUBIC', 'SYMBIOSIS', 'DEBRIDGE']
+        disabledProviders: ['CELER', 'LIFI', 'RUBIC', 'SYMBIOSIS', 'DEBRIDGE', 'VIA']
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -213,7 +213,7 @@ export class CrossChainRoutingService extends TradeService {
         bridgeType:
           providerTrade.trade instanceof LifiCrossChainTrade ||
           providerTrade.trade instanceof RangoCrossChainTrade
-            ? providerTrade?.trade?.subType
+            ? providerTrade?.trade?.bridgeType
             : undefined
       };
 
@@ -322,7 +322,7 @@ export class CrossChainRoutingService extends TradeService {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
         toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: (wrappedTrade.trade as LifiCrossChainTrade).subType
+        bridgeProvider: (wrappedTrade.trade as LifiCrossChainTrade).bridgeType
       };
     }
 
@@ -333,7 +333,7 @@ export class CrossChainRoutingService extends TradeService {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
         toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: (wrappedTrade.trade as RangoCrossChainTrade).subType
+        bridgeProvider: (wrappedTrade.trade as RangoCrossChainTrade).bridgeType
       };
     }
 

@@ -5,13 +5,9 @@ import {
   CrossChainTradeType,
   TRADE_TYPE,
   TradeType,
-  Li_FI_TRADE_SUBTYPE,
-  LiFiTradeSubtype
+  BRIDGE_TYPE,
+  BridgeType
 } from 'rubic-sdk';
-import {
-  RangoTradeSubtype,
-  RANGO_TRADE_SUBTYPE
-} from 'rubic-sdk/lib/features/cross-chain/providers/rango-trade-provider/models/rango-providers';
 
 export type Provider = {
   name: string;
@@ -202,17 +198,197 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: '',
     color: ''
   },
-  [TRADE_TYPE.ACROSS]: {
-    name: 'Across',
-    image: '',
-    color: ''
-  },
-  [TRADE_TYPE.ANYSWAP]: {
-    name: 'Anyswap',
-    image: '',
-    color: ''
-  },
   OOLONG_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ACRYPTOS: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ALDRIN_EXCHANGE: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ANNEX: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  APE_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ARTH_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  BABY_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  BALANCER: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  BI_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  CREMA_FINANCE: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  CROPPER_FINANCE: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  CROW_FI: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  CRO_DEX: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  CURVE: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  DEFI_PLAZA: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  DEFI_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  DFYN: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  DYSTOPIA: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  JET_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  KYBER_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  LUA_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  MAVERICK: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  MDEX: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  MESH_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  MOJITO_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ONE_MOON: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ONE_SOL: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ORCA_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  OSMOSIS_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  POLYDEX: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SABER_STABLE_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SAROS_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SERUM: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SHIBA_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SMOOTHY: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  SPL_TOKEN_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  WAULT_SWAP: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  WOO_FI: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ZIP_SWAP: {
     name: '',
     image: '',
     color: ''
@@ -247,142 +423,192 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
     name: 'Rango',
     image: `${imageBasePath}debridge.svg`,
     color: '#bf38ee'
+  },
+  [CROSS_CHAIN_TRADE_TYPE.VIA]: {
+    name: '',
+    image: '',
+    color: ''
   }
 };
 
-export const RANGO_BRIDGE_PROVIDER: Record<RangoTradeSubtype, Provider> = {
-  [RANGO_TRADE_SUBTYPE.ACROSS]: {
+// export const RANGO_BRIDGE_PROVIDER: Record<RangoTradeSubtype, Provider> = {
+//   [RANGO_TRADE_SUBTYPE.ACROSS]: {
+//     name: 'Across',
+//     image: `${imageBasePath}across.svg`,
+//     color: '#29a98b'
+//   },
+//   [RANGO_TRADE_SUBTYPE.ARBITRUM_BRIDGE]: {
+//     name: 'Arbitrum Bridge',
+//     image: `${imageBasePath}arbitrum-bridge.svg`,
+//     color: '#1275b7'
+//   },
+//   [RANGO_TRADE_SUBTYPE.AVALANCHE_BRIDGE]: {
+//     name: 'Avalanche Bridge',
+//     image: `${imageBasePath}avalanche-bridge.svg`,
+//     color: '#323232'
+//   },
+//   [RANGO_TRADE_SUBTYPE.CELER_BRIDGE]: {
+//     name: 'cBridge',
+//     image: `${imageBasePath}celer.svg`,
+//     color: 'white'
+//   },
+//   [RANGO_TRADE_SUBTYPE.HOP]: {
+//     name: 'Hop',
+//     image: `${imageBasePath}hop.svg`,
+//     color: '#de7fb8'
+//   },
+//   [RANGO_TRADE_SUBTYPE.HYPHEN]: {
+//     name: 'Hyphen',
+//     image: `${imageBasePath}hyphen.svg`,
+//     color: '#353392'
+//   },
+//   [RANGO_TRADE_SUBTYPE.OPTIMISM_BRIDGE]: {
+//     name: 'Optimism Gateway',
+//     image: `${imageBasePath}optimism-gateway.svg`,
+//     color: 'white'
+//   },
+//   [RANGO_TRADE_SUBTYPE.STARGATE]: {
+//     name: 'Stargate',
+//     image: `${imageBasePath}stargate.svg`,
+//     color: 'grey'
+//   },
+//   [RANGO_TRADE_SUBTYPE.ANYSWAP_AGGREGATOR]: {
+//     name: 'Anyswap Aggregator',
+//     image: '${imageBasePath}stargate.svg',
+//     color: 'grey'
+//   },
+//   [RANGO_TRADE_SUBTYPE.ANYSWAP_BRIDGE]: {
+//     name: 'Anyswap Bridge',
+//     image: '${imageBasePath}stargate.svg',
+//     color: 'grey'
+//   },
+//   [RANGO_TRADE_SUBTYPE.CBRIDGE_AGGREGATOR]: {
+//     name: 'Cbridge Aggregator',
+//     image: '${imageBasePath}stargate.svg',
+//     color: 'grey'
+//   },
+//   [RANGO_TRADE_SUBTYPE.OPENOCEAN]: {
+//     name: 'Openocean',
+//     image: '${imageBasePath}stargate.svg',
+//     color: 'grey'
+//   }
+// };
+
+export const BRIDGE_TYPE_PROVIDERS: Record<BridgeType, Provider> = {
+  [BRIDGE_TYPE.ACROSS]: {
     name: 'Across',
     image: `${imageBasePath}across.svg`,
     color: '#29a98b'
   },
-  [RANGO_TRADE_SUBTYPE.ARBITRUM_BRIDGE]: {
+  [BRIDGE_TYPE.ARBITRUM_BRIDGE]: {
     name: 'Arbitrum Bridge',
     image: `${imageBasePath}arbitrum-bridge.svg`,
     color: '#1275b7'
   },
-  [RANGO_TRADE_SUBTYPE.AVALANCHE_BRIDGE]: {
+  [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
     color: '#323232'
   },
-  [RANGO_TRADE_SUBTYPE.CELER_BRIDGE]: {
+  [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}celer.svg`,
     color: 'white'
   },
-  [RANGO_TRADE_SUBTYPE.HOP]: {
-    name: 'Hop',
-    image: `${imageBasePath}hop.svg`,
-    color: '#de7fb8'
-  },
-  [RANGO_TRADE_SUBTYPE.HYPHEN]: {
-    name: 'Hyphen',
-    image: `${imageBasePath}hyphen.svg`,
-    color: '#353392'
-  },
-  [RANGO_TRADE_SUBTYPE.OPTIMISM_BRIDGE]: {
-    name: 'Optimism Gateway',
-    image: `${imageBasePath}optimism-gateway.svg`,
-    color: 'white'
-  },
-  [RANGO_TRADE_SUBTYPE.STARGATE]: {
-    name: 'Stargate',
-    image: `${imageBasePath}stargate.svg`,
-    color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.ANYSWAP_AGGREGATOR]: {
-    name: 'Anyswap Aggregator',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.ANYSWAP_BRIDGE]: {
-    name: 'Anyswap Bridge',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.CBRIDGE_AGGREGATOR]: {
-    name: 'Cbridge Aggregator',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
-  },
-  [RANGO_TRADE_SUBTYPE.OPENOCEAN]: {
-    name: 'Openocean',
-    image: '${imageBasePath}stargate.svg',
-    color: 'grey'
-  }
-};
-
-export const LIFI_BRIDGE_PROVIDER: Record<LiFiTradeSubtype, Provider> = {
-  [Li_FI_TRADE_SUBTYPE.ACROSS]: {
-    name: 'Across',
-    image: `${imageBasePath}across.svg`,
-    color: '#29a98b'
-  },
-  [Li_FI_TRADE_SUBTYPE.ARBITRUM_BRIDGE]: {
-    name: 'Arbitrum Bridge',
-    image: `${imageBasePath}arbitrum-bridge.svg`,
-    color: '#1275b7'
-  },
-  [Li_FI_TRADE_SUBTYPE.AVALANCHE_BRIDGE]: {
-    name: 'Avalanche Bridge',
-    image: `${imageBasePath}avalanche-bridge.svg`,
-    color: '#323232'
-  },
-  [Li_FI_TRADE_SUBTYPE.CELER_BRIDGE]: {
-    name: 'cBridge',
-    image: `${imageBasePath}celer.svg`,
-    color: 'white'
-  },
-  [Li_FI_TRADE_SUBTYPE.CONNEXT]: {
+  [BRIDGE_TYPE.CONNEXT]: {
     name: 'Connext',
     image: `${imageBasePath}connext.svg`,
     color: '#8e28fe'
   },
-  [Li_FI_TRADE_SUBTYPE.HOP]: {
+  [BRIDGE_TYPE.HOP]: {
     name: 'Hop',
     image: `${imageBasePath}hop.svg`,
     color: '#de7fb8'
   },
-  [Li_FI_TRADE_SUBTYPE.HYPHEN]: {
+  [BRIDGE_TYPE.HYPHEN]: {
     name: 'Hyphen',
     image: `${imageBasePath}hyphen.svg`,
     color: '#353392'
   },
-  [Li_FI_TRADE_SUBTYPE.MAKERS_WORMHOLE]: {
+  [BRIDGE_TYPE.MAKERS_WORMHOLE]: {
     name: `Maker's wormhole`,
     image: `${imageBasePath}wormhole.svg`,
     color: 'white'
   },
-  [Li_FI_TRADE_SUBTYPE.MULTICHAIN]: {
+  [BRIDGE_TYPE.MULTICHAIN]: {
     name: 'Multichain',
     image: `${imageBasePath}multichain.png`,
     color: '#452fbf'
   },
-  [Li_FI_TRADE_SUBTYPE.OPTIMISM_GATEWAY]: {
+  [BRIDGE_TYPE.OPTIMISM_GATEWAY]: {
     name: 'Optimism Gateway',
     image: `${imageBasePath}optimism-gateway.svg`,
     color: 'white'
   },
-  [Li_FI_TRADE_SUBTYPE.POLYGON]: {
+  [BRIDGE_TYPE.POLYGON]: {
     name: 'Polygon bridge',
     image: `${imageBasePath}polygon-bridge.png`,
     color: '#5d25ba'
   },
-  [Li_FI_TRADE_SUBTYPE.STARGATE]: {
+  [BRIDGE_TYPE.STARGATE]: {
     name: 'Stargate',
     image: `${imageBasePath}stargate.svg`,
     color: 'grey'
   },
-  [Li_FI_TRADE_SUBTYPE.SYNAPSE]: {
+  [BRIDGE_TYPE.SYNAPSE]: {
     name: 'Synapse',
     image: `${imageBasePath}synapse.svg`,
     color: '#b90aba'
   },
-  [Li_FI_TRADE_SUBTYPE.WORMHOLE]: {
+  [BRIDGE_TYPE.WORMHOLE]: {
     name: 'Wormhole',
     image: `${imageBasePath}wormhole.svg`,
     color: 'white'
+  },
+  openocean: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  symbiosis: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  anyswap: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  debridge: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  osmosis: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  refuel: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  satellite: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  thorchain: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  ypool: {
+    name: '',
+    image: '',
+    color: ''
   }
 };
 
@@ -399,8 +625,7 @@ const GAS_REFUND_PROVIDER: Provider = {
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
-  ...LIFI_BRIDGE_PROVIDER,
-  ...RANGO_BRIDGE_PROVIDER,
+  ...BRIDGE_TYPE_PROVIDERS,
   ...CROSS_CHAIN_TRADE_PROVIDER,
   CROSS_CHAIN_ROUTING_PROVIDER,
   GAS_REFUND_PROVIDER
