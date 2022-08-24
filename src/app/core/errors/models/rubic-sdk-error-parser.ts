@@ -16,6 +16,8 @@ import { RubicSdkError } from 'rubic-sdk';
 import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } from 'rubic-sdk';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { NotWhitelistedProviderError as SdkNotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
+import NotWhitelistedProviderError from '@core/errors/models/common/not-whitelisted-provider.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -48,6 +50,13 @@ export class RubicSdkErrorParser {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
+    }
+    if (err instanceof SdkNotWhitelistedProviderError) {
+      console.error('Provider router: ', err.providerRouter);
+      if (err.providerGateway) {
+        console.error('Provider gateway: ', err.providerGateway);
+      }
+      return new NotWhitelistedProviderError();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);

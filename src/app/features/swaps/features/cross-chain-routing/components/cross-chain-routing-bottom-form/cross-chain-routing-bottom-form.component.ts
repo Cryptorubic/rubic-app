@@ -50,6 +50,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
+import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -112,6 +113,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   public smartRouting: SmartRouting = null;
 
   private crossChainProviderTrade: CrossChainProviderTrade;
+
+  private isViaDisabled = false;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -195,6 +198,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   private setFormValues(form: SwapFormInput): void {
+    this.isViaDisabled = false;
+
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
 
@@ -273,7 +278,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           const { fromAmount } = this.swapFormService.inputValue;
           const isUserAuthorized = Boolean(this.authService.userAddress);
 
-          const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(isUserAuthorized);
+          const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(
+            isUserAuthorized,
+            this.isViaDisabled
+          );
 
           const balance$ = from(
             this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
@@ -371,7 +379,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           const { fromAmount } = this.swapFormService.inputValue;
 
-          return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
+          return from(this.crossChainRoutingService.calculateTrade(false, this.isViaDisabled)).pipe(
             map(providerTrade => {
               const { trade, error, currentProviders } = providerTrade;
               if (currentProviders === 0) {
@@ -499,6 +507,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
     } catch (err) {
       this.errorsService.catch(err);
+
+      if (err instanceof NotWhitelistedProviderError) {
+        this.isViaDisabled = true;
+        this.conditionalCalculate('normal');
+        return;
+      }
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
