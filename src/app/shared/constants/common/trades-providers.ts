@@ -251,7 +251,7 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   },
   [TRADE_TYPE.POLYDEX]: {
     name: 'Polydex',
-    image: `${imageBasePath}polydex.png`,
+    image: `${imageBasePath}polydex.svg`,
     color: '#0D2866'
   },
 
