@@ -716,14 +716,16 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       const { fromAddress, blockchain, toAddress } = TradeParser.getItSwapParams(providerTrade);
 
-      await this.tokensService.updateTokenBalanceAfterSwap({
-        address: fromAddress,
-        blockchain
-      });
-      await this.tokensService.updateTokenBalanceAfterSwap({
-        address: toAddress,
-        blockchain
-      });
+      await this.tokensService.updateTokenBalancesAfterItSwap(
+        {
+          address: fromAddress,
+          blockchain
+        },
+        {
+          address: toAddress,
+          blockchain
+        }
+      );
     } catch (err) {
       this.errorService.catch(err);
 

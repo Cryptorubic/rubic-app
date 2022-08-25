@@ -479,7 +479,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
       this.conditionalCalculate('hidden');
 
-      await this.tokensService.updateTokenBalanceAfterSwap({
+      await this.tokensService.updateTokenBalanceAfterCcrSwap({
         address: fromToken.address,
         blockchain: fromBlockchain
       });
