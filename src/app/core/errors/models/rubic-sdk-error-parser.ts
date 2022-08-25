@@ -17,7 +17,7 @@ import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } fro
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { NotWhitelistedProviderError as SdkNotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
-import NotWhitelistedProviderError from '@core/errors/models/common/not-whitelisted-provider.error';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -56,7 +56,7 @@ export class RubicSdkErrorParser {
       if (err.providerGateway) {
         console.error('Provider gateway: ', err.providerGateway);
       }
-      return new NotWhitelistedProviderError();
+      return new NotWhitelistedProviderWarning();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
