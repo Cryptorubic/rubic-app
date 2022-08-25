@@ -535,5 +535,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         size
       })
       .subscribe();
+    return false;
   }
 }
