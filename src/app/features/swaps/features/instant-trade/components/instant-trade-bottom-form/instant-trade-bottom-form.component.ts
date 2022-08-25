@@ -714,10 +714,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.conditionalCalculate('hidden');
 
-      const { fromAddress, blockchain } = TradeParser.getItSwapParams(providerTrade);
+      const { fromAddress, blockchain, toAddress } = TradeParser.getItSwapParams(providerTrade);
 
       await this.tokensService.updateTokenBalanceAfterSwap({
         address: fromAddress,
+        blockchain
+      });
+      await this.tokensService.updateTokenBalanceAfterSwap({
+        address: toAddress,
         blockchain
       });
     } catch (err) {
