@@ -77,7 +77,7 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  private readonly defaultTimeout = Infinity; // @TODO return
+  private readonly defaultTimeout = 25_000;
 
   private _crossChainTrade: CrossChainTrade;
 
