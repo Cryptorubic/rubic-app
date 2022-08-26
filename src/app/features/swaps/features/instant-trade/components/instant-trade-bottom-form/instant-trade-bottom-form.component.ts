@@ -340,7 +340,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
           return forkJoin([instantTrades$, tokenBalance$]).pipe(
             switchMap(([instantTrades]) => {
-              console.log({ instantTrades });
               this.hiddenProvidersTrades = null;
               return this.setupProviders(instantTrades);
             })
