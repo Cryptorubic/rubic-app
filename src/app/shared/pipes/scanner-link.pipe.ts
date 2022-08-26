@@ -171,6 +171,14 @@ const blockchainsScanners: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.BITCOIN]: {
+    baseUrl: 'https://blockchair.com/bitcoin/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: '',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 

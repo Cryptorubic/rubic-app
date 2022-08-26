@@ -176,7 +176,12 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   [TRADE_TYPE.OOLONG_SWAP]: {
     name: 'Oolongswap',
     image: `${imageBasePath}ubeswap.svg`,
-    color: '##5b55e3'
+    color: '#5b55e3'
+  },
+  [TRADE_TYPE.REN_BTC]: {
+    name: 'renBTC',
+    image: `${imageBasePath}renbtc.svg`,
+    color: 'grey'
   }
 };
 

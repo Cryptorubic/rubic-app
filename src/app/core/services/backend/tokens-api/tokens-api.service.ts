@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -26,6 +26,8 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { LifiTokens } from '@core/services/backend/tokens-api/models/lifi-token';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -223,8 +225,12 @@ export class TokensApiService {
         )
       );
 
-    return forkJoin([backendTokens$, lifiTokens$]).pipe(
-      map(([backendTokens, lifiTokens]) => backendTokens.concat(lifiTokens))
+    const staticTokens$ = this.fetchStaticTokens();
+
+    return forkJoin([backendTokens$, lifiTokens$, staticTokens$]).pipe(
+      map(([backendTokens, lifiTokens, staticTokens]) =>
+        backendTokens.concat(lifiTokens).concat(staticTokens)
+      )
     );
   }
 
@@ -271,6 +277,28 @@ export class TokensApiService {
           next: tokensResponse.next
         };
       })
+    );
+  }
+
+  private fetchStaticTokens(): Observable<Token[]> {
+    return from(Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)).pipe(
+      switchMap(price =>
+        of([
+          {
+            image: '/assets/images/icons/coins/bitcoin.svg',
+            rank: 1,
+            price: price.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+
+            blockchain: BLOCKCHAIN_NAME.BITCOIN,
+            address: EMPTY_ADDRESS,
+            name: 'Bitcoin',
+            symbol: 'BTC',
+            decimals: 8
+          }
+        ])
+      )
     );
   }
 }

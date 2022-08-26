@@ -114,5 +114,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
     TRADE_TYPE.BEAM_SWAP
   ]),
   [BLOCKCHAIN_NAME.CELO]: getDefaultStateByProviders([TRADE_TYPE.SUSHI_SWAP, TRADE_TYPE.UBE_SWAP]),
-  [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([TRADE_TYPE.OOLONG_SWAP])
+  [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([TRADE_TYPE.OOLONG_SWAP]),
+  [BLOCKCHAIN_NAME.BITCOIN]: getDefaultStateByProviders([])
 };

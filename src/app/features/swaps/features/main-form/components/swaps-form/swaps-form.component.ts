@@ -353,6 +353,7 @@ export class SwapsFormComponent implements OnInit {
     }
     // Remove null control values.
     formControls.input.patchValue(revertData);
+    formControls.output.patchValue({ toAmount: new BigNumber(NaN) });
   }
 
   private notifyBeta(): void {

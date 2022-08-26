@@ -26,7 +26,7 @@ export class BlockchainsAsideComponent {
 
   @Output() blockchainChange = new EventEmitter<BlockchainName>();
 
-  private readonly allBlockchains: BlockchainName[] = [
+  public static readonly allBlockchains: BlockchainName[] = [
     BLOCKCHAIN_NAME.ETHEREUM,
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
@@ -44,7 +44,8 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.OKE_X_CHAIN,
     BLOCKCHAIN_NAME.CRONOS,
     BLOCKCHAIN_NAME.HARMONY,
-    BLOCKCHAIN_NAME.BOBA
+    BLOCKCHAIN_NAME.BOBA,
+    BLOCKCHAIN_NAME.BITCOIN
 
     // @TODO return after Near & Solana fix
     // BLOCKCHAIN_NAME.NEAR,
@@ -80,9 +81,11 @@ export class BlockchainsAsideComponent {
 
   get blockchains(): BlockchainName[] {
     if (this.allowedBlockchains) {
-      return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
+      return BlockchainsAsideComponent.allBlockchains.filter(el =>
+        this.allowedBlockchains.includes(el)
+      );
     }
-    return this.allBlockchains;
+    return BlockchainsAsideComponent.allBlockchains;
   }
 
   constructor(

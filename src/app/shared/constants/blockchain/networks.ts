@@ -360,6 +360,22 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'ETH',
       decimals: 18
     }
+  },
+  {
+    id: 5555,
+    name: BLOCKCHAIN_NAME.BITCOIN,
+    label: 'Bitcoin',
+    scannerUrl: 'https://blockchair.com/bitcoin/',
+    rpcLink: '',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/bitcoin.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.BITCOIN,
+      address: '',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      decimals: 8
+    }
   }
 ];
 
