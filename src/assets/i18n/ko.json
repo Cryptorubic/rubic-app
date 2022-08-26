@@ -93,7 +93,8 @@
     "buttonLink": "더 알아보기",
     "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다",
-    "noSelectedToken": "토큰 선택"
+    "noSelectedToken": "토큰 선택",
+    "notWhitelistedProvider": "유감스럽게도 계산된 공급자를 사용하는 이 스왑은 현재 사용할 수 없습니다. Rubic은 스왑 경로를 다시 계산합니다."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
@@ -487,6 +488,9 @@
       "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
+    },
+    "warningModal": {
+      "viaSlippage": "유감스럽게도 이 스왑에는 사용자 지정 미끄러짐이 허용되지 않습니다. 설정에서 자동 미끄러짐 허용 오차 설정을 켜십시오."
     }
   },
   "settings": {

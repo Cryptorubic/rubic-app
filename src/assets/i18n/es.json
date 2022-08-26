@@ -92,7 +92,8 @@
     "buttonLink": "Más información",
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada.",
-    "noSelectedToken": "Seleccionar token"
+    "noSelectedToken": "Seleccionar token",
+    "notWhitelistedProvider": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
@@ -486,6 +487,9 @@
       "aboutMyself": "Pero puedes intercambiar tokens tú mismo.",
       "agree": "Ok, estoy de acuerdo",
       "swapMyself": "Intercabio por mi cuenta"
+    },
+    "warningModal": {
+      "viaSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
     }
   },
   "settings": {

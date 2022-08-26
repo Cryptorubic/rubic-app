@@ -26,7 +26,7 @@ export class SymbiosisTradeComponent extends CommonTrade {
   }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradeData(trade);
+    return this.recentTradesService.getTradeData(trade);
   }
 
   public setUiTrade(uiTrade: UiRecentTrade): void {

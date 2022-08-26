@@ -13,4 +13,5 @@ export interface SwapSchemeModalData {
   srcTxHash: string;
   timestamp: number;
   bridgeType?: Provider;
+  viaUuid?: string;
 }

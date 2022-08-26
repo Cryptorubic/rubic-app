@@ -12,4 +12,5 @@ export interface RecentTrade {
   calculatedStatusTo?: CrossChainTxStatus;
   calculatedStatusFrom?: CrossChainTxStatus;
   bridgeType?: string;
+  viaUuid?: string;
 }
