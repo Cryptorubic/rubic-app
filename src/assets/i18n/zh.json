@@ -93,7 +93,8 @@
     "buttonLink": "學到更多",
     "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
     "walletNotInstalled": "未安装钱包",
-    "noSelectedToken": "选择令牌"
+    "noSelectedToken": "选择令牌",
+    "notWhitelistedProvider": "不幸的是，使用計算出的提供者的這種交換目前不可用。 Rubic 將重新計算您的交換路線。"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
@@ -487,6 +488,9 @@
       "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
+    },
+    "warningModal": {
+      "viaSlippage": "不幸的是，此掉期不允許自定義滑點。 請在設置中開啟 Auto Slippage 容差設置。"
     }
   },
   "settings": {
