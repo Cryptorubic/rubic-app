@@ -93,7 +93,8 @@
     "buttonLink": "Узнать больше",
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен.",
-    "noSelectedToken": "Выберите токен"
+    "noSelectedToken": "Выберите токен",
+    "notWhitelistedProvider": "К сожалению, данный обмен с использованием подобранного провайдера в настоящее время недоступен. Rubic пересчитает маршрут вашего обмена."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
@@ -487,6 +488,9 @@
       "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
+    },
+    "warningModal": {
+      "viaSlippage": "К сожалению, для этого свопа не допускается пользовательский Slippage. Пожалуйста, включите настройку автоматического Slippage в настройках."
     }
   },
   "settings": {

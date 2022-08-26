@@ -10,8 +10,7 @@
 
     <div class="modal__footer">
       <div class="modal__footer-text">
-        Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto
-        Slippage tolerance setting in the settings.
+        {{ 'modals.warningModal.viaSlippage' | translate }}
       </div>
 
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
