@@ -340,6 +340,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
           return forkJoin([instantTrades$, tokenBalance$]).pipe(
             switchMap(([instantTrades]) => {
+              console.log({ instantTrades });
               this.hiddenProvidersTrades = null;
               return this.setupProviders(instantTrades);
             })
@@ -400,7 +401,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         needApprove: false,
         trade: null,
         tradeStatus: INSTANT_TRADE_STATUS.ERROR,
-        error: new RubicError('Unknown error')
+        error: new RubicError('There are not enough liquidity for this swap using chosen DEX.')
       };
       if (!settledTrade) {
         return defaultProvider;
