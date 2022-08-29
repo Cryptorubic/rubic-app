@@ -1,20 +1,22 @@
 <ng-container *ngIf="mode === 'table-row'; else mobile">
   <!-- Transaction date -->
-  <td class="date" [class.tui-skeleton]="initialLoading">
-    {{ (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm') }}
+  <td class="date">
+    <span [class.tui-skeleton]="initialLoading">
+      {{
+        (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
+      }}
+    </span>
   </td>
 
   <!-- Src crypto-asset -->
-  <td class="from" [class.tui-skeleton]="initialLoading">
-    <div class="asset">
-      <div
+  <td class="from">
+    <div class="asset" [class.tui-skeleton]="initialLoading">
+      <img
         class="asset__token-image"
-        [ngStyle]="{
-          'background-image': uiTrade?.fromToken?.image
-            ? 'url(' + uiTrade?.fromToken?.image + ')'
-            : 'url(\'assets/images/icons/coins/default-token-ico.svg\')'
-        }"
-      ></div>
+        [src]="uiTrade?.fromToken?.image || 'assets/images/icons/coins/default-token-ico.svg'"
+        [alt]="uiTrade?.fromToken?.symbol"
+        (error)="onTokenImageError($event)"
+      />
       <div class="asset__data">
         <div class="asset__token">{{ uiTrade?.fromToken?.symbol }}</div>
         <div class="asset__blockchain">{{ uiTrade?.fromBlockchain?.name }}</div>
@@ -23,8 +25,8 @@
   </td>
 
   <!-- Status of src transaction -->
-  <td class="status-from" [class.tui-skeleton]="initialLoading">
-    <a [href]="uiTrade?.srcTxLink" target="_blank">
+  <td class="status-from">
+    <a [href]="uiTrade?.srcTxLink" target="_blank" [class.tui-skeleton]="initialLoading">
       <app-status-badge
         [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
         [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
@@ -34,16 +36,14 @@
   </td>
 
   <!-- Dst crypto-asset -->
-  <td class="to" [class.tui-skeleton]="initialLoading">
-    <div class="asset">
-      <div
+  <td class="to">
+    <div class="asset" [class.tui-skeleton]="initialLoading">
+      <img
         class="asset__token-image"
-        [ngStyle]="{
-          'background-image': uiTrade?.toToken?.image
-            ? 'url(' + uiTrade?.toToken?.image + ')'
-            : 'url(\'assets/images/icons/coins/default-token-ico.svg\')'
-        }"
-      ></div>
+        [src]="uiTrade?.toToken?.image || 'assets/images/icons/coins/default-token-ico.svg'"
+        [alt]="uiTrade?.toToken?.symbol"
+        (error)="onTokenImageError($event)"
+      />
       <div class="asset__data">
         <div class="asset__token">{{ uiTrade?.toToken?.symbol }}</div>
         <div class="asset__blockchain">{{ uiTrade?.toBlockchain?.name }}</div>
@@ -52,10 +52,15 @@
   </td>
 
   <!-- Status of dst transaction -->
-  <td class="status-to" [class.tui-skeleton]="initialLoading">
+  <td class="status-to">
     <app-status-badge
+      *ngIf="
+        !isSymbiosisTrade || (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
+        else revert
+      "
       [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
       [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+      [class.tui-skeleton]="initialLoading"
     >
     </app-status-badge>
   </td>
@@ -77,19 +82,17 @@
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <div
+        <img
+          [src]="uiTrade?.fromToken?.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          [alt]="uiTrade?.fromToken?.symbol"
+          (error)="onTokenImageError($event)"
           class="tx__token-image"
-          [ngStyle]="{
-            'background-image': uiTrade?.fromToken?.image
-              ? 'url(' + uiTrade?.fromToken?.image + ')'
-              : 'url(\'assets/images/icons/coins/default-token-ico.svg\')'
-          }"
-        ></div>
+        />
         <div class="tx__token-symbol">
           {{ uiTrade?.fromToken.symbol }}
         </div>
         <div class="tx__token-blockchain">
-          {{ uiTrade?.fromBlockchain.name }}
+          {{ uiTrade?.fromBlockchain?.name }}
         </div>
       </div>
     </div>
@@ -112,19 +115,17 @@
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <div
+        <img
+          [src]="uiTrade?.toToken?.image || 'assets/images/icons/coins/default-token-ico.svg'"
+          [alt]="uiTrade?.toToken?.symbol"
+          (error)="onTokenImageError($event)"
           class="tx__token-image"
-          [ngStyle]="{
-            'background-image': uiTrade?.toToken?.image
-              ? 'url(' + uiTrade?.toToken?.image + ')'
-              : 'url(\'assets/images/icons/coins/default-token-ico.svg\')'
-          }"
-        ></div>
+        />
         <div class="tx__token-symbol">
           {{ uiTrade?.toToken.symbol }}
         </div>
         <div class="tx__token-blockchain">
-          {{ uiTrade?.toBlockchain.name }}
+          {{ uiTrade?.toBlockchain?.name }}
         </div>
       </div>
     </div>
@@ -136,11 +137,21 @@
         <app-status-badge
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
           [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+          *ngIf="
+            !isSymbiosisTrade ||
+              (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
+            else revert
+          "
         >
         </app-status-badge>
       </div>
     </div>
-
     <hr class="tx__divider" />
   </div>
+</ng-template>
+
+<ng-template #revert>
+  <app-rubic-button appearance="secondary" class="revert" (onClick)="revertSymbiosis()">
+    {{ 'common.revert' | translate }}
+  </app-rubic-button>
 </ng-template>

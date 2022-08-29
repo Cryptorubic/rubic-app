@@ -4,24 +4,12 @@ import { RecentCrosschainTxComponent } from './components/recent-crosschain-tx/r
 import { RecentTradesService } from './services/recent-trades.service';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { SharedModule } from '@app/shared/shared.module';
-import { CelerTradeComponent } from './components/celer-trade/celer-trade.component';
-import { SymbiosisTradeComponent } from './components/symbiosis-trade/symbiosis-trade.component';
-import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { LiFiTradeComponent } from '@core/recent-trades/components/li-fi-trade/li-fi-trade.component';
-import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge-trade/de-bridge-trade.component';
 import { ViaTradeComponent } from '@core/recent-trades/components/via-trade/via-trade.component';
+import { TradeRowComponent } from '@core/recent-trades/components/trade-row/trade-row.component';
 
 @NgModule({
-  declarations: [
-    RecentCrosschainTxComponent,
-    CelerTradeComponent,
-    SymbiosisTradeComponent,
-    RubicTradeComponent,
-    LiFiTradeComponent,
-    DeBridgeTradeComponent,
-    ViaTradeComponent
-  ],
+  declarations: [RecentCrosschainTxComponent, TradeRowComponent, ViaTradeComponent],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],
   providers: [RecentTradesService]
