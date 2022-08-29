@@ -85,6 +85,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public viaUuid: string | undefined;
 
+  public rangoRequestId: string | undefined;
+
   private timestamp: number;
 
   constructor(
@@ -123,7 +125,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
                 lifiBridgeType: this.bridgeType.name,
-                viaUuid: this.viaUuid
+                viaUuid: this.viaUuid,
+                rangoRequestId: this.rangoRequestId
               },
               this.crossChainProvider
             )
@@ -188,7 +191,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
-                    viaUuid: this.viaUuid
+                    viaUuid: this.viaUuid,
+                    rangoRequestId: this.rangoRequestId
                   },
                   this.crossChainProvider
                 )
@@ -274,6 +278,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this.bridgeType = data.bridgeType;
 
     this.viaUuid = data.viaUuid;
+    this.rangoRequestId = data.rangoRequestId;
 
     this.timestamp = data.timestamp;
   }

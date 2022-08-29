@@ -56,7 +56,11 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
-import { CrossChainTrade } from 'rubic-sdk/lib/features';
+import {
+  CrossChainTrade,
+  RangoCrossChainTrade,
+  RangoCrossChainTradeProvider
+} from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 
 @Injectable({
@@ -68,7 +72,8 @@ export class CrossChainRoutingService extends TradeService {
     CelerCrossChainTradeProvider,
     SymbiosisCrossChainTradeProvider,
     LifiCrossChainTradeProvider,
-    DebridgeCrossChainTradeProvider
+    DebridgeCrossChainTradeProvider,
+    RangoCrossChainTradeProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -129,7 +134,9 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
+        disabledProviders: isViaDisabled
+          ? ['VIA', 'CELER', 'DEBRIDGE', 'LIFI', 'RUBIC', 'SYMBIOSIS']
+          : ['VIA', 'CELER', 'DEBRIDGE', 'LIFI', 'RUBIC', 'SYMBIOSIS']
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -172,7 +179,7 @@ export class CrossChainRoutingService extends TradeService {
           })
         );
     } catch (err) {
-      console.debug(err);
+      console.error(err);
       throw err;
     }
   }
@@ -211,11 +218,18 @@ export class CrossChainRoutingService extends TradeService {
         timestamp,
         bridgeType:
           providerTrade?.trade instanceof LifiCrossChainTrade ||
-          providerTrade?.trade instanceof ViaCrossChainTrade
+          providerTrade?.trade instanceof ViaCrossChainTrade ||
+          providerTrade?.trade instanceof RangoCrossChainTrade
             ? providerTrade?.trade?.bridgeType
             : undefined,
         viaUuid:
-          providerTrade?.trade instanceof ViaCrossChainTrade ? providerTrade?.trade.uuid : undefined
+          providerTrade?.trade instanceof ViaCrossChainTrade
+            ? providerTrade?.trade.uuid
+            : undefined,
+        rangoRequestId:
+          providerTrade?.trade instanceof RangoCrossChainTrade
+            ? providerTrade?.trade.requestId
+            : undefined
       };
 
       confirmCallback?.();
@@ -258,7 +272,8 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
       trade instanceof DebridgeCrossChainTrade ||
-      trade instanceof ViaCrossChainTrade
+      trade instanceof ViaCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -318,7 +333,8 @@ export class CrossChainRoutingService extends TradeService {
 
     if (
       wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade
+      wrappedTrade.trade instanceof ViaCrossChainTrade ||
+      wrappedTrade.trade instanceof RangoCrossChainTrade
     ) {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
@@ -377,6 +393,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    console.error(error);
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
