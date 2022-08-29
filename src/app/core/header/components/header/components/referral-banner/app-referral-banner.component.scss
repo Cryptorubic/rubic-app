@@ -10,6 +10,10 @@
     justify-content: flex-start;
   }
 
+  @include hide-unused-ui {
+    display: none;
+  }
+
   &__container {
     position: relative;
     z-index: 1;
