@@ -462,10 +462,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
           if (backendTokens.size) {
             return backendTokens
               .filter(el => {
-                return !this.isCrossChainSwap()
-                  ? oppositeSelectedToken.address.toLocaleLowerCase() !==
-                      el.address.toLocaleLowerCase()
-                  : true;
+                return this.isCrossChainSwap() 
+                  || oppositeSelectedToken.address.toLocaleLowerCase() !== el.address.toLocaleLowerCase();
               })
               .map(el => {
                 return {
