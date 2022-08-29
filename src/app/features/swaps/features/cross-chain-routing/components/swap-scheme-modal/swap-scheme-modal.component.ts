@@ -83,6 +83,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public bridgeType: Provider;
 
+  public viaUuid: string | undefined;
+
   private timestamp: number;
 
   constructor(
@@ -120,7 +122,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 toBlockchain: this.toBlockchain.key,
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
-                lifiBridgeType: this.bridgeType.name
+                lifiBridgeType: this.bridgeType.name,
+                viaUuid: this.viaUuid
               },
               this.crossChainProvider
             )
@@ -184,7 +187,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
-                    lifiBridgeType: this.bridgeType.name.toLowerCase()
+                    lifiBridgeType: this.bridgeType.name.toLowerCase(),
+                    viaUuid: this.viaUuid
                   },
                   this.crossChainProvider
                 )
@@ -267,7 +271,9 @@ export class SwapSchemeModalComponent implements OnInit {
 
     this.srcWeb3Public = Injector.web3PublicService.getWeb3Public(data.fromBlockchain);
 
-    this.bridgeType = data?.bridgeType;
+    this.bridgeType = data.bridgeType;
+
+    this.viaUuid = data.viaUuid;
 
     this.timestamp = data.timestamp;
   }
