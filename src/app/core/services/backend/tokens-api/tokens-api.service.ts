@@ -271,10 +271,12 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
-      .get(ENDPOINTS.TOKENS, options)
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options)
       .pipe(
-        map((tokensResponse: BackendToken[]) =>
-          tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List()
+        map(tokensResponse =>
+          tokensResponse.results.length
+            ? TokensApiService.prepareTokens(tokensResponse.results)
+            : List()
         )
       );
   }

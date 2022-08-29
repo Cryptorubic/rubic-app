@@ -49,9 +49,6 @@ export class BlockchainsAsideComponent {
     // @TODO return after Near & Solana fix
     // BLOCKCHAIN_NAME.NEAR,
     // BLOCKCHAIN_NAME.SOLANA
-
-    // @TODO add after lifi update
-    // BLOCKCHAIN_NAME.CRONOS
   ];
 
   public blockchainImages = Object.fromEntries(

@@ -93,7 +93,8 @@
     "buttonLink": "Learn more",
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed.",
-    "noSelectedToken": "Select token"
+    "noSelectedToken": "Select token",
+    "notWhitelistedProvider": "Unfortunately, this swap using the calculated provider is currently unavailable. Rubic will recalculate the route for your swap."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
@@ -486,6 +487,9 @@
       "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
+    },
+    "warningModal": {
+      "viaSlippage": "Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto Slippage tolerance setting in the settings."
     }
   },
   "settings": {
