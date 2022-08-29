@@ -19,8 +19,8 @@ export class SdkLoaderService {
   ) {}
 
   public async initSdk(): Promise<void> {
-    await this.sdkService.initSDK();
     await this.loadUser();
+    await this.sdkService.initSDK();
     await this.updateSdkUser();
   }
 

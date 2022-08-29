@@ -454,8 +454,20 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     if (this.searchQuery) {
       return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
         map(backendTokens => {
+          const oppositeSelectedToken =
+            this.formType === 'from'
+              ? this.form.controls.toToken.value
+              : this.form.controls.fromToken.value;
+
           if (backendTokens.size) {
             return backendTokens
+              .filter(el => {
+                return (
+                  this.isCrossChainSwap() ||
+                  oppositeSelectedToken.address.toLocaleLowerCase() !==
+                    el.address.toLocaleLowerCase()
+                );
+              })
               .map(el => {
                 return {
                   ...el,
