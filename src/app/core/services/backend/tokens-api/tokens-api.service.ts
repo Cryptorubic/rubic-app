@@ -229,7 +229,7 @@ export class TokensApiService {
         map(wrappedTokens =>
           lifiChains.map(chainId =>
             wrappedTokens.tokens[chainId]
-              .filter(token => {
+              ?.filter(token => {
                 const blockchain = BlockchainsInfo.getBlockchainById(chainId).name;
                 return !(
                   blockchain === BLOCKCHAIN_NAME.OPTIMISM &&
