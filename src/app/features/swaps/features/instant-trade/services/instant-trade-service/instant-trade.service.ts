@@ -250,7 +250,7 @@ export class InstantTradeService extends TradeService {
     if (promoterAddress) {
       methodArguments.push(promoterAddress);
     }
-    return Injector.web3Private.executeContractMethod(
+    return Injector.web3Private.tryExecuteContractMethod(
       IT_PROXY_FEE_CONTRACT_ADDRESS,
       IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
