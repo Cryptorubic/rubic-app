@@ -262,10 +262,6 @@ export class SwapButtonContainerErrorsService {
         type = ERROR_TYPE.NO_AMOUNT;
         translateParams = { key: 'errors.noEnteredAmount' };
         break;
-      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
-        translateParams = { key: 'errors.InsufficientBalance' };
-        break;
       case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
         type = ERROR_TYPE.LESS_THAN_MINIMUM;
         translateParams = {
@@ -279,6 +275,10 @@ export class SwapButtonContainerErrorsService {
           key: 'errors.maximumAmount',
           interpolateParams: { amount: this.maxAmount, token: this.maxAmountTokenSymbol }
         };
+        break;
+      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
+        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
+        translateParams = { key: 'errors.InsufficientBalance' };
         break;
       case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
         type = ERROR_TYPE.INVALID_TARGET_ADDRESS;
