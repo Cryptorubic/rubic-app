@@ -23,6 +23,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -121,9 +122,27 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    return this.httpService
-      .get(ENDPOINTS.IFRAME_TOKENS, params)
-      .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+    const backendNetworks: BlockchainName[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      BLOCKCHAIN_NAME.POLYGON,
+      BLOCKCHAIN_NAME.AVALANCHE,
+      BLOCKCHAIN_NAME.FANTOM,
+      BLOCKCHAIN_NAME.ARBITRUM,
+      BLOCKCHAIN_NAME.AURORA,
+      BLOCKCHAIN_NAME.MOONRIVER,
+      BLOCKCHAIN_NAME.TELOS,
+      BLOCKCHAIN_NAME.HARMONY
+    ];
+    return this.httpService.get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params).pipe(
+      map(backendTokens =>
+        backendTokens.filter(token => {
+          const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
+          return backendNetworks.includes(network);
+        })
+      ),
+      map(backendTokens => TokensApiService.prepareTokens(backendTokens))
+    );
   }
 
   /**
@@ -172,10 +191,12 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
-      .get(ENDPOINTS.TOKENS, options)
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options)
       .pipe(
-        map((tokensResponse: TokensBackendResponse) =>
-          tokensResponse.count ? TokensApiService.prepareTokens(tokensResponse.results) : List()
+        map(tokensResponse =>
+          tokensResponse.results.length
+            ? TokensApiService.prepareTokens(tokensResponse.results)
+            : List()
         )
       );
   }

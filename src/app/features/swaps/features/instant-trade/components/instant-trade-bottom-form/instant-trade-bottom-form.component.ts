@@ -400,7 +400,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         needApprove: false,
         trade: null,
         tradeStatus: INSTANT_TRADE_STATUS.ERROR,
-        error: new RubicError('Unknown error')
+        error: new RubicError('There are not enough liquidity for this swap using chosen DEX.')
       };
       if (!settledTrade) {
         return defaultProvider;
@@ -714,12 +714,18 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
       this.conditionalCalculate('hidden');
 
-      const { fromAddress, blockchain } = TradeParser.getItSwapParams(providerTrade);
+      const { fromAddress, blockchain, toAddress } = TradeParser.getItSwapParams(providerTrade);
 
-      await this.tokensService.updateTokenBalanceAfterSwap({
-        address: fromAddress,
-        blockchain
-      });
+      await this.tokensService.updateTokenBalancesAfterItSwap(
+        {
+          address: fromAddress,
+          blockchain
+        },
+        {
+          address: toAddress,
+          blockchain
+        }
+      );
     } catch (err) {
       this.errorService.catch(err);
 

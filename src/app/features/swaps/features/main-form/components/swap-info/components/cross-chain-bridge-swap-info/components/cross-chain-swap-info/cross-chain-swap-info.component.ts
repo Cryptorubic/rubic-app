@@ -21,6 +21,7 @@ import { instantTradesLabels } from '@shared/constants/instant-trade/instant-tra
 import { LifiCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
+import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -154,12 +155,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
               this.nativeCoinSymbol = nativeToken.symbol;
 
-              const trade = this.crossChainRoutingService.crossChainTrade.trade;
+              const trade = this.crossChainRoutingService.crossChainTrade;
 
               if (
                 trade instanceof SymbiosisCrossChainTrade ||
                 trade instanceof LifiCrossChainTrade ||
-                trade instanceof DebridgeCrossChainTrade
+                trade instanceof DebridgeCrossChainTrade ||
+                trade instanceof ViaCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 
@@ -224,7 +226,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.trade.toTokenAmountMin;
+    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;
