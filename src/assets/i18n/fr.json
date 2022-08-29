@@ -92,7 +92,8 @@
     "buttonLink": "En savoir plus",
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
-    "noSelectedToken": "Sélectionnez le token"
+    "noSelectedToken": "Sélectionnez le token",
+    "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

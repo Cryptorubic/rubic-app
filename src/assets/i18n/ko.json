@@ -93,7 +93,8 @@
     "buttonLink": "더 알아보기",
     "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다",
-    "noSelectedToken": "토큰 선택"
+    "noSelectedToken": "토큰 선택",
+    "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

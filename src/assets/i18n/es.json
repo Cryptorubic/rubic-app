@@ -92,7 +92,8 @@
     "buttonLink": "Más información",
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada.",
-    "noSelectedToken": "Seleccionar token"
+    "noSelectedToken": "Seleccionar token",
+    "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

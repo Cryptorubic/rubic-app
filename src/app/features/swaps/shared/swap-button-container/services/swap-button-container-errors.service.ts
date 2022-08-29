@@ -218,6 +218,16 @@ export class SwapButtonContainerErrorsService {
     const { fromBlockchain } = this.swapFormService.inputValue;
 
     switch (true) {
+      case err[ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
+        type = ERROR_TYPE.WRONG_WALLET;
+        translateParams = {
+          key: 'errors.wrongSourceNetwork',
+          interpolateParams: {
+            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+          }
+        };
+        break;
+      }
       // @TODO Solana. Remove after blockchain stabilization.
       case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
         type = ERROR_TYPE.SOLANA_UNAVAILABLE;

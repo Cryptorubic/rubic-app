@@ -92,7 +92,8 @@
     "buttonLink": "Daha fazla bilgi edin",
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil.",
-    "noSelectedToken": "Token seç"
+    "noSelectedToken": "Token seç",
+    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

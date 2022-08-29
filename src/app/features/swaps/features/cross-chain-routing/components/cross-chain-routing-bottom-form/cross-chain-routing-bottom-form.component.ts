@@ -37,7 +37,7 @@ import { TargetNetworkAddressService } from '@features/swaps/features/cross-chai
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, RubicSdkError } from 'rubic-sdk';
+import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
@@ -260,6 +260,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           if (!allowTrade) {
             return of(null);
           }
+          const { fromAmount } = this.swapFormService.inputValue;
           const isUserAuthorized = Boolean(this.authService.userAddress);
 
           const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(isUserAuthorized);
@@ -283,6 +284,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
                 providerTrade;
               if (currentProviders === 0) {
+                return;
+              }
+              if (
+                error !== undefined &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+              ) {
+                this.onCalculateTrade$.next('normal');
                 return;
               }
 
@@ -349,10 +360,22 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
+          const { fromAmount } = this.swapFormService.inputValue;
+
           return from(this.crossChainRoutingService.calculateTrade(false)).pipe(
             map(providerTrade => {
               const { trade, error, currentProviders } = providerTrade;
               if (currentProviders === 0) {
+                return;
+              }
+              if (
+                error &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+              ) {
+                this.onCalculateTrade$.next('hidden');
                 return;
               }
 

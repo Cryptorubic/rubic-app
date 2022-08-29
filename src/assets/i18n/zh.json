@@ -93,7 +93,8 @@
     "buttonLink": "學到更多",
     "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
     "walletNotInstalled": "未安装钱包",
-    "noSelectedToken": "选择令牌"
+    "noSelectedToken": "选择令牌",
+    "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
