@@ -4,7 +4,7 @@ import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockcha
 import { BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
-  TOKENS = 'tokens/',
+  TOKENS = 'v1/tokens/',
   IFRAME_TOKENS = 'tokens/iframe/',
   FAVORITE_TOKENS = 'tokens/favorite/'
 }
