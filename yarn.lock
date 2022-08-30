@@ -7139,10 +7139,9 @@ eslint@8.22.0:
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.22.0.tgz#78fcb044196dfa7eef30a9d65944f6f980402c48"
   integrity sha512-ci4t0sz6vSRKdmkOGmprBo6fmI4PrphDFMy5JEq/fNS0gQkJM3rLmrqcp8ipMcdobH3KtUP40KniAE9W19S4wA==
   dependencies:
-    "@eslint/eslintrc" "^1.3.1"
+    "@eslint/eslintrc" "^1.3.0"
     "@humanwhocodes/config-array" "^0.10.4"
     "@humanwhocodes/gitignore-to-minimatch" "^1.0.2"
-    "@humanwhocodes/module-importer" "^1.0.1"
     ajv "^6.10.0"
     chalk "^4.0.0"
     cross-spawn "^7.0.2"
@@ -7152,7 +7151,7 @@ eslint@8.22.0:
     eslint-scope "^7.1.1"
     eslint-utils "^3.0.0"
     eslint-visitor-keys "^3.3.0"
-    espree "^9.4.0"
+    espree "^9.3.3"
     esquery "^1.4.0"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
@@ -7178,8 +7177,9 @@ eslint@8.22.0:
     strip-ansi "^6.0.1"
     strip-json-comments "^3.1.0"
     text-table "^0.2.0"
+    v8-compile-cache "^2.0.3"
 
-espree@^9.3.3, espree@^9.4.0:
+espree@^9.4.0:
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/espree/-/espree-9.4.0.tgz#cd4bc3d6e9336c433265fc0aa016fc1aaf182f8a"
   integrity sha512-DQmnRpLj7f6TgN/NYb0MTzJXL+vJF9h3pHy4JhCIs3zwcgez8xmGg3sXHcEO97BrmO2OSvCwMdfdlyl+E9KjOw==
@@ -14193,10 +14193,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@2.11.1:
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.11.1.tgz#0b12b5f5ebbe178ebcbd52991107507bf75e3cbd"
-  integrity sha512-j4vqvIOg1eOgeFmC+ElN/BKusiv8Uc2wFlkoLDAgd3bgh9hQiVEsMTs9cLqdDa+QPezwr/622spY4joyUEMLAQ==
+rubic-sdk@2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.12.0.tgz#0b26a68b7314dde97035f0931bbc21749ea8432b"
+  integrity sha512-u7JJJ4WmuEjTJg0rwGvMVd7x0LdcYRBIi90mp1iaEVyqiIv00Z6DqLYG2KrfzQ+VCkHXC5S4Yk49F2r0nY1NNw==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -14205,7 +14205,7 @@ rubic-sdk@2.11.1:
     bignumber.js "^9.0.2"
     ethers "^5.6.8"
     rxjs "^7.5.5"
-    symbiosis-js-sdk "^2.8.9"
+    symbiosis-js-sdk "2.8.13"
     web3 "~1.7.3"
 
 run-async@^2.4.0:
@@ -15579,7 +15579,7 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.7.7, symbiosis-js-sdk@^2.8.9:
+symbiosis-js-sdk@2.8.13, symbiosis-js-sdk@^2.7.7:
   version "2.8.13"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.13.tgz#837829f59b2a770b3752c2f9734621b349510493"
   integrity sha512-0K2y/9P4K9eAb6AbhB+ODKdMmUPGo7ArE0pnUpm6vHRwu05p3ZxTmlvk5V70s2tuBZD60mrUlqNsXdNJxsOGjw==
