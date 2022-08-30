@@ -14178,10 +14178,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.11.0.tgz#21613d038c76db536f55364d962ebeb83cb53518"
-  integrity sha512-QN5BQiI6W9lWO08GTj+XHzdUYJCr0v2EP7GbXiDhr8bbSkrZk6JYciuobI6x4yP7Y4wPvC8ocrRhsQz0yowPyA==
+rubic-sdk@2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.12.0.tgz#0b26a68b7314dde97035f0931bbc21749ea8432b"
+  integrity sha512-u7JJJ4WmuEjTJg0rwGvMVd7x0LdcYRBIi90mp1iaEVyqiIv00Z6DqLYG2KrfzQ+VCkHXC5S4Yk49F2r0nY1NNw==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -14190,7 +14190,7 @@ rubic-sdk@2.11.0:
     bignumber.js "^9.0.2"
     ethers "^5.6.8"
     rxjs "^7.5.5"
-    symbiosis-js-sdk "^2.8.9"
+    symbiosis-js-sdk "2.8.13"
     web3 "~1.7.3"
 
 run-async@^2.4.0:
@@ -15564,7 +15564,7 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.7.7, symbiosis-js-sdk@^2.8.9:
+symbiosis-js-sdk@2.8.13, symbiosis-js-sdk@^2.7.7:
   version "2.8.13"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.13.tgz#837829f59b2a770b3752c2f9734621b349510493"
   integrity sha512-0K2y/9P4K9eAb6AbhB+ODKdMmUPGo7ArE0pnUpm6vHRwu05p3ZxTmlvk5V70s2tuBZD60mrUlqNsXdNJxsOGjw==
