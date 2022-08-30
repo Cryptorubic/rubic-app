@@ -219,7 +219,7 @@ export class SwapButtonContainerErrorsService {
 
     switch (true) {
       case err[ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
-        type = ERROR_TYPE.WRONG_WALLET;
+        type = ERROR_TYPE.WRONG_SOURCE_NETWORK;
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
