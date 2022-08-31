@@ -158,12 +158,12 @@ export class SwapSchemeModalComponent implements OnInit {
                   return currentBlockNumber - srcTxReceipt.blockNumber > diff
                     ? CrossChainTxStatus.SUCCESS
                     : CrossChainTxStatus.PENDING;
+                }),
+                catchError((error: unknown) => {
+                  console.debug('[General] error getting current block number', error);
+                  return of(CrossChainTxStatus.PENDING);
                 })
               );
-            }),
-            catchError((error: unknown) => {
-              console.debug('[General] error getting current block number', error);
-              return of(CrossChainTxStatus.PENDING);
             }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
