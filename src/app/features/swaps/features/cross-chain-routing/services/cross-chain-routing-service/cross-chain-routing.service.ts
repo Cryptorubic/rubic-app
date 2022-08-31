@@ -393,6 +393,7 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    console.error({ [this.parseCalculationError.name]: error });
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
