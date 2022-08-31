@@ -50,6 +50,10 @@
       }
     }
 
+    @include iframe-horizontal {
+      flex-wrap: nowrap;
+    }
+
     &_clearfix {
       &::after {
         @media (orientation: portrait) {

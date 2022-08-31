@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { Subscription, switchMap, timer } from 'rxjs';
+import { firstValueFrom, Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -17,9 +17,9 @@ import {
   EncodeTransactionOptions,
   Web3Pure,
   Web3Public,
-  TransactionOptions,
   UnnecessaryApproveError,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  TransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -226,13 +226,14 @@ export class InstantTradeService extends TradeService {
   ): Promise<Partial<TransactionReceipt>> {
     const fullOptions: EncodeTransactionOptions = {
       ...options,
-      fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS
+      fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,
+      supportFee: false
     };
     const transactionOptions = await trade.encode(fullOptions);
     const { feeData } = this.iframeService;
     const fee = feeData.fee * 1000;
 
-    const promoterAddress = await this.iframeService.getPromoterAddress().toPromise();
+    const promoterAddress = await firstValueFrom(this.iframeService.getPromoterAddress());
 
     const methodName = promoterAddress
       ? IT_PROXY_FEE_CONTRACT_METHOD.SWAP_WITH_PROMOTER
@@ -242,7 +243,7 @@ export class InstantTradeService extends TradeService {
       trade.from.address,
       trade.to.address,
       Web3Pure.toWei(trade.from.tokenAmount, trade.from.decimals),
-      trade,
+      transactionOptions.to,
       transactionOptions.data,
       [fee, feeData.feeTarget]
     ];
@@ -254,7 +255,10 @@ export class InstantTradeService extends TradeService {
       IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
       methodArguments,
-      transactionOptions as TransactionOptions
+      {
+        ...transactionOptions,
+        gasLimit: undefined
+      } as TransactionOptions
     );
   }
 
