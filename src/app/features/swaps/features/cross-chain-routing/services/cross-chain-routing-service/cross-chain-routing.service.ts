@@ -454,6 +454,10 @@ export class CrossChainRoutingService extends TradeService {
 
     const viaUuid =
       providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined;
+    const rangoRequestId =
+      providerTrade.trade instanceof RangoCrossChainTrade
+        ? providerTrade.trade.requestId
+        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -469,6 +473,7 @@ export class CrossChainRoutingService extends TradeService {
           srcTxHash: txHash,
           bridgeType: bridgeProvider,
           viaUuid,
+          rangoRequestId,
           timestamp
         }
       })
