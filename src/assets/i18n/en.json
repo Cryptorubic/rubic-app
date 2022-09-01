@@ -93,8 +93,9 @@
     "buttonLink": "Learn more",
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed.",
+    "notWhitelistedProvider": "Unfortunately, this swap using the calculated provider is currently unavailable. Rubic will recalculate the route for your swap.",
     "noSelectedToken": "Select token",
-    "notWhitelistedProvider": "Unfortunately, this swap using the calculated provider is currently unavailable. Rubic will recalculate the route for your swap."
+    "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",
