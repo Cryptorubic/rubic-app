@@ -17,8 +17,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { BlockchainsAsideComponent } from '@features/swaps/shared/tokens-select/components/blockchains-aside/blockchains-aside.component';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -42,9 +41,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
     return this.amount?.value.split(',').join('');
   }
 
-  public readonly fromBlockchains = BlockchainsAsideComponent.allBlockchains.filter(
-    blockchain => blockchain !== BLOCKCHAIN_NAME.BITCOIN
-  );
+  public readonly fromBlockchains = fromBlockchains;
 
   get usdPrice(): BigNumber {
     if (!this.formattedAmount || !this.selectedToken) {
