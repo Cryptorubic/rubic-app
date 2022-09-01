@@ -18,6 +18,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { isNil } from '@app/shared/utils/utils';
+import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -186,6 +187,7 @@ export class SwapButtonContainerErrorsService {
     if (userBlockchain) {
       const { fromBlockchain } = this.swapFormService.inputValue;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromBlockchain !== userBlockchain;
+      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(fromBlockchain);
     } else {
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
     }
@@ -218,8 +220,18 @@ export class SwapButtonContainerErrorsService {
     const { fromBlockchain } = this.swapFormService.inputValue;
 
     switch (true) {
+      case err[ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
+        type = ERROR_TYPE.WRONG_SOURCE_NETWORK;
+        translateParams = {
+          key: 'errors.wrongSourceNetwork',
+          interpolateParams: {
+            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+          }
+        };
+        break;
+      }
       // @TODO Solana. Remove after blockchain stabilization.
-      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]:
+      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]: {
         type = ERROR_TYPE.SOLANA_UNAVAILABLE;
         if (this.iframeService.iframeAppearance === 'horizontal') {
           translateParams = {
@@ -231,6 +243,7 @@ export class SwapButtonContainerErrorsService {
           };
         }
         break;
+      }
       case err[ERROR_TYPE.WRONG_WALLET]: {
         type = ERROR_TYPE.WRONG_WALLET;
         translateParams = {
@@ -246,10 +259,11 @@ export class SwapButtonContainerErrorsService {
         translateParams = { key: 'errors.multichainWallet' };
         break;
       }
-      case err[ERROR_TYPE.NO_SELECTED_TOKEN]:
+      case err[ERROR_TYPE.NO_SELECTED_TOKEN]: {
         type = ERROR_TYPE.NO_SELECTED_TOKEN;
         translateParams = { key: 'errors.noSelectedToken' };
         break;
+      }
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         type = ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
@@ -258,28 +272,32 @@ export class SwapButtonContainerErrorsService {
         };
         break;
       }
-      case err[ERROR_TYPE.NO_AMOUNT]:
+      case err[ERROR_TYPE.NO_AMOUNT]: {
         type = ERROR_TYPE.NO_AMOUNT;
         translateParams = { key: 'errors.noEnteredAmount' };
         break;
-      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
-        translateParams = { key: 'errors.InsufficientBalance' };
-        break;
-      case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
+      }
+      case err[ERROR_TYPE.LESS_THAN_MINIMUM]: {
         type = ERROR_TYPE.LESS_THAN_MINIMUM;
         translateParams = {
           key: 'errors.minimumAmount',
           interpolateParams: { amount: this.minAmount, token: this.minAmountTokenSymbol }
         };
         break;
-      case err[ERROR_TYPE.MORE_THAN_MAXIMUM]:
+      }
+      case err[ERROR_TYPE.MORE_THAN_MAXIMUM]: {
         type = ERROR_TYPE.MORE_THAN_MAXIMUM;
         translateParams = {
           key: 'errors.maximumAmount',
           interpolateParams: { amount: this.maxAmount, token: this.maxAmountTokenSymbol }
         };
         break;
+      }
+      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]: {
+        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
+        translateParams = { key: 'errors.InsufficientBalance' };
+        break;
+      }
       case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
         type = ERROR_TYPE.INVALID_TARGET_ADDRESS;
         translateParams = { key: 'errors.invalidTargetAddress' };

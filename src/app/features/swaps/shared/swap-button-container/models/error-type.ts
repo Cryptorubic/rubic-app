@@ -4,6 +4,8 @@ export enum ERROR_TYPE {
   WRONG_WALLET = 'Wrong wallet',
   INVALID_TARGET_ADDRESS = 'Invalid target network address',
 
+  WRONG_SOURCE_NETWORK = 'The swaps from the Bitcoin network are currently not supported',
+
   NO_AMOUNT = 'From amount was not entered',
   INSUFFICIENT_FUNDS = 'Insufficient balance',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',

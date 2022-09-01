@@ -400,6 +400,11 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
     color: ''
+  },
+  [TRADE_TYPE.REN_BTC]: {
+    name: 'renBTC',
+    image: `${imageBasePath}renbtc.svg`,
+    color: 'grey'
   }
 };
 

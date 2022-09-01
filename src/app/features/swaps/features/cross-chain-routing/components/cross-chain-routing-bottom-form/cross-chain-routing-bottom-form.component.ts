@@ -307,6 +307,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               if (
                 error !== undefined &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
                   (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
@@ -388,6 +389,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               if (
                 error &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
+                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
                 ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
                   (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {

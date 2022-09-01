@@ -44,7 +44,8 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
-  [BLOCKCHAIN_NAME.ASTAR]: 'astar'
+  [BLOCKCHAIN_NAME.ASTAR]: 'astar',
+  [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin'
 };
 
 export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;

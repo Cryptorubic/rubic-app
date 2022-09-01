@@ -7,9 +7,10 @@ import {
   Output
 } from '@angular/core';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { USER_AGENT } from '@ng-web-apis/common';
+import { allBlockchains } from '@features/swaps/shared/tokens-select/constants/all-blockchains';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -26,30 +27,7 @@ export class BlockchainsAsideComponent {
 
   @Output() blockchainChange = new EventEmitter<BlockchainName>();
 
-  private readonly allBlockchains: BlockchainName[] = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.POLYGON,
-    BLOCKCHAIN_NAME.GNOSIS,
-    BLOCKCHAIN_NAME.AVALANCHE,
-    BLOCKCHAIN_NAME.FANTOM,
-    BLOCKCHAIN_NAME.OPTIMISM,
-    BLOCKCHAIN_NAME.ARBITRUM,
-    BLOCKCHAIN_NAME.AURORA,
-    BLOCKCHAIN_NAME.MOONBEAM,
-    BLOCKCHAIN_NAME.FUSE,
-    BLOCKCHAIN_NAME.MOONRIVER,
-    BLOCKCHAIN_NAME.TELOS,
-    BLOCKCHAIN_NAME.CELO,
-    BLOCKCHAIN_NAME.OKE_X_CHAIN,
-    BLOCKCHAIN_NAME.CRONOS,
-    BLOCKCHAIN_NAME.HARMONY,
-    BLOCKCHAIN_NAME.BOBA
-
-    // @TODO return after Near & Solana fix
-    // BLOCKCHAIN_NAME.NEAR,
-    // BLOCKCHAIN_NAME.SOLANA
-  ];
+  public static readonly allBlockchains: BlockchainName[] = allBlockchains;
 
   public blockchainImages = Object.fromEntries(
     this.blockchains.map(blockchainName => [
@@ -77,9 +55,11 @@ export class BlockchainsAsideComponent {
 
   get blockchains(): BlockchainName[] {
     if (this.allowedBlockchains) {
-      return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
+      return BlockchainsAsideComponent.allBlockchains.filter(el =>
+        this.allowedBlockchains.includes(el)
+      );
     }
-    return this.allBlockchains;
+    return BlockchainsAsideComponent.allBlockchains;
   }
 
   constructor(

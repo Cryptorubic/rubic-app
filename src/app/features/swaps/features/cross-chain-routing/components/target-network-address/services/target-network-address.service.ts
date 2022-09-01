@@ -15,7 +15,8 @@ interface TargetAddress {
 export class TargetNetworkAddressService {
   private readonly networksRequiresAddress: BlockchainName[] = [
     BLOCKCHAIN_NAME.SOLANA,
-    BLOCKCHAIN_NAME.NEAR
+    BLOCKCHAIN_NAME.NEAR,
+    BLOCKCHAIN_NAME.BITCOIN
   ];
 
   private readonly _targetNetworkAddress$ = new BehaviorSubject<TargetAddress | null>(null);
