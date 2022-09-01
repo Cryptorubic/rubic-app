@@ -277,7 +277,6 @@ export class TokensService {
         image: '',
         rank: 1,
         price: null,
-        usedInIframe: true,
         amount: amount || new BigNumber(NaN)
       })),
       tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))

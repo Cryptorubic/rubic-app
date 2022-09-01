@@ -25,8 +25,6 @@ export interface BackendToken {
   image: string;
   coingeckoId: string;
   usdPrice: number;
-  usedInIframe: boolean;
-  hasDirectPair: boolean;
 }
 
 export interface TokensBackendResponse {

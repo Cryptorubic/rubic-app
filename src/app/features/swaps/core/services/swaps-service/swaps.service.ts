@@ -267,10 +267,8 @@ export class SwapsService {
         image: bridgeTokenPair.image,
         rank: 0,
         price: 0,
-        usedInIframe: false,
         amount: new BigNumber(0),
-        favorite: false,
-        hasDirectPair: true
+        favorite: false
       });
     }
 
