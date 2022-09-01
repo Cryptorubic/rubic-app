@@ -390,9 +390,12 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
   private filterFavoriteTokens(): void {
     this.favoriteTokens$.subscribe(favoriteTokens => {
       const query = this.searchQuery.toLowerCase();
-      const currentBlockchainTokens = favoriteTokens.filter(
-        el => el.blockchain === this.blockchain
-      );
+      const currentBlockchainTokens = favoriteTokens
+        .filter(el => el.blockchain === this.blockchain)
+        .map(el => ({
+          ...el,
+          favorite: true
+        }));
 
       if (query.startsWith('0x')) {
         const tokens = currentBlockchainTokens.filter(token =>
