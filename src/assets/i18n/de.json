@@ -92,6 +92,7 @@
     "buttonLink": "Erfahre mehr",
     "wrongPromoterWallet": "Dein Wallet ist leider nicht mit Ethereum kompatibel. Bitte verbinde ein unterstütztes Wallet, z.B. MetaMask.",
     "walletNotInstalled": "Kein Wallet installiert.",
+    "notWhitelistedProvider": "Leider ist dieser Swap mit dem berechneten Anbieter derzeit nicht verfügbar. Rubic berechnet die Route für Ihren Tausch neu.",
     "noSelectedToken": "Token auswählen",
     "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt."
   },
@@ -486,6 +487,9 @@
       "aboutMyself": "Du kannst den Swap natürlich auch eigenverantwortlich durchführen.",
       "agree": "Alles klar, einverstanden",
       "swapMyself": "Ich kümmere mich selbst um den Swap"
+    },
+    "warningModal": {
+      "viaSlippage": "Leider ist benutzerdefinierte Slippage für diesen Swap nicht zulässig. Bitte aktivieren Sie die Auto-Slippage-Toleranzeinstellung in den Einstellungen."
     }
   },
   "settings": {

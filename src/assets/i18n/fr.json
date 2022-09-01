@@ -92,6 +92,7 @@
     "buttonLink": "En savoir plus",
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
+    "notWhitelistedProvider": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
     "noSelectedToken": "Sélectionnez le token",
     "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
@@ -591,6 +592,9 @@
       "aboutMyself": "Mais vous pouvez échanger les jetons vous même.",
       "agree": "Ok, j'accepte",
       "swapMyself": "J'échange les jetons moi même"
+    },
+    "warningModal": {
+      "viaSlippage": "Malheureusement, le glissement personnalisé n'est pas autorisé pour cet échange. Veuillez activer le paramètre de tolérance de glissement automatique dans les paramètres."
     }
   },
   "settings": {

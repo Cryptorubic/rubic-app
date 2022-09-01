@@ -92,6 +92,7 @@
     "buttonLink": "Daha fazla bilgi edin",
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil.",
+    "notWhitelistedProvider": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token seç",
     "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
@@ -629,6 +630,9 @@
       "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
+    },
+    "warningModal": {
+      "viaSlippage": "Ne yazık ki, bu takas için özel kaymaya izin verilmiyor. Lütfen ayarlarda Otomatik Kayma toleransı ayarını açın."
     }
   },
   "lp": {

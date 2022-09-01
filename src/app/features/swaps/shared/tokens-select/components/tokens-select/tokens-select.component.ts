@@ -8,7 +8,6 @@ import {
   Self,
   ViewChild
 } from '@angular/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import {
   BehaviorSubject,
@@ -20,7 +19,7 @@ import {
   Subscription
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BlockchainName, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME, compareAddresses, Web3Pure } from 'rubic-sdk';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -46,9 +45,10 @@ import { TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 import { compareTokens } from '@shared/utils/utils';
 import { TokensListType } from '@features/swaps/shared/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { DOCUMENT } from '@angular/common';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { DOCUMENT } from '@angular/common';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -454,8 +454,19 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     if (this.searchQuery) {
       return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
         map(backendTokens => {
+          const oppositeSelectedToken =
+            this.formType === 'from'
+              ? this.form.controls.toToken.value
+              : this.form.controls.fromToken.value;
+
           if (backendTokens.size) {
             return backendTokens
+              .filter(el => {
+                return (
+                  this.isCrossChainSwap() ||
+                  !compareAddresses(oppositeSelectedToken.address, el.address)
+                );
+              })
               .map(el => {
                 return {
                   ...el,
@@ -544,6 +555,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
       [BLOCKCHAIN_NAME.CELO]: 'celo',
       [BLOCKCHAIN_NAME.BOBA]: 'boba',
+      [BLOCKCHAIN_NAME.ASTAR]: 'astar',
       [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin'
     };
 

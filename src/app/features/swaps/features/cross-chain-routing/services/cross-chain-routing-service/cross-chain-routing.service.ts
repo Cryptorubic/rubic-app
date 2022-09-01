@@ -21,7 +21,6 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-
 import BigNumber from 'bignumber.js';
 import {
   CelerRubicTradeInfo,
@@ -56,6 +55,7 @@ import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/prov
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
+import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 import { CrossChainTrade } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
@@ -119,7 +119,10 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
-  public calculateTrade(userAuthorized: boolean): Observable<CrossChainProviderTrade> {
+  public calculateTrade(
+    userAuthorized: boolean,
+    isViaDisabled: boolean
+  ): Observable<CrossChainProviderTrade> {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -127,7 +130,8 @@ export class CrossChainRoutingService extends TradeService {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
-        timeout: this.defaultTimeout
+        timeout: this.defaultTimeout,
+        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -208,9 +212,12 @@ export class CrossChainRoutingService extends TradeService {
         crossChainProviderType: providerTrade.tradeType,
         timestamp,
         bridgeType:
-          providerTrade?.trade instanceof LifiCrossChainTrade
-            ? providerTrade?.trade?.subType
-            : undefined
+          providerTrade?.trade instanceof LifiCrossChainTrade ||
+          providerTrade?.trade instanceof ViaCrossChainTrade
+            ? providerTrade?.trade?.bridgeType
+            : undefined,
+        viaUuid:
+          providerTrade?.trade instanceof ViaCrossChainTrade ? providerTrade?.trade.uuid : undefined
       };
 
       confirmCallback?.();
@@ -257,7 +264,8 @@ export class CrossChainRoutingService extends TradeService {
     if (
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
-      trade instanceof DebridgeCrossChainTrade
+      trade instanceof DebridgeCrossChainTrade ||
+      trade instanceof ViaCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -316,13 +324,13 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     if (
-      wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.LIFI &&
-      wrappedTrade.trade instanceof LifiCrossChainTrade
+      wrappedTrade.trade instanceof LifiCrossChainTrade ||
+      wrappedTrade.trade instanceof ViaCrossChainTrade
     ) {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
         toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: (wrappedTrade.trade as LifiCrossChainTrade).subType
+        bridgeProvider: wrappedTrade.trade.bridgeType
       };
     }
     if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
@@ -386,7 +394,7 @@ export class CrossChainRoutingService extends TradeService {
       return new RubicError('Slippage is too low for transaction.');
     }
     return new RubicError(
-      'The swap between this pair of tokens is currently unavaible. Please try again later.'
+      'The swap between this pair of tokens is currently unavailable. Please try again later.'
     );
   }
 
@@ -434,6 +442,9 @@ export class CrossChainRoutingService extends TradeService {
           name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
         };
 
+    const viaUuid =
+      providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined;
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -447,6 +458,7 @@ export class CrossChainRoutingService extends TradeService {
           crossChainProvider: providerTrade.tradeType,
           srcTxHash: txHash,
           bridgeType: bridgeProvider,
+          viaUuid,
           timestamp
         }
       })
