@@ -463,6 +463,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
             return backendTokens
               .filter(el => {
                 return (
+                  !oppositeSelectedToken ||
                   this.isCrossChainSwap() ||
                   !compareAddresses(oppositeSelectedToken.address, el.address)
                 );
