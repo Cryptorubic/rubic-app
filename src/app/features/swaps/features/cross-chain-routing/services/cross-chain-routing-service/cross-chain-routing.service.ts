@@ -62,6 +62,7 @@ import {
   RangoCrossChainTradeProvider
 } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
@@ -106,7 +107,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('cross-chain-routing');
   }
@@ -245,11 +247,16 @@ export class CrossChainRoutingService extends TradeService {
 
     const blockchain = providerTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const receiverAddress =
+      this.targetNetworkAddressService.targetAddress?.isValid &&
+      this.targetNetworkAddressService.targetAddress?.value;
     const swapOptions = {
       onConfirm: onTransactionHash,
       ...(Boolean(shouldCalculateGasPrice) && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      })
+      }),
+      ...(receiverAddress && { receiverAddress: receiverAddress })
     };
 
     await providerTrade.trade.swap(swapOptions);
@@ -344,8 +351,8 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       return {
-        fromProvider: TRADE_TYPE.ONE_INCH,
-        toProvider: TRADE_TYPE.ONE_INCH,
+        fromProvider: wrappedTrade.trade.itType.from,
+        toProvider: wrappedTrade.trade.itType.to,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
     }

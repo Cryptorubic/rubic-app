@@ -102,7 +102,11 @@ export class AppComponent implements AfterViewInit {
     const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {
         try {
-          this.queryParamsService.setupQueryParams(queryParams);
+          this.queryParamsService.setupQueryParams({
+            ...queryParams,
+            from: queryParams?.from?.toUpperCase(),
+            to: queryParams?.to?.toUpperCase()
+          });
           if (queryParams?.hideUnusedUI) {
             this.setupUISettings(queryParams);
           }

@@ -441,7 +441,7 @@ export class TokensService {
     });
   }
 
-  public async updateTokenBalanceAfterSwap(token: {
+  public async updateTokenBalanceAfterCcrSwap(token: {
     address: string;
     blockchain: BlockchainName;
   }): Promise<void> {
@@ -456,6 +456,31 @@ export class TokensService {
         })
       ]);
     }
+  }
+
+  public async updateTokenBalancesAfterItSwap(
+    fromToken: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    toToken: {
+      address: string;
+      blockchain: BlockchainName;
+    }
+  ): Promise<void> {
+    const balancePromises = [
+      this.getAndUpdateTokenBalance(fromToken),
+      this.getAndUpdateTokenBalance(toToken)
+    ];
+    if (!Web3Pure.isNativeAddress(fromToken.address)) {
+      balancePromises.concat(
+        this.getAndUpdateTokenBalance({
+          address: Web3Pure.nativeTokenAddress,
+          blockchain: fromToken.blockchain
+        })
+      );
+    }
+    await Promise.all(balancePromises);
   }
 
   /**

@@ -37,6 +37,12 @@
   app-providers-counter {
     display: block;
     margin-top: 10px;
+
+    @include iframe {
+      ::ng-deep {
+        margin-top: 0;
+      }
+    }
   }
 
   app-smart-routing {
@@ -123,4 +129,9 @@
       width: 180px;
     }
   }
+}
+
+app-target-network-address {
+  display: block;
+  margin-top: 10px;
 }

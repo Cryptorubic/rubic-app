@@ -150,7 +150,7 @@ const networks: ReadonlyArray<Network> = [
   {
     id: 42161,
     name: BLOCKCHAIN_NAME.ARBITRUM,
-    label: 'Arbitrum One',
+    label: 'Arbitrum',
     scannerUrl: 'https://arbiscan.io',
     rpcLink:
       'https://late-white-sky.arbitrum-mainnet.quiknode.pro/84da6c33a092bf64d9d72bc52c5db62aac00c81c/',
@@ -375,6 +375,22 @@ const networks: ReadonlyArray<Network> = [
       name: 'ASTR',
       symbol: 'ASTR',
       decimals: 18
+    }
+  },
+  {
+    id: 5555,
+    name: BLOCKCHAIN_NAME.BITCOIN,
+    label: 'Bitcoin',
+    scannerUrl: 'https://blockchair.com/bitcoin/',
+    rpcLink: '',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/bitcoin.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.BITCOIN,
+      address: '',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      decimals: 8
     }
   }
 ];

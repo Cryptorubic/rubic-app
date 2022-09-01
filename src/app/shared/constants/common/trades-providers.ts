@@ -410,6 +410,11 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     name: 'Jupiter',
     image: '${imageBasePath}jupiter.svg',
     color: '#34A5F5'
+  },
+  [TRADE_TYPE.REN_BTC]: {
+    name: 'renBTC',
+    image: `${imageBasePath}renbtc.svg`,
+    color: 'grey'
   }
 };
 
