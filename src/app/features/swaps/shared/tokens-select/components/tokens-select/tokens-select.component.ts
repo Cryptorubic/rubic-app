@@ -261,7 +261,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       .subscribe(() => this.updateTokensList());
 
     this.searchQuery$.pipe(skip(1), debounceTime(500), takeUntil(this.destroy$)).subscribe(() => {
-      this.updateTokensList(true);
+      this.updateTokensList();
     });
 
     this.tokensService.tokensNetworkState$
@@ -321,18 +321,18 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
   /**
    * Updates default and favourite tokens lists.
    */
-  private updateTokensList(shouldSearch?: boolean): void {
+  private updateTokensList(): void {
     if (!this.updateTokensByQuerySubscription$) {
       this.handleQuerySubscription();
     }
 
-    if (shouldSearch && this.searchQuery.length && this.listType === 'default') {
-      this.updateTokensByQuery$.next();
-    } else if (this.searchQuery.length && this.listType === 'favorite') {
-      this.filterFavoriteTokens();
-    } else if (this.searchQuery.length && this.listType === 'default') {
-      this.filterDefaultTokens();
-    } else if (!this.searchQuery.length) {
+    if (this.searchQuery.length) {
+      if (this.listType === 'default') {
+        this.updateTokensByQuery$.next();
+      } else {
+        this.filterFavoriteTokens();
+      }
+    } else {
       this.sortTokens();
       this.customToken = null;
     }
@@ -385,31 +385,17 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maps default tokens list with favorite.
-   */
-  private filterDefaultTokens(): void {
-    this.favoriteTokens$.pipe(first()).subscribe(favoriteTokens => {
-      const tokens = this._tokensToShow$.value.map(token => ({
-        ...token,
-        favorite: favoriteTokens.some(favoriteToken => compareTokens(favoriteToken, token))
-      }));
-      this._tokensToShow$.next(
-        this.isCrossChainSwap()
-          ? tokens.filter(el => el.hasDirectPair === null || el.hasDirectPair === true)
-          : tokens
-      );
-    });
-  }
-
-  /**
    * Filters favorite tokens by blockchain and query.
    */
   private filterFavoriteTokens(): void {
     this.favoriteTokens$.subscribe(favoriteTokens => {
       const query = this.searchQuery.toLowerCase();
-      const currentBlockchainTokens = favoriteTokens.filter(
-        el => el.blockchain === this.blockchain
-      );
+      const currentBlockchainTokens = favoriteTokens
+        .filter(el => el.blockchain === this.blockchain)
+        .map(el => ({
+          ...el,
+          favorite: true
+        }));
 
       if (query.startsWith('0x')) {
         const tokens = currentBlockchainTokens.filter(token =>
@@ -512,15 +498,13 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
             rank: 0,
             amount: new BigNumber(NaN),
             price: 0,
-            usedInIframe: true,
             available:
               !oppositeToken ||
               this.blockchain === oppositeToken.blockchain ||
               TokensSelectComponent.allowedInCrossChain(token.blockchain, oppositeToken.blockchain),
             favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
               compareTokens(favoriteToken, token)
-            ),
-            hasDirectPair: true
+            )
           };
         }
       }
@@ -614,13 +598,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
           }));
         const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
-        this._tokensToShow$.next(
-          this.isCrossChainSwap()
-            ? tokensWithFavorite.filter(
-                el => el.hasDirectPair === null || el.hasDirectPair === true
-              )
-            : tokensWithFavorite
-        );
+        this._tokensToShow$.next(tokensWithFavorite);
         this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
         this.tokensListUpdating = false;
         this.cdr.markForCheck();

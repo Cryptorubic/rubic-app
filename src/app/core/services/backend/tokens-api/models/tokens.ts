@@ -1,12 +1,12 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
-import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
-  TOKENS = 'tokens/',
-  IFRAME_TOKENS = 'tokens/iframe/',
-  FAVORITE_TOKENS = 'tokens/favorite/'
+  TOKENS = 'v1/tokens/',
+  IFRAME_TOKENS = 'v1/tokens/iframe/',
+  FAVORITE_TOKENS = 'v1/tokens/favorite/'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -19,14 +19,12 @@ export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchainNetwork: FromBackendBlockchain;
+  blockchainNetwork: BackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
   coingeckoId: string;
   usdPrice: number;
-  usedInIframe: boolean;
-  hasDirectPair: boolean;
 }
 
 export interface TokensBackendResponse {
