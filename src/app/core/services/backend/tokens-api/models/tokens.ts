@@ -5,8 +5,8 @@ import { BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',
-  IFRAME_TOKENS = 'tokens/iframe/',
-  FAVORITE_TOKENS = 'tokens/favorite/'
+  IFRAME_TOKENS = 'v1/tokens/iframe/',
+  FAVORITE_TOKENS = 'v1/tokens/favorite/'
 }
 
 export interface FavoriteTokenRequestParams {
