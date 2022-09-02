@@ -91,5 +91,7 @@ export const instantTradesLabels: Record<TradeType, string> = {
   [TRADE_TYPE.ZIP_SWAP]: 'ZipSwap',
   [TRADE_TYPE.ZRX]: '0x',
 
-  [TRADE_TYPE.REN_BTC]: 'renBTC'
+  [TRADE_TYPE.REN_BTC]: 'renBTC',
+  [TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
+  [TRADE_TYPE.JUPITER]: 'Jupiter'
 };

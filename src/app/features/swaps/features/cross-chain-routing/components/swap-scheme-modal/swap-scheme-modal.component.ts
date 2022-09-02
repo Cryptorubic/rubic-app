@@ -85,6 +85,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public viaUuid: string | undefined;
 
+  public rangoRequestId: string | undefined;
+
   private timestamp: number;
 
   constructor(
@@ -123,7 +125,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
                 lifiBridgeType: this.bridgeType.name,
-                viaUuid: this.viaUuid
+                viaUuid: this.viaUuid,
+                rangoRequestId: this.rangoRequestId
               },
               this.crossChainProvider
             )
@@ -155,12 +158,12 @@ export class SwapSchemeModalComponent implements OnInit {
                   return currentBlockNumber - srcTxReceipt.blockNumber > diff
                     ? CrossChainTxStatus.SUCCESS
                     : CrossChainTxStatus.PENDING;
+                }),
+                catchError((error: unknown) => {
+                  console.debug('[General] error getting current block number', error);
+                  return of(CrossChainTxStatus.PENDING);
                 })
               );
-            }),
-            catchError((error: unknown) => {
-              console.debug('[General] error getting current block number', error);
-              return of(CrossChainTxStatus.PENDING);
             }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
@@ -188,7 +191,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
-                    viaUuid: this.viaUuid
+                    viaUuid: this.viaUuid,
+                    rangoRequestId: this.rangoRequestId
                   },
                   this.crossChainProvider
                 )
@@ -274,6 +278,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this.bridgeType = data.bridgeType;
 
     this.viaUuid = data.viaUuid;
+    this.rangoRequestId = data.rangoRequestId;
 
     this.timestamp = data.timestamp;
   }
