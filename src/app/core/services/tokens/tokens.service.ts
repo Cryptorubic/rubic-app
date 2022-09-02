@@ -196,7 +196,7 @@ export class TokensService {
 
     const updatedTokens = tokens.map(token => {
       const currentToken = this.tokens?.find(t => TokensService.areTokensEqual(token, t));
-      const balance = tokensWithBalance.find(tWithBalance =>
+      const balance = tokensWithBalance?.find(tWithBalance =>
         TokensService.areTokensEqual(token, tWithBalance)
       )?.amount;
       return {

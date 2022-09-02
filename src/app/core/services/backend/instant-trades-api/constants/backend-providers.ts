@@ -33,5 +33,7 @@ export const BACKEND_PROVIDERS: Partial<Record<TradeType, string>> = {
   [TRADE_TYPE.REF_FINANCE]: 'lifi',
   [TRADE_TYPE.PARA_SWAP]: 'lifi',
   [TRADE_TYPE.STELLA_SWAP]: 'lifi',
-  [TRADE_TYPE.UBE_SWAP]: 'lifi'
+  [TRADE_TYPE.UBE_SWAP]: 'lifi',
+
+  [TRADE_TYPE.REN_BTC]: 'renbtc'
 };

@@ -56,8 +56,13 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
-import { CrossChainTrade } from 'rubic-sdk/lib/features';
+import {
+  CrossChainTrade,
+  RangoCrossChainTrade,
+  RangoCrossChainTradeProvider
+} from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +73,8 @@ export class CrossChainRoutingService extends TradeService {
     CelerCrossChainTradeProvider,
     SymbiosisCrossChainTradeProvider,
     LifiCrossChainTradeProvider,
-    DebridgeCrossChainTradeProvider
+    DebridgeCrossChainTradeProvider,
+    RangoCrossChainTradeProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -101,7 +107,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('cross-chain-routing');
   }
@@ -172,7 +179,7 @@ export class CrossChainRoutingService extends TradeService {
           })
         );
     } catch (err) {
-      console.debug(err);
+      console.error(err);
       throw err;
     }
   }
@@ -211,11 +218,18 @@ export class CrossChainRoutingService extends TradeService {
         timestamp,
         bridgeType:
           providerTrade?.trade instanceof LifiCrossChainTrade ||
-          providerTrade?.trade instanceof ViaCrossChainTrade
+          providerTrade?.trade instanceof ViaCrossChainTrade ||
+          providerTrade?.trade instanceof RangoCrossChainTrade
             ? providerTrade?.trade?.bridgeType
             : undefined,
         viaUuid:
-          providerTrade?.trade instanceof ViaCrossChainTrade ? providerTrade?.trade.uuid : undefined
+          providerTrade?.trade instanceof ViaCrossChainTrade
+            ? providerTrade?.trade.uuid
+            : undefined,
+        rangoRequestId:
+          providerTrade?.trade instanceof RangoCrossChainTrade
+            ? providerTrade?.trade.requestId
+            : undefined
       };
 
       confirmCallback?.();
@@ -231,11 +245,16 @@ export class CrossChainRoutingService extends TradeService {
 
     const blockchain = providerTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const receiverAddress =
+      this.targetNetworkAddressService.targetAddress?.isValid &&
+      this.targetNetworkAddressService.targetAddress?.value;
     const swapOptions = {
       onConfirm: onTransactionHash,
       ...(Boolean(shouldCalculateGasPrice) && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      })
+      }),
+      ...(receiverAddress && { receiverAddress: receiverAddress })
     };
 
     await providerTrade.trade.swap(swapOptions);
@@ -258,7 +277,8 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
       trade instanceof DebridgeCrossChainTrade ||
-      trade instanceof ViaCrossChainTrade
+      trade instanceof ViaCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -318,7 +338,8 @@ export class CrossChainRoutingService extends TradeService {
 
     if (
       wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade
+      wrappedTrade.trade instanceof ViaCrossChainTrade ||
+      wrappedTrade.trade instanceof RangoCrossChainTrade
     ) {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
@@ -328,8 +349,8 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
       return {
-        fromProvider: TRADE_TYPE.ONE_INCH,
-        toProvider: TRADE_TYPE.ONE_INCH,
+        fromProvider: wrappedTrade.trade.itType.from,
+        toProvider: wrappedTrade.trade.itType.to,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
       };
     }
@@ -437,6 +458,10 @@ export class CrossChainRoutingService extends TradeService {
 
     const viaUuid =
       providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined;
+    const rangoRequestId =
+      providerTrade.trade instanceof RangoCrossChainTrade
+        ? providerTrade.trade.requestId
+        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -452,6 +477,7 @@ export class CrossChainRoutingService extends TradeService {
           srcTxHash: txHash,
           bridgeType: bridgeProvider,
           viaUuid,
+          rangoRequestId,
           timestamp
         }
       })

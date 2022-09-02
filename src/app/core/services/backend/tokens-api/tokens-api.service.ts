@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -24,6 +24,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -132,14 +134,22 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.TELOS,
       BLOCKCHAIN_NAME.HARMONY
     ];
-    return this.httpService.get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params).pipe(
-      map(backendTokens =>
-        backendTokens.filter(token => {
-          const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
-          return backendNetworks.includes(network);
-        })
-      ),
-      map(backendTokens => TokensApiService.prepareTokens(backendTokens))
+    const backendTokens$ = this.httpService
+      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)
+      .pipe(
+        map(backendTokens =>
+          backendTokens.filter(token => {
+            const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
+            return backendNetworks.includes(network);
+          })
+        ),
+        map(backendTokens => TokensApiService.prepareTokens(backendTokens))
+      );
+
+    const staticTokens$ = this.fetchStaticTokens();
+
+    return forkJoin([backendTokens$, staticTokens$]).pipe(
+      map(([backendTokens, staticTokens]) => backendTokens.concat(staticTokens))
     );
   }
 
@@ -169,11 +179,17 @@ export class TokensApiService {
         })
       )
     );
-    return forkJoin(requests$).pipe(
+    const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
         return TokensApiService.prepareTokens(backendTokens);
       })
+    );
+
+    const staticTokens$ = this.fetchStaticTokens();
+
+    return forkJoin([backendTokens$, staticTokens$]).pipe(
+      map(([backendTokens, staticTokens]) => backendTokens.concat(staticTokens))
     );
   }
 
@@ -220,6 +236,28 @@ export class TokensApiService {
           next: tokensResponse.next
         };
       })
+    );
+  }
+
+  private fetchStaticTokens(): Observable<Token[]> {
+    return from(Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)).pipe(
+      switchMap(price =>
+        of([
+          {
+            image: '/assets/images/icons/coins/bitcoin.svg',
+            rank: 1,
+            price: price.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+
+            blockchain: BLOCKCHAIN_NAME.BITCOIN,
+            address: EMPTY_ADDRESS,
+            name: 'Bitcoin',
+            symbol: 'BTC',
+            decimals: 8
+          }
+        ])
+      )
     );
   }
 }

@@ -92,8 +92,9 @@
     "buttonLink": "Daha fazla bilgi edin",
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil.",
+    "notWhitelistedProvider": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token seç",
-    "notWhitelistedProvider": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır."
+    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
   "navigation": { 
     "recentTrades": "Recent cross-chain tx",

@@ -399,7 +399,22 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
   [TRADE_TYPE.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
-    color: ''
+    color: '#34A5F5'
+  },
+  [TRADE_TYPE.AURORA_SWAP]: {
+    name: 'AuroraSwap',
+    image: '${imageBasePath}auroraswap.svg',
+    color: '#34A5F5'
+  },
+  [TRADE_TYPE.JUPITER]: {
+    name: 'Jupiter',
+    image: '${imageBasePath}jupiter.svg',
+    color: '#34A5F5'
+  },
+  [TRADE_TYPE.REN_BTC]: {
+    name: 'renBTC',
+    image: `${imageBasePath}renbtc.svg`,
+    color: 'grey'
   }
 };
 
@@ -429,6 +444,10 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.VIA]: {
     name: 'Via',
+    image: ``
+  },
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
+    name: 'Rango',
     image: ``
   }
 };
@@ -553,6 +572,11 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   [BRIDGE_TYPE.YPOOL]: {
     name: 'YPool',
     image: `${imageBasePath}ypool.svg`,
+    color: '#15D9E1'
+  },
+  [BRIDGE_TYPE.OPEN_OCEAN]: {
+    name: 'Open Ocean',
+    image: '${imageBasePath}openocean.png',
     color: '#15D9E1'
   }
 };

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
@@ -7,11 +7,16 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { CrossChainTrade } from 'rubic-sdk/lib/features';
 
-function correctAddressValidator(): ValidatorFn {
+function correctAddressValidator(blockchain: BlockchainName): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const isAddressCorrect = Web3Pure.isAddressCorrect(control.value);
-    return isAddressCorrect ? null : { wrongAddress: control.value };
+    try {
+      CrossChainTrade.checkReceiverAddress(control.value, blockchain);
+      return null;
+    } catch {
+      return { wrongAddress: control.value };
+    }
   };
 }
 
@@ -27,7 +32,7 @@ export class TargetNetworkAddressComponent implements OnInit {
     this.address.clearValidators();
     this.address.setValidators(Validators.required);
     this.targetBlockchainName = blockchain;
-    this.address.setValidators(correctAddressValidator());
+    this.address.setValidators(correctAddressValidator(blockchain));
   }
 
   public targetBlockchainName: BlockchainName;

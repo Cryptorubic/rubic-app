@@ -7,7 +7,7 @@ import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-c
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { first, map, startWith } from 'rxjs/operators';
-import { BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
@@ -42,7 +42,8 @@ export class ErrorButtonComponent {
   ) {}
 
   public allowChangeNetwork(err: ERROR_TYPE): boolean {
-    if (err !== ERROR_TYPE.WRONG_BLOCKCHAIN) {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (err !== ERROR_TYPE.WRONG_BLOCKCHAIN || fromBlockchain === BLOCKCHAIN_NAME.BITCOIN) {
       return false;
     }
     return this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK;
