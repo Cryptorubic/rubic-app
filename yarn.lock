@@ -14202,10 +14202,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@2.13.1:
-  version "2.13.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.13.1.tgz#077b7caf4270cf28ae6c1b3489c480795a155921"
-  integrity sha512-JgZ7V9kE4OHqk079lF9DqT0d4RqB4FbPAecUjDLUGgCFs7meeUuPa11Z9RBWH1NKaJeako9oB2YTTcA98Bf5wg==
+rubic-sdk@2.13.2:
+  version "2.13.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-2.13.2.tgz#84207da14c3cec8de4460b4c98a2a4b8a9b487f2"
+  integrity sha512-Q9APccsWZWdq9999pTv95QmhblkoVKBuHKlHTACilakqe5szZy6EZst0ajzMIbC70S5zyNNtmXsCknvM2ev+gg==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
