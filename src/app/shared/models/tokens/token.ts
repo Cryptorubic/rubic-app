@@ -4,6 +4,4 @@ export interface Token extends BlockchainToken {
   image: string;
   rank: number;
   price: number;
-  usedInIframe: boolean;
-  hasDirectPair: boolean | null;
 }

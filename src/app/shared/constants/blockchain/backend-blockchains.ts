@@ -1,28 +1,5 @@
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
-export const FROM_BACKEND_BLOCKCHAINS = {
-  ethereum: BLOCKCHAIN_NAME.ETHEREUM,
-  'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  polygon: BLOCKCHAIN_NAME.POLYGON,
-  harmony: BLOCKCHAIN_NAME.HARMONY,
-  avalanche: BLOCKCHAIN_NAME.AVALANCHE,
-  moonriver: BLOCKCHAIN_NAME.MOONRIVER,
-  fantom: BLOCKCHAIN_NAME.FANTOM,
-  arbitrum: BLOCKCHAIN_NAME.ARBITRUM,
-  aurora: BLOCKCHAIN_NAME.AURORA,
-  solana: BLOCKCHAIN_NAME.SOLANA,
-  near: BLOCKCHAIN_NAME.NEAR,
-  'telos-evm': BLOCKCHAIN_NAME.TELOS,
-  optimism: BLOCKCHAIN_NAME.OPTIMISM,
-  cronos: BLOCKCHAIN_NAME.CRONOS,
-  okxchain: BLOCKCHAIN_NAME.OKE_X_CHAIN,
-  gnosis: BLOCKCHAIN_NAME.GNOSIS,
-  fuse: BLOCKCHAIN_NAME.FUSE,
-  moonbeam: BLOCKCHAIN_NAME.MOONBEAM,
-  celo: BLOCKCHAIN_NAME.CELO,
-  boba: BLOCKCHAIN_NAME.BOBA
-};
-
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
@@ -36,10 +13,10 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SOLANA]: 'solana',
   [BLOCKCHAIN_NAME.NEAR]: 'near',
   [BLOCKCHAIN_NAME.TELOS]: 'telos-evm',
-  [BLOCKCHAIN_NAME.OPTIMISM]: 'optimism',
+  [BLOCKCHAIN_NAME.OPTIMISM]: 'optimistic-ethereum',
   [BLOCKCHAIN_NAME.CRONOS]: 'cronos',
-  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: 'okxchain',
-  [BLOCKCHAIN_NAME.GNOSIS]: 'gnosis',
+  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: 'okex-chain',
+  [BLOCKCHAIN_NAME.GNOSIS]: 'xdai',
   [BLOCKCHAIN_NAME.FUSE]: 'fuse',
   [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
   [BLOCKCHAIN_NAME.CELO]: 'celo',
@@ -48,5 +25,27 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin'
 };
 
-export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;
-export type FromBackendBlockchain = keyof typeof FROM_BACKEND_BLOCKCHAINS;
+export type BackendBlockchain = typeof TO_BACKEND_BLOCKCHAINS[keyof typeof TO_BACKEND_BLOCKCHAINS];
+
+export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName> = {
+  ethereum: BLOCKCHAIN_NAME.ETHEREUM,
+  'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  polygon: BLOCKCHAIN_NAME.POLYGON,
+  harmony: BLOCKCHAIN_NAME.HARMONY,
+  avalanche: BLOCKCHAIN_NAME.AVALANCHE,
+  moonriver: BLOCKCHAIN_NAME.MOONRIVER,
+  fantom: BLOCKCHAIN_NAME.FANTOM,
+  arbitrum: BLOCKCHAIN_NAME.ARBITRUM,
+  aurora: BLOCKCHAIN_NAME.AURORA,
+  solana: BLOCKCHAIN_NAME.SOLANA,
+  near: BLOCKCHAIN_NAME.NEAR,
+  'telos-evm': BLOCKCHAIN_NAME.TELOS,
+  'optimistic-ethereum': BLOCKCHAIN_NAME.OPTIMISM,
+  cronos: BLOCKCHAIN_NAME.CRONOS,
+  'okex-chain': BLOCKCHAIN_NAME.OKE_X_CHAIN,
+  xdai: BLOCKCHAIN_NAME.GNOSIS,
+  fuse: BLOCKCHAIN_NAME.FUSE,
+  moonbeam: BLOCKCHAIN_NAME.MOONBEAM,
+  celo: BLOCKCHAIN_NAME.CELO,
+  boba: BLOCKCHAIN_NAME.BOBA
+};

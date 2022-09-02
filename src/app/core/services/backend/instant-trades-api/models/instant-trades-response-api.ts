@@ -1,6 +1,6 @@
 import InputToken from '@shared/models/tokens/input-token';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
+import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { TradeType } from 'rubic-sdk';
 
 interface InstantTradesBlockchainNetwork {
@@ -22,7 +22,7 @@ interface SolanaITContract {
 }
 
 interface InstantTradesTokenApi extends InputToken {
-  blockchain_network: FromBackendBlockchain;
+  blockchain_network: BackendBlockchain;
   coingecko_id: string;
   usd_price: number;
 }
