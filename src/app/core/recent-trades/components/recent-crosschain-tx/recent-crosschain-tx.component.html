@@ -49,6 +49,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
           ></tr>
+          <tr
+            rango-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
@@ -92,6 +98,12 @@
           [trade]="trade"
           mode="mobile"
           *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
+        ></div>
+        <div
+          rango-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
         ></div>
       </ng-container>
     </div>
