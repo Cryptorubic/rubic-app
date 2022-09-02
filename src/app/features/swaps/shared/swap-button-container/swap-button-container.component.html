@@ -10,7 +10,7 @@
   <ng-container *ngIf="(isUpdateRateStatus$ | async) === false; else updateRateButton">
     <ng-container *ngLet="error$ | async as error">
       <ng-container *ngIf="!error.text || error.loading; else errorButton">
-        <ng-container *ngIf="withApproveButton; else swapButton">
+        <ng-container *ngIf="withApproveButton && (!isIframe || needApprove); else swapButton">
           <app-approve-swap-button
             (onApproveClick)="onApproveClick.emit()"
             (onSwapClick)="onSwapClick.emit()"
