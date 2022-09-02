@@ -14,4 +14,5 @@ export interface SwapSchemeModalData {
   timestamp: number;
   bridgeType?: Provider;
   viaUuid?: string;
+  rangoRequestId?: string;
 }

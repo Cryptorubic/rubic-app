@@ -75,7 +75,8 @@ export class RecentTradesService {
         srcTxHash: srcTxHash,
         txTimestamp: trade.timestamp,
         lifiBridgeType: trade.bridgeType,
-        viaUuid: trade.viaUuid
+        viaUuid: trade.viaUuid,
+        rangoRequestId: trade.rangoRequestId
       },
       trade.crossChainProviderType
     );
