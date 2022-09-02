@@ -136,9 +136,7 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? ['VIA', 'CELER', 'DEBRIDGE', 'LIFI', 'RUBIC', 'SYMBIOSIS']
-          : ['VIA', 'CELER', 'DEBRIDGE', 'LIFI', 'RUBIC', 'SYMBIOSIS']
+        disabledProviders: isViaDisabled ? ['VIA'] : []
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
