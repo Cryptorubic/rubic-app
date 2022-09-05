@@ -10,7 +10,7 @@ export enum ENDPOINTS {
 }
 
 export interface FavoriteTokenRequestParams {
-  blockchain_network: string;
+  network: string;
   address: string;
   user: string;
 }
