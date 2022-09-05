@@ -6,6 +6,7 @@ import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-bu
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-swap-button-container',
@@ -14,6 +15,8 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapButtonContainerComponent {
+  @Input() needApprove: boolean;
+
   @Input() withApproveButton = false;
 
   @Input() set status(value: TRADE_STATUS) {
@@ -58,11 +61,14 @@ export class SwapButtonContainerComponent {
 
   public readonly sdkLoading$ = this.sdkService.sdkLoading$;
 
+  public readonly isIframe = this.iframeService.isIframe;
+
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly swapButtonService: SwapButtonService,
     private readonly authService: AuthService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: RubicSdkService,
+    private readonly iframeService: IframeService
   ) {}
 }
