@@ -183,7 +183,12 @@ export class WalletConnectorService {
   }
 
   public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    return Object.values(BLOCKCHAIN_NAME);
+    return Object.values(BLOCKCHAIN_NAME).filter(
+      blockchain =>
+        blockchain !== BLOCKCHAIN_NAME.SOLANA &&
+        blockchain !== BLOCKCHAIN_NAME.NEAR &&
+        blockchain !== BLOCKCHAIN_NAME.BITCOIN
+    );
   }
 
   public async activate(): Promise<void> {

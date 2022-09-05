@@ -2,6 +2,9 @@ import { Configuration, RpcProvider } from 'rubic-sdk';
 import networks from '@shared/constants/blockchain/networks';
 
 const rpcProviders = networks.reduce((acc, curr) => {
+  if (!curr.rpcLink) {
+    return acc;
+  }
   const provider: RpcProvider = {
     mainRpc: curr.rpcLink,
     spareRpc: curr.additionalRpcLink,

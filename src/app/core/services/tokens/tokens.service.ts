@@ -39,8 +39,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+  private readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
