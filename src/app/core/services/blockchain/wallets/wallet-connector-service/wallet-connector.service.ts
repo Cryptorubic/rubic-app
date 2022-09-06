@@ -88,26 +88,13 @@ export class WalletConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public readonly networkChange$ = this.networkChangeSubject$.asObservable().pipe(
-    switchTap(network => {
-      const walletProvider: WalletProvider =
-        this.addressChangeSubject$.value && network
-          ? {
-              address: this.addressChangeSubject$.value,
-              chainId: network.id,
-              core: this.provider.wallet
-            }
-          : undefined;
-      return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
-    })
-  );
+  public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
     switchTap(address => {
       const walletProvider: WalletProvider = address
         ? ({
             address,
-            chainId: this.networkChangeSubject$.value.id,
             core: this.provider.wallet as Web3Provider | Web3
           } as undefined)
         : undefined;
