@@ -38,7 +38,6 @@ export class SdkLoaderService {
     if (this.authService.user) {
       const walletProvider: WalletProvider = {
         address: this.authService.user.address,
-        chainId: this.walletConnectorService.network.id,
         core: this.walletConnectorService.provider.wallet
       };
       await this.sdkService.patchConfig({ walletProvider });

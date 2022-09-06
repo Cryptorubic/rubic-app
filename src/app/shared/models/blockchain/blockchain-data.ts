@@ -6,7 +6,7 @@ export interface BlockchainData<T = BlockchainName> {
   name: T;
   label: string;
   scannerUrl: string;
-  rpcLink: string;
+  rpcList: string[];
   imagePath: string;
   nativeCoin: BlockchainToken;
 }
