@@ -84,7 +84,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
       .reduce((prev, cur) => {
         return {
           ...prev,
-          [cur.id]: cur.rpcLink
+          [cur.id]: cur.rpcList[0]
         };
       }, {});
   }

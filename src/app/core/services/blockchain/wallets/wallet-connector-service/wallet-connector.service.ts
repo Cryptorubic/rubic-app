@@ -88,26 +88,13 @@ export class WalletConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public readonly networkChange$ = this.networkChangeSubject$.asObservable().pipe(
-    switchTap(network => {
-      const walletProvider: WalletProvider =
-        this.addressChangeSubject$.value && network
-          ? {
-              address: this.addressChangeSubject$.value,
-              chainId: network.id,
-              core: this.provider.wallet
-            }
-          : undefined;
-      return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
-    })
-  );
+  public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
     switchTap(address => {
       const walletProvider: WalletProvider = address
         ? ({
             address,
-            chainId: this.networkChangeSubject$.value.id,
             core: this.provider.wallet as Web3Provider | Web3
           } as undefined)
         : undefined;
@@ -183,7 +170,12 @@ export class WalletConnectorService {
   }
 
   public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    return Object.values(BLOCKCHAIN_NAME);
+    return Object.values(BLOCKCHAIN_NAME).filter(
+      blockchain =>
+        blockchain !== BLOCKCHAIN_NAME.SOLANA &&
+        blockchain !== BLOCKCHAIN_NAME.NEAR &&
+        blockchain !== BLOCKCHAIN_NAME.BITCOIN
+    );
   }
 
   public async activate(): Promise<void> {
@@ -376,7 +368,7 @@ export class WalletConnectorService {
         symbol: network.nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
+      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcList[0]],
       blockExplorerUrls: [network.scannerUrl],
       iconUrls: [`${this.window.location.origin}/${network.imagePath}`]
     } as AddEthChainParams;

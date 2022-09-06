@@ -36,6 +36,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -61,6 +62,16 @@ export class InstantTradeService extends TradeService {
   }
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
+    if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
+      const allowance = await Injector.web3PublicService
+        .getWeb3Public(trade.from.blockchain)
+        .getAllowance(
+          trade.from.address,
+          this.authService.userAddress,
+          IT_PROXY_FEE_CONTRACT_ADDRESS
+        );
+      return new BigNumber(allowance).lt(trade.from.weiAmount);
+    }
     return trade.needApprove();
   }
 
@@ -70,15 +81,26 @@ export class InstantTradeService extends TradeService {
     const { blockchain } = TradeParser.getItSwapParams(trade);
     const useRubicGasPrice = shouldCalculateGas[blockchain];
 
+    const transactionOptions = {
+      onTransactionHash: () => {
+        subscription$ = this.notificationsService.showApproveInProgress();
+      },
+      ...(useRubicGasPrice && {
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+      })
+    };
+
     try {
-      await trade.approve({
-        onTransactionHash: () => {
-          subscription$ = this.notificationsService.showApproveInProgress();
-        },
-        ...(useRubicGasPrice && {
-          gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-        })
-      });
+      if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
+        await Injector.web3Private.approveTokens(
+          trade.from.address,
+          IT_PROXY_FEE_CONTRACT_ADDRESS,
+          'infinity',
+          transactionOptions
+        );
+      } else {
+        await trade.approve(transactionOptions);
+      }
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
@@ -129,7 +151,8 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
     });
   }
 
@@ -257,7 +280,7 @@ export class InstantTradeService extends TradeService {
       methodArguments,
       {
         ...transactionOptions,
-        gasLimit: undefined
+        gas: undefined
       } as TransactionOptions
     );
   }
