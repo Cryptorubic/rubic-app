@@ -74,7 +74,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaultWalletParams);
     this.selectedChain = chainId.toString();
-    return walletLink.makeWeb3Provider(chain.rpcLink, chainId);
+    return walletLink.makeWeb3Provider(chain.rpcList[0], chainId);
   }
 
   public async signPersonal(message: string): Promise<string> {

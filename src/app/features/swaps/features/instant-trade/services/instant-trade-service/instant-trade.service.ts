@@ -36,6 +36,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -150,7 +151,8 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
     });
   }
 
