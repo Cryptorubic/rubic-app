@@ -8,6 +8,12 @@ export const FOOTER_LINKS: FooterLink[] = [
     link: 'https://www.facebook.com/RubicDEX/'
   },
   {
+    dark: 'assets/images/contacts/dune.svg',
+    light: 'assets/images/contacts/dune_light.svg',
+    altText: 'Dune',
+    link: 'https://dune.com/rubic_exchange/rubic-general-dashboard'
+  },
+  {
     dark: 'assets/images/contacts/twitter.svg',
     light: 'assets/images/contacts/twitter_light.svg',
     altText: 'Twitter',
