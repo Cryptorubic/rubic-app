@@ -368,7 +368,7 @@ export class WalletConnectorService {
         symbol: network.nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
+      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcList[0]],
       blockExplorerUrls: [network.scannerUrl],
       iconUrls: [`${this.window.location.origin}/${network.imagePath}`]
     } as AddEthChainParams;
