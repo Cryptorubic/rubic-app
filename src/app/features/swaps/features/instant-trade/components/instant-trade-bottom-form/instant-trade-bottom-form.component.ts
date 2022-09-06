@@ -624,7 +624,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     providerName: TradeType,
     tradeStatus: TRADE_STATUS,
     providerState?: INSTANT_TRADE_STATUS,
-    needApprove?: boolean
+    needApprove?: boolean,
+    isSelected?: boolean
   ): void {
     this.tradeStatus = tradeStatus;
 
@@ -635,7 +636,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return {
         ...providerData,
         ...(providerState && { tradeStatus: providerState }),
-        ...(needApprove !== undefined && { needApprove: needApprove })
+        ...(needApprove !== undefined && { needApprove: needApprove }),
+        ...(isSelected && { isSelected })
       };
     });
 
@@ -659,8 +661,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
         provider.name,
         TRADE_STATUS.READY_TO_SWAP,
         INSTANT_TRADE_STATUS.COMPLETED,
-        false
+        false,
+        true
       );
+      this.isTradeSelectedByUser = true;
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
       await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
