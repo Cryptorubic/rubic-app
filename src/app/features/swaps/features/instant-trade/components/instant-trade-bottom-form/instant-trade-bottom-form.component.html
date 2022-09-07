@@ -72,7 +72,10 @@
         </ng-container>
       </div>
     </div>
-
+    <app-target-network-address
+      *ngIf="displayTargetAddressInput$ | async"
+      [targetBlockchain]="toBlockchain"
+    ></app-target-network-address>
     <ng-container *noFrame>
       <app-providers-panels-container
         *ngIf="allowTrade && !ethWethTrade"

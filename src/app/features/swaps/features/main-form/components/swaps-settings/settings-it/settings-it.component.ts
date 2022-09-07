@@ -41,7 +41,8 @@ export class SettingsItComponent implements OnInit {
       deadline: new FormControl<number>(form.deadline),
       disableMultihops: new FormControl<boolean>(form.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(form.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(form.autoRefresh)
+      autoRefresh: new FormControl<boolean>(form.autoRefresh),
+      showReceiverAddress: new FormControl<boolean>(form.showReceiverAddress)
     });
     this.slippageTolerance = form.slippageTolerance;
     this.setFormChanges(this.settingsService.instantTrade);
