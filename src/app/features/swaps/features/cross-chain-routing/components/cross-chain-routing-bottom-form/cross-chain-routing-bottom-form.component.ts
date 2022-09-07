@@ -108,9 +108,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public readonly displayTargetAddressInput$ =
-    this.targetNetworkAddressService.displayAddress$ ||
-    this.settingsService.crossChainRoutingValue.showReceiverAddress;
+  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
   public smartRouting: SmartRouting = null;
 
