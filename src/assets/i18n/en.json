@@ -504,13 +504,17 @@
       "deadlineTitle": "Transaction deadline",
       "deadline": "Your transaction will revert if it remains pending for more than this period of time.",
       "autoRefreshTitle": "Auto-refresh",
-      "autoRefresh": "Updates trade parameters every 15 seconds."
+      "autoRefresh": "Updates trade parameters every 15 seconds.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Auto-refresh",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
       "autoRefresh": "Updates trade parameters each 15 seconds.",
       "slippageTitle": "Slippage tolerance",
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",

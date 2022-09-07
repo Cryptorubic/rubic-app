@@ -6,6 +6,7 @@ import {
 } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { PromoCode } from '@features/swaps/features/main-form/models/promo-code';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
+import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -30,7 +31,10 @@ export class SettingsCcrComponent implements OnInit {
 
   public readonly minimumSlippageTolerance = 3;
 
-  constructor(private readonly settingsService: SettingsService) {
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
+  ) {
     this.defaultSlippageTolerance = this.settingsService.defaultCcrSettings.slippageTolerance;
   }
 
@@ -44,7 +48,8 @@ export class SettingsCcrComponent implements OnInit {
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
       autoRefresh: new FormControl<boolean>(formValue.autoRefresh),
-      promoCode: new FormControl<PromoCode | null>(null)
+      promoCode: new FormControl<PromoCode | null>(null),
+      showReceiverAddress: new FormControl<boolean>(formValue.showReceiverAddress)
     });
     this.slippageTolerance = formValue.slippageTolerance;
     this.promoCode = formValue.promoCode;
@@ -54,6 +59,7 @@ export class SettingsCcrComponent implements OnInit {
   private setFormChanges(): void {
     this.crossChainRoutingForm.valueChanges.subscribe(settings => {
       this.settingsService.crossChainRouting.patchValue({ ...settings });
+      this.targetNetworkAddressService.showReceiverAddressToggle(settings.showReceiverAddress);
     });
     this.settingsService.crossChainRoutingValueChanges.subscribe(settings => {
       this.crossChainRoutingForm.patchValue({ ...settings }, { emitEvent: false });

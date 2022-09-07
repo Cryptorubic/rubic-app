@@ -504,7 +504,9 @@
       "deadlineTitle": "Tiempo límite de transacción",
       "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
       "autoRefreshTitle": "Actualización automática",
-      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos."
+      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "La dirección de la billetera en TRON blockchain, en la que se proporcionarán los tokens."
@@ -512,6 +514,8 @@
     "crossChainRouting": {
       "autoRefreshTitle": "Actualización automática",
       "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
       "slippageTitle": "Tolerancia al deslizamiento",
       "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
       "promoCodeTitle": "Código promocional",

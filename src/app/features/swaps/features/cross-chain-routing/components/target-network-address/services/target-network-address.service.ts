@@ -51,4 +51,8 @@ export class TargetNetworkAddressService {
         }
       });
   }
+
+  public showReceiverAddressToggle(showReceiverAddress: boolean): void {
+    this._displayAddress$.next(showReceiverAddress);
+  }
 }

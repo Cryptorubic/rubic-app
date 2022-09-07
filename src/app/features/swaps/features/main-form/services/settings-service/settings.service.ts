@@ -19,6 +19,7 @@ export interface ItSettingsForm {
   disableMultihops: boolean;
   rubicOptimisation: boolean;
   autoRefresh: boolean;
+  showReceiverAddress: boolean;
 }
 
 export interface BridgeSettingsForm {}
@@ -28,6 +29,7 @@ export interface CcrSettingsForm {
   slippageTolerance: number;
   autoRefresh: boolean;
   promoCode: PromoCode | null;
+  showReceiverAddress: boolean;
 }
 
 export interface SettingsForm {
@@ -122,7 +124,8 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: Boolean(this.authService?.user?.address)
+      autoRefresh: Boolean(this.authService?.user?.address),
+      showReceiverAddress: false
     };
   }
 
@@ -134,7 +137,8 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: Boolean(this.authService?.user?.address)
+      autoRefresh: Boolean(this.authService?.user?.address),
+      showReceiverAddress: false
     };
   }
 
@@ -184,7 +188,8 @@ export class SettingsService {
         deadline: new FormControl<number>(this.defaultItSettings.deadline),
         disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
         rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
-        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
+        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
+        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
       }),
       [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({}),
       [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
@@ -193,7 +198,8 @@ export class SettingsService {
         ),
         slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
         autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh),
-        promoCode: new FormControl<PromoCode | null>(null)
+        promoCode: new FormControl<PromoCode | null>(null),
+        showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress)
       })
     });
   }
