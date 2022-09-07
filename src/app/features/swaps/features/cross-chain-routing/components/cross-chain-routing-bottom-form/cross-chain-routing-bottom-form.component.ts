@@ -179,7 +179,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, current) => {
+          console.log('prev value: ', prev.showReceiverAddress);
+          console.log('current value: ', current.showReceiverAddress);
+
+          return prev.showReceiverAddress !== current.showReceiverAddress;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });

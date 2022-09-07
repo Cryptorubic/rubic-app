@@ -59,6 +59,8 @@ export class SettingsCcrComponent implements OnInit {
   private setFormChanges(): void {
     this.crossChainRoutingForm.valueChanges.subscribe(settings => {
       this.settingsService.crossChainRouting.patchValue({ ...settings });
+      console.log('value in form: ', settings.showReceiverAddress);
+      console.log('-------------');
       this.targetNetworkAddressService.showReceiverAddressToggle(settings.showReceiverAddress);
     });
     this.settingsService.crossChainRoutingValueChanges.subscribe(settings => {
