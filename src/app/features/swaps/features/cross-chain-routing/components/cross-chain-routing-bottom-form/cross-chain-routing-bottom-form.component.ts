@@ -178,14 +178,18 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.cdr.markForCheck();
       });
 
+    // We did not use distinctUntilChanged because the PREV value was not updated.
+    let prev: boolean;
     this.settingsService.crossChainRoutingValueChanges
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
-        distinctUntilChanged((prev, current) => {
-          console.log('prev value: ', prev.showReceiverAddress);
-          console.log('current value: ', current.showReceiverAddress);
-
-          return prev.showReceiverAddress !== current.showReceiverAddress;
+        filter(curr => {
+          if (curr.showReceiverAddress === prev) {
+            prev = curr.showReceiverAddress;
+            return true;
+          }
+          prev = curr.showReceiverAddress;
+          return false;
         }),
         takeUntil(this.destroy$)
       )
