@@ -119,10 +119,10 @@ export class StakeFormComponent implements OnInit {
       return;
     }
 
-    if (this.stakingService.rbcTokenBalance?.lt(this.stakingService.parseAmountToBn(rbcAmount))) {
-      this.error = StakeButtonError.INSUFFICIENT_BALANCE_RBC;
-      return;
-    }
+    // if (this.stakingService.rbcTokenBalance?.lt(this.stakingService.parseAmountToBn(rbcAmount))) {
+    //   this.error = StakeButtonError.INSUFFICIENT_BALANCE_RBC;
+    //   return;
+    // }
 
     if (this.stakingService.parseAmountToBn(rbcAmount).lt(this.MIN_STAKE_AMOUNT)) {
       this.error = StakeButtonError.LESS_THEN_MINIMUM;
@@ -167,7 +167,10 @@ export class StakeFormComponent implements OnInit {
   }
 
   public stake(): void {
-    const amount = new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
+    const amount =
+      typeof this.rbcAmountCtrl.value !== 'string'
+        ? this.rbcAmountCtrl.value
+        : new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
     const duration = this.durationSliderCtrl.value;
 
     this.stakingModalService
