@@ -240,6 +240,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }
       });
 
+    // We did not use 'distinctUntilChanged' for 'showReceiverAddress' because the PREV value was not updated.
+    let isShowedReceiverAddressPreviousValue: boolean;
     this.settingsService.instantTradeValueChanges
       .pipe(
         distinctUntilChanged((prev, next) => {
@@ -248,6 +250,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
             prev.disableMultihops === next.disableMultihops &&
             prev.slippageTolerance === next.slippageTolerance
           );
+        }),
+        filter(current => {
+          if (current.showReceiverAddress === isShowedReceiverAddressPreviousValue) {
+            isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
+            return true;
+          }
+          isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
+          return false;
         }),
         takeUntil(this.destroy$)
       )
