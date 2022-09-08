@@ -167,7 +167,10 @@ export class StakeFormComponent implements OnInit {
   }
 
   public stake(): void {
-    const amount = new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
+    const amount =
+      typeof this.rbcAmountCtrl.value !== 'string'
+        ? this.rbcAmountCtrl.value
+        : new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
     const duration = this.durationSliderCtrl.value;
 
     this.stakingModalService
