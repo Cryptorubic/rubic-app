@@ -47,5 +47,6 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   fuse: BLOCKCHAIN_NAME.FUSE,
   moonbeam: BLOCKCHAIN_NAME.MOONBEAM,
   celo: BLOCKCHAIN_NAME.CELO,
-  boba: BLOCKCHAIN_NAME.BOBA
+  boba: BLOCKCHAIN_NAME.BOBA,
+  bitcoin: BLOCKCHAIN_NAME.BITCOIN
 };
