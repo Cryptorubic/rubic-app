@@ -194,7 +194,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -226,8 +228,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
-
-    this.conditionalCalculate('normal');
   }
 
   private conditionalCalculate(type?: CalculateTradeType): void {
@@ -243,8 +243,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    const { autoRefresh } = this.settingsService.crossChainRoutingValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradeCalculation(): void {

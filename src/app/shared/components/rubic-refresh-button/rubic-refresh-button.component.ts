@@ -123,41 +123,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
     }, this.refreshTimeout * 1000);
   }
 
-  public mouseEnter(): void {
-    if (this.type === 'autoRefresh') {
-      this.stopAnimation = true;
-      this.updateImageOnEnter();
-    }
-  }
-
-  private updateImageOnEnter(): void {
-    if (this._autoUpdate) {
-      this.imageUrl = 'assets/images/icons/reload/pause.svg';
-    } else {
-      this.imageUrl = 'assets/images/icons/reload/play.svg';
-    }
-    this.cdr.detectChanges();
-  }
-
-  public mouseLeave(): void {
-    this.imageUrl = 'assets/images/icons/reload.svg';
-    this.stopAnimation = false;
-  }
-
   public toggleClick(): void {
-    if (this.type === 'autoRefresh') {
-      this._autoUpdate = !this._autoUpdate;
-      this.updateImageOnEnter();
-
-      const formNewValue = {
-        autoRefresh: this._autoUpdate
-      };
-      if (this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-        this.settingsService.instantTrade.patchValue(formNewValue);
-      } else {
-        this.settingsService.crossChainRouting.patchValue(formNewValue);
-      }
-    }
     this.onRefresh.emit();
   }
 }
