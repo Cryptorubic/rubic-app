@@ -1,3 +1,5 @@
+export const WEEKS_IN_YEAR = 52;
+
 export const DAYS_IN_MONTH = 30;
 export const SECONDS_IN_MONTH = 2592000;
 export const MILLISECONDS_IN_MONTH = 2592000000;
