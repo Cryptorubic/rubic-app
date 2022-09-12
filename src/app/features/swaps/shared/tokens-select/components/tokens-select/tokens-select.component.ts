@@ -568,7 +568,10 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   public fetchNewPageTokens(): void {
     this.tokensListUpdating = true;
-    this.tokensService.fetchNetworkTokens(this.blockchain);
+    this.tokensService.fetchNetworkTokens(this.blockchain, () => {
+      this.tokensListUpdating = false;
+      this.cdr.detectChanges();
+    });
   }
 
   /**
