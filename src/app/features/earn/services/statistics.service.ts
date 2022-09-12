@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
+import { WEEKS_IN_YEAR } from '@app/shared/constants/time/time';
 
 interface EpochInfo {
   startTime: string;
@@ -68,7 +69,7 @@ export class StatisticsService {
     switchMap(() =>
       combineLatest([this.rewardPerSecond$, of(this.currentActiveTokens)]).pipe(
         map(([rewardPerSecond, currentActiveTokens]) => {
-          const rewardPerYear: BigNumber = rewardPerSecond.multipliedBy(52);
+          const rewardPerYear: BigNumber = rewardPerSecond.multipliedBy(WEEKS_IN_YEAR);
           this.currentStakingApr = rewardPerYear.dividedBy(currentActiveTokens).multipliedBy(100);
           return this.currentStakingApr;
         })
