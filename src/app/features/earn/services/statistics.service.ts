@@ -55,11 +55,11 @@ export class StatisticsService {
     switchMap(() =>
       StatisticsService.getCurrentEpochId().pipe(
         switchMap(currentEpochId => this.getCurrentEpochInfo(currentEpochId)),
-        map(epochInfo => {
-          return Web3Pure.fromWei(epochInfo.rewardPerSecond)
+        map(epochInfo =>
+          Web3Pure.fromWei(epochInfo.rewardPerSecond)
             .multipliedBy(this.numberOfSecondsPerWeek)
-            .dividedBy(this.reward_multiplier);
-        }),
+            .dividedBy(this.reward_multiplier)
+        ),
         tap(rewardPerSecond => this._rewardPerSecond$.next(rewardPerSecond))
       )
     )
