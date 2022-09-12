@@ -34,6 +34,7 @@ import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
 import {
+  MILLISECONDS_IN_MONTH,
   MILLISECONDS_IN_WEEK,
   SECONDS_IN_MONTH,
   WEEKS_IN_YEAR
