@@ -230,7 +230,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     }
   }
 
-  private conditionalCalculate(type?: CalculateTradeType): void {
+  private conditionalCalculate(type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
       return;
