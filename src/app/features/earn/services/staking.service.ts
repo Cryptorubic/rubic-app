@@ -33,7 +33,7 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_WEEK, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 
 @Injectable()
@@ -300,10 +300,11 @@ export class StakingService {
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
-                const nftVotingPower = await this.getNftVotingPower(id);
-                const tokenApr = new BigNumber(nftVotingPower)
-                  .dividedBy(Web3Pure.toWei(nftInfo.amount))
+                const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
+                  .dividedBy(MILLISECONDS_IN_WEEK)
+                  .dividedBy(52)
                   .multipliedBy(this.statisticsService.currentStakingApr);
+
                 return {
                   ...nftInfo,
                   ...nftRewards,
