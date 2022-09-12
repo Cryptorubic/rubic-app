@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { Deposit } from '../../models/deposit.inteface';
 import { TableTotal } from '../../models/table-total.interface';
 import BigNumber from 'bignumber.js';
+import { WithRoundPipe } from '@app/shared/pipes/with-round.pipe';
 
 @Component({
   selector: 'app-desktop-deposits',
@@ -29,14 +30,16 @@ export class DesktopDepositsComponent {
   }
 
   public getTotalNftRewards(id: number): BigNumber | string {
-    if (this.deposits[id].totalNftRewards.isZero()) {
+    const totalNftRewards = this.deposits[id].totalNftRewards;
+
+    if (totalNftRewards.isZero()) {
       return '0.00';
     }
 
-    if (this.deposits[id].totalNftRewards.lt(0.01)) {
+    if (totalNftRewards.lt(0.01)) {
       return '< 0.01';
     }
 
-    return this.deposits[id].totalNftRewards;
+    return new WithRoundPipe().transform(totalNftRewards.toString(), 'fixedValue', { decimals: 2 });
   }
 }
