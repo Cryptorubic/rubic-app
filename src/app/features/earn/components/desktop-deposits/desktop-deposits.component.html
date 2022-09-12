@@ -41,10 +41,16 @@
             [tuiHintDirection]="'top-left'"
             [tuiHintShowDelay]="50"
           >
-            {{ getTotalNftRewards(id) }}
+            {{ id | functionCall: getTotalNftRewards:this }}
           </span>
         </td>
-        <td class="tui-table__td">{{ deposit.tokenApr | bigNumberFormat: 2 }}%</td>
+        <td class="tui-table__td">
+          {{
+            deposit.tokenApr && deposit.tokenApr >= 0
+              ? (deposit.tokenApr | bigNumberFormat: 2)
+              : '-'
+          }}%
+        </td>
         <td class="tui-table__td">{{ deposit.endTimestamp | date: 'dd.MM.yyyy' }}</td>
         <td class="tui-table__td">
           <div class="tui-table__td-actions">
