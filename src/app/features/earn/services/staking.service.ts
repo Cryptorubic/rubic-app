@@ -34,11 +34,14 @@ import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
 import {
+  MILLISECONDS_IN_MONTH,
   MILLISECONDS_IN_WEEK,
   SECONDS_IN_MONTH,
   WEEKS_IN_YEAR
 } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
+
+const STAKING_END_TIMESTAMP = 1691020800000; // Thu Aug 03 2023 03:00:00 GMT+03
 
 @Injectable()
 export class StakingService {
@@ -49,6 +52,10 @@ export class StakingService {
   public readonly REWARDS_CONTRACT_ADDRESS = ENVIRONMENT.staking.rewardsContractAddress;
 
   public readonly MIN_STAKE_AMOUNT = 1;
+
+  public readonly MAX_LOCK_TIME = Math.trunc(
+    (STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH
+  );
 
   public readonly user$ = this.authService.getCurrentUser();
 
