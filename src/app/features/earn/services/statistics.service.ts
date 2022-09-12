@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, of, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
+import { WEEKS_IN_YEAR } from '@app/shared/constants/time/time';
 
 interface EpochInfo {
   startTime: string;
@@ -37,6 +38,9 @@ export class StatisticsService {
 
   private readonly supply = new BigNumber(124_000_000);
 
+  // @TODO: remove after implementation of apr calculations on BE
+  private readonly currentActiveTokens = 16841697.321;
+
   private readonly numberOfSecondsPerWeek = 604_800;
 
   private readonly numberOfWeekPerYear = 52;
@@ -63,13 +67,10 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.rewardPerSecond$, this.getTotalSupply()]).pipe(
-        map(([rewardPerSecond, totalSupply]) => {
-          this.currentStakingApr = rewardPerSecond
-            .multipliedBy(this.numberOfWeekPerYear)
-            .dividedBy(totalSupply)
-            .multipliedBy(100);
-
+      combineLatest([this.rewardPerSecond$, of(this.currentActiveTokens)]).pipe(
+        map(([rewardPerSecond, currentActiveTokens]) => {
+          const rewardPerYear: BigNumber = rewardPerSecond.multipliedBy(WEEKS_IN_YEAR);
+          this.currentStakingApr = rewardPerYear.dividedBy(currentActiveTokens).multipliedBy(100);
           return this.currentStakingApr;
         })
       )
@@ -95,7 +96,7 @@ export class StatisticsService {
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
-        'totalSupply'
+        'supply'
       )
     ).pipe(
       map(value => {
