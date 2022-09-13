@@ -63,6 +63,10 @@ export class InstantTradeService extends TradeService {
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
+      if (Web3Pure.isNativeAddress(trade.from.address)) {
+        return false;
+      }
+
       const allowance = await Injector.web3PublicService
         .getWeb3Public(trade.from.blockchain)
         .getAllowance(
