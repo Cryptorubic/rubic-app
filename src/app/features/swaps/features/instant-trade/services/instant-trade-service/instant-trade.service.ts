@@ -284,6 +284,7 @@ export class InstantTradeService extends TradeService {
       methodArguments,
       {
         ...transactionOptions,
+        onTransactionHash: options?.onConfirm,
         gas: undefined
       } as TransactionOptions
     );
