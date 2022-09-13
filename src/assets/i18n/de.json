@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Handel auffrischen"
   },
   "errors": {
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",
@@ -510,7 +511,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Automatisch aktualisieren",
-      "autoRefresh": "Preise & Gebühren werden alle 15 Sekunden neu berechnet.",
+      "autoRefresh": "Preise & Gebühren werden alle 30 Sekunden neu berechnet.",
       "slippageTitle": "Schlupftoleranz",
       "slippage": "Deine Transaktion wird automatisch abgebrochen, wenn die gewählte Schlupftoleranz nicht eingehalten werden kann (bzpw. dann, wenn sich die Kurse zwischenzeitlich stark verändert haben). Eine geringe Schlupftoleranz reduziert grundsätzliche das Risiko, dass Deine Transaktion von Frontrunning erfasst wird.",
       "promoCodeTitle": "Promo Code",
