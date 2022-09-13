@@ -1,4 +1,4 @@
-<div class="refresh-button">
+<div class="refresh-button" [tuiHint]="refreshIconTooltip">
   <img
     class="refresh-icon"
     [ngClass]="{ autoRefresh: status !== REFRESH_BUTTON_STATUS.STOPPED }"
@@ -26,5 +26,5 @@
 </div>
 
 <ng-template #refreshIconTooltip
-  ><span class="refresh-icon-tooltip">{{ hint }}</span></ng-template
+  ><span class="refresh-icon-tooltip">{{ 'common.refreshTrade' | translate }}</span></ng-template
 >

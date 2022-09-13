@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Handel auffrischen"
   },
   "errors": {
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",

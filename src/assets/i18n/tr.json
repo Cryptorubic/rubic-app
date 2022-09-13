@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Ticareti yenile"
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",

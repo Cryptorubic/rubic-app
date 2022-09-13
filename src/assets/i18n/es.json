@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Actualizar comercio"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",

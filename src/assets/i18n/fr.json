@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Actualiser le commerce"
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",

@@ -85,13 +85,6 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public stopAnimation: boolean;
 
-  public get hint(): string {
-    if (this.type === 'autoRefresh') {
-      return this.autoUpdate ? 'Disable auto refresh' : 'Enable auto refresh';
-    }
-    return 'Refresh';
-  }
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly settingsService: SettingsService
