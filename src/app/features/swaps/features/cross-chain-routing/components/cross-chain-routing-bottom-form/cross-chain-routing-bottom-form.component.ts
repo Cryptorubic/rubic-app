@@ -175,6 +175,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
+        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
