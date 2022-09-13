@@ -3,7 +3,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '../../services/statistics.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BehaviorSubject, map, skip } from 'rxjs';
+import { BehaviorSubject, skip } from 'rxjs';
 
 @Component({
   selector: 'app-statistics',
@@ -24,12 +24,6 @@ export class StatisticsComponent implements OnInit {
   public readonly apr$ = this.statisticsService.apr$;
 
   private readonly _currentTimestamp$ = new BehaviorSubject<number>(Date.now());
-
-  public readonly aprExists$ = this._currentTimestamp$.asObservable().pipe(
-    map(timestamp => {
-      return timestamp > Date.UTC(2022, 7, 8, 14, 0, 30);
-    })
-  );
 
   public loading = false;
 

@@ -101,7 +101,7 @@ const networks: ReadonlyArray<Network> = [
     scannerUrl: 'https://snowtrace.io/',
     rpcList: [
       'https://rpc.ankr.com/avalanche/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
-
+      'https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key=02530958-c8c4-4297-974c-66203e79800d',
       'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet'
     ],
     imagePath: 'assets/images/icons/coins/avalanche.svg',
