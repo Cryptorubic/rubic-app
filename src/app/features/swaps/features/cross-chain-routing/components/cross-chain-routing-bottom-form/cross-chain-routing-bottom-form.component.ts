@@ -180,7 +180,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.autoSlippageTolerance === next.autoSlippageTolerance &&
+            prev.slippageTolerance === next.slippageTolerance
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
