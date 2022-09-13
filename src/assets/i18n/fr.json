@@ -615,7 +615,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Rafraîchir automatiquement",
-      "autoRefresh": "Mettre à jour les paramètres transactionnels toutes les 15 secondes.",
+      "autoRefresh": "Mettre à jour les paramètres transactionnels toutes les 30 secondes.",
       "slippageTitle": "Tolérance au glissement du prix",
       "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi. (Un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run)",
       "promoCodeTitle": "Code Promo",

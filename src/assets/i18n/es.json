@@ -511,7 +511,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Actualización automática",
-      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
+      "autoRefresh": "Actualiza los parámetros comerciales cada 30 segundos.",
       "slippageTitle": "Tolerancia al deslizamiento",
       "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
       "promoCodeTitle": "Código promocional",

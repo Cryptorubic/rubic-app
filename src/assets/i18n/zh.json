@@ -512,7 +512,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "自動刷新",
-      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "autoRefresh": "每 30 秒更新一次交易參數。",
       "slippageTitle": "滑點公差",
       "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
       "promoCodeTitle": "促銷代碼",
