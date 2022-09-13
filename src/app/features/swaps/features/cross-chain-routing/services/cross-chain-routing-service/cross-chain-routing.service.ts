@@ -9,6 +9,7 @@ import {
   LowSlippageError,
   RubicSdkError,
   TRADE_TYPE,
+  TooLowAmountError,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
@@ -136,7 +137,9 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
+        disabledProviders: isViaDisabled
+          ? [CROSS_CHAIN_TRADE_TYPE.VIA, 'DEBRIDGE', 'LIFI', 'RANGO', 'RUBIC', 'SYMBIOSIS']
+          : [CROSS_CHAIN_TRADE_TYPE.VIA, 'DEBRIDGE', 'LIFI', 'RANGO', 'RUBIC', 'SYMBIOSIS']
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -406,6 +409,11 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
+    }
+    if (error instanceof TooLowAmountError) {
+      return new RubicError(
+        "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
+      );
     }
     return new RubicError(
       'The swap between this pair of tokens is currently unavailable. Please try again later.'
