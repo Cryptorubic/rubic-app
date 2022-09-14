@@ -37,6 +37,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { SwapTransactionOptions } from 'rubic-sdk/src/features/instant-trades/models/swap-transaction-options';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -180,7 +181,7 @@ export class InstantTradeService extends TradeService {
     const receiverAddress =
       this.targetNetworkAddressService.targetAddress?.isValid &&
       this.targetNetworkAddressService.targetAddress?.value;
-    const options = {
+    const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
         confirmCallback?.();
@@ -200,7 +201,7 @@ export class InstantTradeService extends TradeService {
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       }),
-      ...(receiverAddress && { receiverAddress: receiverAddress })
+      ...(receiverAddress && { receiverAddress })
     };
 
     try {
@@ -238,7 +239,7 @@ export class InstantTradeService extends TradeService {
   private async checkFeeAndCreateTrade(
     providerName: TradeType,
     trade: InstantTrade,
-    options: ItOptions
+    options: SwapTransactionOptions
   ): Promise<Partial<TransactionReceipt>> {
     await this.walletConnectorService.checkSettings(trade.from.blockchain);
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
