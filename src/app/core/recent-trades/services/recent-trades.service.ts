@@ -68,21 +68,25 @@ export class RecentTradesService {
       return uiTrade;
     }
 
-    const { srcTxStatus, dstTxStatus } = await this.sdk.crossChainStatusManager.getCrossChainStatus(
-      {
-        fromBlockchain: trade.fromBlockchain,
-        toBlockchain: trade.toBlockchain,
-        srcTxHash: srcTxHash,
-        txTimestamp: trade.timestamp,
-        lifiBridgeType: trade.bridgeType,
-        viaUuid: trade.viaUuid,
-        rangoRequestId: trade.rangoRequestId
-      },
-      trade.crossChainProviderType
-    );
+    const { srcTxStatus, dstTxStatus, dstTxHash } =
+      await this.sdk.crossChainStatusManager.getCrossChainStatus(
+        {
+          fromBlockchain: trade.fromBlockchain,
+          toBlockchain: trade.toBlockchain,
+          srcTxHash: srcTxHash,
+          txTimestamp: trade.timestamp,
+          lifiBridgeType: trade.bridgeType,
+          viaUuid: trade.viaUuid,
+          rangoRequestId: trade.rangoRequestId
+        },
+        trade.crossChainProviderType
+      );
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
+    uiTrade.dstTxLink = dstTxHash
+      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      : null;
 
     return uiTrade;
   }

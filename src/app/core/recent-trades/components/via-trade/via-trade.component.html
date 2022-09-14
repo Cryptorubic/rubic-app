@@ -57,12 +57,23 @@
 
   <!-- Status of dst transaction -->
   <td class="status-to">
-    <app-status-badge
-      [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-      [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-      [class.tui-skeleton]="initialLoading"
-    >
-    </app-status-badge>
+    <ng-container *ngIf="uiTrade?.dstTxLink; else statusBadge">
+      <a [href]="uiTrade.dstTxLink" [class.tui-skeleton]="initialLoading">
+        <app-status-badge
+          [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+        >
+        </app-status-badge>
+      </a>
+    </ng-container>
+    <ng-template #statusBadge>
+      <app-status-badge
+        [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+        [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+        [class.tui-skeleton]="initialLoading"
+      >
+      </app-status-badge>
+    </ng-template>
   </td>
 </ng-container>
 
