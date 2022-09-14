@@ -459,7 +459,7 @@
       "noSearchData": "沒什麼可顯示的",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "連接錢包",
