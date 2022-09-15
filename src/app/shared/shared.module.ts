@@ -23,7 +23,8 @@ import {
   TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule
+  TuiManualHintModule,
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
@@ -147,7 +148,8 @@ import { TargetNetworkAddressComponent } from '@features/swaps/features/cross-ch
     TuiLoaderModule,
     TuiBadgeModule,
     TuiManualHintModule,
-    TuiTagModule
+    TuiTagModule,
+    TuiTextfieldControllerModule
   ],
   exports: [
     BigNumberFormatPipe,

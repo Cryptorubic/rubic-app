@@ -130,15 +130,13 @@ export class CrossChainRoutingService extends TradeService {
   ): Observable<CrossChainProviderTrade> {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-      console.log(isViaDisabled);
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const options: SwapManagerCrossChainCalculationOptions & CrossChainOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        // disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
-        disabledProviders: [CROSS_CHAIN_TRADE_TYPE.VIA]
+        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
