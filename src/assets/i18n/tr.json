@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Ticareti yenile"
   },
   "errors": {
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
@@ -687,7 +688,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "otomatik yenileme",
-      "autoRefresh": "Her 15 saniyede bir ticaret parametrelerini günceller.",
+      "autoRefresh": "Her 30 saniyede bir ticaret parametrelerini günceller.",
       "slippageTitle": "Slippage tolerance",
       "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
       "promoCodeTitle": "promosyon kodu",

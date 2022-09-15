@@ -41,7 +41,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "거래 새로고침"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -512,7 +513,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "자동 새로 고침",
-      "autoRefresh": "15 초마다 거래 매개 변수를 업데이트합니다.",
+      "autoRefresh": "30 초마다 거래 매개 변수를 업데이트합니다.",
       "slippageTitle": "미끄러짐 허용 오차",
       "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
       "promoCodeTitle": "프로모션 코드",

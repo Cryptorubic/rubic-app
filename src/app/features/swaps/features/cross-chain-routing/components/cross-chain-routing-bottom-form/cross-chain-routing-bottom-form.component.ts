@@ -175,11 +175,21 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
+        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
     this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.autoSlippageTolerance === next.autoSlippageTolerance &&
+            prev.slippageTolerance === next.slippageTolerance
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
@@ -194,7 +204,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -226,11 +238,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
-
-    this.conditionalCalculate('normal');
   }
 
-  private conditionalCalculate(type?: CalculateTradeType): void {
+  private conditionalCalculate(type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
       return;
@@ -243,8 +253,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    const { autoRefresh } = this.settingsService.crossChainRoutingValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradeCalculation(): void {
