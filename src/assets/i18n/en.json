@@ -506,7 +506,7 @@
       "autoRefreshTitle": "Auto-refresh",
       "autoRefresh": "Updates trade parameters every 15 seconds.",
       "showReceiverAddressTitle": "Show Receiver Address",
-      "showReceiverAddress": "Show Receiver Address"
+      "showReceiverAddress": "Enter wallet address of the Recipient"
     },
     "bridge": {
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
