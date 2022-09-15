@@ -58,13 +58,13 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
   }
 
   protected saveTradeOnDestroy(): void {
-    if (this.uiTrade.statusTo === CrossChainTxStatus.SUCCESS) {
-      this.recentTradesStoreService.updateTrade({
-        ...this.trade,
-        calculatedStatusTo: CrossChainTxStatus.SUCCESS,
-        calculatedStatusFrom: CrossChainTxStatus.SUCCESS
-      });
-    }
+    const isCrossChainFinished = this.uiTrade.statusTo === CrossChainTxStatus.SUCCESS;
+    this.recentTradesStoreService.updateTrade({
+      ...this.trade,
+      calculatedStatusTo: isCrossChainFinished && CrossChainTxStatus.SUCCESS,
+      calculatedStatusFrom: isCrossChainFinished && CrossChainTxStatus.SUCCESS,
+      dstTxHash: this.uiTrade.dstTxHash
+    });
   }
 
   ngOnDestroy(): void {

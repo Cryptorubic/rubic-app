@@ -42,7 +42,14 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
+    const {
+      srcTxHash,
+      crossChainProviderType,
+      fromToken,
+      toToken,
+      timestamp,
+      dstTxHash: calculatedDstTxHash
+    } = trade;
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -84,9 +91,20 @@ export class RecentTradesService {
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
-    uiTrade.dstTxLink = dstTxHash
-      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
-      : null;
+
+    if (calculatedDstTxHash) {
+      uiTrade.dstTxHash = calculatedDstTxHash;
+      uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+        calculatedDstTxHash,
+        toBlockchainInfo.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
+    } else {
+      uiTrade.dstTxHash = dstTxHash;
+      uiTrade.dstTxLink = dstTxHash
+        ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+        : null;
+    }
 
     return uiTrade;
   }

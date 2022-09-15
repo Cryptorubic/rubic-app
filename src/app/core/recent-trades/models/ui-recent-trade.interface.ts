@@ -10,6 +10,7 @@ export interface UiRecentTrade {
   timestamp: number;
   srcTxLink: string;
   srcTxHash: string;
+  dstTxHash?: string | null;
   dstTxLink?: string | null;
   statusFrom?: CrossChainTxStatus;
   statusTo?: CrossChainTxStatus;

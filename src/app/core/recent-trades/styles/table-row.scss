@@ -54,11 +54,15 @@ td {
     &.tui-skeleton::after {
       content: '';
     }
-
+    
     &::after {
       margin-left: 7px;
-
+      
       content: url('/assets/images/icons/arrow/link-arrow.svg');
     }
   }
+}
+
+.status-to a.hide-arrow::after {
+  visibility: hidden;
 }
