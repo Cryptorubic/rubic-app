@@ -1,4 +1,4 @@
-<div class="refresh-button" [tuiHint]="refreshIconTooltip">
+<div class="refresh-button" [tuiHint]="refreshIconTooltip" (click)="toggleClick()">
   <img
     class="refresh-icon"
     [ngClass]="{ autoRefresh: status !== REFRESH_BUTTON_STATUS.STOPPED }"
@@ -6,7 +6,6 @@
     width="18"
     height="18"
     alt="Toggle auto refresh"
-    (click)="toggleClick()"
     #refreshIcon
   />
   <svg
