@@ -220,7 +220,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setupSwapForm(form);
-        this.conditionalCalculate('normal');
       });
 
     this.swapFormService.input.controls.toToken.valueChanges
