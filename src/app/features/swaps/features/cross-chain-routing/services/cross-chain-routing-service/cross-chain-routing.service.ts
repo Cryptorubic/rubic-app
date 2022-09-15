@@ -5,6 +5,7 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  UnsupportedReceiverAddressError,
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
@@ -95,6 +96,13 @@ export class CrossChainRoutingService extends TradeService {
     return this._crossChainTrade;
   }
 
+  private get receiverAddress(): string {
+    return (
+      this.targetNetworkAddressService.targetAddress?.isValid &&
+      this.targetNetworkAddressService.targetAddress?.value
+    );
+  }
+
   constructor(
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
@@ -136,7 +144,10 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []
+        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : [],
+        ...(this.settingsService.crossChainRoutingValue.showReceiverAddress && {
+          receiverAddress: this.receiverAddress
+        })
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -246,9 +257,7 @@ export class CrossChainRoutingService extends TradeService {
     const blockchain = providerTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
-    const receiverAddress =
-      this.targetNetworkAddressService.targetAddress?.isValid &&
-      this.targetNetworkAddressService.targetAddress?.value;
+    const receiverAddress = this.receiverAddress;
     const swapOptions = {
       onConfirm: onTransactionHash,
       ...(Boolean(shouldCalculateGasPrice) && {
@@ -398,6 +407,10 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    debugger;
+    if (error instanceof UnsupportedReceiverAddressError) {
+      return new RubicError('This provider doesn’t support the receiver address.');
+    }
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
