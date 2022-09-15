@@ -259,7 +259,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
   }
 
   /**
@@ -295,16 +297,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
-  private conditionalCalculate(type?: 'normal' | 'hidden'): void {
+  private conditionalCalculate(type: 'normal' | 'hidden'): void {
     if (
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
       return;
     }
-
-    const { autoRefresh } = this.settingsService.instantTradeValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradesCalculation(): void {
