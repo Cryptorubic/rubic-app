@@ -19,7 +19,8 @@ import {
   Web3Public,
   UnnecessaryApproveError,
   BLOCKCHAIN_NAME,
-  TransactionOptions
+  TransactionOptions,
+  SwapTransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -37,7 +38,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { SwapTransactionOptions } from 'rubic-sdk/src/features/instant-trades/models/swap-transaction-options';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
