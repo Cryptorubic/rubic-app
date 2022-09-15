@@ -135,12 +135,18 @@
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <app-status-badge
-          [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-          *ngIf="uiTrade?.statusTo !== CrossChainTxStatus.REVERT; else revert"
+        <a
+          class="tx__status-to"
+          [href]="uiTrade?.dstTxLink"
+          target="_blank"
+          [class.hide-arrow]="!uiTrade?.dstTxHash"
         >
-        </app-status-badge>
+          <app-status-badge
+            [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+            [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+          >
+          </app-status-badge>
+        </a>
       </div>
     </div>
     <hr class="tx__divider" />

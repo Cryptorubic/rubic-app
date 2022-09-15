@@ -68,6 +68,15 @@ export class RecentTradesService {
       crossChainProviderType
     };
 
+    if (calculatedDstTxHash) {
+      uiTrade.dstTxHash = calculatedDstTxHash;
+      uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+        calculatedDstTxHash,
+        toBlockchainInfo.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
+    }
+
     if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
       uiTrade.statusTo = trade.calculatedStatusTo;
       uiTrade.statusFrom = trade.calculatedStatusFrom;
@@ -91,20 +100,10 @@ export class RecentTradesService {
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
-
-    if (calculatedDstTxHash) {
-      uiTrade.dstTxHash = calculatedDstTxHash;
-      uiTrade.dstTxLink = new ScannerLinkPipe().transform(
-        calculatedDstTxHash,
-        toBlockchainInfo.key,
-        ADDRESS_TYPE.TRANSACTION
-      );
-    } else {
-      uiTrade.dstTxHash = dstTxHash;
-      uiTrade.dstTxLink = dstTxHash
-        ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
-        : null;
-    }
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = dstTxHash
+      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      : null;
 
     return uiTrade;
   }

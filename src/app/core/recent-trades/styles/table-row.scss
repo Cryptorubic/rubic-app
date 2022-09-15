@@ -63,6 +63,12 @@ td {
   }
 }
 
-.status-to a.hide-arrow::after {
-  visibility: hidden;
+.status-to a.hide-arrow { 
+  cursor: default;
+
+  pointer-events: none;
+
+  &::after {
+    visibility: hidden;
+  }
 }
