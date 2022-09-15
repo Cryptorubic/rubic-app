@@ -407,7 +407,6 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
-    debugger;
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
     }

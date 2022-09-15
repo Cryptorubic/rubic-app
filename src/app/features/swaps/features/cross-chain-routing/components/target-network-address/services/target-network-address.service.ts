@@ -47,7 +47,8 @@ export class TargetNetworkAddressService {
           ((this.networksRequiresAddress.includes(form.fromBlockchain) ||
             this.networksRequiresAddress.includes(form.toBlockchain)) &&
             Boolean(form.fromToken && form.toToken)) ||
-          this.settingsService.crossChainRoutingValue.showReceiverAddress;
+          this.settingsService.crossChainRoutingValue.showReceiverAddress ||
+          this.settingsService.instantTradeValue.showReceiverAddress;
 
         this._displayAddress$.next(needDisplayAddress);
 

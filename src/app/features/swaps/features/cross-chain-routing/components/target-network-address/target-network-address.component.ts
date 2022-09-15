@@ -55,9 +55,7 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   private setTargetAddress(): void {
     const targetAddress = this.storeService.getItem('targetAddress');
-    if (targetAddress?.blockchain === this.targetBlockchainName) {
-      this.address.patchValue(targetAddress.address);
-    }
+    this.address.patchValue(targetAddress.address);
   }
 
   private initSubscription(): void {
