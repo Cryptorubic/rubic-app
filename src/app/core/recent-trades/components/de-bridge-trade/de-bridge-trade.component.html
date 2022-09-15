@@ -61,6 +61,7 @@
       [href]="uiTrade?.dstTxLink"
       [class.tui-skeleton]="initialLoading"
       [class.hide-arrow]="!uiTrade?.dstTxLink"
+      target="_blank"
     >
       <app-status-badge
         [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
