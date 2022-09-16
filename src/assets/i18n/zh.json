@@ -506,13 +506,17 @@
       "deadlineTitle": "交易截止日期",
       "deadline": "如果待處理的時間超過此時間段，您的交易將恢復。",
       "autoRefreshTitle": "自動刷新",
-      "autoRefresh": "每 15 秒更新一次交易參數。"
+      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
     "crossChainRouting": {
       "autoRefreshTitle": "自動刷新",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
       "autoRefresh": "每 30 秒更新一次交易參數。",
       "slippageTitle": "滑點公差",
       "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
