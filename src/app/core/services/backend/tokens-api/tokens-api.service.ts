@@ -161,7 +161,7 @@ export class TokensApiService {
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
     // @TODO Fix when back ready
-    const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS).slice(0, -1);
+    const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
 
     const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }).pipe(
@@ -179,34 +179,6 @@ export class TokensApiService {
           }
         })
       )
-    );
-    requests$.push(
-      this.httpService
-        .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network: 'ethereum' })
-        .pipe(
-          tap(networkTokens => {
-            const blockchain = FROM_BACKEND_BLOCKCHAINS['ethereum-pow'];
-            if (networkTokens?.results) {
-              tokensNetworkState$.next({
-                ...tokensNetworkState$.value,
-                [blockchain]: {
-                  ...tokensNetworkState$.value[blockchain],
-                  page: options.page,
-                  maxPage: Math.ceil(networkTokens.count / options.pageSize)
-                }
-              });
-            }
-          }),
-          map(tokens => {
-            return {
-              ...tokens,
-              results: tokens.results.map(token => ({
-                ...token,
-                blockchainNetwork: 'ethereum-pow'
-              }))
-            };
-          })
-        )
     );
     const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
