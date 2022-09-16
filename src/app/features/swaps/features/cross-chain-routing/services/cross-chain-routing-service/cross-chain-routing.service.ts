@@ -64,7 +64,7 @@ import {
   RangoCrossChainTradeProvider
 } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'

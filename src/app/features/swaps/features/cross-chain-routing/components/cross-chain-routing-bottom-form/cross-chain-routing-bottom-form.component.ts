@@ -36,7 +36,7 @@ import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/r
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
@@ -190,12 +190,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             prev.slippageTolerance === next.slippageTolerance
           );
         }),
-        filter(curr => {
-          if (curr.showReceiverAddress === prevToggleValue) {
-            prevToggleValue = curr.showReceiverAddress;
+        filter(settings => {
+          if (settings.showReceiverAddress === prevToggleValue) {
+            prevToggleValue = settings.showReceiverAddress;
             return true;
           }
-          prevToggleValue = curr.showReceiverAddress;
+          prevToggleValue = settings.showReceiverAddress;
           return false;
         }),
         takeUntil(this.destroy$)

@@ -10,9 +10,7 @@ interface TargetAddress {
   isValid: boolean;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TargetNetworkAddressService {
   private readonly networksRequiresAddress: BlockchainName[] = [
     BLOCKCHAIN_NAME.SOLANA,

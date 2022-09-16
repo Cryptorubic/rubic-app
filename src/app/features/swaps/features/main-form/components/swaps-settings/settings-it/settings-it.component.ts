@@ -5,7 +5,7 @@ import {
 } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Component({
   selector: 'app-settings-it',

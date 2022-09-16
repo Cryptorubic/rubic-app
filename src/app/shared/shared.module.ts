@@ -68,7 +68,6 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
 import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
 import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
-import { TargetNetworkAddressComponent } from '@features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +103,6 @@ import { TargetNetworkAddressComponent } from '@features/swaps/features/cross-ch
     SymbiosisWarningTxModalComponent,
     IframeLogoutButtonComponent,
     ViaSlippageWarningModalComponent,
-    TargetNetworkAddressComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -188,8 +186,7 @@ import { TargetNetworkAddressComponent } from '@features/swaps/features/cross-ch
     FunctionCallPipe,
     StatusBadgeComponent,
     ChipsComponent,
-    IframeLogoutButtonComponent,
-    TargetNetworkAddressComponent
+    IframeLogoutButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard],
   entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
