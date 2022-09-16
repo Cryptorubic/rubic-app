@@ -61,8 +61,10 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
     const isCrossChainFinished = this.uiTrade.statusTo === CrossChainTxStatus.SUCCESS;
     this.recentTradesStoreService.updateTrade({
       ...this.trade,
-      calculatedStatusTo: isCrossChainFinished && CrossChainTxStatus.SUCCESS,
-      calculatedStatusFrom: isCrossChainFinished && CrossChainTxStatus.SUCCESS,
+      ...(isCrossChainFinished && {
+        calculatedStatusTo: CrossChainTxStatus.SUCCESS,
+        calculatedStatusFrom: CrossChainTxStatus.SUCCESS
+      }),
       dstTxHash: this.uiTrade.dstTxHash
     });
   }
