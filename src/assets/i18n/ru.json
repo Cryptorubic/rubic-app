@@ -460,7 +460,7 @@
       "noSearchData": "Нет подходящих данных",
       "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
       "backToTokens": "вернутся к списку всех токенов",
-      "unauthorized": "User is not authorized. please log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Подключить кошелёк",

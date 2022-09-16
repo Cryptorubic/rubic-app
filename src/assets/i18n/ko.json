@@ -460,7 +460,7 @@
       "noSearchData": "표시 할 내용 없음",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. please log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "지갑 연결",
