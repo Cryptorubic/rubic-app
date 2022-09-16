@@ -390,6 +390,21 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'BTC',
       decimals: 8
     }
+  },
+  {
+    id: 10001,
+    name: BLOCKCHAIN_NAME.ETHEREUM_POW,
+    label: 'Eth PoW',
+    scannerUrl: 'https://www.oklink.com/en/ethw/',
+    rpcList: ['https://mainnet.ethereumpow.org/'],
+    imagePath: 'assets/images/icons/coins/eth-pow.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Ethereum PoW',
+      symbol: 'ETHW',
+      decimals: 18
+    }
   }
 ];
 

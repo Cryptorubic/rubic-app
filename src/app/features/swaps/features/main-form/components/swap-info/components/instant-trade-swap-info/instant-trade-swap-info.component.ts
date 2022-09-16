@@ -18,7 +18,7 @@ import { SwapInfoService } from '@features/swaps/features/main-form/components/s
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { InstantTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, InstantTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -117,13 +117,18 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       this.slippage = this.settingsService.instantTradeValue.slippageTolerance;
       this.setSlippageAndMinimumReceived();
 
-      const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-      this.priceImpact = PriceImpactService.calculatePriceImpact(
-        fromToken?.price,
-        toToken?.price,
-        fromAmount,
-        toAmount
-      );
+      const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+      if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
+        this.priceImpact = null;
+      } else {
+        this.priceImpact = PriceImpactService.calculatePriceImpact(
+          fromToken?.price,
+          toToken?.price,
+          fromAmount,
+          toAmount
+        );
+      }
+
       if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
         this.priceImpact = null;
       }
