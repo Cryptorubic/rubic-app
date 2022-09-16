@@ -460,7 +460,7 @@
       "noSearchData": "沒什麼可顯示的",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "連接錢包",
@@ -594,7 +594,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "交易成功發送！",
     "successfulCCRSwapTitle": "源網絡交換成功！",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
+    "successfulTradeParagraph": "Check transaction in ",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

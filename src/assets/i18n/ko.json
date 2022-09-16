@@ -460,7 +460,7 @@
       "noSearchData": "표시 할 내용 없음",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "지갑 연결",
@@ -594,7 +594,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "거래가 성공적으로 전송되었습니다!",
     "successfulCCRSwapTitle": "소스 네트워크에서 성공적인 스왑!",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
+    "successfulTradeParagraph": "Check transaction in ",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

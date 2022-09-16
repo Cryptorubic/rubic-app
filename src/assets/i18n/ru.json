@@ -460,7 +460,7 @@
       "noSearchData": "Нет подходящих данных",
       "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
       "backToTokens": "вернутся к списку всех токенов",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Подключить кошелёк",
@@ -594,7 +594,7 @@
     "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
     "successfullySentTransaction": "Транзакция была успешно отправлена!",
     "successfulCCRSwapTitle": "Успешный обмен в исходной сети!",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
+    "successfulTradeParagraph": "Check transaction in ",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
