@@ -681,13 +681,17 @@
       "deadlineTitle": "İşlem son tarihi",
       "deadline": "İşleminiz bu süreden daha uzun süre beklemedeyse işleminiz geri alınacaktır.",
       "autoRefreshTitle": "otomatik yenile",
-      "autoRefresh": "Her 15 saniyede bir ticaret parametrelerini günceller."
+      "autoRefresh": "Her 15 saniyede bir ticaret parametrelerini günceller.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "Belirteçlerin sağlanacağı TRON blok zincirindeki cüzdan adresi."
     },
     "crossChainRouting": {
       "autoRefreshTitle": "otomatik yenileme",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
       "autoRefresh": "Her 30 saniyede bir ticaret parametrelerini günceller.",
       "slippageTitle": "Slippage tolerance",
       "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
