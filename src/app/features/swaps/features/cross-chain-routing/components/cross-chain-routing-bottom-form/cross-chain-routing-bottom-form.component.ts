@@ -175,20 +175,27 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
+        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
     // We did not use distinctUntilChanged because the PREV value was not updated.
-    let prev: boolean;
+    let prevToggleValue: boolean;
     this.settingsService.crossChainRoutingValueChanges
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.autoSlippageTolerance === next.autoSlippageTolerance &&
+            prev.slippageTolerance === next.slippageTolerance
+          );
+        }),
         filter(curr => {
-          if (curr.showReceiverAddress === prev) {
-            prev = curr.showReceiverAddress;
+          if (curr.showReceiverAddress === prevToggleValue) {
+            prevToggleValue = curr.showReceiverAddress;
             return true;
           }
-          prev = curr.showReceiverAddress;
+          prevToggleValue = curr.showReceiverAddress;
           return false;
         }),
         takeUntil(this.destroy$)
@@ -207,7 +214,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
 
     this.targetNetworkAddressService.targetAddress$.subscribe(() => {
       this.conditionalCalculate('normal');
@@ -243,11 +252,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
-
-    this.conditionalCalculate('normal');
   }
 
-  private conditionalCalculate(type?: CalculateTradeType): void {
+  private conditionalCalculate(type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
       return;
@@ -260,8 +267,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    const { autoRefresh } = this.settingsService.crossChainRoutingValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradeCalculation(): void {

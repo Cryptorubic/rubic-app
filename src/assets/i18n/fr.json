@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Actualiser le commerce"
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
@@ -617,9 +618,9 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Rafraîchir automatiquement",
-      "autoRefresh": "Mettre à jour les paramètres transactionnels toutes les 15 secondes.",
       "showReceiverAddressTitle": "Show Receiver Address",
       "showReceiverAddress": "Show Receiver Address",
+      "autoRefresh": "Mettre à jour les paramètres transactionnels toutes les 30 secondes.",
       "slippageTitle": "Tolérance au glissement du prix",
       "slippage": "Votre transaction sera annulée si le prix change défavorablement davantage que le pourcentage saisi. (Un pourcentage inférieur diminue les chances que votre transaction soit devancée par la technique du front-run)",
       "promoCodeTitle": "Code Promo",

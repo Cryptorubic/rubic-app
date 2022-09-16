@@ -41,7 +41,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Обновить сделку"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -514,7 +515,7 @@
     },
     "crossChainRouting": {
       "autoRefreshTitle":  "Автообновление",
-      "autoRefresh": "Обновление курса каждые 15 секунд.",
+      "autoRefresh": "Обновление курса каждые 30 секунд.",
       "showReceiverAddressTitle": "Show Receiver Address",
       "showReceiverAddress": "Show Receiver Address",
       "slippageTitle": "Допустимое проскальзывание",

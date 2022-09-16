@@ -37,6 +37,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 @Injectable()
@@ -65,6 +66,10 @@ export class InstantTradeService extends TradeService {
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
+      if (Web3Pure.isNativeAddress(trade.from.address)) {
+        return false;
+      }
+
       const allowance = await Injector.web3PublicService
         .getWeb3Public(trade.from.blockchain)
         .getAllowance(
@@ -153,7 +158,8 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
     });
   }
 

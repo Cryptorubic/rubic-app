@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, finalize, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -39,8 +39,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+  private readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
@@ -521,8 +520,9 @@ export class TokensService {
   /**
    * Fetches tokens for specific network.
    * @param blockchain Requested network.
+   * @param updateCallback Callback after tokens fetching.
    */
-  public fetchNetworkTokens(blockchain: BlockchainName): void {
+  public fetchNetworkTokens(blockchain: BlockchainName, updateCallback?: () => void): void {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network: blockchain,
@@ -547,6 +547,9 @@ export class TokensService {
                 )
               )
             : of(tokens.result.toArray());
+        }),
+        finalize(() => {
+          updateCallback?.();
         })
       )
       .subscribe((tokens: TokenAmount[]) => {

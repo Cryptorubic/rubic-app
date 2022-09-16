@@ -46,11 +46,13 @@ export class StakeFormComponent implements OnInit {
     { value: 12, label: '12M' }
   ];
 
+  public readonly MAX_LOCK_TIME = this.stakingService.MAX_LOCK_TIME;
+
   public readonly MIN_STAKE_AMOUNT = this.stakingService.MIN_STAKE_AMOUNT;
 
   public readonly rbcTokenBalance$ = this.stakingService.rbcTokenBalance$;
 
-  public readonly durationSliderCtrl = new FormControl(6);
+  public readonly durationSliderCtrl = new FormControl(this.MAX_LOCK_TIME);
 
   public readonly rbcAmountCtrl = new FormControl(null);
 
@@ -83,7 +85,9 @@ export class StakeFormComponent implements OnInit {
 
   public rbcUsdPrice: number;
 
-  public error: StakeButtonError = StakeButtonError.EMPTY_AMOUNT;
+  public amountError = StakeButtonError.EMPTY_AMOUNT;
+
+  public lockTimeExceededError = false;
 
   public readonly errors = StakeButtonError;
 
@@ -115,17 +119,17 @@ export class StakeFormComponent implements OnInit {
     this.selectedAmount = rbcAmount;
 
     if (rbcAmount === '') {
-      this.error = StakeButtonError.EMPTY_AMOUNT;
+      this.amountError = StakeButtonError.EMPTY_AMOUNT;
       return;
     }
 
     if (this.stakingService.rbcTokenBalance?.lt(this.stakingService.parseAmountToBn(rbcAmount))) {
-      this.error = StakeButtonError.INSUFFICIENT_BALANCE_RBC;
+      this.amountError = StakeButtonError.INSUFFICIENT_BALANCE_RBC;
       return;
     }
 
     if (this.stakingService.parseAmountToBn(rbcAmount).lt(this.MIN_STAKE_AMOUNT)) {
-      this.error = StakeButtonError.LESS_THEN_MINIMUM;
+      this.amountError = StakeButtonError.LESS_THEN_MINIMUM;
       return;
     }
 
@@ -133,11 +137,15 @@ export class StakeFormComponent implements OnInit {
       this.stakingService.rbcAllowance.isFinite() &&
       this.stakingService.rbcAllowance.lt(10000000)
     ) {
-      this.error = StakeButtonError.NEED_APPROVE;
+      this.amountError = StakeButtonError.NEED_APPROVE;
       return;
     }
 
-    this.error = StakeButtonError.NULL;
+    this.amountError = StakeButtonError.NULL;
+  }
+
+  public handleDurationError(duration: number): void {
+    this.lockTimeExceededError = duration > this.MAX_LOCK_TIME;
   }
 
   public setMaxAmount(amount: BigNumber): void {
@@ -167,7 +175,10 @@ export class StakeFormComponent implements OnInit {
   }
 
   public stake(): void {
-    const amount = this.rbcAmountCtrl.value;
+    const amount =
+      typeof this.rbcAmountCtrl.value !== 'string'
+        ? this.rbcAmountCtrl.value
+        : new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
     const duration = this.durationSliderCtrl.value;
 
     this.stakingModalService
