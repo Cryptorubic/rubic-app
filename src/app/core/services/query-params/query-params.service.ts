@@ -267,7 +267,9 @@ export class QueryParamsService {
     chain: BlockchainName
   ): Observable<TokenAmount> {
     const similarTokens = tokens.filter(
-      token => token.symbol === symbol && token.blockchain === chain
+      token =>
+        token.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase() &&
+        token.blockchain === chain
     );
 
     if (!similarTokens.size) {
@@ -276,7 +278,9 @@ export class QueryParamsService {
           if (foundTokens?.size) {
             const token =
               foundTokens?.size > 1
-                ? foundTokens.find(el => el.symbol === symbol)
+                ? foundTokens.find(
+                    el => el.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
+                  )
                 : foundTokens.first();
             const newToken = { ...token, amount: new BigNumber(NaN) } as TokenAmount;
             this.tokensService.addToken(newToken);

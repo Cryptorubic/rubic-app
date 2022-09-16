@@ -82,7 +82,8 @@ export class RubicSdkErrorParser {
       err.message.includes('execution reverted: MetaRouter: other side call failed') ||
       err.message.includes('1inch sets increased costs on gas fee') ||
       err.message.includes('err: insufficient funds for gas * price + value') ||
-      err.message.includes('insufficient balance for transfer')
+      err.message.includes('insufficient balance for transfer') ||
+      err.message.includes('Sender balance too low for value specified')
     ) {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'

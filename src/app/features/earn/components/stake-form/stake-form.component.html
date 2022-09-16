@@ -49,6 +49,7 @@
         <button
           class="duration__common-chip"
           [class.duration__common-chip_selected]="durationSliderCtrl.value === duration.value"
+          [disabled]="duration.value > MAX_LOCK_TIME"
           (click)="setDuration(duration.value)"
         >
           {{ duration.label }}
@@ -58,7 +59,13 @@
   </div>
 
   <div class="duration-slider">
-    <tui-slider [formControl]="durationSliderCtrl" [max]="12" [min]="1" [steps]="11"></tui-slider>
+    <tui-slider
+      [formControl]="durationSliderCtrl"
+      [max]="12"
+      [min]="1"
+      [steps]="11"
+      (ngModelChange)="handleDurationError($event)"
+    ></tui-slider>
   </div>
 
   <div class="hint">
@@ -93,8 +100,10 @@
 
       <app-stake-button
         *ngIf="!data.needSwitchNetwork && !data.needLogin"
-        [error]="error"
         [minStakeAmount]="MIN_STAKE_AMOUNT"
+        [maxLockTime]="MAX_LOCK_TIME"
+        [amountError]="amountError"
+        [lockTimeExceededError]="lockTimeExceededError"
         [stakeLoading]="stakeLoading$ | async"
         [approveLoading]="approveLoading$ | async"
         (onApprove)="approve()"

@@ -96,7 +96,7 @@ export class TokensApiService {
    */
   public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
-      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
+      network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
       user: this.authService.userAddress
     };
@@ -109,7 +109,7 @@ export class TokensApiService {
    */
   public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
-      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
+      network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
       user: this.authService.userAddress
     };

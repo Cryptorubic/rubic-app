@@ -240,6 +240,12 @@
       &_selected {
         border: 1px solid $rubic-primary;
       }
+
+      &[disabled] {
+        color: rgba(144, 144, 144, 0.7);
+
+        border: 1px solid transparent;
+      }
     }
   }
 }

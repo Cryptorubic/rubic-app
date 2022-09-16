@@ -26,6 +26,12 @@ export const FOOTER_LINKS: FooterLink[] = [
     link: 'https://t.me/cryptorubic_chat'
   },
   {
+    dark: 'assets/images/contacts/dune.svg',
+    light: 'assets/images/contacts/dune_light.svg',
+    altText: 'Dune',
+    link: 'https://dune.com/rubic_exchange/rubic-general-dashboard'
+  },
+  {
     dark: 'assets/images/contacts/mail.svg',
     light: 'assets/images/contacts/mail_light.svg',
     altText: 'Email',

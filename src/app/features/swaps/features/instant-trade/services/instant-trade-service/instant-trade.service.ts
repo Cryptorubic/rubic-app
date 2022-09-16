@@ -19,7 +19,8 @@ import {
   Web3Public,
   UnnecessaryApproveError,
   BLOCKCHAIN_NAME,
-  TransactionOptions
+  TransactionOptions,
+  SwapTransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -36,6 +37,8 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { ENVIRONMENT } from 'src/environments/environment';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -55,13 +58,18 @@ export class InstantTradeService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('instant-trade');
   }
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
+      if (Web3Pure.isNativeAddress(trade.from.address)) {
+        return false;
+      }
+
       const allowance = await Injector.web3PublicService
         .getWeb3Public(trade.from.blockchain)
         .getAllowance(
@@ -150,7 +158,8 @@ export class InstantTradeService extends TradeService {
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled'
+      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
     });
   }
 
@@ -174,7 +183,11 @@ export class InstantTradeService extends TradeService {
     let subscription$: Subscription;
 
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-    const options = {
+
+    const receiverAddress =
+      this.targetNetworkAddressService.targetAddress?.isValid &&
+      this.targetNetworkAddressService.targetAddress?.value;
+    const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
         confirmCallback?.();
@@ -193,7 +206,8 @@ export class InstantTradeService extends TradeService {
       },
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      })
+      }),
+      ...(receiverAddress && { receiverAddress })
     };
 
     try {
@@ -231,7 +245,7 @@ export class InstantTradeService extends TradeService {
   private async checkFeeAndCreateTrade(
     providerName: TradeType,
     trade: InstantTrade,
-    options: ItOptions
+    options: SwapTransactionOptions
   ): Promise<Partial<TransactionReceipt>> {
     await this.walletConnectorService.checkSettings(trade.from.blockchain);
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
@@ -278,6 +292,7 @@ export class InstantTradeService extends TradeService {
       methodArguments,
       {
         ...transactionOptions,
+        onTransactionHash: options?.onConfirm,
         gas: undefined
       } as TransactionOptions
     );
