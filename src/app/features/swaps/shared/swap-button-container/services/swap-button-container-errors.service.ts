@@ -9,7 +9,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
@@ -122,7 +122,6 @@ export class SwapButtonContainerErrorsService {
     this.authService.getCurrentUser().subscribe(() => {
       this.checkWalletSupportsFromBlockchain();
       this.checkUserBalance();
-      this.checkMultichainWallet();
 
       this.updateError();
     });
@@ -168,15 +167,10 @@ export class SwapButtonContainerErrorsService {
   }
 
   private checkSelectedToken(): void {
-    if (
+    this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] =
       isNil(this.swapFormService.inputValue?.fromToken) &&
       isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
-      isNil(this.queryParamsService.currentQueryParams?.from)
-    ) {
-      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = true;
-    } else {
-      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = false;
-    }
+      isNil(this.queryParamsService.currentQueryParams?.from);
   }
 
   /**
@@ -190,21 +184,6 @@ export class SwapButtonContainerErrorsService {
       this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(fromBlockchain);
     } else {
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
-    }
-  }
-
-  /**
-   * Checks that if wallet is multichain, then blockchains are correct.
-   */
-  private checkMultichainWallet(): void {
-    if (this.walletConnectorService.provider) {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      const { isMultiChainWallet } = this.walletConnectorService.provider;
-
-      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
-        isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
-    } else {
-      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] = false;
     }
   }
 
