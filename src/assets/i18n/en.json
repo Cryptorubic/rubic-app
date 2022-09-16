@@ -448,7 +448,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in  and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "defaultTitle": "Tokens List",
@@ -459,7 +459,7 @@
       "noSearchData": "Nothing to show",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Connect Wallet",
@@ -589,7 +589,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "The transaction was successfully sent!",
     "successfulCCRSwapTitle": "Successful swap in source network!",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
+    "successfulTradeParagraph": "Check transaction in ",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
     "successApproveToken": "Successful {{token}} approve",
