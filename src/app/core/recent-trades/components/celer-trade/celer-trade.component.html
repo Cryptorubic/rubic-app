@@ -1,12 +1,16 @@
 <ng-container *ngIf="mode === 'table-row'; else mobile">
   <!-- Transaction date -->
-  <td class="date" [class.tui-skeleton]="initialLoading">
-    {{ (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm') }}
+  <td class="date">
+    <span [class.tui-skeleton]="initialLoading">
+      {{
+        (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
+      }}
+    </span>
   </td>
 
   <!-- Src crypto-asset -->
-  <td class="from" [class.tui-skeleton]="initialLoading">
-    <div class="asset">
+  <td class="from">
+    <div class="asset" [class.tui-skeleton]="initialLoading">
       <div
         class="asset__token-image"
         [ngStyle]="{
@@ -23,8 +27,8 @@
   </td>
 
   <!-- Status of src transaction -->
-  <td class="status-from" [class.tui-skeleton]="initialLoading">
-    <a [href]="uiTrade?.srcTxLink" target="_blank">
+  <td class="status-from">
+    <a [href]="uiTrade?.srcTxLink" target="_blank" [class.tui-skeleton]="initialLoading">
       <app-status-badge
         [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
         [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
@@ -34,8 +38,8 @@
   </td>
 
   <!-- Dst crypto-asset -->
-  <td class="to" [class.tui-skeleton]="initialLoading">
-    <div class="asset">
+  <td class="to">
+    <div class="asset" [class.tui-skeleton]="initialLoading">
       <div
         class="asset__token-image"
         [ngStyle]="{
@@ -53,18 +57,15 @@
 
   <!-- Status of dst transaction -->
   <td class="status-to">
-    <a
-      [href]="uiTrade?.dstTxLink"
-      [class.tui-skeleton]="initialLoading"
-      [class.hide-arrow]="!uiTrade?.dstTxLink"
-      target="_blank"
-    >
-      <app-status-badge
-        [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-        [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-      >
-      </app-status-badge>
-    </a>
+    <div [class.tui-skeleton]="initialLoading">
+      <a [href]="uiTrade?.dstTxLink" [class.hide-arrow]="!uiTrade?.dstTxLink" target="_blank">
+        <app-status-badge
+          [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+        >
+        </app-status-badge>
+      </a>
+    </div>
   </td>
 </ng-container>
 

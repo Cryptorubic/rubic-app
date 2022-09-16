@@ -57,18 +57,15 @@
 
   <!-- Status of dst transaction -->
   <td class="status-to">
-    <a
-      [href]="uiTrade?.dstTxLink"
-      [class.tui-skeleton]="initialLoading"
-      [class.hide-arrow]="!uiTrade?.dstTxLink"
-      target="_blank"
-    >
-      <app-status-badge
-        [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
-        [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
-      >
-      </app-status-badge>
-    </a>
+    <div [class.tui-skeleton]="initialLoading">
+      <a [href]="uiTrade?.dstTxLink" [class.hide-arrow]="!uiTrade?.dstTxLink" target="_blank">
+        <app-status-badge
+          [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+          [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
+        >
+        </app-status-badge>
+      </a>
+    </div>
   </td>
 </ng-container>
 
