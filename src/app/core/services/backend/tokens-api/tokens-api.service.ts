@@ -160,7 +160,6 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    // @TODO Fix when back ready
     const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
 
     const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
