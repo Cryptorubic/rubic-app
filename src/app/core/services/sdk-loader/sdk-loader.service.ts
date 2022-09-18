@@ -5,7 +5,6 @@ import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletProvider } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 @Injectable({
   providedIn: 'root'
@@ -37,9 +36,10 @@ export class SdkLoaderService {
 
   private async updateSdkUser(): Promise<void> {
     if (this.authService.user) {
+      const chainType = this.authService.userChainType;
       const walletProvider: WalletProvider = {
-        [CHAIN_TYPE.EVM]: {
-          address: this.authService.user.address,
+        [chainType]: {
+          address: this.authService.userAddress,
           core: this.walletConnectorService.provider.wallet
         }
       };

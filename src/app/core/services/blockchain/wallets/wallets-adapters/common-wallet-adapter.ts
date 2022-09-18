@@ -1,5 +1,5 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
@@ -7,11 +7,12 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { isBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { NgZone } from '@angular/core';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
+  public abstract readonly walletType: CHAIN_TYPE;
+
   protected selectedAddress: string;
 
   protected selectedChain: string;
@@ -26,8 +27,6 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   get isInstalled(): boolean {
     return Boolean(this.wallet);
   }
-
-  abstract get walletType(): BlockchainType;
 
   /**
    * is the blockchain provider activated
@@ -108,8 +107,6 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     }
     return null;
   }
-
-  public abstract signPersonal(message: string): Promise<string>;
 
   /**
    * activate the blockchain provider

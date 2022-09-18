@@ -18,7 +18,7 @@ export interface Network<T = BlockchainName> {
   name: T;
   label: string;
   scannerUrl: string;
-  rpcList: string[];
+  rpcList: unknown[];
   imagePath: string;
   nativeCoin: NativeCoin;
 }
@@ -404,6 +404,40 @@ const networks: ReadonlyArray<Network> = [
       name: 'Ethereum PoW',
       symbol: 'ETHW',
       decimals: 18
+    }
+  },
+  {
+    id: 10001,
+    name: BLOCKCHAIN_NAME.ETHEREUM_POW,
+    label: 'Eth PoW',
+    scannerUrl: 'https://www.oklink.com/en/ethw/',
+    rpcList: ['https://mainnet.ethereumpow.org/'],
+    imagePath: 'assets/images/icons/coins/eth-pow.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Ethereum PoW',
+      symbol: 'ETHW',
+      decimals: 18
+    }
+  },
+  {
+    id: 195,
+    name: BLOCKCHAIN_NAME.TRON,
+    label: 'Tron',
+    scannerUrl: 'https://tronscan.org/#/',
+    rpcList: [
+      {
+        fullHost: 'https://api.trongrid.io'
+      }
+    ],
+    imagePath: 'assets/images/icons/coins/tron.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.TRON,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'TRON',
+      symbol: 'TRON',
+      decimals: 6
     }
   }
 ];

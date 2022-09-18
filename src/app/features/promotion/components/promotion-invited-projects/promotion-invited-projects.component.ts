@@ -10,6 +10,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
@@ -53,7 +54,8 @@ export class PromotionInvitedProjectsComponent {
       .getCurrentUser()
       .pipe(
         map(
-          user => !!user?.address && this.walletConnectorService.provider.walletType === 'ethLike'
+          user =>
+            !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
         )
       );
   }

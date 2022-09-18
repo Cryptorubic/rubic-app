@@ -71,7 +71,7 @@ export class UserProfileComponent implements AfterViewInit {
       this.cdr.markForCheck();
     });
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
-      this.authService.setCurrentUser(address);
+      this.authService.setCurrentUser(address, this.walletConnectorService.chainType);
       this.cdr.markForCheck();
     });
   }

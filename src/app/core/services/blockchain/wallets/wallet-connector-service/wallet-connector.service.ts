@@ -1,23 +1,22 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, from, of, Subject } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
-import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
-import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
+import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/metamask-wallet-adapter';
+import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-connect-adapter';
+import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { map } from 'rxjs/operators';
+import { share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Connection } from '@solana/web3.js';
-import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
+import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { Near } from 'near-api-js';
-import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { AccountError } from '@core/errors/models/provider/account-error';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { NetworkError } from '@core/errors/models/provider/network-error';
@@ -26,23 +25,18 @@ import { NotSupportedNetworkError } from '@core/errors/models/provider/not-suppo
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { Token } from '@shared/models/tokens/token';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { BitkeepWalletAdapter } from '../wallets-adapters/eth-like/bitkeep-wallet-adapter';
-import { BLOCKCHAIN_NAME, BlockchainName, WalletProvider } from 'rubic-sdk';
+import { BitkeepWalletAdapter } from '../wallets-adapters/evm/bitkeep-wallet-adapter';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CHAIN_TYPE,
+  EVM_BLOCKCHAIN_NAME,
+  WalletProvider
+} from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { TronLinkAdapter } from '@core/services/blockchain/wallets/wallets-adapters/tron/tron-link-adapter';
 import { switchTap } from '@shared/utils/utils';
 import { provider as Web3Provider } from 'web3-core';
-
-interface WCWallets {
-  [P: string]: {
-    mobile: {
-      native: string;
-      universal: string;
-    };
-    metadata: {
-      shortName: string;
-    };
-  };
-}
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +56,10 @@ export class WalletConnectorService {
 
   public get address(): string | undefined {
     return this.provider?.address;
+  }
+
+  public get chainType(): CHAIN_TYPE {
+    return this.provider?.walletType;
   }
 
   public get network(): BlockchainData {
@@ -93,13 +91,16 @@ export class WalletConnectorService {
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
     switchTap(address => {
       const walletProvider: WalletProvider = address
-        ? ({
-            address,
-            core: this.provider.wallet as Web3Provider | Web3
-          } as undefined)
+        ? {
+            [this.chainType]: {
+              address,
+              core: this.provider.wallet as Web3Provider | Web3
+            }
+          }
         : undefined;
       return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
-    })
+    }),
+    share()
   );
 
   public readonly web3: Web3;
@@ -137,19 +138,6 @@ export class WalletConnectorService {
     this.web3 = new Web3();
   }
 
-  /**
-   * Calculates an Ethereum specific signature.
-   * @param message Data to sign.
-   * @return The signature.
-   */
-  public async signPersonal(message: string): Promise<string> {
-    try {
-      return this.provider.signPersonal(message);
-    } catch (err: unknown) {
-      throw new SignRejectError();
-    }
-  }
-
   public emitTransaction(): void {
     this._transactionEmitter$.next();
   }
@@ -170,12 +158,10 @@ export class WalletConnectorService {
   }
 
   public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    return Object.values(BLOCKCHAIN_NAME).filter(
-      blockchain =>
-        blockchain !== BLOCKCHAIN_NAME.SOLANA &&
-        blockchain !== BLOCKCHAIN_NAME.NEAR &&
-        blockchain !== BLOCKCHAIN_NAME.BITCOIN
-    );
+    if (this.chainType === CHAIN_TYPE.EVM) {
+      return Object.values(EVM_BLOCKCHAIN_NAME);
+    }
+    return [BLOCKCHAIN_NAME.TRON];
   }
 
   public async activate(): Promise<void> {
@@ -248,7 +234,7 @@ export class WalletConnectorService {
           this.zone
         );
         await metamaskWalletAdapter.setupDefaultValues();
-        return metamaskWalletAdapter as CommonWalletAdapter;
+        return metamaskWalletAdapter;
       },
       [WALLET_NAME.BITKEEP]: async () => {
         const bitkeepWalletAdapter = new BitkeepWalletAdapter(
@@ -259,7 +245,7 @@ export class WalletConnectorService {
           this.zone
         );
         await bitkeepWalletAdapter.setupDefaultValues();
-        return bitkeepWalletAdapter as CommonWalletAdapter;
+        return bitkeepWalletAdapter;
       },
       [WALLET_NAME.WALLET_LINK]: async () =>
         new WalletLinkWalletAdapter(
@@ -270,7 +256,17 @@ export class WalletConnectorService {
           this.storage,
           this.zone,
           chainId
-        )
+        ),
+      [WALLET_NAME.TRON_LINK]: async () => {
+        const tronLinkAdapter = new TronLinkAdapter(
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService,
+          this.zone
+        );
+        await tronLinkAdapter.setupDefaultValues();
+        return tronLinkAdapter;
+      }
     };
     return walletAdapters[walletName]();
   }
@@ -401,23 +397,5 @@ export class WalletConnectorService {
         return false;
       }
     }
-  }
-
-  /**
-   * Fetches wallets from WC API, filters by black list and takes names.
-   * @return Observable<string[]> List of wallets names.
-   */
-  private getWalletConnectWallets(): Observable<string[]> {
-    const url = 'https://registry.walletconnect.org/data/wallets.json';
-    const blackListWallets = ['trust'];
-    return this.httpService.get<WCWallets>(null, null, url).pipe(
-      map(registry => {
-        const mobileWallets = Object.values(registry).filter(el => el.mobile?.native);
-        const allowMobileWallets = mobileWallets.filter(
-          el => !blackListWallets.includes(el.metadata.shortName.toLowerCase())
-        );
-        return allowMobileWallets.map(el => el.metadata.shortName);
-      })
-    );
   }
 }

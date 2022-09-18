@@ -10,6 +10,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WrongWalletError } from '@core/errors/models/promotion/wrong-wallet.error';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 /**
  * Block with promotion statistics and referral link.
@@ -51,7 +52,8 @@ export class PromotionStatsComponent implements OnInit {
       .getCurrentUser()
       .pipe(
         map(
-          user => !!user?.address && this.walletConnectorService.provider.walletType === 'ethLike'
+          user =>
+            !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
         )
       );
 
@@ -64,7 +66,7 @@ export class PromotionStatsComponent implements OnInit {
   ngOnInit(): void {
     this.isWalletConnected$.pipe(takeUntil(this.destroy$)).subscribe(isAuthorized => {
       const isNotEthLikeWallet =
-        isAuthorized && this.walletConnectorService.provider.walletType !== 'ethLike';
+        isAuthorized && this.walletConnectorService.provider.walletType !== CHAIN_TYPE.EVM;
       if (isNotEthLikeWallet) {
         this.errorsService.catch(new WrongWalletError());
       }

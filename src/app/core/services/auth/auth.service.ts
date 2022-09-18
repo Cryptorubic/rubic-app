@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
-import { WalletLoginInterface, UserInterface } from './models/user.interface';
+import { UserInterface } from './models/user.interface';
 import { StoreService } from '../store/store.service';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -18,6 +18,7 @@ import { BrowserService } from '../browser/browser.service';
 import { BROWSER } from '@app/shared/models/browser/browser';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -36,17 +37,16 @@ export class AuthService {
    */
   private readonly currentUser$: BehaviorSubject<UserInterface>;
 
-  /**
-   * Code when user session is still active.
-   */
-  private readonly USER_IS_IN_SESSION_CODE = '1000';
-
   get user(): UserInterface {
     return this.currentUser$.getValue();
   }
 
   get userAddress(): string {
     return this.user?.address;
+  }
+
+  get userChainType(): string {
+    return this.user?.chainType;
   }
 
   constructor(
@@ -70,39 +70,6 @@ export class AuthService {
    */
   public getCurrentUser(): Observable<UserInterface> {
     return this.currentUser$.asObservable();
-  }
-
-  /**
-   * Fetch authorized user address or auth message in case there's no authorized user.
-   */
-  private fetchWalletLoginBody(): Observable<WalletLoginInterface> {
-    return this.httpService.get<WalletLoginInterface>('auth/wallets/login/', {});
-  }
-
-  /**
-   * Authenticate user on backend.
-   * @param address wallet address
-   * @param nonce nonce to sign
-   * @param signature signed nonce
-   * @param walletProvider wallet provider
-   * @return Authentication key.
-   */
-  private sendSignedNonce(
-    address: string,
-    nonce: string,
-    signature: string,
-    walletProvider: WALLET_NAME
-  ): Promise<void> {
-    return this.httpService
-      .post('auth/wallets/login/', {
-        address,
-        message: nonce,
-        signedMessage: signature,
-        walletProvider,
-        type: this.walletConnectorService.provider.walletType.toLowerCase()
-      })
-      .pipe(switchMap(() => EMPTY))
-      .toPromise();
   }
 
   /**
@@ -135,20 +102,23 @@ export class AuthService {
     }
   }
 
-  public setCurrentUser(address: string): void {
+  public setCurrentUser(address: string, chainType: CHAIN_TYPE): void {
     if (compareAddresses(address, this.userAddress)) {
       return;
     }
 
     this.cookieService.set('address', address, 7, null, null, null, null);
-    this.currentUser$.next({ address });
+    this.currentUser$.next({ address, chainType });
   }
 
   private activateProviderAndSignIn(address: string): Observable<void> {
     return from(this.walletConnectorService.activate()).pipe(
       switchMap(() => {
         if (compareAddresses(address, this.walletConnectorService.address)) {
-          this.currentUser$.next({ address: this.walletConnectorService.address });
+          this.currentUser$.next({
+            address: this.walletConnectorService.address,
+            chainType: this.walletConnectorService.chainType
+          });
           return of() as Observable<void>;
         }
         return this.serverlessSignIn();
@@ -175,8 +145,8 @@ export class AuthService {
 
       if (permissions) {
         await this.walletConnectorService.activate();
-        const { address } = this.walletConnectorService;
-        this.currentUser$.next({ address } || null);
+        const { address, chainType } = this.walletConnectorService;
+        this.currentUser$.next({ address, chainType } || null);
         this.cookieService.set('address', address, 7, null, null, null, null);
 
         if (provider) {
@@ -186,47 +156,6 @@ export class AuthService {
         this.currentUser$.next(null);
       }
 
-      this.isAuthProcess = false;
-    } catch (err) {
-      this.catchSignIn(err);
-    }
-  }
-
-  /**
-   * Initiate iframe authentication via wallet message signing
-   */
-  public async iframeSignIn(): Promise<void> {
-    try {
-      this.isAuthProcess = true;
-      const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission = permissions.find(
-        permission => permission.parentCapability === 'eth_accounts'
-      );
-
-      if (accountsPermission) {
-        await this.walletConnectorService.activate();
-
-        const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
-
-        if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-          this.currentUser$.next({ address: this.walletConnectorService.provider.address });
-          this.isAuthProcess = false;
-          return;
-        }
-
-        const { message } = walletLoginBody.payload;
-        const signature = await this.walletConnectorService.signPersonal(message);
-        await this.sendSignedNonce(
-          this.walletConnectorService.address,
-          message,
-          signature,
-          this.walletConnectorService.provider.walletName
-        );
-
-        this.currentUser$.next({ address: this.walletConnectorService.address });
-      } else {
-        this.currentUser$.next(null);
-      }
       this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);

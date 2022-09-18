@@ -1,3 +1,5 @@
+import { CHAIN_TYPE } from 'rubic-sdk';
+
 export interface WalletLoginInterface {
   code: string;
   payload: {
@@ -10,6 +12,7 @@ export interface WalletLoginInterface {
 
 export interface UserInterface {
   address: string;
+  chainType: CHAIN_TYPE;
 }
 
 export interface AuthUserInterface {

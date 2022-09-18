@@ -14,8 +14,11 @@ import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletconnectError } from '@core/errors/models/provider/walletconnect-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
+  public readonly walletType = CHAIN_TYPE.EVM;
+
   protected isEnabled: boolean;
 
   protected selectedAddress: string;
@@ -25,10 +28,6 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected readonly onAddressChanges$: BehaviorSubject<string>;
 
   protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>;
-
-  get walletType(): 'ethLike' | 'solana' {
-    return 'ethLike';
-  }
 
   get isMultiChainWallet(): boolean {
     const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];

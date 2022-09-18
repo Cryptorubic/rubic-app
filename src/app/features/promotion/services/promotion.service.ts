@@ -11,6 +11,7 @@ import { SortParameter } from '@features/promotion/models/sort-parameter.interfa
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
 import { comparators } from '@features/promotion/table-comporators';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 @Injectable()
 export class PromotionService {
@@ -144,7 +145,7 @@ export class PromotionService {
       .pipe(map(user => !!user?.address))
       .subscribe(isAuthorized => {
         const isEthLikeWalletConnected =
-          isAuthorized && this.walletConnectorService.provider.walletType === 'ethLike';
+          isAuthorized && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM;
         if (isEthLikeWalletConnected) {
           this.updatePromotionData();
           this.updatePromotionStatistics();

@@ -8,26 +8,22 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
+import { MetamaskError } from '@core/errors/models/provider/metamask-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
-import { RubicWindow } from '@app/shared/utils/rubic-window';
-import { RubicError } from '@core/errors/models/rubic-error';
-import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { NgZone } from '@angular/core';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
-export class BitkeepWalletAdapter extends CommonWalletAdapter {
+export class MetamaskWalletAdapter extends CommonWalletAdapter {
+  public readonly walletType = CHAIN_TYPE.EVM;
+
   public get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get walletType(): BlockchainType {
-    return 'ethLike';
-  }
-
   public get walletName(): WALLET_NAME {
-    return WALLET_NAME.BITKEEP;
+    return WALLET_NAME.METAMASK;
   }
 
   constructor(
@@ -38,24 +34,23 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     zone: NgZone
   ) {
     super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
-
-    const ethereum = (window as RubicWindow).bitkeep?.ethereum;
-    BitkeepWalletAdapter.checkErrors(ethereum);
+    const { ethereum } = window;
+    MetamaskWalletAdapter.checkErrors(ethereum);
     web3.setProvider(ethereum);
     this.wallet = ethereum;
     this.handleEvents();
   }
 
   /**
-   * Checks possible BitKeep errors.
+   * Checks possible metamask errors.
    * @param ethereum Global ethereum object.
    */
   private static checkErrors(ethereum: RubicAny): void {
-    if (!ethereum?.isBitKeep) {
-      throw new BitKeepError();
+    if (!ethereum?.isMetaMask) {
+      throw new MetamaskError();
     }
 
-    // installed coinbase chrome extension
+    // installed coinbase Chrome extension
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }
@@ -116,13 +111,24 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
       if (
         error.code === 4001 ||
         // metamask browser
-        error.message?.toLowerCase().includes('user denied message signature') ||
-        // Bitkeep
-        error.message?.toLowerCase().includes('user rejected the request')
+        error.message?.toLowerCase().includes('user denied message signature')
       ) {
         throw new SignRejectError();
       }
+      throw new MetamaskError();
     }
+  }
+
+  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
+    try {
+      return this.wallet.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
   }
 
   public deActivate(): void {
@@ -133,7 +139,7 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
 
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      throw new RubicError('Please make sure that you have BitKeep plugin installed and unlocked.');
+      throw new MetamaskError();
     }
     if (this.getNetwork().name !== token.blockchain) {
       throw new NetworkError(token.blockchain);

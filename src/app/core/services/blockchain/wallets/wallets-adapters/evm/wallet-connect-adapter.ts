@@ -3,7 +3,7 @@ import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/wallet-connect-abstract';
+import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { NgZone } from '@angular/core';
 
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {

@@ -13,23 +13,21 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
-import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
+  public readonly walletType = CHAIN_TYPE.EVM;
+
   private isMobileMode: boolean = false;
 
   private defaultWalletParams: WalletLinkOptions;
 
   public get isMultiChainWallet(): boolean {
     return false;
-  }
-
-  get walletType(): BlockchainType {
-    return 'ethLike';
   }
 
   public get walletName(): WALLET_NAME {
@@ -74,7 +72,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaultWalletParams);
     this.selectedChain = chainId.toString();
-    return walletLink.makeWeb3Provider(chain.rpcList[0], chainId);
+    return walletLink.makeWeb3Provider(chain.rpcList[0] as string, chainId);
   }
 
   public async signPersonal(message: string): Promise<string> {

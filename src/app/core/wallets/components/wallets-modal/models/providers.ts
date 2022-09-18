@@ -14,6 +14,17 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInVerticalMobileIframe: false
   },
   {
+    name: 'TronLink',
+    value: WALLET_NAME.TRON_LINK,
+    img: './assets/images/icons/wallets/tronlink.webp',
+    desktopOnly: true,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: false,
+    supportsInVerticalIframe: false,
+    supportsInVerticalMobileIframe: false
+  },
+  {
     name: 'BitKeep',
     value: WALLET_NAME.BITKEEP,
     img: './assets/images/icons/wallets/bitkeep.svg',
