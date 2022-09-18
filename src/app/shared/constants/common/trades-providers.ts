@@ -419,10 +419,6 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
 };
 
 const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
-  [CROSS_CHAIN_TRADE_TYPE.RUBIC]: {
-    name: 'Rubic',
-    image: ''
-  },
   [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]: {
     name: 'Symbiosis',
     image: `${imageBasePath}symbiosis.png`,
@@ -448,6 +444,10 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
     name: 'Rango',
+    image: ``
+  },
+  [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: {
+    name: 'Bridgers',
     image: ``
   }
 };

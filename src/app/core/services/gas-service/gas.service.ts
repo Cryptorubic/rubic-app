@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME, Injector } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,

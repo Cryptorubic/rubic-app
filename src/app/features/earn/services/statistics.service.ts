@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, Web3Pure, Injector, EvmWeb3Public } from 'rubic-sdk';
 import { BehaviorSubject, combineLatest, from, Observable, of, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
@@ -87,7 +86,7 @@ export class StatisticsService {
 
   constructor(private readonly coingeckoApiService: CoingeckoApiService) {}
 
-  private static get blockchainAdapter(): Web3Public {
+  private static get blockchainAdapter(): EvmWeb3Public {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
@@ -124,7 +123,7 @@ export class StatisticsService {
         STAKING_ROUND_THREE.REWARDS.address,
         STAKING_ROUND_THREE.REWARDS.abi,
         'epochInfo',
-        { methodArguments: [currentEpochId] }
+        [currentEpochId]
       ) as Promise<EpochInfo>
     );
   }

@@ -24,8 +24,14 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
-import { BLOCKCHAIN_NAME, CrossChainTradeType, Web3Public, CrossChainTxStatus } from 'rubic-sdk';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import {
+  BLOCKCHAIN_NAME,
+  CrossChainTradeType,
+  CrossChainTxStatus,
+  EvmWeb3Public,
+  EvmBlockchainName,
+  Injector
+} from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Component({
@@ -53,7 +59,7 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private srcTxHash: string;
 
-  private srcWeb3Public: Web3Public;
+  private srcWeb3Public: EvmWeb3Public;
 
   private readonly _srcTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
     CrossChainTxStatus.PENDING
@@ -120,7 +126,7 @@ export class SwapSchemeModalComponent implements OnInit {
           return from(
             this.sdk.crossChainStatusManager.getCrossChainStatus(
               {
-                fromBlockchain: this.fromBlockchain.key,
+                fromBlockchain: this.fromBlockchain.key as EvmBlockchainName,
                 toBlockchain: this.toBlockchain.key,
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
@@ -186,7 +192,7 @@ export class SwapSchemeModalComponent implements OnInit {
               from(
                 this.sdk.crossChainStatusManager.getCrossChainStatus(
                   {
-                    fromBlockchain: this.fromBlockchain.key,
+                    fromBlockchain: this.fromBlockchain.key as EvmBlockchainName,
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,

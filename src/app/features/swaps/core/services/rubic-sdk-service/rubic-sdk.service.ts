@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import SDK, {
+import {
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
   InstantTradesManager,
-  TokensManager
+  SDK
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -25,10 +25,6 @@ export class RubicSdkService {
       throw new Error('Rubic SDK is not initiated.');
     }
     return this._SDK;
-  }
-
-  public get tokens(): TokensManager {
-    return this.SDK.tokens;
   }
 
   public get symbiosis(): CrossChainSymbiosisManager {

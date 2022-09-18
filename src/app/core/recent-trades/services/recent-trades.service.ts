@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { BlockchainName, CrossChainTxStatus } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { EvmBlockchainName } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 @Injectable()
 export class RecentTradesService {
@@ -70,7 +71,7 @@ export class RecentTradesService {
 
     const { srcTxStatus, dstTxStatus } = await this.sdk.crossChainStatusManager.getCrossChainStatus(
       {
-        fromBlockchain: trade.fromBlockchain,
+        fromBlockchain: trade.fromBlockchain as EvmBlockchainName,
         toBlockchain: trade.toBlockchain,
         srcTxHash: srcTxHash,
         txTimestamp: trade.timestamp,

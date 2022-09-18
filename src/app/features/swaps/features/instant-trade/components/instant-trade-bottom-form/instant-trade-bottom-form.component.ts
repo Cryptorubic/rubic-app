@@ -12,6 +12,7 @@ import { SwapFormService } from '@features/swaps/features/main-form/services/swa
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
+  BlockchainsInfo,
   InstantTrade,
   InstantTradeError,
   TRADE_TYPE,
@@ -184,7 +185,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public get isFromNative(): boolean {
-    return Web3Pure.isNativeAddress(this.fromToken.address);
+    return Web3Pure[BlockchainsInfo.getChainType(this.fromToken.blockchain)].isNativeAddress(
+      this.fromToken.address
+    );
   }
 
   constructor(

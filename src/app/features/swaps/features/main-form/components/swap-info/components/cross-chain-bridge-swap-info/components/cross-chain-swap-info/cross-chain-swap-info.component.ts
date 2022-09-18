@@ -18,7 +18,13 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { LifiCrossChainTrade, RangoCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import {
+  LifiCrossChainTrade,
+  RangoCrossChainTrade,
+  TradeType,
+  Web3Pure,
+  BlockchainsInfo as SdkBlockchainsInfo
+} from 'rubic-sdk';
 import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
@@ -150,7 +156,10 @@ export class CrossChainSwapInfoComponent implements OnInit {
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
               const nativeToken = tokens.find(
                 token =>
-                  token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
+                  token.blockchain === fromBlockchain &&
+                  Web3Pure[SdkBlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(
+                    token.address
+                  )
               );
 
               this.nativeCoinSymbol = nativeToken.symbol;

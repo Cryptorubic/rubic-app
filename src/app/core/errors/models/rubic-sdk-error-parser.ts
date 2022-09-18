@@ -33,7 +33,11 @@ export class RubicSdkErrorParser {
       return new UserRejectError();
     }
     if (err instanceof SdkInsufficientFundsError) {
-      return new InsufficientFundsError(err.tokenSymbol, err.balance, err.requiredBalance);
+      return new InsufficientFundsError(
+        err.token.symbol,
+        err.balance.toFixed(),
+        err.requiredBalance.toFixed()
+      );
     }
     if (err instanceof SdkLowGasError) {
       return new LowGasError();

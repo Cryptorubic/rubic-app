@@ -1,7 +1,6 @@
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import {
   BlockchainName,
-  CelerRubicCrossChainTrade,
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
@@ -10,10 +9,14 @@ import {
   LowSlippageError,
   RubicSdkError,
   TRADE_TYPE,
-  Web3Pure
+  Web3Pure,
+  TooLowAmountError,
+  CrossChainTrade,
+  RangoCrossChainTrade,
+  RangoCrossChainTradeProvider,
+  CelerCrossChainTrade,
+  EvmCrossChainTrade
 } from 'rubic-sdk';
-import TooLowAmountError from 'rubic-sdk';
-import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
@@ -58,11 +61,6 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
 import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
 import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
-import {
-  CrossChainTrade,
-  RangoCrossChainTrade,
-  RangoCrossChainTradeProvider
-} from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
@@ -70,8 +68,8 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
   providedIn: 'root'
 })
 export class CrossChainRoutingService extends TradeService {
+  // @TODO update
   private static readonly crossChainProviders = [
-    RubicCrossChainTradeProvider,
     CelerCrossChainTradeProvider,
     SymbiosisCrossChainTradeProvider,
     LifiCrossChainTradeProvider,
@@ -281,7 +279,7 @@ export class CrossChainRoutingService extends TradeService {
     }
 
     const trade = this._crossChainTrade;
-    const { estimatedGas } = trade;
+    const { estimatedGas } = trade as EvmCrossChainTrade;
 
     if (
       trade instanceof SymbiosisCrossChainTrade ||
@@ -301,8 +299,8 @@ export class CrossChainRoutingService extends TradeService {
       };
     }
 
-    if (trade instanceof CelerRubicCrossChainTrade) {
-      const { fromTrade, toTrade } = trade as CelerRubicCrossChainTrade;
+    if (trade instanceof CelerCrossChainTrade) {
+      const { fromTrade, toTrade } = trade;
       const fromProvider = fromTrade.provider.type;
       const toProvider = toTrade.provider.type;
 
@@ -371,14 +369,11 @@ export class CrossChainRoutingService extends TradeService {
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
       };
     }
-    if (wrappedTrade.trade instanceof CelerRubicCrossChainTrade) {
+    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CELER) {
       return {
         fromProvider: wrappedTrade.trade.itType.from,
         toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider:
-          wrappedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CELER
-            ? CROSS_CHAIN_TRADE_TYPE.CELER
-            : CROSS_CHAIN_TRADE_TYPE.RUBIC
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.CELER
       };
     }
     return null;

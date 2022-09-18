@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CrossChainTrade } from 'rubic-sdk';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
@@ -7,7 +7,6 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { CrossChainTrade } from 'rubic-sdk/lib/features';
 
 function correctAddressValidator(blockchain: BlockchainName): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

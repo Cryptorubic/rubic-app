@@ -24,8 +24,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import {
+  BlockchainName,
+  BLOCKCHAIN_NAME,
+  Injector,
+  Web3PublicSupportedBlockchain,
+  Token
+} from 'rubic-sdk';
 import { RubicBridgeSupportedBlockchains } from './blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 @Injectable()
@@ -268,8 +273,10 @@ export class BridgeService extends TradeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(fromBlockchain);
-    return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      fromBlockchain as Web3PublicSupportedBlockchain
+    );
+    return blockchainAdapter.checkBalance(token as Token, amount, this.authService.user.address);
   }
 
   private checkDeviceAndShowNotification(): void {

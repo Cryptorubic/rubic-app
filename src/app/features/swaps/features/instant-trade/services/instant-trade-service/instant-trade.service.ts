@@ -10,17 +10,21 @@ import { TransactionReceipt } from 'web3-eth';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import {
-  InstantTrade,
-  TradeType,
-  BlockchainName,
-  InstantTradeError,
-  EncodeTransactionOptions,
-  Web3Pure,
-  Web3Public,
-  UnnecessaryApproveError,
   BLOCKCHAIN_NAME,
-  TransactionOptions,
-  SwapTransactionOptions
+  BlockchainName,
+  CHAIN_TYPE,
+  EncodeTransactionOptions,
+  EvmBlockchainName,
+  EvmWeb3Pure,
+  Injector,
+  InstantTrade,
+  InstantTradeError,
+  SwapTransactionOptions,
+  Token,
+  TradeType,
+  UnnecessaryApproveError,
+  Web3Public,
+  Web3Pure
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -30,7 +34,7 @@ import {
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -39,6 +43,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -66,12 +71,12 @@ export class InstantTradeService extends TradeService {
 
   public async needApprove(trade: InstantTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-      if (Web3Pure.isNativeAddress(trade.from.address)) {
+      if (EvmWeb3Pure.isNativeAddress(trade.from.address)) {
         return false;
       }
 
       const allowance = await Injector.web3PublicService
-        .getWeb3Public(trade.from.blockchain)
+        .getWeb3Public(trade.from.blockchain as EvmBlockchainName)
         .getAllowance(
           trade.from.address,
           this.authService.userAddress,
@@ -99,12 +104,14 @@ export class InstantTradeService extends TradeService {
 
     try {
       if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-        await Injector.web3Private.approveTokens(
-          trade.from.address,
-          IT_PROXY_FEE_CONTRACT_ADDRESS,
-          'infinity',
-          transactionOptions
-        );
+        await Injector.web3PrivateService
+          .getWeb3Private(CHAIN_TYPE.EVM)
+          .approveTokens(
+            trade.from.address,
+            IT_PROXY_FEE_CONTRACT_ADDRESS,
+            'infinity',
+            transactionOptions
+          );
       } else {
         await trade.approve(transactionOptions);
       }
@@ -155,12 +162,17 @@ export class InstantTradeService extends TradeService {
       blockchain: BlockchainName;
     }
   ): Promise<Array<InstantTrade | InstantTradeError>> {
-    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
-      timeout: 10000,
-      slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
-      gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
-      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
-    });
+    return this.sdk.instantTrade.calculateTrade(
+      fromToken as Token<EvmBlockchainName>,
+      fromAmount,
+      toToken.address,
+      {
+        timeout: 10000,
+        slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
+        gasCalculation: shouldCalculateGas[fromToken.blockchain] ? 'calculate' : 'disabled',
+        zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
+      }
+    );
   }
 
   public async createTrade(
@@ -174,7 +186,7 @@ export class InstantTradeService extends TradeService {
 
     const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
     await blockchainAdapter.checkBalance(
-      { address: fromAddress, decimals: fromDecimals, symbol: fromSymbol },
+      { address: fromAddress, decimals: fromDecimals, symbol: fromSymbol } as Token,
       fromAmount,
       this.authService.userAddress
     );
@@ -285,17 +297,19 @@ export class InstantTradeService extends TradeService {
     if (promoterAddress) {
       methodArguments.push(promoterAddress);
     }
-    return Injector.web3Private.tryExecuteContractMethod(
-      IT_PROXY_FEE_CONTRACT_ADDRESS,
-      IT_PROXY_FEE_CONTRACT_ABI,
-      methodName,
-      methodArguments,
-      {
-        ...transactionOptions,
-        onTransactionHash: options?.onConfirm,
-        gas: undefined
-      } as TransactionOptions
-    );
+    return Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .tryExecuteContractMethod(
+        IT_PROXY_FEE_CONTRACT_ADDRESS,
+        IT_PROXY_FEE_CONTRACT_ABI,
+        methodName,
+        methodArguments,
+        {
+          ...transactionOptions,
+          onTransactionHash: options?.onConfirm,
+          gas: undefined
+        } as TransactionOptions
+      );
   }
 
   private async postTrade(

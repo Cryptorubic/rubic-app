@@ -20,9 +20,10 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-pure/evm-web3-pure';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -249,7 +250,7 @@ export class QueryParamsService {
       return of(null);
     }
 
-    return Web3Pure.isAddressCorrect(token)
+    return EvmWeb3Pure.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }

@@ -9,7 +9,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { Web3Pure } from 'rubic-sdk';
+import { EvmWeb3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
@@ -143,7 +143,7 @@ export class SwapButtonContainerErrorsService {
   private checkWalletSupportsFromBlockchain(): void {
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !Web3Pure.isAddressCorrect(this.authService.userAddress);
+      !EvmWeb3Pure.isAddressCorrect(this.authService.userAddress); // @TODO update
   }
 
   /**
