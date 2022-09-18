@@ -55,6 +55,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 interface SettledProviderTrade {
   providerName: TradeType;
@@ -114,6 +115,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
+  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+
   /**
    * True, if 'approve' button should be shown near 'swap' button.
    */
@@ -133,6 +136,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   private calculateTradeSubscription$: Subscription;
 
   private hiddenCalculateTradeSubscription$: Subscription;
+
+  public toBlockchain: BlockchainName;
 
   public get selectedProvider(): InstantTradeProviderData {
     return this._selectedProvider;
@@ -184,6 +189,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
@@ -234,6 +240,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }
       });
 
+    // We did not use 'distinctUntilChanged' for 'showReceiverAddress' because the PREV value was not updated.
+    let isShowedReceiverAddressPreviousValue: boolean;
     this.settingsService.instantTradeValueChanges
       .pipe(
         distinctUntilChanged((prev, next) => {
@@ -242,6 +250,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
             prev.disableMultihops === next.disableMultihops &&
             prev.slippageTolerance === next.slippageTolerance
           );
+        }),
+        filter(current => {
+          if (current.showReceiverAddress === isShowedReceiverAddressPreviousValue) {
+            isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
+            return true;
+          }
+          isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
+          return false;
         }),
         takeUntil(this.destroy$)
       )
@@ -259,7 +275,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
   }
 
   /**
@@ -269,6 +287,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
+    this.toBlockchain = form.toBlockchain;
 
     this.ethWethTrade = this.instantTradeService.getEthWethTrade();
     this.allowRefreshChange.emit(!this.ethWethTrade);
@@ -295,16 +314,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
-  private conditionalCalculate(type?: 'normal' | 'hidden'): void {
+  private conditionalCalculate(type: 'normal' | 'hidden'): void {
     if (
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
       return;
     }
-
-    const { autoRefresh } = this.settingsService.instantTradeValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradesCalculation(): void {

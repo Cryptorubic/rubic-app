@@ -3,15 +3,14 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { startWith } from 'rxjs/operators';
+import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 
 interface TargetAddress {
   value: string;
   isValid: boolean;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TargetNetworkAddressService {
   private readonly networksRequiresAddress: BlockchainName[] = [
     BLOCKCHAIN_NAME.SOLANA,
@@ -35,14 +34,19 @@ export class TargetNetworkAddressService {
     this._targetNetworkAddress$.next(targetAddress);
   }
 
-  constructor(private readonly formService: SwapFormService) {
+  constructor(
+    private readonly formService: SwapFormService,
+    private readonly settingsService: SettingsService
+  ) {
     this.formService.input.valueChanges
       .pipe(startWith(this.formService.inputValue))
       .subscribe(form => {
         const needDisplayAddress =
-          (this.networksRequiresAddress.includes(form.fromBlockchain) ||
+          ((this.networksRequiresAddress.includes(form.fromBlockchain) ||
             this.networksRequiresAddress.includes(form.toBlockchain)) &&
-          Boolean(form.fromToken && form.toToken);
+            Boolean(form.fromToken && form.toToken)) ||
+          this.settingsService.crossChainRoutingValue.showReceiverAddress ||
+          this.settingsService.instantTradeValue.showReceiverAddress;
 
         this._displayAddress$.next(needDisplayAddress);
 
@@ -50,5 +54,9 @@ export class TargetNetworkAddressService {
           this._targetNetworkAddress$.next(null);
         }
       });
+  }
+
+  public showReceiverAddressToggle(showReceiverAddress: boolean): void {
+    this._displayAddress$.next(showReceiverAddress);
   }
 }
