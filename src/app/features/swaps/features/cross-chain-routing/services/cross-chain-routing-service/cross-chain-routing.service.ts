@@ -5,13 +5,14 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  UnsupportedReceiverAddressError,
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
   TRADE_TYPE,
-  TooLowAmountError,
   Web3Pure
 } from 'rubic-sdk';
+import TooLowAmountError from 'rubic-sdk';
 import { RubicCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/rubic-trade-provider/rubic-cross-chain-trade-provider';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
@@ -63,7 +64,7 @@ import {
   RangoCrossChainTradeProvider
 } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +95,13 @@ export class CrossChainRoutingService extends TradeService {
 
   public get crossChainTrade(): CrossChainTrade {
     return this._crossChainTrade;
+  }
+
+  private get receiverAddress(): string {
+    return (
+      this.targetNetworkAddressService.targetAddress?.isValid &&
+      this.targetNetworkAddressService.targetAddress?.value
+    );
   }
 
   constructor(
@@ -137,9 +145,10 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [CROSS_CHAIN_TRADE_TYPE.VIA]
-          : ['DEBRIDGE', 'CELER', 'RANGO', 'SYMBIOSIS', 'RUBIC']
+        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : [],
+        ...(this.settingsService.crossChainRoutingValue.showReceiverAddress && {
+          receiverAddress: this.receiverAddress
+        })
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -249,9 +258,7 @@ export class CrossChainRoutingService extends TradeService {
     const blockchain = providerTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
-    const receiverAddress =
-      this.targetNetworkAddressService.targetAddress?.isValid &&
-      this.targetNetworkAddressService.targetAddress?.value;
+    const receiverAddress = this.receiverAddress;
     const swapOptions = {
       onConfirm: onTransactionHash,
       ...(Boolean(shouldCalculateGasPrice) && {
@@ -401,6 +408,9 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof UnsupportedReceiverAddressError) {
+      return new RubicError('This provider doesn’t support the receiver address.');
+    }
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
     }
