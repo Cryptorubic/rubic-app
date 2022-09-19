@@ -35,6 +35,7 @@ import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scann
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
+import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +54,7 @@ export class WalletConnectorService {
   }
 
   public get chainType(): CHAIN_TYPE {
-    return this.provider?.walletType;
+    return this.provider?.chainType;
   }
 
   public get network(): BlockchainName | null {
@@ -190,14 +191,15 @@ export class WalletConnectorService {
    */
   public async switchChain(evmBlockchainName: EvmBlockchainName): Promise<boolean> {
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
+    const provider = this.provider as EvmWalletAdapter;
     try {
-      await this.provider.switchChain(chainId);
+      await provider.switchChain(chainId);
       return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
           await this.addChain(evmBlockchainName);
-          await this.provider.switchChain(chainId);
+          await provider.switchChain(chainId);
           return true;
         } catch (err) {
           this.errorService.catch(err);
@@ -241,6 +243,6 @@ export class WalletConnectorService {
       blockExplorerUrls: [scannerUrl],
       iconUrls: [`${this.window.location.origin}/${icon}`]
     };
-    await this.provider.addChain(params);
+    await (this.provider as EvmWalletAdapter).addChain(params);
   }
 }

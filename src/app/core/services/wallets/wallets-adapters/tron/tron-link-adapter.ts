@@ -4,21 +4,14 @@ import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
-import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicError } from '@core/errors/models/rubic-error';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
-  public readonly walletType = CHAIN_TYPE.TRON;
+  public readonly chainType = CHAIN_TYPE.TRON;
 
-  public get isMultiChainWallet(): boolean {
-    return false;
-  }
-
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.TRON_LINK;
-  }
+  public readonly walletName = WALLET_NAME.TRON_LINK;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -58,15 +51,5 @@ export class TronLinkAdapter extends CommonWalletAdapter {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
-  }
-
-  // @todo remove
-  public switchChain(_chainParams: string): Promise<null> {
-    return Promise.resolve(null);
-  }
-
-  // @todo remove
-  public addChain(_params: AddEthChainParams): Promise<null> {
-    return Promise.resolve(null);
   }
 }

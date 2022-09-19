@@ -93,7 +93,7 @@ export class InstantTradesApiService {
       hash
     };
 
-    const backendWallet = toBackendWallet[this.walletConnectorService.provider.walletType];
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
     const url = instantTradesApiRoutes.createData(backendWallet);
     return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
   }
@@ -110,7 +110,7 @@ export class InstantTradesApiService {
       hash,
       user: this.authService.userAddress
     };
-    const backendWallet = toBackendWallet[this.walletConnectorService.provider.walletType];
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
     const url = instantTradesApiRoutes.editData(backendWallet);
     return this.httpService.patch(url, body);
   }
@@ -125,7 +125,7 @@ export class InstantTradesApiService {
     walletAddress: string,
     errorCallback?: (error: unknown) => void
   ): Observable<TableTrade[]> {
-    const backendWallet = toBackendWallet[this.walletConnectorService.provider.walletType];
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
     const url = instantTradesApiRoutes.getData(backendWallet);
     return this.httpService.get(url, { user: walletAddress }).pipe(
       map((swaps: InstantTradesResponseApi[]) =>

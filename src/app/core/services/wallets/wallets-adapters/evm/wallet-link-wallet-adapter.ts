@@ -2,31 +2,22 @@ import { BehaviorSubject } from 'rxjs';
 import WalletLink, { WalletLinkProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
+import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
-export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvider> {
-  public readonly walletType = CHAIN_TYPE.EVM;
+export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider> {
+  public readonly walletName = WALLET_NAME.WALLET_LINK;
 
   private isMobileMode: boolean = false;
-
-  public get isMultiChainWallet(): boolean {
-    return false;
-  }
-
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.WALLET_LINK;
-  }
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -98,24 +89,10 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
   }
 
   public async deactivate(): Promise<void> {
-    this.isEnabled = false;
     this.wallet.close();
+    this.storeService.deleteItem('chainId');
     this.onAddressChanges$.next(undefined);
     this.onNetworkChanges$.next(undefined);
-    this.storeService.deleteItem('chainId');
-  }
-
-  public async switchChain(chainId: string): Promise<null | never> {
-    return this.wallet.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId }]
-    });
-  }
-
-  public async addChain(params: AddEthChainParams): Promise<null | never> {
-    return this.wallet.request({
-      method: 'wallet_addEthereumChain',
-      params: [params]
-    });
+    this.isEnabled = false;
   }
 }

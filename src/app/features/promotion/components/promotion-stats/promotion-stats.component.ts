@@ -50,8 +50,7 @@ export class PromotionStatsComponent implements OnInit {
     this.isWalletConnected$ = authService.currentUser$.pipe(map(user => !!user?.address));
     this.isEthLikeWalletConnected$ = authService.currentUser$.pipe(
       map(
-        user =>
-          !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
+        user => !!user?.address && this.walletConnectorService.provider.chainType === CHAIN_TYPE.EVM
       )
     );
 
@@ -64,7 +63,7 @@ export class PromotionStatsComponent implements OnInit {
   ngOnInit(): void {
     this.isWalletConnected$.pipe(takeUntil(this.destroy$)).subscribe(isAuthorized => {
       const isNotEthLikeWallet =
-        isAuthorized && this.walletConnectorService.provider.walletType !== CHAIN_TYPE.EVM;
+        isAuthorized && this.walletConnectorService.provider.chainType !== CHAIN_TYPE.EVM;
       if (isNotEthLikeWallet) {
         this.errorsService.catch(new WrongWalletError());
       }

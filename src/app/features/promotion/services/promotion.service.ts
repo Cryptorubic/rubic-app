@@ -142,7 +142,7 @@ export class PromotionService {
   private setWalletSubscriptions(): void {
     this.authService.currentUser$.pipe(map(user => !!user?.address)).subscribe(isAuthorized => {
       const isEthLikeWalletConnected =
-        isAuthorized && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM;
+        isAuthorized && this.walletConnectorService.provider.chainType === CHAIN_TYPE.EVM;
       if (isEthLikeWalletConnected) {
         this.updatePromotionData();
         this.updatePromotionStatistics();

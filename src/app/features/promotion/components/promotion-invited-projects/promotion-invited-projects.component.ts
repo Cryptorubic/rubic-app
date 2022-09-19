@@ -52,8 +52,7 @@ export class PromotionInvitedProjectsComponent {
     this.isWalletConnected$ = authService.currentUser$.pipe(map(user => !!user?.address));
     this.isEthLikeWalletConnected$ = authService.currentUser$.pipe(
       map(
-        user =>
-          !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
+        user => !!user?.address && this.walletConnectorService.provider.chainType === CHAIN_TYPE.EVM
       )
     );
   }

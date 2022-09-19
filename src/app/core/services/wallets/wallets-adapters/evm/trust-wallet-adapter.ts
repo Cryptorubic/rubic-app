@@ -8,9 +8,7 @@ import { NgZone } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.TRUST_WALLET;
-  }
+  public readonly walletName = WALLET_NAME.TRUST_WALLET;
 
   constructor(
     accountChange$: BehaviorSubject<string>,
