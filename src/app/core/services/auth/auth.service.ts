@@ -28,7 +28,7 @@ export class AuthService {
     return this.user?.address;
   }
 
-  get userChainType(): string {
+  get userChainType(): CHAIN_TYPE {
     return this.user?.chainType;
   }
 

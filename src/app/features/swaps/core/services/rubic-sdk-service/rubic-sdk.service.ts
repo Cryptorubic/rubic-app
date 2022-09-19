@@ -69,8 +69,8 @@ export class RubicSdkService {
       const newConfig = { ...this.currentConfig, ...config };
       await this.SDK.updateConfiguration(newConfig);
       this.currentConfig = newConfig;
-    } catch {
-      console.debug('Failed to reload SDK configuration.');
+    } catch (err) {
+      console.debug('Failed to reload SDK configuration:', err);
     }
     this._sdkLoading$.next(false);
   }

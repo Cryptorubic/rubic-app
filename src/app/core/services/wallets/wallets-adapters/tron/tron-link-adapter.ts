@@ -58,9 +58,9 @@ export class TronLinkAdapter extends CommonWalletAdapter {
    */
   protected initSubscriptionsOnChanges(): void {
     this.onAddressChangesSub = fromEvent(this.window, 'message')
-      .pipe(filter((e: RubicAny) => e.data.message?.action === 'setAccount'))
-      .subscribe((e: RubicAny) => {
-        const address = e.data.message.data.address;
+      .pipe(filter((event: RubicAny) => event.data.message?.action === 'setAccount'))
+      .subscribe((event: RubicAny) => {
+        const address = event.data.message.data.address;
         if (!compareAddresses(address, this.selectedAddress)) {
           this.selectedAddress = address;
           this.zone.run(() => {
@@ -70,9 +70,9 @@ export class TronLinkAdapter extends CommonWalletAdapter {
       });
 
     this.onNetworkChangesSub = fromEvent(this.window, 'message')
-      .pipe(filter((e: RubicAny) => e.data.message?.action === 'setNode'))
-      .subscribe((e: RubicAny) => {
-        const node = e.data.message.data.node.fullNode;
+      .pipe(filter((event: RubicAny) => event.data.message?.action === 'setNode'))
+      .subscribe((event: RubicAny) => {
+        const node = event.data.message.data.node.fullNode;
         const chain = mainnetNodes.some(mainnetNode => node.includes(mainnetNode))
           ? BLOCKCHAIN_NAME.TRON
           : null;

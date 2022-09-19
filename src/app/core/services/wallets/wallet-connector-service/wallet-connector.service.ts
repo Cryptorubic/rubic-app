@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, from, of } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
@@ -10,7 +10,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { share } from 'rxjs/operators';
+import { filter, share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
@@ -68,17 +68,16 @@ export class WalletConnectorService {
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
+    filter(Boolean),
     // @todo move to sdk service
     switchTap(address => {
-      const walletProvider: WalletProvider = address
-        ? {
-            [this.chainType]: {
-              address,
-              core: this.provider.wallet as Web3Provider | Web3
-            }
-          }
-        : undefined;
-      return walletProvider ? from(this.sdk.patchConfig({ walletProvider })) : of(null);
+      const walletProvider: WalletProvider = {
+        [this.chainType]: {
+          address,
+          core: this.provider.wallet as Web3Provider | Web3
+        }
+      };
+      return from(this.sdk.patchConfig({ walletProvider }));
     }),
     share()
   );

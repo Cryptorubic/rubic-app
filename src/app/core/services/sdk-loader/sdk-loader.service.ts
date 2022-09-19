@@ -3,8 +3,6 @@ import { RubicSdkService } from '@app/features/swaps/core/services/rubic-sdk-ser
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletProvider } from 'rubic-sdk';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,33 +12,18 @@ export class SdkLoaderService {
     private readonly sdkService: RubicSdkService,
     private readonly iframeService: IframeService,
     private readonly storeService: StoreService,
-    private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly authService: AuthService
   ) {}
 
   public async initSdk(): Promise<void> {
-    await this.loadUser();
     await this.sdkService.initSDK();
-    await this.updateSdkUser();
+    await this.loadUser();
   }
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
     if (!isIframe) {
       await this.authService.loadStorageUser();
-    }
-  }
-
-  private async updateSdkUser(): Promise<void> {
-    if (this.authService.user) {
-      const chainType = this.authService.userChainType;
-      const walletProvider: WalletProvider = {
-        [chainType]: {
-          address: this.authService.userAddress,
-          core: this.walletConnectorService.provider.wallet
-        }
-      };
-      await this.sdkService.patchConfig({ walletProvider });
     }
   }
 }

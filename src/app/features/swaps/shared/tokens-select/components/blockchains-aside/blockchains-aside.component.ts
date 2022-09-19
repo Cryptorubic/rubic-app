@@ -44,7 +44,7 @@ export class BlockchainsAsideComponent {
     );
   }
 
-  get blockchains(): BlockchainName[] {
+  public get blockchains(): BlockchainName[] {
     if (this.allowedBlockchains) {
       return BlockchainsAsideComponent.allBlockchains.filter(el =>
         this.allowedBlockchains.includes(el)
