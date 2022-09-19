@@ -49,6 +49,21 @@
         formControlName="autoRefresh"
       ></tui-toggle>
     </div>
+    <div class="settings__form-row">
+      <label for="showReceiverAddress">{{
+        'settings.crossChainRouting.showReceiverAddressTitle' | translate
+      }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.crossChainRouting.showReceiverAddress' | translate"
+      ></div>
+      <tui-toggle
+        class="settings__toggle"
+        id="showReceiverAddress"
+        formControlName="showReceiverAddress"
+      ></tui-toggle>
+    </div>
 
     <div class="settings__form-row">
       <app-ccr-promocode

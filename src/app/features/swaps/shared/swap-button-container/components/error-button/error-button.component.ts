@@ -46,7 +46,11 @@ export class ErrorButtonComponent {
     if (err !== ERROR_TYPE.WRONG_BLOCKCHAIN || fromBlockchain === BLOCKCHAIN_NAME.BITCOIN) {
       return false;
     }
-    return this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK;
+
+    return (
+      this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK ||
+      this.walletConnectorService?.provider.walletName === WALLET_NAME.WALLET_CONNECT
+    );
   }
 
   public async changeNetwork(): Promise<void> {

@@ -15,7 +15,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.FANTOM,
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.AURORA,
-  BLOCKCHAIN_NAME.TELOS
+  BLOCKCHAIN_NAME.TELOS,
+  BLOCKCHAIN_NAME.ETHEREUM_POW
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -41,7 +42,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'ethereum',
       [BLOCKCHAIN_NAME.AURORA]: 'ethereum',
-      [BLOCKCHAIN_NAME.TELOS]: 'telos'
+      [BLOCKCHAIN_NAME.TELOS]: 'telos',
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou'
     };
 
     this.tokenBlockchainId = {
@@ -54,7 +56,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum-one',
       [BLOCKCHAIN_NAME.AURORA]: 'aurora',
-      [BLOCKCHAIN_NAME.TELOS]: 'telos'
+      [BLOCKCHAIN_NAME.TELOS]: 'telos',
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou'
     };
   }
 

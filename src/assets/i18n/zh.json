@@ -41,7 +41,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "刷新交易"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -459,7 +460,7 @@
       "noSearchData": "沒什麼可顯示的",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "連接錢包",
@@ -505,14 +506,18 @@
       "deadlineTitle": "交易截止日期",
       "deadline": "如果待處理的時間超過此時間段，您的交易將恢復。",
       "autoRefreshTitle": "自動刷新",
-      "autoRefresh": "每 15 秒更新一次交易參數。"
+      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
     "crossChainRouting": {
       "autoRefreshTitle": "自動刷新",
-      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
+      "autoRefresh": "每 30 秒更新一次交易參數。",
       "slippageTitle": "滑點公差",
       "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
       "promoCodeTitle": "促銷代碼",
@@ -589,7 +594,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "交易成功發送！",
     "successfulCCRSwapTitle": "源網絡交換成功！",
-    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
+    "successfulTradeParagraph": "Check transaction in ",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

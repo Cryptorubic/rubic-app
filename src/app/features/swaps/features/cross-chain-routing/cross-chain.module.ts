@@ -6,7 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
@@ -16,7 +15,6 @@ import { ProvidersCounterComponent } from './components/providers-counter/provid
 @NgModule({
   declarations: [
     CrossChainRoutingBottomFormComponent,
-    TargetNetworkAddressComponent,
     SmartRoutingComponent,
     SwapSchemeModalComponent,
     ProvidersCounterComponent
