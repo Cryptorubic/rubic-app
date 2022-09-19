@@ -93,7 +93,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     }
   }
 
-  public async deActivate(): Promise<void> {
+  public async deactivate(): Promise<void> {
     await this.wallet.close();
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);

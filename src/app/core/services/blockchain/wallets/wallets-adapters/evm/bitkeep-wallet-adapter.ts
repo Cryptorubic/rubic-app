@@ -75,7 +75,7 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
       }
       if (!this.selectedAddress) {
         this.selectedChain = null;
-        this.deActivate();
+        this.deactivate();
       }
     });
   }
@@ -106,7 +106,7 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     }
   }
 
-  public deActivate(): void {
+  public deactivate(): void {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;

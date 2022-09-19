@@ -97,7 +97,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
     }
   }
 
-  public async deActivate(): Promise<void> {
+  public async deactivate(): Promise<void> {
     this.isEnabled = false;
     this.wallet.close();
     this.onAddressChanges$.next(undefined);

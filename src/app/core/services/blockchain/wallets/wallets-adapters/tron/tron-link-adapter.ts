@@ -54,7 +54,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
     this.onNetworkChanges$.next(this.selectedChain);
   }
 
-  public deActivate(): void {
+  public deactivate(): void {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;

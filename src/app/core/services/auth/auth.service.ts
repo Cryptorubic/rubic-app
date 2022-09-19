@@ -79,7 +79,7 @@ export class AuthService {
         this.gtmService.fireConnectWalletEvent(walletName);
       }
     } catch (err) {
-      this.walletConnectorService.deActivate();
+      this.walletConnectorService.deactivate();
       this._currentUser$.next(null);
       this.headerStore.setWalletsLoadingStatus(false); // @todo move
       this.errorService.catch(err);
@@ -87,7 +87,7 @@ export class AuthService {
   }
 
   public disconnectWallet(): void {
-    this.walletConnectorService.deActivate();
+    this.walletConnectorService.deactivate();
     this._currentUser$.next(null);
   }
 }

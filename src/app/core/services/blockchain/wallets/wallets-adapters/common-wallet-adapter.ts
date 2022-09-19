@@ -80,7 +80,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   /**
    * deactivate the blockchain provider
    */
-  public abstract deActivate(): void;
+  public abstract deactivate(): void;
 
   public abstract switchChain(chainId: string): Promise<null | never>;
 

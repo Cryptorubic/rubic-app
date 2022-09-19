@@ -109,25 +109,6 @@ export class WalletConnectorService {
     return this.connectProvider(provider);
   }
 
-  public getBlockchainsBasedOnWallet(): BlockchainName[] {
-    if (this.chainType === CHAIN_TYPE.EVM) {
-      return Object.values(EVM_BLOCKCHAIN_NAME);
-    }
-    // chainType === CHAIN_TYPE.TRON
-    return [BLOCKCHAIN_NAME.TRON];
-  }
-
-  public async activate(): Promise<void> {
-    await this.provider.activate();
-    this.storeService.setItem('provider', this.provider.walletName);
-  }
-
-  public deActivate(): void {
-    this.storeService.deleteItem('provider');
-    this.storeService.deleteItem('chainId');
-    return this.provider?.deActivate();
-  }
-
   public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
       this.privateProvider = await this.createWalletAdapter(walletName, chainId);
@@ -181,6 +162,25 @@ export class WalletConnectorService {
 
     // walletName === WALLET_NAME.TRON_LINK
     return new TronLinkAdapter(...defaultConstructorParameters);
+  }
+
+  public async activate(): Promise<void> {
+    await this.provider.activate();
+    this.storeService.setItem('provider', this.provider.walletName);
+  }
+
+  public deactivate(): void {
+    this.storeService.deleteItem('provider');
+    this.storeService.deleteItem('chainId');
+    return this.provider?.deactivate();
+  }
+
+  public getBlockchainsBasedOnWallet(): BlockchainName[] {
+    if (this.chainType === CHAIN_TYPE.EVM) {
+      return Object.values(EVM_BLOCKCHAIN_NAME);
+    }
+    // chainType === CHAIN_TYPE.TRON
+    return [BLOCKCHAIN_NAME.TRON];
   }
 
   /**
