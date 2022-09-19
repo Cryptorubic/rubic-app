@@ -259,7 +259,6 @@ export class InstantTradeService extends TradeService {
     trade: InstantTrade,
     options: SwapTransactionOptions
   ): Promise<Partial<TransactionReceipt>> {
-    await this.walletConnectorService.checkSettings(trade.from.blockchain);
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
       return this.createTradeWithFee(trade, options);
     }
@@ -271,6 +270,10 @@ export class InstantTradeService extends TradeService {
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
+    await Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .checkBlockchainCorrect(trade.from.blockchain);
+
     const fullOptions: EncodeTransactionOptions = {
       ...options,
       fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,

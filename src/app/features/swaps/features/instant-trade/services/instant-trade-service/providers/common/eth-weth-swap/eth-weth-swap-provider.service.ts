@@ -47,7 +47,9 @@ export class EthWethSwapProviderService {
     const fromToken = trade.from.token;
     const fromAmount = trade.from.amount;
 
-    this.walletConnectorService.checkSettings(blockchain);
+    await Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .checkBlockchainCorrect(blockchain);
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
       blockchain as EvmBlockchainName
     );

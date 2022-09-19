@@ -194,8 +194,6 @@ export class BridgeService extends TradeService {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
-          this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
-
           const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
           await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 
@@ -249,8 +247,6 @@ export class BridgeService extends TradeService {
     this.checkDeviceAndShowNotification();
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
-        this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
-
         const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 

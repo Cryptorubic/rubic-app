@@ -14,10 +14,6 @@ import { share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/trust-wallet-adapter';
-import { AccountError } from '@core/errors/models/provider/account-error';
-import { NetworkError } from '@core/errors/models/provider/network-error';
-import { WalletError } from '@core/errors/models/provider/wallet-error';
-import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { BitkeepWalletAdapter } from '../wallets-adapters/evm/bitkeep-wallet-adapter';
@@ -60,18 +56,12 @@ export class WalletConnectorService {
     return this.provider?.walletType;
   }
 
-  // @todo remove after checkSettings removal
   public get network(): BlockchainName | null {
     return this.provider?.network;
   }
 
   public get provider(): CommonWalletAdapter {
     return this.privateProvider;
-  }
-
-  // @todo remove after checkSettings removal
-  public get isProviderActive(): boolean {
-    return Boolean(this.provider?.isActive);
   }
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
@@ -93,7 +83,7 @@ export class WalletConnectorService {
   );
 
   constructor(
-    private readonly storage: StoreService,
+    private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
@@ -107,13 +97,13 @@ export class WalletConnectorService {
    * Setups provider based on local storage.
    */
   public async setupProvider(): Promise<boolean> {
-    const provider = this.storage.getItem('provider');
+    const provider = this.storeService.getItem('provider');
     if (!provider) {
       return false;
     }
 
     if (provider === WALLET_NAME.WALLET_LINK) {
-      const chainId = this.storage.getItem('chainId');
+      const chainId = this.storeService.getItem('chainId');
       return this.connectProvider(provider, chainId);
     }
     return this.connectProvider(provider);
@@ -129,12 +119,12 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    this.storage.setItem('provider', this.provider.walletName);
+    this.storeService.setItem('provider', this.provider.walletName);
   }
 
   public deActivate(): void {
-    this.storage.deleteItem('provider');
-    this.storage.deleteItem('chainId');
+    this.storeService.deleteItem('provider');
+    this.storeService.deleteItem('chainId');
     return this.provider?.deActivate();
   }
 
@@ -182,29 +172,15 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.WALLET_LINK) {
-      return new WalletLinkWalletAdapter(...defaultConstructorParameters, this.storage, chainId!);
+      return new WalletLinkWalletAdapter(
+        ...defaultConstructorParameters,
+        this.storeService,
+        chainId!
+      );
     }
 
     // walletName === WALLET_NAME.TRON_LINK
     return new TronLinkAdapter(...defaultConstructorParameters);
-  }
-
-  // @todo remove
-  public checkSettings(selectedBlockchain: BlockchainName): void {
-    if (!this.isProviderActive) {
-      throw new WalletError();
-    }
-    if (!this.address) {
-      throw new AccountError();
-    }
-
-    if (this.network !== selectedBlockchain) {
-      if (this.provider.walletName === WALLET_NAME.METAMASK) {
-        throw new NetworkError(selectedBlockchain);
-      } else if (!this.provider.isMultiChainWallet) {
-        throw new NotSupportedNetworkError(selectedBlockchain);
-      }
-    }
   }
 
   /**

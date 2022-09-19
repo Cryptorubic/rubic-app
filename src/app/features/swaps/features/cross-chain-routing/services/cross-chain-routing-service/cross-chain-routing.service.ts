@@ -201,7 +201,6 @@ export class CrossChainRoutingService extends TradeService {
     providerTrade: CrossChainProviderTrade,
     confirmCallback?: () => void
   ): Promise<void> {
-    await this.walletConnectorService.checkSettings(providerTrade.trade?.from?.blockchain);
     if (!providerTrade?.trade) {
       throw new RubicError('Cross chain trade object not found.');
     }
