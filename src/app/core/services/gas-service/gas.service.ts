@@ -14,7 +14,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.TELOS,
-  BLOCKCHAIN_NAME.FANTOM
+  BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.ETHEREUM_POW
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -60,7 +61,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.AVALANCHE]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.TELOS]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -68,7 +70,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this),
       [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this),
       [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
-      [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this)
+      [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -202,6 +205,24 @@ export class GasService {
   })
   private fetchFantomGas(): Observable<number | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FANTOM);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
+      })
+    );
+  }
+
+  /**
+   * Gets Ethereum PoW gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchEthereumPowGas(): Observable<number | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.ETHEREUM_POW
+    );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();

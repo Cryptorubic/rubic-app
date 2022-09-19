@@ -98,5 +98,20 @@
         formControlName="autoRefresh"
       ></tui-toggle>
     </div>
+    <div class="settings__form-row">
+      <label for="showReceiverAddress">{{
+        'settings.instantTrades.showReceiverAddressTitle' | translate
+      }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
+      ></div>
+      <tui-toggle
+        class="settings__toggle"
+        id="showReceiverAddress"
+        formControlName="showReceiverAddress"
+      ></tui-toggle>
+    </div>
   </form>
 </div>

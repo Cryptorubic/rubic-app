@@ -1,6 +1,9 @@
-@use 'src/scss/mixins' as *;
+@use '../../../../../scss/mixins' as *;
 
 :host {
+  display: block;
+  margin-top: 20px;
+
   @include iframe-vertical {
     position: absolute;
     top: 100px;
@@ -47,11 +50,11 @@
       }
 
       input {
-        border-left-width: 18px !important;
+        border-left-width: 30px !important;
       }
 
       .content {
-        padding-left: 30px !important;
+        padding-left: 33px !important;
       }
     }
 
