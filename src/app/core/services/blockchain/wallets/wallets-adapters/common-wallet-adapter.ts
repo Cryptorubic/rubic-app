@@ -1,7 +1,6 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
@@ -22,33 +21,26 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   public wallet: T = null;
 
   /**
-   * is the blockchain provider installed
-   */
-  get isInstalled(): boolean {
-    return Boolean(this.wallet);
-  }
-
-  /**
    * is the blockchain provider activated
    */
-  get isActive(): boolean {
+  public get isActive(): boolean {
     return this.isEnabled && Boolean(this.selectedAddress);
   }
 
   /**
    * Is connected app provider supports multi chain wallet.
    */
-  abstract get isMultiChainWallet(): boolean;
+  public abstract get isMultiChainWallet(): boolean;
 
   /**
    * Current provider name.
    */
-  abstract get walletName(): WALLET_NAME;
+  public abstract get walletName(): WALLET_NAME;
 
   /**
    * Gets detailed provider name if it's possible. Otherwise returns common name.
    */
-  get detailedWalletName(): string {
+  public get detailedWalletName(): string {
     return this.walletName;
   }
 
@@ -56,18 +48,18 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * current selected wallet address
    * @return current selected wallet address or undefined if isActive is false
    */
-  get address(): string {
+  public get address(): string {
     if (!this.isActive) {
       return null;
     }
-    return this.getAddress();
+    return this.selectedAddress;
   }
 
   /**
    * current selected network
    * @return current selected network or undefined if isActive is false
    */
-  get network(): BlockchainData {
+  public get network(): BlockchainData {
     if (!this.isActive) {
       return null;
     }
@@ -78,28 +70,21 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * current selected network name
    * @return current selected network name or undefined if isActive is false
    */
-  get networkName(): BlockchainName {
+  public get networkName(): BlockchainName {
     return this.network?.name;
   }
 
   protected constructor(
-    protected readonly errorsService: ErrorsService,
     protected readonly onAddressChanges$: BehaviorSubject<string>,
     protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    protected readonly errorsService: ErrorsService,
     protected readonly zone: NgZone
   ) {
     this.isEnabled = false;
   }
 
-  protected getAddress(): string | null {
-    if (this.isEnabled) {
-      return this.selectedAddress;
-    }
-    return null;
-  }
-
   protected getNetwork(): BlockchainData | null {
-    if (this.isEnabled && this.selectedChain) {
+    if (this.selectedChain) {
       if (isBlockchainName(this.selectedChain)) {
         return BlockchainsInfo.getBlockchainByName(this.selectedChain);
       }
@@ -117,12 +102,6 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * deactivate the blockchain provider
    */
   public abstract deActivate(): void;
-
-  /**
-   * opens a window with suggestion to add token to user's wallet
-   * @param token token to add
-   */
-  public abstract addToken(token: Token): Promise<void>;
 
   public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return [{ parentCapability: 'eth_accounts' }];

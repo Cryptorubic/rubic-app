@@ -1,6 +1,5 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -9,37 +8,25 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { NgZone } from '@angular/core';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
-  private deepLink: string;
-
-  private readonly window: RubicWindow;
-
-  private readonly isIos: boolean;
-
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.TRUST_WALLET;
   }
 
   constructor(
-    web3: Web3,
-    chainChange$: BehaviorSubject<BlockchainData>,
     accountChange$: BehaviorSubject<string>,
+    chainChange$: BehaviorSubject<BlockchainData>,
     errorsService: ErrorsService,
-    isIos: boolean,
-    window: RubicWindow,
-    transactionEmitter$: Observable<void>,
-    zone: NgZone
+    zone: NgZone,
+    private readonly isIos: boolean,
+    private readonly window: RubicWindow
   ) {
     const providerConfig: IWalletConnectProviderOptions = {
       bridge: 'https://bridge.walletconnect.org',
       qrcode: false
     };
-    super(web3, chainChange$, accountChange$, errorsService, providerConfig, zone);
-    this.window = window;
-    this.isIos = isIos;
+    super(providerConfig, accountChange$, chainChange$, errorsService, zone);
+
     this.initDisplaySubscription();
-    transactionEmitter$.subscribe(() => {
-      this.redirectToWallet();
-    });
   }
 
   /**
@@ -54,23 +41,23 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
       const uri = payload.params[0];
       const encodedUri = encodeURIComponent(uri);
       const decodedUri = decodeURIComponent(uri);
-      this.deepLink = this.isIos ? `wc?uri=${encodedUri}` : decodedUri;
-      this.redirectToWallet();
+      const deepLink = this.isIos ? `wc?uri=${encodedUri}` : decodedUri;
+      this.redirectToWallet(deepLink);
     });
   }
 
   /**
    * Redirects to trust wallet mobile app via deep linking.
    */
-  private redirectToWallet(): void {
+  private redirectToWallet(deepLink: string): void {
     if (this.isIos) {
       try {
-        this.window.location.assign(`trust://${this.deepLink}`);
+        this.window.location.assign(`trust://${deepLink}`);
       } catch (err) {
-        this.window.location.assign(`https://link.trustwallet.com/${this.deepLink}`);
+        this.window.location.assign(`https://link.trustwallet.com/${deepLink}`);
       }
     } else {
-      this.window.location.assign(this.deepLink);
+      this.window.location.assign(deepLink);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, from, of, Subject } from 'rxjs';
+import { BehaviorSubject, from, of } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -14,16 +14,13 @@ import { HttpService } from '@core/services/http/http.service';
 import { share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/trust-wallet-adapter';
-import { Near } from 'near-api-js';
 import { AccountError } from '@core/errors/models/provider/account-error';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { Token } from '@shared/models/tokens/token';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { BitkeepWalletAdapter } from '../wallets-adapters/evm/bitkeep-wallet-adapter';
 import {
@@ -45,10 +42,6 @@ export class WalletConnectorService {
   private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainData>(null);
 
   private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
-
-  private readonly _transactionEmitter$ = new Subject<void>();
-
-  public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
 
   private privateProvider: CommonWalletAdapter;
 
@@ -78,17 +71,15 @@ export class WalletConnectorService {
     this.privateProvider = value;
   }
 
+  // @todo remove after checkSettings removal
   public get isProviderActive(): boolean {
     return Boolean(this.provider?.isActive);
-  }
-
-  public get isProviderInstalled(): boolean {
-    return Boolean(this.provider?.isInstalled);
   }
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
   public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
+    // @todo move to sdk service
     switchTap(address => {
       const walletProvider: WalletProvider = address
         ? {
@@ -103,28 +94,6 @@ export class WalletConnectorService {
     share()
   );
 
-  public readonly web3: Web3;
-
-  private _solanaWeb3connection: Connection;
-
-  private _nearConnection: Near;
-
-  set solanaWeb3Connection(value: Connection) {
-    this._solanaWeb3connection = value;
-  }
-
-  get solanaWeb3Connection(): Connection {
-    return this._solanaWeb3connection;
-  }
-
-  set nearConnection(value: Near) {
-    this._nearConnection = value;
-  }
-
-  get nearConnection(): Near {
-    return this._nearConnection;
-  }
-
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
@@ -134,13 +103,7 @@ export class WalletConnectorService {
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone
-  ) {
-    this.web3 = new Web3();
-  }
-
-  public emitTransaction(): void {
-    this._transactionEmitter$.next();
-  }
+  ) {}
 
   /**
    * Setup provider based on local storage.
@@ -178,14 +141,6 @@ export class WalletConnectorService {
     return this.provider.deActivate();
   }
 
-  /**
-   * opens a window with suggestion to add token to user's wallet
-   * @param token token to add
-   */
-  public addToken(token: Token): Promise<void> {
-    return this.provider.addToken(token);
-  }
-
   public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
       this.provider = await this.createWalletAdapter(walletName, chainId);
@@ -208,61 +163,59 @@ export class WalletConnectorService {
     const walletAdapters: Record<WALLET_NAME, () => Promise<CommonWalletAdapter>> = {
       [WALLET_NAME.TRUST_WALLET]: async () =>
         new TrustWalletAdapter(
-          this.web3,
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
+          this.zone,
           this.isIos,
-          this.window,
-          this.transactionEmitter$,
-          this.zone
+          this.window
         ),
       [WALLET_NAME.WALLET_CONNECT]: async () =>
         new WalletConnectAdapter(
-          this.web3,
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
           this.zone
         ),
       [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(
-          this.web3,
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
-          this.zone
+          this.zone,
+          this.window
         );
         await metamaskWalletAdapter.setupDefaultValues();
         return metamaskWalletAdapter;
       },
       [WALLET_NAME.BITKEEP]: async () => {
         const bitkeepWalletAdapter = new BitkeepWalletAdapter(
-          this.web3,
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
-          this.zone
+          this.zone,
+          this.window
         );
         await bitkeepWalletAdapter.setupDefaultValues();
         return bitkeepWalletAdapter;
       },
       [WALLET_NAME.WALLET_LINK]: async () =>
         new WalletLinkWalletAdapter(
-          this.web3,
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
-          this.storage,
           this.zone,
-          chainId
+          this.window,
+          this.storage,
+          chainId!
         ),
       [WALLET_NAME.TRON_LINK]: async () => {
         const tronLinkAdapter = new TronLinkAdapter(
-          this.networkChangeSubject$,
           this.addressChangeSubject$,
+          this.networkChangeSubject$,
           this.errorService,
-          this.zone
+          this.zone,
+          this.window
         );
         await tronLinkAdapter.setupDefaultValues();
         return tronLinkAdapter;
@@ -271,6 +224,7 @@ export class WalletConnectorService {
     return walletAdapters[walletName]();
   }
 
+  // @todo remove
   public checkSettings(selectedBlockchain: BlockchainName): void {
     if (!this.isProviderActive) {
       throw new WalletError();

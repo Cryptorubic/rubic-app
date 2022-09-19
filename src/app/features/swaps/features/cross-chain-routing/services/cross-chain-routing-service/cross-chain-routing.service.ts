@@ -15,7 +15,9 @@ import {
   RangoCrossChainTrade,
   RangoCrossChainTradeProvider,
   CelerCrossChainTrade,
-  EvmCrossChainTrade
+  EvmCrossChainTrade,
+  BridgersCrossChainTradeProvider,
+  ViaCrossChainTradeProvider
 } from 'rubic-sdk';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
@@ -68,13 +70,14 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
   providedIn: 'root'
 })
 export class CrossChainRoutingService extends TradeService {
-  // @TODO update
   private static readonly crossChainProviders = [
     CelerCrossChainTradeProvider,
     SymbiosisCrossChainTradeProvider,
     LifiCrossChainTradeProvider,
     DebridgeCrossChainTradeProvider,
-    RangoCrossChainTradeProvider
+    RangoCrossChainTradeProvider,
+    ViaCrossChainTradeProvider,
+    BridgersCrossChainTradeProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {

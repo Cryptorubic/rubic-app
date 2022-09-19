@@ -2,7 +2,6 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletConnect from '@walletconnect/web3-provider';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
@@ -10,8 +9,6 @@ import Web3 from 'web3';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { NetworkError } from '@core/errors/models/provider/network-error';
-import { WalletconnectError } from '@core/errors/models/provider/walletconnect-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
 import { CHAIN_TYPE } from 'rubic-sdk';
@@ -36,20 +33,18 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   }
 
   protected constructor(
-    web3: Web3,
-    chainChange$: BehaviorSubject<BlockchainData>,
-    accountChange$: BehaviorSubject<string>,
-    errorsService: ErrorsService,
     providerConfig: IWalletConnectProviderOptions,
+    accountChange$: BehaviorSubject<string>,
+    chainChange$: BehaviorSubject<BlockchainData>,
+    errorsService: ErrorsService,
     zone: NgZone
   ) {
-    super(errorsService, accountChange$, chainChange$, zone);
+    super(accountChange$, chainChange$, errorsService, zone);
+
     this.wallet = new WalletConnect({
       rpc: this.getNetworksProviders(),
       ...providerConfig
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    web3.setProvider(this.wallet as any);
     this.initSubscriptions();
   }
 
@@ -118,28 +113,6 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
-  }
-
-  public addToken(token: Token): Promise<void> {
-    if (!this.isActive) {
-      throw new WalletconnectError();
-    }
-    if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
-    }
-
-    return this.wallet.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image
-        }
-      }
-    });
   }
 
   public async switchChain(chainId: string): Promise<null | never> {

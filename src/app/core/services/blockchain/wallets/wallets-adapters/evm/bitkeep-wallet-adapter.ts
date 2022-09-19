@@ -2,17 +2,14 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
-import { NetworkError } from '@core/errors/models/provider/network-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { NgZone } from '@angular/core';
 import { CHAIN_TYPE } from 'rubic-sdk';
@@ -29,17 +26,16 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
   }
 
   constructor(
-    web3: Web3,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     errorsService: ErrorsService,
-    zone: NgZone
+    zone: NgZone,
+    window: RubicWindow
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone);
 
-    const ethereum = (window as RubicWindow).bitkeep?.ethereum;
+    const ethereum = window.bitkeep?.ethereum;
     BitkeepWalletAdapter.checkErrors(ethereum);
-    web3.setProvider(ethereum);
     this.wallet = ethereum;
     this.handleEvents();
   }
@@ -127,28 +123,6 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
-  }
-
-  public addToken(token: Token): Promise<void> {
-    if (!this.isActive) {
-      throw new RubicError('Please make sure that you have BitKeep plugin installed and unlocked.');
-    }
-    if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
-    }
-
-    return this.wallet.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image
-        }
-      }
-    });
   }
 
   public async switchChain(chainId: string): Promise<null | never> {

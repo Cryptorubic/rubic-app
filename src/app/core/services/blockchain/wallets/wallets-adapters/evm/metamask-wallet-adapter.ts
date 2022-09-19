@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -10,10 +9,10 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';
-import { NetworkError } from '@core/errors/models/provider/network-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { NgZone } from '@angular/core';
 import { CHAIN_TYPE } from 'rubic-sdk';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export class MetamaskWalletAdapter extends CommonWalletAdapter {
   public readonly walletType = CHAIN_TYPE.EVM;
@@ -27,16 +26,16 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
   }
 
   constructor(
-    web3: Web3,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     errorsService: ErrorsService,
-    zone: NgZone
+    zone: NgZone,
+    window: RubicWindow
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone);
+
     const { ethereum } = window;
     MetamaskWalletAdapter.checkErrors(ethereum);
-    web3.setProvider(ethereum);
     this.wallet = ethereum;
     this.handleEvents();
   }
@@ -135,28 +134,6 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
-  }
-
-  public addToken(token: Token): Promise<void> {
-    if (!this.isActive) {
-      throw new MetamaskError();
-    }
-    if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
-    }
-
-    return this.wallet.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image
-        }
-      }
-    });
   }
 
   public async switchChain(chainId: string): Promise<null | never> {

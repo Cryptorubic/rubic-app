@@ -5,10 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
-import { Token } from '@shared/models/tokens/token';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
   public readonly walletType = CHAIN_TYPE.TRON;
@@ -22,18 +21,19 @@ export class TronLinkAdapter extends CommonWalletAdapter {
   }
 
   constructor(
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     errorsService: ErrorsService,
-    zone: NgZone
+    zone: NgZone,
+    window: RubicWindow
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$, zone);
-    this.wallet = (window as RubicAny).tronLink; // @TODO RubicWindow
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone);
+    this.wallet = window.tronLink;
     // @TODO add change events
   }
 
   public async setupDefaultValues(): Promise<void> {
-    this.selectedChain = BLOCKCHAIN_NAME.TRON;
+    this.selectedChain = BLOCKCHAIN_NAME.TRON; // @todo add check
     this.selectedAddress = this.wallet.tronWeb?.defaultAddress.base58;
   }
 
@@ -69,10 +69,5 @@ export class TronLinkAdapter extends CommonWalletAdapter {
   // @todo remove
   public addChain(_params: AddEthChainParams): Promise<null> {
     return Promise.resolve(null);
-  }
-
-  // @todo remove
-  public addToken(_token: Token): Promise<void> {
-    return Promise.resolve(undefined);
   }
 }

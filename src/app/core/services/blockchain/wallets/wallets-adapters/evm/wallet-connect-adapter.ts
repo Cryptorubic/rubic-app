@@ -1,6 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
@@ -19,20 +18,15 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
   }
 
   constructor(
-    web3: Web3,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     errorsService: ErrorsService,
-    zone: NgZone,
-    availableMobileWallets?: string[]
+    zone: NgZone
   ) {
     const providerConfig = {
       bridge: 'https://bridge.walletconnect.org',
-      qrcode: true,
-      qrcodeModalOptions: {
-        mobileLinks: availableMobileWallets
-      }
+      qrcode: true
     };
-    super(web3, onNetworkChanges$, onAddressChanges$, errorsService, providerConfig, zone);
+    super(providerConfig, onAddressChanges$, onNetworkChanges$, errorsService, zone);
   }
 }

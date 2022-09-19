@@ -1,10 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import WalletLink, { WalletLinkProvider, WalletLinkProvider as CoinbaseProvider } from 'walletlink';
+import WalletLink, { WalletLinkProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
-import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import BigNumber from 'bignumber.js';
@@ -13,18 +11,16 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
-import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
 import { CHAIN_TYPE } from 'rubic-sdk';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
-export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
+export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvider> {
   public readonly walletType = CHAIN_TYPE.EVM;
 
   private isMobileMode: boolean = false;
-
-  private defaultWalletParams: WalletLinkOptions;
 
   public get isMultiChainWallet(): boolean {
     return false;
@@ -35,112 +31,80 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
   }
 
   constructor(
-    web3: Web3,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     errorService: ErrorsService,
-    private readonly storeService: StoreService,
     zone: NgZone,
-    blockchainId?: number
+    private readonly window: RubicWindow,
+    private readonly storeService: StoreService,
+    blockchainId: number
   ) {
-    super(errorService, onAddressChanges$, onNetworkChanges$, zone);
+    super(onAddressChanges$, onNetworkChanges$, errorService, zone);
+
     this.wallet = this.getWallet(blockchainId);
-    web3.setProvider(this.wallet);
   }
 
-  public getWallet(blockchainId?: number): CoinbaseProvider {
-    const provider = window?.ethereum as WalletLinkProvider & {
-      isCoinbaseWallet: boolean;
-    };
-    if (provider?.isCoinbaseWallet === true) {
-      // Handle mobile coinbase browser.
-      this.isMobileMode = true;
-      return window.ethereum;
-    }
-    this.defaultWalletParams = {
-      appName: 'Rubic',
-      appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
-      darkMode: false
-    };
-
-    if (!blockchainId) {
+  public getWallet(chainId: number): WalletLinkProvider {
+    if (!chainId) {
       console.error('Desktop walletLink works only with predefined chainId');
       throw new UndefinedError();
     }
 
-    const chainId = blockchainId;
+    const provider = this.window.ethereum as WalletLinkProvider;
+    if (provider?.isCoinbaseWallet === true) {
+      // Handle mobile coinbase browser.
+      this.isMobileMode = true;
+      return provider;
+    }
+
+    const defaultWalletParams: WalletLinkOptions = {
+      appName: 'Rubic',
+      appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
+      darkMode: false
+    };
     const chain = BlockchainsInfo.getBlockchainById(chainId);
-    const walletLink = new WalletLink(this.defaultWalletParams);
+    const walletLink = new WalletLink(defaultWalletParams);
     this.selectedChain = chainId.toString();
     return walletLink.makeWeb3Provider(chain.rpcList[0] as string, chainId);
-  }
-
-  public async signPersonal(message: string): Promise<string> {
-    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
   }
 
   public async activate(): Promise<void> {
     try {
       const [address] = await this.wallet.request<[string]>({ method: 'eth_requestAccounts' });
 
-      const activeChain = (await this.wallet.request({ method: 'eth_chainId' })) as string;
-      const chainInfo = BlockchainsInfo.getBlockchainById(parseInt(activeChain).toString());
+      const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
+      const chainInfo = BlockchainsInfo.getBlockchainById(chainId);
 
       // in desktop version selected into modal chain should match mobile app selected chain
       if (!this.isMobileMode) {
-        if (!new BigNumber(activeChain).eq(this.selectedChain)) {
+        if (!new BigNumber(chainId).eq(this.selectedChain)) {
           throw new WalletlinkWrongNetwork(
             BlockchainsInfo.getBlockchainById(this.selectedChain).label
           );
         }
       }
 
-      this.selectedAddress = address;
-      this.selectedChain = chainInfo.name;
       this.isEnabled = true;
+      this.selectedAddress = address;
+      this.selectedChain = chainInfo.id.toString();
       this.zone.run(() => {
         this.onNetworkChanges$.next(chainInfo);
         this.onAddressChanges$.next(address);
       });
       this.storeService.setItem('chainId', Number(chainInfo?.id));
     } catch (error) {
-      if (!(error instanceof RubicError)) {
-        throw new WalletlinkError();
-      } else {
+      if (error instanceof RubicError) {
         throw error;
       }
+      throw new WalletlinkError();
     }
   }
 
   public async deActivate(): Promise<void> {
+    this.isEnabled = false;
     this.wallet.close();
     this.onAddressChanges$.next(undefined);
     this.onNetworkChanges$.next(undefined);
-    this.isEnabled = false;
-  }
-
-  public async addToken(token: Token): Promise<void> {
-    if (!this.isActive) {
-      throw new WalletlinkError();
-    }
-    if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
-    }
-
-    await this.wallet.request({
-      method: 'wallet_watchAsset',
-      params: [
-        {
-          type: 'ERC20',
-          options: {
-            address: token.address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            image: token.image
-          }
-        }
-      ]
-    });
   }
 
   public async switchChain(chainId: string): Promise<null | never> {

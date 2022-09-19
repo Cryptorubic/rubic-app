@@ -1,5 +1,6 @@
 import { WalletLinkProvider } from 'walletlink';
-import Process = NodeJS.Process; // Included with Angular CLI.
+import Process = NodeJS.Process;
+// Included with Angular CLI.
 
 /**
  * APPLICATION IMPORTS
@@ -12,4 +13,7 @@ export interface RubicWindow extends Window {
   ga?: Function | { create: Function; loaded: boolean };
   bitkeep?: { ethereum?: WalletLinkProvider };
   chrome?: boolean;
+  tronLink?: {
+    tronWeb: unknown;
+  };
 }
