@@ -130,7 +130,7 @@ export class TokensService {
       )
       .subscribe();
 
-    this.authService.getCurrentUser().subscribe(async user => {
+    this.authService.currentUser$.subscribe(async user => {
       this.userAddress = user?.address;
       await this.calculateTokensBalancesByType('default');
       if (this.userAddress) {

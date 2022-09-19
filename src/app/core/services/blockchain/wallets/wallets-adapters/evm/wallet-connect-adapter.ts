@@ -4,6 +4,7 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { NgZone } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
   public get walletName(): WALLET_NAME {
@@ -21,7 +22,8 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
-    zone: NgZone
+    zone: NgZone,
+    _window: RubicWindow
   ) {
     const providerConfig = {
       bridge: 'https://bridge.walletconnect.org',

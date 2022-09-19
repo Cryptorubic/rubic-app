@@ -68,10 +68,6 @@ export class WalletConnectorService {
     return this.privateProvider;
   }
 
-  public set provider(value: CommonWalletAdapter) {
-    this.privateProvider = value;
-  }
-
   // @todo remove after checkSettings removal
   public get isProviderActive(): boolean {
     return Boolean(this.provider?.isActive);
@@ -107,13 +103,14 @@ export class WalletConnectorService {
   ) {}
 
   /**
-   * Setup provider based on local storage.
+   * Setups provider based on local storage.
    */
-  public async installProvider(): Promise<boolean> {
+  public async setupProvider(): Promise<boolean> {
     const provider = this.storage.getItem('provider');
     if (!provider) {
       return false;
     }
+
     if (provider === WALLET_NAME.WALLET_LINK) {
       const chainId = this.storage.getItem('chainId');
       return this.connectProvider(provider, chainId);
@@ -125,6 +122,7 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.EVM) {
       return Object.values(EVM_BLOCKCHAIN_NAME);
     }
+    // chainType === CHAIN_TYPE.TRON
     return [BLOCKCHAIN_NAME.TRON];
   }
 
@@ -139,12 +137,13 @@ export class WalletConnectorService {
 
   public deActivate(): void {
     this.storage.deleteItem('provider');
-    return this.provider.deActivate();
+    this.storage.deleteItem('chainId');
+    return this.provider?.deActivate();
   }
 
   public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
-      this.provider = await this.createWalletAdapter(walletName, chainId);
+      this.privateProvider = await this.createWalletAdapter(walletName, chainId);
       return true;
     } catch (e) {
       // The error module is triggered before the translation is loaded
@@ -161,68 +160,42 @@ export class WalletConnectorService {
     walletName: WALLET_NAME,
     chainId?: number
   ): Promise<CommonWalletAdapter> {
-    const walletAdapters: Record<WALLET_NAME, () => Promise<CommonWalletAdapter>> = {
-      [WALLET_NAME.TRUST_WALLET]: async () =>
-        new TrustWalletAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone,
-          this.isIos,
-          this.window
-        ),
-      [WALLET_NAME.WALLET_CONNECT]: async () =>
-        new WalletConnectAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone
-        ),
-      [WALLET_NAME.METAMASK]: async () => {
-        const metamaskWalletAdapter = new MetamaskWalletAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone,
-          this.window
-        );
-        await metamaskWalletAdapter.setupDefaultValues();
-        return metamaskWalletAdapter;
-      },
-      [WALLET_NAME.BITKEEP]: async () => {
-        const bitkeepWalletAdapter = new BitkeepWalletAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone,
-          this.window
-        );
-        await bitkeepWalletAdapter.setupDefaultValues();
-        return bitkeepWalletAdapter;
-      },
-      [WALLET_NAME.WALLET_LINK]: async () =>
-        new WalletLinkWalletAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone,
-          this.window,
-          this.storage,
-          chainId!
-        ),
-      [WALLET_NAME.TRON_LINK]: async () => {
-        const tronLinkAdapter = new TronLinkAdapter(
-          this.addressChangeSubject$,
-          this.networkChangeSubject$,
-          this.errorService,
-          this.zone,
-          this.window
-        );
-        await tronLinkAdapter.setupDefaultValues();
-        return tronLinkAdapter;
-      }
-    };
-    return walletAdapters[walletName]();
+    const defaultConstructorParameters = [
+      this.addressChangeSubject$,
+      this.networkChangeSubject$,
+      this.errorService,
+      this.zone,
+      this.window
+    ] as const;
+
+    if (walletName === WALLET_NAME.TRUST_WALLET) {
+      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
+    }
+
+    if (walletName === WALLET_NAME.WALLET_CONNECT) {
+      return new WalletConnectAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.METAMASK) {
+      const metamaskWalletAdapter = new MetamaskWalletAdapter(...defaultConstructorParameters);
+      await metamaskWalletAdapter.setupDefaultValues();
+      return metamaskWalletAdapter;
+    }
+
+    if (walletName === WALLET_NAME.BITKEEP) {
+      const bitkeepWalletAdapter = new BitkeepWalletAdapter(...defaultConstructorParameters);
+      await bitkeepWalletAdapter.setupDefaultValues();
+      return bitkeepWalletAdapter;
+    }
+
+    if (walletName === WALLET_NAME.WALLET_LINK) {
+      return new WalletLinkWalletAdapter(...defaultConstructorParameters, this.storage, chainId!);
+    }
+
+    // walletName === WALLET_NAME.TRON_LINK
+    const tronLinkAdapter = new TronLinkAdapter(...defaultConstructorParameters);
+    await tronLinkAdapter.setupDefaultValues();
+    return tronLinkAdapter;
   }
 
   // @todo remove
@@ -243,20 +216,50 @@ export class WalletConnectorService {
     }
   }
 
-  public async addChain(blockchainName: EvmBlockchainName): Promise<void> {
-    const chainId = blockchainId[blockchainName];
-    const nativeCoin = nativeTokensList[blockchainName];
-    const scannerUrl = blockchainScanner[blockchainName].baseUrl;
-    const icon = blockchainIcon[blockchainName];
+  /**
+   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
+   * @param evmBlockchainName Chain to switch to.
+   * @return True if the network switch was successful, otherwise false.
+   */
+  public async switchChain(evmBlockchainName: EvmBlockchainName): Promise<boolean> {
+    const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
+    try {
+      await this.provider.switchChain(chainId);
+      return true;
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        try {
+          await this.addChain(evmBlockchainName);
+          await this.provider.switchChain(chainId);
+          return true;
+        } catch (err) {
+          this.errorService.catch(err);
+        }
+      } else {
+        this.errorService.catch(switchError);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Adds new network through wallet provider.
+   * @param evmBlockchainName Chain to switch to.
+   */
+  public async addChain(evmBlockchainName: EvmBlockchainName): Promise<void> {
+    const chainId = blockchainId[evmBlockchainName];
+    const nativeCoin = nativeTokensList[evmBlockchainName];
+    const scannerUrl = blockchainScanner[evmBlockchainName].baseUrl;
+    const icon = blockchainIcon[evmBlockchainName];
     let chainName: string;
     let rpcUrl: string;
-    const defaultData = defaultBlockchainData[blockchainName];
+    const defaultData = defaultBlockchainData[evmBlockchainName];
     if (defaultData) {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
     } else {
-      chainName = blockchainName;
-      rpcUrl = rpcList[blockchainName][0];
+      chainName = evmBlockchainName;
+      rpcUrl = rpcList[evmBlockchainName][0];
     }
 
     const params: AddEthChainParams = {
@@ -272,31 +275,5 @@ export class WalletConnectorService {
       iconUrls: [`${this.window.location.origin}/${icon}`]
     };
     await this.provider.addChain(params);
-  }
-
-  /**
-   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
-   * @param blockchainName chain to switch to.
-   * @return True if the network switch was successful, otherwise false.
-   */
-  public async switchChain(blockchainName: EvmBlockchainName): Promise<boolean> {
-    const chainId = `0x${blockchainId[blockchainName].toString(16)}`;
-    try {
-      await this.provider.switchChain(chainId);
-      return true;
-    } catch (switchError) {
-      if (switchError.code === 4902) {
-        try {
-          await this.addChain(blockchainName);
-          await this.provider.switchChain(chainId);
-          return true;
-        } catch (err) {
-          this.errorService.catch(err);
-        }
-      } else {
-        this.errorService.catch(switchError);
-      }
-    }
-    return false;
   }
 }

@@ -102,6 +102,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
     this.wallet.close();
     this.onAddressChanges$.next(undefined);
     this.onNetworkChanges$.next(undefined);
+    this.storeService.deleteItem('chainId');
   }
 
   public async switchChain(chainId: string): Promise<null | never> {

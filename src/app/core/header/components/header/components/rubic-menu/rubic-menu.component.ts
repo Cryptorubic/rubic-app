@@ -72,7 +72,7 @@ export class RubicMenuComponent implements AfterViewInit {
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.currentUser$ = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.currentUser$;
     this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
@@ -118,7 +118,7 @@ export class RubicMenuComponent implements AfterViewInit {
   }
 
   public logout(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
   }
 
   isLinkActive(url: string): boolean {

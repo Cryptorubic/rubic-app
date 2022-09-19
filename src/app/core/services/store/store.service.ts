@@ -10,10 +10,7 @@ import { Store } from 'src/app/core/services/store/models/store';
   providedIn: 'root'
 })
 export class StoreService {
-  /**
-   * Data stored.
-   */
-  private readonly storageSubject$: BehaviorSubject<Store>;
+  private readonly storageSubject$ = new BehaviorSubject<Store>(this.fetchData());
 
   /**
    * Key to store data.
@@ -32,10 +29,7 @@ export class StoreService {
     @Inject(DOCUMENT) private document: Document,
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private readonly iframeService: IframeService
-  ) {
-    const store = this.fetchData();
-    this.storageSubject$ = new BehaviorSubject<Store>(store);
-  }
+  ) {}
 
   /**
    * Set some store data by key.
@@ -75,31 +69,15 @@ export class StoreService {
    */
   public fetchData(): Store {
     try {
-      const cookie = this.cookieService.get(this.storageKey);
-      const data = JSON.parse(
-        this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
-      );
-      return (data || {}) as Store;
+      const data = this.isIframe
+        ? this.cookieService.get(this.storageKey)
+        : this.localStorage?.getItem(this.storageKey);
+
+      const parsedData = JSON.parse(data);
+      return parsedData || {};
     } catch (err: unknown) {
       console.debug(err);
       return {} as Store;
-    }
-  }
-
-  /**
-   * Delete stored data.
-   */
-  public deleteData(): void {
-    try {
-      if (!this.isIframe) {
-        this.localStorage?.removeItem(this.storageKey);
-      } else {
-        this.cookieService.delete(this.storageKey);
-      }
-    } catch (err: unknown) {
-      console.debug(err);
-    } finally {
-      this.storageSubject$.next(null);
     }
   }
 
@@ -123,36 +101,6 @@ export class StoreService {
       console.debug(err);
     } finally {
       this.storageSubject$.next(newData);
-    }
-  }
-
-  /**
-   * Clear all data in user storage except
-   * recent trades and unread trades if they exists.
-   */
-  public clearStorage(): void {
-    const recentTrades = this.getItem('recentTrades');
-    const unreadTrades = this.getItem('unreadTrades');
-
-    try {
-      if (!this.isIframe) {
-        this.localStorage?.clear();
-
-        if (recentTrades) {
-          this.localStorage.setItem(
-            this.storageKey,
-            JSON.stringify({ recentTrades, unreadTrades })
-          );
-        }
-      }
-    } catch (err: unknown) {
-      console.debug(err);
-    } finally {
-      if (recentTrades) {
-        this.storageSubject$.next({ ...({} as Store), recentTrades, unreadTrades });
-      } else {
-        this.storageSubject$.next(null);
-      }
     }
   }
 }

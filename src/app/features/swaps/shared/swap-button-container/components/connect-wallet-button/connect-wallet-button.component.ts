@@ -23,7 +23,7 @@ export class ConnectWalletButtonComponent {
 
   public readonly isIframe = this.iframeService.isIframe;
 
-  public readonly user$ = this.authService.getCurrentUser();
+  public readonly user$ = this.authService.currentUser$;
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,

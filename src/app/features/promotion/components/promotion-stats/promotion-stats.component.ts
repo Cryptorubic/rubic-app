@@ -47,15 +47,13 @@ export class PromotionStatsComponent implements OnInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorsService: ErrorsService
   ) {
-    this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
-    this.isEthLikeWalletConnected$ = authService
-      .getCurrentUser()
-      .pipe(
-        map(
-          user =>
-            !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
-        )
-      );
+    this.isWalletConnected$ = authService.currentUser$.pipe(map(user => !!user?.address));
+    this.isEthLikeWalletConnected$ = authService.currentUser$.pipe(
+      map(
+        user =>
+          !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
+      )
+    );
 
     this.statistics$ = promotionService.statistics$;
     this.isStatisticsLoading$ = promotionService.isStatisticsLoading$;
@@ -78,7 +76,7 @@ export class PromotionStatsComponent implements OnInit {
   }
 
   public reconnectWallet(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
     this.openWalletsModal();
   }
 

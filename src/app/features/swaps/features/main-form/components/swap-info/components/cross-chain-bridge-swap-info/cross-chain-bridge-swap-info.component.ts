@@ -62,7 +62,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
       this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
         startWith(this.swapFormService.inputValue.toBlockchain)
       ),
-      this.authService.getCurrentUser(),
+      this.authService.currentUser$,
       this.targetNetworkAddressService.displayAddress$,
       this.targetNetworkAddressService.targetAddress$
     ])

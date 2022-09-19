@@ -55,7 +55,7 @@ export class StakingService {
     (STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH
   );
 
-  public readonly user$ = this.authService.getCurrentUser();
+  public readonly user$ = this.authService.currentUser$;
 
   private readonly _rbcTokenBalance$ = new BehaviorSubject<BigNumber>(null);
 
@@ -77,9 +77,9 @@ export class StakingService {
     return this.authService.userAddress;
   }
 
-  public readonly needLogin$ = this.authService
-    .getCurrentUser()
-    .pipe(map(user => !Boolean(user?.address)));
+  public readonly needLogin$ = this.authService.currentUser$.pipe(
+    map(user => !Boolean(user?.address))
+  );
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
     filter(Boolean),

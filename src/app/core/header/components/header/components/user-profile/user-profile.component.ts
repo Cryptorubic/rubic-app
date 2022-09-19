@@ -47,7 +47,7 @@ export class UserProfileComponent implements AfterViewInit {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.currentUser$ = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.currentUser$;
   }
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
@@ -76,14 +76,10 @@ export class UserProfileComponent implements AfterViewInit {
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         this.cdr.markForCheck();
       });
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
-      this.authService.setCurrentUser(address, this.walletConnectorService.chainType);
-      this.cdr.markForCheck();
-    });
   }
 
   public logout(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
   }
 
   public getDropdownStatus(status: boolean): void {

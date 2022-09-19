@@ -122,7 +122,7 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   get user$(): Observable<UserInterface> {
-    return this.authService.getCurrentUser();
+    return this.authService.currentUser$;
   }
 
   constructor(

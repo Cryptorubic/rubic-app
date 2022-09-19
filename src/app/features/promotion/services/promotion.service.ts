@@ -140,22 +140,19 @@ export class PromotionService {
    * Subscribes to wallet changes and fetches promotion data if needed.
    */
   private setWalletSubscriptions(): void {
-    this.authService
-      .getCurrentUser()
-      .pipe(map(user => !!user?.address))
-      .subscribe(isAuthorized => {
-        const isEthLikeWalletConnected =
-          isAuthorized && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM;
-        if (isEthLikeWalletConnected) {
-          this.updatePromotionData();
-          this.updatePromotionStatistics();
-          this.updatePromoLink();
-        } else {
-          this.setDefaultTableData();
-          this.setDefaultStatistics();
-          this.setDefaultPromoLink();
-        }
-      });
+    this.authService.currentUser$.pipe(map(user => !!user?.address)).subscribe(isAuthorized => {
+      const isEthLikeWalletConnected =
+        isAuthorized && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM;
+      if (isEthLikeWalletConnected) {
+        this.updatePromotionData();
+        this.updatePromotionStatistics();
+        this.updatePromoLink();
+      } else {
+        this.setDefaultTableData();
+        this.setDefaultStatistics();
+        this.setDefaultPromoLink();
+      }
+    });
   }
 
   private setTableDataLoading(): void {

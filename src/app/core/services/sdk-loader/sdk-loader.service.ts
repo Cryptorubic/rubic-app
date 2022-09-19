@@ -26,11 +26,8 @@ export class SdkLoaderService {
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
     if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch {}
+      await this.authService.loadStorageUser();
     }
   }
 

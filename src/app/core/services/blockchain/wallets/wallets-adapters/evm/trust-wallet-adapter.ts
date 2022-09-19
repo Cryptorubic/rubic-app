@@ -17,8 +17,8 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    private readonly isIos: boolean,
-    private readonly window: RubicWindow
+    private readonly window: RubicWindow,
+    private readonly isIos: boolean
   ) {
     const providerConfig: IWalletConnectProviderOptions = {
       bridge: 'https://bridge.walletconnect.org',

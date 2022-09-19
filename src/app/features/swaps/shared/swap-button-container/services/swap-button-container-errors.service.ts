@@ -119,7 +119,7 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnAuth(): void {
-    this.authService.getCurrentUser().subscribe(() => {
+    this.authService.currentUser$.subscribe(() => {
       this.checkWalletSupportsFromBlockchain();
       this.checkUserBalance();
 

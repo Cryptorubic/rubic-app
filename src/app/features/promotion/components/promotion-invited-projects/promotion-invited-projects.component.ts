@@ -49,15 +49,13 @@ export class PromotionInvitedProjectsComponent {
     this.tableData$ = promotionService.tableData$;
     this.sortParameter$ = promotionService.sortParameter$;
 
-    this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
-    this.isEthLikeWalletConnected$ = authService
-      .getCurrentUser()
-      .pipe(
-        map(
-          user =>
-            !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
-        )
-      );
+    this.isWalletConnected$ = authService.currentUser$.pipe(map(user => !!user?.address));
+    this.isEthLikeWalletConnected$ = authService.currentUser$.pipe(
+      map(
+        user =>
+          !!user?.address && this.walletConnectorService.provider.walletType === CHAIN_TYPE.EVM
+      )
+    );
   }
 
   public onRefresh(): void {
@@ -69,7 +67,7 @@ export class PromotionInvitedProjectsComponent {
   }
 
   public reconnectWallet(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
     this.openWalletsModal();
   }
 

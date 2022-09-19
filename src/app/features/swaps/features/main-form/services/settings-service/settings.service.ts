@@ -150,8 +150,7 @@ export class SettingsService {
   }
 
   private setupData(): void {
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(
         filter(user => Boolean(user?.address)),
         tap(() => {

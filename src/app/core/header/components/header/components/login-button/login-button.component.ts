@@ -20,7 +20,7 @@ export class LoginButtonComponent {
     private readonly authService: AuthService,
     private readonly walletsModalService: WalletsModalService
   ) {
-    this.currentUser$ = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.currentUser$;
   }
 
   public showModal(): void {

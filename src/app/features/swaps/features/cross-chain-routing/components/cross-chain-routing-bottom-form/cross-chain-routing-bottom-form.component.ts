@@ -204,8 +204,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(
         filter(user => !!user?.address),
         takeUntil(this.destroy$)
