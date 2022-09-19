@@ -1,7 +1,7 @@
 import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { NgZone } from '@angular/core';
 
@@ -17,6 +17,10 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   protected isEnabled: boolean;
 
   public wallet: T = null;
+
+  protected onAddressChangesSub: Subscription;
+
+  protected onNetworkChangesSub: Subscription;
 
   public get isActive(): boolean {
     return this.isEnabled && Boolean(this.selectedAddress);
@@ -54,5 +58,11 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   public abstract activate(): Promise<void>;
 
-  public abstract deactivate(): void;
+  public deactivate(): void {
+    this.onAddressChangesSub?.unsubscribe();
+    this.onNetworkChangesSub?.unsubscribe();
+    this.onAddressChanges$.next(null);
+    this.onNetworkChanges$.next(null);
+    this.isEnabled = false;
+  }
 }

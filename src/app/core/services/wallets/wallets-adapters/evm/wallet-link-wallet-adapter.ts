@@ -91,8 +91,6 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
   public async deactivate(): Promise<void> {
     this.wallet.close();
     this.storeService.deleteItem('chainId');
-    this.onAddressChanges$.next(undefined);
-    this.onNetworkChanges$.next(undefined);
-    this.isEnabled = false;
+    super.deactivate();
   }
 }

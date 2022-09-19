@@ -74,7 +74,7 @@ export class UserProfileComponent implements AfterViewInit {
       .subscribe(blockchainName => {
         this.currentBlockchainName = blockchainName;
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
   }
 

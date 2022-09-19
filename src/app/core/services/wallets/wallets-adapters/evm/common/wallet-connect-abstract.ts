@@ -54,8 +54,6 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter {
 
   public async deactivate(): Promise<void> {
     await this.wallet.close();
-    this.onAddressChanges$.next(null);
-    this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
+    super.deactivate();
   }
 }

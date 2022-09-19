@@ -37,7 +37,15 @@ export class AuthService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
     private readonly gtmService: GoogleTagManagerService
-  ) {}
+  ) {
+    this.initSubscriptions();
+  }
+
+  private initSubscriptions(): void {
+    this.walletConnectorService.addressChange$.subscribe(address => {
+      this.setCurrentUser(address, this.walletConnectorService.chainType);
+    });
+  }
 
   private setCurrentUser(address: string, chainType: CHAIN_TYPE): void {
     if (!compareAddresses(address, this.userAddress)) {

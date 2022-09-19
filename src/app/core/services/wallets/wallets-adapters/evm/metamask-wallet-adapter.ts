@@ -64,10 +64,4 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       throw new MetamaskError();
     }
   }
-
-  public deactivate(): void {
-    this.onAddressChanges$.next(null);
-    this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
-  }
 }

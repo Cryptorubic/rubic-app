@@ -86,9 +86,6 @@ export class RubicMenuComponent implements AfterViewInit {
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         this.cdr.markForCheck();
       });
-    this.walletConnectorService.addressChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.cdr.markForCheck());
   }
 
   public getDropdownStatus(opened: boolean): void {

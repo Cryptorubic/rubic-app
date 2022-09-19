@@ -57,7 +57,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
    * Subscribes on chain and account change events.
    */
   protected initSubscriptionsOnChanges(): void {
-    fromEvent(this.window, 'message')
+    this.onAddressChangesSub = fromEvent(this.window, 'message')
       .pipe(filter((e: RubicAny) => e.data.message?.action === 'setAccount'))
       .subscribe((e: RubicAny) => {
         const address = e.data.message.data.address;
@@ -69,7 +69,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
         }
       });
 
-    fromEvent(this.window, 'message')
+    this.onNetworkChangesSub = fromEvent(this.window, 'message')
       .pipe(filter((e: RubicAny) => e.data.message?.action === 'setNode'))
       .subscribe((e: RubicAny) => {
         const node = e.data.message.data.node.fullNode;
@@ -83,11 +83,5 @@ export class TronLinkAdapter extends CommonWalletAdapter {
           });
         }
       });
-  }
-
-  public deactivate(): void {
-    this.onAddressChanges$.next(null);
-    this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
   }
 }
