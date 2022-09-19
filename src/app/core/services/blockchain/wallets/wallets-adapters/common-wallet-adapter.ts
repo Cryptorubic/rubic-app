@@ -1,7 +1,7 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -107,7 +107,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return [{ parentCapability: 'eth_accounts' }];
   }
 
-  public abstract switchChain(chainParams: string): Promise<null | never>;
+  public abstract switchChain(chainId: string): Promise<null | never>;
 
   public abstract addChain(params: AddEthChainParams): Promise<null | never>;
 }

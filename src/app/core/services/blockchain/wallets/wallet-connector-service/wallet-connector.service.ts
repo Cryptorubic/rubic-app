@@ -2,8 +2,7 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, from, of } from 'rxjs';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
+import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
@@ -25,15 +24,22 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { BitkeepWalletAdapter } from '../wallets-adapters/evm/bitkeep-wallet-adapter';
 import {
   BLOCKCHAIN_NAME,
+  blockchainId,
   BlockchainName,
   CHAIN_TYPE,
   EVM_BLOCKCHAIN_NAME,
+  EvmBlockchainName,
+  nativeTokensList,
   WalletProvider
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { TronLinkAdapter } from '@core/services/blockchain/wallets/wallets-adapters/tron/tron-link-adapter';
 import { switchTap } from '@shared/utils/utils';
 import { provider as Web3Provider } from 'web3-core';
+import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
+import { rpcList } from '@shared/constants/blockchain/rpc-list';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { defaultBlockchainData } from '@core/services/blockchain/wallets/wallet-connector-service/constants/default-blockchain-data';
 
 @Injectable({
   providedIn: 'root'
@@ -242,114 +248,60 @@ export class WalletConnectorService {
     }
   }
 
-  public async addChain(networkName: BlockchainName): Promise<void> {
-    const network = BlockchainsInfo.getBlockchainByName(networkName);
-    const defaultData = {
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        name: 'Binance Smart Chain Mainnet',
-        rpc: 'https://bsc-dataseed1.binance.org'
-      },
-      [BLOCKCHAIN_NAME.POLYGON]: {
-        name: 'Polygon Mainnet',
-        rpc: 'https://rpc-mainnet.maticvigil.com'
-      },
-      [BLOCKCHAIN_NAME.HARMONY]: {
-        name: 'Harmony Mainnet Shard 0',
-        rpc: 'https://api.harmony.one'
-      },
-      [BLOCKCHAIN_NAME.AVALANCHE]: {
-        name: 'Avalanche Mainnet',
-        rpc: 'https://api.avax.network/ext/bc/C/rpc'
-      },
-      [BLOCKCHAIN_NAME.MOONRIVER]: {
-        name: 'Moonriver',
-        rpc: 'https://rpc.moonriver.moonbeam.network'
-      },
-      [BLOCKCHAIN_NAME.FANTOM]: {
-        name: 'Fantom Opera',
-        rpc: 'https://rpc.ankr.com/fantom'
-      },
-      [BLOCKCHAIN_NAME.ARBITRUM]: {
-        name: 'Arbitrum One',
-        rpc: 'https://arb1.arbitrum.io/rpc'
-      },
-      [BLOCKCHAIN_NAME.AURORA]: {
-        name: 'Aurora MainNet',
-        rpc: 'https://mainnet.aurora.dev'
-      },
-      [BLOCKCHAIN_NAME.TELOS]: {
-        name: 'Telos EVM Mainnet',
-        rpc: 'https://mainnet.telos.net/evm'
-      },
-      [BLOCKCHAIN_NAME.OPTIMISM]: {
-        name: 'Optimism',
-        rpc: 'https://mainnet.optimism.io'
-      },
-      [BLOCKCHAIN_NAME.CRONOS]: {
-        name: 'Cronos Mainnet Beta',
-        rpc: 'https://evm.cronos.org'
-      },
-      [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
-        name: 'OKXChain Mainnet',
-        rpc: 'https://exchainrpc.okex.org'
-      },
-      [BLOCKCHAIN_NAME.GNOSIS]: {
-        name: 'Gnosis Chain',
-        rpc: 'https://rpc.gnosischain.com'
-      },
-      [BLOCKCHAIN_NAME.FUSE]: {
-        name: 'Fuse Mainnet',
-        rpc: 'https://rpc.fuse.io'
-      },
-      [BLOCKCHAIN_NAME.MOONBEAM]: {
-        name: 'Moonbeam',
-        rpc: 'https://rpc.api.moonbeam.network'
-      },
-      [BLOCKCHAIN_NAME.CELO]: {
-        name: 'Celo Mainnet',
-        rpc: 'https://forno.celo.org'
-      }
-    };
-    const params = {
-      chainId: `0x${network.id.toString(16)}`,
-      chainName: defaultData[network.name as keyof typeof defaultData]?.name || network.name,
+  public async addChain(blockchainName: EvmBlockchainName): Promise<void> {
+    const chainId = blockchainId[blockchainName];
+    const nativeCoin = nativeTokensList[blockchainName];
+    const scannerUrl = blockchainScanner[blockchainName].baseUrl;
+    const icon = blockchainIcon[blockchainName];
+    let chainName: string;
+    let rpcUrl: string;
+    const defaultData = defaultBlockchainData[blockchainName];
+    if (defaultData) {
+      chainName = defaultData.name;
+      rpcUrl = defaultData.rpc;
+    } else {
+      chainName = blockchainName;
+      rpcUrl = rpcList[blockchainName][0];
+    }
+
+    const params: AddEthChainParams = {
+      chainId: `0x${chainId.toString(16)}`,
+      chainName,
       nativeCurrency: {
-        name: network.nativeCoin.name,
-        symbol: network.nativeCoin.symbol,
+        name: nativeCoin.name,
+        symbol: nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcList[0]],
-      blockExplorerUrls: [network.scannerUrl],
-      iconUrls: [`${this.window.location.origin}/${network.imagePath}`]
-    } as AddEthChainParams;
+      rpcUrls: [rpcUrl],
+      blockExplorerUrls: [scannerUrl],
+      iconUrls: [`${this.window.location.origin}/${icon}`]
+    };
     await this.provider.addChain(params);
   }
 
   /**
    * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
-   * @param networkName chain to switch to.
-   * @return was the network switch successful.
+   * @param blockchainName chain to switch to.
+   * @return True if the network switch was successful, otherwise false.
    */
-  public async switchChain(networkName: BlockchainName): Promise<boolean> {
-    const network = BlockchainsInfo.getBlockchainByName(networkName);
-    const chainId = `0x${network.id.toString(16)}`;
+  public async switchChain(blockchainName: EvmBlockchainName): Promise<boolean> {
+    const chainId = `0x${blockchainId[blockchainName].toString(16)}`;
     try {
       await this.provider.switchChain(chainId);
       return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
-          await this.addChain(networkName);
+          await this.addChain(blockchainName);
           await this.provider.switchChain(chainId);
           return true;
         } catch (err) {
           this.errorService.catch(err);
-          return false;
         }
       } else {
         this.errorService.catch(switchError);
-        return false;
       }
     }
+    return false;
   }
 }

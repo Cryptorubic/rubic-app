@@ -12,10 +12,9 @@ import { LowGasError as SdkLowGasError } from 'rubic-sdk/lib/common/errors/block
 import { LowGasError } from '@core/errors/models/provider/low-gas-error';
 import { LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError } from 'rubic-sdk/lib/common/errors/swap/low-slippage-deflationary-token.error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
-import { RubicSdkError } from 'rubic-sdk';
+import { nativeTokensList, RubicSdkError } from 'rubic-sdk';
 import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } from 'rubic-sdk';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { NotWhitelistedProviderError as SdkNotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 
@@ -46,9 +45,7 @@ export class RubicSdkErrorParser {
       return new TokenWithFeeError();
     }
     if (err instanceof SdkInsufficientFundsOneinchError) {
-      return new InsufficientFundsOneinchError(
-        BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
-      );
+      return new InsufficientFundsOneinchError(nativeTokensList[err.blockchain].symbol);
     }
     if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
       return new RubicError(

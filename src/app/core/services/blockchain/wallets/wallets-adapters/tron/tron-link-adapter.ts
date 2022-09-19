@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
-import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { RubicWindow } from '@shared/utils/rubic-window';
 

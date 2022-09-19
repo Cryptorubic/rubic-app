@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
