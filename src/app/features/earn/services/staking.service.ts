@@ -4,7 +4,6 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME, Web3Pure, Injector } from 'rubic-sdk';
-import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
 import {
   BehaviorSubject,
   catchError,
@@ -15,7 +14,6 @@ import {
   map,
   Observable,
   of,
-  startWith,
   Subject,
   switchMap,
   takeUntil,
@@ -84,9 +82,8 @@ export class StakingService {
     .pipe(map(user => !Boolean(user?.address)));
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
-    startWith(this.walletConnectorService.network),
-    filter<BlockchainData>(Boolean),
-    map(network => network?.name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+    filter(Boolean),
+    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
   );
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(

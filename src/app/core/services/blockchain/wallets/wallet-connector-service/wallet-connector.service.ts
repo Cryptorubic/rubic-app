@@ -15,7 +15,6 @@ import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { AccountError } from '@core/errors/models/provider/account-error';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
@@ -45,7 +44,7 @@ import { defaultBlockchainData } from '@core/services/blockchain/wallets/wallet-
   providedIn: 'root'
 })
 export class WalletConnectorService {
-  private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainData>(null);
+  private readonly networkChangeSubject$ = new BehaviorSubject<BlockchainName | null>(null);
 
   private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
 
@@ -61,12 +60,8 @@ export class WalletConnectorService {
     return this.provider?.walletType;
   }
 
-  public get network(): BlockchainData {
+  public get network(): BlockchainName | null {
     return this.provider?.network;
-  }
-
-  public get networkName(): BlockchainName {
-    return this.provider?.networkName;
   }
 
   public get provider(): CommonWalletAdapter {
@@ -239,7 +234,7 @@ export class WalletConnectorService {
       throw new AccountError();
     }
 
-    if (this.networkName !== selectedBlockchain) {
+    if (this.network !== selectedBlockchain) {
       if (this.provider.walletName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
       } else if (!this.provider.isMultiChainWallet) {

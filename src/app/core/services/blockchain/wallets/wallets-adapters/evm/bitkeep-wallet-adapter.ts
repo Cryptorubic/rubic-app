@@ -1,10 +1,7 @@
-import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
@@ -12,7 +9,7 @@ import { SignRejectError } from '@core/errors/models/provider/sign-reject-error'
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { NgZone } from '@angular/core';
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';
 
 export class BitkeepWalletAdapter extends CommonWalletAdapter {
   public readonly walletType = CHAIN_TYPE.EVM;
@@ -27,7 +24,7 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow
@@ -59,13 +56,13 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
    * Handles chain and account change events.
    */
   private handleEvents(): void {
-    this.wallet.on('chainChanged', (chain: string) => {
-      this.selectedChain = chain;
+    this.wallet.on('chainChanged', (chainId: string) => {
+      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) ?? null;
       if (this.isEnabled) {
         this.zone.run(() => {
-          this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+          this.onNetworkChanges$.next(this.selectedChain);
         });
-        console.info('Chain changed', chain);
+        console.info('Chain changed', chainId);
       }
     });
     this.wallet.on('accountsChanged', (accounts: string[]) => {
@@ -90,10 +87,6 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     [this.selectedAddress] = accounts;
   }
 
-  public async signPersonal(message: string): Promise<string> {
-    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
-  }
-
   public async activate(params?: unknown[]): Promise<void> {
     try {
       const accounts = await this.wallet.request({
@@ -102,10 +95,11 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
       });
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
-      this.selectedChain = String(chain);
+
       [this.selectedAddress] = accounts;
-      this.onNetworkChanges$.next(this.getNetwork());
+      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chain) ?? null;
       this.onAddressChanges$.next(this.selectedAddress);
+      this.onNetworkChanges$.next(this.selectedChain);
     } catch (error) {
       if (
         error.code === 4001 ||

@@ -6,7 +6,7 @@ import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 @Component({
-  selector: 'app-coinbase-confirm-modal',
+  selector: 'polymorpheus-coinbase-confirm-modal',
   templateUrl: './coinbase-confirm-modal.component.html',
   styleUrls: ['./coinbase-confirm-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,21 +1,19 @@
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletLink, { WalletLinkProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { UndefinedError } from '@core/errors/models/undefined.error';
-import BigNumber from 'bignumber.js';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvider> {
   public readonly walletType = CHAIN_TYPE.EVM;
@@ -32,16 +30,16 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorService: ErrorsService,
     zone: NgZone,
     private readonly window: RubicWindow,
     private readonly storeService: StoreService,
-    blockchainId: number
+    chainId: number
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorService, zone);
 
-    this.wallet = this.getWallet(blockchainId);
+    this.wallet = this.getWallet(chainId);
   }
 
   public getWallet(chainId: number): WalletLinkProvider {
@@ -49,6 +47,8 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
       console.error('Desktop walletLink works only with predefined chainId');
       throw new UndefinedError();
     }
+
+    this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId);
 
     const provider = this.window.ethereum as WalletLinkProvider;
     if (provider?.isCoinbaseWallet === true) {
@@ -62,36 +62,33 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<WalletLinkProvi
       appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
       darkMode: false
     };
-    const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(defaultWalletParams);
-    this.selectedChain = chainId.toString();
-    return walletLink.makeWeb3Provider(chain.rpcList[0] as string, chainId);
+    const rpcUrl = rpcList[this.selectedChain as keyof typeof rpcList][0] as string; // @todo update
+    return walletLink.makeWeb3Provider(rpcUrl, chainId);
   }
 
   public async activate(): Promise<void> {
     try {
       const [address] = await this.wallet.request<[string]>({ method: 'eth_requestAccounts' });
-
       const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
-      const chainInfo = BlockchainsInfo.getBlockchainById(chainId);
+      this.isEnabled = true;
+
+      const chainName = BlockchainsInfo.getBlockchainNameById(chainId);
 
       // in desktop version selected into modal chain should match mobile app selected chain
       if (!this.isMobileMode) {
-        if (!new BigNumber(chainId).eq(this.selectedChain)) {
-          throw new WalletlinkWrongNetwork(
-            BlockchainsInfo.getBlockchainById(this.selectedChain).label
-          );
+        if (chainName !== this.selectedChain) {
+          throw new WalletlinkWrongNetwork(this.selectedChain);
         }
       }
 
-      this.isEnabled = true;
       this.selectedAddress = address;
-      this.selectedChain = chainInfo.id.toString();
+      this.selectedChain = chainName;
       this.zone.run(() => {
-        this.onNetworkChanges$.next(chainInfo);
         this.onAddressChanges$.next(address);
+        this.onNetworkChanges$.next(this.selectedChain);
       });
-      this.storeService.setItem('chainId', Number(chainInfo?.id));
+      this.storeService.setItem('chainId', Number(chainId));
     } catch (error) {
       if (error instanceof RubicError) {
         throw error;

@@ -177,7 +177,7 @@ export class SwapButtonContainerErrorsService {
    * Checks that user's selected blockchain is equal to from blockchain.
    */
   private checkUserBlockchain(): void {
-    const userBlockchain = this.walletConnectorService.network?.name;
+    const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain) {
       const { fromBlockchain } = this.swapFormService.inputValue;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromBlockchain !== userBlockchain;

@@ -1,12 +1,9 @@
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { isBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 import { NgZone } from '@angular/core';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
@@ -14,7 +11,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected selectedAddress: string;
 
-  protected selectedChain: string;
+  protected selectedChain: BlockchainName;
 
   protected isEnabled: boolean;
 
@@ -59,38 +56,20 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * current selected network
    * @return current selected network or undefined if isActive is false
    */
-  public get network(): BlockchainData {
+  public get network(): BlockchainName | null {
     if (!this.isActive) {
       return null;
     }
-    return this.getNetwork();
-  }
-
-  /**
-   * current selected network name
-   * @return current selected network name or undefined if isActive is false
-   */
-  public get networkName(): BlockchainName {
-    return this.network?.name;
+    return this.selectedChain;
   }
 
   protected constructor(
     protected readonly onAddressChanges$: BehaviorSubject<string>,
-    protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    protected readonly onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     protected readonly errorsService: ErrorsService,
     protected readonly zone: NgZone
   ) {
     this.isEnabled = false;
-  }
-
-  protected getNetwork(): BlockchainData | null {
-    if (this.selectedChain) {
-      if (isBlockchainName(this.selectedChain)) {
-        return BlockchainsInfo.getBlockchainByName(this.selectedChain);
-      }
-      return BlockchainsInfo.getBlockchainById(this.selectedChain);
-    }
-    return null;
   }
 
   /**

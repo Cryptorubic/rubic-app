@@ -1,30 +1,17 @@
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletConnect from '@walletconnect/web3-provider';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import Web3 from 'web3';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';
 
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   public readonly walletType = CHAIN_TYPE.EVM;
-
-  protected isEnabled: boolean;
-
-  protected selectedAddress: string;
-
-  protected selectedChain: string;
-
-  protected readonly onAddressChanges$: BehaviorSubject<string>;
-
-  protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>;
 
   get isMultiChainWallet(): boolean {
     const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];
@@ -35,7 +22,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected constructor(
     providerConfig: IWalletConnectProviderOptions,
     accountChange$: BehaviorSubject<string>,
-    chainChange$: BehaviorSubject<BlockchainData>,
+    chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone
   ) {
@@ -49,15 +36,16 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   }
 
   private initSubscriptions(): void {
-    this.wallet.on('chainChanged', (chain: string) => {
-      this.selectedChain = chain;
+    this.wallet.on('chainChanged', (chainId: string) => {
+      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) ?? null;
       if (this.isEnabled) {
         this.zone.run(() => {
-          this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
+          this.onNetworkChanges$.next(this.selectedChain);
         });
-        console.info('Chain changed', chain);
+        console.info('Chain changed', chainId);
       }
     });
+
     this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
@@ -87,10 +75,6 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     return this.isEnabled && this.selectedAddress;
   }
 
-  public getNetwork(): BlockchainData {
-    return this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain);
-  }
-
   public get name(): WALLET_NAME {
     return WALLET_NAME.WALLET_CONNECT;
   }
@@ -99,10 +83,11 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     try {
       const [address] = await this.wallet.enable();
       this.isEnabled = true;
+
       this.selectedAddress = address;
-      this.selectedChain = String(this.wallet.chainId);
-      this.onNetworkChanges$.next(this.getNetwork());
+      this.selectedChain = BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) ?? null;
       this.onAddressChanges$.next(address);
+      this.onNetworkChanges$.next(this.selectedChain);
     } catch (error) {
       throw new WalletlinkError();
     }
@@ -127,9 +112,5 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
       method: 'wallet_addEthereumChain',
       params: [params]
     });
-  }
-
-  public async signPersonal(message: string): Promise<string> {
-    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
   }
 }

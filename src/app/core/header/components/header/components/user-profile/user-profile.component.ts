@@ -11,7 +11,6 @@ import {
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
@@ -19,6 +18,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
+import { BlockchainName } from 'rubic-sdk';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 @Component({
   selector: 'app-user-profile',
@@ -40,7 +41,7 @@ export class UserProfileComponent implements AfterViewInit {
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
-    this.router.events.subscribe(event => {
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe(event => {
       if (event instanceof NavigationStart) {
         this.headerStore.setMobileMenuOpeningStatus(false);
         this.headerStore.setConfirmModalOpeningStatus(false);
@@ -57,7 +58,9 @@ export class UserProfileComponent implements AfterViewInit {
 
   public readonly currentUser$: Observable<UserInterface>;
 
-  public currentBlockchain: BlockchainData;
+  public currentBlockchainName: BlockchainName;
+
+  public currentBlockchainIcon: string;
 
   public dropdownIsOpened = false;
 
@@ -66,10 +69,13 @@ export class UserProfileComponent implements AfterViewInit {
   @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 
   ngAfterViewInit(): void {
-    this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(network => {
-      this.currentBlockchain = network;
-      this.cdr.markForCheck();
-    });
+    this.walletConnectorService.networkChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(blockchainName => {
+        this.currentBlockchainName = blockchainName;
+        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+        this.cdr.markForCheck();
+      });
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(address => {
       this.authService.setCurrentUser(address, this.walletConnectorService.chainType);
       this.cdr.markForCheck();

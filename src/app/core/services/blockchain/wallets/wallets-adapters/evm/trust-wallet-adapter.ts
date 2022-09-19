@@ -1,11 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
+import { BlockchainName } from 'rubic-sdk';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   public get walletName(): WALLET_NAME {
@@ -14,7 +14,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
 
   constructor(
     accountChange$: BehaviorSubject<string>,
-    chainChange$: BehaviorSubject<BlockchainData>,
+    chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
     private readonly isIos: boolean,

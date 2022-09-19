@@ -1,8 +1,7 @@
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { BLOCKCHAIN_NAME, CHAIN_TYPE } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
@@ -22,7 +21,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
-    onNetworkChanges$: BehaviorSubject<BlockchainData>,
+    onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow
@@ -51,7 +50,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
 
     this.isEnabled = true;
     this.selectedAddress = this.wallet.tronWeb.defaultAddress.base58;
-    this.onNetworkChanges$.next(this.getNetwork());
+    this.onNetworkChanges$.next(this.selectedChain);
     this.onAddressChanges$.next(this.selectedAddress);
   }
 
