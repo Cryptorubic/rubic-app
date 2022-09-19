@@ -82,10 +82,6 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    */
   public abstract deActivate(): void;
 
-  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
-    return [{ parentCapability: 'eth_accounts' }];
-  }
-
   public abstract switchChain(chainId: string): Promise<null | never>;
 
   public abstract addChain(params: AddEthChainParams): Promise<null | never>;

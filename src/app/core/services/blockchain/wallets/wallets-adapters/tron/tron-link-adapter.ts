@@ -7,6 +7,7 @@ import { NgZone } from '@angular/core';
 import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
   public readonly walletType = CHAIN_TYPE.TRON;
@@ -31,11 +32,6 @@ export class TronLinkAdapter extends CommonWalletAdapter {
     // @TODO add change events
   }
 
-  public async setupDefaultValues(): Promise<void> {
-    this.selectedChain = BLOCKCHAIN_NAME.TRON; // @todo add check
-    this.selectedAddress = this.wallet.tronWeb?.defaultAddress.base58;
-  }
-
   public async activate(): Promise<void> {
     const response = await this.wallet.request({ method: 'tron_requestAccounts' });
     if (response.code !== 200) {
@@ -45,13 +41,17 @@ export class TronLinkAdapter extends CommonWalletAdapter {
       ) {
         throw new SignRejectError();
       }
+      if (response === '') {
+        throw new RubicError('Please, check you unlocked wallet extension.'); // @todo add error
+      }
       throw new Error(response.message);
     }
-
     this.isEnabled = true;
+
     this.selectedAddress = this.wallet.tronWeb.defaultAddress.base58;
-    this.onNetworkChanges$.next(this.selectedChain);
+    this.selectedChain = BLOCKCHAIN_NAME.TRON; // @todo add check
     this.onAddressChanges$.next(this.selectedAddress);
+    this.onNetworkChanges$.next(this.selectedChain);
   }
 
   public deActivate(): void {

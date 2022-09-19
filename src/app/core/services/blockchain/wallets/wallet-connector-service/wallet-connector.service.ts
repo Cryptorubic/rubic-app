@@ -52,7 +52,7 @@ export class WalletConnectorService {
 
   private readonly TIMEOUT_DELAY = 500;
 
-  public get address(): string | undefined {
+  public get address(): string {
     return this.provider?.address;
   }
 
@@ -60,6 +60,7 @@ export class WalletConnectorService {
     return this.provider?.walletType;
   }
 
+  // @todo remove after checkSettings removal
   public get network(): BlockchainName | null {
     return this.provider?.network;
   }
@@ -131,10 +132,6 @@ export class WalletConnectorService {
     this.storage.setItem('provider', this.provider.walletName);
   }
 
-  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
-    return this.provider.requestPermissions();
-  }
-
   public deActivate(): void {
     this.storage.deleteItem('provider');
     this.storage.deleteItem('chainId');
@@ -177,15 +174,11 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.METAMASK) {
-      const metamaskWalletAdapter = new MetamaskWalletAdapter(...defaultConstructorParameters);
-      await metamaskWalletAdapter.setupDefaultValues();
-      return metamaskWalletAdapter;
+      return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.BITKEEP) {
-      const bitkeepWalletAdapter = new BitkeepWalletAdapter(...defaultConstructorParameters);
-      await bitkeepWalletAdapter.setupDefaultValues();
-      return bitkeepWalletAdapter;
+      return new BitkeepWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_LINK) {
@@ -193,9 +186,7 @@ export class WalletConnectorService {
     }
 
     // walletName === WALLET_NAME.TRON_LINK
-    const tronLinkAdapter = new TronLinkAdapter(...defaultConstructorParameters);
-    await tronLinkAdapter.setupDefaultValues();
-    return tronLinkAdapter;
+    return new TronLinkAdapter(...defaultConstructorParameters);
   }
 
   // @todo remove

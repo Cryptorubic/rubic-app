@@ -5,8 +5,6 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { HeaderStore } from '../../header/services/header.store';
 import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { BrowserService } from '../browser/browser.service';
-import { BROWSER } from '@app/shared/models/browser/browser';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CHAIN_TYPE } from 'rubic-sdk';
@@ -38,8 +36,7 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
-    private readonly gtmService: GoogleTagManagerService,
-    private readonly browserService: BrowserService
+    private readonly gtmService: GoogleTagManagerService
   ) {}
 
   private setCurrentUser(address: string, chainType: CHAIN_TYPE): void {
@@ -61,11 +58,11 @@ export class AuthService {
     await this.connectWallet();
   }
 
-  public async connectWallet(provider?: WALLET_NAME, chainId?: number): Promise<void> {
+  public async connectWallet(walletName?: WALLET_NAME, chainId?: number): Promise<void> {
     try {
-      if (!this.walletConnectorService.provider) {
+      if (walletName && this.walletConnectorService.provider?.walletName !== walletName) {
         const connectionSuccessful = await this.walletConnectorService.connectProvider(
-          provider,
+          walletName,
           chainId
         );
         if (!connectionSuccessful) {
@@ -74,27 +71,12 @@ export class AuthService {
         }
       }
 
-      let permissions: boolean;
-      const isMetamaskBrowser = this.browserService.currentBrowser === BROWSER.METAMASK;
-      if (!isMetamaskBrowser) {
-        const walletPermissions = await this.walletConnectorService.requestPermissions();
-        permissions = walletPermissions.some(
-          permission => permission.parentCapability === 'eth_accounts'
-        );
-      } else {
-        permissions = true;
-      }
+      await this.walletConnectorService.activate();
+      const { address, chainType } = this.walletConnectorService;
+      this.setCurrentUser(address, chainType);
 
-      if (permissions) {
-        await this.walletConnectorService.activate();
-        const { address, chainType } = this.walletConnectorService;
-        this.setCurrentUser(address, chainType);
-
-        if (provider) {
-          this.gtmService.fireConnectWalletEvent(provider);
-        }
-      } else {
-        this._currentUser$.next(null);
+      if (walletName) {
+        this.gtmService.fireConnectWalletEvent(walletName);
       }
     } catch (err) {
       this.walletConnectorService.deActivate();

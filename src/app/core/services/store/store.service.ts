@@ -10,7 +10,7 @@ import { Store } from 'src/app/core/services/store/models/store';
   providedIn: 'root'
 })
 export class StoreService {
-  private readonly storageSubject$ = new BehaviorSubject<Store>(this.fetchData());
+  private readonly storageSubject$: BehaviorSubject<Store>;
 
   /**
    * Key to store data.
@@ -29,7 +29,9 @@ export class StoreService {
     @Inject(DOCUMENT) private document: Document,
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private readonly iframeService: IframeService
-  ) {}
+  ) {
+    this.storageSubject$ = new BehaviorSubject<Store>(this.fetchData());
+  }
 
   /**
    * Set some store data by key.

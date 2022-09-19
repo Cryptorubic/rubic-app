@@ -80,13 +80,6 @@ export class BitkeepWalletAdapter extends CommonWalletAdapter {
     });
   }
 
-  public async setupDefaultValues(): Promise<void> {
-    const chain = await this.wallet.request({ method: 'eth_chainId' });
-    const accounts = await this.wallet.request({ method: 'eth_accounts' });
-    this.selectedChain = chain;
-    [this.selectedAddress] = accounts;
-  }
-
   public async activate(params?: unknown[]): Promise<void> {
     try {
       const accounts = await this.wallet.request({

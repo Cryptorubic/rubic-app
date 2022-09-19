@@ -81,13 +81,6 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     });
   }
 
-  public async setupDefaultValues(): Promise<void> {
-    const chain = await this.wallet.request({ method: 'eth_chainId' });
-    const accounts = await this.wallet.request({ method: 'eth_accounts' });
-    this.selectedChain = chain;
-    [this.selectedAddress] = accounts;
-  }
-
   public async activate(params?: unknown[]): Promise<void> {
     try {
       const accounts = await this.wallet.request({
@@ -111,18 +104,6 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
       }
       throw new MetamaskError();
     }
-  }
-
-  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
-    try {
-      return this.wallet.request({
-        method: 'wallet_requestPermissions',
-        params: [{ eth_accounts: {} }]
-      });
-    } catch (err) {
-      console.error(err);
-    }
-    return null;
   }
 
   public deActivate(): void {
