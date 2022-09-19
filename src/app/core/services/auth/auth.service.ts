@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { UserInterface } from './models/user.interface';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CHAIN_TYPE } from 'rubic-sdk';

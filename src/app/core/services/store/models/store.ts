@@ -1,4 +1,4 @@
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { BlockchainName } from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';

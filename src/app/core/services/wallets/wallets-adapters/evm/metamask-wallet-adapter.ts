@@ -1,8 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';

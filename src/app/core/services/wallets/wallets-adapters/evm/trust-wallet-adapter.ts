@@ -1,9 +1,9 @@
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
+import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 

@@ -7,7 +7,7 @@ import { catchError, first, map, mergeMap, switchMap, tap } from 'rxjs/operators
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';

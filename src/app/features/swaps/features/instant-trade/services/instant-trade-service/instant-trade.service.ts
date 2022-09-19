@@ -37,7 +37,7 @@ import {
 
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';

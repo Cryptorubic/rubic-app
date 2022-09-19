@@ -4,7 +4,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletProvider } from 'rubic-sdk';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'

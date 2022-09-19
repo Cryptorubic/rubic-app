@@ -6,7 +6,7 @@ import {
   WETH_CONTRACT_ADDRESS
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-addresses-net-mode';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { compareAddresses } from '@shared/utils/utils';

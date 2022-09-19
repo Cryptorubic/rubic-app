@@ -2,7 +2,7 @@ import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { WalletsModalComponent } from 'src/app/core/wallets/components/wallets-modal/wallets-modal.component';
+import { WalletsModalComponent } from 'src/app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
 
 @Injectable()

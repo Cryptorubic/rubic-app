@@ -11,7 +11,7 @@ import {
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';

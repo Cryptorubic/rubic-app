@@ -7,24 +7,24 @@ import {
   OnInit
 } from '@angular/core';
 import { USER_AGENT } from '@ng-web-apis/common';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
+import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainId, BlockchainName } from 'rubic-sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
-import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
+import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
-import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/iframe-wallets-warning/iframe-wallets-warning.component';
+import { IframeWalletsWarningComponent } from 'src/app/core/wallets-modal/components/iframe-wallets-warning/iframe-wallets-warning.component';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { PROVIDERS_LIST } from '@core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Component({

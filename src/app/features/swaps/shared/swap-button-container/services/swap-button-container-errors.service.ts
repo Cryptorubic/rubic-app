@@ -10,7 +10,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
 import { map, startWith } from 'rxjs/operators';
 import { EvmWeb3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';

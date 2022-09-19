@@ -1,4 +1,4 @@
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 export interface WalletProvider {
   name: string;

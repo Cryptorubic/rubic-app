@@ -9,7 +9,7 @@ import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';

@@ -1,10 +1,10 @@
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicError } from '@core/errors/models/rubic-error';

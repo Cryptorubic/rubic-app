@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';

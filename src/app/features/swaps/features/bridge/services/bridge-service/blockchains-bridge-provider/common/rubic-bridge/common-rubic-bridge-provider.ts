@@ -12,7 +12,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
 import { BridgeApiService } from '@core/services/backend/bridge-api/bridge-api.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { TransactionReceipt } from 'web3-eth';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';

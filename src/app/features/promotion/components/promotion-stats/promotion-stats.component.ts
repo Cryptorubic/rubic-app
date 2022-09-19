@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, OnInit, Self } from '@angular/core';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Observable } from 'rxjs';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { PromotionService } from '@features/promotion/services/promotion.service';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WrongWalletError } from '@core/errors/models/promotion/wrong-wallet.error';

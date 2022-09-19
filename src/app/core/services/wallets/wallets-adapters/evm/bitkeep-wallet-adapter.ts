@@ -1,12 +1,12 @@
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
-import { RubicWindow } from '@app/shared/utils/rubic-window';
+import { RubicWindow } from '@shared/utils/rubic-window';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { NgZone } from '@angular/core';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';

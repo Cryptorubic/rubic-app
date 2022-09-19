@@ -1,22 +1,22 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, from, of } from 'rxjs';
 import Web3 from 'web3';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/metamask-wallet-adapter';
-import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-connect-adapter';
-import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
-import { StoreService } from 'src/app/core/services/store/store.service';
+import { ErrorsService } from '@core/errors/errors.service';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
+import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
+import { WalletLinkWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
+import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/evm/trust-wallet-adapter';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
+import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { BitkeepWalletAdapter } from '../wallets-adapters/evm/bitkeep-wallet-adapter';
+import { BitkeepWalletAdapter } from 'src/app/core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -28,13 +28,13 @@ import {
   WalletProvider
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { TronLinkAdapter } from '@core/services/blockchain/wallets/wallets-adapters/tron/tron-link-adapter';
+import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { switchTap } from '@shared/utils/utils';
 import { provider as Web3Provider } from 'web3-core';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { defaultBlockchainData } from '@core/services/blockchain/wallets/wallet-connector-service/constants/default-blockchain-data';
+import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 
 @Injectable({
   providedIn: 'root'

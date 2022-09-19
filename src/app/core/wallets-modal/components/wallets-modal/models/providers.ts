@@ -1,5 +1,5 @@
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {

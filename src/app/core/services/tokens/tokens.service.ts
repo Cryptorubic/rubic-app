@@ -15,7 +15,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import {
   BlockchainName,

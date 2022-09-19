@@ -6,7 +6,7 @@ import { notNull } from '@shared/utils/utils';
 import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
 import { comparators } from '@features/promotion/table-comporators';

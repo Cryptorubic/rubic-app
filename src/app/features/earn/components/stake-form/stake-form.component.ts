@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
 import { MILLISECONDS_IN_MONTH, MILLISECONDS_IN_WEEK } from '@app/shared/constants/time/time';
 import { FormControl } from '@ngneat/reactive-forms';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';

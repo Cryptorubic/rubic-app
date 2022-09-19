@@ -25,7 +25,7 @@ import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/provi
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';

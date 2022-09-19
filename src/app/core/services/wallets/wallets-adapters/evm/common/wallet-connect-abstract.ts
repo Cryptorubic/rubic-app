@@ -1,11 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
 import WalletConnect from '@walletconnect/web3-provider';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';

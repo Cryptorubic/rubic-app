@@ -1,7 +1,7 @@
 import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/blockchain/wallets/models/add-eth-chain-params';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { NgZone } from '@angular/core';

@@ -16,7 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
