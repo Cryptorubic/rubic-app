@@ -5,7 +5,6 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
@@ -19,6 +18,7 @@ import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-fo
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { isNil } from '@app/shared/utils/utils';
 import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -204,7 +204,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+            network: blockchainLabel[fromBlockchain]
           }
         };
         break;
@@ -228,7 +228,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+            network: blockchainLabel[fromBlockchain]
           }
         };
         break;

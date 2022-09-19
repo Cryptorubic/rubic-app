@@ -8,13 +8,13 @@
       (click)="selectedBlockchain = blockchain"
     >
       <img
-        [src]="blockchain?.imagePath"
+        [src]="blockchainIcon[blockchain]"
         class="networks__image"
         alt="($currentBlockchain | async)?.name"
         width="25"
         height="25"
       />
-      <span class="networks__label">{{ blockchain.label }}</span>
+      <span class="networks__label">{{ blockchainLabel[blockchain] }}</span>
     </li>
   </ul>
   <div class="buttons-container">

@@ -15,8 +15,7 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { BlockchainName } from 'rubic-sdk';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { blockchainId, BlockchainName } from 'rubic-sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
@@ -166,7 +165,7 @@ export class WalletsModalComponent implements OnInit {
             if (blockchainName) {
               await this.walletConnectorService.connectProvider(
                 provider,
-                BlockchainsInfo.getBlockchainByName(blockchainName).id
+                blockchainId[blockchainName]
               );
               await this.authService.serverlessSignIn();
               this.close();

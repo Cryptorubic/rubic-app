@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'polymorpheus-coinbase-confirm-modal',
@@ -11,21 +11,26 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
   styleUrls: ['./coinbase-confirm-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+// @todo add margin
 export class CoinbaseConfirmModalComponent {
-  public availableBlockchains: BlockchainData[] = [
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.POLYGON),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.FANTOM),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.AVALANCHE),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+  public readonly availableBlockchains: BlockchainName[] = [
+    BLOCKCHAIN_NAME.ETHEREUM,
+    BLOCKCHAIN_NAME.POLYGON,
+    BLOCKCHAIN_NAME.FANTOM,
+    BLOCKCHAIN_NAME.AVALANCHE,
+    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   ];
 
   public selectedBlockchain = this.availableBlockchains[0];
 
+  public readonly blockchainIcon = blockchainIcon;
+
+  public readonly blockchainLabel = blockchainLabel;
+
   constructor(@Inject(POLYMORPHEUS_CONTEXT) private context: TuiDialogContext<BlockchainName>) {}
 
   onConfirm(): void {
-    this.context.completeWith(this.selectedBlockchain.name);
+    this.context.completeWith(this.selectedBlockchain);
   }
 
   onDecline(): void {

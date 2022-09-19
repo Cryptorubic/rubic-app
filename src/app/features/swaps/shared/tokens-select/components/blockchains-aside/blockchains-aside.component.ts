@@ -6,11 +6,12 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { BlockchainName } from 'rubic-sdk';
 import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { USER_AGENT } from '@ng-web-apis/common';
 import { allBlockchains } from '@features/swaps/shared/tokens-select/constants/all-blockchains';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -29,19 +30,9 @@ export class BlockchainsAsideComponent {
 
   public static readonly allBlockchains: BlockchainName[] = allBlockchains;
 
-  public blockchainImages = Object.fromEntries(
-    this.blockchains.map(blockchainName => [
-      blockchainName,
-      BlockchainsInfo.getBlockchainByName(blockchainName).imagePath
-    ])
-  );
+  public blockchainIcon = blockchainIcon;
 
-  public blockchainLabels = Object.fromEntries(
-    this.blockchains.map(blockchainName => [
-      blockchainName,
-      BlockchainsInfo.getBlockchainByName(blockchainName).label
-    ])
-  );
+  public blockchainLabel = blockchainLabel;
 
   public get showClearFix(): boolean {
     const safariDetector: RegExp = /iPhone/i;

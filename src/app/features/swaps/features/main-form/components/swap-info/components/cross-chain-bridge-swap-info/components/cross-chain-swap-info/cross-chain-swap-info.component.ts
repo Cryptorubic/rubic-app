@@ -14,10 +14,7 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import {
   LifiCrossChainTrade,
   RangoCrossChainTrade,
@@ -82,30 +79,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public symbiosisOrLifiCryptoFee: BigNumber;
 
   public symbiosisOrLifiCryptoFeeSymbol: string;
-
-  public get fromProviderImg(): string {
-    return TRADES_PROVIDERS[this.fromProvider].image;
-  }
-
-  public get toProviderImg(): string {
-    return TRADES_PROVIDERS[this.toProvider].image;
-  }
-
-  public get fromProviderLabel(): string {
-    return instantTradesLabels[this.fromProvider];
-  }
-
-  public get toProviderLabel(): string {
-    return instantTradesLabels[this.toProvider];
-  }
-
-  public get fromBlockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.fromToken.blockchain);
-  }
-
-  public get toBlockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.toToken.blockchain);
-  }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,

@@ -16,7 +16,7 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { combineLatest } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-cross-chain-bridge-swap-info',
@@ -39,7 +39,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
   public isWalletCopied: boolean;
 
   public get blockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.toBlockchain);
+    return blockchainLabel[this.toBlockchain];
   }
 
   constructor(
