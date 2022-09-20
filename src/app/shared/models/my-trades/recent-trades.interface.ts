@@ -3,6 +3,7 @@ import { BlockchainName, CrossChainTradeType, CrossChainTxStatus } from 'rubic-s
 
 export interface RecentTrade {
   srcTxHash: string;
+  dstTxHash?: string;
   fromBlockchain: BlockchainName;
   toBlockchain: BlockchainName;
   fromToken: Token;

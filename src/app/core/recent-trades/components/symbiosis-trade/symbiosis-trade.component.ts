@@ -6,6 +6,8 @@ import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { CrossChainTxStatus } from 'rubic-sdk';
+import { ScannerLinkPipe } from '@app/shared/pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -50,6 +52,12 @@ export class SymbiosisTradeComponent extends CommonTrade {
     if (revertTxReceipt.status) {
       this.uiTrade.statusTo = CrossChainTxStatus.FALLBACK;
       this.revertBtnLoading = false;
+      this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
+      this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+        revertTxReceipt.transactionHash,
+        this.uiTrade.fromBlockchain.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
       this.cdr.detectChanges();
     }
   }
