@@ -70,7 +70,7 @@ export class RecentTradesService {
 
     if (calculatedDstTxHash) {
       uiTrade.dstTxHash = calculatedDstTxHash;
-      uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+      uiTrade.dstTxLink = this.scannerLinkPipe.transform(
         calculatedDstTxHash,
         toBlockchainInfo.key,
         ADDRESS_TYPE.TRANSACTION
