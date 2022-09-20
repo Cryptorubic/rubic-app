@@ -33,6 +33,8 @@ interface AllQueryParams {
   promoCode: string;
   hideUnusedUI: string;
   isDesktop: string;
+  enableProvider: string;
+  enableBlockchains: BlockchainName[];
   // Near specific query params.
   // Transaction.
   nearLogin: string;
