@@ -21,10 +21,10 @@ import {
   BlockchainName,
   Web3Pure,
   Injector,
-  CHAIN_TYPE,
-  EvmWeb3Pure,
   EvmBlockchainName,
-  Token as SdkToken
+  Token as SdkToken,
+  BlockchainsInfo,
+  Web3PublicService
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
@@ -407,15 +407,18 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
-    if (!this.userAddress) {
+    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    if (
+      !this.userAddress ||
+      !Web3Pure[chainType].isAddressCorrect(this.userAddress) ||
+      !Web3PublicService.isSupportedBlockchain(token.blockchain)
+    ) {
       return null;
     }
 
     try {
-      const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
-        token.blockchain as EvmBlockchainName
-      );
-      const balanceInWei = EvmWeb3Pure.isNativeAddress(token.address)
+      const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
+      const balanceInWei = Web3Pure[chainType].isNativeAddress(token.address)
         ? await blockchainAdapter.getBalance(this.userAddress)
         : await blockchainAdapter.getTokenBalance(this.userAddress, token.address);
 
@@ -444,8 +447,9 @@ export class TokensService {
   }
 
   public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
+    const chainType = BlockchainsInfo.getChainType(blockchain);
     await this.getAndUpdateTokenBalance({
-      address: EvmWeb3Pure.nativeTokenAddress,
+      address: Web3Pure[chainType].nativeTokenAddress,
       blockchain
     });
   }
@@ -454,13 +458,14 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<void> {
-    if (EvmWeb3Pure.isNativeAddress(token.address)) {
+    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    if (Web3Pure[chainType].isNativeAddress(token.address)) {
       await this.getAndUpdateTokenBalance(token);
     } else {
       await Promise.all([
         this.getAndUpdateTokenBalance(token),
         this.getAndUpdateTokenBalance({
-          address: EvmWeb3Pure.nativeTokenAddress,
+          address: Web3Pure[chainType].nativeTokenAddress,
           blockchain: token.blockchain
         })
       ]);
@@ -481,10 +486,12 @@ export class TokensService {
       this.getAndUpdateTokenBalance(fromToken),
       this.getAndUpdateTokenBalance(toToken)
     ];
-    if (!Web3Pure[CHAIN_TYPE.EVM].isNativeAddress(fromToken.address)) {
+
+    const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    if (!Web3Pure[fromChainType].isNativeAddress(fromToken.address)) {
       balancePromises.concat(
         this.getAndUpdateTokenBalance({
-          address: EvmWeb3Pure.nativeTokenAddress,
+          address: Web3Pure[fromChainType].nativeTokenAddress,
           blockchain: fromToken.blockchain
         })
       );

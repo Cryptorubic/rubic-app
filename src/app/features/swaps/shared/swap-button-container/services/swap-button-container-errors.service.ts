@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
@@ -153,7 +153,13 @@ export class SwapButtonContainerErrorsService {
   private checkUserBalance(): void {
     const { fromToken, fromAmount } = this.swapFormService.inputValue;
 
-    if (!fromToken || !this.authService.userAddress) {
+    const fromChainType =
+      fromToken?.blockchain && BlockchainsInfo.getChainType(fromToken.blockchain);
+    if (
+      !fromToken ||
+      !this.authService.userAddress ||
+      fromChainType !== this.authService.userChainType
+    ) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
     }
