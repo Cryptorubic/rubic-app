@@ -5,6 +5,7 @@ import {
 } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Component({
   selector: 'app-settings-it',
@@ -25,7 +26,10 @@ export class SettingsItComponent implements OnInit {
 
   public slippageTolerance: number;
 
-  constructor(private readonly settingsService: SettingsService) {
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
+  ) {
     this.defaultSlippageTolerance = this.settingsService.defaultItSettings.slippageTolerance;
   }
 
@@ -41,7 +45,8 @@ export class SettingsItComponent implements OnInit {
       deadline: new FormControl<number>(form.deadline),
       disableMultihops: new FormControl<boolean>(form.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(form.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(form.autoRefresh)
+      autoRefresh: new FormControl<boolean>(form.autoRefresh),
+      showReceiverAddress: new FormControl<boolean>(form.showReceiverAddress)
     });
     this.slippageTolerance = form.slippageTolerance;
     this.setFormChanges(this.settingsService.instantTrade);
@@ -50,6 +55,7 @@ export class SettingsItComponent implements OnInit {
   private setFormChanges(form: AbstractControl<ItSettingsForm>): void {
     this.instantTradeForm.valueChanges.subscribe(settings => {
       form.patchValue({ ...settings });
+      this.targetNetworkAddressService.showReceiverAddressToggle(settings.showReceiverAddress);
     });
     form.valueChanges.subscribe(settings => {
       this.instantTradeForm.patchValue({ ...settings }, { emitEvent: false });

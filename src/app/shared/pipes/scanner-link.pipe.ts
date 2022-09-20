@@ -187,6 +187,14 @@ const blockchainsScanners: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: '',
     [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.ETHEREUM_POW]: {
+    baseUrl: 'https://www.oklink.com/en/ethw/',
+    nativeCoinUrl: 'stat/supply/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 
