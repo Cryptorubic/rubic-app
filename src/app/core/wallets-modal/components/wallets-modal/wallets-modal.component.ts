@@ -163,7 +163,10 @@ export class WalletsModalComponent implements OnInit {
         .subscribe({
           next: async blockchainName => {
             if (blockchainName) {
-              await this.authService.connectWallet(provider, blockchainId[blockchainName]);
+              await this.authService.connectWallet({
+                walletName: provider,
+                chainId: blockchainId[blockchainName]
+              });
               this.close();
             }
           },
@@ -173,7 +176,7 @@ export class WalletsModalComponent implements OnInit {
     }
 
     try {
-      await this.authService.connectWallet(provider);
+      await this.authService.connectWallet({ walletName: provider });
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }

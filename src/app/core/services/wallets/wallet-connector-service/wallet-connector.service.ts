@@ -47,8 +47,6 @@ export class WalletConnectorService {
 
   private privateProvider: CommonWalletAdapter;
 
-  private readonly TIMEOUT_DELAY = 500;
-
   public get address(): string {
     return this.provider?.address;
   }
@@ -101,28 +99,15 @@ export class WalletConnectorService {
     if (!provider) {
       return false;
     }
-    return this.connectProvider(provider);
+    this.connectProvider(provider);
+    return true;
   }
 
-  public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
-    try {
-      this.privateProvider = await this.createWalletAdapter(walletName, chainId);
-      return true;
-    } catch (e) {
-      // The error module is triggered before the translation is loaded
-      // @TODO fix premature module loading before service load
-      setTimeout(() => {
-        this.errorService.catch(e);
-      }, this.TIMEOUT_DELAY);
-
-      return false;
-    }
+  public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
+    this.privateProvider = this.createWalletAdapter(walletName, chainId);
   }
 
-  private async createWalletAdapter(
-    walletName: WALLET_NAME,
-    chainId?: number
-  ): Promise<CommonWalletAdapter> {
+  private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
     const defaultConstructorParameters = [
       this.addressChangeSubject$,
       this.networkChangeSubject$,

@@ -63,20 +63,20 @@ export class AuthService {
       return;
     }
 
-    await this.connectWallet();
+    await this.connectWallet({
+      hideError: true
+    });
   }
 
-  public async connectWallet(walletName?: WALLET_NAME, chainId?: number): Promise<void> {
+  public async connectWallet(options: {
+    walletName?: WALLET_NAME;
+    chainId?: number;
+    hideError?: boolean;
+  }): Promise<void> {
     try {
+      const { walletName } = options;
       if (walletName && this.walletConnectorService.provider?.walletName !== walletName) {
-        const connectionSuccessful = await this.walletConnectorService.connectProvider(
-          walletName,
-          chainId
-        );
-        if (!connectionSuccessful) {
-          this.disconnectWallet();
-          return;
-        }
+        this.walletConnectorService.connectProvider(walletName, options.chainId);
       }
 
       await this.walletConnectorService.activate();
@@ -90,7 +90,9 @@ export class AuthService {
       this.walletConnectorService.deactivate();
       this._currentUser$.next(null);
       this.headerStore.setWalletsLoadingStatus(false); // @todo move
-      this.errorService.catch(err);
+      if (!options.hideError) {
+        this.errorService.catch(err);
+      }
     }
   }
 
