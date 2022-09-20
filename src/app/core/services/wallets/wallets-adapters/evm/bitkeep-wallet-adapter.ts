@@ -6,7 +6,7 @@ import { SignRejectError } from '@core/errors/models/provider/sign-reject-error'
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
 export class BitkeepWalletAdapter extends EvmWalletAdapter {
@@ -48,7 +48,8 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
       this.isEnabled = true;
 
       [this.selectedAddress] = accounts;
-      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chain) ?? null;
+      this.selectedChain =
+        (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 

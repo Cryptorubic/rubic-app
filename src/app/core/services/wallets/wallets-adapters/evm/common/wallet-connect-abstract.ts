@@ -4,7 +4,13 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
-import { blockchainId, BlockchainName, BlockchainsInfo, EVM_BLOCKCHAIN_NAME } from 'rubic-sdk';
+import {
+  blockchainId,
+  BlockchainName,
+  BlockchainsInfo,
+  EVM_BLOCKCHAIN_NAME,
+  EvmBlockchainName
+} from 'rubic-sdk';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
@@ -42,7 +48,8 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter {
       this.isEnabled = true;
 
       this.selectedAddress = address;
-      this.selectedChain = BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) ?? null;
+      this.selectedChain =
+        (BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) as EvmBlockchainName) ?? null;
       this.onAddressChanges$.next(address);
       this.onNetworkChanges$.next(this.selectedChain);
 

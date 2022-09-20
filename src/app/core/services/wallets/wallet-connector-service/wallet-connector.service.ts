@@ -101,11 +101,6 @@ export class WalletConnectorService {
     if (!provider) {
       return false;
     }
-
-    if (provider === WALLET_NAME.WALLET_LINK) {
-      const chainId = this.storeService.getItem('chainId');
-      return this.connectProvider(provider, chainId);
-    }
     return this.connectProvider(provider);
   }
 

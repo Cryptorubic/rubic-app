@@ -1,11 +1,13 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainsInfo, CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from 'rubic-sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { fromEvent } from 'rxjs';
 
 export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter<T> {
   public readonly chainType = CHAIN_TYPE.EVM;
+
+  protected selectedChain: EvmBlockchainName | null;
 
   /**
    * Subscribes on chain and account change events.
@@ -22,7 +24,8 @@ export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter
 
     this.onNetworkChangesSub = fromEvent(this.wallet as RubicAny, 'chainChanged').subscribe(
       (chainId: string) => {
-        this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) ?? null;
+        this.selectedChain =
+          (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
         this.zone.run(() => {
           this.onNetworkChanges$.next(this.selectedChain);
         });

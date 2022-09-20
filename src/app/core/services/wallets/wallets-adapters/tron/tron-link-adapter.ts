@@ -1,6 +1,12 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, compareAddresses } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CHAIN_TYPE,
+  compareAddresses,
+  TronBlockchainName
+} from 'rubic-sdk';
 import { BehaviorSubject, fromEvent } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
@@ -15,6 +21,8 @@ export class TronLinkAdapter extends CommonWalletAdapter {
   public readonly chainType = CHAIN_TYPE.TRON;
 
   public readonly walletName = WALLET_NAME.TRON_LINK;
+
+  protected selectedChain: TronBlockchainName | null;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,

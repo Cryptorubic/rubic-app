@@ -9,7 +9,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
@@ -30,6 +30,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorService, zone);
 
+    chainId = chainId ?? this.storeService.getItem('chainId');
     this.wallet = this.getWallet(chainId);
   }
 
@@ -39,7 +40,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
       throw new UndefinedError();
     }
 
-    this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId);
+    this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
 
     const provider = this.window.ethereum as WalletLinkProvider;
     if (provider?.isCoinbaseWallet === true) {
@@ -54,7 +55,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
       darkMode: false
     };
     const walletLink = new WalletLink(defaultWalletParams);
-    const rpcUrl = rpcList[this.selectedChain as keyof typeof rpcList][0] as string; // @todo update
+    const rpcUrl = rpcList[this.selectedChain][0];
     return walletLink.makeWeb3Provider(rpcUrl, chainId);
   }
 
@@ -64,7 +65,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
       const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
       this.isEnabled = true;
 
-      const chainName = BlockchainsInfo.getBlockchainNameById(chainId);
+      const chainName = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
 
       // in desktop version selected into modal chain should match mobile app selected chain
       if (!this.isMobileMode) {

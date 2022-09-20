@@ -12,7 +12,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected selectedAddress: string;
 
-  protected selectedChain: BlockchainName;
+  protected selectedChain: BlockchainName | null;
 
   protected isEnabled: boolean;
 

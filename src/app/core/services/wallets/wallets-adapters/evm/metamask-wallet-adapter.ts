@@ -5,7 +5,7 @@ import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-ex
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
@@ -48,7 +48,8 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       this.isEnabled = true;
 
       [this.selectedAddress] = accounts;
-      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chain) ?? null;
+      this.selectedChain =
+        (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 
