@@ -25,6 +25,7 @@ import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { CrossChainTradeType } from 'rubic-sdk/lib/features';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -94,7 +95,8 @@ export class QueryParamsService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly rubicSdkService: RubicSdkService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -109,7 +111,7 @@ export class QueryParamsService {
     });
   }
 
-  public setupQueryParams(queryParams: QueryParams): void {
+  public async setupQueryParams(queryParams: QueryParams): Promise<void> {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
@@ -118,6 +120,11 @@ export class QueryParamsService {
       if (queryParams.enableProvider && queryParams.enableBlockchains) {
         this.setDisabledProviders(queryParams.enableProvider);
         this.enabledBlockchains = queryParams.enableBlockchains;
+
+        await this.rubicSdkService.SDK.updateConfiguration({
+          ...this.rubicSdkService.defaultConfig,
+          providerAddress: queryParams.feeTarget
+        });
       }
 
       const route = this.router.url.split('?')[0].substr(1);

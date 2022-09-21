@@ -20,7 +20,7 @@ export class RubicSdkService {
 
   private _SDK: SDK | null;
 
-  private get SDK(): SDK {
+  public get SDK(): SDK {
     if (!this._SDK) {
       throw new Error('Rubic SDK is not initiated.');
     }
@@ -51,7 +51,7 @@ export class RubicSdkService {
     this._SDK = value;
   }
 
-  private readonly defaultConfig = {
+  public readonly defaultConfig = {
     ...rubicSdkDefaultConfig,
     httpClient: new SdkHttpClient(this.angularHttpClient)
   };
