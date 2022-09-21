@@ -7,13 +7,13 @@ import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/c
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
 import { WEEKS_IN_YEAR } from '@app/shared/constants/time/time';
 
-interface EpochInfo {
+type EpochInfo = {
   startTime: string;
   endTime: string;
   rewardPerSecond: string;
   totalPower: string;
   startBlock: string;
-}
+};
 
 @Injectable()
 export class StatisticsService {
@@ -117,7 +117,7 @@ export class StatisticsService {
     });
   }
 
-  public getCurrentEpochInfo(currentEpochId: number): Observable<EpochInfo> {
+  public getCurrentEpochInfo(currentEpochId: string): Observable<EpochInfo> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<EpochInfo>(
         STAKING_ROUND_THREE.REWARDS.address,
@@ -128,13 +128,13 @@ export class StatisticsService {
     );
   }
 
-  private static getCurrentEpochId(): Observable<number> {
+  private static getCurrentEpochId(): Observable<string> {
     return from(
-      StatisticsService.blockchainAdapter.callContractMethod<number>(
+      StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.REWARDS.address,
         STAKING_ROUND_THREE.REWARDS.abi,
         'getCurrentEpochId'
-      ) as Promise<number>
+      )
     );
   }
 

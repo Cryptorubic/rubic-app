@@ -1,6 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, from } from 'rxjs';
-import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
@@ -30,7 +29,6 @@ import {
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { switchTap } from '@shared/utils/utils';
-import { provider as Web3Provider } from 'web3-core';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -72,7 +70,9 @@ export class WalletConnectorService {
       const walletProvider: WalletProvider = {
         [this.chainType]: {
           address,
-          core: this.provider.wallet as Web3Provider | Web3
+          // @todo redo
+          core:
+            this.chainType === CHAIN_TYPE.EVM ? this.provider.wallet : this.provider.wallet.tronWeb
         }
       };
       return from(this.sdk.patchConfig({ walletProvider }));
