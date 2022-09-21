@@ -34,12 +34,12 @@ export class GasService {
   /**
    * Gas price functions for different networks.
    */
-  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number | null>>;
+  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<string | null>>;
 
   /**
    * Gas price in Gwei subject.
    */
-  private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<number | null>>;
+  private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<string | null>>;
 
   /**
    * Gas price update interval in seconds.
@@ -81,7 +81,7 @@ export class GasService {
    * Gas price in Gwei for selected blockchain as observable.
    * @param blockchain Blockchain to get gas price from.
    */
-  public getGasPrice$(blockchain: BlockchainName): Observable<number | null> {
+  public getGasPrice$(blockchain: BlockchainName): Observable<string | null> {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }
@@ -110,7 +110,7 @@ export class GasService {
           return this.gasPriceFunctions[BLOCKCHAIN_NAME.ETHEREUM]();
         })
       )
-      .subscribe((ethGasPrice: number | null) => {
+      .subscribe((ethGasPrice: string | null) => {
         if (ethGasPrice) {
           this.networkGasPrice$[BLOCKCHAIN_NAME.ETHEREUM].next(ethGasPrice);
         }
@@ -124,20 +124,19 @@ export class GasService {
   @Cacheable({
     maxAge: GasService.requestInterval
   })
-  private fetchEthGas(): Observable<number | null> {
+  private fetchEthGas(): Observable<string | null> {
     const requestTimeout = 2000;
     return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
       timeout(requestTimeout),
-      map((response: { medium: { maxFeePerGas: string } }) =>
-        new BigNumber(response.medium.maxFeePerGas)
-          .dividedBy(10 ** 9)
-          .dp(0)
-          .toNumber()
+      map((response: { high: { maxFeePerGas: string } }) =>
+        new BigNumber(response.high.maxFeePerGas).dividedBy(10 ** 9).toFixed()
       ),
       catchError(() =>
         this.httpClient.get('https://ethgasstation.info/api/ethgasAPI.json').pipe(
           timeout(requestTimeout),
-          map((response: { average: number }) => response.average / 10)
+          map((response: { average: number }) =>
+            new BigNumber(response.average).dividedBy(10).toFixed()
+          )
         )
       ),
       catchError(() => of(null))
