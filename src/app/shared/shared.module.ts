@@ -188,7 +188,6 @@ import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippag
     ChipsComponent,
     IframeLogoutButtonComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard],
-  entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard]
 })
 export class SharedModule {}
