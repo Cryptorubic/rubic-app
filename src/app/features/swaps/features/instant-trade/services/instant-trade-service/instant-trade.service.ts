@@ -34,7 +34,6 @@ import {
   IT_PROXY_FEE_CONTRACT_ADDRESS,
   IT_PROXY_FEE_CONTRACT_METHOD
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
-
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
