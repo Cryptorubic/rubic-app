@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -125,22 +125,11 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchEthGas(): Observable<number | null> {
-    const requestTimeout = 2000;
-    return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
-      timeout(requestTimeout),
-      map((response: { medium: { maxFeePerGas: string } }) =>
-        new BigNumber(response.medium.maxFeePerGas)
-          .dividedBy(10 ** 9)
-          .dp(0)
-          .toNumber()
-      ),
-      catchError(() =>
-        this.httpClient.get('https://ethgasstation.info/api/ethgasAPI.json').pipe(
-          timeout(requestTimeout),
-          map((response: { average: number }) => response.average / 10)
-        )
-      ),
-      catchError(() => of(null))
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
+      })
     );
   }
 
