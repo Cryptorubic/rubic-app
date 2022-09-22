@@ -448,7 +448,8 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',
-    image: ``
+    image: `${imageBasePath}bridgers.png`,
+    color: '#E6F3FF'
   }
 };
 

@@ -13,9 +13,8 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { BlockchainName, CrossChainTxStatus } from 'rubic-sdk';
+import { BlockchainName, CrossChainTxStatus, Web3PublicSupportedBlockchain } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { EvmBlockchainName } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 @Injectable()
 export class RecentTradesService {
@@ -71,7 +70,7 @@ export class RecentTradesService {
 
     const { srcTxStatus, dstTxStatus } = await this.sdk.crossChainStatusManager.getCrossChainStatus(
       {
-        fromBlockchain: trade.fromBlockchain as EvmBlockchainName,
+        fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain, // @todo redo
         toBlockchain: trade.toBlockchain,
         srcTxHash: srcTxHash,
         txTimestamp: trade.timestamp,

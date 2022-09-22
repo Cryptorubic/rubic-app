@@ -207,55 +207,52 @@ export class CrossChainRoutingService extends TradeService {
     this.checkDeviceAndShowNotification();
 
     const form = this.swapFormService.inputValue;
+    const fromAddress = this.authService.userAddress;
 
     const onTransactionHash = (txHash: string) => {
       confirmCallback?.();
 
-      const fromToken = compareAddresses(providerTrade?.trade?.from.address, form.fromToken.address)
+      const fromToken = compareAddresses(providerTrade.trade?.from.address, form.fromToken.address)
         ? form.fromToken
-        : (providerTrade?.trade?.from as unknown as Token); // @TODO change types
+        : (providerTrade.trade?.from as unknown as Token); // @TODO change types
       const toToken = compareAddresses(providerTrade?.trade?.to.address, form.toToken.address)
         ? form.toToken
-        : (providerTrade?.trade?.to as unknown as Token); // @TODO change types
+        : (providerTrade.trade?.to as unknown as Token); // @TODO change types
 
       const timestamp = Date.now();
 
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
-        fromBlockchain: providerTrade?.trade.from?.blockchain,
-        toBlockchain: providerTrade?.trade.to?.blockchain,
+        fromBlockchain: providerTrade.trade.from?.blockchain,
+        toBlockchain: providerTrade.trade.to?.blockchain,
         fromToken,
         toToken,
         crossChainProviderType: providerTrade.tradeType,
         timestamp,
         bridgeType:
-          providerTrade?.trade instanceof LifiCrossChainTrade ||
-          providerTrade?.trade instanceof ViaCrossChainTrade ||
-          providerTrade?.trade instanceof RangoCrossChainTrade
-            ? providerTrade?.trade?.bridgeType
+          providerTrade.trade instanceof LifiCrossChainTrade ||
+          providerTrade.trade instanceof ViaCrossChainTrade ||
+          providerTrade.trade instanceof RangoCrossChainTrade
+            ? providerTrade.trade?.bridgeType
             : undefined,
         viaUuid:
-          providerTrade?.trade instanceof ViaCrossChainTrade
-            ? providerTrade?.trade.uuid
-            : undefined,
+          providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined,
         rangoRequestId:
-          providerTrade?.trade instanceof RangoCrossChainTrade
-            ? providerTrade?.trade.requestId
+          providerTrade.trade instanceof RangoCrossChainTrade
+            ? providerTrade.trade.requestId
             : undefined
       };
 
-      confirmCallback?.();
-
-      if (providerTrade?.tradeType) {
+      if (providerTrade.smartRouting) {
         this.openSwapSchemeModal(providerTrade, txHash, timestamp);
       }
 
-      this.recentTradesStoreService.saveTrade(this.authService.userAddress, tradeData);
+      this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
 
       this.notifyGtmAfterSignTx(txHash);
     };
 
-    const blockchain = providerTrade?.trade?.from?.blockchain as BlockchainName;
+    const blockchain = providerTrade.trade?.from?.blockchain;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     const receiverAddress = this.receiverAddress;
@@ -376,6 +373,13 @@ export class CrossChainRoutingService extends TradeService {
         fromProvider: wrappedTrade.trade.itType.from,
         toProvider: wrappedTrade.trade.itType.to,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.CELER
+      };
+    }
+    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.BRIDGERS) {
+      return {
+        fromProvider: wrappedTrade.trade.itType.from,
+        toProvider: wrappedTrade.trade.itType.to,
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BRIDGERS
       };
     }
     return null;

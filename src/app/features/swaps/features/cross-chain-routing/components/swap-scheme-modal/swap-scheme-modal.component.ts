@@ -29,8 +29,10 @@ import {
   CrossChainTradeType,
   CrossChainTxStatus,
   EvmWeb3Public,
-  EvmBlockchainName,
-  Injector
+  Injector,
+  TronWeb3Public,
+  Web3Public,
+  Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
@@ -59,7 +61,7 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private srcTxHash: string;
 
-  private srcWeb3Public: EvmWeb3Public;
+  private srcWeb3Public: Web3Public;
 
   private readonly _srcTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
     CrossChainTxStatus.PENDING
@@ -126,7 +128,7 @@ export class SwapSchemeModalComponent implements OnInit {
           return from(
             this.sdk.crossChainStatusManager.getCrossChainStatus(
               {
-                fromBlockchain: this.fromBlockchain.key as EvmBlockchainName,
+                fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain,
                 toBlockchain: this.toBlockchain.key,
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
@@ -154,12 +156,22 @@ export class SwapSchemeModalComponent implements OnInit {
           return interval(7000).pipe(
             startWith(-1),
             switchMap(() => {
+              const getTransaction =
+                this.srcWeb3Public instanceof EvmWeb3Public
+                  ? this.srcWeb3Public.getTransactionReceipt
+                  : (this.srcWeb3Public as TronWeb3Public).getTransactionInfo;
+
               return forkJoin([
                 this.srcWeb3Public.getBlockNumber(),
-                this.srcWeb3Public.getTransactionReceipt(this.srcTxHash)
+                getTransaction(this.srcTxHash)
               ]).pipe(
                 map(([currentBlockNumber, srcTxReceipt]) => {
-                  const diff = this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM ? 5 : 10;
+                  const diff =
+                    this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
+                      ? 5
+                      : this.fromBlockchain.key === BLOCKCHAIN_NAME.TRON
+                      ? 20
+                      : 10;
 
                   return currentBlockNumber - srcTxReceipt.blockNumber > diff
                     ? CrossChainTxStatus.SUCCESS
@@ -192,7 +204,7 @@ export class SwapSchemeModalComponent implements OnInit {
               from(
                 this.sdk.crossChainStatusManager.getCrossChainStatus(
                   {
-                    fromBlockchain: this.fromBlockchain.key as EvmBlockchainName,
+                    fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain, // @todo redo
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
