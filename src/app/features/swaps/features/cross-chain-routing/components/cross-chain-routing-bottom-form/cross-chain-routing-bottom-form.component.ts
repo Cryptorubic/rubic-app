@@ -44,6 +44,7 @@ import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
+import { SwapRequestError } from 'rubic-sdk/lib/common/errors/swap/swap-request.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TuiDialogService } from '@taiga-ui/core';
@@ -531,7 +532,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         blockchain: fromBlockchain
       });
     } catch (err) {
-      this.errorsService.catch(err);
+      this.errorsService.catch(err instanceof SwapRequestError ? new SwapRequestError() : err);
 
       if (err instanceof NotWhitelistedProviderError) {
         this.isViaDisabled = true;
