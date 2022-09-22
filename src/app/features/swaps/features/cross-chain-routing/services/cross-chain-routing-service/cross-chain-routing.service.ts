@@ -416,7 +416,7 @@ export class CrossChainRoutingService extends TradeService {
       return new CrossChainIsUnavailableWarning();
     }
     if (error?.message?.includes('Representation of ')) {
-      return new RubicError('The swap between this pair of blockchains is currently unavaible.');
+      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
