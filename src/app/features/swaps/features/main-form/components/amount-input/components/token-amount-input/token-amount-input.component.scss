@@ -139,6 +139,7 @@
 @include b($mobile-sm) {
   .token-amount-input-container {
     flex-direction: column;
+    gap: 10px;
     align-items: flex-start;
 
     &__input {
@@ -149,7 +150,8 @@
 
     &__wrapper {
       @include hide-unused-ui {
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
       }
     }
   }
