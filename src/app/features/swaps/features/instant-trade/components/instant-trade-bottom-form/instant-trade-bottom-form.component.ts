@@ -56,7 +56,6 @@ import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/in
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { SwapRequestError } from 'rubic-sdk/lib/common/errors/swap/swap-request.error';
 
 interface SettledProviderTrade {
   providerName: TradeType;
@@ -749,7 +748,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }
       );
     } catch (err) {
-      this.errorService.catch(err instanceof SwapRequestError ? new SwapRequestError() : err);
+      this.errorService.catch(err);
 
       this.setProviderState(
         providerName,
