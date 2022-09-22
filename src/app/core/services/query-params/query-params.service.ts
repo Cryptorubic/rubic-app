@@ -276,7 +276,6 @@ export class QueryParamsService {
     this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
       provider => !enabledProviders.includes(provider.toLowerCase())
     );
-    console.log(this.disabledProviders);
   }
 
   /**
