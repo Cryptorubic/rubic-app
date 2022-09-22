@@ -40,7 +40,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
@@ -297,8 +297,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           if (!allowTrade) {
             return of(null);
           }
-          const { fromAmount } = this.swapFormService.inputValue;
-          const isUserAuthorized = Boolean(this.authService.userAddress);
+          const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+          const isUserAuthorized =
+            Boolean(this.authService.userAddress) &&
+            this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
 
           const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(
             isUserAuthorized,
