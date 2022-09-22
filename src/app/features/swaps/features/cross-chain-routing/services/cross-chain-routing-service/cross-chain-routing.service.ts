@@ -155,6 +155,7 @@ export class CrossChainRoutingService extends TradeService {
           receiverAddress: this.receiverAddress
         })
       };
+      console.log(options);
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(

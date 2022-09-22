@@ -117,11 +117,11 @@ export class QueryParamsService {
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
 
-      if (queryParams.enableProvider && queryParams.enableBlockchains) {
-        this.setDisabledProviders(queryParams.enableProvider);
-        this.enabledBlockchains = queryParams.enableBlockchains;
+      if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+        this.setDisabledProviders(queryParams.enabledProviders);
+        this.enabledBlockchains = queryParams.enabledBlockchains;
 
-        await this.rubicSdkService.SDK.updateConfiguration({
+        await this.rubicSdkService.patchConfig({
           ...this.rubicSdkService.defaultConfig,
           providerAddress: queryParams.feeTarget
         });
@@ -272,10 +272,11 @@ export class QueryParamsService {
       : this.searchTokenBySymbol(tokens, token, chain);
   }
 
-  private setDisabledProviders(enableProvider: string): void {
+  private setDisabledProviders(enabledProviders: string[]): void {
     this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
-      provider => provider !== enableProvider.toUpperCase()
+      provider => !enabledProviders.includes(provider.toLowerCase())
     );
+    console.log(this.disabledProviders);
   }
 
   /**

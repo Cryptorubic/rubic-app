@@ -55,7 +55,7 @@ export class BlockchainsAsideComponent {
   }
 
   get blockchains(): BlockchainName[] {
-    if (this.queryParamsService.enabledBlockchains.length !== 0) {
+    if (this.queryParamsService.enabledBlockchains) {
       return BlockchainsAsideComponent.allBlockchains.filter(blockchain => {
         return this.queryParamsService.enabledBlockchains.includes(blockchain);
       });

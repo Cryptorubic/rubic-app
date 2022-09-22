@@ -20,7 +20,7 @@ export class RubicSdkService {
 
   private _SDK: SDK | null;
 
-  public get SDK(): SDK {
+  private get SDK(): SDK {
     if (!this._SDK) {
       throw new Error('Rubic SDK is not initiated.');
     }

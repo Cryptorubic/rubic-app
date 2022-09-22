@@ -164,10 +164,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
 
-    // if (this.queryParamsService.enabledBlockchains) {
-    //   return false;
-    // }
-
     return Boolean(
       form.fromBlockchain &&
         form.fromToken &&
