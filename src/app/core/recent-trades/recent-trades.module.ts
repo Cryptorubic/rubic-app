@@ -12,6 +12,7 @@ import { LiFiTradeComponent } from '@core/recent-trades/components/li-fi-trade/l
 import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge-trade/de-bridge-trade.component';
 import { ViaTradeComponent } from '@core/recent-trades/components/via-trade/via-trade.component';
 import { RangoTradeComponent } from './components/rango-trade/rango-trade.component';
+import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-trade/bridgers-trade.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RangoTradeComponent } from './components/rango-trade/rango-trade.compon
     LiFiTradeComponent,
     DeBridgeTradeComponent,
     ViaTradeComponent,
-    RangoTradeComponent
+    RangoTradeComponent,
+    BridgersTradeComponent
   ],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],
