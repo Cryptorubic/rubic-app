@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
+import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -23,6 +24,8 @@ import { isSupportedLanguage } from '@shared/models/languages/supported-language
 import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { CrossChainTradeType } from 'rubic-sdk/lib/features';
+import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -73,6 +76,10 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public disabledProviders: CrossChainTradeType[];
+
+  public enabledBlockchains: BlockchainName[];
+
   public screenWidth: number;
 
   constructor(
@@ -88,7 +95,8 @@ export class QueryParamsService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly rubicSdkService: RubicSdkService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -103,11 +111,21 @@ export class QueryParamsService {
     });
   }
 
-  public setupQueryParams(queryParams: QueryParams): void {
+  public async setupQueryParams(queryParams: QueryParams): Promise<void> {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
+
+      if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+        this.setDisabledProviders(queryParams.enabledProviders);
+        this.enabledBlockchains = queryParams.enabledBlockchains;
+
+        await this.rubicSdkService.patchConfig({
+          ...this.rubicSdkService.defaultConfig,
+          providerAddress: queryParams.feeTarget
+        });
+      }
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -252,6 +270,12 @@ export class QueryParamsService {
     return Web3Pure.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
+  }
+
+  private setDisabledProviders(enabledProviders: string[]): void {
+    this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
+      provider => !enabledProviders.includes(provider.toLowerCase())
+    );
   }
 
   /**

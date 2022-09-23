@@ -51,6 +51,10 @@
 
     transition: opacity 0.3s;
 
+    @include hide-unused-ui {
+      margin-top: 10px;
+    }
+
     &.smart-routing-loading {
       opacity: 0.25;
     }
