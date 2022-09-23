@@ -77,7 +77,8 @@
     @include font(12px, 17px, 400, #8E8D91);
   }
 
-  &__status-from {
+  &__status-from,
+  &__status-to {
     display: flex;
 
     text-decoration: none;
@@ -86,6 +87,16 @@
       margin-left: 13px;
 
       content: url('/assets/images/icons/arrow/link-arrow.svg');
+    }
+  }
+
+  &__status-to.hide-arrow {
+    cursor: default;
+
+    pointer-events: none;
+    
+    &::after {
+      visibility: hidden;
     }
   }
 }

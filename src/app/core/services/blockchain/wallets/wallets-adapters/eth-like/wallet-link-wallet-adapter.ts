@@ -83,7 +83,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.wallet.request({ method: 'eth_requestAccounts' });
+      const [address] = await this.wallet.request<[string]>({ method: 'eth_requestAccounts' });
 
       const activeChain = (await this.wallet.request({ method: 'eth_chainId' })) as string;
       const chainInfo = BlockchainsInfo.getBlockchainById(parseInt(activeChain).toString());

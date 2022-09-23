@@ -61,7 +61,8 @@ import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers
 import {
   CrossChainTrade,
   RangoCrossChainTrade,
-  RangoCrossChainTradeProvider
+  RangoCrossChainTradeProvider,
+  SwapTransactionOptions
 } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
@@ -265,13 +266,14 @@ export class CrossChainRoutingService extends TradeService {
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     const receiverAddress = this.receiverAddress;
-    const swapOptions = {
+    const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
-      ...(Boolean(shouldCalculateGasPrice) && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      }),
       ...(receiverAddress && { receiverAddress: receiverAddress })
     };
+    if (shouldCalculateGasPrice) {
+      const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
+      swapOptions.gasPrice = Web3Pure.toWei(gasPrice);
+    }
 
     await providerTrade.trade.swap(swapOptions);
 
