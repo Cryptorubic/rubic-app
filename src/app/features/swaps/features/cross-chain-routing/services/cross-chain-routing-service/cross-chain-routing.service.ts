@@ -98,11 +98,11 @@ export class CrossChainRoutingService extends TradeService {
     return this._crossChainTrade;
   }
 
-  private get receiverAddress(): string {
-    return (
-      this.targetNetworkAddressService.targetAddress?.isValid &&
-      this.targetNetworkAddressService.targetAddress?.value
-    );
+  private get receiverAddress(): string | null {
+    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
+      return null;
+    }
+    return this.targetNetworkAddressService.address;
   }
 
   constructor(
@@ -141,15 +141,14 @@ export class CrossChainRoutingService extends TradeService {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+      const receiverAddress = this.receiverAddress;
       const options: SwapManagerCrossChainCalculationOptions & CrossChainOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
         disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : [],
-        ...(this.settingsService.crossChainRoutingValue.showReceiverAddress && {
-          receiverAddress: this.receiverAddress
-        })
+        ...(receiverAddress && { receiverAddress })
       };
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
@@ -261,7 +260,7 @@ export class CrossChainRoutingService extends TradeService {
       ...(Boolean(shouldCalculateGasPrice) && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       }),
-      ...(receiverAddress && { receiverAddress: receiverAddress })
+      ...(receiverAddress && { receiverAddress })
     };
 
     await providerTrade.trade.swap(swapOptions);

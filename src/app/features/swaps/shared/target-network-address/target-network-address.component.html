@@ -4,7 +4,9 @@
     <div
       class="network-container__hint"
       [inlineSVG]="'/assets/images/icons/hint.svg'"
-      [tuiHint]="'crossChainPage.targetAddress.hint' | translate: { network: targetBlockchainName }"
+      [tuiHint]="
+        'crossChainPage.targetAddress.hint' | translate: { network: (toBlockchain$ | async) }
+      "
     ></div>
   </div>
 
@@ -14,8 +16,8 @@
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="!!address.value"
-    [pseudoInvalid]="(address.touch$ | async) !== undefined && address.invalid"
+    [pseudoFocused]="address.invalid || !!address.value"
+    [pseudoInvalid]="address.invalid"
   >
     {{ 'crossChainPage.targetAddress.placeholder' | translate }}
   </tui-input>
@@ -27,8 +29,8 @@
     tuiTextfieldSize="s"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="!!address.value"
-    [pseudoInvalid]="(address.touch$ | async) !== undefined && address.invalid"
+    [pseudoFocused]="address.invalid || !!address.value"
+    [pseudoInvalid]="address.invalid"
     >{{ 'crossChainPage.targetAddress.placeholder' | translate }}</tui-input
   >
   <ng-template #success>

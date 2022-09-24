@@ -1,62 +1,67 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { Validators } from '@angular/forms';
+import { FormControl } from '@ngneat/reactive-forms';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { StoreService } from '@core/services/store/store.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { startWith } from 'rxjs/operators';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-
-interface TargetAddress {
-  value: string;
-  isValid: boolean;
-}
+import { correctAddressValidator } from '@features/swaps/shared/target-network-address/services/utils/correct-address-validator';
+import { blockchainRequiresAddress } from '@features/swaps/shared/target-network-address/services/constants/blockchain-requires-address';
 
 @Injectable()
 export class TargetNetworkAddressService {
-  private readonly networksRequiresAddress: BlockchainName[] = [
-    BLOCKCHAIN_NAME.SOLANA,
-    BLOCKCHAIN_NAME.NEAR,
-    BLOCKCHAIN_NAME.BITCOIN
-  ];
+  public readonly addressForm = new FormControl<string>(null, [Validators.required]);
 
-  private readonly _targetNetworkAddress$ = new BehaviorSubject<TargetAddress | null>(null);
+  private readonly _address$ = new BehaviorSubject<string | null>(null);
 
-  public readonly targetAddress$ = this._targetNetworkAddress$.asObservable();
+  public readonly address$ = this._address$.asObservable();
 
-  private readonly _displayAddress$ = new BehaviorSubject<boolean>(false);
-
-  public readonly displayAddress$ = this._displayAddress$.asObservable();
-
-  public get targetAddress(): TargetAddress | null {
-    return this._targetNetworkAddress$.value;
+  public get address(): string | null {
+    return this._address$.value;
   }
 
-  public set targetAddress(targetAddress: TargetAddress | null) {
-    this._targetNetworkAddress$.next(targetAddress);
-  }
+  private readonly _isAddressRequired$ = new BehaviorSubject<boolean>(false);
+
+  public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
+
+  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(true);
+
+  public readonly isAddressValid$ = this._isAddressValid$.asObservable();
 
   constructor(
-    private readonly formService: SwapFormService,
-    private readonly settingsService: SettingsService
+    private readonly storeService: StoreService,
+    private readonly swapFormService: SwapFormService
   ) {
-    this.formService.input.valueChanges
-      .pipe(startWith(this.formService.inputValue))
-      .subscribe(form => {
-        const needDisplayAddress =
-          ((this.networksRequiresAddress.includes(form.fromBlockchain) ||
-            this.networksRequiresAddress.includes(form.toBlockchain)) &&
-            Boolean(form.fromToken && form.toToken)) ||
-          this.settingsService.crossChainRoutingValue.showReceiverAddress ||
-          this.settingsService.instantTradeValue.showReceiverAddress;
+    this.initSubscriptions();
+    this.setupTargetAddress();
+  }
 
-        this._displayAddress$.next(needDisplayAddress);
+  private initSubscriptions(): void {
+    this.addressForm.valueChanges.pipe(debounceTime(10), distinctUntilChanged()).subscribe(() => {
+      this._isAddressValid$.next(this.addressForm.valid);
 
-        if (!needDisplayAddress) {
-          this._targetNetworkAddress$.next(null);
-        }
+      if (this.addressForm.valid) {
+        this.storeService.setItem('targetAddress', this.addressForm.value);
+      }
+
+      this._address$.next(this.addressForm.valid ? this.addressForm.value : null);
+    });
+
+    this.swapFormService.input.controls.toBlockchain.valueChanges
+      .pipe(startWith(this.swapFormService.inputValue.toBlockchain))
+      .subscribe(toBlockchain => {
+        this._isAddressRequired$.next(blockchainRequiresAddress.some(el => el === toBlockchain));
+
+        this.addressForm.clearValidators();
+        this.addressForm.setValidators(Validators.required);
+        this.addressForm.setValidators(correctAddressValidator(toBlockchain));
       });
   }
 
-  public showReceiverAddressToggle(showReceiverAddress: boolean): void {
-    this._displayAddress$.next(showReceiverAddress);
+  private setupTargetAddress(): void {
+    const targetAddress = this.storeService.getItem('targetAddress');
+    if (typeof targetAddress === 'string') {
+      this.addressForm.patchValue(targetAddress);
+    }
   }
 }

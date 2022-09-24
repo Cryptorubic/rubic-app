@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { from, Observable, of, Subject, Subscription } from 'rxjs';
+import { from, Observable, of, Subject, combineLatest, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -108,7 +108,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+  public readonly displayTargetAddressInput$ =
+    this.settingsService.crossChainRoutingValueChanges.pipe(
+      startWith(this.settingsService.crossChainRoutingValue),
+      map(value => value.showReceiverAddress)
+    );
 
   public smartRouting: SmartRouting = null;
 
@@ -217,7 +221,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.conditionalCalculate('normal'));
 
-    this.targetNetworkAddressService.targetAddress$.subscribe(() => {
+    combineLatest([
+      this.targetNetworkAddressService.address$,
+      this.displayTargetAddressInput$
+    ]).subscribe(() => {
       this.conditionalCalculate('normal');
     });
   }

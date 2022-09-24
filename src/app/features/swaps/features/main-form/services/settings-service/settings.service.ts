@@ -11,6 +11,7 @@ import { copyObject } from '@shared/utils/utils';
 import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -58,6 +59,8 @@ export class SettingsService {
 
   public settingsForm: FormGroup<SettingsForm>;
 
+  private ccrShowReceiverAddressUserValue: boolean;
+
   public get instantTrade(): FormGroup<ItSettingsForm> {
     return this.settingsForm.controls.INSTANT_TRADE;
   }
@@ -97,13 +100,14 @@ export class SettingsService {
   constructor(
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.defaultItSettings = this.getDefaultITSettings();
     this.defaultCcrSettings = this.getDefaultCCRSettings();
 
     this.createForm();
-    this.setupData();
+    this.initSubscriptions();
   }
 
   public changeDefaultSlippage(slippage: QuerySlippage): void {
@@ -149,7 +153,33 @@ export class SettingsService {
     return Math.min(Math.max(slippage, 0.1), 50);
   }
 
-  private setupData(): void {
+  private createForm(): void {
+    this.settingsForm = new FormGroup<SettingsForm>({
+      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup<ItSettingsForm>({
+        autoSlippageTolerance: new FormControl<boolean>(
+          this.defaultItSettings.autoSlippageTolerance
+        ),
+        slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
+        deadline: new FormControl<number>(this.defaultItSettings.deadline),
+        disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
+        rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
+        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
+        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
+      }),
+      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({}),
+      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
+        autoSlippageTolerance: new FormControl<boolean>(
+          this.defaultItSettings.autoSlippageTolerance
+        ),
+        slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
+        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh),
+        promoCode: new FormControl<PromoCode | null>(null),
+        showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress)
+      })
+    });
+  }
+
+  private initSubscriptions(): void {
     this.authService.currentUser$
       .pipe(
         filter(user => Boolean(user?.address)),
@@ -175,31 +205,21 @@ export class SettingsService {
         autoRefresh: widgetIntoViewport
       });
     });
-  }
 
-  private createForm(): void {
-    this.settingsForm = new FormGroup<SettingsForm>({
-      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup<ItSettingsForm>({
-        autoSlippageTolerance: new FormControl<boolean>(
-          this.defaultItSettings.autoSlippageTolerance
-        ),
-        slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
-        deadline: new FormControl<number>(this.defaultItSettings.deadline),
-        disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
-        rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
-        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
-        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
-      }),
-      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({}),
-      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
-        autoSlippageTolerance: new FormControl<boolean>(
-          this.defaultItSettings.autoSlippageTolerance
-        ),
-        slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
-        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh),
-        promoCode: new FormControl<PromoCode | null>(null),
-        showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress)
-      })
+    this.targetNetworkAddressService.isAddressRequired$.subscribe(isAddressRequired => {
+      if (isAddressRequired) {
+        this.ccrShowReceiverAddressUserValue = this.crossChainRoutingValue.showReceiverAddress;
+
+        this.crossChainRouting.patchValue({
+          showReceiverAddress: true
+        });
+      } else {
+        if (this.ccrShowReceiverAddressUserValue !== undefined) {
+          this.crossChainRouting.patchValue({
+            showReceiverAddress: this.ccrShowReceiverAddressUserValue
+          });
+        }
+      }
     });
   }
 

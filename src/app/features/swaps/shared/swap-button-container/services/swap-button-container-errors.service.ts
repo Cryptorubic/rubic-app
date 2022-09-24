@@ -128,10 +128,8 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnTargetNetworkAddress(): void {
-    this.targetNetworkAddressService.targetAddress$.subscribe(targetAddress => {
-      const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-      this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
-        fromBlockchain !== toBlockchain && targetAddress && !targetAddress.isValid;
+    this.targetNetworkAddressService.isAddressValid$.subscribe(isAddressValid => {
+      this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = !isAddressValid;
 
       this.updateError();
     });

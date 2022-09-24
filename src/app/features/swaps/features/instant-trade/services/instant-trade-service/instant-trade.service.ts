@@ -52,6 +52,13 @@ export class InstantTradeService extends TradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
+  private get receiverAddress(): string | null {
+    if (!this.settingsService.instantTradeValue.showReceiverAddress) {
+      return null;
+    }
+    return this.targetNetworkAddressService.address;
+  }
+
   constructor(
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
@@ -195,9 +202,7 @@ export class InstantTradeService extends TradeService {
 
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
-    const receiverAddress =
-      this.targetNetworkAddressService.targetAddress?.isValid &&
-      this.targetNetworkAddressService.targetAddress?.value;
+    const receiverAddress = this.receiverAddress;
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;

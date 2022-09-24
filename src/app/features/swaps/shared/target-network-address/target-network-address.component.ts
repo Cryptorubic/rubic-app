@@ -1,23 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { BlockchainName, CrossChainTrade } from 'rubic-sdk';
-import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
-import { Validators } from '@angular/forms';
-import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { StoreService } from '@core/services/store/store.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BlockchainName } from 'rubic-sdk';
+import { startWith } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-
-function correctAddressValidator(blockchain: BlockchainName): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    try {
-      CrossChainTrade.checkReceiverAddress(control.value, blockchain);
-      return null;
-    } catch {
-      return { wrongAddress: control.value };
-    }
-  };
-}
+import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { Observable } from 'rxjs';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 @Component({
   selector: 'app-target-network-address',
@@ -27,50 +14,18 @@ function correctAddressValidator(blockchain: BlockchainName): ValidatorFn {
   providers: [TuiDestroyService]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  @Input() set targetBlockchain(blockchain: BlockchainName) {
-    this.address.clearValidators();
-    this.address.setValidators(Validators.required);
-    this.targetBlockchainName = blockchain;
-    this.address.setValidators(correctAddressValidator(blockchain));
-  }
+  public readonly address = this.targetNetworkAddressService.addressForm;
 
-  public targetBlockchainName: BlockchainName;
-
-  public address: FormControl<string>;
+  public toBlockchain$: Observable<BlockchainName>;
 
   constructor(
-    private readonly storeService: StoreService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly destroy$: TuiDestroyService
-  ) {
-    this.address = new FormControl<string>(null, [Validators.required]);
-    this.address.markAsDirty();
-  }
+    private readonly swapFormService: SwapFormService
+  ) {}
 
   ngOnInit() {
-    this.initSubscription();
-    this.setTargetAddress();
-  }
-
-  private setTargetAddress(): void {
-    const targetAddress = this.storeService.getItem('targetAddress');
-    this.address.patchValue(targetAddress.address);
-  }
-
-  private initSubscription(): void {
-    this.address.valueChanges
-      .pipe(debounceTime(10), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.address.valid) {
-          this.storeService.setItem('targetAddress', {
-            address: this.address.value,
-            blockchain: this.targetBlockchainName
-          });
-        }
-        this.targetNetworkAddressService.targetAddress = {
-          value: this.address.value,
-          isValid: this.address.valid
-        };
-      });
+    this.toBlockchain$ = this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
+      startWith(this.swapFormService.inputValue.toBlockchain)
+    );
   }
 }

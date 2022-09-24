@@ -35,6 +35,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  map,
   startWith,
   switchMap,
   takeUntil,
@@ -116,7 +117,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
-  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+  public readonly displayTargetAddressInput$ = this.settingsService.instantTradeValueChanges.pipe(
+    startWith(this.settingsService.instantTradeValue),
+    map(value => value.showReceiverAddress)
+  );
 
   /**
    * True, if 'approve' button should be shown near 'swap' button.
@@ -243,8 +247,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }
       });
 
-    // We did not use 'distinctUntilChanged' for 'showReceiverAddress' because the PREV value was not updated.
-    let isShowedReceiverAddressPreviousValue: boolean;
     this.settingsService.instantTradeValueChanges
       .pipe(
         distinctUntilChanged((prev, next) => {
@@ -253,14 +255,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
             prev.disableMultihops === next.disableMultihops &&
             prev.slippageTolerance === next.slippageTolerance
           );
-        }),
-        filter(current => {
-          if (current.showReceiverAddress === isShowedReceiverAddressPreviousValue) {
-            isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
-            return true;
-          }
-          isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
-          return false;
         }),
         takeUntil(this.destroy$)
       )

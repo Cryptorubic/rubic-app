@@ -63,14 +63,12 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
         startWith(this.swapFormService.inputValue.toBlockchain)
       ),
       this.authService.currentUser$,
-      this.targetNetworkAddressService.displayAddress$,
-      this.targetNetworkAddressService.targetAddress$
+      this.targetNetworkAddressService.address$
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([toBlockchain, user, displayTargetAddress, targetAddress]) => {
+      .subscribe(([toBlockchain, user, targetAddress]) => {
         this.toBlockchain = toBlockchain;
-        const targetAddressExact = targetAddress?.isValid ? targetAddress.value : null;
-        this.toWalletAddress = displayTargetAddress ? targetAddressExact : user?.address;
+        this.toWalletAddress = targetAddress ?? user?.address;
 
         this.cdr.detectChanges();
       });
