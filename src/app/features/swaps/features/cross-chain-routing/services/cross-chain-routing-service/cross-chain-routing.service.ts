@@ -17,7 +17,9 @@ import {
   CelerCrossChainTrade,
   EvmCrossChainTrade,
   BridgersCrossChainTradeProvider,
-  ViaCrossChainTradeProvider
+  ViaCrossChainTradeProvider,
+  EvmBridgersCrossChainTrade,
+  TronBridgersCrossChainTrade
 } from 'rubic-sdk';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
@@ -284,7 +286,9 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof LifiCrossChainTrade ||
       trade instanceof DebridgeCrossChainTrade ||
       trade instanceof ViaCrossChainTrade ||
-      trade instanceof RangoCrossChainTrade
+      trade instanceof RangoCrossChainTrade ||
+      trade instanceof EvmBridgersCrossChainTrade ||
+      trade instanceof TronBridgersCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -292,8 +296,8 @@ export class CrossChainRoutingService extends TradeService {
         feeTokenSymbol: 'USDC',
         feePercent: trade.feeInfo.platformFee.percent,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
-        networkFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount),
-        networkFeeSymbol: trade.feeInfo?.cryptoFee?.tokenSymbol
+        networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
+        networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
       };
     }
 
