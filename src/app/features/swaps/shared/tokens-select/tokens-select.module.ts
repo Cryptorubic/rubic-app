@@ -48,7 +48,6 @@ import { CustomTokenWarningModalComponent } from '@features/swaps/shared/tokens-
     TuiLoaderModule,
     InlineSVGModule
   ],
-  providers: [TokensSelectService],
-  entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
+  providers: [TokensSelectService]
 })
 export class TokensSelectModule {}
