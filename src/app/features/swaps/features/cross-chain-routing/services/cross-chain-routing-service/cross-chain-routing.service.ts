@@ -19,7 +19,8 @@ import {
   BridgersCrossChainTradeProvider,
   ViaCrossChainTradeProvider,
   EvmBridgersCrossChainTrade,
-  TronBridgersCrossChainTrade
+  TronBridgersCrossChainTrade,
+  SwapTransactionOptions
 } from 'rubic-sdk';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
@@ -67,6 +68,7 @@ import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-ch
 import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable({
   providedIn: 'root'
@@ -120,7 +122,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     super('cross-chain-routing');
   }
@@ -141,6 +144,7 @@ export class CrossChainRoutingService extends TradeService {
     isViaDisabled: boolean
   ): Observable<CrossChainProviderTrade> {
     try {
+      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
@@ -149,9 +153,12 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : [],
+        disabledProviders: isViaDisabled
+          ? [...disabledProvidersForLandingIframe, CROSS_CHAIN_TRADE_TYPE.VIA]
+          : [...disabledProvidersForLandingIframe],
         ...(receiverAddress && { receiverAddress })
       };
+
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
@@ -257,13 +264,14 @@ export class CrossChainRoutingService extends TradeService {
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     const receiverAddress = this.receiverAddress;
-    const swapOptions = {
+    const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
-      ...(Boolean(shouldCalculateGasPrice) && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      }),
       ...(receiverAddress && { receiverAddress })
     };
+    if (shouldCalculateGasPrice) {
+      const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
+      swapOptions.gasPrice = Web3Pure.toWei(gasPrice);
+    }
 
     await providerTrade.trade.swap(swapOptions);
 

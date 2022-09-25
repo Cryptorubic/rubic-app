@@ -42,7 +42,14 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
+    const {
+      srcTxHash,
+      crossChainProviderType,
+      fromToken,
+      toToken,
+      timestamp,
+      dstTxHash: calculatedDstTxHash
+    } = trade;
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -61,6 +68,15 @@ export class RecentTradesService {
       crossChainProviderType
     };
 
+    if (calculatedDstTxHash) {
+      uiTrade.dstTxHash = calculatedDstTxHash;
+      uiTrade.dstTxLink = this.scannerLinkPipe.transform(
+        calculatedDstTxHash,
+        toBlockchainInfo.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
+    }
+
     if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
       uiTrade.statusTo = trade.calculatedStatusTo;
       uiTrade.statusFrom = trade.calculatedStatusFrom;
@@ -68,21 +84,26 @@ export class RecentTradesService {
       return uiTrade;
     }
 
-    const { srcTxStatus, dstTxStatus } = await this.sdk.crossChainStatusManager.getCrossChainStatus(
-      {
-        fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain, // @todo redo
-        toBlockchain: trade.toBlockchain,
-        srcTxHash: srcTxHash,
-        txTimestamp: trade.timestamp,
-        lifiBridgeType: trade.bridgeType,
-        viaUuid: trade.viaUuid,
-        rangoRequestId: trade.rangoRequestId
-      },
-      trade.crossChainProviderType
-    );
+    const { srcTxStatus, dstTxStatus, dstTxHash } =
+      await this.sdk.crossChainStatusManager.getCrossChainStatus(
+        {
+          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain, // @todo redo,
+          toBlockchain: trade.toBlockchain,
+          srcTxHash: srcTxHash,
+          txTimestamp: trade.timestamp,
+          lifiBridgeType: trade.bridgeType,
+          viaUuid: trade.viaUuid,
+          rangoRequestId: trade.rangoRequestId
+        },
+        trade.crossChainProviderType
+      );
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = dstTxHash
+      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      : null;
 
     return uiTrade;
   }

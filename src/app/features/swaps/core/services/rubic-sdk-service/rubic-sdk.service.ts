@@ -47,7 +47,7 @@ export class RubicSdkService {
     this._SDK = value;
   }
 
-  private readonly defaultConfig = {
+  public readonly defaultConfig = {
     ...rubicSdkDefaultConfig,
     httpClient: new SdkHttpClient(this.angularHttpClient)
   };

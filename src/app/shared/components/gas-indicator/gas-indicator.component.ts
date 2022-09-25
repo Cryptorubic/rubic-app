@@ -13,7 +13,7 @@ export class GasIndicatorComponent {
   /**
    * Current gas price.
    */
-  public gasPrice$: Observable<number>;
+  public gasPrice$: Observable<string>;
 
   constructor(private readonly gasService: GasService) {
     this.gasPrice$ = this.gasService.getGasPrice$(BLOCKCHAIN_NAME.ETHEREUM);

@@ -58,6 +58,7 @@ import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/in
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 interface SettledProviderTrade {
   providerName: TradeType;
@@ -167,6 +168,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
+
     return Boolean(
       form.fromBlockchain &&
         form.fromToken &&
@@ -206,6 +208,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly iframeService: IframeService,
     private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
+    private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isIframe = this.iframeService.isIframe;
@@ -343,11 +346,16 @@ export class InstantTradeBottomFormComponent implements OnInit {
           this.setProvidersStateCalculating();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const instantTrades$ = this.instantTradeService.calculateTrades(
-            this.fromToken,
-            this.fromAmount.toFixed(),
-            this.toToken
-          );
+          const disableInstantTrade =
+            this.queryParamsService.disabledProviders && this.queryParamsService.enabledBlockchains;
+
+          const instantTrades$ = disableInstantTrade
+            ? this.getFakeTrades()
+            : this.instantTradeService.calculateTrades(
+                this.fromToken,
+                this.fromAmount.toFixed(),
+                this.toToken
+              );
 
           const tokenBalance$ = this.tokensService.getAndUpdateTokenBalance(this.fromToken);
 
@@ -779,5 +787,16 @@ export class InstantTradeBottomFormComponent implements OnInit {
         needApprove: approveData?.[index]
       };
     });
+  }
+
+  private getFakeTrades(): Promise<InstantTradeError[]> {
+    return new Promise<InstantTradeError[]>(resolve =>
+      resolve(
+        this.providersData.map(provider => ({
+          type: provider.name,
+          error: new RubicError('Instant trade is not supported')
+        }))
+      )
+    );
   }
 }

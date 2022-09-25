@@ -66,7 +66,7 @@
     "symbiosis-js-sdk": "^2.7.7",
     "ts-cacheable": "^1.0.5",
     "walletlink": "^2.1.0",
-    "web3": "^1.7.5",
+    "web3": "^1.8.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
