@@ -234,7 +234,9 @@ export class InstantTradeService extends TradeService {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
-      subscription$.unsubscribe();
+      if (!(trade instanceof InstantTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON)) {
+        subscription$.unsubscribe();
+      }
       this.showSuccessTrxNotification();
       this.updateTrade(transactionHash, true);
 

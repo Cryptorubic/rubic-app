@@ -19,6 +19,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { isNil } from '@app/shared/utils/utils';
 import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -76,6 +77,7 @@ export class SwapButtonContainerErrorsService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
+    private readonly settingsService: SettingsService,
     private readonly ngZone: NgZone
   ) {
     this.subscribeOnSwapForm();
@@ -128,8 +130,14 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnTargetNetworkAddress(): void {
-    this.targetNetworkAddressService.isAddressValid$.subscribe(isAddressValid => {
-      this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = !isAddressValid;
+    combineLatest([
+      this.targetNetworkAddressService.isAddressValid$,
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue)
+      )
+    ]).subscribe(([isAddressValid, settingsForm]) => {
+      const isWithReceiverAddress = settingsForm.showReceiverAddress;
+      this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = isWithReceiverAddress && !isAddressValid;
 
       this.updateError();
     });
@@ -139,9 +147,10 @@ export class SwapButtonContainerErrorsService {
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
+    const chainType = BlockchainsInfo.getChainType(this.swapFormService.inputValue.fromBlockchain);
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !Web3Pure[this.authService.userChainType].isAddressCorrect(this.authService.userAddress);
+      !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
   }
 
   /**

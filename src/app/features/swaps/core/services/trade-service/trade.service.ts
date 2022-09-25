@@ -4,10 +4,15 @@ import { TuiNotification } from '@taiga-ui/core';
 import { inject, Injectable } from '@angular/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType
+} from 'rubic-sdk';
 
 @Injectable()
 export abstract class TradeService {
@@ -52,7 +57,7 @@ export abstract class TradeService {
       blockchain,
       this.successTxModalType,
       ccrProviderType,
-      this.showTrxInProgressTrxNotification
+      blockchain !== BLOCKCHAIN_NAME.TRON ? this.showTrxInProgressTrxNotification : () => of(null)
     );
   }
 }
