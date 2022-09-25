@@ -413,6 +413,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * If not provided, current approve data is chosen.
    */
   private async setupProviders(trades: Array<InstantTrade | InstantTradeError>): Promise<void> {
+    const isUserAuthorized =
+      Boolean(this.authService.userAddress) &&
+      this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
+
     const providersPromises = this.providersData.map(async provider => {
       const settledTrade = trades.find(trade => trade?.type === provider.name);
 
@@ -435,7 +439,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         };
       }
 
-      const needApprove = this.authService.user?.address
+      const needApprove = isUserAuthorized
         ? await this.instantTradeService.needApprove(settledTrade)
         : false;
 

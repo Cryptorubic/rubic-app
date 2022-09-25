@@ -322,6 +322,13 @@ export class InstantTradeService extends TradeService {
     providerName: TradeType,
     trade: InstantTrade | WrapTrade
   ): Promise<void> {
+    if (
+      (trade instanceof InstantTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) ||
+      (trade as WrapTrade).blockchain === BLOCKCHAIN_NAME.TRON
+    ) {
+      return;
+    }
+
     let fee: number;
     let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);

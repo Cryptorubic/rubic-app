@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Validators } from '@angular/forms';
 import { FormControl } from '@ngneat/reactive-forms';
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
@@ -10,7 +9,7 @@ import { blockchainRequiresAddress } from '@features/swaps/shared/target-network
 
 @Injectable()
 export class TargetNetworkAddressService {
-  public readonly addressForm = new FormControl<string>(null, [Validators.required]);
+  public readonly addressForm = new FormControl<string>(null);
 
   private readonly _address$ = new BehaviorSubject<string | null>(null);
 
@@ -47,14 +46,20 @@ export class TargetNetworkAddressService {
       this._address$.next(this.addressForm.valid ? this.addressForm.value : null);
     });
 
-    this.swapFormService.input.controls.toBlockchain.valueChanges
-      .pipe(startWith(this.swapFormService.inputValue.toBlockchain))
-      .subscribe(toBlockchain => {
-        this._isAddressRequired$.next(blockchainRequiresAddress.some(el => el === toBlockchain));
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue))
+      .subscribe(form => {
+        const { fromBlockchain, toBlockchain } = form;
+
+        this._isAddressRequired$.next(
+          fromBlockchain !== toBlockchain &&
+            blockchainRequiresAddress.some(el => el === fromBlockchain || el === toBlockchain)
+        );
 
         this.addressForm.clearValidators();
-        this.addressForm.setValidators(Validators.required);
-        this.addressForm.setValidators(correctAddressValidator(toBlockchain));
+        this.addressForm.setValidators(correctAddressValidator(fromBlockchain, toBlockchain));
+
+        this._isAddressValid$.next(this.addressForm.valid);
       });
   }
 

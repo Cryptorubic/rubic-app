@@ -16,7 +16,7 @@
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="address.invalid || !!address.value"
+    [pseudoFocused]="address.invalid"
     [pseudoInvalid]="address.invalid"
   >
     {{ 'crossChainPage.targetAddress.placeholder' | translate }}
@@ -29,7 +29,7 @@
     tuiTextfieldSize="s"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="address.invalid || !!address.value"
+    [pseudoFocused]="address.invalid"
     [pseudoInvalid]="address.invalid"
     >{{ 'crossChainPage.targetAddress.placeholder' | translate }}</tui-input
   >
