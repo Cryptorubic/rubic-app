@@ -80,6 +80,11 @@ const INSTANT_TRADES_PROVIDER: Record<TradeType, Provider> = {
     image: `${imageBasePath}biswap.svg`,
     color: ''
   },
+  [TRADE_TYPE.BRIDGERS]: {
+    name: 'Bridgers',
+    image: `${imageBasePath}biswap.svg`, // @todo update
+    color: ''
+  },
 
   [TRADE_TYPE.CREMA_FINANCE]: {
     name: 'CremaFinance',

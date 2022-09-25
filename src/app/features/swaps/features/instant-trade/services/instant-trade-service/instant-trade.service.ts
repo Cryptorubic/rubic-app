@@ -6,15 +6,14 @@ import { InstantTradesApiService } from '@core/services/backend/instant-trades-a
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { TransactionReceipt } from 'web3-eth';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   CHAIN_TYPE,
-  EncodeTransactionOptions,
   EvmBlockchainName,
+  EvmEncodeTransactionOptions,
   EvmWeb3Pure,
   Injector,
   InstantTrade,
@@ -43,6 +42,7 @@ import { TradeParser } from '@features/swaps/features/instant-trade/services/ins
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { TransactionConfig } from 'web3-core';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -227,11 +227,11 @@ export class InstantTradeService extends TradeService {
     };
 
     try {
-      let receipt;
+      const userAddress = this.authService.userAddress;
       if (trade instanceof InstantTrade) {
-        receipt = await this.checkFeeAndCreateTrade(providerName, trade, options);
+        await this.checkFeeAndCreateTrade(providerName, trade, options);
       } else {
-        receipt = await this.ethWethSwapProvider.createTrade(trade, options);
+        await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
       subscription$.unsubscribe();
@@ -242,7 +242,7 @@ export class InstantTradeService extends TradeService {
         .notifyInstantTradesBot({
           provider: providerName,
           blockchain,
-          walletAddress: receipt.from,
+          walletAddress: userAddress,
           trade,
           txHash: transactionHash
         })
@@ -262,7 +262,7 @@ export class InstantTradeService extends TradeService {
     providerName: TradeType,
     trade: InstantTrade,
     options: SwapTransactionOptions
-  ): Promise<Partial<TransactionReceipt>> {
+  ): Promise<string> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
       return this.createTradeWithFee(trade, options);
     }
@@ -270,20 +270,17 @@ export class InstantTradeService extends TradeService {
     return trade.swap(options);
   }
 
-  private async createTradeWithFee(
-    trade: InstantTrade,
-    options: ItOptions
-  ): Promise<Partial<TransactionReceipt>> {
+  private async createTradeWithFee(trade: InstantTrade, options: ItOptions): Promise<string> {
     await Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .checkBlockchainCorrect(trade.from.blockchain);
 
-    const fullOptions: EncodeTransactionOptions = {
+    const fullOptions: EvmEncodeTransactionOptions = {
       ...options,
       fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,
       supportFee: false
     };
-    const transactionOptions = await trade.encode(fullOptions);
+    const transactionOptions = (await trade.encode(fullOptions)) as TransactionConfig;
     const { feeData } = this.iframeService;
     const fee = feeData.fee * 1000;
 
@@ -304,7 +301,7 @@ export class InstantTradeService extends TradeService {
     if (promoterAddress) {
       methodArguments.push(promoterAddress);
     }
-    return Injector.web3PrivateService
+    const receipt = await Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .tryExecuteContractMethod(
         IT_PROXY_FEE_CONTRACT_ADDRESS,
@@ -317,6 +314,7 @@ export class InstantTradeService extends TradeService {
           gas: undefined
         } as TransactionOptions
       );
+    return receipt.transactionHash;
   }
 
   private async postTrade(

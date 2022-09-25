@@ -42,7 +42,7 @@ export class EthWethSwapProviderService {
     );
   }
 
-  public async createTrade(trade: WrapTrade, options: ItOptions): Promise<TransactionReceipt> {
+  public async createTrade(trade: WrapTrade, options: ItOptions): Promise<string> {
     const { blockchain } = trade;
     const fromToken = trade.from.token;
     const fromAmount = trade.from.amount;
@@ -63,7 +63,12 @@ export class EthWethSwapProviderService {
     const swapMethod = EvmWeb3Pure.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;
-    return swapMethod.bind(this)(blockchain, fromAmountAbsolute, options);
+    const receipt: TransactionReceipt = await swapMethod.bind(this)(
+      blockchain,
+      fromAmountAbsolute,
+      options
+    );
+    return receipt.transactionHash;
   }
 
   private swapEthToWeth(

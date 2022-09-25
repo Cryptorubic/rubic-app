@@ -13,6 +13,7 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 import {
   BlockchainName,
   BlockchainsInfo,
+  EvmInstantTrade,
   InstantTrade,
   InstantTradeError,
   TRADE_TYPE,
@@ -59,6 +60,7 @@ import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade'
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 interface SettledProviderTrade {
   providerName: TradeType;
@@ -429,7 +431,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       if ('error' in settledTrade) {
         return {
           ...defaultProvider,
-          error: settledTrade.error as RubicError<ERROR_TYPE.TEXT>
+          error: RubicSdkErrorParser.parseError(settledTrade.error)
         };
       }
 
@@ -496,12 +498,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!trade) {
       return new BigNumber(-Infinity);
     }
-    const { gasFeeInfo, to } = trade;
+    const { to } = trade;
     if (!to.price.isFinite()) {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
-    return amountInUsd.minus(gasFeeInfo?.gasFeeInUsd || 0);
+    const gasFeeInfo = trade instanceof EvmInstantTrade ? trade.gasFeeInfo?.gasFeeInUsd : 0;
+    return amountInUsd.minus(gasFeeInfo);
   }
 
   /**

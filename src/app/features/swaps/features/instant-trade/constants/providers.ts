@@ -122,5 +122,5 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
     TRADE_TYPE.UNISWAP_V2
   ]),
   [BLOCKCHAIN_NAME.BITCOIN]: getDefaultStateByProviders([]),
-  [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([])
+  [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([TRADE_TYPE.BRIDGERS])
 };

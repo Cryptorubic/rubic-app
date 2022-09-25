@@ -12,6 +12,7 @@ export const instantTradesLabels: Record<TradeType, string> = {
   [TRADE_TYPE.BALANCER]: 'Balancer',
   [TRADE_TYPE.BEAM_SWAP]: 'BeamSwap',
   [TRADE_TYPE.BI_SWAP]: 'BiSwap',
+  [TRADE_TYPE.BRIDGERS]: 'Bridgers',
 
   [TRADE_TYPE.CREMA_FINANCE]: 'CremaFinance',
   [TRADE_TYPE.CRONA_SWAP]: 'CronaSwap',

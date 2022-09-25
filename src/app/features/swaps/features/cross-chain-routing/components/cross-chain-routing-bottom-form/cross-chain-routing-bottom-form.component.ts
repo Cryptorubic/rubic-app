@@ -40,10 +40,15 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CROSS_CHAIN_TRADE_TYPE,
+  MaxAmountError,
+  MinAmountError,
+  RubicSdkError
+} from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
-import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
-import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TuiDialogService } from '@taiga-ui/core';
@@ -339,19 +344,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 error !== undefined &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
-                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
-                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+                ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
                 this.onCalculateTrade$.next('normal');
                 return;
               }
 
               this.minError =
-                error instanceof CrossChainMinAmountError
+                error instanceof MinAmountError
                   ? { amount: error.minAmount, symbol: error.tokenSymbol }
                   : false;
               this.maxError =
-                error instanceof CrossChainMaxAmountError
+                error instanceof MaxAmountError
                   ? { amount: error.maxAmount, symbol: error.tokenSymbol }
                   : false;
               this.errorText = '';
@@ -421,19 +426,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 error &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
                 trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
-                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
-                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+                ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
+                  (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
               ) {
                 this.onCalculateTrade$.next('hidden');
                 return;
               }
 
               this.minError =
-                error instanceof CrossChainMinAmountError
+                error instanceof MinAmountError
                   ? { amount: error.minAmount, symbol: error.tokenSymbol }
                   : false;
               this.maxError =
-                error instanceof CrossChainMaxAmountError
+                error instanceof MaxAmountError
                   ? { amount: error.maxAmount, symbol: error.tokenSymbol }
                   : false;
 

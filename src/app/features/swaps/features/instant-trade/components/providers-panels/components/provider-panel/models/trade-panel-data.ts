@@ -4,7 +4,7 @@ import { BlockchainName } from 'rubic-sdk';
 export interface TradePanelData {
   blockchain: BlockchainName;
   amount: BigNumber;
-  gasLimit: string;
-  gasFeeInUsd: BigNumber;
-  gasFeeInEth: BigNumber;
+  gasLimit?: string;
+  gasFeeInUsd?: BigNumber;
+  gasFeeInEth?: BigNumber;
 }

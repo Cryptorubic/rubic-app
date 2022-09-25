@@ -20,7 +20,7 @@ import {
   ViaCrossChainTradeProvider,
   EvmBridgersCrossChainTrade,
   TronBridgersCrossChainTrade,
-  SwapTransactionOptions
+  EvmSwapTransactionOptions
 } from 'rubic-sdk';
 import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
 import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
@@ -264,13 +264,13 @@ export class CrossChainRoutingService extends TradeService {
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     const receiverAddress = this.receiverAddress;
-    const swapOptions: SwapTransactionOptions = {
+    const swapOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress })
     };
     if (shouldCalculateGasPrice) {
       const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
-      swapOptions.gasPrice = Web3Pure.toWei(gasPrice);
+      (swapOptions as EvmSwapTransactionOptions).gasPrice = Web3Pure.toWei(gasPrice);
     }
 
     await providerTrade.trade.swap(swapOptions);
