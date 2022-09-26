@@ -1,9 +1,9 @@
-import { BlockchainName, InstantTrade, TRADE_TYPE, TradeType } from 'rubic-sdk';
+import { BlockchainName, OnChainTrade, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import BigNumber from 'bignumber.js';
 
 export class TradeParser {
-  public static getItSwapParams(trade: InstantTrade | WrapTrade): {
+  public static getItSwapParams(trade: OnChainTrade | WrapTrade): {
     fromAddress: string;
     fromSymbol: string;
     fromAmount: BigNumber;
@@ -15,9 +15,9 @@ export class TradeParser {
     toPrice: number;
     toDecimals: number;
     blockchain: BlockchainName;
-    type: TradeType;
+    type: OnChainTradeType;
   } {
-    if (trade instanceof InstantTrade) {
+    if (trade instanceof OnChainTrade) {
       return {
         fromAddress: trade.from.address,
         fromSymbol: trade.from.symbol,
@@ -45,7 +45,7 @@ export class TradeParser {
       toPrice: trade.to.token.price,
       toDecimals: trade.to.token.decimals,
       blockchain: trade.blockchain,
-      type: TRADE_TYPE.WRAPPED
+      type: ON_CHAIN_TRADE_TYPE.WRAPPED
     };
   }
 }

@@ -13,7 +13,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';
-import { BlockchainName, InstantTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
@@ -36,10 +36,10 @@ export class InstantTradesApiService {
   ) {}
 
   public notifyInstantTradesBot(body: {
-    provider: TradeType;
+    provider: OnChainTradeType;
     blockchain: BlockchainName;
     walletAddress: string;
-    trade: InstantTrade | WrapTrade;
+    trade: OnChainTrade | WrapTrade;
     txHash: string;
   }): Promise<void> {
     const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
@@ -66,8 +66,8 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: TradeType,
-    trade: InstantTrade | WrapTrade,
+    provider: OnChainTradeType,
+    trade: OnChainTrade | WrapTrade,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {

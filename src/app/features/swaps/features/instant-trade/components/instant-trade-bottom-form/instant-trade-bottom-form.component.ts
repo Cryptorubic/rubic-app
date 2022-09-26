@@ -13,11 +13,11 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 import {
   BlockchainName,
   BlockchainsInfo,
-  EvmInstantTrade,
-  InstantTrade,
-  InstantTradeError,
-  TRADE_TYPE,
-  TradeType,
+  EvmOnChainTrade,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTrade,
+  OnChainTradeError,
+  OnChainTradeType,
   Web3Pure
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
@@ -63,10 +63,10 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 interface SettledProviderTrade {
-  providerName: TradeType;
+  providerName: OnChainTradeType;
 
   status: 'fulfilled' | 'rejected';
-  value?: InstantTrade | null;
+  value?: OnChainTrade | null;
   reason?: RubicError<ERROR_TYPE>;
 
   needApprove?: boolean;
@@ -412,7 +412,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * @param trades Calculated providers' trade data.
    * If not provided, current approve data is chosen.
    */
-  private async setupProviders(trades: Array<InstantTrade | InstantTradeError>): Promise<void> {
+  private async setupProviders(trades: Array<OnChainTrade | OnChainTradeError>): Promise<void> {
     const isUserAuthorized =
       Boolean(this.authService.userAddress) &&
       this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
@@ -498,7 +498,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private calculateTradeProfit(trade: InstantTrade): BigNumber {
+  private calculateTradeProfit(trade: OnChainTrade): BigNumber {
     if (!trade) {
       return new BigNumber(-Infinity);
     }
@@ -507,7 +507,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
-    const gasFeeInfo = trade instanceof EvmInstantTrade ? trade.gasFeeInfo?.gasFeeInUsd : 0;
+    const gasFeeInfo = trade instanceof EvmOnChainTrade ? trade.gasFeeInfo?.gasFeeInUsd : 0;
     return amountInUsd.minus(gasFeeInfo);
   }
 
@@ -649,7 +649,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
-    providerName: TradeType,
+    providerName: OnChainTradeType,
     tradeStatus: TRADE_STATUS,
     providerState?: INSTANT_TRADE_STATUS,
     needApprove?: boolean,
@@ -712,8 +712,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
-    let providerName: TradeType;
-    let providerTrade: InstantTrade | WrapTrade;
+    let providerName: OnChainTradeType;
+    let providerTrade: OnChainTrade | WrapTrade;
     if (!this.ethWethTrade) {
       if (!this.selectedProvider) {
         this.errorService.catch(new NoSelectedProviderError());
@@ -722,7 +722,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       providerName = this.selectedProvider.name;
       providerTrade = this.selectedProvider.trade;
     } else {
-      providerName = TRADE_TYPE.WRAPPED;
+      providerName = ON_CHAIN_TRADE_TYPE.WRAPPED;
       providerTrade = this.ethWethTrade;
     }
 
@@ -773,7 +773,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   private async getHiddenTradeAndApproveData(
-    instantTrades: Array<InstantTrade | InstantTradeError>
+    instantTrades: Array<OnChainTrade | OnChainTradeError>
   ): Promise<SettledProviderTrade[]> {
     const approveData: Array<boolean | null> = await Promise.all(
       instantTrades.map(trade => ('error' in trade ? null : trade.needApprove()))
@@ -796,8 +796,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private getFakeTrades(): Promise<InstantTradeError[]> {
-    return new Promise<InstantTradeError[]>(resolve =>
+  private getFakeTrades(): Promise<OnChainTradeError[]> {
+    return new Promise<OnChainTradeError[]>(resolve =>
       resolve(
         this.providersData.map(provider => ({
           type: provider.name,

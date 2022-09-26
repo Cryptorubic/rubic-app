@@ -3,7 +3,7 @@ import {
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
-  InstantTradesManager,
+  OnChainManager,
   SDK
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
@@ -31,12 +31,12 @@ export class RubicSdkService {
     return this.SDK.crossChainSymbiosisManager;
   }
 
-  public get instantTrade(): InstantTradesManager {
-    return this.SDK.instantTrades;
+  public get instantTrade(): OnChainManager {
+    return this.SDK.onChainManager;
   }
 
   public get crossChain(): CrossChainManager {
-    return this.SDK.crossChain;
+    return this.SDK.crossChainManager;
   }
 
   public get crossChainStatusManager(): CrossChainStatusManager {

@@ -8,22 +8,29 @@ import {
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
-  TRADE_TYPE,
+  ON_CHAIN_TRADE_TYPE,
   Web3Pure,
   TooLowAmountError,
   CrossChainTrade,
   RangoCrossChainTrade,
-  RangoCrossChainTradeProvider,
+  RangoCrossChainProvider,
   CelerCrossChainTrade,
   EvmCrossChainTrade,
-  BridgersCrossChainTradeProvider,
-  ViaCrossChainTradeProvider,
+  BridgersCrossChainProvider,
+  ViaCrossChainProvider,
   EvmBridgersCrossChainTrade,
   TronBridgersCrossChainTrade,
-  EvmSwapTransactionOptions
+  EvmSwapTransactionOptions,
+  SymbiosisCrossChainTrade,
+  DebridgeCrossChainProvider,
+  DebridgeCrossChainTrade,
+  LifiCrossChainProvider,
+  SymbiosisCrossChainProvider,
+  ViaCrossChainTrade,
+  CelerCrossChainProvider,
+  CrossChainProvider,
+  CrossChainManagerCalculationOptions
 } from 'rubic-sdk';
-import { CelerCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/celer-trade-provider/celer-cross-chain-trade-provider';
-import { SymbiosisCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade-provider';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -36,12 +43,9 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
-import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
 import { from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
@@ -60,12 +64,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { filter, switchMap } from 'rxjs/operators';
-import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
-import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
-import { DebridgeCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade-provider';
-import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -75,13 +74,13 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 })
 export class CrossChainRoutingService extends TradeService {
   private static readonly crossChainProviders = [
-    CelerCrossChainTradeProvider,
-    SymbiosisCrossChainTradeProvider,
-    LifiCrossChainTradeProvider,
-    DebridgeCrossChainTradeProvider,
-    RangoCrossChainTradeProvider,
-    ViaCrossChainTradeProvider,
-    BridgersCrossChainTradeProvider
+    CelerCrossChainProvider,
+    SymbiosisCrossChainProvider,
+    LifiCrossChainProvider,
+    DebridgeCrossChainProvider,
+    RangoCrossChainProvider,
+    ViaCrossChainProvider,
+    BridgersCrossChainProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -133,7 +132,7 @@ export class CrossChainRoutingService extends TradeService {
     toBlockchain: BlockchainName
   ): boolean {
     return Boolean(
-      Object.values(this.sdk.crossChain.tradeProviders).find((provider: CrossChainTradeProvider) =>
+      Object.values(this.sdk.crossChain.tradeProviders).find((provider: CrossChainProvider) =>
         provider.isSupportedBlockchains(fromBlockchain, toBlockchain)
       )
     );
@@ -148,7 +147,7 @@ export class CrossChainRoutingService extends TradeService {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
-      const options: SwapManagerCrossChainCalculationOptions & CrossChainOptions = {
+      const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
@@ -374,8 +373,8 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
       return {
-        fromProvider: TRADE_TYPE.ONE_INCH,
-        toProvider: TRADE_TYPE.ONE_INCH,
+        fromProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
+        toProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
       };
     }

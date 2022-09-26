@@ -18,15 +18,15 @@ import { SettingsService } from '@app/features/swaps/features/main-form/services
 import {
   LifiCrossChainTrade,
   RangoCrossChainTrade,
-  TradeType,
+  OnChainTradeType,
   Web3Pure,
   BlockchainsInfo as SdkBlockchainsInfo,
   TronBridgersCrossChainTrade,
-  EvmBridgersCrossChainTrade
+  EvmBridgersCrossChainTrade,
+  SymbiosisCrossChainTrade,
+  DebridgeCrossChainTrade,
+  ViaCrossChainTrade
 } from 'rubic-sdk';
-import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
-import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
-import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -64,9 +64,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
-  private fromProvider: TradeType;
+  private fromProvider: OnChainTradeType;
 
-  private toProvider: TradeType;
+  private toProvider: OnChainTradeType;
 
   public fromPath: string[] | null;
 

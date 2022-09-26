@@ -16,14 +16,14 @@ import {
   EvmEncodeTransactionOptions,
   EvmWeb3Pure,
   Injector,
-  InstantTrade,
-  InstantTradeError,
   SwapTransactionOptions,
   Token,
-  TradeType,
+  OnChainTradeType,
   UnnecessaryApproveError,
   Web3Public,
-  Web3Pure
+  Web3Pure,
+  OnChainTrade,
+  OnChainTradeError
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -75,7 +75,7 @@ export class InstantTradeService extends TradeService {
     super('instant-trade');
   }
 
-  public async needApprove(trade: InstantTrade): Promise<boolean> {
+  public async needApprove(trade: OnChainTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
       if (EvmWeb3Pure.isNativeAddress(trade.from.address)) {
         return false;
@@ -93,7 +93,7 @@ export class InstantTradeService extends TradeService {
     return trade.needApprove();
   }
 
-  public async approve(trade: InstantTrade): Promise<void> {
+  public async approve(trade: OnChainTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
@@ -167,7 +167,7 @@ export class InstantTradeService extends TradeService {
       address: string;
       blockchain: BlockchainName;
     }
-  ): Promise<Array<InstantTrade | InstantTradeError>> {
+  ): Promise<Array<OnChainTrade | OnChainTradeError>> {
     return this.sdk.instantTrade.calculateTrade(
       fromToken as Token<EvmBlockchainName>,
       fromAmount,
@@ -182,8 +182,8 @@ export class InstantTradeService extends TradeService {
   }
 
   public async createTrade(
-    providerName: TradeType,
-    trade: InstantTrade | WrapTrade,
+    providerName: OnChainTradeType,
+    trade: OnChainTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
@@ -228,13 +228,13 @@ export class InstantTradeService extends TradeService {
 
     try {
       const userAddress = this.authService.userAddress;
-      if (trade instanceof InstantTrade) {
+      if (trade instanceof OnChainTrade) {
         await this.checkFeeAndCreateTrade(providerName, trade, options);
       } else {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
-      if (!(trade instanceof InstantTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON)) {
+      if (!(trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON)) {
         subscription$.unsubscribe();
       }
       this.showSuccessTrxNotification();
@@ -261,8 +261,8 @@ export class InstantTradeService extends TradeService {
   }
 
   private async checkFeeAndCreateTrade(
-    providerName: TradeType,
-    trade: InstantTrade,
+    providerName: OnChainTradeType,
+    trade: OnChainTrade,
     options: SwapTransactionOptions
   ): Promise<string> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
@@ -272,7 +272,7 @@ export class InstantTradeService extends TradeService {
     return trade.swap(options);
   }
 
-  private async createTradeWithFee(trade: InstantTrade, options: ItOptions): Promise<string> {
+  private async createTradeWithFee(trade: OnChainTrade, options: ItOptions): Promise<string> {
     await Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .checkBlockchainCorrect(trade.from.blockchain);
@@ -321,11 +321,11 @@ export class InstantTradeService extends TradeService {
 
   private async postTrade(
     transactionHash: string,
-    providerName: TradeType,
-    trade: InstantTrade | WrapTrade
+    providerName: OnChainTradeType,
+    trade: OnChainTrade | WrapTrade
   ): Promise<void> {
     if (
-      (trade instanceof InstantTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) ||
+      (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) ||
       (trade as WrapTrade).blockchain === BLOCKCHAIN_NAME.TRON
     ) {
       return;
