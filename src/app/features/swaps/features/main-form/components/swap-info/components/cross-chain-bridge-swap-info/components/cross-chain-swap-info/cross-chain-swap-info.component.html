@@ -64,11 +64,7 @@
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="feePercent !== 0; else zero">
-      {{ feePercent }}% ≈
-      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-      {{ feeTokenSymbol }}
-    </ng-container>
+    <ng-container *ngIf="feePercent !== 0; else zero">{{ feePercent }}% + 1 USD</ng-container>
     <ng-template #zero>
       <ng-container *ngIf="feeAmount?.isFinite(); else fullZero"> ~ 1 USD</ng-container>
       <ng-template #fullZero> 0% </ng-template>
