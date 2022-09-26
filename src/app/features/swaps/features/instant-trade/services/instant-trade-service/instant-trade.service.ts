@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { firstValueFrom, Subscription, switchMap, timer } from 'rxjs';
+import { firstValueFrom, interval, Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -13,7 +13,6 @@ import {
   BlockchainName,
   CHAIN_TYPE,
   EvmBlockchainName,
-  EvmEncodeTransactionOptions,
   EvmWeb3Pure,
   Injector,
   SwapTransactionOptions,
@@ -23,7 +22,9 @@ import {
   Web3Public,
   Web3Pure,
   OnChainTrade,
-  OnChainTradeError
+  OnChainTradeError,
+  TxStatus,
+  EncodeTransactionOptions
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -43,6 +44,7 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -230,25 +232,40 @@ export class InstantTradeService extends TradeService {
       const userAddress = this.authService.userAddress;
       if (trade instanceof OnChainTrade) {
         await this.checkFeeAndCreateTrade(providerName, trade, options);
+        // options.onConfirm('123');
       } else {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
       if (!(trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON)) {
         subscription$.unsubscribe();
-      }
-      this.showSuccessTrxNotification();
-      this.updateTrade(transactionHash, true);
+        this.showSuccessTrxNotification();
+        this.updateTrade(transactionHash, true);
 
-      await this.instantTradesApiService
-        .notifyInstantTradesBot({
-          provider: providerName,
-          blockchain,
-          walletAddress: userAddress,
-          trade,
-          txHash: transactionHash
-        })
-        .catch(_err => {});
+        await this.instantTradesApiService
+          .notifyInstantTradesBot({
+            provider: providerName,
+            blockchain,
+            walletAddress: userAddress,
+            trade,
+            txHash: transactionHash
+          })
+          .catch(_err => {});
+      } else {
+        await firstValueFrom(
+          interval(10_000).pipe(
+            switchMap(async () => {
+              const txData = await this.sdk.onChainStatusManager.getBridgersSwapStatus(
+                transactionHash
+              );
+              return txData.txStatus;
+            }),
+            filter(status => status === TxStatus.SUCCESS)
+          )
+        );
+        subscription$.unsubscribe();
+        this.showSuccessTrxNotification();
+      }
     } catch (err) {
       subscription$?.unsubscribe();
 
@@ -277,7 +294,7 @@ export class InstantTradeService extends TradeService {
       .getWeb3Private(CHAIN_TYPE.EVM)
       .checkBlockchainCorrect(trade.from.blockchain);
 
-    const fullOptions: EvmEncodeTransactionOptions = {
+    const fullOptions: EncodeTransactionOptions = {
       ...options,
       fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,
       supportFee: false

@@ -13,7 +13,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { BlockchainName, CrossChainTxStatus, Web3PublicSupportedBlockchain } from 'rubic-sdk';
+import { BlockchainName, TxStatus, Web3PublicSupportedBlockchain } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Injectable()
@@ -139,8 +139,8 @@ export class RecentTradesService {
 
       this.recentTradesStoreService.updateTrade({
         ...this.recentTradesStoreService.getSpecificTrade(srcTxHash, fromBlockchain),
-        calculatedStatusFrom: CrossChainTxStatus.SUCCESS,
-        calculatedStatusTo: CrossChainTxStatus.FALLBACK
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);

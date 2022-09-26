@@ -37,13 +37,12 @@ export class TargetNetworkAddressService {
 
   private initSubscriptions(): void {
     this.addressForm.valueChanges.pipe(debounceTime(10), distinctUntilChanged()).subscribe(() => {
-      this._isAddressValid$.next(this.addressForm.valid);
-
       if (this.addressForm.valid) {
         this.storeService.setItem('targetAddress', this.addressForm.value);
       }
 
       this._address$.next(this.addressForm.valid ? this.addressForm.value : null);
+      this._isAddressValid$.next(this.addressForm.valid);
     });
 
     this.swapFormService.inputValueChanges
@@ -59,6 +58,7 @@ export class TargetNetworkAddressService {
         this.addressForm.clearValidators();
         this.addressForm.setValidators(correctAddressValidator(fromBlockchain, toBlockchain));
 
+        this._address$.next(this.addressForm.valid ? this.addressForm.value : null);
         this._isAddressValid$.next(this.addressForm.valid);
       });
   }

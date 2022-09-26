@@ -4,6 +4,7 @@ import {
   CrossChainManager,
   CrossChainStatusManager,
   OnChainManager,
+  OnChainStatusManager,
   SDK
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
@@ -37,6 +38,10 @@ export class RubicSdkService {
 
   public get crossChain(): CrossChainManager {
     return this.SDK.crossChainManager;
+  }
+
+  public get onChainStatusManager(): OnChainStatusManager {
+    return this.SDK.onChainStatusManager;
   }
 
   public get crossChainStatusManager(): CrossChainStatusManager {

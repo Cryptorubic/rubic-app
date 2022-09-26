@@ -27,10 +27,10 @@ import { CommonModalService } from '@app/core/services/modal/common-modal.servic
 import {
   BLOCKCHAIN_NAME,
   CrossChainTradeType,
-  CrossChainTxStatus,
   EvmWeb3Public,
   Injector,
   TronWeb3Public,
+  TxStatus,
   Web3Public,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -63,25 +63,19 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private srcWeb3Public: Web3Public;
 
-  private readonly _srcTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
-    CrossChainTxStatus.PENDING
-  );
+  private readonly _srcTxStatus$ = new BehaviorSubject<TxStatus>(TxStatus.PENDING);
 
   public readonly srcTxStatus$ = this._srcTxStatus$.asObservable();
 
-  private readonly _dstTxStatus$ = new BehaviorSubject<CrossChainTxStatus>(
-    CrossChainTxStatus.UNKNOWN
-  );
+  private readonly _dstTxStatus$ = new BehaviorSubject<TxStatus>(TxStatus.UNKNOWN);
 
   public readonly dstTxStatus$ = this._dstTxStatus$.asObservable();
 
-  private readonly _tradeProcessingStatus$ = new BehaviorSubject<CrossChainTxStatus>(
-    CrossChainTxStatus.UNKNOWN
-  );
+  private readonly _tradeProcessingStatus$ = new BehaviorSubject<TxStatus>(TxStatus.UNKNOWN);
 
   public readonly tradeProcessingStatus$ = this._tradeProcessingStatus$.asObservable();
 
-  public readonly CrossChainTxStatus = CrossChainTxStatus;
+  public readonly CrossChainTxStatus = TxStatus;
 
   private readonly _revertBtnLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -141,7 +135,7 @@ export class SwapSchemeModalComponent implements OnInit {
           );
         }),
         tap(crossChainStatus => this._srcTxStatus$.next(crossChainStatus.srcTxStatus)),
-        takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === CrossChainTxStatus.PENDING),
+        takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === TxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -150,8 +144,8 @@ export class SwapSchemeModalComponent implements OnInit {
   public initTradeProcessingStatusPolling(): void {
     this.srcTxStatus$
       .pipe(
-        filter(srcTxStatus => srcTxStatus === CrossChainTxStatus.SUCCESS),
-        tap(() => this._tradeProcessingStatus$.next(CrossChainTxStatus.PENDING)),
+        filter(srcTxStatus => srcTxStatus === TxStatus.SUCCESS),
+        tap(() => this._tradeProcessingStatus$.next(TxStatus.PENDING)),
         switchMap(() => {
           return interval(7000).pipe(
             startWith(-1),
@@ -174,19 +168,19 @@ export class SwapSchemeModalComponent implements OnInit {
                       : 10;
 
                   return currentBlockNumber - srcTxReceipt.blockNumber > diff
-                    ? CrossChainTxStatus.SUCCESS
-                    : CrossChainTxStatus.PENDING;
+                    ? TxStatus.SUCCESS
+                    : TxStatus.PENDING;
                 }),
                 catchError((error: unknown) => {
                   console.debug('[General] error getting current block number', error);
-                  return of(CrossChainTxStatus.PENDING);
+                  return of(TxStatus.PENDING);
                 })
               );
             }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
         }),
-        takeWhile(tradeProcessingStatus => tradeProcessingStatus === CrossChainTxStatus.PENDING),
+        takeWhile(tradeProcessingStatus => tradeProcessingStatus === TxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -195,8 +189,8 @@ export class SwapSchemeModalComponent implements OnInit {
   public initDstTxStatusPolling(): void {
     this.tradeProcessingStatus$
       .pipe(
-        filter(tradeProcessingStatus => tradeProcessingStatus === CrossChainTxStatus.SUCCESS),
-        tap(() => this._dstTxStatus$.next(CrossChainTxStatus.PENDING)),
+        filter(tradeProcessingStatus => tradeProcessingStatus === TxStatus.SUCCESS),
+        tap(() => this._dstTxStatus$.next(TxStatus.PENDING)),
         switchMap(() => {
           return interval(10000).pipe(
             startWith(-1),
@@ -221,7 +215,7 @@ export class SwapSchemeModalComponent implements OnInit {
         tap(crossChainStatus => {
           this._dstTxStatus$.next(crossChainStatus.dstTxStatus);
         }),
-        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === CrossChainTxStatus.PENDING),
+        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -254,8 +248,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
       this.recentTradesStoreService.updateTrade({
         ...this.recentTradesStoreService.getSpecificTrade(this.srcTxHash, this.fromBlockchain.key),
-        calculatedStatusFrom: CrossChainTxStatus.SUCCESS,
-        calculatedStatusTo: CrossChainTxStatus.FALLBACK
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
       });
 
       this.context.completeWith(true);
