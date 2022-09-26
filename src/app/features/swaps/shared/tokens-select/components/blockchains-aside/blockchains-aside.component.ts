@@ -11,6 +11,7 @@ import { BlockchainName } from 'rubic-sdk';
 import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { USER_AGENT } from '@ng-web-apis/common';
 import { allBlockchains } from '@features/swaps/shared/tokens-select/constants/all-blockchains';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -54,9 +55,15 @@ export class BlockchainsAsideComponent {
   }
 
   get blockchains(): BlockchainName[] {
+    if (this.queryParamsService.enabledBlockchains) {
+      return BlockchainsAsideComponent.allBlockchains.filter(blockchain => {
+        return this.queryParamsService.enabledBlockchains.includes(blockchain);
+      });
+    }
+
     if (this.allowedBlockchains) {
-      return BlockchainsAsideComponent.allBlockchains.filter(el =>
-        this.allowedBlockchains.includes(el)
+      return BlockchainsAsideComponent.allBlockchains.filter(blockchain =>
+        this.allowedBlockchains.includes(blockchain)
       );
     }
     return BlockchainsAsideComponent.allBlockchains;
@@ -65,7 +72,8 @@ export class BlockchainsAsideComponent {
   constructor(
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
-    @Inject(USER_AGENT) private readonly userAgent: string
+    @Inject(USER_AGENT) private readonly userAgent: string,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {

@@ -14,7 +14,6 @@ import { TuiScrollbarModule } from '@taiga-ui/core';
     IframeWalletsWarningComponent
   ],
   imports: [CommonModule, SharedModule, TuiScrollbarModule],
-  providers: [WalletsModalService],
-  entryComponents: [WalletsModalComponent, IframeWalletsWarningComponent]
+  providers: [WalletsModalService]
 })
 export class WalletsModule {}

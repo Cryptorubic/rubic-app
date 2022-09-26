@@ -38,18 +38,6 @@ import { BitKeepErrorComponent } from './components/bitkeep-error/bitkeep-error.
     UnsupportedTokenCCRComponent,
     RpcErrorComponent
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
-  entryComponents: [
-    UndefinedErrorComponent,
-    NotSupportedNetworkErrorComponent,
-    InsufficientFundsErrorComponent,
-    MetamaskErrorComponent,
-    BitKeepErrorComponent,
-    NetworkErrorComponent,
-    TotalSupplyOverflowErrorComponent,
-    OverQueryLimitErrorComponent,
-    UnknownErrorComponent,
-    InsufficientFundsCcrErrorComponent
-  ]
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule]
 })
 export class ErrorsModule {}
