@@ -157,7 +157,13 @@ export class SwapButtonContainerErrorsService {
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const chainType = BlockchainsInfo.getChainType(this.swapFormService.inputValue.fromBlockchain);
+    const fromToken = this.swapFormService.inputValue.fromToken;
+    if (!fromToken) {
+      this.errorType[ERROR_TYPE.WRONG_WALLET] = false;
+      return;
+    }
+
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
@@ -192,7 +198,6 @@ export class SwapButtonContainerErrorsService {
   private checkSelectedToken(): void {
     this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] =
       isNil(this.swapFormService.inputValue?.fromToken) &&
-      isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
       isNil(this.queryParamsService.currentQueryParams?.from);
   }
 
@@ -200,11 +205,13 @@ export class SwapButtonContainerErrorsService {
    * Checks that user's selected blockchain is equal to from blockchain.
    */
   private checkUserBlockchain(): void {
+    const { fromToken } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
-    if (userBlockchain) {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromBlockchain !== userBlockchain;
-      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(fromBlockchain);
+    if (userBlockchain && fromToken) {
+      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
+      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(
+        fromToken.blockchain
+      );
     } else {
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
     }
