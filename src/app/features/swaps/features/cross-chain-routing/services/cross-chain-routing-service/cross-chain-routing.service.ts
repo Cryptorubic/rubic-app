@@ -29,7 +29,9 @@ import {
   ViaCrossChainTrade,
   CelerCrossChainProvider,
   CrossChainProvider,
-  CrossChainManagerCalculationOptions
+  CrossChainManagerCalculationOptions,
+  MinAmountError,
+  MaxAmountError
 } from 'rubic-sdk';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
@@ -435,6 +437,9 @@ export class CrossChainRoutingService extends TradeService {
       return new RubicError(
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
+    }
+    if (error instanceof MinAmountError || error instanceof MaxAmountError) {
+      return new RubicError(error.message);
     }
     return new RubicError(
       'The swap between this pair of tokens is currently unavailable. Please try again later.'
