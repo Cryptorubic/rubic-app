@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
@@ -9,7 +9,6 @@ import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
-import { filter, share } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
@@ -23,12 +22,10 @@ import {
   CHAIN_TYPE,
   EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName,
-  nativeTokensList,
-  WalletProvider
+  nativeTokensList
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
-import { switchTap } from '@shared/utils/utils';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -63,22 +60,7 @@ export class WalletConnectorService {
 
   public readonly networkChange$ = this.networkChangeSubject$.asObservable();
 
-  public readonly addressChange$ = this.addressChangeSubject$.asObservable().pipe(
-    filter(Boolean),
-    // @todo move to sdk service
-    switchTap(address => {
-      const walletProvider: WalletProvider = {
-        [this.chainType]: {
-          address,
-          // @todo redo
-          core:
-            this.chainType === CHAIN_TYPE.EVM ? this.provider.wallet : this.provider.wallet.tronWeb
-        }
-      };
-      return from(this.sdk.patchConfig({ walletProvider }));
-    }),
-    share()
-  );
+  public readonly addressChange$ = this.addressChangeSubject$.asObservable();
 
   constructor(
     private readonly storeService: StoreService,

@@ -198,7 +198,7 @@ export class SwapSchemeModalComponent implements OnInit {
               from(
                 this.sdk.crossChainStatusManager.getCrossChainStatus(
                   {
-                    fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain, // @todo redo
+                    fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain,
                     toBlockchain: this.toBlockchain.key,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,

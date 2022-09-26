@@ -87,7 +87,7 @@ export class RecentTradesService {
     const { srcTxStatus, dstTxStatus, dstTxHash } =
       await this.sdk.crossChainStatusManager.getCrossChainStatus(
         {
-          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain, // @todo redo,
+          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain,
           toBlockchain: trade.toBlockchain,
           srcTxHash: srcTxHash,
           txTimestamp: trade.timestamp,

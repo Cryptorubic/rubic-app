@@ -11,7 +11,6 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   styleUrls: ['./coinbase-confirm-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-// @todo add margin
 export class CoinbaseConfirmModalComponent {
   public readonly availableBlockchains: BlockchainName[] = [
     BLOCKCHAIN_NAME.ETHEREUM,

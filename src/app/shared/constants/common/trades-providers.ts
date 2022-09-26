@@ -82,7 +82,7 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   },
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',
-    image: `${imageBasePath}biswap.svg`, // @todo update
+    image: `${imageBasePath}bridgers.png`,
     color: ''
   },
 

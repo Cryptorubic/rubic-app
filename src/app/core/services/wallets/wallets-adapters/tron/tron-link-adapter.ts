@@ -45,7 +45,7 @@ export class TronLinkAdapter extends CommonWalletAdapter {
         throw new SignRejectError();
       }
       if (response === '') {
-        throw new RubicError('Please, check you unlocked TronLink.'); // @todo add error
+        throw new RubicError('Please, check you unlocked TronLink.');
       }
       throw new Error(response.message);
     }
