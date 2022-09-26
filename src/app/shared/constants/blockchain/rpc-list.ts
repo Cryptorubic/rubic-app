@@ -54,7 +54,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.TRON]: [
     {
-      fullHost: 'https://api.trongrid.io'
+      fullHost:
+        'https://rpc.ankr.com/premium-http/tron/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
     }
   ]
   /*
