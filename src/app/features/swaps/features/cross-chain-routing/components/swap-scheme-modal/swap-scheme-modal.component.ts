@@ -150,6 +150,7 @@ export class SwapSchemeModalComponent implements OnInit {
           return interval(7000).pipe(
             startWith(-1),
             switchMap(() => {
+              // @todo move function to sdk
               const getTransaction =
                 this.srcWeb3Public instanceof EvmWeb3Public
                   ? this.srcWeb3Public.getTransactionReceipt
