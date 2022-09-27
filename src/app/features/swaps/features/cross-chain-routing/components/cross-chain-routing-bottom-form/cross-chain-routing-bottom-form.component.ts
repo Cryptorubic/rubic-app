@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { from, Observable, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -21,6 +21,7 @@ import {
   map,
   startWith,
   switchMap,
+  take,
   takeUntil,
   tap
 } from 'rxjs/operators';
@@ -156,6 +157,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   ngOnInit() {
     this.setupNormalTradeCalculation();
     this.setupHiddenTradeCalculation();
+    this.setupSelectSubscription();
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
@@ -183,6 +185,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
+
+    this.crossChainRoutingService.dangerousProviders$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
 
     this.authService
       .getCurrentUser()
@@ -275,7 +281,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           if (!allowTrade) {
             return of(null);
           }
-          const { fromAmount } = this.swapFormService.inputValue;
           const isUserAuthorized = Boolean(this.authService.userAddress);
 
           const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(
@@ -297,57 +302,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 hasBestTrade: Boolean(trade)
               };
             }),
-            map(providerTrade => {
-              this.crossChainProviderTrade = providerTrade;
-              const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
-                providerTrade;
-              if (currentProviders === 0) {
-                return;
-              }
-              if (
-                error !== undefined &&
-                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
-                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
-                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
-                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
-              ) {
-                this.onCalculateTrade$.next('normal');
-                return;
-              }
-
-              this.minError =
-                error instanceof CrossChainMinAmountError
-                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
-                  : false;
-              this.maxError =
-                error instanceof CrossChainMaxAmountError
-                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
-                  : false;
-              this.errorText = '';
-
-              this.needApprove = needApprove;
-              this.withApproveButton = this.needApprove;
-
-              if (trade?.to?.tokenAmount) {
-                this.toAmount = trade?.to?.tokenAmount;
-                this.crossChainRoutingService.crossChainTrade = trade;
-                this.swapFormService.output.patchValue({
-                  toAmount: trade?.to.tokenAmount
-                });
-                this.smartRouting = smartRouting;
-                this.hiddenTradeData = null;
-
-                if (this.minError || this.maxError || this.toAmount?.lte(0)) {
-                  this.tradeStatus = TRADE_STATUS.DISABLED;
-                } else {
-                  this.tradeStatus = this.needApprove
-                    ? TRADE_STATUS.READY_TO_APPROVE
-                    : TRADE_STATUS.READY_TO_SWAP;
-                }
-              } else if (currentProviders === totalProviders) {
-                throw error;
-              }
-            }),
+            map(providerTrade => this.selectProvider(providerTrade)),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicSdkError | undefined) => this.onCalculateError(err))
           );
@@ -361,6 +316,61 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  public selectProvider(providerTrade: CrossChainProviderTrade): void {
+    const { fromAmount } = this.swapFormService.inputValue;
+    this.crossChainProviderTrade = providerTrade;
+
+    const { trade, error, needApprove, totalProviders, currentProviders, smartRouting } =
+      providerTrade;
+    if (currentProviders === 0) {
+      return;
+    }
+    if (
+      error !== undefined &&
+      trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
+      trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
+        (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+    ) {
+      this.onCalculateTrade$.next('normal');
+      return;
+    }
+
+    this.minError =
+      error instanceof CrossChainMinAmountError
+        ? { amount: error.minAmount, symbol: error.tokenSymbol }
+        : false;
+    this.maxError =
+      error instanceof CrossChainMaxAmountError
+        ? { amount: error.maxAmount, symbol: error.tokenSymbol }
+        : false;
+    this.errorText = '';
+
+    this.needApprove = needApprove;
+    this.withApproveButton = this.needApprove;
+
+    if (trade?.to?.tokenAmount) {
+      this.toAmount = trade?.to?.tokenAmount;
+      this.crossChainRoutingService.crossChainTrade = trade;
+      this.swapFormService.output.patchValue({
+        toAmount: trade?.to.tokenAmount
+      });
+      this.smartRouting = smartRouting;
+      this.hiddenTradeData = null;
+
+      if (this.minError || this.maxError || this.toAmount?.lte(0)) {
+        this.tradeStatus = TRADE_STATUS.DISABLED;
+      } else {
+        this.tradeStatus = this.needApprove
+          ? TRADE_STATUS.READY_TO_APPROVE
+          : TRADE_STATUS.READY_TO_SWAP;
+      }
+    } else if (currentProviders === totalProviders) {
+      throw error;
+    }
+    this.cdr.detectChanges();
   }
 
   public setupHiddenTradeCalculation(): void {
@@ -500,6 +510,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.cdr.detectChanges();
       });
+      this.crossChainRoutingService.unmarkProviderAsDangerous(
+        this.crossChainProviderTrade.tradeType
+      );
 
       this.conditionalCalculate('hidden');
 
@@ -515,6 +528,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
         return;
       }
+
+      this.crossChainRoutingService.markProviderAsDangerous(this.crossChainProviderTrade.tradeType);
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
@@ -538,5 +553,33 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       })
       .subscribe();
     return false;
+  }
+
+  private setupSelectSubscription(): void {
+    this.crossChainRoutingService.selectedProvider$
+      .pipe(
+        filter(provider => provider !== null),
+        switchMap(type => {
+          return forkJoin([of(type), this.crossChainRoutingService.allProviders$.pipe(take(1))]);
+        }),
+        switchMap(([type, allProviders]) => {
+          const selectedProvider = allProviders.data.find(provider => provider.tradeType === type);
+
+          return forkJoin([
+            of(selectedProvider),
+            from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider))
+          ]);
+        })
+      )
+      .subscribe(([selectedProvider, smartRouting]) => {
+        const provider: CrossChainProviderTrade = {
+          ...selectedProvider,
+          needApprove: false,
+          totalProviders: this.crossChainProviderTrade.totalProviders,
+          currentProviders: this.crossChainProviderTrade.currentProviders,
+          smartRouting
+        };
+        this.selectProvider(provider);
+      });
   }
 }

@@ -1,0 +1,26 @@
+<!--[class.provider-panel_loading]="providerPanelData.loading-->
+
+<!--[class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"-->
+<div class="provider-panel">
+  <div class="provider-panel__row">
+    <app-providers-counter
+      *noFrame
+      [calculatedProvider]="calculatedProvider"
+    ></app-providers-counter>
+
+    <ng-container *ngLet="calculatedProviders$ | async as providers">
+      <button *ngIf="providers > 1" class="toggler" (click)="showProvidersList()">
+        {{ providers - 1 + (providers === 2 ? ' More trade' : ' More trades') }}
+        <img
+          class="provider-panel__arrow"
+          src="assets/images/swaps/icons/show-more-arrow.svg"
+          alt="arrow"
+        />
+      </button>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="smartRouting">
+    <app-smart-routing *noFrame [smartRouting]="smartRouting"></app-smart-routing>
+  </ng-container>
+</div>

@@ -5,6 +5,8 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  CrossChainManager,
+  CrossChainTradeType,
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
@@ -32,7 +34,7 @@ import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-rout
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SwapManagerCrossChainCalculationOptions } from 'rubic-sdk/lib/features/cross-chain/models/swap-manager-cross-chain-options';
 import { CrossChainOptions } from 'rubic-sdk/lib/features/cross-chain/models/cross-chain-options';
-import { from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -49,7 +51,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { filter, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
@@ -63,6 +65,13 @@ import {
 } from 'rubic-sdk/lib/features';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { WrappedTradeOrNull } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-trade-or-null';
+import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
+
+export type AllProviders = {
+  readonly totalAmount: number;
+  readonly data: ReadonlyArray<WrappedTradeOrNull & { rank: number }>;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +92,20 @@ export class CrossChainRoutingService extends TradeService {
     );
   }
 
+  private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
+
+  public setSelectedProvider(type: CrossChainTradeType): void {
+    this._selectedProvider$.next(type);
+  }
+
+  public readonly selectedProvider$ = this._selectedProvider$.asObservable();
+
+  private readonly _allProviders$ = new BehaviorSubject<AllProviders>({ totalAmount: 0, data: [] });
+
+  public readonly allProviders$ = this._allProviders$
+    .asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => prev.data.length === curr.data.length));
+
   private readonly defaultTimeout = 25_000;
 
   private _crossChainTrade: CrossChainTrade;
@@ -94,6 +117,10 @@ export class CrossChainRoutingService extends TradeService {
   public get crossChainTrade(): CrossChainTrade {
     return this._crossChainTrade;
   }
+
+  private readonly _dangerousProviders$ = new BehaviorSubject<CrossChainTradeType[]>([]);
+
+  public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
   constructor(
     private readonly sdk: RubicSdkService,
@@ -108,9 +135,19 @@ export class CrossChainRoutingService extends TradeService {
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly providersListSortingService: ProvidersListSortingService
   ) {
     super('cross-chain-routing');
+  }
+
+  public markProviderAsDangerous(type: CrossChainTradeType): void {
+    this._dangerousProviders$.next([...this._dangerousProviders$.value, type]);
+  }
+
+  public unmarkProviderAsDangerous(type: CrossChainTradeType): void {
+    const providers = this._dangerousProviders$.value.filter(providerType => providerType !== type);
+    this._dangerousProviders$.next(providers);
   }
 
   public isSupportedBlockchains(
@@ -141,23 +178,55 @@ export class CrossChainRoutingService extends TradeService {
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
+          switchMap(tradeData =>
+            forkJoin([
+              of(tradeData),
+              this.providersListSortingService.currentSortingType$.pipe(first())
+            ])
+          ),
+          tap(([tradeData, sortingType]) => {
+            let sortedProviders: WrappedCrossChainTrade[];
+            if (sortingType === 'smart') {
+              sortedProviders = [...tradeData.data]
+                .filter(provider => Boolean(provider.trade))
+                .sort((a, b) => {
+                  const bestProvider = CrossChainManager.chooseBestProvider(a, b);
+                  return a.tradeType === bestProvider.tradeType ? -1 : 1;
+                });
+            } else {
+              sortedProviders = [...tradeData.data]
+                .filter(provider => Boolean(provider.trade))
+                .sort((a, b) => b.trade.to.tokenAmount.comparedTo(a.trade.to.tokenAmount));
+            }
+            const rankedProviders = sortedProviders.map(provider => ({
+              ...provider,
+              rank: this._dangerousProviders$.value.includes(provider.tradeType) ? 0 : 1
+            }));
+
+            this._allProviders$.next({
+              totalAmount: tradeData.total,
+              data: rankedProviders
+            });
+          }),
+          map(([tradeData]) => tradeData),
           filter(tradeData => {
-            return (
-              tradeData.totalProviders === tradeData.calculatedProviders ||
-              tradeData.calculatedProviders === 0
-            );
+            return tradeData.total === tradeData.calculated || tradeData.calculated === 0;
           }),
           switchMap(tradeData => {
-            const bestProvider = tradeData.bestProvider;
+            const bestProvider = this._selectedProvider$.value
+              ? tradeData.data.find(
+                  provider => provider.tradeType === this._selectedProvider$.value
+                )
+              : this._allProviders$.value.data[0];
             const trade = bestProvider?.trade;
             const error = bestProvider?.error;
 
             if (!trade && error) {
               return of({
-                ...tradeData.bestProvider,
+                ...bestProvider,
                 needApprove: false,
-                totalProviders: tradeData.totalProviders,
-                currentProviders: tradeData.calculatedProviders,
+                totalProviders: tradeData.total,
+                currentProviders: tradeData.calculated,
                 smartRouting: null
               });
             }
@@ -166,12 +235,12 @@ export class CrossChainRoutingService extends TradeService {
               userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
             ).pipe(
               switchMap(async needApprove => {
-                const smartRouting = await this.calculateSmartRouting(tradeData.bestProvider);
+                const smartRouting = await this.calculateSmartRouting(bestProvider);
                 return {
-                  ...tradeData.bestProvider,
+                  ...bestProvider,
                   needApprove,
-                  totalProviders: tradeData.totalProviders,
-                  currentProviders: tradeData.calculatedProviders,
+                  totalProviders: tradeData.total,
+                  currentProviders: tradeData.calculated,
                   smartRouting
                 };
               })
@@ -329,7 +398,7 @@ export class CrossChainRoutingService extends TradeService {
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 
-  private async calculateSmartRouting(
+  public async calculateSmartRouting(
     wrappedTrade: WrappedCrossChainTrade
   ): Promise<SmartRouting | null> {
     if (!wrappedTrade?.trade) {
@@ -389,9 +458,15 @@ export class CrossChainRoutingService extends TradeService {
       })
     };
 
+    const oldProvider = this._selectedProvider$.value;
+
     try {
+      this._selectedProvider$.next(wrappedTrade.tradeType);
       await wrappedTrade.trade.approve(swapOptions);
       this.notificationsService.showApproveSuccessful();
+    } catch (err) {
+      this._selectedProvider$.next(oldProvider);
+      throw err;
     } finally {
       approveInProgressSubscription$?.unsubscribe();
     }

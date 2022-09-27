@@ -22,6 +22,7 @@ import { TokensListElementComponent } from '@features/swaps/shared/tokens-select
 import { SharedModule } from '@shared/shared.module';
 import { CustomTokenComponent } from '@features/swaps/shared/tokens-select/components/custom-token/custom-token.component';
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/tokens-select/components/custom-token-warning-modal/custom-token-warning-modal.component';
+import { TuiAutoFocusModule } from '@taiga-ui/cdk';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { CustomTokenWarningModalComponent } from '@features/swaps/shared/tokens-
     TuiHintModule,
     TuiManualHintModule,
     TuiLoaderModule,
-    InlineSVGModule
+    InlineSVGModule,
+    TuiAutoFocusModule
   ],
   providers: [TokensSelectService],
   entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
