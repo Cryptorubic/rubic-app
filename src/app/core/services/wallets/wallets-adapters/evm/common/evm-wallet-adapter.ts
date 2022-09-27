@@ -1,7 +1,7 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from 'rubic-sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { fromEvent } from 'rxjs';
 
 export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter<T> {
@@ -40,7 +40,7 @@ export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter
     });
   }
 
-  public async addChain(params: AddEthChainParams): Promise<void | never> {
+  public async addChain(params: AddEvmChainParams): Promise<void | never> {
     return (this.wallet as RubicAny).request({
       method: 'wallet_addEthereumChain',
       params: [params]

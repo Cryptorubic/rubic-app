@@ -1,7 +1,7 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
-import { AddEthChainParams } from '@core/services/wallets/models/add-eth-chain-params';
+import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
@@ -192,7 +192,7 @@ export class WalletConnectorService {
       rpcUrl = rpcList[evmBlockchainName][0];
     }
 
-    const params: AddEthChainParams = {
+    const params: AddEvmChainParams = {
       chainId: `0x${chainId.toString(16)}`,
       chainName,
       nativeCurrency: {

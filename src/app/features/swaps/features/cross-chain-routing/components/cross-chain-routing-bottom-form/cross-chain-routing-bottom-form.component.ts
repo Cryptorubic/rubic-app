@@ -226,12 +226,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.conditionalCalculate('normal'));
 
-    combineLatest([
-      this.targetNetworkAddressService.address$,
-      this.displayTargetAddressInput$
-    ]).subscribe(() => {
-      this.conditionalCalculate('normal');
-    });
+    combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.conditionalCalculate('normal');
+      });
   }
 
   private setFormValues(form: SwapFormInput): void {

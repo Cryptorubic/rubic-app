@@ -1,4 +1,4 @@
-export interface AddEthChainParams {
+export interface AddEvmChainParams {
   chainId: string;
   chainName: string;
   nativeCurrency: {

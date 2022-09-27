@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, Web3Pure } from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -24,7 +24,6 @@ import { isSupportedLanguage } from '@shared/models/languages/supported-language
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-pure/evm-web3-pure';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 const DEFAULT_PARAMETERS = {
@@ -267,7 +266,8 @@ export class QueryParamsService {
       return of(null);
     }
 
-    return EvmWeb3Pure.isAddressCorrect(token)
+    const chainType = BlockchainsInfo.getChainType(chain);
+    return Web3Pure[chainType].isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }

@@ -13,7 +13,6 @@ import {
   BlockchainName,
   CHAIN_TYPE,
   EvmBlockchainName,
-  EvmWeb3Pure,
   Injector,
   SwapTransactionOptions,
   Token,
@@ -24,7 +23,8 @@ import {
   OnChainTrade,
   OnChainTradeError,
   TxStatus,
-  EncodeTransactionOptions
+  EncodeTransactionOptions,
+  BlockchainsInfo
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -79,7 +79,8 @@ export class InstantTradeService extends TradeService {
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
     if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-      if (EvmWeb3Pure.isNativeAddress(trade.from.address)) {
+      const chainType = BlockchainsInfo.getChainType(trade.from.blockchain);
+      if (Web3Pure[chainType].isNativeAddress(trade.from.address)) {
         return false;
       }
 
@@ -232,26 +233,11 @@ export class InstantTradeService extends TradeService {
       const userAddress = this.authService.userAddress;
       if (trade instanceof OnChainTrade) {
         await this.checkFeeAndCreateTrade(providerName, trade, options);
-        // options.onConfirm('123');
       } else {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
 
-      if (!(trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON)) {
-        subscription$.unsubscribe();
-        this.showSuccessTrxNotification();
-        this.updateTrade(transactionHash, true);
-
-        await this.instantTradesApiService
-          .notifyInstantTradesBot({
-            provider: providerName,
-            blockchain,
-            walletAddress: userAddress,
-            trade,
-            txHash: transactionHash
-          })
-          .catch(_err => {});
-      } else {
+      if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         await firstValueFrom(
           interval(10_000).pipe(
             switchMap(async () => {
@@ -265,6 +251,20 @@ export class InstantTradeService extends TradeService {
         );
         subscription$.unsubscribe();
         this.showSuccessTrxNotification();
+      } else {
+        subscription$.unsubscribe();
+        this.showSuccessTrxNotification();
+        this.updateTrade(transactionHash, true);
+
+        await this.instantTradesApiService
+          .notifyInstantTradesBot({
+            provider: providerName,
+            blockchain,
+            walletAddress: userAddress,
+            trade,
+            txHash: transactionHash
+          })
+          .catch(_err => {});
       }
     } catch (err) {
       subscription$?.unsubscribe();
