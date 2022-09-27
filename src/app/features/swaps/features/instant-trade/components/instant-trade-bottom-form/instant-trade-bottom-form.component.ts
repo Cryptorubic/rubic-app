@@ -298,18 +298,23 @@ export class InstantTradeBottomFormComponent implements OnInit {
       form.fromBlockchain === form.toBlockchain
     ) {
       this.currentBlockchain = form.fromBlockchain;
-      this.initiateProviders(this.currentBlockchain);
+      const isSuccessful = this.initiateProviders(this.currentBlockchain);
+      if (!isSuccessful) {
+        return;
+      }
     }
 
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BlockchainName): void {
+  private initiateProviders(blockchain: BlockchainName): boolean {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+      this.providersData = [];
       this.errorService.catch(new NotSupportedItNetwork());
-      return;
+      return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];
+    return true;
   }
 
   /**

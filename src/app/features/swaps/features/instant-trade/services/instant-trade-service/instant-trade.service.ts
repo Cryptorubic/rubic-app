@@ -48,7 +48,7 @@ import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
-  private static readonly unsupportedItNetworks: BlockchainName[] = [];
+  private static readonly unsupportedItNetworks: BlockchainName[] = [BLOCKCHAIN_NAME.TRON];
 
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
