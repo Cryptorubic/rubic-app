@@ -54,7 +54,7 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 
 type CalculateTradeType = 'normal' | 'hidden';
@@ -561,14 +561,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private isSlippageCorrect(): boolean {
     if (
       !this.crossChainProviderTrade ||
-      this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA ||
-      this.settingsService.crossChainRoutingValue.autoSlippageTolerance
+      this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
+      (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
     ) {
       return true;
     }
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(ViaSlippageWarningModalComponent, this.injector), {
+      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
         size
       })
       .subscribe();

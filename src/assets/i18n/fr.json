@@ -595,7 +595,7 @@
       "swapMyself": "J'échange les jetons moi même"
     },
     "warningModal": {
-      "viaSlippage": "Malheureusement, le glissement personnalisé n'est pas autorisé pour cet échange. Veuillez activer le paramètre de tolérance de glissement automatique dans les paramètres."
+      "autoSlippage": "Malheureusement, le glissement personnalisé n'est pas autorisé pour cet échange. Veuillez activer le paramètre de tolérance de glissement automatique dans les paramètres."
     }
   },
   "settings": {

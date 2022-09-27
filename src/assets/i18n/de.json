@@ -490,7 +490,7 @@
       "swapMyself": "Ich kümmere mich selbst um den Swap"
     },
     "warningModal": {
-      "viaSlippage": "Leider ist benutzerdefinierte Slippage für diesen Swap nicht zulässig. Bitte aktivieren Sie die Auto-Slippage-Toleranzeinstellung in den Einstellungen."
+      "autoSlippage": "Leider ist benutzerdefinierte Slippage für diesen Swap nicht zulässig. Bitte aktivieren Sie die Auto-Slippage-Toleranzeinstellung in den Einstellungen."
     }
   },
   "settings": {

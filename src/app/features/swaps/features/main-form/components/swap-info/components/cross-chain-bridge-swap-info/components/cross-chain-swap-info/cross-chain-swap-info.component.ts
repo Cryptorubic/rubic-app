@@ -82,6 +82,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public symbiosisOrLifiCryptoFeeSymbol: string;
 
+  public isBridgers: boolean;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
@@ -167,6 +169,11 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   nativeCoinPrice
                 );
               }
+
+              this.isBridgers =
+                trade instanceof EvmBridgersCrossChainTrade ||
+                trade instanceof TronBridgersCrossChainTrade;
+
               this.swapInfoService.emitInfoCalculated();
             })
           );
