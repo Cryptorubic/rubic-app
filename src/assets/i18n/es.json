@@ -491,7 +491,7 @@
       "swapMyself": "Intercabio por mi cuenta"
     },
     "warningModal": {
-      "viaSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
+      "autoSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
     }
   },
   "settings": {

@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
-import { BlockchainName, TradeType } from 'rubic-sdk';
+import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -123,7 +123,7 @@ export class IframeService implements OnDestroy {
     );
   }
 
-  public isIframeWithFee(blockchain: BlockchainName, providerType: TradeType): boolean {
+  public isIframeWithFee(blockchain: BlockchainName, providerType: OnChainTradeType): boolean {
     if (!this.isIframe || !this.iframeParameters.fee) {
       return false;
     }

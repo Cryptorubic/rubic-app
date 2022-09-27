@@ -1,26 +1,23 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-import { BlockchainData } from '@app/shared/models/blockchain/blockchain-data';
+import { BLOCKCHAIN_NAME, Web3Pure, Injector } from 'rubic-sdk';
 import {
-  switchMap,
-  startWith,
-  filter,
-  tap,
   BehaviorSubject,
+  catchError,
+  combineLatest,
+  filter,
+  forkJoin,
   from,
   map,
   Observable,
-  forkJoin,
   of,
-  catchError,
   Subject,
-  combineLatest,
+  switchMap,
   takeUntil,
+  tap,
   timer
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
@@ -40,6 +37,7 @@ import {
   WEEKS_IN_YEAR
 } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 const STAKING_END_TIMESTAMP = 1691020800000; // Thu Aug 03 2023 03:00:00 GMT+03
 
@@ -57,7 +55,7 @@ export class StakingService {
     (STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH
   );
 
-  public readonly user$ = this.authService.getCurrentUser();
+  public readonly user$ = this.authService.currentUser$;
 
   private readonly _rbcTokenBalance$ = new BehaviorSubject<BigNumber>(null);
 
@@ -79,14 +77,13 @@ export class StakingService {
     return this.authService.userAddress;
   }
 
-  public readonly needLogin$ = this.authService
-    .getCurrentUser()
-    .pipe(map(user => !Boolean(user?.address)));
+  public readonly needLogin$ = this.authService.currentUser$.pipe(
+    map(user => !Boolean(user?.address))
+  );
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
-    startWith(this.walletConnectorService.network),
-    filter<BlockchainData>(Boolean),
-    map(network => network?.name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+    filter(Boolean),
+    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
   );
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(
@@ -202,11 +199,9 @@ export class StakingService {
 
   public async approveRbc(): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3Private.approveTokens(
-        this.RBC_TOKEN_ADDRESS,
-        this.NFT_CONTRACT_ADDRESS,
-        'infinity'
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .approveTokens(this.RBC_TOKEN_ADDRESS, this.NFT_CONTRACT_ADDRESS, 'infinity');
 
       if (receipt && receipt.status) {
         this.stakingNotificationService.showSuccessApproveNotification();
@@ -222,25 +217,27 @@ export class StakingService {
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    return Injector.web3Private.tryExecuteContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
-      'create_lock',
-      [Web3Pure.toWei(amount, 18), String(durationInSeconds)]
-    );
+    return Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'create_lock', [
+        Web3Pure.toWei(amount, 18),
+        String(durationInSeconds)
+      ]);
   }
 
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3Private.tryExecuteContractMethod(
-        this.REWARDS_CONTRACT_ADDRESS,
-        REWARDS_CONTRACT_ABI,
-        'claimReward',
-        [
-          deposit.id,
-          deposit.rewardIntervals.map(interval => [interval.startEpoch, interval.endEpoch])
-        ]
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .tryExecuteContractMethod(
+          this.REWARDS_CONTRACT_ADDRESS,
+          REWARDS_CONTRACT_ABI,
+          'claimReward',
+          [
+            deposit.id,
+            deposit.rewardIntervals.map(interval => [interval.startEpoch, interval.endEpoch])
+          ]
+        );
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
@@ -269,12 +266,11 @@ export class StakingService {
 
   public async withdraw(deposit: Deposit): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3Private.tryExecuteContractMethod(
-        this.NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
-        'withdraw',
-        [deposit.id]
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'withdraw', [
+          deposit.id
+        ]);
       if (receipt.status) {
         this.stakingNotificationService.showSuccessWithdrawNotification();
         const updatedDeposits = this.deposits.filter(item => item.id !== deposit.id);
@@ -364,7 +360,7 @@ export class StakingService {
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
       'viewTokensByOwner',
-      { methodArguments: [walletAddress] }
+      [walletAddress]
     );
   }
 
@@ -372,7 +368,7 @@ export class StakingService {
     const { amount, end } = await this.web3Public.callContractMethod<{
       amount: string;
       end: string;
-    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'locked', { methodArguments: [nftId] });
+    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'locked', [nftId]);
     return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000 };
   }
 
@@ -389,9 +385,7 @@ export class StakingService {
         this.REWARDS_CONTRACT_ADDRESS,
         REWARDS_CONTRACT_ABI,
         'pendingReward',
-        {
-          methodArguments: [nftId, 0, currentEpoch]
-        }
+        [nftId, 0, currentEpoch]
       );
       const totalNftRewards = rewardIntervals
         .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
@@ -414,7 +408,7 @@ export class StakingService {
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
       'balanceOfNFT',
-      { methodArguments: [nftId] }
+      [nftId]
     );
   }
 

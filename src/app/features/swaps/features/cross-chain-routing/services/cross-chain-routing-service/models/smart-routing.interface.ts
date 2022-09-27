@@ -1,7 +1,7 @@
-import { BridgeType, CrossChainTradeType, TradeType } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType, OnChainTradeType } from 'rubic-sdk';
 
 export interface SmartRouting {
-  fromProvider: TradeType | undefined;
-  toProvider: TradeType | undefined;
+  fromProvider: OnChainTradeType | undefined;
+  toProvider: OnChainTradeType | undefined;
   bridgeProvider: Exclude<CrossChainTradeType, 'LIFI' | 'VIA' | 'RANGO'> | BridgeType;
 }

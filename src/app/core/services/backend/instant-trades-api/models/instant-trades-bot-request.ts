@@ -1,4 +1,4 @@
-import { BlockchainName, TradeType } from 'rubic-sdk';
+import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
 
 export interface InstantTradeBotRequest {
   txHash: string;
@@ -9,5 +9,5 @@ export interface InstantTradeBotRequest {
   toSymbol: string;
   blockchain: BlockchainName;
   price: number;
-  provider: TradeType;
+  provider: OnChainTradeType;
 }

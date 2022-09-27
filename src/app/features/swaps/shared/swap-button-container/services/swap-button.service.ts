@@ -73,7 +73,8 @@ export class SwapButtonService {
         tradeStatus !== TRADE_STATUS.DISABLED &&
         ((PRICE_IMPACT_RANGE.MEDIUM <= priceImpact && priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
           (priceImpact === null &&
-            this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM_POW))
+            this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM_POW &&
+            this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.TRON))
     )
   );
 

@@ -12,7 +12,7 @@ import { TradePanelData } from '@features/swaps/features/instant-trade/component
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
-import { InstantTrade } from 'rubic-sdk';
+import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-provider-panel',
@@ -57,13 +57,20 @@ export class ProviderPanelComponent implements OnInit {
     }
   }
 
-  private setupTradePanelData(trade: InstantTrade): void {
+  private setupTradePanelData(trade: OnChainTrade): void {
+    const gas =
+      trade instanceof EvmOnChainTrade
+        ? {
+            gasLimit: trade.gasFeeInfo?.gasLimit.toFixed(),
+            gasFeeInUsd: trade.gasFeeInfo?.gasFeeInUsd,
+            gasFeeInEth: trade.gasFeeInfo?.gasFeeInEth
+          }
+        : {};
+
     this.tradePanelData = {
       blockchain: trade.from.blockchain,
       amount: trade.to.tokenAmount,
-      gasLimit: trade.gasFeeInfo?.gasLimit.toFixed(),
-      gasFeeInUsd: trade.gasFeeInfo?.gasFeeInUsd,
-      gasFeeInEth: trade.gasFeeInfo?.gasFeeInEth
+      ...gas
     };
   }
 

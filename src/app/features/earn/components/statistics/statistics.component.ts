@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { StatisticsService } from '../../services/statistics.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BehaviorSubject, skip } from 'rxjs';
 
 @Component({

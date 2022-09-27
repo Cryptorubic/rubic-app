@@ -3,8 +3,11 @@ import { RubicSdkService } from '@app/features/swaps/core/services/rubic-sdk-ser
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletProvider } from 'rubic-sdk';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { filter } from 'rxjs/operators';
+import { switchTap } from '@shared/utils/utils';
+import { CHAIN_TYPE, WalletProvider } from 'rubic-sdk';
+import { from } from 'rxjs';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,28 +22,35 @@ export class SdkLoaderService {
   ) {}
 
   public async initSdk(): Promise<void> {
-    await this.loadUser();
+    this.subscribeOnAddressChange();
+
     await this.sdkService.initSDK();
-    await this.updateSdkUser();
+    await this.loadUser();
   }
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
     if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch {}
+      await this.authService.loadStorageUser();
     }
   }
 
-  private async updateSdkUser(): Promise<void> {
-    if (this.authService.user) {
-      const walletProvider: WalletProvider = {
-        address: this.authService.user.address,
-        core: this.walletConnectorService.provider.wallet
-      };
-      await this.sdkService.patchConfig({ walletProvider });
-    }
+  private subscribeOnAddressChange(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        filter(Boolean),
+        switchTap(address => {
+          const chainType = this.walletConnectorService.chainType;
+          const provider = this.walletConnectorService.provider;
+          const walletProvider: WalletProvider = {
+            [chainType]: {
+              address,
+              core: chainType === CHAIN_TYPE.EVM ? provider.wallet : provider.wallet.tronWeb
+            }
+          };
+          return from(this.sdkService.patchConfig({ walletProvider }));
+        })
+      )
+      .subscribe();
   }
 }

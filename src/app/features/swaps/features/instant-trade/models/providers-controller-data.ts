@@ -1,11 +1,11 @@
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { InstantTrade, TradeType } from 'rubic-sdk';
+import { OnChainTrade, OnChainTradeType } from 'rubic-sdk';
 
 export interface InstantTradeProviderData {
-  readonly name: TradeType;
-  trade: InstantTrade | null;
+  readonly name: OnChainTradeType;
+  trade: OnChainTrade | null;
   tradeStatus: INSTANT_TRADE_STATUS;
   needApprove: boolean;
   error?: RubicError<ERROR_TYPE>;

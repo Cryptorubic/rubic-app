@@ -18,7 +18,7 @@ export interface Network<T = BlockchainName> {
   name: T;
   label: string;
   scannerUrl: string;
-  rpcList: string[];
+  rpcList: unknown[];
   imagePath: string;
   nativeCoin: NativeCoin;
 }
@@ -67,7 +67,6 @@ const networks: ReadonlyArray<Network> = [
     scannerUrl: 'https://polygonscan.com',
     rpcList: [
       'https://rpc.ankr.com/polygon/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
-
       'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
     ],
     imagePath: 'assets/images/icons/coins/polygon.svg',
@@ -120,7 +119,6 @@ const networks: ReadonlyArray<Network> = [
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcList: [
       'https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f',
-
       'https://rpc.moonriver.moonbeam.network'
     ],
     imagePath: 'assets/images/icons/coins/moonriver.webp',
@@ -157,7 +155,6 @@ const networks: ReadonlyArray<Network> = [
     scannerUrl: 'https://arbiscan.io',
     rpcList: [
       'https://late-white-sky.arbitrum-mainnet.quiknode.pro/84da6c33a092bf64d9d72bc52c5db62aac00c81c/',
-
       'https://arb1.arbitrum.io/rpc'
     ],
     imagePath: 'assets/images/icons/coins/arbitrum.svg',
@@ -191,7 +188,6 @@ const networks: ReadonlyArray<Network> = [
     scannerUrl: 'https://explorer.solana.com',
     rpcList: [
       'https://green-hidden-shape.solana-mainnet.quiknode.pro/',
-
       'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
     ],
     imagePath: 'assets/images/icons/coins/solana.svg',
@@ -404,6 +400,40 @@ const networks: ReadonlyArray<Network> = [
       name: 'Ethereum PoW',
       symbol: 'ETHW',
       decimals: 18
+    }
+  },
+  {
+    id: 10001,
+    name: BLOCKCHAIN_NAME.ETHEREUM_POW,
+    label: 'Eth PoW',
+    scannerUrl: 'https://www.oklink.com/en/ethw/',
+    rpcList: ['https://mainnet.ethereumpow.org/'],
+    imagePath: 'assets/images/icons/coins/eth-pow.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Ethereum PoW',
+      symbol: 'ETHW',
+      decimals: 18
+    }
+  },
+  {
+    id: 195,
+    name: BLOCKCHAIN_NAME.TRON,
+    label: 'Tron',
+    scannerUrl: 'https://tronscan.org/#/',
+    rpcList: [
+      {
+        fullHost: 'https://api.trongrid.io'
+      }
+    ],
+    imagePath: 'assets/images/icons/coins/tron.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.TRON,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'TRON',
+      symbol: 'TRON',
+      decimals: 6
     }
   }
 ];
