@@ -22,10 +22,10 @@ export class SdkLoaderService {
   ) {}
 
   public async initSdk(): Promise<void> {
+    this.subscribeOnAddressChange();
+
     await this.sdkService.initSDK();
     await this.loadUser();
-
-    this.subscribeOnAddressChange();
   }
 
   private async loadUser(): Promise<void> {
@@ -36,19 +36,21 @@ export class SdkLoaderService {
   }
 
   private subscribeOnAddressChange(): void {
-    this.walletConnectorService.addressChange$.pipe(
-      filter(Boolean),
-      switchTap(address => {
-        const chainType = this.walletConnectorService.chainType;
-        const provider = this.walletConnectorService.provider;
-        const walletProvider: WalletProvider = {
-          [chainType]: {
-            address,
-            core: chainType === CHAIN_TYPE.EVM ? provider.wallet : provider.wallet.tronWeb
-          }
-        };
-        return from(this.sdkService.patchConfig({ walletProvider }));
-      })
-    );
+    this.walletConnectorService.addressChange$
+      .pipe(
+        filter(Boolean),
+        switchTap(address => {
+          const chainType = this.walletConnectorService.chainType;
+          const provider = this.walletConnectorService.provider;
+          const walletProvider: WalletProvider = {
+            [chainType]: {
+              address,
+              core: chainType === CHAIN_TYPE.EVM ? provider.wallet : provider.wallet.tronWeb
+            }
+          };
+          return from(this.sdkService.patchConfig({ walletProvider }));
+        })
+      )
+      .subscribe();
   }
 }
