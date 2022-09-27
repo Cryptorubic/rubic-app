@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { InstantTrade } from 'rubic-sdk';
+import { OnChainTrade } from 'rubic-sdk';
 
 export interface TradeAndToAmount {
-  trade: InstantTrade | null;
+  trade: OnChainTrade | null;
   toAmount: BigNumber;
 }
 

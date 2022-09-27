@@ -48,7 +48,7 @@ export class SwapsHeaderComponent {
 
   public toBlockchainItem: Network;
 
-  public tradeType: string;
+  public OnChainTradeType: string;
 
   constructor(private readonly swapsService: SwapsService) {
     const ethBlockchain = networks.find(el => el.name === BLOCKCHAIN_NAME.ETHEREUM);

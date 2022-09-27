@@ -12,7 +12,6 @@
   }
 
   &__title {
-    max-width: 65%;
     margin: 30px auto 40px;
 
     font-size: 25px;
@@ -20,16 +19,26 @@
   }
 
   &__footer-text {
-    margin-bottom: 18px;
+    line-height: 1.3;
+
+    &_warning {
+      color: #d6bd27;
+    }
   }
 
   &__footer-link {
     display: inline-block;
-    margin-bottom: 18px;
 
     font-size: 17px;
+    line-height: 1.3;
 
     cursor: pointer;
+  }
+
+  app-rubic-button {
+    display: block;
+
+    margin-top: 25px;
   }
 
   /* stylelint-disable */

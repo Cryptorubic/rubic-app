@@ -15,11 +15,17 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { BlockchainName, Web3Pure } from 'rubic-sdk';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import {
+  BlockchainName,
+  Web3Pure,
+  Injector,
+  EvmBlockchainName,
+  Token as SdkToken,
+  BlockchainsInfo,
+  Web3PublicService
+} from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
 /**
@@ -101,8 +107,7 @@ export class TokensService {
     private readonly authService: AuthService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly errorsService: ErrorsService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly sdk: RubicSdkService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.setupSubscriptions();
   }
@@ -125,7 +130,7 @@ export class TokensService {
       )
       .subscribe();
 
-    this.authService.getCurrentUser().subscribe(async user => {
+    this.authService.currentUser$.subscribe(async user => {
       this.userAddress = user?.address;
       await this.calculateTokensBalancesByType('default');
       if (this.userAddress) {
@@ -226,7 +231,9 @@ export class TokensService {
       const balances$: Observable<BigNumber[]>[] = blockchains.map(blockchain => {
         const tokensAddresses = tokensWithBlockchain[blockchain].map(el => el.address);
 
-        const publicAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
+        const publicAdapter = Injector.web3PublicService.getWeb3Public(
+          blockchain as EvmBlockchainName
+        );
         return from(publicAdapter.getTokensBalances(this.userAddress, tokensAddresses)).pipe(
           timeout(3000),
           catchError(() => [])
@@ -260,11 +267,13 @@ export class TokensService {
    * @return Observable<TokenAmount> Tokens with balance.
    */
   public addTokenByAddress(address: string, blockchain: BlockchainName): Observable<TokenAmount> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      blockchain as EvmBlockchainName
+    );
     const balance$ = this.userAddress
       ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
       : of(null);
-    const token$ = this.sdk.tokens.createToken({ blockchain, address });
+    const token$ = SdkToken.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
       map(([token, amount]) => ({
@@ -398,13 +407,18 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
-    if (!this.userAddress) {
+    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    if (
+      !this.userAddress ||
+      !Web3Pure[chainType].isAddressCorrect(this.userAddress) ||
+      !Web3PublicService.isSupportedBlockchain(token.blockchain)
+    ) {
       return null;
     }
 
     try {
       const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
-      const balanceInWei = Web3Pure.isNativeAddress(token.address)
+      const balanceInWei = Web3Pure[chainType].isNativeAddress(token.address)
         ? await blockchainAdapter.getBalance(this.userAddress)
         : await blockchainAdapter.getTokenBalance(this.userAddress, token.address);
 
@@ -433,8 +447,9 @@ export class TokensService {
   }
 
   public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
+    const chainType = BlockchainsInfo.getChainType(blockchain);
     await this.getAndUpdateTokenBalance({
-      address: Web3Pure.nativeTokenAddress,
+      address: Web3Pure[chainType].nativeTokenAddress,
       blockchain
     });
   }
@@ -443,13 +458,14 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<void> {
-    if (Web3Pure.isNativeAddress(token.address)) {
+    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    if (Web3Pure[chainType].isNativeAddress(token.address)) {
       await this.getAndUpdateTokenBalance(token);
     } else {
       await Promise.all([
         this.getAndUpdateTokenBalance(token),
         this.getAndUpdateTokenBalance({
-          address: Web3Pure.nativeTokenAddress,
+          address: Web3Pure[chainType].nativeTokenAddress,
           blockchain: token.blockchain
         })
       ]);
@@ -470,10 +486,12 @@ export class TokensService {
       this.getAndUpdateTokenBalance(fromToken),
       this.getAndUpdateTokenBalance(toToken)
     ];
-    if (!Web3Pure.isNativeAddress(fromToken.address)) {
+
+    const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    if (!Web3Pure[fromChainType].isNativeAddress(fromToken.address)) {
       balancePromises.concat(
         this.getAndUpdateTokenBalance({
-          address: Web3Pure.nativeTokenAddress,
+          address: Web3Pure[fromChainType].nativeTokenAddress,
           blockchain: fromToken.blockchain
         })
       );
@@ -633,7 +651,7 @@ export class TokensService {
       return foundToken?.symbol;
     }
 
-    const token = await this.sdk.tokens.createToken({
+    const token = await SdkToken.createToken({
       blockchain: blockchain,
       address: tokenAddress
     });

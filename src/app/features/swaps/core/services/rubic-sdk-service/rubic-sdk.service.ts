@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import SDK, {
+import {
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
-  InstantTradesManager,
-  TokensManager
+  OnChainManager,
+  OnChainStatusManager,
+  SDK
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -27,20 +28,20 @@ export class RubicSdkService {
     return this._SDK;
   }
 
-  public get tokens(): TokensManager {
-    return this.SDK.tokens;
-  }
-
   public get symbiosis(): CrossChainSymbiosisManager {
     return this.SDK.crossChainSymbiosisManager;
   }
 
-  public get instantTrade(): InstantTradesManager {
-    return this.SDK.instantTrades;
+  public get instantTrade(): OnChainManager {
+    return this.SDK.onChainManager;
   }
 
   public get crossChain(): CrossChainManager {
-    return this.SDK.crossChain;
+    return this.SDK.crossChainManager;
+  }
+
+  public get onChainStatusManager(): OnChainStatusManager {
+    return this.SDK.onChainStatusManager;
   }
 
   public get crossChainStatusManager(): CrossChainStatusManager {
@@ -73,8 +74,8 @@ export class RubicSdkService {
       const newConfig = { ...this.currentConfig, ...config };
       await this.SDK.updateConfiguration(newConfig);
       this.currentConfig = newConfig;
-    } catch {
-      console.debug('Failed to reload SDK configuration.');
+    } catch (err) {
+      console.debug('Failed to reload SDK configuration:', err);
     }
     this._sdkLoading$.next(false);
   }

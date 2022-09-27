@@ -77,7 +77,7 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
     private readonly cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
-    this.isLoggedIn$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
+    this.isLoggedIn$ = authService.currentUser$.pipe(map(user => !!user?.address));
   }
 
   ngOnInit() {

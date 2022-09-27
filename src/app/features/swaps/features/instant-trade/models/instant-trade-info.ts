@@ -1,7 +1,7 @@
-import { InstantTrade } from 'rubic-sdk';
+import { OnChainTrade } from 'rubic-sdk';
 
 export interface InstantTradeInfo {
-  trade: InstantTrade;
+  trade: OnChainTrade;
 
   /**
    * True, if trade is eth-weth type.

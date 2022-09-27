@@ -18,7 +18,7 @@ import { SwapInfoService } from '@features/swaps/features/main-form/components/s
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { BLOCKCHAIN_NAME, InstantTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, OnChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -28,8 +28,8 @@ import { BLOCKCHAIN_NAME, InstantTrade } from 'rubic-sdk';
   providers: [TuiDestroyService]
 })
 export class InstantTradeSwapInfoComponent implements OnInit {
-  @Input() set currentInstantTrade(instantTrade: InstantTrade) {
-    this.path = instantTrade?.path?.map(token => token.symbol);
+  @Input() set currentOnChainTrade(onChainTrade: OnChainTrade) {
+    this.path = onChainTrade?.path?.map(token => token.symbol);
   }
 
   public toToken: TokenAmount;

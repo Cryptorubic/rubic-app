@@ -23,7 +23,7 @@
 
         <app-instant-trade-swap-info
           *ngIf="isInstantTrade; else crossChainSwapInfo"
-          [currentInstantTrade]="currentInstantTradeInfo?.trade"
+          [currentOnChainTrade]="currentInstantTradeInfo?.trade"
         ></app-instant-trade-swap-info>
 
         <ng-template #crossChainSwapInfo>

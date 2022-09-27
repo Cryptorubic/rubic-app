@@ -7,7 +7,7 @@ import { startWith, switchMap, tap, takeWhile, takeUntil } from 'rxjs/operators'
 import { getStatusBadgeText, getStatusBadgeType } from '../utils/recent-trades-utils';
 import { UiRecentTrade } from './ui-recent-trade.interface';
 import { watch } from '@taiga-ui/cdk';
-import { CrossChainTxStatus } from 'rubic-sdk';
+import { TxStatus } from 'rubic-sdk';
 
 @Directive()
 export abstract class CommonTrade implements OnInit, OnDestroy {
@@ -19,11 +19,11 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
 
   public initialLoading = true;
 
-  public readonly CrossChainTxStatus = CrossChainTxStatus;
+  public readonly CrossChainTxStatus = TxStatus;
 
-  public readonly getStatusBadgeType: (status: CrossChainTxStatus) => string = getStatusBadgeType;
+  public readonly getStatusBadgeType: (status: TxStatus) => string = getStatusBadgeType;
 
-  public readonly getStatusBadgeText: (status: CrossChainTxStatus) => string = getStatusBadgeText;
+  public readonly getStatusBadgeText: (status: TxStatus) => string = getStatusBadgeText;
 
   protected constructor(
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -44,7 +44,7 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
         switchMap(() => this.getTradeData(this.trade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
-        takeWhile(uiTrade => uiTrade?.statusTo === CrossChainTxStatus.PENDING),
+        takeWhile(uiTrade => uiTrade?.statusTo === TxStatus.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -58,7 +58,7 @@ export abstract class CommonTrade implements OnInit, OnDestroy {
   }
 
   protected saveTradeOnDestroy(): void {
-    const isCrossChainFinished = this.uiTrade.statusTo !== CrossChainTxStatus.PENDING;
+    const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
     this.recentTradesStoreService.updateTrade({
       ...this.trade,
       ...(isCrossChainFinished && {
