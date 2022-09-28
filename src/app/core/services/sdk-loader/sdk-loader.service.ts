@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { RubicSdkService } from '@app/features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { CHAIN_TYPE, WalletProvider } from 'rubic-sdk';
 import { from } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { QueryParamsService } from '../query-params/query-params.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +16,15 @@ export class SdkLoaderService {
   constructor(
     private readonly sdkService: RubicSdkService,
     private readonly iframeService: IframeService,
-    private readonly storeService: StoreService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public async initSdk(): Promise<void> {
+    const providerAddress = this.queryParamsService.getUrlSearchParam('feeTarget');
     this.subscribeOnAddressChange();
-
-    await this.sdkService.initSDK();
+    await this.sdkService.initSDK(providerAddress);
     await this.loadUser();
   }
 
