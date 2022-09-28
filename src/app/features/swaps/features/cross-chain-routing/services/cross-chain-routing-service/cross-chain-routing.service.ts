@@ -67,6 +67,7 @@ import {
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -154,7 +155,8 @@ export class CrossChainRoutingService extends TradeService {
           : [...(disabledProvidersForLandingIframe || [])],
         ...(this.settingsService.crossChainRoutingValue.showReceiverAddress && {
           receiverAddress: this.receiverAddress
-        })
+        }),
+        providerAddress: this.iframeService?.feeData?.feeTarget || EMPTY_ADDRESS
       };
 
       return this.sdk.crossChain
