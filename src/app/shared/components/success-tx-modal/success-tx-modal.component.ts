@@ -10,6 +10,9 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from 'rubic-sdk';
+import { timer } from 'rxjs';
+import { MODAL_CONFIG } from '@shared/constants/modals/modal-config';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -55,9 +58,9 @@ export class SuccessTxModalComponent {
     this.blockchain = context.data.blockchain;
     this.ccrProviderType = context.data.ccrProviderType;
 
-    // timer(MODAL_CONFIG.modalLifetime)
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe(() => this.onConfirm());
+    timer(MODAL_CONFIG.modalLifetime)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onConfirm());
   }
 
   public onConfirm(): void {
