@@ -31,7 +31,7 @@ export class ProvidersListComponent {
             return 1;
           }
           const bestProvider = CrossChainManager.chooseBestProvider(a, b);
-          return a.tradeType === bestProvider.tradeType ? 1 : -1;
+          return a.tradeType === bestProvider.tradeType ? -1 : 1;
         });
       }
       return trades.sort((a, b) => {

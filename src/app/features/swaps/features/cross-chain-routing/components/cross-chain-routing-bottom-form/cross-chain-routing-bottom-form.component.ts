@@ -156,7 +156,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   ngOnInit() {
     this.setupNormalTradeCalculation();
-    this.setupHiddenTradeCalculation();
     this.setupSelectSubscription();
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -371,70 +370,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       throw error;
     }
     this.cdr.detectChanges();
-  }
-
-  public setupHiddenTradeCalculation(): void {
-    if (this.hiddenCalculateTradeSubscription$) {
-      return;
-    }
-
-    this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade$
-      .pipe(
-        filter(el => el === 'hidden' && Boolean(this.authService.userAddress)),
-        switchMap(() => {
-          if (!this.allowTrade) {
-            return of(null);
-          }
-
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
-
-          const { fromAmount } = this.swapFormService.inputValue;
-
-          return from(this.crossChainRoutingService.calculateTrade(false, this.isViaDisabled)).pipe(
-            map(providerTrade => {
-              const { trade, error, currentProviders } = providerTrade;
-              if (currentProviders === 0) {
-                return;
-              }
-              if (
-                error &&
-                trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
-                trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
-                ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
-                  (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
-              ) {
-                this.onCalculateTrade$.next('hidden');
-                return;
-              }
-
-              this.minError =
-                error instanceof CrossChainMinAmountError
-                  ? { amount: error.minAmount, symbol: error.tokenSymbol }
-                  : false;
-              this.maxError =
-                error instanceof CrossChainMaxAmountError
-                  ? { amount: error.maxAmount, symbol: error.tokenSymbol }
-                  : false;
-
-              this.hiddenTradeData = providerTrade;
-              const hiddenToAmount = trade?.to?.tokenAmount;
-              if (
-                hiddenToAmount &&
-                this.toAmount?.isFinite() &&
-                !hiddenToAmount.eq(this.toAmount)
-              ) {
-                this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
-              }
-            }),
-            // eslint-disable-next-line rxjs/no-implicit-any-catch
-            catchError((err: RubicSdkError) => this.onCalculateError(err))
-          );
-        }),
-        tap(() => this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED)),
-        watch(this.cdr),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
   }
 
   public onCalculateError(error: RubicSdkError | undefined): Observable<null> {

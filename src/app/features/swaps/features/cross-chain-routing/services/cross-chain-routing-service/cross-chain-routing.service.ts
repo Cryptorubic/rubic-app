@@ -51,7 +51,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, switchMap, tap } from 'rxjs/operators';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
@@ -209,9 +209,9 @@ export class CrossChainRoutingService extends TradeService {
             });
           }),
           map(([tradeData]) => tradeData),
-          filter(tradeData => {
-            return tradeData.total === tradeData.calculated || tradeData.calculated === 0;
-          }),
+          // filter(tradeData => {
+          //   return tradeData.total === tradeData.calculated || tradeData.calculated === 0;
+          // }),
           switchMap(tradeData => {
             const bestProvider = this._selectedProvider$.value
               ? tradeData.data.find(
