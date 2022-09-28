@@ -5,7 +5,9 @@ import {
   CrossChainStatusManager,
   OnChainManager,
   OnChainStatusManager,
-  SDK
+  SDK,
+  WalletProvider,
+  WalletProviderCore
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -78,5 +80,12 @@ export class RubicSdkService {
       console.debug('Failed to reload SDK configuration:', err);
     }
     this._sdkLoading$.next(false);
+  }
+
+  public updateWallet(
+    chainType: keyof WalletProvider,
+    walletProviderCore: WalletProviderCore
+  ): void {
+    this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
   }
 }
