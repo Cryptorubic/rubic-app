@@ -25,6 +25,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { WINDOW } from '@ng-web-apis/common';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -95,7 +96,8 @@ export class QueryParamsService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
-    private readonly rubicSdkService: RubicSdkService
+    private readonly rubicSdkService: RubicSdkService,
+    @Inject(WINDOW) private window: Window
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -504,5 +506,9 @@ export class QueryParamsService {
       public_key: null
     });
     this.navigate();
+  }
+
+  public getUrlSearchParam(key: string): string {
+    return new URLSearchParams(this.window.location.search).get(key) || undefined;
   }
 }
