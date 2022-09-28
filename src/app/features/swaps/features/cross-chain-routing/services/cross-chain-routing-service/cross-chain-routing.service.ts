@@ -184,8 +184,6 @@ export class CrossChainRoutingService extends TradeService {
               });
             }
 
-            console.log(tradeData);
-
             return from(
               userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
             ).pipe(
