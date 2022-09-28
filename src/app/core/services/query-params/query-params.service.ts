@@ -120,11 +120,6 @@ export class QueryParamsService {
       if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
         this.setDisabledProviders(queryParams.enabledProviders);
         this.enabledBlockchains = queryParams.enabledBlockchains;
-
-        await this.rubicSdkService.patchConfig({
-          ...this.rubicSdkService.defaultConfig,
-          providerAddress: queryParams.feeTarget
-        });
       }
 
       const route = this.router.url.split('?')[0].substr(1);
