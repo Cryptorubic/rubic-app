@@ -70,7 +70,6 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -158,7 +157,6 @@ export class CrossChainRoutingService extends TradeService {
         disabledProviders: isViaDisabled
           ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
           : [...(disabledProvidersForLandingIframe || [])],
-        providerAddress: this.iframeService?.feeData?.feeTarget || EMPTY_ADDRESS,
         ...(receiverAddress && { receiverAddress })
       };
 
@@ -185,6 +183,8 @@ export class CrossChainRoutingService extends TradeService {
                 smartRouting: null
               });
             }
+
+            console.log(tradeData);
 
             return from(
               userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
