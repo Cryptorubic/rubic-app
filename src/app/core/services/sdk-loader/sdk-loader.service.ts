@@ -5,6 +5,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletProvider } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { QueryParamsService } from '../query-params/query-params.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,14 @@ export class SdkLoaderService {
     private readonly iframeService: IframeService,
     private readonly storeService: StoreService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public async initSdk(): Promise<void> {
+    const providerAddress = this.queryParamsService.getUrlSearchParam('feeTarget');
     await this.loadUser();
-    await this.sdkService.initSDK();
+    await this.sdkService.initSDK(providerAddress);
     await this.updateSdkUser();
   }
 

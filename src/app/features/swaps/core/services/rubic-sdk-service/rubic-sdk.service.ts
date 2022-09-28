@@ -62,9 +62,9 @@ export class RubicSdkService {
     this._SDK = null;
   }
 
-  public async initSDK(): Promise<void> {
-    this.SDK = await SDK.createSDK(this.defaultConfig);
-    this.currentConfig = this.defaultConfig;
+  public async initSDK(providerAddress: string): Promise<void> {
+    this.SDK = await SDK.createSDK({ ...this.defaultConfig, providerAddress });
+    this.currentConfig = { ...this.defaultConfig, providerAddress };
   }
 
   public async patchConfig(config: Partial<Configuration>): Promise<void> {
