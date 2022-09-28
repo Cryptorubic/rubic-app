@@ -25,6 +25,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -122,7 +123,9 @@ export class QueryParamsService {
 
         await this.rubicSdkService.patchConfig({
           ...this.rubicSdkService.defaultConfig,
-          providerAddress: queryParams.feeTarget
+          providerAddress: {
+            [CHAIN_TYPE.EVM]: queryParams.feeTarget
+          }
         });
       }
 
