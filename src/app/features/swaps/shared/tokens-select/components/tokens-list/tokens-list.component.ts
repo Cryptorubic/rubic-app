@@ -22,7 +22,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensListType } from '@features/swaps/shared/tokens-select/models/tokens-list-type';
 import { LIST_ANIMATION } from '@features/swaps/shared/tokens-select/components/tokens-list/animations/list-animation';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
@@ -122,7 +122,7 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   get user$(): Observable<UserInterface> {
-    return this.authService.getCurrentUser();
+    return this.authService.currentUser$;
   }
 
   constructor(

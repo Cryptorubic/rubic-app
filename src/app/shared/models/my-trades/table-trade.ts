@@ -1,4 +1,4 @@
-import { BlockchainName, BridgeType, CrossChainTradeType, TradeType } from 'rubic-sdk';
+import { BlockchainName, BridgeType, CrossChainTradeType, OnChainTradeType } from 'rubic-sdk';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
@@ -11,7 +11,7 @@ export interface TableToken {
 }
 
 export type TableProvider =
-  | TradeType
+  | OnChainTradeType
   | BRIDGE_PROVIDER
   | BridgeType
   | CrossChainTradeType

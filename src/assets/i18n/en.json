@@ -491,7 +491,7 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "viaSlippage": "Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto Slippage tolerance setting in the settings."
+      "autoSlippage": "Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto Slippage tolerance setting in the settings."
     }
   },
   "settings": {

@@ -53,7 +53,7 @@ export class SwapButtonContainerComponent {
 
   @Output() readonly onUpdateRateClick = new EventEmitter<void>();
 
-  public readonly user$ = this.authService.getCurrentUser();
+  public readonly user$ = this.authService.currentUser$;
 
   public readonly isUpdateRateStatus$ = this.swapButtonContainerService.isUpdateRateStatus$;
 

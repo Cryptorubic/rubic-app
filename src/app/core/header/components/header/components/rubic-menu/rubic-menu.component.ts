@@ -6,17 +6,16 @@ import {
   EventEmitter,
   Inject,
   Input,
-  OnDestroy,
   Output,
   QueryList,
+  Self,
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WINDOW } from '@ng-web-apis/common';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
@@ -24,14 +23,18 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 @Component({
   selector: 'app-rubic-menu',
   templateUrl: './rubic-menu.component.html',
   styleUrls: ['./rubic-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class RubicMenuComponent implements AfterViewInit, OnDestroy {
+export class RubicMenuComponent implements AfterViewInit {
   @Input() public swapActive: boolean;
 
   @Input() public bridgeActive: boolean;
@@ -50,11 +53,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public currentUser$: Observable<UserInterface>;
 
-  public currentBlockchain: BlockchainData;
-
-  private _onNetworkChanges$: Subscription;
-
-  private _onAddressChanges$: Subscription;
+  public currentBlockchainIcon: string;
 
   public readonly navigationList: NavigationItem[];
 
@@ -70,9 +69,10 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly commonModalService: CommonModalService,
-    @Inject(WINDOW) private window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.currentUser$ = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.currentUser$;
     this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
@@ -80,19 +80,12 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.walletConnectorService.networkChange$.subscribe(network => {
-      this.currentBlockchain = network;
-      this.cdr.detectChanges();
-    });
-    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(() =>
-      this.cdr.detectChanges()
-    );
-  }
-
-  public ngOnDestroy(): void {
-    this._onNetworkChanges$.unsubscribe();
-    this._onAddressChanges$.unsubscribe();
+    this.walletConnectorService.networkChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(blockchainName => {
+        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+        this.cdr.markForCheck();
+      });
   }
 
   public getDropdownStatus(opened: boolean): void {
@@ -122,7 +115,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   public logout(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
   }
 
   isLinkActive(url: string): boolean {

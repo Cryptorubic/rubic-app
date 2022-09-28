@@ -12,7 +12,7 @@ import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rub
 @Injectable()
 export abstract class TradeService {
   protected showSuccessTrxNotification = (
-    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.RUBIC
+    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
   ): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
@@ -45,7 +45,7 @@ export abstract class TradeService {
   protected notifyTradeInProgress(
     transactionHash: string,
     blockchain: BlockchainName,
-    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.RUBIC
+    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,

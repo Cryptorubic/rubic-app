@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
 import { RoundStatus } from '../../models/round-status.enum';
 import { StakingService } from '../../services/staking.service';
 

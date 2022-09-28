@@ -6,11 +6,11 @@
     >
       <li *ngFor="let blockchainName of blockchains" [id]="idPrefix + 'Network_' + blockchainName">
         <app-icon-button
-          [icon]="blockchainImages[blockchainName]"
+          [icon]="blockchainIcon[blockchainName]"
           [disabled]="blockchain === blockchainName"
           [border]="blockchain === blockchainName"
           [borderRadiusPercent]="50"
-          [label]="blockchainLabels[blockchainName]"
+          [label]="blockchainLabel[blockchainName]"
           (iconButtonClick)="onBlockchainSelect(blockchainName)"
         >
         </app-icon-button>
