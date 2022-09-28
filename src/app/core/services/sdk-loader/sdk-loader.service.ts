@@ -8,6 +8,7 @@ import { switchTap } from '@shared/utils/utils';
 import { CHAIN_TYPE, WalletProvider } from 'rubic-sdk';
 import { from } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { EMPTY_ADDRESS } from '@app/shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,9 @@ export class SdkLoaderService {
 
   public async initSdk(): Promise<void> {
     this.subscribeOnAddressChange();
-
-    await this.sdkService.initSDK();
+    await this.sdkService.initSDK(
+      new URLSearchParams(window.location.search).get('feeTarget') || EMPTY_ADDRESS
+    );
     await this.loadUser();
   }
 
