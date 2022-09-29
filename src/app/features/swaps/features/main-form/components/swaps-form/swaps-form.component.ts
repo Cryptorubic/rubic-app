@@ -332,12 +332,9 @@ export class SwapsFormComponent implements OnInit {
       this.selectedToken[tokenType] = updatedToken;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.input.patchValue(
-        {
-          [formKey]: this.selectedToken[tokenType]
-        },
-        { emitEvent: false }
-      );
+      this.swapFormService.input.patchValue({
+        [formKey]: this.selectedToken[tokenType]
+      });
     }
   }
 
