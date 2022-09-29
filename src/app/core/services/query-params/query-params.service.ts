@@ -368,7 +368,9 @@ export class QueryParamsService {
       device: queryParams.device,
       fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
       feeTarget: queryParams.feeTarget,
-      promoCode: queryParams.promoCode
+      promoCode: queryParams.promoCode,
+      tokenSearch: queryParams.tokenSearch === 'true',
+      rubicLink: queryParams.rubicLink === 'true'
     });
 
     this.setBackgroundStatus(queryParams);

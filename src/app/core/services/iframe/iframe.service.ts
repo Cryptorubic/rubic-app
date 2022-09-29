@@ -53,6 +53,14 @@ export class IframeService implements OnDestroy {
     return this.iframeParameters.promoCode;
   }
 
+  public get tokenSearch(): boolean {
+    return this.iframeParameters.tokenSearch;
+  }
+
+  public get rubicLink(): boolean {
+    return this.iframeParameters.rubicLink;
+  }
+
   public get originDomain(): string {
     const url =
       this.window.location !== this.window.parent.location
