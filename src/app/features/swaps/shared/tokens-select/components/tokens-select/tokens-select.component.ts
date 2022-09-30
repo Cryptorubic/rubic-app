@@ -53,9 +53,9 @@ import { compareTokens } from '@shared/utils/utils';
 import { TokensListType } from '@features/swaps/shared/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { IframeService } from '@app/core/services/iframe/iframe.service';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -183,6 +183,12 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     this.searchQuery$.next(value);
   }
 
+  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
+
+  public readonly iframeRubicLink = this.iframeService.rubicLink;
+
+  public readonly isHorizontalIframe = this.iframeService.iframeAppearance === 'horizontal';
+
   /**
    * Checks if tokens pair is allowed to trade through cross-chain.
    * @param fromBlockchain From token blockchain.
@@ -204,7 +210,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
-    private readonly sdk: RubicSdkService,
+    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
