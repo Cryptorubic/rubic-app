@@ -78,9 +78,15 @@
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
-      <li class="tokens-list-horizontal-iframe__item-container">
+      <li
+        class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item_empty"
+        *ngIf="tokens.length === 0"
+      >
+        Nothing to show
+      </li>
+      <li class="tokens-list-horizontal-iframe__item-container" *ngIf="iframeRubicLink">
         <div class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
-          <a [safetyLink]="noFrameLink">More on {{ rubicDomain }}</a>
+          <a [href]="noFrameLink" target="_blank" rel="noopener">More on {{ rubicDomain }}</a>
         </div>
       </li>
     </ul>
@@ -102,8 +108,11 @@
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
-      <li class="tokens-list__item vertical-frame-link">
-        <a [safetyLink]="noFrameLink">More on {{ rubicDomain }}</a>
+      <li class="tokens-list__item tokens-list__item_empty" *ngIf="tokens.length === 0">
+        Nothing to show
+      </li>
+      <li class="tokens-list__item vertical-frame-link" *ngIf="iframeRubicLink">
+        <a [href]="noFrameLink" target="_blank" rel="noopener">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--vertical iframe -->
