@@ -1,4 +1,4 @@
-<tui-loader [showLoader]="(providers$ | async).length === 0" [overlay]="true">
+<tui-loader [showLoader]="(providers$ | async)?.length === 0" [overlay]="true">
   <ul *ngIf="providers$ | async as providers">
     <ng-container *ngFor="let provider of providers$ | async; let i = index">
       <li

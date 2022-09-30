@@ -14,6 +14,7 @@ import { SmartRouting } from '@features/swaps/features/cross-chain-routing/servi
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
+import { ProvidersSort } from '@features/swaps/features/cross-chain-routing/components/providers-list-sorting/models/providers-sort';
 
 @Component({
   selector: 'app-providers-list',
@@ -30,22 +31,8 @@ export class ProvidersListComponent {
   ]).pipe(
     map(([allProviders, sorting]) => {
       const providers: readonly (WrappedCrossChainTrade & { rank: number })[] = allProviders.data;
-      const trades = providers.filter(provider => Boolean(provider.trade));
-      if (sorting === 'smart') {
-        return trades.sort((a, b) => {
-          if (b.rank === 0) {
-            return 1;
-          }
-          const bestProvider = CrossChainManager.chooseBestProvider(a, b);
-          return a.tradeType === bestProvider.tradeType ? -1 : 1;
-        });
-      }
-      return trades.sort((a, b) => {
-        if (a.rank === 0) {
-          return 1;
-        }
-        b.trade.to.tokenAmount.comparedTo(a.trade.to.tokenAmount);
-      });
+      const trades = [...providers].filter(provider => Boolean(provider.trade));
+      return ProvidersListComponent.sortProviders(trades, sorting);
     })
   );
 
@@ -72,7 +59,7 @@ export class ProvidersListComponent {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainService: CrossChainRoutingService,
-    private readonly providersListService: ProvidersListSortingService // @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
+    private readonly providersListService: ProvidersListSortingService
   ) {}
 
   public selectProvider(tradeType: CrossChainTradeType): void {
@@ -82,5 +69,35 @@ export class ProvidersListComponent {
 
   public async publicGetSmartRouting(provider: WrappedCrossChainTrade): Promise<SmartRouting> {
     return this.crossChainService.calculateSmartRouting(provider);
+  }
+
+  public static sortProviders(
+    providers: readonly (WrappedCrossChainTrade & { rank: number })[],
+    type: ProvidersSort
+  ): readonly (WrappedCrossChainTrade & { rank: number })[] {
+    const trades = [...providers];
+    if (type === 'smart') {
+      trades.sort((a, b) => {
+        if (a.rank === 0 || !a.trade) {
+          return 1;
+        }
+        if (!b.trade) {
+          return -1;
+        }
+        const bestProvider = CrossChainManager.chooseBestProvider(a, b);
+        return a.tradeType === bestProvider.tradeType ? -1 : 1;
+      });
+    } else {
+      trades.sort((a, b) => {
+        if (a.rank === 0 || !a.trade) {
+          return 1;
+        }
+        if (!b.trade) {
+          return -1;
+        }
+        return b.trade.to.tokenAmount.comparedTo(a.trade.to.tokenAmount);
+      });
+    }
+    return trades;
   }
 }

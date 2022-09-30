@@ -52,6 +52,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
 import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
+import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -498,18 +499,20 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([of(type), this.crossChainRoutingService.allProviders$.pipe(take(1))]);
         }),
         switchMap(([type, allProviders]) => {
-          const selectedProvider = allProviders.data.find(provider => provider.tradeType === type);
+          const selectedProvider: WrappedCrossChainTrade & { rank: number } =
+            allProviders.data.find(provider => provider.tradeType === type);
 
           return forkJoin([
             of(selectedProvider),
-            from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider))
+            from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
+            selectedProvider.trade.needApprove()
           ]);
         })
       )
-      .subscribe(([selectedProvider, smartRouting]) => {
+      .subscribe(([selectedProvider, smartRouting, needApprove]) => {
         const provider: CrossChainProviderTrade = {
           ...selectedProvider,
-          needApprove: false,
+          needApprove,
           totalProviders: this.crossChainProviderTrade.totalProviders,
           currentProviders: this.crossChainProviderTrade.currentProviders,
           smartRouting

@@ -5,7 +5,6 @@ import {
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
-  CrossChainManager,
   CrossChainTradeType,
   LifiCrossChainTrade,
   LowSlippageError,
@@ -51,7 +50,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { distinctUntilChanged, first, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, first, map, switchMap, tap } from 'rxjs/operators';
 import { LifiCrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/lifi-trade-provider/lifi-cross-chain-trade-provider';
 import { CrossChainTradeProvider } from 'rubic-sdk/lib/features/cross-chain/providers/common/cross-chain-trade-provider';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
@@ -67,6 +66,7 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { WrappedTradeOrNull } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-trade-or-null';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
+import { ProvidersListComponent } from '@features/swaps/features/cross-chain-routing/components/providers-list/providers-list.component';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -102,9 +102,12 @@ export class CrossChainRoutingService extends TradeService {
 
   private readonly _allProviders$ = new BehaviorSubject<AllProviders>({ totalAmount: 0, data: [] });
 
-  public readonly allProviders$ = this._allProviders$
-    .asObservable()
-    .pipe(distinctUntilChanged((prev, curr) => prev.data.length === curr.data.length));
+  public readonly allProviders$ = this._allProviders$.asObservable().pipe(
+    debounceTime(100),
+    distinctUntilChanged((prev, curr) => {
+      return prev.data.length === curr.data.length;
+    })
+  );
 
   private readonly defaultTimeout = 25_000;
 
@@ -185,33 +188,20 @@ export class CrossChainRoutingService extends TradeService {
             ])
           ),
           tap(([tradeData, sortingType]) => {
-            let sortedProviders: WrappedCrossChainTrade[];
-            if (sortingType === 'smart') {
-              sortedProviders = [...tradeData.data]
-                .filter(provider => Boolean(provider.trade))
-                .sort((a, b) => {
-                  const bestProvider = CrossChainManager.chooseBestProvider(a, b);
-                  return a.tradeType === bestProvider.tradeType ? -1 : 1;
-                });
-            } else {
-              sortedProviders = [...tradeData.data]
-                .filter(provider => Boolean(provider.trade))
-                .sort((a, b) => b.trade.to.tokenAmount.comparedTo(a.trade.to.tokenAmount));
-            }
-            const rankedProviders = sortedProviders.map(provider => ({
+            const rankedProviders = [...tradeData.data].map(provider => ({
               ...provider,
               rank: this._dangerousProviders$.value.includes(provider.tradeType) ? 0 : 1
             }));
-
+            const sortedProviders = ProvidersListComponent.sortProviders(
+              rankedProviders,
+              sortingType
+            );
             this._allProviders$.next({
               totalAmount: tradeData.total,
-              data: rankedProviders
+              data: sortedProviders
             });
           }),
           map(([tradeData]) => tradeData),
-          // filter(tradeData => {
-          //   return tradeData.total === tradeData.calculated || tradeData.calculated === 0;
-          // }),
           switchMap(tradeData => {
             const bestProvider = this._selectedProvider$.value
               ? tradeData.data.find(

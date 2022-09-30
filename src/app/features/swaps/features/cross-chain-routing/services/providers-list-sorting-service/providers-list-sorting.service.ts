@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ProvidersSort } from '@features/swaps/features/cross-chain-routing/components/providers-list-sorting/models/providers-sort';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 
 @Injectable({
@@ -13,7 +13,9 @@ export class ProvidersListSortingService {
 
   private readonly _currentSortingType$ = new BehaviorSubject<ProvidersSort>(this.defaultSortType);
 
-  public readonly currentSortingType$ = this._currentSortingType$.asObservable();
+  public readonly currentSortingType$ = this._currentSortingType$
+    .asObservable()
+    .pipe(distinctUntilChanged());
 
   private readonly _visibleSortingType$ = new BehaviorSubject<ProvidersSort>(this.defaultSortType);
 
@@ -25,7 +27,9 @@ export class ProvidersListSortingService {
 
   public setCurrentSortingType(type: ProvidersSort): void {
     this.storeService.setItem('sortingType', type);
-    this._currentSortingType$.next(type);
+    if (this._currentSortingType$.value !== type) {
+      this._currentSortingType$.next(type);
+    }
   }
 
   public setVisibleSortingType(type?: ProvidersSort): void {
