@@ -492,7 +492,7 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "viaSlippage": "不幸的是，此掉期不允許自定義滑點。 請在設置中開啟 Auto Slippage 容差設置。"
+      "autoSlippage": "不幸的是，此掉期不允許自定義滑點。 請在設置中開啟 Auto Slippage 容差設置。"
     }
   },
   "settings": {

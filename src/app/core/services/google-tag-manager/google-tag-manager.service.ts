@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';

@@ -7,17 +7,14 @@
 
 <ng-template #dropdownButtonTemplate>
   <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
-      <img
-        [src]="currentBlockchain?.imagePath"
-        [alt]="currentBlockchain?.name"
-        width="25"
-        height="25"
-      />
+    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
+      <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="25" height="25" />
     </div>
+
     <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
       {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
     </div>
+
     <app-notification-badge
       class="notification-counter notification-counter_profile"
       *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
@@ -25,6 +22,7 @@
       color="red"
       [value]="unreadTrades$ | async"
     ></app-notification-badge>
+
     <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
   </div>
 </ng-template>
@@ -60,8 +58,8 @@
 
 <ng-container *onlyFrame>
   <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
-      <img [src]="currentBlockchain?.imagePath" alt="Current blockchain" width="25" height="25" />
+    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
+      <img [src]="currentBlockchainIcon" alt="Current blockchain" width="25" height="25" />
     </div>
     <div class="user-profile__address">
       {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}

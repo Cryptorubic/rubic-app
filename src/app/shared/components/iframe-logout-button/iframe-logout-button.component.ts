@@ -11,6 +11,6 @@ export class IframeLogoutButtonComponent {
   constructor(private readonly authService: AuthService) {}
 
   public logout(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
   }
 }

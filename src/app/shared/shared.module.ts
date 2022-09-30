@@ -67,7 +67,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
-import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +102,7 @@ import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippag
     ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
     IframeLogoutButtonComponent,
-    ViaSlippageWarningModalComponent,
+    AutoSlippageWarningModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,

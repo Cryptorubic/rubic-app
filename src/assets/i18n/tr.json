@@ -633,7 +633,7 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "viaSlippage": "Ne yazık ki, bu takas için özel kaymaya izin verilmiyor. Lütfen ayarlarda Otomatik Kayma toleransı ayarını açın."
+      "autoSlippage": "Ne yazık ki, bu takas için özel kaymaya izin verilmiyor. Lütfen ayarlarda Otomatik Kayma toleransı ayarını açın."
     }
   },
   "lp": {

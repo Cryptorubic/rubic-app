@@ -66,9 +66,9 @@
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
         <button tuiOption class="data-list__address">
           <img
-            *ngIf="currentBlockchain?.imagePath"
+            *ngIf="currentBlockchainIcon"
             class="rubic-menu__chain-icon"
-            [src]="currentBlockchain?.imagePath"
+            [src]="currentBlockchainIcon"
             alt="($currentBlockchain | async)?.name"
             width="25"
             height="25"

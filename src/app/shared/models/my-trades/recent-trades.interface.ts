@@ -1,5 +1,5 @@
 import { Token } from '../tokens/token';
-import { BlockchainName, CrossChainTradeType, CrossChainTxStatus } from 'rubic-sdk';
+import { BlockchainName, CrossChainTradeType, TxStatus } from 'rubic-sdk';
 
 export interface RecentTrade {
   srcTxHash: string;
@@ -10,8 +10,8 @@ export interface RecentTrade {
   toToken: Token;
   crossChainProviderType: CrossChainTradeType;
   timestamp: number;
-  calculatedStatusTo?: CrossChainTxStatus;
-  calculatedStatusFrom?: CrossChainTxStatus;
+  calculatedStatusTo?: TxStatus;
+  calculatedStatusFrom?: TxStatus;
   bridgeType?: string;
   viaUuid?: string;
   rangoRequestId?: string;

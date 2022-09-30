@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { TradeType } from 'rubic-sdk';
+import { OnChainTradeType } from 'rubic-sdk';
 
 export interface CelerRubicTradeInfo {
   feePercent: number;
@@ -12,8 +12,8 @@ export interface CelerRubicTradeInfo {
   priceImpactFrom: number;
   priceImpactTo: number;
 
-  fromProvider: TradeType;
-  toProvider: TradeType;
+  fromProvider: OnChainTradeType;
+  toProvider: OnChainTradeType;
 
   fromPath: string[] | null; // null if `tokenIn` = `transitToken`
   toPath: string[] | null; // null if `tokenOut` = `transitToken`

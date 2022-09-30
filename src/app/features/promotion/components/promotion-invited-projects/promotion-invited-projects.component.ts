@@ -3,13 +3,14 @@ import { Observable } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
 import { PromotionService } from '@features/promotion/services/promotion.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { map } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
@@ -48,14 +49,12 @@ export class PromotionInvitedProjectsComponent {
     this.tableData$ = promotionService.tableData$;
     this.sortParameter$ = promotionService.sortParameter$;
 
-    this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
-    this.isEthLikeWalletConnected$ = authService
-      .getCurrentUser()
-      .pipe(
-        map(
-          user => !!user?.address && this.walletConnectorService.provider.walletType === 'ethLike'
-        )
-      );
+    this.isWalletConnected$ = authService.currentUser$.pipe(map(user => !!user?.address));
+    this.isEthLikeWalletConnected$ = authService.currentUser$.pipe(
+      map(
+        user => !!user?.address && this.walletConnectorService.provider.chainType === CHAIN_TYPE.EVM
+      )
+    );
   }
 
   public onRefresh(): void {
@@ -67,7 +66,7 @@ export class PromotionInvitedProjectsComponent {
   }
 
   public reconnectWallet(): void {
-    this.authService.serverlessSignOut();
+    this.authService.disconnectWallet();
     this.openWalletsModal();
   }
 
