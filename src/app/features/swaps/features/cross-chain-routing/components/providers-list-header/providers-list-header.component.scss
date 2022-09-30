@@ -2,6 +2,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% - 90px);
-  margin-left: 20px;
+}
+
+.routes {
+  display: flex;
+  align-items: center;
+
+  &__header {
+    margin: 0;
+
+    font-size: 16px;
+  }
+
+  &__counter {
+    margin-left: 6px;
+
+    font-size: 14px;
+  }
+}
+
+app-providers-list-sorting {
+  margin-left: auto;
+}
+
+.image {
+  width: 11px;
+  height: 100%;
+  margin-left: 10px;
+
+  ::ng-deep {
+    g {
+      opacity: 1;
+    }
+
+    path {
+      fill: white;
+    }
+  }
 }

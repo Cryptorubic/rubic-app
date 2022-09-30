@@ -1,6 +1,12 @@
 @use 'src/scss/mixins';
 @use 'src/scss/vars';
 
+:host {
+  z-index: -1;
+
+  display: block;
+}
+
 .info {
   display: flex;
   align-items: center;
@@ -112,6 +118,8 @@
     }
 
     &__name {
+      width: 100px;
+
       color: var(--form-bright-text-color);
       font-weight: 400;
       font-size: 15px;

@@ -1,5 +1,12 @@
 <tui-hosted-dropdown tuiDropdownAlign="left" [content]="content" [(open)]="open">
-  <button tuiButton type="button" appearance="flat" size="m" [iconRight]="arrow">
+  <button
+    (click)="handleSortingClick($event)"
+    tuiButton
+    type="button"
+    appearance="flat"
+    size="m"
+    [iconRight]="arrow"
+  >
     {{ (currentSortingButton$ | async).label }}
   </button>
 </tui-hosted-dropdown>

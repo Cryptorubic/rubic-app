@@ -1,10 +1,14 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { map, switchMap } from 'rxjs/operators';
 import { forkJoin, combineLatest } from 'rxjs';
 import { CrossChainManager, CrossChainTradeType } from 'rubic-sdk';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext } from '@taiga-ui/core';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
@@ -12,12 +16,14 @@ import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chai
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 
 @Component({
-  selector: 'polymorpheus-providers-list',
+  selector: 'app-providers-list',
   templateUrl: './providers-list.component.html',
   styleUrls: ['./providers-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProvidersListComponent {
+  @Output() public readonly selectionHandler = new EventEmitter<void>();
+
   public readonly providers$ = combineLatest([
     this.crossChainService.allProviders$,
     this.providersListService.currentSortingType$
@@ -66,13 +72,12 @@ export class ProvidersListComponent {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainService: CrossChainRoutingService,
-    private readonly providersListService: ProvidersListSortingService,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
+    private readonly providersListService: ProvidersListSortingService // @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
   ) {}
 
   public selectProvider(tradeType: CrossChainTradeType): void {
     this.crossChainService.setSelectedProvider(tradeType);
-    this.context.completeWith();
+    this.selectionHandler.emit();
   }
 
   public async publicGetSmartRouting(provider: WrappedCrossChainTrade): Promise<SmartRouting> {

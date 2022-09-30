@@ -43,4 +43,10 @@ export class ProvidersListSortingComponent {
   public handleMouseOut(): void {
     this.service.setVisibleSortingType();
   }
+
+  public handleSortingClick($event: MouseEvent): void {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.open = true;
+  }
 }

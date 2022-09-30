@@ -13,7 +13,7 @@ import {
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiBadgeModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiAccordionModule, TuiBadgeModule, TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/target-network-address/target-network-address.component';
 import { SmartRoutingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/smart-routing/smart-routing.component';
@@ -54,7 +54,8 @@ import { ProvidersListSortingComponent } from 'src/app/features/swaps/features/c
     TuiHostedDropdownModule,
     TuiButtonModule,
     TuiDropdownControllerModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiAccordionModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
   providers: []

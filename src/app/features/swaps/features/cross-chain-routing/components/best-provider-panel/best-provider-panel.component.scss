@@ -12,8 +12,9 @@ $white: white;
 
 ::ng-deep .provider-panel {
   height: 100%;
-
+  //position: relative;
   transition: opacity ease-in-out 0.3s;
+  //min-height: 60px;
 
   @include b($mobile-md) {
     .provider-panel {
@@ -37,11 +38,59 @@ $white: white;
     }
   }
 
+  &__text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 16px;
+  }
+
+  &__trades-container {
+    width: 100%;
+    overflow: visible !important;
+
+    .tui-accordion__item-wrapper {
+      &::after {
+        border: none;
+      }
+    }
+
+    .header {
+      height: 60px;
+      padding: 0 !important;
+    }
+
+    tui-expand .content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 999;
+
+      width: 100%;
+      height: 166px;
+      padding: 0;
+      overflow: scroll;
+
+      background: var(--main-form-background);
+    }
+
+    .tui-accordion__item-title {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
   &__row {
     display: flex;
     align-items: center;
     min-height: 18px;
     margin-bottom: 25px;
+
+    //position: absolute;
+    //top: 0;
+    //left: 0;
+    //width: 100%;
   }
 
   &_loading {

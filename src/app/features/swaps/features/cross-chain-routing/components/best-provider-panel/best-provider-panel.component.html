@@ -1,26 +1,34 @@
-<!--[class.provider-panel_loading]="providerPanelData.loading-->
-
-<!--[class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"-->
 <div class="provider-panel">
   <div class="provider-panel__row">
-    <app-providers-counter
-      *noFrame
-      [calculatedProvider]="calculatedProvider"
-    ></app-providers-counter>
-
     <ng-container *ngLet="calculatedProviders$ | async as providers">
-      <button *ngIf="providers > 1" class="toggler" (click)="showProvidersList()">
-        {{ providers - 1 + (providers === 2 ? ' More trade' : ' More trades') }}
-        <img
-          class="provider-panel__arrow"
-          src="assets/images/swaps/icons/show-more-arrow.svg"
-          alt="arrow"
-        />
-      </button>
+      <tui-accordion-item
+        *ngIf="providers > 1"
+        [borders]="null"
+        class="provider-panel__trades-container"
+        [ngClass]="{ 'provider-panel_expanded': expanded }"
+        [(open)]="expanded"
+        [showArrow]="false"
+      >
+        <div *ngIf="expanded">
+          <app-providers-list-header
+            [calculatedProviders]="calculatedProviders$ | async"
+            (closeHandler)="closeAccordion()"
+          ></app-providers-list-header>
+        </div>
+        <div class="provider-panel__text" *ngIf="!expanded">
+          <app-providers-counter
+            *noFrame
+            [calculatedProvider]="calculatedProvider"
+          ></app-providers-counter>
+          {{ providers - 1 + (providers === 2 ? ' More trade' : ' More trades') }}
+        </div>
+        <ng-template tuiAccordionItemContent>
+          <app-providers-list (selectionHandler)="handleSelection()"></app-providers-list>
+        </ng-template>
+      </tui-accordion-item>
     </ng-container>
   </div>
-
-  <ng-container *ngIf="smartRouting">
-    <app-smart-routing *noFrame [smartRouting]="smartRouting"></app-smart-routing>
-  </ng-container>
 </div>
+<ng-container *ngIf="smartRouting">
+  <app-smart-routing *noFrame [smartRouting]="smartRouting"></app-smart-routing>
+</ng-container>

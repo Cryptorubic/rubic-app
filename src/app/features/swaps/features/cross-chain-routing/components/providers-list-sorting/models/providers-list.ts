@@ -10,6 +10,7 @@ export const sorts: ReadonlyArray<Sort> = [
   {
     type: 'maxAmount',
     label: 'Maximum amount',
-    description: 'Descr'
+    description:
+      'Sorting by maximum profit, not taking into account exchange commissions and gas price'
   }
 ];

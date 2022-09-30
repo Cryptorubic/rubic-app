@@ -1,12 +1,17 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input
+} from '@angular/core';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { ProvidersListComponent } from '@features/swaps/features/cross-chain-routing/components/providers-list/providers-list.component';
 import { TuiDialogService } from '@taiga-ui/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { map } from 'rxjs/operators';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
-import { ProvidersListHeaderComponent } from '@features/swaps/features/cross-chain-routing/components/providers-list-header/providers-list-header.component';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Component({
   selector: 'app-best-provider-panel',
@@ -23,17 +28,37 @@ export class BestProviderPanelComponent {
     map(providers => providers.data.filter(provider => Boolean(provider.trade)).length)
   );
 
+  public expanded = false;
+
+  // public contentHeight: string = 'auto';
+
   constructor(
     private readonly dialogService: TuiDialogService,
-    private readonly crossChainRoutingService: CrossChainRoutingService
+    private readonly crossChainRoutingService: CrossChainRoutingService,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
-  public showProvidersList(): void {
-    this.dialogService
-      .open<boolean>(new PolymorpheusComponent(ProvidersListComponent), {
-        size: 'm',
-        header: new PolymorpheusComponent(ProvidersListHeaderComponent)
-      })
-      .subscribe();
+  public toggleAccordion(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.expanded) {
+      if ((event.target as HTMLElement).classList.contains('close')) {
+        this.expanded = false;
+      }
+    } else {
+      this.expanded = true;
+    }
+    this.cdr.detectChanges();
+  }
+
+  public handleSelection(): void {
+    this.expanded = false;
+    this.cdr.detectChanges();
+  }
+
+  public closeAccordion(): void {
+    // this.expanded = true;
+    this.cdr.detectChanges();
   }
 }
