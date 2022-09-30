@@ -4,6 +4,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { NgZone } from '@angular/core';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   public abstract readonly chainType: CHAIN_TYPE;
@@ -51,7 +52,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     protected readonly onAddressChanges$: BehaviorSubject<string>,
     protected readonly onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     protected readonly errorsService: ErrorsService,
-    protected readonly zone: NgZone
+    protected readonly zone: NgZone,
+    protected readonly window: RubicWindow
   ) {
     this.isEnabled = false;
   }

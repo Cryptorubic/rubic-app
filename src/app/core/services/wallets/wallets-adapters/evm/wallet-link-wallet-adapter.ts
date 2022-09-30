@@ -24,11 +24,11 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorService: ErrorsService,
     zone: NgZone,
-    private readonly window: RubicWindow,
+    window: RubicWindow,
     private readonly storeService: StoreService,
     chainId: number
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorService, zone);
+    super(onAddressChanges$, onNetworkChanges$, errorService, zone, window);
 
     chainId = chainId ?? this.storeService.getItem('chainId');
     this.wallet = this.getWallet(chainId);
