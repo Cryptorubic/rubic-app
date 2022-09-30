@@ -33,30 +33,59 @@
       (blockchainChange)="onBlockchainChange()"
     ></app-blockchains-aside>
 
-    <tui-loader *ngIf="searchQueryLoading" [showLoader]="true" size="xl"></tui-loader>
+    <ng-container *onlyFrame>
+      <app-tokens-search-bar
+        *ngIf="iframeTokenSearch && !isHorizontalIframe"
+        class="vertical-iframe-token-search"
+        [(searchQuery)]="searchQuery"
+      ></app-tokens-search-bar>
+    </ng-container>
 
-    <ng-container *ngIf="!searchQueryLoading">
-      <app-tokens-list
-        *ngIf="!customToken"
-        [(listType)]="listType"
-        [hasSearchQuery]="!!searchQuery"
-        [tokens]="
-          listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)
-        "
-        [currentlySelectedToken]="
-          currentlySelectedToken?.blockchain === blockchain ? currentlySelectedToken : null
-        "
-        [tokensNetworkState]="tokensNetworkState?.[blockchain]"
-        [loading]="tokensListUpdating"
-        (tokenSelect)="selectToken($event)"
-        (pageUpdate)="fetchNewPageTokens()"
-      ></app-tokens-list>
+    <tui-loader
+      *ngIf="searchQueryLoading && !isHorizontalIframe"
+      [showLoader]="true"
+      size="xl"
+    ></tui-loader>
 
-      <app-custom-token
-        *ngIf="customToken"
-        [token]="customToken"
-        (tokenSelected)="selectToken($event)"
-      ></app-custom-token
-    ></ng-container>
+    <div class="token-list-container">
+      <ng-container *onlyFrame>
+        <app-tokens-search-bar
+          *ngIf="isHorizontalIframe && iframeTokenSearch"
+          class="token-list-container__search"
+          [(searchQuery)]="searchQuery"
+          [expandableField]="true"
+        ></app-tokens-search-bar>
+      </ng-container>
+      <div class="token-list-container__list">
+        <tui-loader
+          *ngIf="searchQueryLoading && isHorizontalIframe"
+          [showLoader]="true"
+          size="l"
+        ></tui-loader>
+        <ng-container *ngIf="!searchQueryLoading">
+          <app-tokens-list
+            *ngIf="!customToken"
+            [(listType)]="listType"
+            [hasSearchQuery]="!!searchQuery"
+            [tokens]="
+              listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)
+            "
+            [currentlySelectedToken]="
+              currentlySelectedToken?.blockchain === blockchain ? currentlySelectedToken : null
+            "
+            [tokensNetworkState]="tokensNetworkState?.[blockchain]"
+            [loading]="tokensListUpdating"
+            (tokenSelect)="selectToken($event)"
+            (pageUpdate)="fetchNewPageTokens()"
+          ></app-tokens-list>
+
+          <app-custom-token
+            *ngIf="customToken"
+            [token]="customToken"
+            (tokenSelected)="selectToken($event)"
+          ></app-custom-token>
+        </ng-container>
+      </div>
+    </div>
   </div>
 </section>
