@@ -19,10 +19,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
     zone: NgZone,
     window: RubicWindow
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorsService, zone);
-
-    this.wallet = window.bitkeep?.ethereum;
-    this.checkErrors();
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
 
   /**
@@ -40,6 +37,9 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
   }
 
   public async activate(): Promise<void> {
+    this.wallet = this.window.bitkeep?.ethereum;
+    this.checkErrors();
+
     try {
       const accounts = await this.wallet.request({
         method: 'eth_requestAccounts'
