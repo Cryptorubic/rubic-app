@@ -11,7 +11,7 @@
       <app-rubic-refresh-button
         class="swaps-form__refresh"
         *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
-        type="autoRefresh"
+        [type]="autoRefresh ? 'autoRefresh' : 'refresh'"
         (onRefresh)="onRefresh()"
         [loadingStatus]="loadingStatus"
         [autoUpdate]="autoRefresh"
@@ -32,7 +32,7 @@
   <ng-container *onlyFrame>
     <!-- prettier-ignore -->
     <app-rubic-refresh-button *ngIf="isInstantTrade && allowTrade && allowRefresh" style="display: none;"
-      type="autoRefresh" (onRefresh)="onRefresh()" [loadingStatus]="loadingStatus" [autoUpdate]="autoRefresh">
+      [type]="autoRefresh ? 'autoRefresh' : 'refresh'" (onRefresh)="onRefresh()" [loadingStatus]="loadingStatus" [autoUpdate]="autoRefresh">
     </app-rubic-refresh-button>
   </ng-container>
 

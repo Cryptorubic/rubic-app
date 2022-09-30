@@ -29,9 +29,9 @@ export class TronLinkAdapter extends CommonWalletAdapter {
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    private readonly window: RubicWindow
+    window: RubicWindow
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorsService, zone);
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
     this.wallet = window.tronLink;
   }
 

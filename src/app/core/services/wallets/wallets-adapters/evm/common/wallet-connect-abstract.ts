@@ -13,6 +13,7 @@ import {
 } from 'rubic-sdk';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter {
   protected constructor(
@@ -20,9 +21,10 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter {
     accountChange$: BehaviorSubject<string>,
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
-    zone: NgZone
+    zone: NgZone,
+    window: RubicWindow
   ) {
-    super(accountChange$, chainChange$, errorsService, zone);
+    super(accountChange$, chainChange$, errorsService, zone, window);
 
     this.wallet = new WalletConnect({
       rpc: this.getNetworksProviders(),
