@@ -45,6 +45,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';
+import { TransactionFailed } from '@core/errors/models/common/transaction-failed';
 
 @Injectable()
 export class InstantTradeService extends TradeService {
@@ -238,19 +239,21 @@ export class InstantTradeService extends TradeService {
       }
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
-        await firstValueFrom(
-          interval(10_000).pipe(
-            switchMap(async () => {
-              const txData = await this.sdk.onChainStatusManager.getBridgersSwapStatus(
-                transactionHash
-              );
-              return txData.txStatus;
-            }),
-            filter(status => status === TxStatus.SUCCESS)
+        const txStatusData = await firstValueFrom(
+          interval(7_000).pipe(
+            switchMap(() => this.sdk.onChainStatusManager.getBridgersSwapStatus(transactionHash)),
+            filter(
+              statusData =>
+                statusData.status === TxStatus.SUCCESS || statusData.status === TxStatus.FAIL
+            )
           )
         );
         subscription$.unsubscribe();
-        this.showSuccessTrxNotification();
+        if (txStatusData.status === TxStatus.SUCCESS) {
+          this.showSuccessTrxNotification();
+        } else {
+          throw new TransactionFailed(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
+        }
       } else {
         subscription$.unsubscribe();
         this.showSuccessTrxNotification();
