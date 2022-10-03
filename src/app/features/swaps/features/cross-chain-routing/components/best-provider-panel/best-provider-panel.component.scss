@@ -11,10 +11,10 @@ $white: white;
 }
 
 ::ng-deep .provider-panel {
+  position: relative;
+
   height: 100%;
-  //position: relative;
-  transition: opacity ease-in-out 0.3s;
-  //min-height: 60px;
+  //transition: opacity ease-in-out 0.3s;
 
   @include b($mobile-md) {
     .provider-panel {
@@ -38,10 +38,37 @@ $white: white;
     }
   }
 
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 45px;
+  }
+
+  &__expand-button {
+    margin-left: auto;
+  }
+
+  &__providers-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+
+    width: 100%;
+    height: 166px;
+    padding: 0;
+    overflow: scroll;
+
+    background: var(--main-form-background);
+  }
+
   &__text {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 
     font-size: 16px;
   }
@@ -54,11 +81,6 @@ $white: white;
       &::after {
         border: none;
       }
-    }
-
-    .header {
-      height: 60px;
-      padding: 0 !important;
     }
 
     tui-expand .content {
@@ -82,8 +104,8 @@ $white: white;
   }
 
   &__row {
-    display: flex;
-    align-items: center;
+    //display: flex;
+    //align-items: center;
     min-height: 18px;
     margin-bottom: 25px;
 

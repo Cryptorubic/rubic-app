@@ -6,7 +6,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { forkJoin, combineLatest } from 'rxjs';
 import { CrossChainManager, CrossChainTradeType } from 'rubic-sdk';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
@@ -15,12 +15,24 @@ import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chai
 import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { ProvidersSort } from '@features/swaps/features/cross-chain-routing/components/providers-list-sorting/models/providers-sort';
+import { fadeAnimation, listAnimation } from '@shared/utils/utils';
+
+type RankedTaggedProviders = WrappedCrossChainTrade & {
+  rank: number;
+  tags: {
+    best: boolean;
+    minAmountWarning: boolean;
+    maxAmountWarning: boolean;
+    similarTrade: boolean;
+  };
+};
 
 @Component({
   selector: 'app-providers-list',
   templateUrl: './providers-list.component.html',
   styleUrls: ['./providers-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [fadeAnimation, listAnimation]
 })
 export class ProvidersListComponent {
   @Output() public readonly selectionHandler = new EventEmitter<void>();
@@ -32,8 +44,10 @@ export class ProvidersListComponent {
     map(([allProviders, sorting]) => {
       const providers: readonly (WrappedCrossChainTrade & { rank: number })[] = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListComponent.sortProviders(trades, sorting);
-    })
+      const sortedProviders = ProvidersListComponent.sortProviders(trades, sorting);
+      return this.setTags(sortedProviders);
+    }),
+    debounceTime(10)
   );
 
   public readonly smartRoutingList$ = this.providers$.pipe(
@@ -99,5 +113,30 @@ export class ProvidersListComponent {
       });
     }
     return trades;
+  }
+
+  private setTags(
+    sortedProviders: readonly (WrappedCrossChainTrade & { rank: number })[]
+  ): RankedTaggedProviders[] {
+    return sortedProviders.map((provider, index, allProviders) => {
+      const similarTrade = allProviders.find(
+        el =>
+          el.tradeType !== provider.tradeType &&
+          el.trade.to.tokenAmount.eq(provider.trade.to.tokenAmount)
+      );
+      return {
+        ...provider,
+        tags: {
+          best: index === 0,
+          minAmountWarning: provider.error instanceof CrossChainMinAmountError,
+          maxAmountWarning: provider.error instanceof CrossChainMaxAmountError,
+          similarTrade: Boolean(similarTrade)
+        }
+      };
+    });
+  }
+
+  public trackByType(_index: number, provider: RankedTaggedProviders): CrossChainTradeType {
+    return provider.tradeType;
   }
 }

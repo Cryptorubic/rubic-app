@@ -1,31 +1,38 @@
 <div class="provider-panel">
   <div class="provider-panel__row">
+    <!--    <ng-container *ngLet="calculatedProviders$ | async as providers">-->
+    <!--      <tui-accordion-item-->
+    <!--        *ngIf="providers > 1"-->
+    <!--        [borders]="null"-->
+    <!--        class="provider-panel__trades-container"-->
+    <!--        [ngClass]="{ 'provider-panel_expanded': expanded }"-->
+    <!--        [(open)]="expanded"-->
+    <!--        [showArrow]="false"-->
+    <!--      >-->
+    <!--      </tui-accordion-item>-->
+    <!--    </ng-container>-->
+
     <ng-container *ngLet="calculatedProviders$ | async as providers">
-      <tui-accordion-item
-        *ngIf="providers > 1"
-        [borders]="null"
-        class="provider-panel__trades-container"
-        [ngClass]="{ 'provider-panel_expanded': expanded }"
-        [(open)]="expanded"
-        [showArrow]="false"
-      >
-        <div *ngIf="expanded">
-          <app-providers-list-header
-            [calculatedProviders]="calculatedProviders$ | async"
-            (closeHandler)="closeAccordion()"
-          ></app-providers-list-header>
-        </div>
-        <div class="provider-panel__text" *ngIf="!expanded">
+      <div class="provider-panel__header">
+        <app-providers-list-header
+          *ngIf="expanded"
+          [calculatedProviders]="calculatedProviders$ | async"
+          (closeHandler)="closeAccordion()"
+        ></app-providers-list-header>
+        <div class="provider-panel__text" *ngIf="!expanded && providers > 1">
           <app-providers-counter
             *noFrame
             [calculatedProvider]="calculatedProvider"
           ></app-providers-counter>
-          {{ providers - 1 + (providers === 2 ? ' More trade' : ' More trades') }}
+          <button class="provider-panel__expand-button" (click)="expanded = true">
+            {{ providers - 1 + (providers === 2 ? ' More trade' : ' More trades') }}
+          </button>
         </div>
-        <ng-template tuiAccordionItemContent>
-          <app-providers-list (selectionHandler)="handleSelection()"></app-providers-list>
-        </ng-template>
-      </tui-accordion-item>
+      </div>
+
+      <div class="provider-panel__providers-content" *ngIf="expanded">
+        <app-providers-list (selectionHandler)="handleSelection()"></app-providers-list>
+      </div>
     </ng-container>
   </div>
 </div>

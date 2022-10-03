@@ -6,7 +6,7 @@ import {
   Input
 } from '@angular/core';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TUI_ANIMATIONS_DURATION, TuiDialogService } from '@taiga-ui/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { map } from 'rxjs/operators';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
@@ -17,7 +17,13 @@ import { RubicWindow } from '@shared/utils/rubic-window';
   selector: 'app-best-provider-panel',
   templateUrl: './best-provider-panel.component.html',
   styleUrls: ['./best-provider-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: TUI_ANIMATIONS_DURATION,
+      useFactory: () => 10000
+    }
+  ]
 })
 export class BestProviderPanelComponent {
   @Input() public calculatedProvider: CalculatedProvider | null;
@@ -39,18 +45,18 @@ export class BestProviderPanelComponent {
     private readonly cdr: ChangeDetectorRef
   ) {}
 
-  public toggleAccordion(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    if (this.expanded) {
-      if ((event.target as HTMLElement).classList.contains('close')) {
-        this.expanded = false;
-      }
-    } else {
-      this.expanded = true;
-    }
-    this.cdr.detectChanges();
-  }
+  // public toggleAccordion(event: MouseEvent): void {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   if (this.expanded) {
+  //     if ((event.target as HTMLElement).classList.contains('close')) {
+  //       this.expanded = false;
+  //     }
+  //   } else {
+  //     this.expanded = true;
+  //   }
+  //   this.cdr.detectChanges();
+  // }
 
   public handleSelection(): void {
     this.expanded = false;
@@ -58,7 +64,6 @@ export class BestProviderPanelComponent {
   }
 
   public closeAccordion(): void {
-    // this.expanded = true;
-    this.cdr.detectChanges();
+    this.expanded = false;
   }
 }

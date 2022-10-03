@@ -1,38 +1,46 @@
-<tui-loader [showLoader]="(providers$ | async)?.length === 0" [overlay]="true">
-  <ul *ngIf="providers$ | async as providers">
-    <ng-container *ngFor="let provider of providers$ | async; let i = index">
-      <li
-        class="provider"
-        [ngClass]="{
-          provider_selected:
-            (selectedProvider$ | async) === provider.tradeType ||
-            ((selectedProvider$ | async) === null && i === 0)
-        }"
-        (click)="selectProvider(provider?.tradeType)"
-      >
-        <app-smart-routing
-          *ngIf="(smartRoutingList$ | async)?.[i] as smartRouting"
-          [smartRouting]="smartRouting"
-        ></app-smart-routing>
+<ng-container *ngIf="providers$ | async as providers">
+  <tui-loader [showLoader]="providers?.length === 0" [overlay]="true">
+    <ul @listAnimation>
+      <ng-container *ngFor="let provider of providers; let i = index; trackBy: trackByType">
+        <li
+          class="provider"
+          [ngClass]="{
+            provider_selected:
+              (selectedProvider$ | async) === provider.tradeType ||
+              ((selectedProvider$ | async) === null && i === 0)
+          }"
+          (click)="selectProvider(provider?.tradeType)"
+          @fadeAnimation
+        >
+          <app-smart-routing
+            *ngIf="(smartRoutingList$ | async)?.[i] as smartRouting"
+            [smartRouting]="smartRouting"
+          ></app-smart-routing>
 
-        <span>
-          {{
-            provider.trade?.to?.tokenAmount
-              | bigNumberFormat
-              | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
-          }}
-        </span>
+          <span>
+            {{
+              provider.trade?.to?.tokenAmount
+                | bigNumberFormat
+                | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
+            }}
+          </span>
 
-        <div class="provider__statuses">
-          <tui-badge *ngIf="i === 0" status="success" value="Best"></tui-badge>
-          <tui-badge
-            *ngIf="provider.error"
-            status="warning"
-            [value]="getMinMaxError(provider)"
-          ></tui-badge>
-          <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
-        </div>
-      </li>
-    </ng-container>
-  </ul>
-</tui-loader>
+          <div class="provider__statuses">
+            <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
+            <tui-badge
+              *ngIf="provider.tags.maxAmountWarning || provider.tags.maxAmountWarning"
+              status="warning"
+              [value]="getMinMaxError(provider)"
+            ></tui-badge>
+            <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
+            <tui-badge
+              *ngIf="provider.tags.similarTrade"
+              status="warning"
+              [value]="provider.tradeType.charAt(0) + provider.tradeType.slice(1).toLowerCase()"
+            ></tui-badge>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </tui-loader>
+</ng-container>
