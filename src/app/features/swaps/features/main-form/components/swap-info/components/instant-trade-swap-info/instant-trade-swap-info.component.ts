@@ -1,16 +1,8 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Self,
-  OnInit,
-  Input
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Self, Input } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
-import { takeUntil } from 'rxjs/operators';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
@@ -31,7 +23,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class InstantTradeSwapInfoComponent implements OnInit {
+export class InstantTradeSwapInfoComponent {
   @Input() set currentOnChainTrade(onChainTrade: OnChainTrade) {
     this.setTradeData(onChainTrade);
   }
@@ -89,20 +81,6 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.rateType = 'fromTokenRate';
-  }
-
-  ngOnInit() {
-    this.initSubscriptions();
-  }
-
-  private initSubscriptions(): void {
-    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      // const { toAmount } = this.swapFormService.outputValue;
-      // if (!toAmount?.isFinite()) {
-      //   this.swapInfoService.emitInfoCalculated();
-      //   return;
-      // }
-    });
   }
 
   public switchRateType(): void {
