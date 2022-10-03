@@ -3,6 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
+  Injector,
+  INJECTOR,
   Input,
   OnInit,
   Output,
@@ -61,6 +64,9 @@ import { TradeParser } from '@features/swaps/features/instant-trade/services/ins
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { TuiDialogService } from '@taiga-ui/core';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -211,6 +217,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly dialogService: TuiDialogService,
+    @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isIframe = this.iframeService.isIframe;
@@ -717,6 +725,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
+    if (!this.isSlippageCorrect()) {
+      return;
+    }
+
     let providerName: OnChainTradeType;
     let providerTrade: OnChainTrade | WrapTrade;
     if (!this.ethWethTrade) {
@@ -810,5 +822,22 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }))
       )
     );
+  }
+
+  private isSlippageCorrect(): boolean {
+    if (
+      !this.selectedProvider ||
+      this.settingsService.instantTradeValue.autoSlippageTolerance ||
+      this.selectedProvider.trade.type !== ON_CHAIN_TRADE_TYPE.BRIDGERS
+    ) {
+      return true;
+    }
+    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    this.dialogService
+      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
+        size
+      })
+      .subscribe();
+    return false;
   }
 }
