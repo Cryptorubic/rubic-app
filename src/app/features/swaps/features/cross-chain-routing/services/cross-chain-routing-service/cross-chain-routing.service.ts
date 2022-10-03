@@ -448,14 +448,10 @@ export class CrossChainRoutingService extends TradeService {
       })
     };
 
-    const oldProvider = this._selectedProvider$.value;
-
     try {
-      this._selectedProvider$.next(wrappedTrade.tradeType);
       await wrappedTrade.trade.approve(swapOptions);
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
-      this._selectedProvider$.next(oldProvider);
       throw err;
     } finally {
       approveInProgressSubscription$?.unsubscribe();

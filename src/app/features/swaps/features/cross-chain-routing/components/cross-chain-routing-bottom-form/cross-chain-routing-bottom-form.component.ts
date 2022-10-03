@@ -11,13 +11,14 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject, Subscription, throwError } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   startWith,
   switchMap,
@@ -53,6 +54,8 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
 import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -117,6 +120,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private crossChainProviderTrade: CrossChainProviderTrade;
 
   private isViaDisabled = false;
+
+  private readonly _selectionHandler$ = new Subject<void>();
+
+  public readonly selectionHandler$ = this._selectionHandler$.asObservable();
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -409,27 +416,39 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public async approveTrade(): Promise<void> {
-    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    this.selectionHandler$
+      .pipe(first())
+      .pipe(
+        tap(() => {
+          this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+        }),
+        switchMap(() => from(this.crossChainRoutingService.approve(this.crossChainProviderTrade))),
+        tap(() => {
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.needApprove = false;
 
-    try {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
-
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.needApprove = false;
-
-      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
-
-      await this.tokensService.updateNativeTokenBalance(fromBlockchain);
-    } catch (err) {
-      this.errorsService.catch(err);
-
-      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-    }
-    this.cdr.detectChanges();
-
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
+        }),
+        switchMap(() => this.tokensService.updateNativeTokenBalance(fromBlockchain)),
+        catchError((err: unknown) =>
+          throwError(() => {
+            throw err;
+          })
+        )
+      )
+      .subscribe({
+        error: (err: unknown) => {
+          this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+        },
+        complete: () => {
+          this.cdr.detectChanges();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+        }
+      });
+    this.crossChainRoutingService.setSelectedProvider(this.crossChainProviderTrade.tradeType);
   }
 
   public async createTrade(): Promise<void> {
@@ -518,6 +537,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           smartRouting
         };
         this.selectProvider(provider);
+        this._selectionHandler$.next();
       });
   }
 }
