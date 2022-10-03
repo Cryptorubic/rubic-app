@@ -349,8 +349,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       this.sortTokens();
       this.customToken = null;
     }
-
-    this.searchQueryLoading = false;
   }
 
   /**
