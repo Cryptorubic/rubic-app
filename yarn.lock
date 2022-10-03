@@ -14673,10 +14673,10 @@ rubic-app-maticjs@^2.0.56:
     query-string "6.8.1"
     web3 "^1.3.5"
 
-rubic-sdk@3.0.1-alpha.1:
-  version "3.0.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.0.1-alpha.1.tgz#3ed5346a261ce5137ba8d195f83f0a4862a210e8"
-  integrity sha512-39dmYxwUKc08pZpiRxPzNeD9xQtJTwyojy+gEPUMA1ezcux9+G94/E+bZEwQ+VtTWhjLmlfBCbj3eb70jE5CXQ==
+rubic-sdk@3.0.2-alpha.3:
+  version "3.0.2-alpha.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.0.2-alpha.3.tgz#3de8037df8cacc5677d097aa01fba47e9c3c2064"
+  integrity sha512-G6vHO5uuV5iYkmFnDKzzUbZICUPdht2FqKRWYsexiP8NKs5VJuz4Z1pO3EtKAtHlyCuAoA3fSgBbaBMmoE7g8Q==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -16432,9 +16432,9 @@ trim@0.0.1:
   integrity sha512-YzQV+TZg4AxpKxaTHK3c3D+kRDCGVEE7LemdlQZoQXn0iennk10RsIoY6ikzAqJTc9Xjl9C1/waHom/J86ziAQ==
 
 tronweb@^4.3.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-4.4.0.tgz#098e5d27e8143f34290f2938f448859b6a5efacc"
-  integrity sha512-0yPmjQE1drPcDtW4YCXFjtvDQmKc/utjKB2J6U5GDcWWhsGqE8yFjdIMJRa1yj1a/oFQNlthKMzw4Jd7lkWbYA==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-4.3.0.tgz#d3a088e9efb839f0d445f9dc5c79853ab33ccbfa"
+  integrity sha512-U+s+NBGOg+zfiXeO2kaljJCClg8y8v0McIdO3aAN3/UujDJHou6d6XVPaiMnli4ynE0XC4JHSUM+5KcYos+DiQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.26.1"
