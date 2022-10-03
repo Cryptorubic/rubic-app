@@ -9,6 +9,10 @@
   display: flex;
   align-items: center;
 
+  &__close {
+    cursor: pointer;
+  }
+
   &__header {
     margin: 0;
 
