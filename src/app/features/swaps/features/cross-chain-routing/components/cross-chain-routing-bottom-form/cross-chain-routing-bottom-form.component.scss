@@ -20,6 +20,7 @@
 
     @include iframe-vertical {
       flex-direction: column;
+      grid-gap: 6px;
     }
 
     @include iframe-horizontal {
