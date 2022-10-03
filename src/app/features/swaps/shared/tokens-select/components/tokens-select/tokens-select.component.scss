@@ -117,7 +117,6 @@ app-icon-button {
 
 .token-list-container {
   width: 100%;
-
   @include iframe-horizontal {
     display: flex;
     align-items: center;
@@ -140,9 +139,5 @@ app-icon-button {
     &_loading {
       width: 100%;
     }
-  }
-
-  &_loading {
-    width: 0;
   }
 }
