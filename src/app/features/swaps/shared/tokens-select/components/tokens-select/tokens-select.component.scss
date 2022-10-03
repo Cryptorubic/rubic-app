@@ -122,6 +122,7 @@ app-icon-button {
     display: flex;
     align-items: center;
     height: 90px;
+    overflow: hidden;
   
     &__search {
       position: relative;
@@ -134,7 +135,6 @@ app-icon-button {
 
     &__list {
       width: 100%;
-      overflow: hidden;
     }
 
     &_loading {
