@@ -65,14 +65,13 @@
               "
             ></app-usd-price-container>
 
-            <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
-              Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
+            <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
+              Est. fee ${{ getGas(selectedProvider)?.toFixed(2) }}
             </div>
           </div>
         </ng-container>
       </div>
     </div>
-
     <ng-container *noFrame>
       <app-providers-panels-container
         *ngIf="allowTrade && !ethWethTrade"
@@ -82,6 +81,9 @@
       >
       </app-providers-panels-container>
     </ng-container>
+    <app-target-network-address
+      *ngIf="displayTargetAddressInput$ | async"
+    ></app-target-network-address>
   </main>
 </div>
 

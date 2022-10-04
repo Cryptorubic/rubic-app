@@ -5,7 +5,9 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { CommonTrade } from '../../models/common-trade';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { CrossChainTxStatus } from 'rubic-sdk';
+import { ScannerLinkPipe } from '@app/shared/pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
+import { TxStatus } from 'rubic-sdk';
 
 @Component({
   selector: '[symbiosis-trade]',
@@ -30,7 +32,7 @@ export class SymbiosisTradeComponent extends CommonTrade {
   }
 
   public setUiTrade(uiTrade: UiRecentTrade): void {
-    if (!this.uiTrade || this.uiTrade?.statusTo !== CrossChainTxStatus.FALLBACK) {
+    if (!this.uiTrade || this.uiTrade?.statusTo !== TxStatus.FALLBACK) {
       this.uiTrade = uiTrade;
 
       if (this.initialLoading) {
@@ -48,8 +50,14 @@ export class SymbiosisTradeComponent extends CommonTrade {
     );
 
     if (revertTxReceipt.status) {
-      this.uiTrade.statusTo = CrossChainTxStatus.FALLBACK;
+      this.uiTrade.statusTo = TxStatus.FALLBACK;
       this.revertBtnLoading = false;
+      this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
+      this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+        revertTxReceipt.transactionHash,
+        this.uiTrade.fromBlockchain.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
       this.cdr.detectChanges();
     }
   }

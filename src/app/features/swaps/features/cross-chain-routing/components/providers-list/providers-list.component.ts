@@ -8,11 +8,9 @@ import {
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { forkJoin, combineLatest } from 'rxjs';
-import { CrossChainManager, CrossChainTradeType } from 'rubic-sdk';
+import { CrossChainManager, CrossChainTradeType, MaxAmountError, MinAmountError } from 'rubic-sdk';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
-import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { ProvidersSort } from '@features/swaps/features/cross-chain-routing/components/providers-list-sorting/models/providers-sort';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
@@ -62,10 +60,10 @@ export class ProvidersListComponent {
 
   public getMinMaxError(provider: WrappedCrossChainTrade): string {
     const error = provider.error;
-    if (error instanceof CrossChainMaxAmountError) {
+    if (error instanceof MaxAmountError) {
       return `Max: ${error.maxAmount.toFixed(3)}`;
     }
-    if (error instanceof CrossChainMinAmountError) {
+    if (error instanceof MinAmountError) {
       return `Min: ${error.minAmount.toFixed(3)}`;
     }
   }
@@ -128,8 +126,8 @@ export class ProvidersListComponent {
         ...provider,
         tags: {
           best: index === 0,
-          minAmountWarning: provider.error instanceof CrossChainMinAmountError,
-          maxAmountWarning: provider.error instanceof CrossChainMaxAmountError,
+          minAmountWarning: provider.error instanceof MinAmountError,
+          maxAmountWarning: provider.error instanceof MaxAmountError,
           similarTrade: Boolean(similarTrade)
         }
       };

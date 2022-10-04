@@ -15,8 +15,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-cross-chain-bridge-swap-info',
@@ -39,7 +39,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
   public isWalletCopied: boolean;
 
   public get blockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.toBlockchain);
+    return blockchainLabel[this.toBlockchain];
   }
 
   constructor(
@@ -62,15 +62,13 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
       this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
         startWith(this.swapFormService.inputValue.toBlockchain)
       ),
-      this.authService.getCurrentUser(),
-      this.targetNetworkAddressService.displayAddress$,
-      this.targetNetworkAddressService.targetAddress$
+      this.authService.currentUser$,
+      this.targetNetworkAddressService.address$
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([toBlockchain, user, displayTargetAddress, targetAddress]) => {
+      .subscribe(([toBlockchain, user, targetAddress]) => {
         this.toBlockchain = toBlockchain;
-        const targetAddressExact = targetAddress?.isValid ? targetAddress.value : null;
-        this.toWalletAddress = displayTargetAddress ? targetAddressExact : user?.address;
+        this.toWalletAddress = targetAddress ?? user?.address;
 
         this.cdr.detectChanges();
       });

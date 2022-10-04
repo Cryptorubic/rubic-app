@@ -59,16 +59,12 @@
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="Protocol fee"
-      [tuiHint]="'Platform\'s comission charges in source network native coin.'"
+      [tuiHint]="'Platform\'s commission charges in source network native coin.'"
     />
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="feePercent !== 0; else zero">
-      {{ feePercent }}% ≈
-      {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
-      {{ feeTokenSymbol }}
-    </ng-container>
+    <ng-container *ngIf="feePercent !== 0; else zero">{{ feePercent }}% + 1 USD</ng-container>
     <ng-template #zero>
       <ng-container *ngIf="feeAmount?.isFinite(); else fullZero"> ~ 1 USD</ng-container>
       <ng-template #fullZero> 0% </ng-template>
@@ -76,7 +72,9 @@
   </div>
 </div>
 
-<hr class="delimiter" />
+<ng-container *ngIf="!isBridgers || priceImpact">
+  <hr class="delimiter" />
+</ng-container>
 
 <app-price-impact-info-line
   *ngIf="!isSymbiosisOrLifi"
@@ -105,27 +103,29 @@
   [priceImpact]="priceImpact"
 ></app-price-impact-info-line>
 
-<div
-  class="info-line"
-  *ngLet="
-    (minimumReceived
-      | bigNumberFormat
-      | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
-    ' ' +
-    toToken.symbol as minimumReceivedFormatted
-  "
->
-  <div class="info-line__title title">
-    <span class="title__text">Current slippage</span>
-    <img
-      src="assets/images/swaps/swaps-info/question-icon.svg"
-      alt="question"
-      [tuiHint]="
-        'Output is estimated. You will receive at least ' +
-        minimumReceivedFormatted +
-        ' or the transaction will revert.'
-      "
-    />
+<ng-container *ngIf="!isBridgers">
+  <div
+    class="info-line"
+    *ngLet="
+      (minimumReceived
+        | bigNumberFormat
+        | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
+      ' ' +
+      toToken.symbol as minimumReceivedFormatted
+    "
+  >
+    <div class="info-line__title title">
+      <span class="title__text">Current slippage</span>
+      <img
+        src="assets/images/swaps/swaps-info/question-icon.svg"
+        alt="question"
+        [tuiHint]="
+          'Output is estimated. You will receive at least ' +
+          minimumReceivedFormatted +
+          ' or the transaction will revert.'
+        "
+      />
+    </div>
+    <div class="info-line__value">{{ slippage }}%</div>
   </div>
-  <div class="info-line__value">{{ slippage }}%</div>
-</div>
+</ng-container>

@@ -19,6 +19,7 @@ import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/to
 import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-ccr/unsupported-token-ccr.component';
 import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
 import { BitKeepErrorComponent } from './components/bitkeep-error/bitkeep-error.component';
+import { TransactionFailedErrorComponent } from '@core/errors/components/transaction-failed-error/transaction-failed-error.component';
 
 @NgModule({
   declarations: [
@@ -36,20 +37,9 @@ import { BitKeepErrorComponent } from './components/bitkeep-error/bitkeep-error.
     InsufficientFundsOneinchErrorComponent,
     TokenWithFeeErrorComponent,
     UnsupportedTokenCCRComponent,
-    RpcErrorComponent
+    RpcErrorComponent,
+    TransactionFailedErrorComponent
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
-  entryComponents: [
-    UndefinedErrorComponent,
-    NotSupportedNetworkErrorComponent,
-    InsufficientFundsErrorComponent,
-    MetamaskErrorComponent,
-    BitKeepErrorComponent,
-    NetworkErrorComponent,
-    TotalSupplyOverflowErrorComponent,
-    OverQueryLimitErrorComponent,
-    UnknownErrorComponent,
-    InsufficientFundsCcrErrorComponent
-  ]
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule]
 })
 export class ErrorsModule {}

@@ -12,7 +12,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
+    "target": "es2020",
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "typeRoots": [

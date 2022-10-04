@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
-import { BLOCKCHAIN_NAME, Web3Public, Web3Pure } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
+import { BLOCKCHAIN_NAME, Web3Pure, Injector, EvmWeb3Public } from 'rubic-sdk';
+import { BehaviorSubject, combineLatest, from, Observable, of, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
+import { WEEKS_IN_YEAR } from '@app/shared/constants/time/time';
 
-interface EpochInfo {
+type EpochInfo = {
   startTime: string;
   endTime: string;
   rewardPerSecond: string;
   totalPower: string;
   startBlock: string;
-}
+};
 
 @Injectable()
 export class StatisticsService {
@@ -36,6 +36,9 @@ export class StatisticsService {
   private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
   private readonly supply = new BigNumber(124_000_000);
+
+  // @TODO: remove after implementation of apr calculations on BE
+  private readonly currentActiveTokens = 16841697.321;
 
   private readonly numberOfSecondsPerWeek = 604_800;
 
@@ -63,13 +66,10 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.rewardPerSecond$, this.getTotalSupply()]).pipe(
-        map(([rewardPerSecond, totalSupply]) => {
-          this.currentStakingApr = rewardPerSecond
-            .multipliedBy(this.numberOfWeekPerYear)
-            .dividedBy(totalSupply)
-            .multipliedBy(100);
-
+      combineLatest([this.rewardPerSecond$, of(this.currentActiveTokens)]).pipe(
+        map(([rewardPerSecond, currentActiveTokens]) => {
+          const rewardPerYear: BigNumber = rewardPerSecond.multipliedBy(WEEKS_IN_YEAR);
+          this.currentStakingApr = rewardPerYear.dividedBy(currentActiveTokens).multipliedBy(100);
           return this.currentStakingApr;
         })
       )
@@ -86,7 +86,7 @@ export class StatisticsService {
 
   constructor(private readonly coingeckoApiService: CoingeckoApiService) {}
 
-  private static get blockchainAdapter(): Web3Public {
+  private static get blockchainAdapter(): EvmWeb3Public {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
@@ -95,7 +95,7 @@ export class StatisticsService {
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
-        'totalSupply'
+        'supply'
       )
     ).pipe(
       map(value => {
@@ -117,24 +117,24 @@ export class StatisticsService {
     });
   }
 
-  public getCurrentEpochInfo(currentEpochId: number): Observable<EpochInfo> {
+  public getCurrentEpochInfo(currentEpochId: string): Observable<EpochInfo> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<EpochInfo>(
         STAKING_ROUND_THREE.REWARDS.address,
         STAKING_ROUND_THREE.REWARDS.abi,
         'epochInfo',
-        { methodArguments: [currentEpochId] }
+        [currentEpochId]
       ) as Promise<EpochInfo>
     );
   }
 
-  private static getCurrentEpochId(): Observable<number> {
+  private static getCurrentEpochId(): Observable<string> {
     return from(
-      StatisticsService.blockchainAdapter.callContractMethod<number>(
+      StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.REWARDS.address,
         STAKING_ROUND_THREE.REWARDS.abi,
         'getCurrentEpochId'
-      ) as Promise<number>
+      )
     );
   }
 

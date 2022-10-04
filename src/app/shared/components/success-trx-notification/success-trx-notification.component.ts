@@ -3,6 +3,9 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CommonModalService } from '@core/services/modal/common-modal.service';
+import { HeaderStore } from '@core/header/services/header.store';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 @Component({
   selector: 'app-success-trx-notification',
@@ -22,9 +25,21 @@ export class SuccessTrxNotificationComponent {
     private readonly context: TuiDialogContext<
       void,
       { type: SuccessTxModalType; ccrProviderType: CrossChainTradeType }
-    >
+    >,
+    private readonly modalService: CommonModalService,
+    private readonly headerStore: HeaderStore
   ) {
     this.type = context.data.type;
     this.ccrProviderType = context.data.ccrProviderType;
+  }
+
+  public handleLinkClick(): void {
+    // CompleteWith doesn't work.
+    (this.context as RubicAny).closeHook();
+    this.modalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
+      })
+      .subscribe();
   }
 }

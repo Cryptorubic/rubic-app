@@ -12,9 +12,13 @@ export class StakeButtonComponent {
 
   @Input() approveLoading: boolean = false;
 
-  @Input() error: StakeButtonError;
+  @Input() amountError: StakeButtonError;
+
+  @Input() lockTimeExceededError: boolean;
 
   @Input() minStakeAmount: number;
+
+  @Input() maxLockTime: number;
 
   @Output() public readonly onStake = new EventEmitter<void>();
 
@@ -23,11 +27,11 @@ export class StakeButtonComponent {
   public readonly errors = StakeButtonError;
 
   public handleClick(): void {
-    if (this.error === this.errors.NULL) {
+    if (this.amountError === this.errors.NULL) {
       this.onStake.emit();
     }
 
-    if (this.error === this.errors.NEED_APPROVE) {
+    if (this.amountError === this.errors.NEED_APPROVE) {
       this.onApprove.emit();
     }
   }

@@ -11,7 +11,16 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { forkJoin, from, Observable, of, Subject, Subscription, throwError } from 'rxjs';
+import {
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  combineLatest,
+  Subscription,
+  throwError
+} from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -38,20 +47,25 @@ import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/r
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, RubicSdkError } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CROSS_CHAIN_TRADE_TYPE,
+  MaxAmountError,
+  MinAmountError,
+  RubicSdkError
+} from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
-import { CrossChainMinAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-min-amount.error';
-import { CrossChainMaxAmountError } from 'rubic-sdk/lib/common/errors/cross-chain/cross-chain-max-amount.error';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -113,7 +127,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+  public readonly displayTargetAddressInput$ =
+    this.settingsService.crossChainRoutingValueChanges.pipe(
+      startWith(this.settingsService.crossChainRoutingValue),
+      map(value => value.showReceiverAddress)
+    );
 
   public smartRouting: SmartRouting = null;
 
@@ -184,11 +202,31 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
+        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
+    // We did not use distinctUntilChanged because the PREV value was not updated.
+    let prevToggleValue: boolean;
     this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.autoSlippageTolerance === next.autoSlippageTolerance &&
+            prev.slippageTolerance === next.slippageTolerance
+          );
+        }),
+        filter(settings => {
+          if (settings.showReceiverAddress === prevToggleValue) {
+            prevToggleValue = settings.showReceiverAddress;
+            return true;
+          }
+          prevToggleValue = settings.showReceiverAddress;
+          return false;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
@@ -197,8 +235,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.conditionalCalculate('normal'));
 
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(
         filter(user => !!user?.address),
         takeUntil(this.destroy$)
@@ -207,7 +244,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.onRefreshTrade
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.conditionalCalculate('normal'));
+
+    combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.conditionalCalculate('normal');
+      });
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -239,11 +284,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
-
-    this.conditionalCalculate('normal');
   }
 
-  private conditionalCalculate(type?: CalculateTradeType): void {
+  private conditionalCalculate(type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
       return;
@@ -256,8 +299,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    const { autoRefresh } = this.settingsService.crossChainRoutingValue;
-    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type);
   }
 
   private setupNormalTradeCalculation(): void {
@@ -288,7 +330,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           if (!allowTrade) {
             return of(null);
           }
-          const isUserAuthorized = Boolean(this.authService.userAddress);
+          const { fromBlockchain } = this.swapFormService.inputValue;
+          const isUserAuthorized =
+            Boolean(this.authService.userAddress) &&
+            this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
 
           const crossChainTrade$ = this.crossChainRoutingService.calculateTrade(
             isUserAuthorized,
@@ -338,19 +383,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       error !== undefined &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
-      ((error instanceof CrossChainMinAmountError && fromAmount.gte(error.minAmount)) ||
-        (error instanceof CrossChainMaxAmountError && fromAmount.lte(error.maxAmount)))
+      ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
+        (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
     ) {
       this.onCalculateTrade$.next('normal');
       return;
     }
 
     this.minError =
-      error instanceof CrossChainMinAmountError
+      error instanceof MinAmountError
         ? { amount: error.minAmount, symbol: error.tokenSymbol }
         : false;
     this.maxError =
-      error instanceof CrossChainMaxAmountError
+      error instanceof MaxAmountError
         ? { amount: error.maxAmount, symbol: error.tokenSymbol }
         : false;
     this.errorText = '';
@@ -496,14 +541,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private isSlippageCorrect(): boolean {
     if (
       !this.crossChainProviderTrade ||
-      this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA ||
-      this.settingsService.crossChainRoutingValue.autoSlippageTolerance
+      this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
+      (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
     ) {
       return true;
     }
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(ViaSlippageWarningModalComponent, this.injector), {
+      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
         size
       })
       .subscribe();

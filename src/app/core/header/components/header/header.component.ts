@@ -92,7 +92,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly zone: NgZone
   ) {
     this.advertisementType = 'default';
-    this.currentUser$ = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.currentUser$;
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
@@ -108,8 +108,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.cdr.detectChanges());
   }

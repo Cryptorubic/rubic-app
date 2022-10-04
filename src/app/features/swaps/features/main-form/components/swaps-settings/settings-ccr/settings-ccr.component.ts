@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Self } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import {
   CcrSettingsForm,
@@ -6,6 +6,9 @@ import {
 } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { PromoCode } from '@features/swaps/features/main-form/models/promo-code';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -16,7 +19,8 @@ import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
     {
       provide: TUI_NUMBER_FORMAT,
       useValue: { decimalSeparator: '.', thousandSeparator: ',' }
-    }
+    },
+    TuiDestroyService
   ]
 })
 export class SettingsCcrComponent implements OnInit {
@@ -30,7 +34,11 @@ export class SettingsCcrComponent implements OnInit {
 
   public readonly minimumSlippageTolerance = 3;
 
-  constructor(private readonly settingsService: SettingsService) {
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {
     this.defaultSlippageTolerance = this.settingsService.defaultCcrSettings.slippageTolerance;
   }
 
@@ -44,22 +52,34 @@ export class SettingsCcrComponent implements OnInit {
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
       autoRefresh: new FormControl<boolean>(formValue.autoRefresh),
-      promoCode: new FormControl<PromoCode | null>(null)
+      promoCode: new FormControl<PromoCode | null>(null),
+      showReceiverAddress: new FormControl<boolean>(formValue.showReceiverAddress)
     });
     this.slippageTolerance = formValue.slippageTolerance;
     this.promoCode = formValue.promoCode;
     this.setFormChanges();
+
+    this.targetNetworkAddressService.isAddressRequired$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAddressRequired => {
+        this.crossChainRoutingForm.controls.showReceiverAddress.setDisable(isAddressRequired, {
+          emitEvent: false
+        });
+      });
   }
 
   private setFormChanges(): void {
-    this.crossChainRoutingForm.valueChanges.subscribe(settings => {
+    this.crossChainRoutingForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.settingsService.crossChainRouting.patchValue({ ...settings });
     });
-    this.settingsService.crossChainRoutingValueChanges.subscribe(settings => {
-      this.crossChainRoutingForm.patchValue({ ...settings }, { emitEvent: false });
-      this.slippageTolerance = settings.slippageTolerance;
-      this.promoCode = settings.promoCode;
-    });
+
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(settings => {
+        this.crossChainRoutingForm.patchValue({ ...settings }, { emitEvent: false });
+        this.slippageTolerance = settings.slippageTolerance;
+        this.promoCode = settings.promoCode;
+      });
   }
 
   public toggleAutoSlippageTolerance(): void {

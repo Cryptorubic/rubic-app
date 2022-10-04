@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
-import { WalletsModule } from 'src/app/core/wallets/wallets.module';
+import { WalletsModalModule } from '@core/wallets-modal/wallets-modal.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
 import { SharedModule } from '@shared/shared.module';
@@ -43,7 +43,7 @@ import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
   imports: [
     CommonModule,
     HeaderModule,
-    WalletsModule,
+    WalletsModalModule,
     ErrorsModule,
     SharedModule,
     TranslateModule.forRoot({

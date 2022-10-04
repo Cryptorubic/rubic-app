@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';
-import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -15,7 +15,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.FANTOM,
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.AURORA,
-  BLOCKCHAIN_NAME.TELOS
+  BLOCKCHAIN_NAME.TELOS,
+  BLOCKCHAIN_NAME.ETHEREUM_POW
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -41,7 +42,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'ethereum',
       [BLOCKCHAIN_NAME.AURORA]: 'ethereum',
-      [BLOCKCHAIN_NAME.TELOS]: 'telos'
+      [BLOCKCHAIN_NAME.TELOS]: 'telos',
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou'
     };
 
     this.tokenBlockchainId = {
@@ -54,7 +56,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
       [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum-one',
       [BLOCKCHAIN_NAME.AURORA]: 'aurora',
-      [BLOCKCHAIN_NAME.TELOS]: 'telos'
+      [BLOCKCHAIN_NAME.TELOS]: 'telos',
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou'
     };
   }
 
@@ -132,7 +135,7 @@ export class CoingeckoApiService {
     address: string;
     blockchain: BlockchainName;
   }): Observable<number | undefined> {
-    if (Web3Pure.isNativeAddress(token.address)) {
+    if (Web3Pure[BlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(token.address)) {
       return this.getNativeCoinPrice(token.blockchain);
     }
     return this.getCommonTokenPrice(token.blockchain, token.address);

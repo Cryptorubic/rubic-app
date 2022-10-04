@@ -96,12 +96,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     ClipboardModule,
     TuiAccordionModule
   ],
-  entryComponents: [
-    SettingsItComponent,
-    SettingsBridgeComponent,
-    SettingsCcrComponent,
-    IframeSettingsComponent
-  ],
   providers: [SwapsService, SuccessTxModalService, RubicSdkService]
 })
 export class SwapsModule {}

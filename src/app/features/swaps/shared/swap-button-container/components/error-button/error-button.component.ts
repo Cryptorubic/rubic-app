@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-button-container/services/swap-button-container-errors.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ERROR_TYPE } from '@features/swaps/shared/swap-button-container/models/error-type';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { first, map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
@@ -43,16 +43,26 @@ export class ErrorButtonComponent {
 
   public allowChangeNetwork(err: ERROR_TYPE): boolean {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    if (err !== ERROR_TYPE.WRONG_BLOCKCHAIN || fromBlockchain === BLOCKCHAIN_NAME.BITCOIN) {
+    if (
+      err !== ERROR_TYPE.WRONG_BLOCKCHAIN ||
+      !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
+    ) {
       return false;
     }
-    return this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK;
+
+    return (
+      this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK ||
+      this.walletConnectorService?.provider.walletName === WALLET_NAME.WALLET_CONNECT
+    );
   }
 
   public async changeNetwork(): Promise<void> {
-    this.loading = true;
-
     const { fromBlockchain } = this.swapFormService.inputValue;
+    if (!BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
+      return;
+    }
+
+    this.loading = true;
     try {
       await this.walletConnectorService.switchChain(fromBlockchain);
       await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));

@@ -41,7 +41,8 @@ td {
   }
 }
 
-.status-from {
+.status-from,
+.status-to {
   a {
     display: flex;
     align-items: center;
@@ -53,11 +54,21 @@ td {
     &.tui-skeleton::after {
       content: '';
     }
-
+    
     &::after {
       margin-left: 7px;
-
+      
       content: url('/assets/images/icons/arrow/link-arrow.svg');
     }
+  }
+}
+
+.status-to a.hide-arrow { 
+  cursor: default;
+
+  pointer-events: none;
+
+  &::after {
+    visibility: hidden;
   }
 }

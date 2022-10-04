@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { RubicSdkService } from '@app/features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { StoreService } from '@core/services/store/store.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletProvider } from 'rubic-sdk';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { filter, tap } from 'rxjs/operators';
+import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from 'rubic-sdk';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,34 +14,40 @@ export class SdkLoaderService {
   constructor(
     private readonly sdkService: RubicSdkService,
     private readonly iframeService: IframeService,
-    private readonly storeService: StoreService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   public async initSdk(): Promise<void> {
+    this.subscribeOnAddressChange();
+    await this.sdkService.initSDK(
+      new URLSearchParams(this.window.location.search).get('feeTarget')
+    );
     await this.loadUser();
-    await this.sdkService.initSDK();
-    await this.updateSdkUser();
   }
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
-    this.storeService.fetchData();
     if (!isIframe) {
-      try {
-        await this.authService.loadUser();
-      } catch {}
+      await this.authService.loadStorageUser();
     }
   }
 
-  private async updateSdkUser(): Promise<void> {
-    if (this.authService.user) {
-      const walletProvider: WalletProvider = {
-        address: this.authService.user.address,
-        core: this.walletConnectorService.provider.wallet
-      };
-      await this.sdkService.patchConfig({ walletProvider });
-    }
+  private subscribeOnAddressChange(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        filter(Boolean),
+        tap(address => {
+          const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
+          const provider = this.walletConnectorService.provider;
+          const walletProviderCore: WalletProviderCore = {
+            address,
+            core: chainType === CHAIN_TYPE.EVM ? provider.wallet : provider.wallet.tronWeb
+          };
+          this.sdkService.updateWallet(chainType, walletProviderCore);
+        })
+      )
+      .subscribe();
   }
 }

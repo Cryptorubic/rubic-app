@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Actualizar comercio"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
@@ -490,7 +491,7 @@
       "swapMyself": "Intercabio por mi cuenta"
     },
     "warningModal": {
-      "viaSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
+      "autoSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
     }
   },
   "settings": {
@@ -504,14 +505,18 @@
       "deadlineTitle": "Tiempo límite de transacción",
       "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
       "autoRefreshTitle": "Actualización automática",
-      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos."
+      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "La dirección de la billetera en TRON blockchain, en la que se proporcionarán los tokens."
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Actualización automática",
-      "autoRefresh": "Actualiza los parámetros comerciales cada 15 segundos.",
+      "autoRefresh": "Actualiza los parámetros comerciales cada 30 segundos.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
       "slippageTitle": "Tolerancia al deslizamiento",
       "slippage": "Su transacción se cancelará si el precio cambia desfavorablemente por más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea adelantada)",
       "promoCodeTitle": "Código promocional",

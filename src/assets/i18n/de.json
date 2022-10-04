@@ -40,7 +40,8 @@
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
-    "revert": "Revert"
+    "revert": "Revert",
+    "refreshTrade": "Handel auffrischen"
   },
   "errors": {
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",
@@ -489,7 +490,7 @@
       "swapMyself": "Ich kümmere mich selbst um den Swap"
     },
     "warningModal": {
-      "viaSlippage": "Leider ist benutzerdefinierte Slippage für diesen Swap nicht zulässig. Bitte aktivieren Sie die Auto-Slippage-Toleranzeinstellung in den Einstellungen."
+      "autoSlippage": "Leider ist benutzerdefinierte Slippage für diesen Swap nicht zulässig. Bitte aktivieren Sie die Auto-Slippage-Toleranzeinstellung in den Einstellungen."
     }
   },
   "settings": {
@@ -503,14 +504,18 @@
       "deadlineTitle": "Zeitlimit",
       "deadline": "Dauert die Abwicklung Deiner Transaktion länger als dieses Zeitlimit wird sie automatisch abgebrochen.",
       "autoRefreshTitle": "Automatisch aktualisieren",
-      "autoRefresh": "Kurse & Gebühren alle 15 Sekunden neu berechnen."
+      "autoRefresh": "Kurse & Gebühren alle 15 Sekunden neu berechnen.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address"
     },
     "bridge": {
       "walletAddress": "Die Wallet-Adresse im TRON-Netzwerk, die die Token empfängt."
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Automatisch aktualisieren",
-      "autoRefresh": "Preise & Gebühren werden alle 15 Sekunden neu berechnet.",
+      "showReceiverAddressTitle": "Show Receiver Address",
+      "showReceiverAddress": "Show Receiver Address",
+      "autoRefresh": "Preise & Gebühren werden alle 30 Sekunden neu berechnet.",
       "slippageTitle": "Schlupftoleranz",
       "slippage": "Deine Transaktion wird automatisch abgebrochen, wenn die gewählte Schlupftoleranz nicht eingehalten werden kann (bzpw. dann, wenn sich die Kurse zwischenzeitlich stark verändert haben). Eine geringe Schlupftoleranz reduziert grundsätzliche das Risiko, dass Deine Transaktion von Frontrunning erfasst wird.",
       "promoCodeTitle": "Promo Code",

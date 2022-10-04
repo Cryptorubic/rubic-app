@@ -10,6 +10,8 @@ import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 
 @Injectable()
 export class SwapButtonService {
@@ -70,7 +72,9 @@ export class SwapButtonService {
       ([tradeStatus, priceImpact]) =>
         tradeStatus !== TRADE_STATUS.DISABLED &&
         ((PRICE_IMPACT_RANGE.MEDIUM <= priceImpact && priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
-          priceImpact === null)
+          (priceImpact === null &&
+            this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM_POW &&
+            this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.TRON))
     )
   );
 
@@ -112,7 +116,8 @@ export class SwapButtonService {
     private readonly iframeService: IframeService,
     private readonly swapsService: SwapsService,
     private readonly priceImpactService: PriceImpactService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: RubicSdkService,
+    private readonly swapFormService: SwapFormService
   ) {
     this.setupPriceImpactCalculation();
   }

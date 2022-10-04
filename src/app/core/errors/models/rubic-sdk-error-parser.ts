@@ -1,23 +1,29 @@
+import {
+  nativeTokensList,
+  RubicSdkError,
+  TransactionRevertedError as SdkTransactionRevertedError,
+  FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
+  UserRejectError as SdkUserRejectError,
+  InsufficientFundsError as SdkInsufficientFundsError,
+  LowGasError as SdkLowGasError,
+  LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError,
+  InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
+  NotWhitelistedProviderError as SdkNotWhitelistedProviderError,
+  WalletNotConnectedError as SdkWalletNotConnectedError,
+  WrongNetworkError as SdkWrongNetworkError
+} from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { TransactionRevertedError as SdkTransactionRevertedError } from 'rubic-sdk/lib/common/errors/blockchain/transaction-reverted.error';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
-import { FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError } from 'rubic-sdk/lib/common/errors/swap/failed-to-check-for-transaction-receipt.error';
 import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
-import { UserRejectError as SdkUserRejectError } from 'rubic-sdk/lib/common/errors/blockchain/user-reject.error';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { InsufficientFundsError as SdkInsufficientFundsError } from 'rubic-sdk/lib/common/errors/swap/insufficient-funds.error';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
-import { LowGasError as SdkLowGasError } from 'rubic-sdk/lib/common/errors/blockchain/low-gas.error';
 import { LowGasError } from '@core/errors/models/provider/low-gas-error';
-import { LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError } from 'rubic-sdk/lib/common/errors/swap/low-slippage-deflationary-token.error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
-import { RubicSdkError } from 'rubic-sdk';
-import { InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError } from 'rubic-sdk';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { NotWhitelistedProviderError as SdkNotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
+import { WalletError } from '@core/errors/models/provider/wallet-error';
+import { NetworkError } from '@core/errors/models/provider/network-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -33,7 +39,11 @@ export class RubicSdkErrorParser {
       return new UserRejectError();
     }
     if (err instanceof SdkInsufficientFundsError) {
-      return new InsufficientFundsError(err.tokenSymbol, err.balance, err.requiredBalance);
+      return new InsufficientFundsError(
+        err.token.symbol,
+        err.balance.toFixed(),
+        err.requiredBalance.toFixed()
+      );
     }
     if (err instanceof SdkLowGasError) {
       return new LowGasError();
@@ -42,14 +52,7 @@ export class RubicSdkErrorParser {
       return new TokenWithFeeError();
     }
     if (err instanceof SdkInsufficientFundsOneinchError) {
-      return new InsufficientFundsOneinchError(
-        BlockchainsInfo.getBlockchainByName(err.blockchain).nativeCoin.symbol
-      );
-    }
-    if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
-      return new RubicError(
-        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
-      );
+      return new InsufficientFundsOneinchError(nativeTokensList[err.blockchain].symbol);
     }
     if (err instanceof SdkNotWhitelistedProviderError) {
       console.error('Provider router: ', err.providerRouter);
@@ -58,6 +61,12 @@ export class RubicSdkErrorParser {
       }
       return new NotWhitelistedProviderWarning();
     }
+    if (err instanceof SdkWalletNotConnectedError) {
+      return new WalletError();
+    }
+    if (err instanceof SdkWrongNetworkError) {
+      return new NetworkError(err.requiredBlockchain);
+    }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
@@ -65,6 +74,11 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
+      return new RubicError(
+        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
+      );
+    }
     if (err.message.includes('Request failed with status code 400')) {
       return new RubicError(
         'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
@@ -82,7 +96,8 @@ export class RubicSdkErrorParser {
       err.message.includes('execution reverted: MetaRouter: other side call failed') ||
       err.message.includes('1inch sets increased costs on gas fee') ||
       err.message.includes('err: insufficient funds for gas * price + value') ||
-      err.message.includes('insufficient balance for transfer')
+      err.message.includes('insufficient balance for transfer') ||
+      err.message.includes('Sender balance too low for value specified')
     ) {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'

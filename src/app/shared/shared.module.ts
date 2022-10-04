@@ -23,7 +23,8 @@ import {
   TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule
+  TuiManualHintModule,
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
@@ -66,7 +67,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
-import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/via-slippage-warning-modal.component';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,7 @@ import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippag
     ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
     IframeLogoutButtonComponent,
-    ViaSlippageWarningModalComponent,
+    AutoSlippageWarningModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -145,7 +146,8 @@ import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippag
     TuiLoaderModule,
     TuiBadgeModule,
     TuiManualHintModule,
-    TuiTagModule
+    TuiTagModule,
+    TuiTextfieldControllerModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -186,7 +188,6 @@ import { ViaSlippageWarningModalComponent } from '@shared/components/via-slippag
     ChipsComponent,
     IframeLogoutButtonComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard],
-  entryComponents: [SuccessTrxNotificationComponent, ProgressTrxNotificationComponent]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard]
 })
 export class SharedModule {}

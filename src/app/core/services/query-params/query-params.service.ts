@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
+import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, Web3Pure } from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -16,13 +17,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { WINDOW } from '@ng-web-apis/common';
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -73,6 +73,10 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public disabledProviders: CrossChainTradeType[];
+
+  public enabledBlockchains: BlockchainName[];
+
   public screenWidth: number;
 
   constructor(
@@ -86,9 +90,8 @@ export class QueryParamsService {
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -103,11 +106,16 @@ export class QueryParamsService {
     });
   }
 
-  public setupQueryParams(queryParams: QueryParams): void {
+  public async setupQueryParams(queryParams: QueryParams): Promise<void> {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
       this.headerStore.forceDesktopResolution = queryParams.isDesktop;
       this.setIframeInfo(queryParams);
+
+      if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+        this.setDisabledProviders(queryParams.enabledProviders);
+        this.enabledBlockchains = queryParams.enabledBlockchains;
+      }
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -249,9 +257,16 @@ export class QueryParamsService {
       return of(null);
     }
 
-    return Web3Pure.isAddressCorrect(token)
+    const chainType = BlockchainsInfo.getChainType(chain);
+    return Web3Pure[chainType].isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
+  }
+
+  private setDisabledProviders(enabledProviders: string[]): void {
+    this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
+      provider => !enabledProviders.includes(provider.toLowerCase())
+    );
   }
 
   /**
@@ -267,7 +282,9 @@ export class QueryParamsService {
     chain: BlockchainName
   ): Observable<TokenAmount> {
     const similarTokens = tokens.filter(
-      token => token.symbol === symbol && token.blockchain === chain
+      token =>
+        token.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase() &&
+        token.blockchain === chain
     );
 
     if (!similarTokens.size) {
@@ -276,7 +293,9 @@ export class QueryParamsService {
           if (foundTokens?.size) {
             const token =
               foundTokens?.size > 1
-                ? foundTokens.find(el => el.symbol === symbol)
+                ? foundTokens.find(
+                    el => el.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
+                  )
                 : foundTokens.first();
             const newToken = { ...token, amount: new BigNumber(NaN) } as TokenAmount;
             this.tokensService.addToken(newToken);
@@ -481,5 +500,9 @@ export class QueryParamsService {
       public_key: null
     });
     this.navigate();
+  }
+
+  public getUrlSearchParam(key: string): string {
+    return new URLSearchParams(this.window.location.search).get(key) || undefined;
   }
 }

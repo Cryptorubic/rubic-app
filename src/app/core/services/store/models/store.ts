@@ -1,6 +1,5 @@
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
-import { BlockchainName } from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -33,12 +32,9 @@ export interface Store {
   favoriteTokens: LocalToken[];
 
   /**
-   * Wallet target address for cross-chain trade.
+   * Wallet target address.
    */
-  targetAddress: {
-    address: string;
-    blockchain: BlockchainName;
-  };
+  targetAddress: string;
 
   /**
    * Passed form steps for bridge swap.

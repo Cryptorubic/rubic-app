@@ -50,7 +50,6 @@ import { TuiAutoFocusModule } from '@taiga-ui/cdk';
     InlineSVGModule,
     TuiAutoFocusModule
   ],
-  providers: [TokensSelectService],
-  entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
+  providers: [TokensSelectService]
 })
 export class TokensSelectModule {}

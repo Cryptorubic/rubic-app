@@ -5,13 +5,12 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TranslateService } from '@ngx-translate/core';
-import { TargetNetworkAddressService } from '@features/swaps/features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -19,6 +18,8 @@ import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-fo
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { isNil } from '@app/shared/utils/utils';
 import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -76,6 +77,7 @@ export class SwapButtonContainerErrorsService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
+    private readonly settingsService: SettingsService,
     private readonly ngZone: NgZone
   ) {
     this.subscribeOnSwapForm();
@@ -119,32 +121,52 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnAuth(): void {
-    this.authService.getCurrentUser().subscribe(() => {
+    this.authService.currentUser$.subscribe(() => {
       this.checkWalletSupportsFromBlockchain();
       this.checkUserBalance();
-      this.checkMultichainWallet();
 
       this.updateError();
     });
   }
 
   private subscribeOnTargetNetworkAddress(): void {
-    this.targetNetworkAddressService.targetAddress$.subscribe(targetAddress => {
-      const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-      this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
-        fromBlockchain !== toBlockchain && targetAddress && !targetAddress.isValid;
+    combineLatest([
+      this.targetNetworkAddressService.isAddressValid$,
+      this.swapsService.swapMode$,
+      this.settingsService.instantTradeValueChanges.pipe(
+        startWith(this.settingsService.instantTradeValue)
+      ),
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue)
+      )
+    ]).subscribe(
+      ([isAddressValid, swapMode, instantTradesSettingsForm, crossChainSettingsForm]) => {
+        const isWithReceiverAddress =
+          swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+            ? instantTradesSettingsForm.showReceiverAddress
+            : crossChainSettingsForm.showReceiverAddress;
+        this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
+          isWithReceiverAddress && !isAddressValid;
 
-      this.updateError();
-    });
+        this.updateError();
+      }
+    );
   }
 
   /**
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
+    const fromToken = this.swapFormService.inputValue.fromToken;
+    if (!fromToken) {
+      this.errorType[ERROR_TYPE.WRONG_WALLET] = false;
+      return;
+    }
+
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !Web3Pure.isAddressCorrect(this.authService.userAddress);
+      !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
   }
 
   /**
@@ -154,7 +176,13 @@ export class SwapButtonContainerErrorsService {
   private checkUserBalance(): void {
     const { fromToken, fromAmount } = this.swapFormService.inputValue;
 
-    if (!fromToken || !this.authService.userAddress) {
+    const fromChainType =
+      fromToken?.blockchain && BlockchainsInfo.getChainType(fromToken.blockchain);
+    if (
+      !fromToken ||
+      !this.authService.userAddress ||
+      fromChainType !== this.authService.userChainType
+    ) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
     }
@@ -168,43 +196,24 @@ export class SwapButtonContainerErrorsService {
   }
 
   private checkSelectedToken(): void {
-    if (
+    this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] =
       isNil(this.swapFormService.inputValue?.fromToken) &&
-      isNil(this.queryParamsService.currentQueryParams?.fromChain) &&
-      isNil(this.queryParamsService.currentQueryParams?.from)
-    ) {
-      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = true;
-    } else {
-      this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] = false;
-    }
+      isNil(this.queryParamsService.currentQueryParams?.from);
   }
 
   /**
    * Checks that user's selected blockchain is equal to from blockchain.
    */
   private checkUserBlockchain(): void {
-    const userBlockchain = this.walletConnectorService.network?.name;
-    if (userBlockchain) {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromBlockchain !== userBlockchain;
-      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(fromBlockchain);
+    const { fromToken } = this.swapFormService.inputValue;
+    const userBlockchain = this.walletConnectorService.network;
+    if (userBlockchain && fromToken) {
+      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
+      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(
+        fromToken.blockchain
+      );
     } else {
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
-    }
-  }
-
-  /**
-   * Checks that if wallet is multichain, then blockchains are correct.
-   */
-  private checkMultichainWallet(): void {
-    if (this.walletConnectorService.provider) {
-      const { fromBlockchain } = this.swapFormService.inputValue;
-      const { isMultiChainWallet } = this.walletConnectorService.provider;
-
-      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
-        isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
-    } else {
-      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] = false;
     }
   }
 
@@ -225,7 +234,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+            network: blockchainLabel[fromBlockchain]
           }
         };
         break;
@@ -249,7 +258,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromBlockchain)?.label || ''
+            network: blockchainLabel[fromBlockchain]
           }
         };
         break;

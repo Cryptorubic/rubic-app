@@ -13,7 +13,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { BlockchainName, CrossChainTxStatus } from 'rubic-sdk';
+import { BlockchainName, TxStatus, Web3PublicSupportedBlockchain } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Injectable()
@@ -42,7 +42,14 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, crossChainProviderType, fromToken, toToken, timestamp } = trade;
+    const {
+      srcTxHash,
+      crossChainProviderType,
+      fromToken,
+      toToken,
+      timestamp,
+      dstTxHash: calculatedDstTxHash
+    } = trade;
     const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
     const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
@@ -61,6 +68,15 @@ export class RecentTradesService {
       crossChainProviderType
     };
 
+    if (calculatedDstTxHash) {
+      uiTrade.dstTxHash = calculatedDstTxHash;
+      uiTrade.dstTxLink = this.scannerLinkPipe.transform(
+        calculatedDstTxHash,
+        toBlockchainInfo.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
+    }
+
     if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
       uiTrade.statusTo = trade.calculatedStatusTo;
       uiTrade.statusFrom = trade.calculatedStatusFrom;
@@ -68,21 +84,26 @@ export class RecentTradesService {
       return uiTrade;
     }
 
-    const { srcTxStatus, dstTxStatus } = await this.sdk.crossChainStatusManager.getCrossChainStatus(
-      {
-        fromBlockchain: trade.fromBlockchain,
-        toBlockchain: trade.toBlockchain,
-        srcTxHash: srcTxHash,
-        txTimestamp: trade.timestamp,
-        lifiBridgeType: trade.bridgeType,
-        viaUuid: trade.viaUuid,
-        rangoRequestId: trade.rangoRequestId
-      },
-      trade.crossChainProviderType
-    );
+    const { srcTxStatus, dstTxStatus, dstTxHash } =
+      await this.sdk.crossChainStatusManager.getCrossChainStatus(
+        {
+          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain,
+          toBlockchain: trade.toBlockchain,
+          srcTxHash: srcTxHash,
+          txTimestamp: trade.timestamp,
+          lifiBridgeType: trade.bridgeType,
+          viaUuid: trade.viaUuid,
+          rangoRequestId: trade.rangoRequestId
+        },
+        trade.crossChainProviderType
+      );
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = dstTxHash
+      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      : null;
 
     return uiTrade;
   }
@@ -118,8 +139,8 @@ export class RecentTradesService {
 
       this.recentTradesStoreService.updateTrade({
         ...this.recentTradesStoreService.getSpecificTrade(srcTxHash, fromBlockchain),
-        calculatedStatusFrom: CrossChainTxStatus.SUCCESS,
-        calculatedStatusTo: CrossChainTxStatus.FALLBACK
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);
