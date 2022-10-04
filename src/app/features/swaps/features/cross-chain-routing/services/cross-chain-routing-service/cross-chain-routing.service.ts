@@ -8,7 +8,6 @@ import {
   LifiCrossChainTrade,
   LowSlippageError,
   RubicSdkError,
-  ON_CHAIN_TRADE_TYPE,
   Web3Pure,
   TooLowAmountError,
   CrossChainTrade,
@@ -358,46 +357,27 @@ export class CrossChainRoutingService extends TradeService {
       return null;
     }
 
+    let smartRouting: SmartRouting = {
+      fromProvider: wrappedTrade.trade.itType.from,
+      toProvider: wrappedTrade.trade.itType.to,
+      bridgeProvider: wrappedTrade.tradeType
+    };
+
+    if (this.queryParamsService.enabledProviders) {
+      return smartRouting;
+    }
+
     if (
       wrappedTrade.trade instanceof LifiCrossChainTrade ||
       wrappedTrade.trade instanceof ViaCrossChainTrade ||
       wrappedTrade.trade instanceof RangoCrossChainTrade
     ) {
       return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
+        ...smartRouting,
         bridgeProvider: wrappedTrade.trade.bridgeType
       };
     }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
-      return {
-        fromProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
-        toProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CELER) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.CELER
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.BRIDGERS) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BRIDGERS
-      };
-    }
-    return null;
+    return smartRouting;
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
