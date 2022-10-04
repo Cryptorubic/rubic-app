@@ -8,9 +8,7 @@ import {
   SDK,
   WalletProvider,
   WalletProviderCore,
-  CHAIN_TYPE,
-  EvmWeb3Pure,
-  TronWeb3Pure
+  CHAIN_TYPE
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -72,8 +70,8 @@ export class RubicSdkService {
     this.currentConfig = {
       ...this.defaultConfig,
       providerAddress: {
-        [CHAIN_TYPE.EVM]: providerAddress || EvmWeb3Pure.EMPTY_ADDRESS,
-        [CHAIN_TYPE.TRON]: providerAddress || TronWeb3Pure.EMPTY_ADDRESS
+        [CHAIN_TYPE.EVM]: providerAddress,
+        [CHAIN_TYPE.TRON]: providerAddress
       }
     };
     this.SDK = await SDK.createSDK(this.currentConfig);
