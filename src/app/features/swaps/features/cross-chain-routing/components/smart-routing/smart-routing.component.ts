@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { Provider, TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-smart-routing',
@@ -17,7 +18,10 @@ export class SmartRoutingComponent {
   public toTradeProvider: Provider;
 
   @Input() set smartRouting(routing: SmartRouting) {
-    this.bridgeProvider = this.tradesProviders[routing.bridgeProvider];
+    this.bridgeProvider = this.queryParamsService.enabledProviders
+      ? this.tradesProviders[this.queryParamsService.enabledProviders[0]]
+      : this.tradesProviders[routing.bridgeProvider];
+
     this.fromTradeProvider = routing.fromProvider
       ? this.tradesProviders[routing.fromProvider]
       : {
@@ -36,5 +40,8 @@ export class SmartRoutingComponent {
 
   public readonly isMobile$ = this.headerStoreService.getMobileDisplayStatus();
 
-  constructor(private readonly headerStoreService: HeaderStore) {}
+  constructor(
+    private readonly headerStoreService: HeaderStore,
+    private readonly queryParamsService: QueryParamsService
+  ) {}
 }

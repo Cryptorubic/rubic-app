@@ -75,6 +75,8 @@ export class QueryParamsService {
 
   public disabledProviders: CrossChainTradeType[];
 
+  public enabledProviders: CrossChainTradeType[];
+
   public enabledBlockchains: BlockchainName[];
 
   public screenWidth: number;
@@ -113,6 +115,7 @@ export class QueryParamsService {
       this.setIframeInfo(queryParams);
 
       if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+        this.setEnabledProviders(queryParams.enabledProviders);
         this.setDisabledProviders(queryParams.enabledProviders);
         this.enabledBlockchains = queryParams.enabledBlockchains;
       }
@@ -266,6 +269,12 @@ export class QueryParamsService {
   private setDisabledProviders(enabledProviders: string[]): void {
     this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
       provider => !enabledProviders.includes(provider.toLowerCase())
+    );
+  }
+
+  private setEnabledProviders(enabledProviders: string[]): void {
+    this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
+      enabledProviders.includes(provider.toLowerCase())
     );
   }
 
