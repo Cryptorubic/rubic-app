@@ -85,6 +85,10 @@
 app-tokens-search-bar {
   width: 100%;
   margin-bottom: 14px;
+
+  &.vertical-iframe-token-search {
+    margin-top: 14px;
+  }
 }
 
 tui-loader {
@@ -108,5 +112,41 @@ app-icon-button {
       height: calc(100% - 100px);
       max-height: calc(100vh - 117.5px);
     }
+  }
+}
+
+.token-list-container {
+  width: 100%;
+
+  @include iframe-horizontal {
+    display: flex;
+    align-items: center;
+    height: 90px;
+    overflow: hidden;
+  
+    &__search {
+      position: relative;
+      top: -2px;
+
+      width: auto;
+      margin-right: 15px;
+      margin-bottom: 0;
+    }
+
+    &__list {
+      display: flex;
+      width: 100%;
+      height: 90px;
+      overflow: hidden;
+    }
+
+    &_loading {
+      flex: 1;
+      max-height: 90px;
+    }
+  }
+
+  &_loading {
+    flex: 0;
   }
 }

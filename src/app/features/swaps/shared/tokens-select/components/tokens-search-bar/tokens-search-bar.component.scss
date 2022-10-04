@@ -22,3 +22,26 @@ tui-input {
     }
   }
 }
+
+.expandable-input {
+  width: 50px;
+
+  transition: 0.2s width ease-in-out;
+
+  tui-input ::ng-deep {
+    --tui-height-l: 54px;
+
+    tui-wrapper[data-appearance='textfield'] {
+      background: #282828;
+    }
+
+    tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+      border: 0;
+    }
+  }
+
+  &_expanded {
+    width: 300px;
+  }
+}
+
