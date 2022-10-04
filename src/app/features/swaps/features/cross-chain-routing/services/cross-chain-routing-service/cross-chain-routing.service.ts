@@ -170,6 +170,9 @@ export class CrossChainRoutingService extends TradeService {
             );
           }),
           switchMap(tradeData => {
+            console.log('=======================');
+            console.log('tradeData: ', tradeData);
+            console.log('=======================');
             const bestProvider = tradeData.bestProvider;
             const trade = bestProvider?.trade;
             const error = bestProvider?.error;

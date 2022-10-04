@@ -18,9 +18,18 @@ export class SmartRoutingComponent {
   public toTradeProvider: Provider;
 
   @Input() set smartRouting(routing: SmartRouting) {
+    console.log('=======================');
+    console.log('Enabled Providers from query: ', this.queryParamsService.enabledProviders[0]);
+    console.log('Bridge Provider before init: ', this.bridgeProvider);
+    console.log('Bridge Provider app calculated: ', this.tradesProviders[routing.bridgeProvider]);
+
     this.bridgeProvider = this.queryParamsService.enabledProviders
       ? this.tradesProviders[this.queryParamsService.enabledProviders[0]]
       : this.tradesProviders[routing.bridgeProvider];
+
+    console.log('Bridge Provider after init: ', this.bridgeProvider);
+    console.log('=======================');
+
     this.fromTradeProvider = routing.fromProvider
       ? this.tradesProviders[routing.fromProvider]
       : {
