@@ -5,7 +5,10 @@ import {
   CrossChainStatusManager,
   OnChainManager,
   OnChainStatusManager,
-  SDK
+  SDK,
+  WalletProvider,
+  WalletProviderCore,
+  CHAIN_TYPE
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -63,9 +66,14 @@ export class RubicSdkService {
     this._SDK = null;
   }
 
-  public async initSDK(providerAddress: string): Promise<void> {
-    this.SDK = await SDK.createSDK({ ...this.defaultConfig, providerAddress });
-    this.currentConfig = { ...this.defaultConfig, providerAddress };
+  public async initSDK(providerAddress?: string): Promise<void> {
+    this.currentConfig = {
+      ...this.defaultConfig,
+      providerAddress: {
+        [CHAIN_TYPE.EVM]: providerAddress
+      }
+    };
+    this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
   public async patchConfig(config: Partial<Configuration>): Promise<void> {
@@ -78,5 +86,12 @@ export class RubicSdkService {
       console.debug('Failed to reload SDK configuration:', err);
     }
     this._sdkLoading$.next(false);
+  }
+
+  public updateWallet(
+    chainType: keyof WalletProvider,
+    walletProviderCore: WalletProviderCore
+  ): void {
+    this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
   }
 }

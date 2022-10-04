@@ -64,7 +64,7 @@ export class SwapInfoContainerComponent implements OnInit {
 
     this.swapInfoService.onInfoCalculated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loading = false;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 }

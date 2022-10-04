@@ -131,7 +131,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.MOONRIVER,
       BLOCKCHAIN_NAME.TELOS,
-      BLOCKCHAIN_NAME.HARMONY
+      BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.TRON
     ];
     const backendTokens$ = this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)
