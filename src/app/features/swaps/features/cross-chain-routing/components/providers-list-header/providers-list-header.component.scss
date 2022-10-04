@@ -31,9 +31,12 @@ app-providers-list-sorting {
 }
 
 .image {
+  box-sizing: content-box;
   width: 11px;
-  height: 100%;
   margin-left: 10px;
+  padding: 10px;
+
+  cursor: pointer;
 
   ::ng-deep {
     g {

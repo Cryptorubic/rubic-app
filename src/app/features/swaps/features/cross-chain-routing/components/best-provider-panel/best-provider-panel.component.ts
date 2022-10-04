@@ -8,10 +8,12 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { TUI_ANIMATIONS_DURATION, TuiDialogService } from '@taiga-ui/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 
 @Component({
   selector: 'app-best-provider-panel',
@@ -36,27 +38,22 @@ export class BestProviderPanelComponent {
 
   public expanded = false;
 
-  // public contentHeight: string = 'auto';
-
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    private readonly formService: SwapFormService,
+    @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
+  ) {
+    this.formSubscribe();
+  }
 
-  // public toggleAccordion(event: MouseEvent): void {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   if (this.expanded) {
-  //     if ((event.target as HTMLElement).classList.contains('close')) {
-  //       this.expanded = false;
-  //     }
-  //   } else {
-  //     this.expanded = true;
-  //   }
-  //   this.cdr.detectChanges();
-  // }
+  private formSubscribe(): void {
+    this.formService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.expanded = false;
+    });
+  }
 
   public handleSelection(): void {
     this.expanded = false;

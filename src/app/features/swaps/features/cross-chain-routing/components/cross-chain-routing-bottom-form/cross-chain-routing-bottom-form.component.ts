@@ -260,10 +260,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     this.toBlockchain = form.toBlockchain;
     this.toToken = form.toToken;
-
-    if (!form.fromToken || !form.toToken || !form.fromAmount?.gt(0)) {
-      this.smartRouting = null;
-    }
+    this.smartRouting = null;
 
     if (
       form.fromToken &&
@@ -566,11 +563,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         switchMap(([type, allProviders]) => {
           const selectedProvider: WrappedCrossChainTrade & { rank: number } =
             allProviders.data.find(provider => provider.tradeType === type);
-
           return forkJoin([
             of(selectedProvider),
             from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
-            selectedProvider.trade.needApprove()
+            from(selectedProvider.trade.needApprove()).pipe(catchError(() => of(false)))
           ]);
         })
       )

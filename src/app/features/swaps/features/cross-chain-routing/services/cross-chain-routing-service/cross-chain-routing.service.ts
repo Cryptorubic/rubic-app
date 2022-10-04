@@ -231,9 +231,8 @@ export class CrossChainRoutingService extends TradeService {
                 )
               : this._allProviders$.value.data[0];
             const trade = bestProvider?.trade;
-            const error = bestProvider?.error;
 
-            if (!trade && error) {
+            if (!trade) {
               return of({
                 ...bestProvider,
                 needApprove: false,
