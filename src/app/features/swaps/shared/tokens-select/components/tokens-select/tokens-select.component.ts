@@ -273,9 +273,16 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
-    this.searchQuery$.pipe(skip(1), debounceTime(500), takeUntil(this.destroy$)).subscribe(() => {
-      this.updateTokensList();
-    });
+    this.searchQuery$
+      .pipe(
+        skip(1),
+        debounceTime(500),
+        tap(() => (this.searchQueryLoading = true)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.updateTokensList();
+      });
 
     this.tokensService.tokensNetworkState$
       .pipe(
@@ -349,6 +356,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       this.sortTokens();
       this.customToken = null;
     }
+
+    this.searchQueryLoading = false;
   }
 
   /**
@@ -362,7 +371,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
       .pipe(
         tap(() => {
-          this.searchQueryLoading = true;
           this.cdr.detectChanges();
         }),
         switchMap(() => this.tryParseQueryAsBackendTokens()),

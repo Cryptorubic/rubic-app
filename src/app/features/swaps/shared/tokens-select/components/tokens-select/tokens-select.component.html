@@ -47,7 +47,7 @@
       size="xl"
     ></tui-loader>
 
-    <div class="token-list-container">
+    <div class="token-list-container" [class.token-list-container_loading]="searchQueryLoading">
       <ng-container *onlyFrame>
         <app-tokens-search-bar
           *ngIf="isHorizontalIframe && iframeTokenSearch"
@@ -57,11 +57,13 @@
         ></app-tokens-search-bar>
       </ng-container>
       <div class="token-list-container__list">
-        <tui-loader
-          *ngIf="searchQueryLoading && isHorizontalIframe"
-          [showLoader]="true"
-          size="l"
-        ></tui-loader>
+        <ng-container *onlyFrame>
+          <tui-loader
+            *ngIf="searchQueryLoading && isHorizontalIframe"
+            [showLoader]="true"
+            size="l"
+          ></tui-loader>
+        </ng-container>
         <ng-container *ngIf="!searchQueryLoading">
           <app-tokens-list
             *ngIf="!customToken"
