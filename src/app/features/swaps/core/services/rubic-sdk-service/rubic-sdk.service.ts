@@ -70,8 +70,7 @@ export class RubicSdkService {
     this.currentConfig = {
       ...this.defaultConfig,
       providerAddress: {
-        [CHAIN_TYPE.EVM]: providerAddress,
-        [CHAIN_TYPE.TRON]: providerAddress
+        [CHAIN_TYPE.EVM]: providerAddress
       }
     };
     this.SDK = await SDK.createSDK(this.currentConfig);
