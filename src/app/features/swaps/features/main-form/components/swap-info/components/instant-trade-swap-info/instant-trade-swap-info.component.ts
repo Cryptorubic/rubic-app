@@ -1,24 +1,20 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Self,
-  OnInit,
-  Input
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Self, Input } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
-import { startWith, takeUntil } from 'rxjs/operators';
-import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { BLOCKCHAIN_NAME, InstantTrade } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BridgersTrade,
+  OnChainTrade,
+  PriceTokenAmount,
+  TokenAmountSymbol
+} from 'rubic-sdk';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -27,12 +23,12 @@ import { BLOCKCHAIN_NAME, InstantTrade } from 'rubic-sdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class InstantTradeSwapInfoComponent implements OnInit {
-  @Input() set currentInstantTrade(instantTrade: InstantTrade) {
-    this.path = instantTrade?.path?.map(token => token.symbol);
+export class InstantTradeSwapInfoComponent {
+  @Input() set currentOnChainTrade(onChainTrade: OnChainTrade) {
+    this.setTradeData(onChainTrade);
   }
 
-  public toToken: TokenAmount;
+  public toToken: PriceTokenAmount;
 
   public minimumReceived: BigNumber;
 
@@ -44,19 +40,11 @@ export class InstantTradeSwapInfoComponent implements OnInit {
 
   public path: string[];
 
-  public get minimumReceivedFormatted(): string {
-    if (!this.minimumReceived?.isFinite()) {
-      return '';
-    }
+  public isBridgers: boolean;
 
-    const { toToken } = this.swapFormService.inputValue;
-    const minimumReceivedFormatter = this.withRoundPipe.transform(
-      this.bigNumberFormatPipe.transform(this.minimumReceived),
-      'toClosestValue',
-      { decimals: toToken.decimals }
-    );
-    return `${minimumReceivedFormatter} ${toToken.symbol}`;
-  }
+  public cryptoFeeToken: TokenAmountSymbol;
+
+  public platformFeePercent: number;
 
   public get rate(): string {
     const { fromAmount, fromToken, toToken } = this.swapFormService.inputValue;
@@ -95,70 +83,49 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     this.rateType = 'fromTokenRate';
   }
 
-  ngOnInit() {
-    this.initSubscriptions();
+  public switchRateType(): void {
+    this.rateType = this.rateType === 'fromTokenRate' ? 'toTokenRate' : 'fromTokenRate';
   }
 
-  private initSubscriptions(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        this.toToken = form.toToken;
-        this.cdr.markForCheck();
-      });
+  private setTradeData(trade: OnChainTrade): void {
+    if (trade) {
+      this.minimumReceived = trade.toTokenAmountMin.tokenAmount;
+      this.slippage = trade.slippageTolerance;
+      this.path = trade?.path?.map(token => token.symbol);
+      this.setPriceImpact();
 
-    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const { toAmount } = this.swapFormService.outputValue;
-      if (!toAmount?.isFinite()) {
-        this.swapInfoService.emitInfoCalculated();
-        return;
-      }
-
-      this.slippage = this.settingsService.instantTradeValue.slippageTolerance;
-      this.setSlippageAndMinimumReceived();
-
-      const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-      if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
-        this.priceImpact = null;
+      this.toToken = trade.to;
+      if (trade instanceof BridgersTrade) {
+        this.isBridgers = true;
+        if (this.isBridgers) {
+          this.cryptoFeeToken = trade.cryptoFeeToken;
+          this.platformFeePercent = trade.platformFeePercent;
+        }
       } else {
-        this.priceImpact = PriceImpactService.calculatePriceImpact(
-          fromToken?.price,
-          toToken?.price,
-          fromAmount,
-          toAmount
-        );
+        this.isBridgers = false;
       }
-
-      if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
-        this.priceImpact = null;
-      }
-      this.priceImpactService.setPriceImpact(this.priceImpact);
 
       this.swapInfoService.emitInfoCalculated();
-
-      this.cdr.markForCheck();
-    });
-
-    this.settingsService.instantTrade.controls.slippageTolerance.valueChanges
-      .pipe(
-        startWith(this.settingsService.instantTradeValue.slippageTolerance),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(slippage => {
-        this.slippage = slippage;
-        this.setSlippageAndMinimumReceived();
-        this.cdr.markForCheck();
-      });
-  }
-
-  private setSlippageAndMinimumReceived(): void {
-    const { toAmount } = this.swapFormService.outputValue;
-    if (toAmount?.isFinite()) {
-      this.minimumReceived = subtractPercent(toAmount, this.slippage / 100);
+      this.cdr.detectChanges();
     }
   }
 
-  public switchRateType(): void {
-    this.rateType = this.rateType === 'fromTokenRate' ? 'toTokenRate' : 'fromTokenRate';
+  private setPriceImpact(): void {
+    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+    const { toAmount } = this.swapFormService.outputValue;
+    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
+      this.priceImpact = null;
+    } else {
+      this.priceImpact = PriceImpactService.calculatePriceImpact(
+        fromToken?.price,
+        toToken?.price,
+        fromAmount,
+        toAmount
+      );
+    }
+    if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
+      this.priceImpact = null;
+    }
+    this.priceImpactService.setPriceImpact(this.priceImpact);
   }
 }

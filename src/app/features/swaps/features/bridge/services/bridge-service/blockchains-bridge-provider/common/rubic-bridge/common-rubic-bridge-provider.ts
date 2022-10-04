@@ -1,11 +1,18 @@
 import BigNumber from 'bignumber.js';
-import { BlockchainName, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  Web3Pure,
+  Injector,
+  EvmBlockchainName,
+  CHAIN_TYPE
+} from 'rubic-sdk';
 import { EMPTY, forkJoin, from, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
 import { BridgeApiService } from '@core/services/backend/bridge-api/bridge-api.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { TransactionReceipt } from 'web3-eth';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
@@ -21,7 +28,6 @@ import {
   RUBIC_BRIDGE_CONTRACT_ADDRESS,
   RUBIC_TOKEN_ADDRESS
 } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 import { BRIDGE_BLOCKCHAIN_NUM } from './constants/bridge-blockchain-num';
 
 interface RubicConfig {
@@ -152,7 +158,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           RUBIC_BRIDGE_CONTRACT_ADDRESS[fromBlockchain],
           rubicBridgeContractAbi,
           'feeAmountOfBlockchain',
-          { methodArguments: [BRIDGE_BLOCKCHAIN_NUM[toBlockchain]] }
+          [BRIDGE_BLOCKCHAIN_NUM[toBlockchain]]
         )
     ).pipe(map((fee: string) => Web3Pure.fromWei(fee).toNumber()));
   }
@@ -183,7 +189,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
     return from(
       Injector.web3PublicService
-        .getWeb3Public(bridgeTrade.fromBlockchain)
+        .getWeb3Public(bridgeTrade.fromBlockchain as EvmBlockchainName)
         .getAllowance(
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
             .rubicTokenAddress,
@@ -211,14 +217,11 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           console.error('You should check bridge trade allowance before approve');
           return throwError(new UndefinedError());
         }
-        const request$: Promise<TransactionReceipt> = Injector.web3Private.approveTokens(
-          tokenFrom.address,
-          spenderAddress,
-          'infinity',
-          {
+        const request$: Promise<TransactionReceipt> = Injector.web3PrivateService
+          .getWeb3Private(CHAIN_TYPE.EVM)
+          .approveTokens(tokenFrom.address, spenderAddress, 'infinity', {
             onTransactionHash: bridgeTrade.onTransactionHash
-          }
-        );
+          });
         return from(request$);
       })
     );
@@ -257,15 +260,17 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
       );
     };
 
-    return Injector.web3Private.executeContractMethod(
-      trade.swapContractAddress,
-      this.contractAbi,
-      'transferToOtherBlockchain',
-      [blockchain, trade.amount.toFixed(0), bridgeTrade.toAddress],
-      {
-        onTransactionHash: onTradeTransactionHash
-      }
-    );
+    return Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .executeContractMethod(
+        trade.swapContractAddress,
+        this.contractAbi,
+        'transferToOtherBlockchain',
+        [blockchain, trade.amount.toFixed(0), bridgeTrade.toAddress],
+        {
+          onTransactionHash: onTradeTransactionHash
+        }
+      );
   }
 
   private async provideAllowance(
@@ -273,7 +278,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     onApprove: (hash: string) => void
   ): Promise<void> {
     const allowance = await Injector.web3PublicService
-      .getWeb3Public(trade.fromBlockchain)
+      .getWeb3Public(trade.fromBlockchain as EvmBlockchainName)
       .getAllowance(
         trade.token.address,
         this.walletConnectorService.address,
@@ -281,14 +286,11 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
       );
     if (trade.amount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await Injector.web3Private.approveTokens(
-        trade.token.address,
-        trade.swapContractAddress,
-        uintInfinity,
-        {
+      await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .approveTokens(trade.token.address, trade.swapContractAddress, uintInfinity, {
           onTransactionHash: onApprove
-        }
-      );
+        });
     }
   }
 

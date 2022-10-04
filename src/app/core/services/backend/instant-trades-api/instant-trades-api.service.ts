@@ -9,32 +9,26 @@ import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
-import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { AuthService } from '../../auth/auth.service';
-import { BlockchainName, BLOCKCHAIN_NAME, InstantTrade, TradeType, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
-
-type HashObject = { hash: string } | { signature: string };
+import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
 
 const instantTradesApiRoutes = {
-  createData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
-  editData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
-  getData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`
+  createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
+  editData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
+  getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  private static getHashObject(_blockchain: BlockchainName, hash: string): HashObject {
-    return { hash };
-  }
-
   constructor(
     private readonly httpService: HttpService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -42,10 +36,10 @@ export class InstantTradesApiService {
   ) {}
 
   public notifyInstantTradesBot(body: {
-    provider: TradeType;
+    provider: OnChainTradeType;
     blockchain: BlockchainName;
     walletAddress: string;
-    trade: InstantTrade | WrapTrade;
+    trade: OnChainTrade | WrapTrade;
     txHash: string;
   }): Promise<void> {
     const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
@@ -72,8 +66,8 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: TradeType,
-    trade: InstantTrade | WrapTrade,
+    provider: OnChainTradeType,
+    trade: OnChainTrade | WrapTrade,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
@@ -86,7 +80,6 @@ export class InstantTradesApiService {
       toAddress: toAddress,
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
-    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
       provider: BACKEND_PROVIDERS[provider],
@@ -97,10 +90,11 @@ export class InstantTradesApiService {
       user: this.authService.userAddress,
       fee,
       promocode: promoCode,
-      ...hashObject
+      hash
     };
 
-    const url = instantTradesApiRoutes.createData(this.walletConnectorService.provider.walletType);
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
+    const url = instantTradesApiRoutes.createData(backendWallet);
     return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
   }
 
@@ -111,16 +105,13 @@ export class InstantTradesApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
-    const blockchain =
-      this.walletConnectorService.provider.walletType === 'solana'
-        ? BLOCKCHAIN_NAME.SOLANA
-        : BLOCKCHAIN_NAME.ETHEREUM;
     const body = {
       success,
-      ...InstantTradesApiService.getHashObject(blockchain, hash),
+      hash,
       user: this.authService.userAddress
     };
-    const url = instantTradesApiRoutes.editData(this.walletConnectorService.provider.walletType);
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
+    const url = instantTradesApiRoutes.editData(backendWallet);
     return this.httpService.patch(url, body);
   }
 
@@ -134,7 +125,8 @@ export class InstantTradesApiService {
     walletAddress: string,
     errorCallback?: (error: unknown) => void
   ): Observable<TableTrade[]> {
-    const url = instantTradesApiRoutes.getData(this.walletConnectorService.provider.walletType);
+    const backendWallet = toBackendWallet[this.walletConnectorService.provider.chainType];
+    const url = instantTradesApiRoutes.getData(backendWallet);
     return this.httpService.get(url, { user: walletAddress }).pipe(
       map((swaps: InstantTradesResponseApi[]) =>
         swaps.map(swap => this.parseTradeApiToTableTrade(swap))

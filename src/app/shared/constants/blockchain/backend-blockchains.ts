@@ -23,7 +23,8 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow'
+  [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
+  [BLOCKCHAIN_NAME.TRON]: 'tron'
 };
 
 export type BackendBlockchain = typeof TO_BACKEND_BLOCKCHAINS[keyof typeof TO_BACKEND_BLOCKCHAINS];
@@ -50,5 +51,6 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   celo: BLOCKCHAIN_NAME.CELO,
   boba: BLOCKCHAIN_NAME.BOBA,
   bitcoin: BLOCKCHAIN_NAME.BITCOIN,
-  'ethereum-pow': BLOCKCHAIN_NAME.ETHEREUM_POW
+  'ethereum-pow': BLOCKCHAIN_NAME.ETHEREUM_POW,
+  tron: BLOCKCHAIN_NAME.TRON
 };

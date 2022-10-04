@@ -14,14 +14,19 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
-import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { LifiCrossChainTrade, RangoCrossChainTrade, TradeType, Web3Pure } from 'rubic-sdk';
-import { SymbiosisCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/symbiosis-trade-provider/symbiosis-cross-chain-trade';
-import { DebridgeCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/debridge-trade-provider/debridge-cross-chain-trade';
-import { ViaCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/via-trade-provider/via-cross-chain-trade';
+import {
+  LifiCrossChainTrade,
+  RangoCrossChainTrade,
+  OnChainTradeType,
+  Web3Pure,
+  BlockchainsInfo as SdkBlockchainsInfo,
+  TronBridgersCrossChainTrade,
+  EvmBridgersCrossChainTrade,
+  SymbiosisCrossChainTrade,
+  DebridgeCrossChainTrade,
+  ViaCrossChainTrade
+} from 'rubic-sdk';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -59,9 +64,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
-  private fromProvider: TradeType;
+  private fromProvider: OnChainTradeType;
 
-  private toProvider: TradeType;
+  private toProvider: OnChainTradeType;
 
   public fromPath: string[] | null;
 
@@ -77,29 +82,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public symbiosisOrLifiCryptoFeeSymbol: string;
 
-  public get fromProviderImg(): string {
-    return TRADES_PROVIDERS[this.fromProvider].image;
-  }
-
-  public get toProviderImg(): string {
-    return TRADES_PROVIDERS[this.toProvider].image;
-  }
-
-  public get fromProviderLabel(): string {
-    return instantTradesLabels[this.fromProvider];
-  }
-
-  public get toProviderLabel(): string {
-    return instantTradesLabels[this.toProvider];
-  }
-
-  public get fromBlockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.fromToken.blockchain);
-  }
-
-  public get toBlockchainLabel(): string {
-    return BlockchainsInfo.getBlockchainLabel(this.toToken.blockchain);
-  }
+  public isBridgers: boolean;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -150,7 +133,10 @@ export class CrossChainSwapInfoComponent implements OnInit {
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
               const nativeToken = tokens.find(
                 token =>
-                  token.blockchain === fromBlockchain && Web3Pure.isNativeAddress(token.address)
+                  token.blockchain === fromBlockchain &&
+                  Web3Pure[SdkBlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(
+                    token.address
+                  )
               );
 
               this.nativeCoinSymbol = nativeToken.symbol;
@@ -162,7 +148,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 trade instanceof LifiCrossChainTrade ||
                 trade instanceof DebridgeCrossChainTrade ||
                 trade instanceof ViaCrossChainTrade ||
-                trade instanceof RangoCrossChainTrade
+                trade instanceof RangoCrossChainTrade ||
+                trade instanceof EvmBridgersCrossChainTrade ||
+                trade instanceof TronBridgersCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 
@@ -181,6 +169,11 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   nativeCoinPrice
                 );
               }
+
+              this.isBridgers =
+                trade instanceof EvmBridgersCrossChainTrade ||
+                trade instanceof TronBridgersCrossChainTrade;
+
               this.swapInfoService.emitInfoCalculated();
             })
           );

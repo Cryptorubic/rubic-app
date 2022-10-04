@@ -2,12 +2,17 @@ import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { timer } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
-import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType
+} from 'rubic-sdk';
+import { timer } from 'rxjs';
+import { MODAL_CONFIG } from '@shared/constants/modals/modal-config';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -30,6 +35,8 @@ export class SuccessTxModalComponent {
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public readonly CROSS_CHAIN_PROVIDER = CROSS_CHAIN_TRADE_TYPE;
+
+  public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
   constructor(
     private readonly destroy$: TuiDestroyService,

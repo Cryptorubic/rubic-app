@@ -121,7 +121,7 @@ export class SwapsFormComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  public readonly getCurrentUser$ = this.authService.getCurrentUser();
+  public readonly getCurrentUser$ = this.authService.currentUser$;
 
   constructor(
     private readonly swapsService: SwapsService,

@@ -3,6 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
+  Injector,
+  INJECTOR,
   Input,
   OnInit,
   Output,
@@ -12,10 +15,12 @@ import { SwapFormService } from '@features/swaps/features/main-form/services/swa
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
-  InstantTrade,
-  InstantTradeError,
-  TRADE_TYPE,
-  TradeType,
+  BlockchainsInfo,
+  EvmOnChainTrade,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTrade,
+  OnChainTradeError,
+  OnChainTradeType,
   Web3Pure
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
@@ -34,6 +39,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  map,
   startWith,
   switchMap,
   takeUntil,
@@ -57,12 +63,16 @@ import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade'
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { TuiDialogService } from '@taiga-ui/core';
 
 interface SettledProviderTrade {
-  providerName: TradeType;
+  providerName: OnChainTradeType;
 
   status: 'fulfilled' | 'rejected';
-  value?: InstantTrade | null;
+  value?: OnChainTrade | null;
   reason?: RubicError<ERROR_TYPE>;
 
   needApprove?: boolean;
@@ -116,7 +126,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
-  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+  public readonly displayTargetAddressInput$ = this.settingsService.instantTradeValueChanges.pipe(
+    startWith(this.settingsService.instantTradeValue),
+    map(value => value.showReceiverAddress)
+  );
 
   /**
    * True, if 'approve' button should be shown near 'swap' button.
@@ -186,7 +199,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public get isFromNative(): boolean {
-    return Web3Pure.isNativeAddress(this.fromToken.address);
+    return Web3Pure[BlockchainsInfo.getChainType(this.fromToken.blockchain)].isNativeAddress(
+      this.fromToken.address
+    );
   }
 
   constructor(
@@ -202,6 +217,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly dialogService: TuiDialogService,
+    @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isIframe = this.iframeService.isIframe;
@@ -243,8 +260,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }
       });
 
-    // We did not use 'distinctUntilChanged' for 'showReceiverAddress' because the PREV value was not updated.
-    let isShowedReceiverAddressPreviousValue: boolean;
     this.settingsService.instantTradeValueChanges
       .pipe(
         distinctUntilChanged((prev, next) => {
@@ -254,22 +269,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
             prev.slippageTolerance === next.slippageTolerance
           );
         }),
-        filter(current => {
-          if (current.showReceiverAddress === isShowedReceiverAddressPreviousValue) {
-            isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
-            return true;
-          }
-          isShowedReceiverAddressPreviousValue = current.showReceiverAddress;
-          return false;
-        }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
 
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(
         filter(user => !!user?.address),
         takeUntil(this.destroy$)
@@ -300,18 +306,23 @@ export class InstantTradeBottomFormComponent implements OnInit {
       form.fromBlockchain === form.toBlockchain
     ) {
       this.currentBlockchain = form.fromBlockchain;
-      this.initiateProviders(this.currentBlockchain);
+      const isSuccessful = this.initiateProviders(this.currentBlockchain);
+      if (!isSuccessful) {
+        return;
+      }
     }
 
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BlockchainName): void {
+  private initiateProviders(blockchain: BlockchainName): boolean {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+      this.providersData = [];
       this.errorService.catch(new NotSupportedItNetwork());
-      return;
+      return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];
+    return true;
   }
 
   /**
@@ -414,7 +425,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * @param trades Calculated providers' trade data.
    * If not provided, current approve data is chosen.
    */
-  private async setupProviders(trades: Array<InstantTrade | InstantTradeError>): Promise<void> {
+  private async setupProviders(trades: Array<OnChainTrade | OnChainTradeError>): Promise<void> {
+    const isUserAuthorized =
+      Boolean(this.authService.userAddress) &&
+      this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
+
     const providersPromises = this.providersData.map(async provider => {
       const settledTrade = trades.find(trade => trade?.type === provider.name);
 
@@ -433,11 +448,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
       if ('error' in settledTrade) {
         return {
           ...defaultProvider,
-          error: settledTrade.error as RubicError<ERROR_TYPE.TEXT>
+          error: RubicSdkErrorParser.parseError(settledTrade.error)
         };
       }
 
-      const needApprove = this.authService.user?.address
+      const needApprove = isUserAuthorized
         ? await this.instantTradeService.needApprove(settledTrade)
         : false;
 
@@ -496,16 +511,17 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private calculateTradeProfit(trade: InstantTrade): BigNumber {
+  private calculateTradeProfit(trade: OnChainTrade): BigNumber {
     if (!trade) {
       return new BigNumber(-Infinity);
     }
-    const { gasFeeInfo, to } = trade;
+    const { to } = trade;
     if (!to.price.isFinite()) {
       return to.tokenAmount;
     }
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
-    return amountInUsd.minus(gasFeeInfo?.gasFeeInUsd || 0);
+    const gasFeeInfo = trade instanceof EvmOnChainTrade ? trade.gasFeeInfo?.gasFeeInUsd : 0;
+    return amountInUsd.minus(gasFeeInfo);
   }
 
   /**
@@ -646,7 +662,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
-    providerName: TradeType,
+    providerName: OnChainTradeType,
     tradeStatus: TRADE_STATUS,
     providerState?: INSTANT_TRADE_STATUS,
     needApprove?: boolean,
@@ -709,8 +725,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
-    let providerName: TradeType;
-    let providerTrade: InstantTrade | WrapTrade;
+    if (!this.isSlippageCorrect()) {
+      return;
+    }
+
+    let providerName: OnChainTradeType;
+    let providerTrade: OnChainTrade | WrapTrade;
     if (!this.ethWethTrade) {
       if (!this.selectedProvider) {
         this.errorService.catch(new NoSelectedProviderError());
@@ -719,7 +739,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       providerName = this.selectedProvider.name;
       providerTrade = this.selectedProvider.trade;
     } else {
-      providerName = TRADE_TYPE.WRAPPED;
+      providerName = ON_CHAIN_TRADE_TYPE.WRAPPED;
       providerTrade = this.ethWethTrade;
     }
 
@@ -770,7 +790,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   private async getHiddenTradeAndApproveData(
-    instantTrades: Array<InstantTrade | InstantTradeError>
+    instantTrades: Array<OnChainTrade | OnChainTradeError>
   ): Promise<SettledProviderTrade[]> {
     const approveData: Array<boolean | null> = await Promise.all(
       instantTrades.map(trade => ('error' in trade ? null : trade.needApprove()))
@@ -793,8 +813,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private getFakeTrades(): Promise<InstantTradeError[]> {
-    return new Promise<InstantTradeError[]>(resolve =>
+  private getFakeTrades(): Promise<OnChainTradeError[]> {
+    return new Promise<OnChainTradeError[]>(resolve =>
       resolve(
         this.providersData.map(provider => ({
           type: provider.name,
@@ -802,5 +822,22 @@ export class InstantTradeBottomFormComponent implements OnInit {
         }))
       )
     );
+  }
+
+  private isSlippageCorrect(): boolean {
+    if (
+      !this.selectedProvider ||
+      this.settingsService.instantTradeValue.autoSlippageTolerance ||
+      this.selectedProvider.trade.type !== ON_CHAIN_TRADE_TYPE.BRIDGERS
+    ) {
+      return true;
+    }
+    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    this.dialogService
+      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
+        size
+      })
+      .subscribe();
+    return false;
   }
 }

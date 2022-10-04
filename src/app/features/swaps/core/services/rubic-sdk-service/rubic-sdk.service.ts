@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import SDK, {
+import {
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
-  InstantTradesManager,
-  TokensManager
+  OnChainManager,
+  OnChainStatusManager,
+  SDK,
+  WalletProvider,
+  WalletProviderCore,
+  CHAIN_TYPE
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -27,20 +31,20 @@ export class RubicSdkService {
     return this._SDK;
   }
 
-  public get tokens(): TokensManager {
-    return this.SDK.tokens;
-  }
-
   public get symbiosis(): CrossChainSymbiosisManager {
     return this.SDK.crossChainSymbiosisManager;
   }
 
-  public get instantTrade(): InstantTradesManager {
-    return this.SDK.instantTrades;
+  public get instantTrade(): OnChainManager {
+    return this.SDK.onChainManager;
   }
 
   public get crossChain(): CrossChainManager {
-    return this.SDK.crossChain;
+    return this.SDK.crossChainManager;
+  }
+
+  public get onChainStatusManager(): OnChainStatusManager {
+    return this.SDK.onChainStatusManager;
   }
 
   public get crossChainStatusManager(): CrossChainStatusManager {
@@ -62,9 +66,14 @@ export class RubicSdkService {
     this._SDK = null;
   }
 
-  public async initSDK(providerAddress: string): Promise<void> {
-    this.SDK = await SDK.createSDK({ ...this.defaultConfig, providerAddress });
-    this.currentConfig = { ...this.defaultConfig, providerAddress };
+  public async initSDK(providerAddress?: string): Promise<void> {
+    this.currentConfig = {
+      ...this.defaultConfig,
+      providerAddress: {
+        [CHAIN_TYPE.EVM]: providerAddress
+      }
+    };
+    this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
   public async patchConfig(config: Partial<Configuration>): Promise<void> {
@@ -73,9 +82,16 @@ export class RubicSdkService {
       const newConfig = { ...this.currentConfig, ...config };
       await this.SDK.updateConfiguration(newConfig);
       this.currentConfig = newConfig;
-    } catch {
-      console.debug('Failed to reload SDK configuration.');
+    } catch (err) {
+      console.debug('Failed to reload SDK configuration:', err);
     }
     this._sdkLoading$.next(false);
+  }
+
+  public updateWallet(
+    chainType: keyof WalletProvider,
+    walletProviderCore: WalletProviderCore
+  ): void {
+    this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
   }
 }

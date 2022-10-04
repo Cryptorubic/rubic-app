@@ -23,9 +23,8 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -132,7 +131,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.MOONRIVER,
       BLOCKCHAIN_NAME.TELOS,
-      BLOCKCHAIN_NAME.HARMONY
+      BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.TRON
     ];
     const backendTokens$ = this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)

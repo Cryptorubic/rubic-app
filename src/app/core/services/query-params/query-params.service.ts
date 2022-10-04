@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, Web3Pure } from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -19,11 +19,9 @@ import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-par
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BLOCKCHAIN_NAME, BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { CrossChainTradeType } from 'rubic-sdk/lib/features';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { WINDOW } from '@ng-web-apis/common';
 
 const DEFAULT_PARAMETERS = {
@@ -93,7 +91,6 @@ export class QueryParamsService {
     private readonly translateService: TranslateService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly settingsService: SettingsService,
-    private readonly rubicSdkService: RubicSdkService,
     @Inject(WINDOW) private readonly window: Window
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
@@ -118,11 +115,6 @@ export class QueryParamsService {
       if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
         this.setDisabledProviders(queryParams.enabledProviders);
         this.enabledBlockchains = queryParams.enabledBlockchains;
-
-        await this.rubicSdkService.patchConfig({
-          ...this.rubicSdkService.defaultConfig,
-          providerAddress: queryParams.feeTarget
-        });
       }
 
       const route = this.router.url.split('?')[0].substr(1);
@@ -265,7 +257,8 @@ export class QueryParamsService {
       return of(null);
     }
 
-    return Web3Pure.isAddressCorrect(token)
+    const chainType = BlockchainsInfo.getChainType(chain);
+    return Web3Pure[chainType].isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }

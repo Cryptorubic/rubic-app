@@ -1,6 +1,6 @@
 import { Blockchain } from '@app/shared/constants/blockchain/ui-blockchains';
 import { Token } from '@app/shared/models/tokens/token';
-import { CrossChainTradeType, CrossChainTxStatus } from 'rubic-sdk';
+import { CrossChainTradeType, TxStatus } from 'rubic-sdk';
 
 export interface UiRecentTrade {
   fromBlockchain: Blockchain;
@@ -12,7 +12,7 @@ export interface UiRecentTrade {
   srcTxHash: string;
   dstTxHash?: string | null;
   dstTxLink?: string | null;
-  statusFrom?: CrossChainTxStatus;
-  statusTo?: CrossChainTxStatus;
+  statusFrom?: TxStatus;
+  statusTo?: TxStatus;
   crossChainProviderType: CrossChainTradeType;
 }

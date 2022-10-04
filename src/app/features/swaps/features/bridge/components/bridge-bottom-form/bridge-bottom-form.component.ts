@@ -150,8 +150,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => this.setFormValues(form));
 
-    this.authService
-      .getCurrentUser()
+    this.authService.currentUser$
       .pipe(
         filter(user => !!user?.address),
         takeUntil(this.destroy$)

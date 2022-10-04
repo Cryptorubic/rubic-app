@@ -19,7 +19,14 @@ import {
   Subscription
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BlockchainName, BLOCKCHAIN_NAME, compareAddresses, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BLOCKCHAIN_NAME,
+  compareAddresses,
+  EvmWeb3Pure,
+  Token,
+  BlockchainsInfo
+} from 'rubic-sdk';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -477,11 +484,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     try {
       if (this.searchQuery) {
-        if (!Web3Pure.isAddressCorrect(this.searchQuery)) {
-          return null;
-        }
-
-        const token = await this.sdk.tokens.createToken({
+        const token = await Token.createToken({
           blockchain: this.blockchain,
           address: this.searchQuery
         });
@@ -542,16 +545,20 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.BOBA]: 'boba',
       [BLOCKCHAIN_NAME.ASTAR]: 'astar',
       [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
-      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow'
+      [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
+      [BLOCKCHAIN_NAME.TRON]: 'tron'
     };
 
     if (!blockchains[token.blockchain]) {
       return DEFAULT_TOKEN_IMAGE;
     }
 
+    const tokenAddress = BlockchainsInfo.isEvmBlockchainName(token.blockchain)
+      ? EvmWeb3Pure.toChecksumAddress(token.address)
+      : token.address;
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain]
-    }/assets/${Web3Pure.toChecksumAddress(token.address)}/logo.png`;
+    }/assets/${tokenAddress}/logo.png`;
 
     return this.httpClient
       .get(image)

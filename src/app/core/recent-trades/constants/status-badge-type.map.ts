@@ -1,9 +1,9 @@
-import { CrossChainTxStatus } from 'rubic-sdk';
+import { TxStatus } from 'rubic-sdk';
 
-export const STATUS_BADGE_TYPE: Partial<Record<CrossChainTxStatus, string>> = {
-  [CrossChainTxStatus.FAIL]: 'error',
-  [CrossChainTxStatus.PENDING]: 'info',
-  [CrossChainTxStatus.SUCCESS]: 'active',
-  [CrossChainTxStatus.FALLBACK]: 'info',
-  [CrossChainTxStatus.UNKNOWN]: 'inactive'
+export const STATUS_BADGE_TYPE: Partial<Record<TxStatus, string>> = {
+  [TxStatus.FAIL]: 'error',
+  [TxStatus.PENDING]: 'info',
+  [TxStatus.SUCCESS]: 'active',
+  [TxStatus.FALLBACK]: 'info',
+  [TxStatus.UNKNOWN]: 'inactive'
 };

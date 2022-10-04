@@ -7,7 +7,7 @@ import { catchError, first, map, mergeMap, switchMap, tap } from 'rxjs/operators
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
@@ -24,8 +24,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { Injector } from 'rubic-sdk/lib/core/sdk/injector';
+import {
+  BlockchainName,
+  BLOCKCHAIN_NAME,
+  Injector,
+  Web3PublicSupportedBlockchain,
+  Token
+} from 'rubic-sdk';
 import { RubicBridgeSupportedBlockchains } from './blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 @Injectable()
@@ -189,8 +194,6 @@ export class BridgeService extends TradeService {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
-          this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
-
           const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
           await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 
@@ -244,8 +247,6 @@ export class BridgeService extends TradeService {
     this.checkDeviceAndShowNotification();
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
-        this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
-
         const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 
@@ -268,8 +269,10 @@ export class BridgeService extends TradeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(fromBlockchain);
-    return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      fromBlockchain as Web3PublicSupportedBlockchain
+    );
+    return blockchainAdapter.checkBalance(token as Token, amount, this.authService.user.address);
   }
 
   private checkDeviceAndShowNotification(): void {

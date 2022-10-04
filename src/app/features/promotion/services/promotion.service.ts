@@ -6,11 +6,12 @@ import { notNull } from '@shared/utils/utils';
 import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
 import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
 import { comparators } from '@features/promotion/table-comporators';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CHAIN_TYPE } from 'rubic-sdk';
 
 @Injectable()
 export class PromotionService {
@@ -139,22 +140,19 @@ export class PromotionService {
    * Subscribes to wallet changes and fetches promotion data if needed.
    */
   private setWalletSubscriptions(): void {
-    this.authService
-      .getCurrentUser()
-      .pipe(map(user => !!user?.address))
-      .subscribe(isAuthorized => {
-        const isEthLikeWalletConnected =
-          isAuthorized && this.walletConnectorService.provider.walletType === 'ethLike';
-        if (isEthLikeWalletConnected) {
-          this.updatePromotionData();
-          this.updatePromotionStatistics();
-          this.updatePromoLink();
-        } else {
-          this.setDefaultTableData();
-          this.setDefaultStatistics();
-          this.setDefaultPromoLink();
-        }
-      });
+    this.authService.currentUser$.pipe(map(user => !!user?.address)).subscribe(isAuthorized => {
+      const isEthLikeWalletConnected =
+        isAuthorized && this.walletConnectorService.provider.chainType === CHAIN_TYPE.EVM;
+      if (isEthLikeWalletConnected) {
+        this.updatePromotionData();
+        this.updatePromotionStatistics();
+        this.updatePromoLink();
+      } else {
+        this.setDefaultTableData();
+        this.setDefaultStatistics();
+        this.setDefaultPromoLink();
+      }
+    });
   }
 
   private setTableDataLoading(): void {
