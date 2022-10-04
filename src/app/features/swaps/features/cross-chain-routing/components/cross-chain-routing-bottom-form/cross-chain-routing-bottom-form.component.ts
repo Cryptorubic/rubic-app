@@ -57,7 +57,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
-  RubicSdkError
+  RubicSdkError,
+  UserRejectError
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
@@ -66,10 +67,11 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { NotWhitelistedProviderError } from 'rubic-sdk/lib/common/errors/swap/not-whitelisted-provider.error';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -177,7 +179,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly providersListSortingService: ProvidersListSortingService
   ) {}
 
   ngOnInit() {
@@ -232,8 +235,20 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.crossChainRoutingService.dangerousProviders$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.conditionalCalculate('normal'));
+      .pipe(
+        filter(providers => providers.length !== 0),
+        distinctUntilChanged((prev, curr) => prev.length <= curr.length),
+        debounceTime(200),
+        switchMap(() => this.crossChainRoutingService.providers$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(providers => {
+        const secondProvider = providers?.[1];
+        if (secondProvider) {
+          this.crossChainRoutingService.setSelectedProvider(secondProvider?.tradeType);
+          this.errorsService.catch(new NotWhitelistedProviderWarning());
+        }
+      });
 
     this.authService.currentUser$
       .pipe(
@@ -368,6 +383,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public selectProvider(providerTrade: CrossChainProviderTrade): void {
+    console.log(providerTrade?.tradeType);
     const { fromAmount } = this.swapFormService.inputValue;
     this.crossChainProviderTrade = providerTrade;
 
@@ -518,15 +534,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         blockchain: fromBlockchain
       });
     } catch (err) {
+      debugger;
       this.errorsService.catch(err);
-
-      if (err instanceof NotWhitelistedProviderError) {
-        this.isViaDisabled = true;
-        this.conditionalCalculate('normal');
-        return;
+      if (!(err instanceof UserRejectError)) {
+        this.crossChainRoutingService.markProviderAsDangerous(
+          this.crossChainProviderTrade.tradeType
+        );
       }
-
-      this.crossChainRoutingService.markProviderAsDangerous(this.crossChainProviderTrade.tradeType);
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
@@ -561,6 +575,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([of(type), this.crossChainRoutingService.allProviders$.pipe(take(1))]);
         }),
         switchMap(([type, allProviders]) => {
+          console.log(type);
           const selectedProvider: WrappedCrossChainTrade & { rank: number } =
             allProviders.data.find(provider => provider.tradeType === type);
           return forkJoin([

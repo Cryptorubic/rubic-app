@@ -49,7 +49,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -72,7 +72,6 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { WrappedTradeOrNull } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-trade-or-null';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
-import { ProvidersListComponent } from '@features/swaps/features/cross-chain-routing/components/providers-list/providers-list.component';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 export type AllProviders = {
@@ -139,6 +138,19 @@ export class CrossChainRoutingService extends TradeService {
   private readonly _dangerousProviders$ = new BehaviorSubject<CrossChainTradeType[]>([]);
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
+
+  public readonly providers$ = combineLatest([
+    this.allProviders$,
+    this.providersListSortingService.currentSortingType$
+  ]).pipe(
+    map(([allProviders, sorting]) => {
+      const providers: readonly (WrappedCrossChainTrade & { rank: number })[] = allProviders.data;
+      const trades = [...providers].filter(provider => Boolean(provider.trade));
+      const sortedProviders = ProvidersListSortingService.sortProviders(trades, sorting);
+      return ProvidersListSortingService.setTags(sortedProviders);
+    }),
+    debounceTime(10)
+  );
 
   constructor(
     private readonly sdk: RubicSdkService,
@@ -214,7 +226,7 @@ export class CrossChainRoutingService extends TradeService {
               ...provider,
               rank: this._dangerousProviders$.value.includes(provider.tradeType) ? 0 : 1
             }));
-            const sortedProviders = ProvidersListComponent.sortProviders(
+            const sortedProviders = ProvidersListSortingService.sortProviders(
               rankedProviders,
               sortingType
             );
