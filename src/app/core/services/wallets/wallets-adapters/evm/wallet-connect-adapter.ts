@@ -21,12 +21,12 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    _window: RubicWindow
+    window: RubicWindow
   ) {
     const providerConfig = {
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true
     };
-    super(providerConfig, onAddressChanges$, onNetworkChanges$, errorsService, zone);
+    super(providerConfig, onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
 }
