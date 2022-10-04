@@ -146,6 +146,10 @@ app-icon-button {
     }
   }
 
+  &__list {
+    height: 100%;
+  }
+
   &_loading {
     flex: 0;
   }
