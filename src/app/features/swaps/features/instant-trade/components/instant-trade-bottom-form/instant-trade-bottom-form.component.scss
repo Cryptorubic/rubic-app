@@ -99,6 +99,7 @@ $green: rgb(74, 169, 86);
     @include iframe-vertical {
       flex-direction: column;
       margin-bottom: 52px;
+      overflow: visible;
     }
   }
 
