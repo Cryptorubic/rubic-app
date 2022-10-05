@@ -10,6 +10,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiScrollbarModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -53,7 +54,8 @@ import { ProvidersListSortingComponent } from 'src/app/features/swaps/features/c
     TuiButtonModule,
     TuiDropdownControllerModule,
     TuiLoaderModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiScrollbarModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
   providers: []
