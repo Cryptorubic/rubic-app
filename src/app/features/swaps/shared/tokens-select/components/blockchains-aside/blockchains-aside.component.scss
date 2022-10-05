@@ -3,7 +3,7 @@
 .blockchain-aside {
   width: 260px;
   height: 443px;
-  padding: 14px 10px;
+  padding: 14px 0 14px 10px;
 
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;
@@ -31,6 +31,10 @@
 
   &__scroll {
     max-height: 100%;
+
+    @include iframe {
+      height: 76px;
+    }
   }
 
   &__blockchains-list {
