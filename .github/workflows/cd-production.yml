@@ -3,7 +3,7 @@ name: Update production server
 on:
   push:
     branches:
-      - master
+      - debych-patch-1
 
 jobs:
   deploy:
@@ -12,33 +12,45 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Read .nvmrc
-        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
-        id: nvm
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v6
+        
+      - name: Notify bot
+        uses: fjogeleit/http-request-action@v1
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          url: 'https://deploy-bot.rubic.exchange/deploy'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${{ steps.branch-names.outputs.head_ref_branch }}"}'
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+#       - name: Read .nvmrc
+#         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+#         id: nvm
 
-      - name: Set up packages
-        run: yarn
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
-      - name: Set up sshpass and npm
-        run: |
-          sudo apt-get install sshpass
-          yarn
+#       - name: Cache dependencies
+#         uses: actions/cache@v2
+#         with:
+#           path: ~/.npm
+#           key: npm-${{ hashFiles('package-lock.json') }}
+#           restore-keys: npm-
 
-      - name: Run build prod
-        run: yarn run build
+#       - name: Set up packages
+#         run: yarn
 
-      - name: Deploy on prod server
-        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
+#       - name: Set up sshpass and npm
+#         run: |
+#           sudo apt-get install sshpass
+#           yarn
+
+#       - name: Run build prod
+#         run: yarn run build
+
+#       - name: Deploy on prod server
+#         run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
