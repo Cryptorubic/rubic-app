@@ -31,7 +31,7 @@
     }
 
     &__iframe-input {
-      width: 200px;
+      width: 182px;
     }
 
     tui-wrapper[data-appearance='textfield'] {
@@ -51,10 +51,20 @@
 
       input {
         border-left-width: 30px !important;
+
+        @include iframe {
+          padding-right: 0 !important;
+
+          border-left-width: 0 !important;
+        }
       }
 
       .content {
         padding-left: 33px !important;
+
+        @include iframe {
+          padding: 0 0 0 var(--tui-padding-s) !important;
+        }
       }
     }
 

@@ -75,6 +75,8 @@ export class QueryParamsService {
 
   public disabledProviders: CrossChainTradeType[];
 
+  public enabledProviders: CrossChainTradeType[];
+
   public enabledBlockchains: BlockchainName[];
 
   public screenWidth: number;
@@ -113,6 +115,7 @@ export class QueryParamsService {
       this.setIframeInfo(queryParams);
 
       if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+        this.setEnabledProviders(queryParams.enabledProviders);
         this.setDisabledProviders(queryParams.enabledProviders);
         this.enabledBlockchains = queryParams.enabledBlockchains;
       }
@@ -269,6 +272,12 @@ export class QueryParamsService {
     );
   }
 
+  private setEnabledProviders(enabledProviders: string[]): void {
+    this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
+      enabledProviders.includes(provider.toLowerCase())
+    );
+  }
+
   /**
    * Searches token by symbol.
    * @param tokens List of local tokens.
@@ -368,7 +377,9 @@ export class QueryParamsService {
       device: queryParams.device,
       fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
       feeTarget: queryParams.feeTarget,
-      promoCode: queryParams.promoCode
+      promoCode: queryParams.promoCode,
+      tokenSearch: queryParams.tokenSearch === 'true',
+      rubicLink: queryParams.rubicLink === 'true'
     });
 
     this.setBackgroundStatus(queryParams);

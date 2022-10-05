@@ -42,6 +42,17 @@ $token-card-height: 55px;
         background-color: unset;
       }
     }
+
+    &_empty {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
   }
 }
 
@@ -99,6 +110,19 @@ $token-card-height: 55px;
 
     &_active {
       cursor: not-allowed;
+    }
+
+    &_empty {
+      border: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      cursor: default;
+    
+      &:hover {
+        background-color: unset;
+      }
     }
   }
 
