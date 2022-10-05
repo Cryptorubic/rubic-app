@@ -1,0 +1,50 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.routes {
+  display: flex;
+  align-items: center;
+
+  &__close {
+    cursor: pointer;
+  }
+
+  &__header {
+    margin: 0;
+
+    font-size: 16px;
+  }
+
+  &__counter {
+    margin-left: 6px;
+
+    font-size: 14px;
+  }
+}
+
+app-providers-list-sorting {
+  margin-left: auto;
+}
+
+.image {
+  box-sizing: content-box;
+  width: 11px;
+  margin-left: 10px;
+  padding: 10px;
+
+  cursor: pointer;
+
+  ::ng-deep {
+    g {
+      opacity: 1;
+    }
+
+    path {
+      fill: white;
+    }
+  }
+}

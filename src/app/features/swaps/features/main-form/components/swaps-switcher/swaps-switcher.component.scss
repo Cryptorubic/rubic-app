@@ -7,6 +7,8 @@
 }
 
 .switcher {
+  z-index: 999;
+
   display: flex;
   box-sizing: content-box;
   width: 35px;

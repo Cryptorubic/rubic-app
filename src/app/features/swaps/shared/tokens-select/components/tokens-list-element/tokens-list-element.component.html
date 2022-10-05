@@ -3,6 +3,7 @@
     <img
       [src]="token.image || DEFAULT_TOKEN_IMAGE"
       [alt]="token.name"
+      loading="lazy"
       (error)="onImageError($event)"
     />
   </div>

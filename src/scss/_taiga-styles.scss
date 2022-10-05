@@ -3,6 +3,13 @@
 tui-dialog {
   overflow: hidden;
 
+  @include b($mobile-sm-plus) {
+    .header {
+      flex: auto !important;
+      overflow: auto !important;
+    }
+  }
+
   &::after {
     box-shadow: unset !important;
   }
@@ -57,6 +64,10 @@ tui-dialog {
 
   .wrapper {
     z-index: 1;
+  }
+
+  .header {
+    background: var(--tui-base-01);
   }
 
   .close {
