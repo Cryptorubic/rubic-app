@@ -1,0 +1,61 @@
+:host ::ng-deep {
+  tui-wrapper {
+    --tui-secondary-active: var(--secondary-background);
+    --tui-secondary-hover: var(--secondary-background);
+
+    --tui-link: var(--form-rubic-text-color);
+    --tui-link-active: var(--form-rubic-text-color);
+    --tui-link-hover: var(--form-rubic-text-color);
+
+    font-weight: 500;
+  }
+}
+
+button.option {
+  position: relative;
+
+  min-height: 40px;
+  margin: 0;
+  padding: 0 20px 0 60px;
+
+  border: none;
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
+
+  &:hover {
+    background: var(--secondary-background);
+  }
+
+  &_description {
+    width: 300px;
+    padding-left: 20px;
+
+    white-space: normal;
+  }
+}
+
+.data-list {
+  &__recommended {
+    opacity: 0.5;
+  }
+
+  &__select-indicator {
+    position: absolute;
+    left: 20px;
+
+    width: 20px;
+    height: 20px;
+
+    color: green;
+  }
+
+  tui-opt-group {
+    &::before {
+      padding: 1rem 20px 0;
+
+      font-size: 14px;
+    }
+  }
+}
