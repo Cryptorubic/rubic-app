@@ -19,7 +19,8 @@ import {
   Subject,
   combineLatest,
   Subscription,
-  throwError
+  throwError,
+  firstValueFrom
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
@@ -57,8 +58,7 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
-  RubicSdkError,
-  UserRejectError
+  RubicSdkError
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
@@ -72,6 +72,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -237,12 +238,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.crossChainRoutingService.dangerousProviders$
       .pipe(
         filter(providers => providers.length !== 0),
-        distinctUntilChanged((prev, curr) => prev.length <= curr.length),
+        distinctUntilChanged((prev, curr) => prev.length === curr.length),
         debounceTime(200),
-        switchMap(() => this.crossChainRoutingService.providers$),
         takeUntil(this.destroy$)
       )
-      .subscribe(providers => {
+      .subscribe(async () => {
+        const providers = await firstValueFrom(this.crossChainRoutingService.providers$);
         const secondProvider = providers?.[1];
         if (secondProvider) {
           this.crossChainRoutingService.setSelectedProvider(secondProvider?.tradeType);
@@ -533,11 +534,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         blockchain: fromBlockchain
       });
     } catch (err) {
-      this.errorsService.catch(err);
-      if (!(err instanceof UserRejectError)) {
+      if (err instanceof NotWhitelistedProviderWarning || err instanceof ExecutionRevertedError) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
+      } else {
+        this.errorsService.catch(err);
       }
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
