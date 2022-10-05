@@ -86,7 +86,7 @@
       </li>
       <li class="tokens-list-horizontal-iframe__item-container" *ngIf="iframeRubicLink">
         <div class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
-          <a [href]="noFrameLink" target="_blank" rel="noopener">More on {{ rubicDomain }}</a>
+          <a [safetyLink]="noFrameLink">More on {{ rubicDomain }}</a>
         </div>
       </li>
     </ul>
@@ -112,7 +112,7 @@
         Nothing to show
       </li>
       <li class="tokens-list__item vertical-frame-link" *ngIf="iframeRubicLink">
-        <a [href]="noFrameLink" target="_blank" rel="noopener">More on {{ rubicDomain }}</a>
+        <a [safetyLink]="noFrameLink">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--vertical iframe -->
