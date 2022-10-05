@@ -14656,10 +14656,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.0.3-alpha.0:
-  version "3.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.0.3-alpha.0.tgz#0b4821722e70ed13ba97a8337e3bfae66e6be22e"
-  integrity sha512-twc1sYzCARqkGxf+4YsZoHbgSin0eqPQUF0rcGg3Swjh0lISMVw/gG2F3LiPfjrwT3UwwhsJQxW/QIyFdhvkFQ==
+rubic-sdk@3.0.3-alpha.1:
+  version "3.0.3-alpha.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.0.3-alpha.1.tgz#d0e8940cd0f011a0cd422c367ca739af0d878bee"
+  integrity sha512-l7dwujLOuDDd6b0rUlsllTBYY7HPKgJnjIc/Ea7wp11T/Igo8ORYbn7OxsXAWA2wLx3x14NoWrQsWJp0n43UlA==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -16178,9 +16178,9 @@ terser@5.14.2:
     source-map-support "~0.5.20"
 
 terser@^5.14.1:
-  version "5.15.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.15.0.tgz#e16967894eeba6e1091509ec83f0c60e179f2425"
-  integrity sha512-L1BJiXVmheAQQy+as0oF3Pwtlo4s3Wi1X2zNZ2NxOB4wx9bdS9Vk67XQENLFdLYGCK/Z2di53mTj/hBafR+dTA==
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.15.1.tgz#8561af6e0fd6d839669c73b92bdd5777d870ed6c"
+  integrity sha512-K1faMUvpm/FBxjBXud0LWVAGxmvoPbZbfTCYbSgaaYQaIXI3/TdI7a7ZGA73Zrou6Q8Zmz3oeUTsp/dj+ag2Xw==
   dependencies:
     "@jridgewell/source-map" "^0.3.2"
     acorn "^8.5.0"
