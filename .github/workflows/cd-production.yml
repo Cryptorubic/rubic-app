@@ -1,4 +1,5 @@
 name: Update production server
+#TEST
 
 on:
   push:
