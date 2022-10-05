@@ -31,7 +31,9 @@
       </div>
 
       <div class="provider-panel__providers-content" *ngIf="expanded">
-        <app-providers-list (selectionHandler)="handleSelection()"></app-providers-list>
+        <tui-scrollbar>
+          <app-providers-list (selectionHandler)="handleSelection()"></app-providers-list>
+        </tui-scrollbar>
       </div>
     </ng-container>
   </div>
