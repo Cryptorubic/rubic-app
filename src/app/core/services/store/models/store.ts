@@ -3,6 +3,7 @@ import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
+import { ProvidersSort } from '@features/swaps/features/cross-chain-routing/components/providers-list-sorting/models/providers-sort';
 
 export interface Store {
   /**
@@ -63,4 +64,9 @@ export interface Store {
   unreadTrades: {
     [address: string]: number;
   };
+
+  /**
+   * Providers sorting type.
+   */
+  sortingType: ProvidersSort;
 }

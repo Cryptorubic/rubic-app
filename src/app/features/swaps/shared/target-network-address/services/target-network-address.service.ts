@@ -46,7 +46,13 @@ export class TargetNetworkAddressService {
     });
 
     this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged(
+          (prev, cur) =>
+            prev.fromBlockchain === cur.fromBlockchain && prev.toBlockchain === cur.toBlockchain
+        )
+      )
       .subscribe(form => {
         const { fromBlockchain, toBlockchain } = form;
 

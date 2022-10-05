@@ -1,0 +1,48 @@
+<tui-hosted-dropdown tuiDropdownAlign="left" [content]="content" [(open)]="open">
+  <button
+    (click)="handleSortingClick($event)"
+    tuiButton
+    type="button"
+    appearance="flat"
+    size="m"
+    [iconRight]="arrow"
+  >
+    {{ (currentSortingButton$ | async).label }}
+  </button>
+</tui-hosted-dropdown>
+
+<ng-template #arrow>
+  <tui-svg src="tuiIconChevronDown" class="icon" [class.icon_rotated]="open"></tui-svg>
+</ng-template>
+
+<ng-template #content>
+  <tui-data-list class="data-list">
+    <tui-opt-group>
+      <button
+        *ngFor="let sort of sorts"
+        tuiOption
+        class="option"
+        (mouseenter)="handleMouseIn(sort.type)"
+        (mouseout)="handleMouseOut()"
+        (touchstart)="handleMouseIn(sort.type)"
+        (touchend)="handleSelect(sort.type)"
+        (click)="handleSelect(sort.type)"
+        [ngClass]="{ option_selected: sort.type === (currentSortingType$ | async) }"
+      >
+        <img
+          *ngIf="sort.type === (currentSortingType$ | async)"
+          class="data-list__select-indicator"
+          src="assets/images/icons/checkmark/checkmark-thin-white.svg"
+          alt="Selected provider"
+        />
+        {{ sort.label }}
+        <span class="data-list__recommended" *ngIf="sort.type === 'smart'">Recommended</span>
+      </button>
+    </tui-opt-group>
+    <tui-opt-group [label]="(visibleSorting$ | async)?.label">
+      <button tuiOption class="option option_description">
+        {{ (visibleSorting$ | async)?.description }}
+      </button>
+    </tui-opt-group>
+  </tui-data-list>
+</ng-template>
