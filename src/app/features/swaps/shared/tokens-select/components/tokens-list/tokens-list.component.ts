@@ -113,13 +113,15 @@ export class TokensListComponent implements AfterViewInit {
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
 
+  public readonly rubicDomain = 'app.rubic.exchange';
+
   public get noFrameLink(): string {
-    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
+    return `https://${this.rubicDomain}${this.queryParamsService.noFrameLink}`;
   }
 
-  public get rubicDomain(): string {
-    return this.window.location.hostname;
-  }
+  public readonly iframeRubicLink = this.iframeService.rubicLink;
+
+  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
   get user$(): Observable<UserInterface> {
     return this.authService.currentUser$;

@@ -9,9 +9,11 @@ import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from 
 export class TokensSearchBarComponent {
   @Input() searchQuery: string;
 
+  @Input() expandableField: boolean = false;
+
   @Output() searchQueryChange = new EventEmitter<string>();
 
-  constructor() {}
+  public isExpanded = false;
 
   /**
    * Handles input query change.
@@ -20,5 +22,9 @@ export class TokensSearchBarComponent {
   public onQueryChanges(model: string): void {
     this.searchQuery = model;
     this.searchQueryChange.emit(model);
+  }
+
+  public expand(): void {
+    this.isExpanded = !this.isExpanded;
   }
 }

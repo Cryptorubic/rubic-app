@@ -84,6 +84,22 @@
           formControlName="autoRefresh"
         ></tui-toggle>
       </div>
+
+      <div class="iframe-settings__row">
+        <label for="showReceiverAddress">{{
+          'settings.instantTrades.showReceiverAddressTitle' | translate
+        }}</label>
+        <div
+          class="iframe-settings__hint"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
+        ></div>
+        <tui-toggle
+          class="iframe-settings__toggle"
+          id="showReceiverAddress"
+          formControlName="showReceiverAddress"
+        ></tui-toggle>
+      </div>
     </div>
   </form>
 </section>

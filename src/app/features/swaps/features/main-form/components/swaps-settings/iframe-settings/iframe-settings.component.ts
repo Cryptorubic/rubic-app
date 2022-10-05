@@ -10,6 +10,7 @@ import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 export interface IframeSettingsForm {
   autoSlippageTolerance: boolean;
@@ -17,6 +18,7 @@ export interface IframeSettingsForm {
   disableMultihops: boolean;
   rubicOptimisation: boolean;
   autoRefresh: boolean;
+  showReceiverAddress: boolean;
 }
 
 @Component({
@@ -34,6 +36,7 @@ export class IframeSettingsComponent implements OnInit {
   constructor(
     private readonly settingsService: SettingsService,
     private readonly swapService: SwapsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -55,11 +58,20 @@ export class IframeSettingsComponent implements OnInit {
       slippageTolerance: new FormControl<number>(settingsForm.slippageTolerance),
       disableMultihops: new FormControl<boolean>(itSettingsForm.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(itSettingsForm.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(settingsForm.autoRefresh)
+      autoRefresh: new FormControl<boolean>(settingsForm.autoRefresh),
+      showReceiverAddress: new FormControl<boolean>(settingsForm.showReceiverAddress)
     });
     this.slippageTolerance = this.iframeSettingsForm.value.slippageTolerance;
 
     this.setFormChanges();
+
+    this.targetNetworkAddressService.isAddressRequired$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAddressRequired => {
+        this.iframeSettingsForm.controls.showReceiverAddress.setDisable(isAddressRequired, {
+          emitEvent: false
+        });
+      });
   }
 
   private setFormChanges(): void {
