@@ -52,6 +52,10 @@ $white: white;
     color: var(--form-rubic-text-color);
   }
 
+  tui-scrollbar {
+    max-height: 100%;
+  }
+
   &__providers-content {
     position: absolute;
     top: 100%;
@@ -63,7 +67,6 @@ $white: white;
     width: 100%;
     height: 166px;
     padding: 0 24px;
-    overflow: scroll;
 
     background: var(--main-form-background);
 
