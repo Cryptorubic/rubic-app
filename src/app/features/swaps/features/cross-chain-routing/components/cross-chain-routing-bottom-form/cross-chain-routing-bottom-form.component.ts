@@ -383,7 +383,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public selectProvider(providerTrade: CrossChainProviderTrade): void {
-    console.log(providerTrade?.tradeType);
     const { fromAmount } = this.swapFormService.inputValue;
     this.crossChainProviderTrade = providerTrade;
 
@@ -534,7 +533,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         blockchain: fromBlockchain
       });
     } catch (err) {
-      debugger;
       this.errorsService.catch(err);
       if (!(err instanceof UserRejectError)) {
         this.crossChainRoutingService.markProviderAsDangerous(
@@ -575,7 +573,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([of(type), this.crossChainRoutingService.allProviders$.pipe(take(1))]);
         }),
         switchMap(([type, allProviders]) => {
-          console.log(type);
           const selectedProvider: WrappedCrossChainTrade & { rank: number } =
             allProviders.data.find(provider => provider.tradeType === type);
           return forkJoin([
