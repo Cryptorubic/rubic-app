@@ -260,9 +260,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.conditionalCalculate('normal'));
+    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.conditionalCalculate('normal');
+    });
 
     combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
       .pipe(takeUntil(this.destroy$))
