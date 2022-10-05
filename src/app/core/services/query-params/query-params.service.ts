@@ -79,6 +79,8 @@ export class QueryParamsService {
 
   public screenWidth: number;
 
+  public backgroundColor: string;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensService: TokensService,
@@ -388,7 +390,7 @@ export class QueryParamsService {
 
     const { background } = queryParams;
     if (this.isBackgroundValid(background)) {
-      this.document.body.style.background = background;
+      this.backgroundColor = background;
       return;
     }
     this.document.body.classList.add('default-iframe-background');
