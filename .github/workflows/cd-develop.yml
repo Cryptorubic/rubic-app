@@ -80,4 +80,4 @@ jobs:
           url: 'https://deploy-bot.rubic.exchange/depoly'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${{ $GITHUB_REF }}"}'
+          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${ GITHUB_REF }"}'
