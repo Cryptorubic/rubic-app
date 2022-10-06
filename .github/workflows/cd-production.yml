@@ -18,7 +18,8 @@ jobs:
         id: branch-names
         uses: tj-actions/branch-names@v6
       
-      - uses: actions-ecosystem/action-regex-match@v2
+      - name: Retreive merge title
+        uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
         with:
           text: ${{ github.event.head_commit.message }}
