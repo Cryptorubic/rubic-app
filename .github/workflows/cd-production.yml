@@ -24,7 +24,7 @@ jobs:
           url: 'https://deploy-bot.rubic.exchange/deploy'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${{ steps.branch-names.outputs.head_ref_branch }}"}'
+          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${{ github.event.head_commit.message }}"}'
 
 #       - name: Read .nvmrc
 #         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
