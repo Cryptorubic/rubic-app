@@ -241,8 +241,8 @@ export class CrossChainRoutingService extends TradeService {
             return from(
               userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
             ).pipe(
-              switchMap(async needApprove => {
-                const smartRouting = await this.calculateSmartRouting(bestProvider);
+              map(needApprove => {
+                const smartRouting = this.calculateSmartRouting(bestProvider);
                 return {
                   ...bestProvider,
                   needApprove,
@@ -402,9 +402,7 @@ export class CrossChainRoutingService extends TradeService {
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 
-  public async calculateSmartRouting(
-    wrappedTrade: WrappedCrossChainTrade
-  ): Promise<SmartRouting | null> {
+  public calculateSmartRouting(wrappedTrade: WrappedCrossChainTrade): SmartRouting | null {
     if (!wrappedTrade?.trade) {
       return null;
     }

@@ -36,7 +36,11 @@ export class BestProviderPanelComponent {
     map(providers => providers.data.filter(provider => Boolean(provider.trade)).length)
   );
 
+  public readonly providers$ = this.crossChainRoutingService.providers$;
+
   public expanded = false;
+
+  public showProviders = false;
 
   constructor(
     private readonly dialogService: TuiDialogService,
@@ -56,7 +60,21 @@ export class BestProviderPanelComponent {
   }
 
   public handleSelection(): void {
+    this.showProviders = false;
     this.expanded = false;
     this.cdr.detectChanges();
+  }
+
+  public toggleExpanded(): void {
+    if (this.expanded) {
+      this.showProviders = false;
+      setTimeout(() => {
+        this.expanded = false;
+        this.cdr.detectChanges();
+      }, 150);
+    } else {
+      this.expanded = true;
+      this.showProviders = true;
+    }
   }
 }

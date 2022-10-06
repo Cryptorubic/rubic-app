@@ -74,13 +74,17 @@ $white: white;
     box-sizing: content-box;
 
     width: 100%;
-    height: 167px;
+    height: 0;
     padding: 0 24px;
 
     background: var(--main-form-background);
 
     border-bottom-right-radius: 19px;
     border-bottom-left-radius: 19px;
+
+    &_expanded {
+      height: 167px;
+    }
   }
 
   &__text {
