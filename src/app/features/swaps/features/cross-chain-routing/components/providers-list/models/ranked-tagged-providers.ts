@@ -6,6 +6,5 @@ export type RankedTaggedProviders = WrappedCrossChainTrade & {
     best: boolean;
     minAmountWarning: boolean;
     maxAmountWarning: boolean;
-    similarTrade: boolean;
   };
 };
