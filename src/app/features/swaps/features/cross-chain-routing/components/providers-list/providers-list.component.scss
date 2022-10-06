@@ -4,15 +4,14 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 20px;
 }
 
 .provider {
   display: flex;
-  gap: 20px;
   align-items: center;
+  justify-content: center;
   height: 52px;
-  padding: 10px 20px;
+  padding: 10px 0;
 
   border-radius: 14px;
 
@@ -25,6 +24,14 @@ ul {
     app-smart-routing {
       width: 100%;
     }
+  }
+
+  &__container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    width: 85%;
   }
 
   &__statuses {
@@ -53,9 +60,8 @@ ul {
 
 app-smart-routing {
   display: block;
-  width: 50%;
+  width: 55%;
 }
-
 
 :host ::ng-deep {
   .route {

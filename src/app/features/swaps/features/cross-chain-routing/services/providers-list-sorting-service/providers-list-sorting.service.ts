@@ -10,19 +10,13 @@ export class ProvidersListSortingService {
   public static setTags(
     sortedProviders: readonly (WrappedCrossChainTrade & { rank: number })[]
   ): RankedTaggedProviders[] {
-    return sortedProviders.map((provider, index, allProviders) => {
-      const similarTrade = allProviders.find(
-        el =>
-          el.tradeType !== provider.tradeType &&
-          el.trade.to.tokenAmount.eq(provider.trade.to.tokenAmount)
-      );
+    return sortedProviders.map((provider, index) => {
       return {
         ...provider,
         tags: {
           best: index === 0,
           minAmountWarning: provider.error instanceof MinAmountError,
-          maxAmountWarning: provider.error instanceof MaxAmountError,
-          similarTrade: Boolean(similarTrade)
+          maxAmountWarning: provider.error instanceof MaxAmountError
         }
       };
     });

@@ -12,32 +12,29 @@
           (click)="selectProvider(provider?.tradeType)"
           @fadeAnimation
         >
-          <app-smart-routing
-            *ngIf="(smartRoutingList$ | async)?.[i] as smartRouting"
-            [smartRouting]="smartRouting"
-          ></app-smart-routing>
+          <div class="provider__container">
+            <app-smart-routing
+              *ngIf="(smartRoutingList$ | async)?.[i] as smartRouting"
+              [smartRouting]="smartRouting"
+            ></app-smart-routing>
 
-          <span>
-            {{
-              provider.trade?.to?.tokenAmount
-                | bigNumberFormat
-                | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
-            }}
-          </span>
+            <span>
+              {{
+                provider.trade?.to?.tokenAmount
+                  | bigNumberFormat
+                  | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
+              }}
+            </span>
 
-          <div class="provider__statuses">
-            <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
-            <tui-badge
-              *ngIf="provider.tags.maxAmountWarning || provider.tags.maxAmountWarning"
-              status="warning"
-              [value]="getMinMaxError(provider)"
-            ></tui-badge>
-            <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
-            <tui-badge
-              *ngIf="provider.tags.similarTrade"
-              status="warning"
-              [value]="provider.tradeType.charAt(0) + provider.tradeType.slice(1).toLowerCase()"
-            ></tui-badge>
+            <div class="provider__statuses">
+              <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
+              <tui-badge
+                *ngIf="provider.tags.minAmountWarning || provider.tags.maxAmountWarning"
+                status="warning"
+                [value]="getMinMaxError(provider)"
+              ></tui-badge>
+              <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
+            </div>
           </div>
         </li>
       </ng-container>

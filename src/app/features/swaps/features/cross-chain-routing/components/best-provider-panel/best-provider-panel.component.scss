@@ -58,14 +58,13 @@ $white: white;
 
   &__providers-content {
     position: absolute;
-    top: 100%;
     left: -24px;
     z-index: 999;
 
     box-sizing: content-box;
 
     width: 100%;
-    height: 166px;
+    height: 167px;
     padding: 0 24px;
 
     background: var(--main-form-background);
@@ -83,46 +82,9 @@ $white: white;
     font-size: 16px;
   }
 
-  &__trades-container {
-    width: 100%;
-    overflow: visible !important;
-
-    .tui-accordion__item-wrapper {
-      &::after {
-        border: none;
-      }
-    }
-
-    tui-expand .content {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 999;
-
-      width: 100%;
-      height: 166px;
-      padding: 0;
-      overflow: scroll;
-
-      background: var(--main-form-background);
-    }
-
-    .tui-accordion__item-title {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-
   &__row {
-    //display: flex;
-    //align-items: center;
     min-height: 18px;
     margin-bottom: 25px;
-
-    //position: absolute;
-    //top: 0;
-    //left: 0;
-    //width: 100%;
   }
 
   &_loading {

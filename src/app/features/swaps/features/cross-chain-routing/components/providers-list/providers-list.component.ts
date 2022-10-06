@@ -38,10 +38,10 @@ export class ProvidersListComponent {
   public getMinMaxError(provider: WrappedCrossChainTrade): string {
     const error = provider.error;
     if (error instanceof MaxAmountError) {
-      return `Max: ${error.maxAmount.toFixed(3)}`;
+      return `Max: ${error.maxAmount.toFixed(2)}`;
     }
     if (error instanceof MinAmountError) {
-      return `Min: ${error.minAmount.toFixed(3)}`;
+      return `Min: ${error.minAmount.toFixed(2)}`;
     }
   }
 
