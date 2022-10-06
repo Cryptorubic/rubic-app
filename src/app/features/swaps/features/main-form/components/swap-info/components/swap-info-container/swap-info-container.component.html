@@ -8,13 +8,13 @@
   [(open)]="accordionOpened"
 >
   <div class="transaction-info__header">
+    {{ 'common.transactionDetails' | translate }}
     <img
       src="assets/images/icons/arrow-down.svg"
       alt="expand"
       class="transaction-info__header-arrow"
       [class.transaction-info__header-arrow_opened]="accordionOpened"
     />
-    {{ 'common.transactionDetails' | translate }}
   </div>
   <div tuiAccordionItemContent>
     <tui-loader [showLoader]="loading" [overlay]="true">

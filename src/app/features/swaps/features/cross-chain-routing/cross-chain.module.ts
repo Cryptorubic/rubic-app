@@ -23,7 +23,6 @@ import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-sc
 import { ProvidersCounterComponent } from './components/providers-counter/providers-counter.component';
 import { ProvidersListComponent } from './components/providers-list/providers-list.component';
 import { BestProviderPanelComponent } from './components/best-provider-panel/best-provider-panel.component';
-import { ProvidersListHeaderComponent } from './components/providers-list-header/providers-list-header.component';
 
 @NgModule({
   declarations: [
@@ -32,8 +31,7 @@ import { ProvidersListHeaderComponent } from './components/providers-list-header
     SwapSchemeModalComponent,
     ProvidersCounterComponent,
     ProvidersListComponent,
-    BestProviderPanelComponent,
-    ProvidersListHeaderComponent
+    BestProviderPanelComponent
   ],
   imports: [
     CommonModule,

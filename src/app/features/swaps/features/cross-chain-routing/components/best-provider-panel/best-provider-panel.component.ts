@@ -59,8 +59,4 @@ export class BestProviderPanelComponent {
     this.expanded = false;
     this.cdr.detectChanges();
   }
-
-  public closeAccordion(): void {
-    this.expanded = false;
-  }
 }

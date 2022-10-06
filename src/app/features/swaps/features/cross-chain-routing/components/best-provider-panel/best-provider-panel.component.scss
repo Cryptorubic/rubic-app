@@ -7,7 +7,6 @@ $white: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 10px;
 }
 
 ::ng-deep .provider-panel {
@@ -50,6 +49,17 @@ $white: white;
     margin-left: auto;
 
     color: var(--form-rubic-text-color);
+  }
+
+  &__expand-arrow {
+    width: 13px;
+    margin-left: 6px;
+
+    transition: 0.2s ease-in-out;
+
+    &_opened {
+      transform: rotate(180deg);
+    }
   }
 
   tui-scrollbar {

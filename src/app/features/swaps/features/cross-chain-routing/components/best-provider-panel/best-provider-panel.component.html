@@ -2,17 +2,17 @@
   <div class="provider-panel__row">
     <ng-container *ngLet="calculatedProviders$ | async as providers">
       <div class="provider-panel__header">
-        <app-providers-list-header
-          *ngIf="expanded"
-          [calculatedProviders]="calculatedProviders$ | async"
-          (closeHandler)="closeAccordion()"
-        ></app-providers-list-header>
-
-        <div class="provider-panel__text" *ngIf="!expanded && providers > 1">
+        <div class="provider-panel__text" *ngIf="providers > 1">
           <app-providers-counter [calculatedProvider]="calculatedProvider"></app-providers-counter>
 
-          <button class="provider-panel__expand-button" (click)="expanded = true">
+          <button class="provider-panel__expand-button" (click)="expanded = !expanded">
             Other routes
+            <img
+              src="assets/images/icons/arrow-down.svg"
+              alt="expand"
+              class="provider-panel__expand-arrow"
+              [class.provider-panel__expand-arrow_opened]="expanded"
+            />
           </button>
         </div>
       </div>
