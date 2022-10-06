@@ -136,6 +136,10 @@
 
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    @include iframe-vertical {
+      text-overflow: inherit;
+    }
   }
 
   &__clear-container {
