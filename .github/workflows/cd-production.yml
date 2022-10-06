@@ -24,6 +24,7 @@ jobs:
         with:
           text: ${{ github.event.head_commit.message }}
           regex: '.*$'
+          flags: 'm'
         
       - name: Notify bot
         uses: fjogeleit/http-request-action@v1
