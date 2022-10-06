@@ -3,7 +3,7 @@ name: Update production server
 on:
   push:
     branches:
-      - debych-patch-1
+      - master
 
 jobs:
   deploy:
