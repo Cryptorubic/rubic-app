@@ -14656,10 +14656,8 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.0.0.tgz#3ccb7eca208ddc4dc638c3819653b45d7021cae2"
-  integrity sha512-phliAXwEbjaO8ZCi0rk6sAbc78S4HdVE7+QRKsMPllSOpVOz/F4yLfWa/h8VN95b0MshTyNH9cynxC0cTR6t/g==
+"rubic-sdk@file:../rubic-sdk":
+  version "3.0.4"
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -14669,7 +14667,7 @@ rubic-sdk@3.0.0:
     bitcoin-address-validation "2.2.1"
     ethers "^5.6.8"
     rango-sdk-basic "^0.0.7"
-    rxjs "^7.5.5"
+    rxjs "^7.5.7"
     symbiosis-js-sdk "2.8.13"
     tronweb "^4.3.0"
     web3 "^1.8.0"
@@ -14716,7 +14714,7 @@ rxjs@6.6.7, rxjs@^6.5.3, rxjs@^6.5.4, rxjs@^6.6.3:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.5.6:
+rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.5.6, rxjs@^7.5.7:
   version "7.5.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
   integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==

@@ -189,28 +189,13 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   public readonly isHorizontalIframe = this.iframeService.iframeAppearance === 'horizontal';
 
-  /**
-   * Checks if tokens pair is allowed to trade through cross-chain.
-   * @param fromBlockchain From token blockchain.
-   * @param toBlockchain To token blockchain.
-   * @return boolean If token is allowed in cross-chain returns true, otherwise false.
-   */
-  static allowedInCrossChain(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): boolean {
-    return (
-      CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) &&
-      CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
-    );
-  }
-
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     private readonly iframeService: IframeService,
+    private readonly crossChainService: CrossChainRoutingService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
@@ -518,7 +503,10 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
             available:
               !oppositeToken ||
               this.blockchain === oppositeToken.blockchain ||
-              TokensSelectComponent.allowedInCrossChain(token.blockchain, oppositeToken.blockchain),
+              this.crossChainService.areSupportedBlockchains(
+                token.blockchain,
+                oppositeToken.blockchain
+              ),
             favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
               compareTokens(favoriteToken, token)
             )

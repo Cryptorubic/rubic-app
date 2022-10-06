@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
-import { CrossChainManager, MaxAmountError, MinAmountError } from 'rubic-sdk';
+import {
+  compareCrossChainTrades,
+  MaxAmountError,
+  MinAmountError,
+  WrappedCrossChainTrade
+} from 'rubic-sdk';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
 
 @Injectable({
@@ -22,20 +26,17 @@ export class ProvidersListSortingService {
     });
   }
 
-  public static sortProviders(
-    providers: readonly (WrappedCrossChainTrade & { rank: number })[]
+  public static sortTrades(
+    trades: readonly (WrappedCrossChainTrade & { rank: number })[]
   ): readonly (WrappedCrossChainTrade & { rank: number })[] {
-    const trades = [...providers];
-    trades.sort((a, b) => {
-      if (a.rank === 0 || !a.trade) {
+    return [...trades].sort((a, b) => {
+      if (a.rank === 0) {
         return 1;
       }
-      if (!b.trade) {
+      if (b.rank === 0) {
         return -1;
       }
-      const bestProvider = CrossChainManager.chooseBestProvider(a, b);
-      return a.tradeType === bestProvider.tradeType ? -1 : 1;
+      return compareCrossChainTrades(a, b);
     });
-    return trades;
   }
 }

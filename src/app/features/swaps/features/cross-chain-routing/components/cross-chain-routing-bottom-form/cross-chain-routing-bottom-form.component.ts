@@ -58,7 +58,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
-  RubicSdkError
+  RubicSdkError,
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
@@ -67,7 +68,6 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
@@ -204,7 +204,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
-        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
@@ -279,15 +278,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     if (
       form.fromToken &&
       form.toToken &&
-      !this.crossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
+      !this.crossChainRoutingService.areSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
     ) {
-      const unsupportedBlockchain = !CrossChainRoutingService.isSupportedBlockchain(
-        form.fromBlockchain
-      )
-        ? form.fromBlockchain
-        : !CrossChainRoutingService.isSupportedBlockchain(form.toBlockchain)
-        ? form.toBlockchain
-        : null;
+      let unsupportedBlockchain = null;
+      if (this.crossChainRoutingService.isSupportedBlockchain(form.fromBlockchain)) {
+        unsupportedBlockchain = form.fromBlockchain;
+      } else if (!this.crossChainRoutingService.isSupportedBlockchain(form.toBlockchain)) {
+        unsupportedBlockchain = form.toBlockchain;
+      }
+
       if (unsupportedBlockchain) {
         this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
       } else {
@@ -295,6 +294,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
+
+    this.conditionalCalculate('normal');
   }
 
   private conditionalCalculate(type: CalculateTradeType): void {
@@ -366,7 +367,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               };
             }),
             map(providerTrade => this.selectProvider(providerTrade)),
-            // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicSdkError | undefined) => this.onCalculateError(err))
           );
         }),
