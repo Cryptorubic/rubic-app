@@ -57,6 +57,13 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
     }
+  ],
+  [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://rpc-bitgert-vefi.com',
+    'https://rpc.icecreamswap.com',
+    'https://mainnet-rpc.brisescan.com',
+    'https://chainrpc.com',
+    'https://serverrpc.com'
   ]
   /*
   [BLOCKCHAIN_NAME.SOLANA]: [

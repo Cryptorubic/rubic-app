@@ -31,7 +31,10 @@ import {
   CrossChainManagerCalculationOptions,
   MinAmountError,
   MaxAmountError,
-  SwapTransactionOptions
+  SwapTransactionOptions,
+  BitgertCrossChainProvider,
+  UnsupportedTokenPairError,
+  BitgertCrossChainTrade
 } from 'rubic-sdk';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
@@ -70,6 +73,7 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { UnsupportedTokenPair } from '@app/core/errors/models/cross-chain-routing/unsupported-token-pair';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +86,8 @@ export class CrossChainRoutingService extends TradeService {
     DebridgeCrossChainProvider,
     RangoCrossChainProvider,
     ViaCrossChainProvider,
-    BridgersCrossChainProvider
+    BridgersCrossChainProvider,
+    BitgertCrossChainProvider
   ];
 
   public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
@@ -201,7 +206,7 @@ export class CrossChainRoutingService extends TradeService {
           })
         );
     } catch (err) {
-      console.error(err);
+      console.error('ERRRR', err);
       throw err;
     }
   }
@@ -290,6 +295,18 @@ export class CrossChainRoutingService extends TradeService {
     const trade = this._crossChainTrade;
     const { estimatedGas } = trade as EvmCrossChainTrade;
 
+    if (trade instanceof BitgertCrossChainTrade) {
+      return {
+        estimatedGas,
+        feeAmount: new BigNumber(0),
+        feeTokenSymbol: 'USDC',
+        feePercent: 0,
+        priceImpact: '0',
+        networkFee: new BigNumber(0),
+        networkFeeSymbol: ''
+      };
+    }
+
     if (
       trade instanceof SymbiosisCrossChainTrade ||
       trade instanceof LifiCrossChainTrade ||
@@ -303,7 +320,7 @@ export class CrossChainRoutingService extends TradeService {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
@@ -394,6 +411,13 @@ export class CrossChainRoutingService extends TradeService {
         bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BRIDGERS
       };
     }
+    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE) {
+      return {
+        fromProvider: undefined,
+        toProvider: undefined,
+        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE
+      };
+    }
     return null;
   }
 
@@ -421,6 +445,9 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof UnsupportedTokenPairError) {
+      return new UnsupportedTokenPair();
+    }
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
     }

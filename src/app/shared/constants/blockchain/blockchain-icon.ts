@@ -26,5 +26,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TRON]: `${basePath}tron.png`,
   [BLOCKCHAIN_NAME.BITCOIN]: `${basePath}bitcoin.svg`,
   [BLOCKCHAIN_NAME.SOLANA]: `${basePath}solana.svg`,
-  [BLOCKCHAIN_NAME.NEAR]: `${basePath}near.svg`
+  [BLOCKCHAIN_NAME.NEAR]: `${basePath}near.svg`,
+  [BLOCKCHAIN_NAME.BITGERT]: `${basePath}bitgert.png`
 };

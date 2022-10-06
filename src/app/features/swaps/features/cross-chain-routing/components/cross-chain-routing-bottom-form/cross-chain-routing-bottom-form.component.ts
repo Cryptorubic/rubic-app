@@ -379,7 +379,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                     ? TRADE_STATUS.READY_TO_APPROVE
                     : TRADE_STATUS.READY_TO_SWAP;
                 }
-              } else if (currentProviders === totalProviders) {
+              } else if (currentProviders === totalProviders && error !== undefined) {
                 throw error;
               }
             }),
@@ -463,6 +463,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   public onCalculateError(error: RubicSdkError | undefined): Observable<null> {
+    console.error('onCalculateError', error);
     const parsedError = this.crossChainRoutingService.parseCalculationError(error);
     this.errorText = parsedError.translateKey || parsedError.message;
 

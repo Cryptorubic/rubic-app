@@ -10,7 +10,8 @@ import {
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
   NotWhitelistedProviderError as SdkNotWhitelistedProviderError,
   WalletNotConnectedError as SdkWalletNotConnectedError,
-  WrongNetworkError as SdkWrongNetworkError
+  WrongNetworkError as SdkWrongNetworkError,
+  UnsupportedTokenPairError as SdkUnsupportedTokenError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -24,6 +25,7 @@ import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/ins
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
+import { UnsupportedTokenPair } from './cross-chain-routing/unsupported-token-pair';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -66,6 +68,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkWrongNetworkError) {
       return new NetworkError(err.requiredBlockchain);
+    }
+    if (err instanceof SdkUnsupportedTokenError) {
+      return new UnsupportedTokenPair();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);

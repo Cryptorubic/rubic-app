@@ -455,6 +455,11 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
     name: 'Bridgers',
     image: `${imageBasePath}bridgers.png`,
     color: '#E6F3FF'
+  },
+  [CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE]: {
+    name: 'Bitgert bridge',
+    image: `${imageBasePath}bitgert.png`,
+    color: '#7619e1'
   }
 };
 
