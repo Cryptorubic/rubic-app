@@ -17,6 +17,12 @@ jobs:
       - name: Get branch names.
         id: branch-names
         uses: tj-actions/branch-names@v6
+      
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.event.head_commit.message }}
+          regex: '/.*$/'
         
       - name: Notify bot
         uses: fjogeleit/http-request-action@v1
@@ -24,7 +30,7 @@ jobs:
           url: 'https://deploy-bot.rubic.exchange/deploy'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{ github.event.commits[0].message }}"}'
+          data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{ steps.regex-match.outputs.group1 }}"}'
 
 #       - name: Read .nvmrc
 #         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
