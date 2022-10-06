@@ -1,7 +1,7 @@
 :host {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
   width: 100%;
 }
 
@@ -24,10 +24,6 @@
 
     font-size: 14px;
   }
-}
-
-app-providers-list-sorting {
-  margin-left: auto;
 }
 
 .image {

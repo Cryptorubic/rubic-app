@@ -48,7 +48,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -65,7 +65,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { debounceTime, distinctUntilChanged, first, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -138,15 +138,11 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
-  public readonly providers$ = combineLatest([
-    this.allProviders$,
-    this.providersListSortingService.currentSortingType$
-  ]).pipe(
-    map(([allProviders, sorting]) => {
+  public readonly providers$ = this.allProviders$.pipe(
+    map(allProviders => {
       const providers: readonly (WrappedCrossChainTrade & { rank: number })[] = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      const sortedProviders = ProvidersListSortingService.sortProviders(trades, sorting);
-      return ProvidersListSortingService.setTags(sortedProviders);
+      return ProvidersListSortingService.setTags(trades);
     }),
     debounceTime(10)
   );
@@ -165,8 +161,7 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly providersListSortingService: ProvidersListSortingService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('cross-chain-routing');
   }
@@ -214,27 +209,17 @@ export class CrossChainRoutingService extends TradeService {
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
-          switchMap(tradeData =>
-            forkJoin([
-              of(tradeData),
-              this.providersListSortingService.currentSortingType$.pipe(first())
-            ])
-          ),
-          tap(([tradeData, sortingType]) => {
+          tap(tradeData => {
             const rankedProviders = [...tradeData.data].map(provider => ({
               ...provider,
               rank: this._dangerousProviders$.value.includes(provider.tradeType) ? 0 : 1
             }));
-            const sortedProviders = ProvidersListSortingService.sortProviders(
-              rankedProviders,
-              sortingType
-            );
+            const sortedProviders = ProvidersListSortingService.sortProviders(rankedProviders);
             this._allProviders$.next({
               totalAmount: tradeData.total,
               data: sortedProviders
             });
           }),
-          map(([tradeData]) => tradeData),
           switchMap(tradeData => {
             const bestProvider = this._selectedProvider$.value
               ? tradeData.data.find(
