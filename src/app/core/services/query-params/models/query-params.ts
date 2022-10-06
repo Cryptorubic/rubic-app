@@ -35,6 +35,8 @@ interface AllQueryParams {
   isDesktop: string;
   enabledProviders: string[];
   enabledBlockchains: BlockchainName[];
+  tokenSearch: string;
+  rubicLink: string;
   // Near specific query params.
   // Transaction.
   nearLogin: string;
