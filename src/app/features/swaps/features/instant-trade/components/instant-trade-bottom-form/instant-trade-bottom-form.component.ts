@@ -840,4 +840,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       .subscribe();
     return false;
   }
+
+  public getGas(selectedProvider: InstantTradeProviderData): BigNumber {
+    const trade = selectedProvider.trade;
+    return trade instanceof EvmOnChainTrade ? trade.gasFeeInfo?.gasFeeInUsd : new BigNumber(0);
+  }
 }

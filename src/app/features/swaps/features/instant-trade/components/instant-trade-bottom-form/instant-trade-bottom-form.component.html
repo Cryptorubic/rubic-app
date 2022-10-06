@@ -65,8 +65,8 @@
               "
             ></app-usd-price-container>
 
-            <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInfo?.gasFeeInUsd?.gt(0)">
-              Est. fee ${{ selectedProvider?.trade.gasFeeInfo?.gasFeeInUsd?.toFixed(2) }}
+            <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
+              Est. fee ${{ getGas(selectedProvider)?.toFixed(2) }}
             </div>
           </div>
         </ng-container>

@@ -9,10 +9,6 @@
           [favoriteTokens]="favoriteTokens"
           [formService]="swapFormService"
         ></app-rubic-tokens>
-        <app-providers-counter
-          *noFrame
-          [calculatedProvider]="calculatedProviders"
-        ></app-providers-counter>
       </div>
       <app-amount-estimated
         [loading]="tradeStatus === TRADE_STATUS.LOADING"
@@ -24,13 +20,11 @@
       *ngIf="displayTargetAddressInput$ | async"
     ></app-target-network-address>
 
-    <ng-container *ngIf="showSmartRouting">
-      <app-smart-routing
-        *noFrame
-        [class.smart-routing-loading]="tradeStatus === TRADE_STATUS.LOADING"
-        [smartRouting]="smartRouting"
-      ></app-smart-routing>
-    </ng-container>
+    <app-best-provider-panel
+      *noFrame
+      [calculatedProvider]="calculatedProviders"
+      [smartRouting]="smartRouting"
+    ></app-best-provider-panel>
   </div>
 
   <div class="bottom-form__footer">
