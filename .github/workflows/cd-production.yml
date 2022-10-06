@@ -31,7 +31,7 @@ jobs:
           url: 'https://deploy-bot.rubic.exchange/deploy'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          run: echo "${{ steps.regex-match.outputs.match }"
+          run: echo "${{ steps.regex-match.outputs.match }}"
           data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{ steps.regex-match.outputs.group1 }}"}'
 
 #       - name: Read .nvmrc
