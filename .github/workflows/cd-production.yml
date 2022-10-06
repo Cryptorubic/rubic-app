@@ -1,5 +1,4 @@
 name: Update production server
-#TEST
 
 on:
   push:
@@ -32,8 +31,7 @@ jobs:
           url: 'https://deploy-bot.rubic.exchange/deploy'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          run: echo "${{ steps.regex-match.outputs.match }}"
-          data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{ steps.regex-match.outputs.group1 }}"}'
+          data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{steps.regex-match.outputs.match }}"}'
 
 #       - name: Read .nvmrc
 #         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
