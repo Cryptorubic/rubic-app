@@ -70,7 +70,6 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 
@@ -180,8 +179,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly iframeService: IframeService,
-    private readonly providersListSortingService: ProvidersListSortingService
+    private readonly iframeService: IframeService
   ) {}
 
   ngOnInit() {
@@ -579,7 +577,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             allProviders.data.find(provider => provider.tradeType === type);
           return forkJoin([
             of(selectedProvider),
-            from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
+            of(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
             from(selectedProvider.trade.needApprove()).pipe(catchError(() => of(false)))
           ]);
         })
