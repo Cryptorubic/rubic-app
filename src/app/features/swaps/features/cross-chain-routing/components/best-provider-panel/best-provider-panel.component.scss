@@ -84,8 +84,18 @@ $white: white;
     border-bottom-right-radius: 19px;
     border-bottom-left-radius: 19px;
 
+    @include b($mobile-md) {
+      left: 0;
+
+      padding: 0;
+    }
+
     &_expanded {
       height: 176px;
+
+      @include b($mobile-md) {
+        height: 186px;
+      }
 
       &#{$self}_with-approve {
         height: 228px;
