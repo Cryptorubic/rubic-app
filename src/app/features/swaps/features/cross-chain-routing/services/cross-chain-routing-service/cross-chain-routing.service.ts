@@ -511,7 +511,21 @@ export class CrossChainRoutingService extends TradeService {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     const routing = providerTrade.smartRouting;
-    const bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
+
+    const { trade } = providerTrade;
+
+    let routingBridgeProvider;
+    if (
+      trade instanceof LifiCrossChainTrade ||
+      trade instanceof ViaCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade
+    ) {
+      routingBridgeProvider = trade.bridgeType;
+    } else {
+      routingBridgeProvider = trade.type;
+    }
+    const bridgeProvider = TRADES_PROVIDERS[routingBridgeProvider];
+
     const fromTradeProvider = routing.fromProvider
       ? TRADES_PROVIDERS[routing.fromProvider]
       : {
