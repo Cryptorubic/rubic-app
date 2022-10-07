@@ -6,6 +6,10 @@
 
   text-align: center;
 
+  @include hide-unused-ui {
+    margin-bottom: 20px;
+  }
+
   @include b($tablet) {
     max-width: 320px;
     margin: 20px 20px 8px;
@@ -13,6 +17,14 @@
     font-size: 20px;
     line-height: 24px;
     text-align: left;
+
+    @include hide-unused-ui {
+      margin: 20px;
+    }
+
+    @include iframe {
+      margin: 20px;
+    }
   }
 
   @include dark {
@@ -133,7 +145,7 @@
   margin: 0 auto 16px;
 
   @include b($tablet) {
-    margin: 0 20px 32px;
+    margin: 0 20px 40px;
   }
 
   &__status-icon {
