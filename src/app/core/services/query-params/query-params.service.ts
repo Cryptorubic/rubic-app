@@ -174,8 +174,8 @@ export class QueryParamsService {
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
         this.gtmService.needTrackFormEventsNow = false;
         this.swapFormService.input.patchValue({
-          fromBlockchain: fromBlockchain === 'BSC' ? 'ETH' : fromBlockchain,
-          toBlockchain: toBlockchain === 'BSC' ? 'ETH' : toBlockchain,
+          fromBlockchain,
+          toBlockchain,
           ...(fromToken && { fromToken }),
           ...(toToken && { toToken }),
           ...(protectedParams.amount !== undefined && {
