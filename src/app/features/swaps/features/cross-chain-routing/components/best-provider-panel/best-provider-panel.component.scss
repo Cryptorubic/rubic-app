@@ -9,7 +9,7 @@ $white: white;
   justify-content: center;
 }
 
-::ng-deep .provider-panel {
+.provider-panel {
   position: relative;
 
   height: 100%;
@@ -67,6 +67,8 @@ $white: white;
   }
 
   &__providers-content {
+    $self: &;
+
     position: absolute;
     left: -24px;
     z-index: 999;
@@ -84,6 +86,10 @@ $white: white;
 
     &_expanded {
       height: 176px;
+
+      &#{$self}_with-approve {
+        height: 228px;
+      }
     }
   }
 
