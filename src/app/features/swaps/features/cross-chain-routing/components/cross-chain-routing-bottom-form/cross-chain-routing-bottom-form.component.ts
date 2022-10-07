@@ -254,7 +254,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.swapStarted = false;
       this.conditionalCalculate('normal');
     });
 
@@ -308,6 +307,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
+    this.swapStarted = false;
     this.onCalculateTrade$.next(type);
   }
 
@@ -517,7 +517,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainProviderTrade.tradeType
       );
 
-      this.swapStarted = false;
       this.conditionalCalculate('normal');
 
       await this.tokensService.updateTokenBalanceAfterCcrSwap({
