@@ -38,6 +38,10 @@ $white: white;
     }
   }
 
+  @include hide-unused-ui {
+    display: none;
+  }
+
   &__header {
     display: flex;
     align-items: center;
