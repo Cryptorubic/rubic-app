@@ -32,6 +32,8 @@ export class BestProviderPanelComponent {
 
   @Input() public smartRouting: SmartRouting = null;
 
+  @Input() public needApprove: boolean;
+
   public readonly calculatedProviders$ = this.crossChainRoutingService.allProviders$.pipe(
     map(providers => providers.data.filter(provider => Boolean(provider.trade)).length)
   );

@@ -19,7 +19,10 @@
 
       <div
         class="provider-panel__providers-content"
-        [ngClass]="{ 'provider-panel__providers-content_expanded': expanded }"
+        [ngClass]="{
+          'provider-panel__providers-content_expanded': expanded,
+          'provider-panel__providers-content_with-approve': needApprove
+        }"
       >
         <tui-scrollbar>
           <app-providers-list

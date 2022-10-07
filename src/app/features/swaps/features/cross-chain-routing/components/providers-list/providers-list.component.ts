@@ -7,8 +7,12 @@ import {
   Input
 } from '@angular/core';
 import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { CrossChainTradeType, MaxAmountError, MinAmountError } from 'rubic-sdk';
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
+import {
+  CrossChainTradeType,
+  MaxAmountError,
+  MinAmountError,
+  WrappedCrossChainTrade
+} from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
 import { SmartRouting } from '../../services/cross-chain-routing-service/models/smart-routing.interface';

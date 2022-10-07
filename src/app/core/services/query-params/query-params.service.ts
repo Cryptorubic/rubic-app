@@ -10,7 +10,6 @@ import { SwapFormService } from 'src/app/features/swaps/features/main-form/servi
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,7 +19,6 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 
@@ -188,7 +186,7 @@ export class QueryParamsService {
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
     return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
       first(pairsArray => !!pairsArray?.size),
-      map(pairsArray => {
+      map(() => {
         const blockchainNames = Object.values(BLOCKCHAIN_NAME);
         const fromChain = blockchainNames.includes(queryParams?.fromChain)
           ? queryParams.fromChain
@@ -215,30 +213,6 @@ export class QueryParamsService {
           }
         }
 
-        if (
-          fromChain !== toChain &&
-          newParams.from &&
-          newParams.to &&
-          !(
-            CrossChainRoutingService.isSupportedBlockchain(fromChain) &&
-            CrossChainRoutingService.isSupportedBlockchain(toChain)
-          ) &&
-          !pairsArray.some(
-            (pairsByBlockchains: BridgeTokenPairsByBlockchains) =>
-              pairsByBlockchains.fromBlockchain === fromChain &&
-              pairsByBlockchains.toBlockchain === toChain &&
-              pairsByBlockchains.tokenPairs.some(
-                tokenPair =>
-                  tokenPair.tokenByBlockchain[fromChain]?.symbol.toLowerCase() ===
-                    newParams.from?.toLowerCase() &&
-                  tokenPair.tokenByBlockchain[toChain]?.symbol.toLowerCase() ===
-                    newParams.to?.toLowerCase()
-              )
-          )
-        ) {
-          newParams.from = null;
-          newParams.to = null;
-        }
         return newParams;
       })
     );

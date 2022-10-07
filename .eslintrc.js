@@ -101,7 +101,8 @@ module.exports = {
             checkDecorators: ['Component'],
             checkDestroy: false
           }
-        ]
+        ],
+        'rxjs/no-implicit-any-catch': 'off'
       }
     },
     {
