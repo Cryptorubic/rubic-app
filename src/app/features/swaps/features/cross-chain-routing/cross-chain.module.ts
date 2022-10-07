@@ -23,8 +23,6 @@ import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-sc
 import { ProvidersCounterComponent } from './components/providers-counter/providers-counter.component';
 import { ProvidersListComponent } from './components/providers-list/providers-list.component';
 import { BestProviderPanelComponent } from './components/best-provider-panel/best-provider-panel.component';
-import { ProvidersListHeaderComponent } from './components/providers-list-header/providers-list-header.component';
-import { ProvidersListSortingComponent } from 'src/app/features/swaps/features/cross-chain-routing/components/providers-list-sorting/providers-list-sorting.component';
 
 @NgModule({
   declarations: [
@@ -33,9 +31,7 @@ import { ProvidersListSortingComponent } from 'src/app/features/swaps/features/c
     SwapSchemeModalComponent,
     ProvidersCounterComponent,
     ProvidersListComponent,
-    BestProviderPanelComponent,
-    ProvidersListHeaderComponent,
-    ProvidersListSortingComponent
+    BestProviderPanelComponent
   ],
   imports: [
     CommonModule,
