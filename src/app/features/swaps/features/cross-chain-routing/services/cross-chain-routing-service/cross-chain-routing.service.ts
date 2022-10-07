@@ -181,7 +181,7 @@ export class CrossChainRoutingService extends TradeService {
         timeout: this.defaultTimeout,
         disabledProviders: isViaDisabled
           ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA],
+          : [...(disabledProvidersForLandingIframe || [])],
         ...(receiverAddress && { receiverAddress })
       };
 
