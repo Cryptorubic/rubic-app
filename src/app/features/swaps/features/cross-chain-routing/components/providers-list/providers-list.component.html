@@ -25,7 +25,7 @@
             }}
           </span>
 
-          <div class="provider__statuses">
+          <div class="provider__statuses" *ngIf="showTags(provider)">
             <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
             <tui-badge
               *ngIf="provider.tags.minAmountWarning || provider.tags.maxAmountWarning"

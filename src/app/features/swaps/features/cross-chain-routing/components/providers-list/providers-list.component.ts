@@ -67,4 +67,8 @@ export class ProvidersListComponent {
   public trackByType(_index: number, provider: RankedTaggedProviders): CrossChainTradeType {
     return provider.tradeType;
   }
+
+  public showTags(provider: RankedTaggedProviders): boolean {
+    return Object.values(provider.tags).some(val => val) || provider.rank === 0;
+  }
 }

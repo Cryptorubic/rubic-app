@@ -20,12 +20,14 @@
       *ngIf="displayTargetAddressInput$ | async"
     ></app-target-network-address>
 
-    <app-best-provider-panel
-      *noFrame
-      [calculatedProvider]="calculatedProviders"
-      [smartRouting]="smartRouting"
-      [needApprove]="needApprove"
-    ></app-best-provider-panel>
+    <ng-container *ngIf="tradeStatus !== TRADE_STATUS.DISABLED">
+      <app-best-provider-panel
+        *noFrame
+        [calculatedProvider]="calculatedProviders"
+        [smartRouting]="smartRouting"
+        [needApprove]="needApprove"
+      ></app-best-provider-panel>
+    </ng-container>
   </div>
 
   <div class="bottom-form__footer">
