@@ -25,7 +25,8 @@ import {
   EvmBridgersCrossChainTrade,
   SymbiosisCrossChainTrade,
   DebridgeCrossChainTrade,
-  ViaCrossChainTrade
+  ViaCrossChainTrade,
+  BitgertCrossChainTrade
 } from 'rubic-sdk';
 
 @Component({
@@ -83,6 +84,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public symbiosisOrLifiCryptoFeeSymbol: string;
 
   public isBridgers: boolean;
+
+  public isBitgert = false;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -161,6 +164,12 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
 
                 this.setSymbiosisOrLifiTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
+              } else if (trade instanceof BitgertCrossChainTrade) {
+                this.isBitgert = true;
+                this.isSymbiosisOrLifi = false;
+                this.feePercent = trade.feeInfo.platformFee.percent;
+                this.feeTokenSymbol = trade.feeInfo.platformFee.tokenSymbol;
+                this.feeAmount = trade.from.tokenAmount.minus(trade.to.tokenAmount);
               } else {
                 this.isSymbiosisOrLifi = false;
 

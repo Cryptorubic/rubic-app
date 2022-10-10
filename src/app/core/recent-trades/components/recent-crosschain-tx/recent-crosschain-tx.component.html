@@ -55,6 +55,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
           ></tr>
+          <tr
+            bitgert-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BITGERT_BRIDGE"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
@@ -105,6 +111,12 @@
           mode="mobile"
           *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
         ></div>
+        <tr
+          bitgert-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BITGERT_BRIDGE"
+        ></tr>
       </ng-container>
     </div>
   </ng-template>

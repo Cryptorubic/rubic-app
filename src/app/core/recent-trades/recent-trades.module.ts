@@ -13,6 +13,7 @@ import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge
 import { ViaTradeComponent } from '@core/recent-trades/components/via-trade/via-trade.component';
 import { RangoTradeComponent } from './components/rango-trade/rango-trade.component';
 import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-trade/bridgers-trade.component';
+import { BitgertTradeComponent } from './components/bitgert-trade/bitgert-trade.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-
     DeBridgeTradeComponent,
     ViaTradeComponent,
     RangoTradeComponent,
-    BridgersTradeComponent
+    BridgersTradeComponent,
+    BitgertTradeComponent
   ],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],
