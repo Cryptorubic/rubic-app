@@ -381,7 +381,7 @@ export class QueryParamsService {
       feeTarget: queryParams.feeTarget,
       promoCode: queryParams.promoCode,
       tokenSearch: queryParams.tokenSearch === 'true',
-      rubicLink: queryParams.rubicLink === 'true'
+      rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
     });
 
     this.setBackgroundStatus(queryParams);
