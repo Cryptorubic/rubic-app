@@ -72,6 +72,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.BITGERT]: {
     name: 'Bitgert',
-    rpc: 'https://rpc-bitgert-vefi.com'
+    rpc: 'https://serverrpc.com'
   }
 };

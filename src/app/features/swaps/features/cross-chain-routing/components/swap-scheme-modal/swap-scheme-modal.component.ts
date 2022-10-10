@@ -27,6 +27,7 @@ import { CommonModalService } from '@app/core/services/modal/common-modal.servic
 import {
   BLOCKCHAIN_NAME,
   CrossChainTradeType,
+  CROSS_CHAIN_TRADE_TYPE,
   EvmWeb3Public,
   Injector,
   TronWeb3Public,
@@ -58,6 +59,8 @@ export class SwapSchemeModalComponent implements OnInit {
   public toBlockchain: Blockchain;
 
   public crossChainProvider: CrossChainTradeType;
+
+  public readonly providers = CROSS_CHAIN_TRADE_TYPE;
 
   private srcTxHash: string;
 

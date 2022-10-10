@@ -35,6 +35,16 @@
   span {
     cursor: pointer;
   }
+
+  &__warning {
+    margin-top: 8px;
+
+    color: #000;
+
+    @include dark {
+      color: #fff;
+    }
+  }
 }
 
 .pair {
@@ -229,6 +239,7 @@
 
     &-name {
       @include font(18px, 21px, 500, #000);
+      text-align: center;
 
       @include dark {
         color: #fff;

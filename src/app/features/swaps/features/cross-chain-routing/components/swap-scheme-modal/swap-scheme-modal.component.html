@@ -42,6 +42,11 @@
       <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">
         {{ 'crossChainPage.swapSchemeModal.recentTrades' | translate }}</span
       >
+      <ng-container *ngIf="crossChainProvider === providers.BITGERT_BRIDGE">
+        <div class="description__warning">
+          Please don't close or update app.rubic.exchange page until the swap is completed
+        </div>
+      </ng-container>
     </div>
 
     <div class="pair">

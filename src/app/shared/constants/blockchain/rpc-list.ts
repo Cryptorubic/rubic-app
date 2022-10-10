@@ -59,11 +59,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     }
   ],
   [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://serverrpc.com',
+    'https://dedicated.brisescan.com/',
     'https://rpc-bitgert-vefi.com',
     'https://rpc.icecreamswap.com',
     'https://mainnet-rpc.brisescan.com',
-    'https://chainrpc.com',
-    'https://serverrpc.com'
+    'https://chainrpc.com'
   ]
   /*
   [BLOCKCHAIN_NAME.SOLANA]: [
