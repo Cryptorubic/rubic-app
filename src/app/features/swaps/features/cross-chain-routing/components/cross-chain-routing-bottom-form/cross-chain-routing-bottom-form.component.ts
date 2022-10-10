@@ -70,6 +70,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -235,11 +236,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         debounceTime(200),
         takeUntil(this.destroy$)
       )
-      .subscribe(async () => {
+      .subscribe(async dangerousProviders => {
         const providers = await firstValueFrom(this.crossChainRoutingService.providers$);
-        const secondProvider = providers?.[1];
-        if (secondProvider) {
-          this.crossChainRoutingService.setSelectedProvider(secondProvider?.tradeType);
+        const nextProvider = providers?.find(provider =>
+          dangerousProviders.every(dangerousProvider => dangerousProvider !== provider.tradeType)
+        );
+        if (nextProvider) {
+          this.crossChainRoutingService.setSelectedProvider(nextProvider?.tradeType);
           this.errorsService.catch(new NotWhitelistedProviderWarning());
         }
       });
@@ -524,7 +527,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         blockchain: fromBlockchain
       });
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderWarning || err instanceof ExecutionRevertedError) {
+      const error = RubicSdkErrorParser.parseError(err);
+      if (
+        error instanceof NotWhitelistedProviderWarning ||
+        error instanceof ExecutionRevertedError
+      ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
