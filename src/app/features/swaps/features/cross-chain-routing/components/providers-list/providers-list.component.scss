@@ -4,6 +4,8 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  padding-right: 20px;
 }
 
 .provider {
@@ -18,12 +20,7 @@ ul {
   transition: 0.2s ease-in-out;
 
   @include b($mobile-sm-plus) {
-    flex-direction: column;
     height: auto;
-
-    app-smart-routing {
-      width: 100%;
-    }
   }
 
   &__container {
@@ -32,6 +29,14 @@ ul {
     align-items: center;
 
     width: 85%;
+
+    @include b($mobile-sm-plus) {
+      flex-direction: column;
+
+      app-smart-routing {
+        width: 100%;
+      }
+    }
   }
 
   &__statuses {

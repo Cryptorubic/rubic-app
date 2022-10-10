@@ -1,5 +1,4 @@
-@use 'src/scss/mixins';
-@use 'src/scss/vars';
+@use 'src/scss/core' as *;
 
 :host {
   z-index: -1;
@@ -15,8 +14,8 @@
 
   font-size: 14px;
 
-  background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
-  border-radius: vars.$border-radius-3;
+  background: transparentize($color: $rubic-primary, $amount: 0.85);
+  border-radius: $border-radius-3;
 
   &__chip {
     padding: 6px 20px;
@@ -24,11 +23,11 @@
     color: var(--rubic-base-02);
     line-height: 22px;
 
-    border-radius: vars.$border-radius-3;
+    border-radius: $border-radius-3;
 
     &_colored {
-      background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
-      border-radius: vars.$border-radius-3;
+      background: transparentize($color: $rubic-primary, $amount: 0.85);
+      border-radius: $border-radius-3;
     }
     
     &:not(:last-child) {
@@ -125,6 +124,10 @@
       font-size: 15px;
       line-height: 18px;
       text-align: center;
+
+      @include b($mobile-md) {
+        width: 80px;
+      }
     }
 
     &__cap {
