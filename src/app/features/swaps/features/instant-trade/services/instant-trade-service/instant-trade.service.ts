@@ -257,17 +257,17 @@ export class InstantTradeService extends TradeService {
       } else {
         subscription$.unsubscribe();
         this.showSuccessTrxNotification();
-
-        await this.instantTradesApiService
-          .notifyInstantTradesBot({
-            provider: providerName,
-            blockchain,
-            walletAddress: userAddress,
-            trade,
-            txHash: transactionHash
-          })
-          .catch(_err => {});
       }
+
+      await this.instantTradesApiService
+        .notifyInstantTradesBot({
+          provider: providerName,
+          blockchain,
+          walletAddress: userAddress,
+          trade,
+          txHash: transactionHash
+        })
+        .catch(_err => {});
 
       this.updateTrade(transactionHash, true);
     } catch (err) {
