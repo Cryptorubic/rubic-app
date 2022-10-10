@@ -82,6 +82,13 @@
       @include iframe {
         margin: 0 15px 0 0;
       }
+
+      &.disabled {
+        cursor: not-allowed !important;
+        opacity: 0.5;
+
+        pointer-events: none;
+      }
     }
   }
 
