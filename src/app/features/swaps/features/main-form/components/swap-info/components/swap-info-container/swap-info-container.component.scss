@@ -10,7 +10,7 @@
 .transaction-info {
   &__header {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
     width: 100%;
 
@@ -28,8 +28,8 @@
     }
 
     &-arrow {
-      width: 15px;
-      margin-right: 12px;
+      width: 13px;
+      margin-left: 12px;
 
       transition: 0.2s ease-in-out;
 

@@ -26,6 +26,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { UnsupportedTokenPair } from './cross-chain-routing/unsupported-token-pair';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -108,7 +109,7 @@ export class RubicSdkErrorParser {
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
     }
-    return new RubicError(err.message);
+    return new ExecutionRevertedError(err.message);
   }
 
   public static parseError(err: RubicError<ERROR_TYPE> | RubicSdkError): RubicError<ERROR_TYPE> {

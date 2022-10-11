@@ -431,7 +431,8 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: {
     name: 'Lifi',
-    image: ''
+    image: `${imageBasePath}lifi.svg`,
+    color: '#bf38ee'
   },
   [CROSS_CHAIN_TRADE_TYPE.CELER]: {
     name: 'Celer',
@@ -449,7 +450,7 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
     name: 'Rango',
-    image: ``
+    image: `${imageBasePath}rango.svg`
   },
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',

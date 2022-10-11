@@ -3,6 +3,13 @@
 tui-dialog {
   overflow: hidden;
 
+  @include b($mobile-sm-plus) {
+    .header {
+      flex: auto !important;
+      overflow: auto !important;
+    }
+  }
+
   &::after {
     box-shadow: unset !important;
   }
@@ -59,6 +66,10 @@ tui-dialog {
     z-index: 1;
   }
 
+  .header {
+    background: var(--tui-base-01);
+  }
+
   .close {
     position: absolute !important;
     top: 18px !important;
@@ -87,6 +98,14 @@ tui-dialog {
 tui-dialog-host {
   > div {
     backdrop-filter: blur(12px);
+  }
+
+  .overlay {
+    overflow: inherit !important;
+  }
+
+  .dialog {
+    overflow: inherit !important;
   }
 }
 

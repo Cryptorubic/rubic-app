@@ -42,3 +42,23 @@ jobs:
 
       - name: Deploy on prod server
         run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
+        
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v6
+      
+      - name: Retreive merge title
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.event.head_commit.message }}
+          regex: '.*$'
+          flags: 'm'
+        
+      - name: Notify bot
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://deploy-bot.rubic.exchange/deploy'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"targetServer": "production", "initiator": "${{ github.actor }}", "feature": "${{steps.regex-match.outputs.match }}"}'

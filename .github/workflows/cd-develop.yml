@@ -49,7 +49,7 @@ jobs:
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
         id: nvm
-
+        
       - name: Set Node.js
         uses: actions/setup-node@v2
         with:
@@ -73,3 +73,16 @@ jobs:
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
           sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
+          
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v6
+        
+      - name: Notify bot
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://deploy-bot.rubic.exchange/deploy'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"targetServer": "${{ inputs.env_id }}", "initiator": "${{ github.actor }}", "feature": "${{ steps.branch-names.outputs.current_branch }}"}'
+      

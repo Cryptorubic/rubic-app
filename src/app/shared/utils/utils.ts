@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
 import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 /**
  * Compares two objects for equality.
@@ -135,3 +136,25 @@ export function parseWeb3Percent(value: string | number): number {
 export function isNil(value: unknown): boolean {
   return value === undefined || value === null;
 }
+
+/**
+ * List element animation.
+ */
+export const fadeAnimation = trigger('fadeAnimation', [
+  transition(':enter', [style({ opacity: 0 }), animate('300ms', style({ opacity: 1 }))]),
+  transition(':leave', [style({ opacity: 1 }), animate('300ms', style({ opacity: 0 }))])
+]);
+
+/**
+ * List animation.
+ */
+export const listAnimation = trigger('listAnimation', [
+  transition('* <=> *', [
+    query(
+      ':enter',
+      [style({ opacity: 0 }), stagger('60ms', animate('600ms ease-out', style({ opacity: 1 })))],
+      { optional: true }
+    ),
+    query(':leave', animate('100ms', style({ opacity: 0 })), { optional: true })
+  ])
+]);

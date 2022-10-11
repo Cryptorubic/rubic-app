@@ -6,7 +6,7 @@
     <div class="dex__name">{{ fromTradeProvider?.name }}</div>
   </div>
 
-  <div class="route__line route__line_left" [style.border-color]="fromTradeProvider?.color"></div>
+  <div class="route__line route__line_left" [style.--left-color]="fromTradeProvider.color"></div>
 
   <div class="dex">
     <div class="dex__icon">
@@ -15,7 +15,7 @@
     <div class="dex__name">{{ bridgeProvider?.name }}</div>
   </div>
 
-  <div class="route__line route__line_right" [style.border-color]="toTradeProvider?.color"></div>
+  <div class="route__line route__line_right" [style.--right-color]="toTradeProvider.color"></div>
 
   <div class="dex">
     <div class="dex__icon">

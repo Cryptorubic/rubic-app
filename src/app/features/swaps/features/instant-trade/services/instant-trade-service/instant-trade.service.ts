@@ -257,18 +257,19 @@ export class InstantTradeService extends TradeService {
       } else {
         subscription$.unsubscribe();
         this.showSuccessTrxNotification();
-        this.updateTrade(transactionHash, true);
-
-        await this.instantTradesApiService
-          .notifyInstantTradesBot({
-            provider: providerName,
-            blockchain,
-            walletAddress: userAddress,
-            trade,
-            txHash: transactionHash
-          })
-          .catch(_err => {});
       }
+
+      await this.instantTradesApiService
+        .notifyInstantTradesBot({
+          provider: providerName,
+          blockchain,
+          walletAddress: userAddress,
+          trade,
+          txHash: transactionHash
+        })
+        .catch(_err => {});
+
+      this.updateTrade(transactionHash, true);
     } catch (err) {
       subscription$?.unsubscribe();
 
@@ -344,13 +345,6 @@ export class InstantTradeService extends TradeService {
     providerName: OnChainTradeType,
     trade: OnChainTrade | WrapTrade
   ): Promise<void> {
-    if (
-      (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) ||
-      (trade as WrapTrade).blockchain === BLOCKCHAIN_NAME.TRON
-    ) {
-      return;
-    }
-
     let fee: number;
     let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);

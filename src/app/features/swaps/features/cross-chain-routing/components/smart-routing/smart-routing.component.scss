@@ -1,5 +1,10 @@
-@use 'src/scss/mixins';
-@use 'src/scss/vars';
+@use 'src/scss/core' as *;
+
+:host {
+  z-index: -1;
+
+  display: block;
+}
 
 .info {
   display: flex;
@@ -9,8 +14,8 @@
 
   font-size: 14px;
 
-  background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
-  border-radius: vars.$border-radius-3;
+  background: transparentize($color: $rubic-primary, $amount: 0.85);
+  border-radius: $border-radius-3;
 
   &__chip {
     padding: 6px 20px;
@@ -18,11 +23,11 @@
     color: var(--rubic-base-02);
     line-height: 22px;
 
-    border-radius: vars.$border-radius-3;
+    border-radius: $border-radius-3;
 
     &_colored {
-      background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
-      border-radius: vars.$border-radius-3;
+      background: transparentize($color: $rubic-primary, $amount: 0.85);
+      border-radius: $border-radius-3;
     }
     
     &:not(:last-child) {
@@ -39,36 +44,64 @@
   position: relative;
 
   display: flex;
-  justify-content: space-between;
+
+  padding: 0 20px;
 
   &__line {
-    position: absolute;
-    top: 16px;
+    overflow: hidden;
 
-    width: 40%;
+    white-space: nowrap;
 
-    border-style: dashed;
-    border-width: 1px;
+    &::after {
+      display: inline-block;
+      width: 100%;
+      padding-left: 5px;
+
+      font-size: 28px;
+      letter-spacing: 2px;
+      vertical-align: 3px;
+
+      background-repeat: repeat;
+
+      background-size: 100%;
+      background-clip: text;
+
+      content: '..........................................................................................................';
+      -webkit-text-fill-color: transparent;
+    }
+
+    //position: absolute;
+    //top: 0;
+    //width: 40%;
 
     &_left {
-      left: 65px;
-      z-index: 2;
+      &::after {
+        color: var(--left-color);
+
+        background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), var(--left-color) 40%);
+
+      }
     }
 
     &_right {
-      right: 65px;
-      z-index: 1;
+      margin-left: -4.5px;
+
+      &::after {
+        color: var(--right-color);
+
+        background-image: linear-gradient(90deg, var(--right-color) 40%, rgba(0, 0, 0, 0));
+      }
     }
   }
 
   .dex {
     position: relative;
-    z-index: 3;
+    //z-index: 3;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100px;
+    width: 40px;
 
     &__icon {
       position: relative;
@@ -84,11 +117,17 @@
     }
 
     &__name {
+      width: 100px;
+
       color: var(--form-bright-text-color);
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 22px;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 18px;
       text-align: center;
+
+      @include b($mobile-md) {
+        width: 80px;
+      }
     }
 
     &__cap {

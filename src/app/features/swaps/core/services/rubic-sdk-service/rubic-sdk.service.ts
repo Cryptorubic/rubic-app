@@ -10,11 +10,11 @@ import {
   WalletProviderCore,
   CHAIN_TYPE,
   EvmWeb3Pure,
-  TronWeb3Pure
+  TronWeb3Pure,
+  CrossChainSymbiosisManager
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
-import { CrossChainSymbiosisManager } from 'rubic-sdk/lib/features/cross-chain/cross-chain-symbiosis-manager';
 import { SdkHttpClient } from '@features/swaps/core/services/rubic-sdk-service/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 

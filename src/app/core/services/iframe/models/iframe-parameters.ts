@@ -6,4 +6,6 @@ export interface IframeParameters {
   fee?: number;
   feeTarget?: string;
   promoCode?: string;
+  tokenSearch?: boolean;
+  rubicLink?: boolean;
 }

@@ -1,42 +1,42 @@
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import {
   BlockchainName,
+  CelerCrossChainTrade,
   compareAddresses,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
-  UnsupportedReceiverAddressError,
+  CrossChainManagerCalculationOptions,
+  CrossChainProvider,
+  CrossChainTrade,
+  CrossChainTradeType,
+  DebridgeCrossChainTrade,
+  EvmBridgersCrossChainTrade,
+  EvmCrossChainTrade,
   LifiCrossChainTrade,
   LowSlippageError,
-  RubicSdkError,
-  ON_CHAIN_TRADE_TYPE,
-  Web3Pure,
-  TooLowAmountError,
-  CrossChainTrade,
-  RangoCrossChainTrade,
-  RangoCrossChainProvider,
-  CelerCrossChainTrade,
-  EvmCrossChainTrade,
-  BridgersCrossChainProvider,
-  ViaCrossChainProvider,
-  EvmBridgersCrossChainTrade,
-  TronBridgersCrossChainTrade,
-  SymbiosisCrossChainTrade,
-  DebridgeCrossChainProvider,
-  DebridgeCrossChainTrade,
-  LifiCrossChainProvider,
-  SymbiosisCrossChainProvider,
-  ViaCrossChainTrade,
-  CelerCrossChainProvider,
-  CrossChainProvider,
-  CrossChainManagerCalculationOptions,
-  MinAmountError,
   MaxAmountError,
   SwapTransactionOptions,
   BitgertCrossChainProvider,
   UnsupportedTokenPairError,
-  BitgertCrossChainTrade
+  BitgertCrossChainTrade,
+  MinAmountError,
+  RangoCrossChainTrade,
+  RubicSdkError,
+  SymbiosisCrossChainTrade,
+  TooLowAmountError,
+  TronBridgersCrossChainTrade,
+  UnsupportedReceiverAddressError,
+  ViaCrossChainTrade,
+  Web3Pure,
+  WrappedCrossChainTrade,
+  CelerCrossChainProvider,
+  SymbiosisCrossChainProvider,
+  LifiCrossChainProvider,
+  DebridgeCrossChainProvider,
+  RangoCrossChainProvider,
+  ViaCrossChainProvider,
+  BridgersCrossChainProvider
 } from 'rubic-sdk';
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -51,7 +51,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -68,12 +68,18 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { filter, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { UnsupportedTokenPair } from '@app/core/errors/models/cross-chain-routing/unsupported-token-pair';
+import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+
+export type AllProviders = {
+  readonly totalAmount: number;
+  readonly data: ReadonlyArray<WrappedCrossChainTrade & { rank: number }>;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -90,11 +96,20 @@ export class CrossChainRoutingService extends TradeService {
     BitgertCrossChainProvider
   ];
 
-  public static isSupportedBlockchain(blockchainName: BlockchainName): boolean {
-    return Boolean(
-      this.crossChainProviders.find(provider => provider.isSupportedBlockchain(blockchainName))
-    );
+  private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
+
+  public setSelectedProvider(type: CrossChainTradeType): void {
+    this._selectedProvider$.next(type);
   }
+
+  public readonly selectedProvider$ = this._selectedProvider$.asObservable();
+
+  private readonly _allProviders$ = new BehaviorSubject<AllProviders>({ totalAmount: 0, data: [] });
+
+  public readonly allProviders$ = this._allProviders$.asObservable().pipe(
+    debounceTime(100),
+    distinctUntilChanged((prev, curr) => prev.data.length === curr.data.length)
+  );
 
   private readonly defaultTimeout = 25_000;
 
@@ -115,6 +130,19 @@ export class CrossChainRoutingService extends TradeService {
     return this.targetNetworkAddressService.address;
   }
 
+  private readonly _dangerousProviders$ = new BehaviorSubject<CrossChainTradeType[]>([]);
+
+  public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
+
+  public readonly providers$ = this.allProviders$.pipe(
+    map(allProviders => {
+      const providers = allProviders.data;
+      const trades = [...providers].filter(provider => Boolean(provider.trade));
+      return ProvidersListSortingService.setTags(trades);
+    }),
+    debounceTime(10)
+  );
+
   constructor(
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
@@ -128,21 +156,34 @@ export class CrossChainRoutingService extends TradeService {
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('cross-chain-routing');
   }
 
-  public isSupportedBlockchains(
+  public isSupportedBlockchain(blockchain: BlockchainName): boolean {
+    return Object.values(this.sdk.crossChain.tradeProviders).some((provider: CrossChainProvider) =>
+      provider.isSupportedBlockchain(blockchain)
+    );
+  }
+
+  public areSupportedBlockchains(
     fromBlockchain: BlockchainName,
     toBlockchain: BlockchainName
   ): boolean {
-    return Boolean(
-      Object.values(this.sdk.crossChain.tradeProviders).find((provider: CrossChainProvider) =>
-        provider.isSupportedBlockchains(fromBlockchain, toBlockchain)
-      )
+    return Object.values(this.sdk.crossChain.tradeProviders).some((provider: CrossChainProvider) =>
+      provider.areSupportedBlockchains(fromBlockchain, toBlockchain)
     );
+  }
+
+  public markProviderAsDangerous(type: CrossChainTradeType): void {
+    this._dangerousProviders$.next([...this._dangerousProviders$.value, type]);
+  }
+
+  public unmarkProviderAsDangerous(type: CrossChainTradeType): void {
+    const providers = this._dangerousProviders$.value.filter(providerType => providerType !== type);
+    this._dangerousProviders$.next(providers);
   }
 
   public calculateTrade(
@@ -150,10 +191,11 @@ export class CrossChainRoutingService extends TradeService {
     isViaDisabled: boolean
   ): Observable<CrossChainProviderTrade> {
     try {
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
+      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
@@ -168,23 +210,31 @@ export class CrossChainRoutingService extends TradeService {
       return this.sdk.crossChain
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
-          filter(tradeData => {
-            return (
-              tradeData.totalProviders === tradeData.calculatedProviders ||
-              tradeData.calculatedProviders === 0
-            );
+          tap(tradeData => {
+            const rankedProviders = [...tradeData.trades].map(trade => ({
+              ...trade,
+              rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
+            }));
+            const sortedProviders = ProvidersListSortingService.sortTrades(rankedProviders);
+            this._allProviders$.next({
+              totalAmount: tradeData.total,
+              data: sortedProviders
+            });
           }),
           switchMap(tradeData => {
-            const bestProvider = tradeData.bestProvider;
+            const bestProvider = this._selectedProvider$.value
+              ? tradeData.trades.find(
+                  provider => provider.tradeType === this._selectedProvider$.value
+                )
+              : this._allProviders$.value.data[0];
             const trade = bestProvider?.trade;
-            const error = bestProvider?.error;
 
-            if (!trade && error) {
+            if (!trade) {
               return of({
-                ...tradeData.bestProvider,
+                ...bestProvider,
                 needApprove: false,
-                totalProviders: tradeData.totalProviders,
-                currentProviders: tradeData.calculatedProviders,
+                totalProviders: tradeData.total,
+                currentProviders: tradeData.calculated,
                 smartRouting: null
               });
             }
@@ -192,13 +242,13 @@ export class CrossChainRoutingService extends TradeService {
             return from(
               userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
             ).pipe(
-              switchMap(async needApprove => {
-                const smartRouting = await this.calculateSmartRouting(tradeData.bestProvider);
+              map(needApprove => {
+                const smartRouting = this.calculateSmartRouting(bestProvider);
                 return {
-                  ...tradeData.bestProvider,
+                  ...bestProvider,
                   needApprove,
-                  totalProviders: tradeData.totalProviders,
-                  currentProviders: tradeData.calculatedProviders,
+                  totalProviders: tradeData.total,
+                  currentProviders: tradeData.calculated,
                   smartRouting
                 };
               })
@@ -365,11 +415,19 @@ export class CrossChainRoutingService extends TradeService {
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 
-  private async calculateSmartRouting(
-    wrappedTrade: WrappedCrossChainTrade
-  ): Promise<SmartRouting | null> {
+  public calculateSmartRouting(wrappedTrade: WrappedCrossChainTrade): SmartRouting | null {
     if (!wrappedTrade?.trade) {
       return null;
+    }
+
+    let smartRouting: SmartRouting = {
+      fromProvider: wrappedTrade.trade.itType.from,
+      toProvider: wrappedTrade.trade.itType.to,
+      bridgeProvider: wrappedTrade.tradeType
+    };
+
+    if (this.queryParamsService.enabledProviders) {
+      return smartRouting;
     }
 
     if (
@@ -378,47 +436,11 @@ export class CrossChainRoutingService extends TradeService {
       wrappedTrade.trade instanceof RangoCrossChainTrade
     ) {
       return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
+        ...smartRouting,
         bridgeProvider: wrappedTrade.trade.bridgeType
       };
     }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.DEBRIDGE) {
-      return {
-        fromProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
-        toProvider: ON_CHAIN_TRADE_TYPE.ONE_INCH,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CELER) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.CELER
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.BRIDGERS) {
-      return {
-        fromProvider: wrappedTrade.trade.itType.from,
-        toProvider: wrappedTrade.trade.itType.to,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BRIDGERS
-      };
-    }
-    if (wrappedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE) {
-      return {
-        fromProvider: undefined,
-        toProvider: undefined,
-        bridgeProvider: CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE
-      };
-    }
-    return null;
+    return smartRouting;
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
@@ -439,6 +461,8 @@ export class CrossChainRoutingService extends TradeService {
     try {
       await wrappedTrade.trade.approve(swapOptions);
       this.notificationsService.showApproveSuccessful();
+    } catch (err) {
+      throw err;
     } finally {
       approveInProgressSubscription$?.unsubscribe();
     }
@@ -503,7 +527,21 @@ export class CrossChainRoutingService extends TradeService {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
     const routing = providerTrade.smartRouting;
-    const bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
+
+    const { trade } = providerTrade;
+
+    let routingBridgeProvider;
+    if (
+      trade instanceof LifiCrossChainTrade ||
+      trade instanceof ViaCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade
+    ) {
+      routingBridgeProvider = trade.bridgeType;
+    } else {
+      routingBridgeProvider = trade.type;
+    }
+    const bridgeProvider = TRADES_PROVIDERS[routingBridgeProvider];
+
     const fromTradeProvider = routing.fromProvider
       ? TRADES_PROVIDERS[routing.fromProvider]
       : {
