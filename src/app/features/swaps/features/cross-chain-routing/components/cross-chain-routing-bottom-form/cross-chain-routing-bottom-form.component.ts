@@ -552,7 +552,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       !this.crossChainProviderTrade ||
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
       (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
-        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS &&
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BITGERT_BRIDGE)
     ) {
       return true;
     }
