@@ -89,6 +89,8 @@ export class SwapsFormComponent implements OnInit {
 
   public currentInstantTradeInfo: InstantTradeInfo;
 
+  public readonly backgroundColor: string = this.queryParams.backgroundColor;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }

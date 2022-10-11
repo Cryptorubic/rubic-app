@@ -99,6 +99,14 @@ tui-dialog-host {
   > div {
     backdrop-filter: blur(12px);
   }
+
+  .overlay {
+    overflow: inherit !important;
+  }
+
+  .dialog {
+    overflow: inherit !important;
+  }
 }
 
 tui-notification {
