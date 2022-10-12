@@ -61,7 +61,11 @@
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="Protocol fee"
-      [tuiHint]="'Platform\'s commission charges in source network native coin.'"
+      [tuiHint]="
+        isBitgert
+          ? 'Providers\'s commission charges in target network token.'
+          : 'Platform\'s commission charges in source network native coin.'
+      "
     />
   </div>
 
