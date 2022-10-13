@@ -23,6 +23,7 @@ import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-sc
 import { ProvidersCounterComponent } from './components/providers-counter/providers-counter.component';
 import { ProvidersListComponent } from './components/providers-list/providers-list.component';
 import { BestProviderPanelComponent } from './components/best-provider-panel/best-provider-panel.component';
+import { LiquiditySharingService } from './services/liquidity-sharing/liquidity-sharing.service';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,6 @@ import { BestProviderPanelComponent } from './components/best-provider-panel/bes
     TuiScrollbarModule
   ],
   exports: [CrossChainRoutingBottomFormComponent],
-  providers: []
+  providers: [LiquiditySharingService]
 })
 export class CrossChainModule {}

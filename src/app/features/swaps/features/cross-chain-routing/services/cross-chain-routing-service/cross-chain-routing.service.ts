@@ -64,6 +64,7 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { LiquiditySharingService } from '../liquidity-sharing/liquidity-sharing.service';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -135,9 +136,11 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly liquiditySharingService: LiquiditySharingService
   ) {
     super('cross-chain-routing');
+    this.liquiditySharingService.initLiquiditySharingObserver();
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
