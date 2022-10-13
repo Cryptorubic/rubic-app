@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
 import { CalculatedProvider } from 'src/app/features/swaps/features/cross-chain/models/calculated-provider';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { interval, of } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { map, takeWhile } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 
 @Component({
@@ -13,7 +13,7 @@ import { fakeProviders } from '@features/swaps/features/cross-chain/components/c
   animations: [
     trigger('fadeAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('200ms', style({ opacity: 1 }))]),
-      transition(':leave', [style({ opacity: 1 }), animate('600ms', style({ opacity: 0 }))])
+      transition(':leave', [style({ opacity: 1 }), animate('600ms 1500ms', style({ opacity: 0 }))])
     ])
   ]
 })
@@ -23,12 +23,11 @@ export class TradesCounterComponent {
     this.showData = value?.total !== undefined;
     this.hasTrade = value?.hasBestTrade !== undefined;
 
-    if (value?.current && value?.total && value.current === value.total) {
-      const timeout = 1500;
+    if (value?.current && value.current === value.total) {
       setTimeout(() => {
         this.showData = false;
         this.cdr.detectChanges();
-      }, timeout);
+      });
     }
   }
 
@@ -38,9 +37,9 @@ export class TradesCounterComponent {
 
   public hasTrade = false;
 
-  public readonly provider$ = interval(1000).pipe(
+  public readonly fakeProvider$ = timer(0, 1000).pipe(
     map(index => fakeProviders[index % fakeProviders.length]),
-    takeUntil(of(this.showData))
+    takeWhile(() => this.showData)
   );
 
   public get calculatedProvider(): CalculatedProvider {

@@ -2,7 +2,7 @@
   <div @fadeAnimation class="calculated-trades">
     <span *ngIf="calculatedProvider.total !== calculatedProvider.current">
       Finding Optimal Route<span class="calculated-trades__dashes"></span>
-      {{ provider$ | async }}
+      {{ fakeProvider$ | async }}
     </span>
 
     <span *ngIf="calculatedProvider.total === calculatedProvider.current">
