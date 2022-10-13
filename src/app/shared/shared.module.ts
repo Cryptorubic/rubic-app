@@ -29,7 +29,7 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
-import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { RefreshButtonComponent } from '@features/swaps/features/swaps-form/components/refresh-button/refresh-button.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
@@ -80,7 +80,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
     RubicTokensComponent,
-    RubicRefreshButtonComponent,
+    RefreshButtonComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -166,7 +166,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,
-    RubicRefreshButtonComponent,
+    RefreshButtonComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,

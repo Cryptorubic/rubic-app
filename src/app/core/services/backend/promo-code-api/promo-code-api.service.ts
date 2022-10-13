@@ -7,7 +7,7 @@ import {
   PromoCode,
   RejectedPromoCode,
   WrongPromoCode
-} from '@features/swaps/features/swaps-form/models/promo-code';
+} from '@core/services/backend/promo-code-api/models/promo-code';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';

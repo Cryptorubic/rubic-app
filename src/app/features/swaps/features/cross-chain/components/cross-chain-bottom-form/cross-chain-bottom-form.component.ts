@@ -42,7 +42,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
@@ -71,6 +70,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -82,16 +82,11 @@ type CalculateTradeType = 'normal' | 'hidden';
   providers: [TuiDestroyService]
 })
 export class CrossChainBottomFormComponent implements OnInit {
-  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
-  @Input() onRefreshTrade: Subject<void>;
-
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
-
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
@@ -169,10 +164,11 @@ export class CrossChainBottomFormComponent implements OnInit {
     private readonly crossChainRoutingService: CrossChainCalculationService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly dialogService: TuiDialogService,
+    private readonly iframeService: IframeService,
+    private readonly refreshService: RefreshService,
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly iframeService: IframeService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
@@ -252,8 +248,10 @@ export class CrossChainBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.conditionalCalculate('normal');
+    this.refreshService.onRefresh$.pipe(takeUntil(this.destroy$)).subscribe(({ isForced }) => {
+      if (isForced || this.settingsService.crossChainRoutingValue.autoRefresh) {
+        this.conditionalCalculate('normal');
+      }
     });
 
     combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
@@ -331,7 +329,7 @@ export class CrossChainBottomFormComponent implements OnInit {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshService.setRefreshing();
           return true;
         }),
         switchMap(allowTrade => {
@@ -372,7 +370,7 @@ export class CrossChainBottomFormComponent implements OnInit {
         }),
         tap(() => {
           if (this.calculatedProviders?.total === this.calculatedProviders?.current) {
-            this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+            this.refreshService.setStopped();
           }
         }),
         watch(this.cdr),
@@ -477,7 +475,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     this.swapStarted = true;
 
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshService.setInProgress();
 
     try {
       await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
@@ -494,7 +492,7 @@ export class CrossChainBottomFormComponent implements OnInit {
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
     this.cdr.detectChanges();
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+    this.refreshService.setStopped();
   }
 
   public async createTrade(): Promise<void> {
@@ -504,7 +502,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     }
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshService.setInProgress();
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
@@ -538,7 +536,7 @@ export class CrossChainBottomFormComponent implements OnInit {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
-      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+      this.refreshService.setStopped();
     }
   }
 

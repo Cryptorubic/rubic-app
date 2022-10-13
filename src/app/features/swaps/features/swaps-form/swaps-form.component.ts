@@ -4,12 +4,11 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/s
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -58,11 +57,6 @@ export class SwapsFormComponent implements OnInit {
 
   public allowRefresh: boolean = true;
 
-  public maxGasFee: BigNumber;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public onRefreshTrade$ = new Subject<void>();
-
   private _supportedTokens: List<TokenAmount>;
 
   private _supportedFavoriteTokens: List<TokenAmount>;
@@ -76,8 +70,6 @@ export class SwapsFormComponent implements OnInit {
   public availableFavoriteTokens: AvailableTokens;
 
   public selectedToken: SelectedToken;
-
-  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
   public fromBlockchain: BlockchainName;
 
@@ -112,15 +104,6 @@ export class SwapsFormComponent implements OnInit {
         form.fromToken &&
         form.toToken
     );
-  }
-
-  public get loadingStatus(): REFRESH_BUTTON_STATUS {
-    return this._loadingStatus;
-  }
-
-  public set loadingStatus(status: REFRESH_BUTTON_STATUS) {
-    this._loadingStatus = status;
-    this.cdr.detectChanges();
   }
 
   public readonly getCurrentUser$ = this.authService.currentUser$;
@@ -394,9 +377,5 @@ export class SwapsFormComponent implements OnInit {
           this.gtmService.needTrackFormEventsNow = true;
         }
       });
-  }
-
-  public onRefresh(): void {
-    this.onRefreshTrade$.next();
   }
 }

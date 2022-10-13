@@ -23,43 +23,12 @@
 
   cursor: pointer;
 
-  img {
+  &__icon {
     width: 16px;
     height: 16px;
-  }
 
-  &__icon {
-    &_refreshing.autoRefresh {
+    &_refreshing {
       animation: 0.9s linear 0.1s infinite refreshAnimation;
-    }
-  }
-
-  &__outline-icon {
-    position: absolute;
-    z-index: -1;
-
-    width: 100%;
-    height: 100%;
-  }
-
-  &__timer {
-    display: block;
-
-    transform-origin: 50% 50%;
-
-    fill: transparent;
-    stroke: $rubic-primary;
-    stroke-linecap: round;
-    stroke-dasharray: 174;
-    stroke-dashoffset: 174;
-    stroke-width: 2px;
-
-    &:not(&_refresh-button__timer_hidden-refresh):not(&:hover) {
-      animation: linear infinite timerAnimation;
-    }
-
-    &_stoped {
-      stroke-dashoffset: 0;
     }
   }
 }

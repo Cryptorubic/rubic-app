@@ -12,7 +12,7 @@ import {
   ChangeDetectorRef,
   Self
 } from '@angular/core';
-import { PromoCode } from '@features/swaps/features/swaps-form/models/promo-code';
+import { PromoCode } from '@core/services/backend/promo-code-api/models/promo-code';
 import { PromoCodeApiService } from '@core/services/backend/promo-code-api/promo-code-api.service';
 import { Observable, of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';

@@ -4,7 +4,7 @@ import {
   CcrSettingsForm,
   SettingsService
 } from '@features/swaps/core/services/settings-service/settings.service';
-import { PromoCode } from '@features/swaps/features/swaps-form/models/promo-code';
+import { PromoCode } from '@core/services/backend/promo-code-api/models/promo-code';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';

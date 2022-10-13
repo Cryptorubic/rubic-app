@@ -6,7 +6,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { PromoCode } from '@features/swaps/features/swaps-form/models/promo-code';
+import { PromoCode } from '@core/services/backend/promo-code-api/models/promo-code';
 import { copyObject } from '@shared/utils/utils';
 import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
