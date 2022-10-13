@@ -141,10 +141,19 @@ export class SwapButtonContainerErrorsService {
       )
     ]).subscribe(
       ([isAddressValid, swapMode, instantTradesSettingsForm, crossChainSettingsForm]) => {
-        const isWithReceiverAddress =
-          swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-            ? instantTradesSettingsForm.showReceiverAddress
-            : crossChainSettingsForm.showReceiverAddress;
+        let isWithReceiverAddress = false;
+
+        switch (swapMode) {
+          case SWAP_PROVIDER_TYPE.INSTANT_TRADE:
+            isWithReceiverAddress = instantTradesSettingsForm.showReceiverAddress;
+            break;
+          case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING:
+            isWithReceiverAddress = crossChainSettingsForm.showReceiverAddress;
+            break;
+          default:
+            break;
+        }
+
         this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
           isWithReceiverAddress && !isAddressValid;
 
