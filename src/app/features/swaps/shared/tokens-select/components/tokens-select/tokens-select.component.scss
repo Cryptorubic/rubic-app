@@ -18,7 +18,7 @@
     justify-content: center;
     width: $iframe-vertical-width;
     height: 100vh;
-    margin: 20px auto 0;
+    margin: 0 auto;
   }
 
   &__row {
@@ -77,17 +77,17 @@
       width: $iframe-vertical-width;
       height: $iframe-vertical-height;
       max-height: $iframe-vertical-height;
-      padding: 40px 20px 20px;
+      padding: 20px;
     }
   }
 }
 
 app-tokens-search-bar {
   width: 100%;
-  margin-bottom: 14px;
+  margin-bottom: 0;
 
   &.vertical-iframe-token-search {
-    margin-top: 14px;
+    margin-top: 10px;
   }
 }
 
