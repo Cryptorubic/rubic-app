@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
@@ -13,7 +13,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
-} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
+} from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-trade-info';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 import {
   LifiCrossChainTrade,
@@ -88,7 +88,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
-    private readonly crossChainRoutingService: CrossChainRoutingService,
+    private readonly crossChainRoutingService: CrossChainCalculationService,
     private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,

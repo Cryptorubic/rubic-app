@@ -1,0 +1,74 @@
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Output,
+  EventEmitter,
+  Input
+} from '@angular/core';
+import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
+import {
+  CrossChainTradeType,
+  MaxAmountError,
+  MinAmountError,
+  WrappedCrossChainTrade
+} from 'rubic-sdk';
+import { fadeAnimation, listAnimation } from '@shared/utils/utils';
+import { RankedTaggedProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/models/ranked-tagged-providers';
+import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
+
+@Component({
+  selector: 'app-trades-list',
+  templateUrl: './trades-list.component.html',
+  styleUrls: ['./trades-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [fadeAnimation, listAnimation]
+})
+export class TradesListComponent {
+  @Input() public set providers(value: RankedTaggedProviders[]) {
+    this._providers = value;
+    this.smartRoutingList = this._providers?.map(provider =>
+      this.crossChainService.calculateSmartRouting(provider)
+    );
+  }
+
+  public get providers(): RankedTaggedProviders[] {
+    return this._providers;
+  }
+
+  @Output() public readonly selectionHandler = new EventEmitter<void>();
+
+  public readonly selectedProvider$ = this.crossChainService.selectedProvider$;
+
+  public smartRoutingList: CrossChainRoute[];
+
+  private _providers: RankedTaggedProviders[];
+
+  public getMinMaxError(provider: WrappedCrossChainTrade): string {
+    const error = provider.error;
+    if (error instanceof MaxAmountError) {
+      return `Max: ${error.maxAmount.toFixed(2)}`;
+    }
+    if (error instanceof MinAmountError) {
+      return `Min: ${error.minAmount.toFixed(2)}`;
+    }
+  }
+
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly crossChainService: CrossChainCalculationService
+  ) {}
+
+  public selectProvider(tradeType: CrossChainTradeType): void {
+    this.crossChainService.setSelectedProvider(tradeType);
+    this.selectionHandler.emit();
+  }
+
+  public trackByType(_index: number, provider: RankedTaggedProviders): CrossChainTradeType {
+    return provider.tradeType;
+  }
+
+  public showTags(provider: RankedTaggedProviders): boolean {
+    return Object.values(provider.tags).some(val => val) || provider.rank === 0;
+  }
+}

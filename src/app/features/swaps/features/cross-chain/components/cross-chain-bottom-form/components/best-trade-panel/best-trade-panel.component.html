@@ -1,0 +1,40 @@
+<div class="trade-panel">
+  <div class="trade-panel__row">
+    <ng-container *ngLet="calculatedProviders$ | async as providers">
+      <div class="trade-panel__header">
+        <div class="trade-panel__text" *ngIf="providers > 1">
+          <app-trades-counter [calculatedProvider]="calculatedProvider"></app-trades-counter>
+
+          <button class="trade-panel__expand-button" (click)="toggleExpanded()">
+            Other routes
+            <img
+              src="assets/images/icons/arrow-down.svg"
+              alt="expand"
+              class="trade-panel__expand-arrow"
+              [class.trade-panel__expand-arrow_opened]="expanded"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="trade-panel__trades-content"
+        [ngClass]="{
+          'trade-panel__trades-content_expanded': expanded,
+          'trade-panel__trades-content_with-approve': needApprove
+        }"
+      >
+        <tui-scrollbar>
+          <app-trades-list
+            [providers]="showProviders ? (providers$ | async) : []"
+            (selectionHandler)="handleSelection()"
+          ></app-trades-list>
+        </tui-scrollbar>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-container *ngIf="route">
+  <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+</ng-container>

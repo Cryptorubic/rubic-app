@@ -52,7 +52,7 @@ import { TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 import { compareTokens } from '@shared/utils/utils';
 import { TokensListType } from '@features/swaps/shared/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@app/core/services/iframe/iframe.service';
@@ -195,7 +195,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     private readonly iframeService: IframeService,
-    private readonly crossChainService: CrossChainRoutingService,
+    private readonly crossChainService: CrossChainCalculationService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {

@@ -24,6 +24,7 @@ module.exports = {
     'selector-max-id': [1, { 'severity': 'warning' }],
     'color-named': null,
     'property-disallowed-list': [],
+    'property-no-vendor-prefix': null,
     /* scss rules */
     'scss/at-rule-no-unknown': true,
     'scss/selector-no-redundant-nesting-selector': true,

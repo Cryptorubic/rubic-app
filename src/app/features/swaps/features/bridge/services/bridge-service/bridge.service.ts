@@ -22,7 +22,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import {
   BlockchainName,
@@ -34,7 +34,7 @@ import {
 import { RubicBridgeSupportedBlockchains } from './blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 @Injectable()
-export class BridgeService extends TradeService {
+export class BridgeService extends TradeCalculationService {
   private blockchainsProviders: Partial<
     Record<BlockchainName, Partial<Record<BlockchainName, BlockchainsBridgeProvider>>>
   >;

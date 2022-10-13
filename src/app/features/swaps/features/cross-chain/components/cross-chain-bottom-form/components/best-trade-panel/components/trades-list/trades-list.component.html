@@ -1,0 +1,41 @@
+<ng-container>
+  <ul @listAnimation>
+    <ng-container *ngFor="let provider of providers; let i = index; trackBy: trackByType">
+      <li
+        class="trade"
+        [ngClass]="{
+          trade_selected:
+            (selectedProvider$ | async) === provider.tradeType ||
+            ((selectedProvider$ | async) === null && i === 0)
+        }"
+        (click)="selectProvider(provider?.tradeType)"
+        @fadeAnimation
+      >
+        <div class="trade__container">
+          <app-cross-chain-route
+            *ngIf="smartRoutingList?.[i] as smartRouting"
+            [route]="smartRouting"
+          ></app-cross-chain-route>
+
+          <span>
+            {{
+              provider.trade?.to?.tokenAmount
+                | bigNumberFormat
+                | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
+            }}
+          </span>
+
+          <div class="trade__statuses" *ngIf="showTags(provider)">
+            <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
+            <tui-badge
+              *ngIf="provider.tags.minAmountWarning || provider.tags.maxAmountWarning"
+              status="warning"
+              [value]="getMinMaxError(provider)"
+            ></tui-badge>
+            <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
+          </div>
+        </div>
+      </li>
+    </ng-container>
+  </ul>
+</ng-container>

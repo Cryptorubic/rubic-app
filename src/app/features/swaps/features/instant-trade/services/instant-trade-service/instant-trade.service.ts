@@ -7,7 +7,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
@@ -48,7 +48,7 @@ import { filter } from 'rxjs/operators';
 import { TransactionFailed } from '@core/errors/models/common/transaction-failed';
 
 @Injectable()
-export class InstantTradeService extends TradeService {
+export class InstantTradeService extends TradeCalculationService {
   private static readonly unsupportedItNetworks: BlockchainName[] = [];
 
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {

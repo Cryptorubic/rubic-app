@@ -85,7 +85,7 @@
       >
       </app-bridge-bottom-form>
 
-      <app-cross-chain-routing-bottom-form
+      <app-cross-chain-bottom-form
         *ngIf="isCrossChainRouting"
         [onRefreshTrade]="onRefreshTrade$"
         (onRefreshStatusChange)="loadingStatus = $event"
@@ -94,7 +94,7 @@
         (tradeStatusChange)="tradeStatus = $event"
         [favoriteTokens]="availableFavoriteTokens['to']"
       >
-      </app-cross-chain-routing-bottom-form>
+      </app-cross-chain-bottom-form>
     </div>
   </main>
 </div>
