@@ -13,7 +13,7 @@ import { CalculatedProvider } from '@features/swaps/features/cross-chain/models/
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Component({
   selector: 'app-best-trade-panel',

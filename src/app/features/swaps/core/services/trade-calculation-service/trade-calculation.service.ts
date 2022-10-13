@@ -3,7 +3,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { inject, Injectable } from '@angular/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SuccessTxModalService } from '@features/swaps/features/main-form/services/success-tx-modal-service/success-tx-modal.service';
+import { SuccessTxModalService } from '@features/swaps/features/swaps-form/services/success-tx-modal-service/success-tx-modal.service';
 import { Observable, Subscription } from 'rxjs';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';

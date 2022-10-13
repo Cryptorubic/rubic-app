@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { ERROR_TYPE } from 'src/app/features/swaps/shared/swap-button-container/models/error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
@@ -12,14 +12,14 @@ import { BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { isNil } from '@app/shared/utils/utils';
 import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {

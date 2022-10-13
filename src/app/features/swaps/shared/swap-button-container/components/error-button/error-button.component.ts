@@ -5,7 +5,7 @@ import { ERROR_TYPE } from '@features/swaps/shared/swap-button-container/models/
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { first, map, startWith } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';

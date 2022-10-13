@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,8 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
-import { SettingsService } from 'src/app/features/swaps/features/main-form/services/settings-service/settings.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
 export enum REFRESH_BUTTON_STATUS {
   REFRESHING = 'refreshing',
@@ -83,12 +81,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public imageUrl: string;
 
-  public stopAnimation: boolean;
-
-  constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly settingsService: SettingsService
-  ) {
+  constructor() {
     this.autoUpdate = false;
     this.imageUrl = 'assets/images/icons/reload.svg';
   }

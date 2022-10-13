@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';

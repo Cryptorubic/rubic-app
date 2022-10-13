@@ -11,7 +11,7 @@ import { ProviderPanelData } from '@features/swaps/features/instant-trade/compon
 import BigNumber from 'bignumber.js';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';

@@ -28,8 +28,8 @@ import {
   WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
@@ -43,7 +43,7 @@ import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-rout
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { TuiDialogService } from '@taiga-ui/core';

@@ -6,7 +6,7 @@ import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, Web3Pure 
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
@@ -16,7 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';

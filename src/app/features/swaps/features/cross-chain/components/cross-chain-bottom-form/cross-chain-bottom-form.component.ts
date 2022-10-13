@@ -37,17 +37,17 @@ import {
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
 import {

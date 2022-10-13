@@ -7,11 +7,11 @@ import {
   PromoCode,
   RejectedPromoCode,
   WrongPromoCode
-} from '@features/swaps/features/main-form/models/promo-code';
+} from '@features/swaps/features/swaps-form/models/promo-code';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
-import { SettingsService } from 'src/app/features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import {
   PromoCodeApiResponse,
   PromoCodesCheckExistenceResponse

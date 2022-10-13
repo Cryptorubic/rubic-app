@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { firstValueFrom, interval, Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
@@ -27,7 +27,7 @@ import {
   BlockchainsInfo
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import {
   IT_PROXY_FEE_CONTRACT_ABI,

@@ -7,11 +7,11 @@ import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-bu
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Injectable()
 export class SwapButtonService {

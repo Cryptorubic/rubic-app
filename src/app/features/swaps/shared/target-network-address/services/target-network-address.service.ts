@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FormControl } from '@ngneat/reactive-forms';
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { correctAddressValidator } from '@features/swaps/shared/target-network-address/services/utils/correct-address-validator';
 import { blockchainRequiresAddress } from '@features/swaps/shared/target-network-address/services/constants/blockchain-requires-address';
 

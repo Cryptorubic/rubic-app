@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
 import { filter, first, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
@@ -14,9 +14,9 @@ import {
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
 @Injectable()
 export class SwapsService {
