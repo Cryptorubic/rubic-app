@@ -270,9 +270,11 @@ export class TokensService {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
       blockchain as EvmBlockchainName
     );
-    const balance$ = this.userAddress
-      ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
-      : of(null);
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const balance$ =
+      this.userAddress && this.authService.userChainType === chainType
+        ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
+        : of(null);
     const token$ = SdkToken.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
