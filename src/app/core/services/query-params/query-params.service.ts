@@ -2,7 +2,14 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  EvmWeb3Pure,
+  Web3Pure
+} from 'rubic-sdk';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -237,9 +244,11 @@ export class QueryParamsService {
     }
 
     const chainType = BlockchainsInfo.getChainType(chain);
-    return Web3Pure[chainType].isAddressCorrect(token)
-      ? this.searchTokenByAddress(tokens, token, chain)
-      : this.searchTokenBySymbol(tokens, token, chain);
+    if (Web3Pure[chainType].isAddressCorrect(token)) {
+      const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
+      return this.searchTokenByAddress(tokens, address, chain);
+    }
+    return this.searchTokenBySymbol(tokens, token, chain);
   }
 
   private setDisabledProviders(enabledProviders: string[]): void {
