@@ -84,10 +84,11 @@
 
 app-tokens-search-bar {
   width: 100%;
-  margin-bottom: 0;
+  margin-bottom: 14px;
 
   &.vertical-iframe-token-search {
     margin-top: 10px;
+    margin-bottom: 0;
   }
 }
 
