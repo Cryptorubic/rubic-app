@@ -18,6 +18,7 @@ import {
 import { SwapFormInput } from '../../../main-form/models/swap-form';
 import { SwapFormService } from '../../../main-form/services/swap-form-service/swap-form.service';
 import { debridgeBaseAbi, debridgePoolAbi, debridgePools } from './constants/debridge-pools';
+import { symbiosisPoolAbi, symbiosisPools } from './constants/symbiosis-pools';
 import { CelerLiquidityInfo } from './models/celer-liquidity-info.interface';
 import { OptimizePayload, PairInfo } from './models/optimize-payload.interface';
 import { OptimizeResponse } from './models/optimize-response.interface';
@@ -67,8 +68,8 @@ export class LiquiditySharingService {
         .pipe(
           map(celerLiquidityInfoResponse => {
             if (celerLiquidityInfoResponse.lp_info.length === 0) {
-              console.log('empty celer liquidity info');
-              return { reserveX: 0, reserveY: 0 };
+              console.log('[CELER LIQUIDITY] empty celer API liquidity info');
+              return { reserveX: '0', reserveY: '0' };
             }
 
             const { lp_info } = celerLiquidityInfoResponse;
@@ -84,8 +85,8 @@ export class LiquiditySharingService {
             ).total_liquidity;
 
             if (!reserveX || !reserveY) {
-              console.log('unsupported pair');
-              return { reserveX: 0, reserveY: 0 };
+              console.log('[CELER LIQUIDITY] unsupported pair');
+              return { reserveX: '0', reserveY: '0' };
             }
 
             return { reserveX, reserveY };
@@ -110,8 +111,8 @@ export class LiquiditySharingService {
         blockchain => blockchain === BLOCKCHAIN_NAME.ETHEREUM
       )
     ) {
-      console.log('unsupported pair');
-      return { reserveX: 0, reserveY: 0 };
+      console.log('[DEBRIDGE LIQUIDITY] unsupported pair');
+      return { reserveX: '0', reserveY: '0' };
     }
 
     const virtualPrice = await srcWeb3Public.callContractMethod(
@@ -146,21 +147,76 @@ export class LiquiditySharingService {
         };
   }
 
-  // private async getSymbiosisLiquidityInfo(
-  //   inputToken: TokenAmount,
-  //   outputToken: TokenAmount
-  // ): Promise<unknown> {
+  private async getSymbiosisLiquidityInfo(
+    inputToken: TokenAmount,
+    outputToken: TokenAmount
+  ): Promise<PairInfo> {
+    const srcWeb3Public = Injector.web3PublicService.getWeb3Public(
+      inputToken.blockchain
+    ) as EvmWeb3Public;
+    let poolInfo: { address: string; decimals: [number, number] } =
+      symbiosisPools[inputToken.blockchain][outputToken.blockchain] ||
+      symbiosisPools[outputToken.blockchain][inputToken.blockchain];
 
-  //   return {};
-  // }
+    if (!poolInfo) {
+      console.log('[SYMBIOSIS LIQUIDITY] unsupported pair');
+      return { reserveX: '0', reserveY: '0' };
+    }
+
+    const zeroIndexTokenBalance = await srcWeb3Public.callContractMethod(
+      poolInfo.address,
+      symbiosisPoolAbi,
+      'getTokenBalance',
+      [0]
+    );
+    const firstIndexTokenBalance = await srcWeb3Public.callContractMethod(
+      poolInfo.address,
+      symbiosisPoolAbi,
+      'getTokenBalance',
+      [1]
+    );
+
+    return symbiosisPools[inputToken.blockchain][outputToken.blockchain].address ===
+      poolInfo.address
+      ? {
+          reserveX: Web3Pure.fromWei(firstIndexTokenBalance, poolInfo.decimals[1]).toString(),
+          reserveY: Web3Pure.fromWei(zeroIndexTokenBalance, poolInfo.decimals[0]).toString()
+        }
+      : {
+          reserveX: Web3Pure.fromWei(zeroIndexTokenBalance, poolInfo.decimals[0]).toString(),
+          reserveY: Web3Pure.fromWei(firstIndexTokenBalance, poolInfo.decimals[1]).toString()
+        };
+  }
 
   private async getOptimizePayload(input: SwapFormInput): Promise<OptimizePayload> {
-    const celer = await this.getCelerLiquidityInfo(input.fromToken, input.toToken);
+    const cBridge = await this.getCelerLiquidityInfo(input.fromToken, input.toToken);
     const deBridge = await this.getDebridgeLiquidityInfo(input.fromToken, input.toToken);
+    const symbiosis = await this.getSymbiosisLiquidityInfo(input.fromToken, input.toToken);
 
     return {
-      inputAmount: input.fromAmount.toNumber(),
-      bridges: { celer, deBridge }
+      fromAmount: input.fromAmount.toString(),
+      fromToken: input.fromToken.symbol,
+      fromBlockchain: input.fromBlockchain,
+      toToken: input.toToken.symbol,
+      toBlockchain: input.toBlockchain,
+      frontCalculations: {
+        cBridge: {
+          input: '0',
+          output: '0',
+          loss: '0'
+        },
+        symbiosis: {
+          input: '0',
+          output: '0',
+          loss: '0'
+        },
+        deBridge: {
+          input: '0',
+          output: '0',
+          loss: '0'
+        }
+      },
+      bridges: { cBridge, deBridge, symbiosis }
     };
   }
 

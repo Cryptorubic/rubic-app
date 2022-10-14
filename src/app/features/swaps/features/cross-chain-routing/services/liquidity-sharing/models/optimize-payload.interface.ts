@@ -4,9 +4,30 @@ export interface PairInfo {
 }
 
 export interface OptimizePayload {
-  inputAmount: number | string;
+  fromBlockchain: string;
+  fromToken: string;
+  fromAmount: string;
+  toBlockchain: string;
+  toToken: string;
+  frontCalculations: {
+    cBridge: {
+      input: string;
+      output: string;
+      loss: string;
+    };
+    symbiosis: {
+      input: string;
+      output: string;
+      loss: string;
+    };
+    deBridge: {
+      input: string;
+      output: string;
+      loss: string;
+    };
+  };
   bridges: {
-    celer: PairInfo;
+    cBridge: PairInfo;
     deBridge: PairInfo;
     symbiosis?: PairInfo;
   };
