@@ -150,8 +150,6 @@ export class SwapButtonContainerErrorsService {
           case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING:
             isWithReceiverAddress = crossChainSettingsForm.showReceiverAddress;
             break;
-          default:
-            break;
         }
 
         this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
