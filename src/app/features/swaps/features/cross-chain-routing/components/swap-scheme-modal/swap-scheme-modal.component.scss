@@ -1,10 +1,20 @@
 @use 'src/scss/core' as *;
 
+::ng-deep {
+  .tui-dialog {
+    border: none;
+  }
+}
+
 .title {
   @include font(26px, 31px, 700, #000);
   margin-bottom: 8px;
 
   text-align: center;
+
+  @include iframe-horizontal {
+    margin-bottom: 30px;
+  }
 
   @include hide-unused-ui {
     margin-bottom: 20px;
@@ -67,6 +77,10 @@
 
   @include b($tablet) {
     margin: 0 20px 90px;
+  }
+
+  @include iframe-horizontal {
+    display: none;
   }
 
   &__arrow {
@@ -316,6 +330,10 @@
   margin: 0 auto 1.5em;
 
   text-align: center;
+
+  @include iframe-horizontal {
+    margin-bottom: 10px;
+  }
 
   @include dark {
     color: #8e8d91;
