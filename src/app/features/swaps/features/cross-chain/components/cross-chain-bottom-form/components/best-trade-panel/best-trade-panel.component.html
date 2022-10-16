@@ -3,7 +3,7 @@
     <ng-container *ngLet="calculatedProviders$ | async as providers">
       <div class="trade-panel__header">
         <div class="trade-panel__text" *ngIf="providers > 1">
-          <app-trades-counter [calculatedProvider]="calculatedProvider"></app-trades-counter>
+          <app-trades-counter></app-trades-counter>
 
           <button class="trade-panel__expand-button" (click)="toggleExpanded()">
             Other routes

@@ -60,7 +60,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-provider-trade';
+import { CalculatedCrossChainTrade } from '@features/swaps/features/cross-chain/models/calculated-cross-chain-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
@@ -164,10 +164,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this._dangerousProviders$.next(providers);
   }
 
-  public calculateTrade(
-    userAuthorized: boolean,
-    isViaDisabled: boolean
-  ): Observable<CrossChainProviderTrade> {
+  public calculateTrade(userAuthorized: boolean): Observable<CalculatedCrossChainTrade> {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
@@ -179,9 +176,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || [])],
+        disabledProviders: [...(disabledProvidersForLandingIframe || [])],
         ...(receiverAddress && { receiverAddress })
       };
 
@@ -205,6 +200,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
                   provider => provider.tradeType === this._selectedProvider$.value
                 )
               : this._allProviders$.value.data[0];
+            // @todo check
+            console.log(bestProvider);
             const trade = bestProvider?.trade;
 
             if (!trade) {
@@ -213,7 +210,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
                 needApprove: false,
                 totalProviders: tradeData.total,
                 currentProviders: tradeData.calculated,
-                smartRouting: null
+                route: null
               });
             }
 
@@ -227,7 +224,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
                   needApprove,
                   totalProviders: tradeData.total,
                   currentProviders: tradeData.calculated,
-                  smartRouting
+                  route: smartRouting
                 };
               })
             );
@@ -240,7 +237,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public async createTrade(
-    providerTrade: CrossChainProviderTrade,
+    providerTrade: CalculatedCrossChainTrade,
     confirmCallback?: () => void
   ): Promise<void> {
     if (!providerTrade?.trade) {
@@ -285,7 +282,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
             : undefined
       };
 
-      if (providerTrade.smartRouting) {
+      if (providerTrade.route) {
         this.openSwapSchemeModal(providerTrade, txHash, timestamp);
       }
 
@@ -483,13 +480,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public openSwapSchemeModal(
-    providerTrade: CrossChainProviderTrade,
+    providerTrade: CalculatedCrossChainTrade,
     txHash: string,
     timestamp: number
   ): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
 
-    const routing = providerTrade.smartRouting;
+    const routing = providerTrade.route;
 
     const { trade } = providerTrade;
 

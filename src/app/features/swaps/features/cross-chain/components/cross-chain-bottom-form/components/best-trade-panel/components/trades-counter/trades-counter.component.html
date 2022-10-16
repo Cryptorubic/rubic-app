@@ -1,22 +1,23 @@
-<ng-container *ngIf="showData">
+<ng-container *ngIf="showData$ | async">
   <div @fadeAnimation class="calculated-trades">
-    <span *ngIf="calculatedProvider.total !== calculatedProvider.current">
+    <span
+      *ngIf="calculatedProvider.total !== calculatedProvider.calculated; else calculationFinished"
+    >
       Finding Optimal Route<span class="calculated-trades__dashes"></span>
       {{ fakeProvider$ | async }}
     </span>
 
-    <span *ngIf="calculatedProvider.total === calculatedProvider.current">
-      <ng-container *ngIf="hasTrade">
+    <ng-template #calculationFinished>
+      <ng-container *ngIf="isBestRouteFound; else routeNotFound">
         We have selected the best Route available for you
         <img
-          *ngIf="calculatedProvider.total === calculatedProvider.current"
           class="calculated-trades__success-icon"
           src="assets/images/icons/checkmark/checkmark-thin-white.svg"
           alt="Success calculating"
         />
       </ng-container>
 
-      <ng-container *ngIf="!hasTrade">Optimal routing not found</ng-container>
-    </span>
+      <ng-template #routeNotFound>Optimal routing not found</ng-template>
+    </ng-template>
   </div>
 </ng-container>

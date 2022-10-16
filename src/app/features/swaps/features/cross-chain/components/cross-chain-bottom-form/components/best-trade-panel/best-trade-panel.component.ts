@@ -9,7 +9,6 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/c
 import { TUI_ANIMATIONS_DURATION, TuiDialogService } from '@taiga-ui/core';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { map, takeUntil } from 'rxjs/operators';
-import { CalculatedProvider } from '@features/swaps/features/cross-chain/models/calculated-provider';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -28,8 +27,6 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
   ]
 })
 export class BestTradePanelComponent {
-  @Input() public calculatedProvider: CalculatedProvider | null;
-
   @Input() public route: CrossChainRoute = null;
 
   @Input() public needApprove: boolean;

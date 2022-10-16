@@ -1,9 +1,11 @@
-import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
-import { CalculatedProvider } from 'src/app/features/swaps/features/cross-chain/models/calculated-provider';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { timer } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 
 @Component({
   selector: 'app-trades-counter',
@@ -18,33 +20,33 @@ import { fakeProviders } from '@features/swaps/features/cross-chain/components/c
   ]
 })
 export class TradesCounterComponent {
-  @Input() set calculatedProvider(value: CalculatedProvider) {
-    this._calculatedValue = value;
-    this.showData = value?.total !== undefined;
-    this.hasTrade = value?.hasBestTrade !== undefined;
+  private _calculatedValue: CalculatedTradesAmounts;
 
-    if (value?.current && value.current === value.total) {
-      setTimeout(() => {
-        this.showData = false;
-        this.cdr.detectChanges();
-      });
-    }
-  }
-
-  private _calculatedValue: CalculatedProvider;
-
-  public showData = false;
-
-  public hasTrade = false;
-
-  public readonly fakeProvider$ = timer(0, 1000).pipe(
-    map(index => fakeProviders[index % fakeProviders.length]),
-    takeWhile(() => this.showData)
+  public showData$ = this.crossChainFormService.calculatedTradesAmounts$.pipe(
+    map(info => info?.total && info.total < info.calculated)
   );
 
-  public get calculatedProvider(): CalculatedProvider {
+  // @todo CHECK
+  public readonly fakeProvider$ = timer(0, 1000).pipe(
+    map(index => {
+      console.log(index);
+      return fakeProviders[index % fakeProviders.length];
+    })
+  );
+
+  public get calculatedProvider(): CalculatedTradesAmounts {
     return this._calculatedValue;
   }
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  public get isBestRouteFound(): boolean {
+    const { tradeStatus } = this.crossChainFormService;
+    return (
+      tradeStatus === TRADE_STATUS.READY_TO_APPROVE || tradeStatus === TRADE_STATUS.READY_TO_SWAP
+    );
+  }
+
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly crossChainFormService: CrossChainFormService
+  ) {}
 }
