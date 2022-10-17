@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Output
+} from '@angular/core';
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
@@ -26,8 +32,17 @@ export class SwapButtonComponent {
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
-    private readonly swapButtonService: SwapButtonService
+    private readonly swapButtonService: SwapButtonService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
+
+  ngOnInit() {
+    this.buttonText$.subscribe(value => console.log('SwapButtonComponent Text ', value));
+    this.disabled$.subscribe(value => {
+      console.log('SwapButtonComponent Disabled  ', value);
+      this.cdr.detectChanges();
+    });
+  }
 
   public onSwapClick(): void {
     if (this.swapButtonService.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {
