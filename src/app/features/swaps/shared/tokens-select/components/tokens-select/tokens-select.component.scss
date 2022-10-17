@@ -73,6 +73,7 @@
 
     @include iframe-vertical {
       flex-direction: column;
+      justify-content: space-between;
 
       width: $iframe-vertical-width;
       height: $iframe-vertical-height;
