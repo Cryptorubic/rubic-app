@@ -59,6 +59,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}arth.png`,
     color: '#00C6EE'
   },
+  [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
+    name: 'AuroraSwap',
+    image: `${imageBasePath}auroraswap.svg`,
+    color: '#34A5F5'
+  },
 
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: {
     name: 'BabySwap',
@@ -159,6 +164,16 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}joe.png`,
     color: '#6665DD'
   },
+  [ON_CHAIN_TRADE_TYPE.JUPITER]: {
+    name: 'Jupiter',
+    image: `${imageBasePath}jupiter.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: {
+    name: 'JupiterSwap',
+    image: `${imageBasePath}jupiterswap.svg`,
+    color: '#F27523'
+  },
   [ON_CHAIN_TRADE_TYPE.J_SWAP]: {
     name: 'JSwap',
     image: `${imageBasePath}jswap.jpg`,
@@ -254,6 +269,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}paraswap.svg`,
     color: '#2e58b0'
   },
+  [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: {
+    name: 'PhotonSwap',
+    image: `${imageBasePath}photonswap.svg`,
+    color: '#8829E2'
+  },
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: {
     name: 'Polydex',
     image: `${imageBasePath}polydex.svg`,
@@ -274,6 +294,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: {
     name: 'Ref Finance',
     image: `${imageBasePath}ref-finance.svg`
+  },
+  [ON_CHAIN_TRADE_TYPE.REN_BTC]: {
+    name: 'renBTC',
+    image: `${imageBasePath}renbtc.svg`,
+    color: 'grey'
   },
 
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -405,21 +430,6 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
     color: '#34A5F5'
-  },
-  [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
-    name: 'AuroraSwap',
-    image: '${imageBasePath}auroraswap.svg',
-    color: '#34A5F5'
-  },
-  [ON_CHAIN_TRADE_TYPE.JUPITER]: {
-    name: 'Jupiter',
-    image: '${imageBasePath}jupiter.svg',
-    color: '#34A5F5'
-  },
-  [ON_CHAIN_TRADE_TYPE.REN_BTC]: {
-    name: 'renBTC',
-    image: `${imageBasePath}renbtc.svg`,
-    color: 'grey'
   }
 };
 

@@ -7,6 +7,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ANNEX]: 'Annex',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'ApeSwap',
   [ON_CHAIN_TRADE_TYPE.ARTH_SWAP]: 'ArthSwap',
+  [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
 
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: 'BabySwap',
   [ON_CHAIN_TRADE_TYPE.BALANCER]: 'Balancer',
@@ -31,6 +32,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.JET_SWAP]: 'JetSwap',
   [ON_CHAIN_TRADE_TYPE.JOE]: 'Joe',
+  [ON_CHAIN_TRADE_TYPE.JUPITER]: 'Jupiter',
+  [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: 'JupiterSwap',
   [ON_CHAIN_TRADE_TYPE.J_SWAP]: 'JSwap',
 
   [ON_CHAIN_TRADE_TYPE.KYBER_SWAP]: 'KyberSwap',
@@ -54,12 +57,14 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'PancakeSwap',
   [ON_CHAIN_TRADE_TYPE.PANGOLIN]: 'Pangolin',
   [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'ParaSwap',
+  [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'PhotonSwap',
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: 'Polydex',
 
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: 'QuickSwap',
 
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: 'Raydium',
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'RefFinance',
+  [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renBTC',
 
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: 'SaberStableSwap',
   [ON_CHAIN_TRADE_TYPE.SAROS_SWAP]: 'SarosSwap',
@@ -90,9 +95,5 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: 'Zappy',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'ZipSwap',
-  [ON_CHAIN_TRADE_TYPE.ZRX]: '0x',
-
-  [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renBTC',
-  [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
-  [ON_CHAIN_TRADE_TYPE.JUPITER]: 'Jupiter'
+  [ON_CHAIN_TRADE_TYPE.ZRX]: '0x'
 };

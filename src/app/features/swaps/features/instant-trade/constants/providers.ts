@@ -127,6 +127,10 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
     ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
     ON_CHAIN_TRADE_TYPE.UNISWAP_V2
   ]),
+  [BLOCKCHAIN_NAME.KAVA]: getDefaultStateByProviders([
+    ON_CHAIN_TRADE_TYPE.JUPITER_SWAP,
+    ON_CHAIN_TRADE_TYPE.PHOTON_SWAP
+  ]),
   [BLOCKCHAIN_NAME.BITCOIN]: getDefaultStateByProviders([]),
   [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS])
 };

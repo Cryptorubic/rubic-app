@@ -69,5 +69,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.CELO]: {
     name: 'Celo Mainnet',
     rpc: 'https://forno.celo.org'
+  },
+  [BLOCKCHAIN_NAME.KAVA]: {
+    name: 'Kava EVM',
+    rpc: 'https://evm.kava.io'
   }
 };

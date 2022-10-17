@@ -23,6 +23,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA]: `${basePath}boba.svg`,
   [BLOCKCHAIN_NAME.ASTAR]: `${basePath}astar.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: `${basePath}eth-pow.png`,
+  [BLOCKCHAIN_NAME.KAVA]: `${basePath}kava.png`,
   [BLOCKCHAIN_NAME.TRON]: `${basePath}tron.png`,
   [BLOCKCHAIN_NAME.BITCOIN]: `${basePath}bitcoin.svg`,
   [BLOCKCHAIN_NAME.SOLANA]: `${basePath}solana.svg`,

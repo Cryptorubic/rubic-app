@@ -52,6 +52,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BOBA]: ['https://mainnet.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR]: ['https://rpc.astar.network:8545'],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
+  [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
   [BLOCKCHAIN_NAME.TRON]: [
     {
       fullHost:

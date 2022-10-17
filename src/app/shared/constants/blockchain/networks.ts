@@ -23,6 +23,7 @@ export interface Network<T = BlockchainName> {
   nativeCoin: NativeCoin;
 }
 
+// @todo remove
 const networks: ReadonlyArray<Network> = [
   {
     id: 1,
@@ -434,6 +435,21 @@ const networks: ReadonlyArray<Network> = [
       name: 'TRON',
       symbol: 'TRON',
       decimals: 6
+    }
+  },
+  {
+    id: 2222,
+    name: BLOCKCHAIN_NAME.KAVA,
+    label: 'KAVA',
+    scannerUrl: 'https://tronscan.org/#/',
+    rpcList: ['https://evm.kava.io'],
+    imagePath: 'assets/images/icons/coins/kava.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.KAVA,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'KAVA',
+      symbol: 'KAVA',
+      decimals: 18
     }
   }
 ];
