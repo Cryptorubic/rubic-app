@@ -54,10 +54,20 @@ export class LiquiditySharingService {
       ),
       switchMap(input => from(this.getOptimizePayload(input))),
       switchMap(payload => {
-        console.log('[OPTIMIZATION] request payload', payload);
+        console.log(
+          '%c [OPTIMIZATION] request payload',
+          'background: #222; color: #bada55',
+          payload
+        );
         return this.optimize(payload);
       }),
-      tap(response => console.log('[OPTIMIZATION] optimization response', response))
+      tap(response =>
+        console.log(
+          '%c [OPTIMIZATION] optimization response',
+          'background: #222; color: #bada55',
+          response
+        )
+      )
     );
   }
 
@@ -73,7 +83,10 @@ export class LiquiditySharingService {
         .pipe(
           map(celerLiquidityInfoResponse => {
             if (celerLiquidityInfoResponse.lp_info.length === 0) {
-              console.log('[OPTIMIZATION] celer empty API liquidity info');
+              console.log(
+                '%c [OPTIMIZATION] celer empty API liquidity info',
+                'background: #222; color: #bada55'
+              );
               return { reserveX: '0', reserveY: '0' };
             }
 
@@ -90,7 +103,10 @@ export class LiquiditySharingService {
             ).total_liquidity;
 
             if (!reserveX || !reserveY) {
-              console.log('[OPTIMIZATION] celer unsupported pair');
+              console.log(
+                '%c [OPTIMIZATION] celer unsupported pair',
+                'background: #222; color: #bada55'
+              );
               return { reserveX: '0', reserveY: '0' };
             }
 
@@ -116,7 +132,10 @@ export class LiquiditySharingService {
         blockchain => blockchain === BLOCKCHAIN_NAME.ETHEREUM
       )
     ) {
-      console.log('[OPTIMIZATION] debridge unsupported pair');
+      console.log(
+        '%c [OPTIMIZATION] debridge unsupported pair',
+        'background: #222; color: #bada55'
+      );
       return { reserveX: '0', reserveY: '0' };
     }
 
@@ -161,7 +180,10 @@ export class LiquiditySharingService {
       symbiosisPools[outputToken.blockchain][inputToken.blockchain];
 
     if (!poolInfo) {
-      console.log('[OPTIMIZATION] symbiosis unsupported pair');
+      console.log(
+        '%c [OPTIMIZATION] symbiosis unsupported pair',
+        'background: #222; color: #bada55'
+      );
       return { reserveX: '0', reserveY: '0' };
     }
 
