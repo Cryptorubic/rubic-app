@@ -1,3 +1,10 @@
+::ng-deep {
+  polymorpheus-custom-token-warning-modal {
+    display: block;
+    padding: 0 1rem;
+  }
+}
+
 .buttons-container {
   display: flex;
   justify-content: space-between;
