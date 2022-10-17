@@ -33,7 +33,7 @@
     }
 
     @include iframe {
-      margin: 20px;
+      margin: 20px 20px 40px;
     }
   }
 
@@ -76,7 +76,7 @@
   margin: 0 auto 56px;
 
   @include b($tablet) {
-    margin: 0 20px 90px;
+    margin: 0 20px 70px;
   }
 
   @include iframe-horizontal {
