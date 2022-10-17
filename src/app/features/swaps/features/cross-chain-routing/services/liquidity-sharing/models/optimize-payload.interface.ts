@@ -9,26 +9,14 @@ export interface OptimizePayload {
   fromAmount: string;
   toBlockchain: string;
   toToken: string;
-  frontCalculations: {
-    cBridge: {
-      input: string;
-      output: string;
-      loss: string;
-    };
-    symbiosis: {
-      input: string;
-      output: string;
-      loss: string;
-    };
-    deBridge: {
-      input: string;
-      output: string;
-      loss: string;
-    };
+  frontBestTrade: {
+    input: string;
+    output: string;
+    loss: string;
   };
   bridges: {
     cBridge: PairInfo;
     deBridge: PairInfo;
-    symbiosis?: PairInfo;
+    symbiosis: PairInfo;
   };
 }

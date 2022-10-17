@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import networks from '@app/shared/constants/blockchain/networks';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from 'rubic-sdk';
 import {
   distinctUntilChanged,
   filter,
@@ -49,10 +49,14 @@ export class LiquiditySharingService {
         switchMap(input => {
           return from(this.getOptimizePayload(input));
         }),
+        switchMap(payload => {
+          console.log('[OPTIMIZATION] request payload', payload);
+          return this.optimize(payload);
+        }),
         takeUntil(this._destroy$)
       )
-      .subscribe(payload => {
-        console.log(payload);
+      .subscribe(response => {
+        console.log('[OPTIMIZATION] optimization response', response);
       });
   }
 
@@ -68,7 +72,7 @@ export class LiquiditySharingService {
         .pipe(
           map(celerLiquidityInfoResponse => {
             if (celerLiquidityInfoResponse.lp_info.length === 0) {
-              console.log('[CELER LIQUIDITY] empty celer API liquidity info');
+              console.log('[OPTIMIZATION] celer empty API liquidity info');
               return { reserveX: '0', reserveY: '0' };
             }
 
@@ -85,11 +89,11 @@ export class LiquiditySharingService {
             ).total_liquidity;
 
             if (!reserveX || !reserveY) {
-              console.log('[CELER LIQUIDITY] unsupported pair');
+              console.log('[OPTIMIZATION] celer unsupported pair');
               return { reserveX: '0', reserveY: '0' };
             }
 
-            return { reserveX, reserveY };
+            return { reserveX: reserveX.toString(), reserveY: reserveY.toString() };
           })
         )
     );
@@ -111,7 +115,7 @@ export class LiquiditySharingService {
         blockchain => blockchain === BLOCKCHAIN_NAME.ETHEREUM
       )
     ) {
-      console.log('[DEBRIDGE LIQUIDITY] unsupported pair');
+      console.log('[OPTIMIZATION] debridge unsupported pair');
       return { reserveX: '0', reserveY: '0' };
     }
 
@@ -151,18 +155,18 @@ export class LiquiditySharingService {
     inputToken: TokenAmount,
     outputToken: TokenAmount
   ): Promise<PairInfo> {
-    const srcWeb3Public = Injector.web3PublicService.getWeb3Public(
-      inputToken.blockchain
-    ) as EvmWeb3Public;
-    let poolInfo: { address: string; decimals: [number, number] } =
+    let poolInfo: { address: string; decimals: [number, number]; blockchain: BlockchainName } =
       symbiosisPools[inputToken.blockchain][outputToken.blockchain] ||
       symbiosisPools[outputToken.blockchain][inputToken.blockchain];
 
     if (!poolInfo) {
-      console.log('[SYMBIOSIS LIQUIDITY] unsupported pair');
+      console.log('[OPTIMIZATION] symbiosis unsupported pair');
       return { reserveX: '0', reserveY: '0' };
     }
 
+    const srcWeb3Public = Injector.web3PublicService.getWeb3Public(
+      poolInfo.blockchain
+    ) as EvmWeb3Public;
     const zeroIndexTokenBalance = await srcWeb3Public.callContractMethod(
       poolInfo.address,
       symbiosisPoolAbi,
@@ -199,29 +203,21 @@ export class LiquiditySharingService {
       fromBlockchain: input.fromBlockchain,
       toToken: input.toToken.symbol,
       toBlockchain: input.toBlockchain,
-      frontCalculations: {
-        cBridge: {
-          input: '0',
-          output: '0',
-          loss: '0'
-        },
-        symbiosis: {
-          input: '0',
-          output: '0',
-          loss: '0'
-        },
-        deBridge: {
-          input: '0',
-          output: '0',
-          loss: '0'
-        }
+      frontBestTrade: {
+        input: '0',
+        output: '0',
+        loss: '0'
       },
       bridges: { cBridge, deBridge, symbiosis }
     };
   }
 
   private optimize(payload: OptimizePayload): Observable<OptimizeResponse> {
-    return this.httpClient.post<OptimizeResponse>('', { ...payload });
+    return this.httpClient.post<OptimizeResponse>(
+      'https://cco.rubic.exchange/optimize',
+      { ...payload },
+      { withCredentials: false }
+    );
   }
 
   public stopLiquiditySharingObserver(): void {

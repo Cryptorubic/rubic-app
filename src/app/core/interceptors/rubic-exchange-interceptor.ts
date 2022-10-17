@@ -41,7 +41,7 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
         )
         .append('Pragma', 'no-cache')
         .append('Expires', '0'),
-      withCredentials: true
+      withCredentials: false
     });
   }
 
