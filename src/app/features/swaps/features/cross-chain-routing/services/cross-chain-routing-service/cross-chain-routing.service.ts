@@ -30,7 +30,6 @@ import {
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -52,7 +51,6 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -64,7 +62,6 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { LiquiditySharingService } from '../liquidity-sharing/liquidity-sharing.service';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -126,21 +123,17 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly liquiditySharingService: LiquiditySharingService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     super('cross-chain-routing');
-    this.liquiditySharingService.initLiquiditySharingObserver();
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {

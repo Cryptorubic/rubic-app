@@ -13,7 +13,7 @@ import {
   Observable,
   Subject,
   switchMap,
-  takeUntil
+  tap
 } from 'rxjs';
 import { SwapFormInput } from '../../../main-form/models/swap-form';
 import { SwapFormService } from '../../../main-form/services/swap-form-service/swap-form.service';
@@ -22,6 +22,8 @@ import { symbiosisPoolAbi, symbiosisPools } from './constants/symbiosis-pools';
 import { CelerLiquidityInfo } from './models/celer-liquidity-info.interface';
 import { OptimizePayload, PairInfo } from './models/optimize-payload.interface';
 import { OptimizeResponse } from './models/optimize-response.interface';
+
+const supportedTokenSymbols = ['USDC', 'USDC.e', 'BUSD'];
 
 @Injectable()
 export class LiquiditySharingService {
@@ -32,32 +34,31 @@ export class LiquiditySharingService {
     private readonly httpClient: HttpClient
   ) {}
 
-  public initLiquiditySharingObserver(): void {
-    this.swapsFormService.commonTrade.valueChanges
-      .pipe(
-        map(form => form.input),
-        distinctUntilChanged((prev, curr) => {
-          return (
-            prev.fromToken?.blockchain === curr.fromToken?.blockchain &&
-            prev.toToken?.symbol === curr.toToken?.symbol &&
-            prev?.fromAmount?.toNumber() === curr?.fromAmount?.toNumber()
-          );
-        }),
-        filter(input => {
-          return Boolean(input.fromToken && input.toToken && input.fromAmount);
-        }),
-        switchMap(input => {
-          return from(this.getOptimizePayload(input));
-        }),
-        switchMap(payload => {
-          console.log('[OPTIMIZATION] request payload', payload);
-          return this.optimize(payload);
-        }),
-        takeUntil(this._destroy$)
-      )
-      .subscribe(response => {
-        console.log('[OPTIMIZATION] optimization response', response);
-      });
+  public initLiquiditySharingObserver(): Observable<OptimizeResponse> {
+    return this.swapsFormService.commonTrade.valueChanges.pipe(
+      map(form => form.input),
+      filter(input =>
+        Boolean(
+          input.fromToken &&
+            input.toToken &&
+            input.fromAmount &&
+            supportedTokenSymbols.includes(input.fromToken.symbol) &&
+            supportedTokenSymbols.includes(input.toToken.symbol)
+        )
+      ),
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev.fromToken?.blockchain === curr.fromToken?.blockchain &&
+          prev.toToken?.symbol === curr.toToken?.symbol &&
+          prev?.fromAmount?.toNumber() === curr?.fromAmount?.toNumber()
+      ),
+      switchMap(input => from(this.getOptimizePayload(input))),
+      switchMap(payload => {
+        console.log('[OPTIMIZATION] request payload', payload);
+        return this.optimize(payload);
+      }),
+      tap(response => console.log('[OPTIMIZATION] optimization response', response))
+    );
   }
 
   private async getCelerLiquidityInfo(
@@ -107,8 +108,8 @@ export class LiquiditySharingService {
       inputToken.blockchain === BLOCKCHAIN_NAME.ETHEREUM
         ? outputToken.blockchain
         : inputToken.blockchain;
-    const srcPoolAndBase = debridgePools[poolBlockchain];
-    const srcWeb3Public = Injector.web3PublicService.getWeb3Public(poolBlockchain) as EvmWeb3Public;
+    const poolAndBase = debridgePools[poolBlockchain];
+    const web3Public = Injector.web3PublicService.getWeb3Public(poolBlockchain) as EvmWeb3Public;
 
     if (
       ![inputToken.blockchain, outputToken.blockchain].some(
@@ -119,19 +120,19 @@ export class LiquiditySharingService {
       return { reserveX: '0', reserveY: '0' };
     }
 
-    const virtualPrice = await srcWeb3Public.callContractMethod(
-      srcPoolAndBase.base,
+    const virtualPrice = await web3Public.callContractMethod(
+      poolAndBase.base,
       debridgeBaseAbi,
       'get_virtual_price'
     );
-    const zeroIndexTokens = await srcWeb3Public.callContractMethod(
-      srcPoolAndBase.pool,
+    const zeroIndexTokens = await web3Public.callContractMethod(
+      poolAndBase.pool,
       debridgePoolAbi,
       'balances',
       [0]
     );
-    const firstIndexTokens = await srcWeb3Public.callContractMethod(
-      srcPoolAndBase.pool,
+    const firstIndexTokens = await web3Public.callContractMethod(
+      poolAndBase.pool,
       debridgePoolAbi,
       'balances',
       [1]
@@ -164,16 +165,16 @@ export class LiquiditySharingService {
       return { reserveX: '0', reserveY: '0' };
     }
 
-    const srcWeb3Public = Injector.web3PublicService.getWeb3Public(
+    const web3Public = Injector.web3PublicService.getWeb3Public(
       poolInfo.blockchain
     ) as EvmWeb3Public;
-    const zeroIndexTokenBalance = await srcWeb3Public.callContractMethod(
+    const zeroIndexTokenBalance = await web3Public.callContractMethod(
       poolInfo.address,
       symbiosisPoolAbi,
       'getTokenBalance',
       [0]
     );
-    const firstIndexTokenBalance = await srcWeb3Public.callContractMethod(
+    const firstIndexTokenBalance = await web3Public.callContractMethod(
       poolInfo.address,
       symbiosisPoolAbi,
       'getTokenBalance',
@@ -218,9 +219,5 @@ export class LiquiditySharingService {
       { ...payload },
       { withCredentials: false }
     );
-  }
-
-  public stopLiquiditySharingObserver(): void {
-    this._destroy$.next();
   }
 }

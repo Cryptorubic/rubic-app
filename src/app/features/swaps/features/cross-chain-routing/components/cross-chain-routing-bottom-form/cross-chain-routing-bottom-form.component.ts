@@ -71,6 +71,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { LiquiditySharingService } from '../../services/liquidity-sharing/liquidity-sharing.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -176,7 +177,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly liquiditySharingService: LiquiditySharingService
   ) {}
 
   ngOnInit() {
@@ -265,6 +267,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .subscribe(() => {
         this.conditionalCalculate('normal');
       });
+
+    this.liquiditySharingService
+      .initLiquiditySharingObserver()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
