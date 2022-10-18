@@ -1,8 +1,6 @@
-::ng-deep {
-  polymorpheus-custom-token-warning-modal {
-    display: block;
-    padding: 0 1rem;
-  }
+:host {
+  display: block;
+  padding: 0 1rem;
 }
 
 .buttons-container {
