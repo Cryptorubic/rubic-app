@@ -1,6 +1,10 @@
+@use 'src/scss/core' as *;
+
 :host {
-  display: block;
-  padding: 0 1rem;
+  @include iframe {
+    display: block;
+    padding: 0 1rem;
+  }
 }
 
 .buttons-container {
