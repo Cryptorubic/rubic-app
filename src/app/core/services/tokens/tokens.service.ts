@@ -606,6 +606,14 @@ export class TokensService {
       ...(isAddress && { address: query })
     };
 
+    this.tokensApiService
+      .fetchQueryTokens(params)
+      .pipe(map(backendTokens => backendTokens.get(0)))
+      .toPromise()
+      .then(token => {
+        this.getAndUpdateTokenBalance({ blockchain: token.blockchain, address: token.address });
+      });
+
     return this.tokensApiService.fetchQueryTokens(params);
   }
 
