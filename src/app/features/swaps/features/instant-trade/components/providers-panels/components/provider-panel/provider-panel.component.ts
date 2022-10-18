@@ -13,7 +13,6 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
 import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-provider-panel',
@@ -33,8 +32,6 @@ export class ProviderPanelComponent implements OnInit {
   public providerPanelData: ProviderPanelData;
 
   public errorTranslateKey: string;
-
-  constructor(private readonly swapButtonService: SwapButtonService) {}
 
   ngOnInit() {
     this.setupProviderPanelData();
@@ -86,7 +83,6 @@ export class ProviderPanelComponent implements OnInit {
    * Emits provider selection event to parent component.
    */
   public selectProvider(): void {
-    this.swapButtonService.setupPriceImpactCalculation();
     if (!this.providerPanelData.hasError && !this.providerPanelData.loading) {
       this.onSelectProvider.emit();
     }
