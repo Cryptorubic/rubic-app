@@ -22,6 +22,8 @@ export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: 'zappy',
   [ON_CHAIN_TRADE_TYPE.ZRX]: 'zerox',
   [ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]: 'oolong',
+  [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: 'jupiter',
+  [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'photon',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
