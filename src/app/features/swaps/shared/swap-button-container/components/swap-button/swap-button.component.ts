@@ -41,6 +41,8 @@ export class SwapButtonComponent {
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
+  // @TODO get rid of manual change detection
+
   ngOnInit(): void {
     this.disabled$.pipe(takeUntil(this.destroy$)).subscribe(() => this.cdr.detectChanges());
   }
