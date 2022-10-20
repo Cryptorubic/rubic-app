@@ -1,7 +1,7 @@
 <div class="tokens-rate" *ngIf="tokensRate$ | async as tokensRate">
   <div class="tokens-rate__amounts" *ngIf="rateDirection === 'from'">
     1 {{ tokensRate.from.symbol }} =
-    {{ tokensRate.to.amount | bigNumberFormat | withRound: 'toClosestValue' }}
+    {{ tokensRate.to.amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 1 } }}
     {{ tokensRate.to.symbol }}
   </div>
 
