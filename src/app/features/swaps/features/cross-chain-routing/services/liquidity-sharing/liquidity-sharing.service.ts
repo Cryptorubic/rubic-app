@@ -203,7 +203,7 @@ export class LiquiditySharingService {
       [1]
     );
 
-    return symbiosisPools[inputToken.blockchain][outputToken.blockchain].address ===
+    return symbiosisPools[inputToken.blockchain][outputToken.blockchain]?.address ===
       poolInfo.address
       ? {
           reserveX: Web3Pure.fromWei(firstIndexTokenBalance, poolInfo.decimals[1]).toString(),
