@@ -398,6 +398,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       error !== undefined &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      trade?.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
       ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
         (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
     ) {
