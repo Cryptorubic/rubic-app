@@ -25,12 +25,15 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  DeflanationTokenManager,
+  EvmBlockchainName,
+  celerCrossChainSupportedBlockchains,
+  CelerCrossChainSupportedBlockchain
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -52,7 +55,6 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -75,6 +77,8 @@ export type AllProviders = {
 })
 export class CrossChainRoutingService extends TradeService {
   private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
+
+  private readonly dtm = new DeflanationTokenManager();
 
   public setSelectedProvider(type: CrossChainTradeType): void {
     this._selectedProvider$.next(type);
@@ -125,13 +129,11 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
@@ -171,17 +173,39 @@ export class CrossChainRoutingService extends TradeService {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
+      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+      const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
+
+      if (isViaDisabled) {
+        disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
+      }
+
+      if (
+        celerCrossChainSupportedBlockchains.includes(
+          toToken.blockchain as CelerCrossChainSupportedBlockchain
+        ) &&
+        celerCrossChainSupportedBlockchains.includes(
+          fromToken.blockchain as CelerCrossChainSupportedBlockchain
+        )
+      ) {
+        try {
+          this.dtm.checkTokenForFees({
+            address: toToken.address,
+            blockchain: toToken.blockchain as EvmBlockchainName
+          });
+        } catch (error) {
+          disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.CELER);
+        }
+      }
+
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || [])],
+        disabledProviders,
         ...(receiverAddress && { receiverAddress })
       };
 
