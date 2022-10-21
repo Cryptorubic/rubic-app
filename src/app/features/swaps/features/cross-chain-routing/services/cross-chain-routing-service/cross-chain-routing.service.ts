@@ -16,6 +16,7 @@ import {
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -189,6 +190,12 @@ export class CrossChainRoutingService extends TradeService {
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
           tap(tradeData => {
+            if ((tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter) {
+              console.error(
+                'Provider router:',
+                (tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter
+              );
+            }
             const rankedProviders = [...tradeData.trades].map(trade => ({
               ...trade,
               rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
