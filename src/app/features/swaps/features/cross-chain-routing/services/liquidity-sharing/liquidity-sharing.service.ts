@@ -130,7 +130,8 @@ export class LiquiditySharingService {
     if (
       ![inputToken.blockchain, outputToken.blockchain].some(
         blockchain => blockchain === BLOCKCHAIN_NAME.ETHEREUM
-      )
+      ) ||
+      !poolAndBase
     ) {
       console.log(
         '%c [OPTIMIZATION] debridge unsupported pair',
