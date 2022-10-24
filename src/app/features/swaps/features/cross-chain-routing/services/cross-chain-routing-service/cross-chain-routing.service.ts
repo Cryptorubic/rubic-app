@@ -26,10 +26,10 @@ import {
   ViaCrossChainTrade,
   Web3Pure,
   WrappedCrossChainTrade,
-  DeflanationTokenManager,
   EvmBlockchainName,
   celerCrossChainSupportedBlockchains,
-  CelerCrossChainSupportedBlockchain
+  CelerCrossChainSupportedBlockchain,
+  DeflationTokenManager
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -44,7 +44,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, iif, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -60,7 +60,14 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -78,7 +85,7 @@ export type AllProviders = {
 export class CrossChainRoutingService extends TradeService {
   private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
 
-  private readonly dtm = new DeflanationTokenManager();
+  private readonly dtm = new DeflationTokenManager();
 
   public setSelectedProvider(type: CrossChainTradeType): void {
     this._selectedProvider$.next(type);
@@ -172,30 +179,21 @@ export class CrossChainRoutingService extends TradeService {
   ): Observable<CrossChainProviderTrade> {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
-      const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
+      const disabledProviders = [...(this.queryParamsService.disabledProviders || [])];
+      const checkTokenForFees$ = from(
+        this.sdk.deflationTokenManager.checkToken({
+          address: toToken.address,
+          blockchain: toToken.blockchain as EvmBlockchainName
+        })
+      ).pipe(
+        catchError(err => {
+          console.log(err);
+          return of(false);
+        })
+      );
 
       if (isViaDisabled) {
         disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
-      }
-
-      if (
-        celerCrossChainSupportedBlockchains.includes(
-          toToken.blockchain as CelerCrossChainSupportedBlockchain
-        ) &&
-        celerCrossChainSupportedBlockchains.includes(
-          fromToken.blockchain as CelerCrossChainSupportedBlockchain
-        )
-      ) {
-        try {
-          this.dtm.checkTokenForFees({
-            address: toToken.address,
-            blockchain: toToken.blockchain as EvmBlockchainName
-          });
-        } catch (error) {
-          disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.CELER);
-        }
       }
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -209,54 +207,82 @@ export class CrossChainRoutingService extends TradeService {
         ...(receiverAddress && { receiverAddress })
       };
 
-      return this.sdk.crossChain
-        .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
-        .pipe(
-          tap(tradeData => {
-            const rankedProviders = [...tradeData.trades].map(trade => ({
-              ...trade,
-              rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
-            }));
-            const sortedProviders = ProvidersListSortingService.sortTrades(rankedProviders);
-            this._allProviders$.next({
-              totalAmount: tradeData.total,
-              data: sortedProviders
-            });
-          }),
-          switchMap(tradeData => {
-            const bestProvider = this._selectedProvider$.value
-              ? tradeData.trades.find(
-                  provider => provider.tradeType === this._selectedProvider$.value
-                )
-              : this._allProviders$.value.data[0];
-            const trade = bestProvider?.trade;
-
-            if (!trade) {
-              return of({
-                ...bestProvider,
-                needApprove: false,
-                totalProviders: tradeData.total,
-                currentProviders: tradeData.calculated,
-                smartRouting: null
-              });
+      return iif(
+        () => {
+          return (
+            celerCrossChainSupportedBlockchains.includes(
+              toToken.blockchain as CelerCrossChainSupportedBlockchain
+            ) &&
+            celerCrossChainSupportedBlockchains.includes(
+              fromToken.blockchain as CelerCrossChainSupportedBlockchain
+            )
+          );
+        },
+        checkTokenForFees$.pipe(
+          switchMap(isDeflationToken => {
+            if (isDeflationToken) {
+              options.disabledProviders.push('CELER');
             }
-
-            return from(
-              userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
-            ).pipe(
-              map(needApprove => {
-                const smartRouting = this.calculateSmartRouting(bestProvider);
-                return {
-                  ...bestProvider,
-                  needApprove,
-                  totalProviders: tradeData.total,
-                  currentProviders: tradeData.calculated,
-                  smartRouting
-                };
-              })
+            return this.sdk.crossChain.calculateTradesReactively(
+              fromToken,
+              fromAmount.toString(),
+              toToken,
+              options
             );
           })
-        );
+        ),
+        this.sdk.crossChain.calculateTradesReactively(
+          fromToken,
+          fromAmount.toString(),
+          toToken,
+          options
+        )
+      ).pipe(
+        tap(tradeData => {
+          const rankedProviders = [...tradeData.trades].map(trade => ({
+            ...trade,
+            rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
+          }));
+          const sortedProviders = ProvidersListSortingService.sortTrades(rankedProviders);
+          this._allProviders$.next({
+            totalAmount: tradeData.total,
+            data: sortedProviders
+          });
+        }),
+        switchMap(tradeData => {
+          const bestProvider = this._selectedProvider$.value
+            ? tradeData.trades.find(
+                provider => provider.tradeType === this._selectedProvider$.value
+              )
+            : this._allProviders$.value.data[0];
+          const trade = bestProvider?.trade;
+
+          if (!trade) {
+            return of({
+              ...bestProvider,
+              needApprove: false,
+              totalProviders: tradeData.total,
+              currentProviders: tradeData.calculated,
+              smartRouting: null
+            });
+          }
+
+          return from(
+            userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
+          ).pipe(
+            map(needApprove => {
+              const smartRouting = this.calculateSmartRouting(bestProvider);
+              return {
+                ...bestProvider,
+                needApprove,
+                totalProviders: tradeData.total,
+                currentProviders: tradeData.calculated,
+                smartRouting
+              };
+            })
+          );
+        })
+      );
     } catch (err) {
       console.error(err);
       throw err;

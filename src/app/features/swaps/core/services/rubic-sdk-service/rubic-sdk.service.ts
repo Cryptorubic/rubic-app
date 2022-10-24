@@ -9,7 +9,8 @@ import {
   WalletProvider,
   WalletProviderCore,
   CHAIN_TYPE,
-  CrossChainSymbiosisManager
+  CrossChainSymbiosisManager,
+  DeflationTokenManager
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -49,6 +50,10 @@ export class RubicSdkService {
 
   public get crossChainStatusManager(): CrossChainStatusManager {
     return this.SDK.crossChainStatusManager;
+  }
+
+  public get deflationTokenManager(): DeflationTokenManager {
+    return this.SDK.deflationTokenManager;
   }
 
   private set SDK(value: SDK) {
