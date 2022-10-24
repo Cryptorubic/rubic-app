@@ -450,7 +450,8 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
     name: 'Rango',
-    image: `${imageBasePath}rango.svg`
+    image: `${imageBasePath}rango.svg`,
+    color: '#128535'
   },
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',

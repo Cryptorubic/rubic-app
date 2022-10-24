@@ -249,6 +249,10 @@ $green: rgb(74, 169, 86);
   app-target-network-address {
     display: block;
     margin-top: 10px;
+
+    @include iframe-vertical {
+      margin-top: 0;
+    }
   }
 }
 
