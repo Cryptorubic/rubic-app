@@ -66,8 +66,6 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { RubicError } from '@core/errors/models/rubic-error';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -494,7 +492,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (err) {
-      this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
+      const error = RubicSdkErrorParser.parseError(err);
+
+      if (error instanceof UnsupportedDeflationToken) {
+        this.crossChainRoutingService.markProviderAsDangerous(
+          this.crossChainProviderTrade.tradeType
+        );
+      } else {
+        this.errorsService.catch(err);
+      }
+
       this.swapStarted = false;
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
