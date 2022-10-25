@@ -181,7 +181,7 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders,
+        disabledProviders: disabledProviders,
         ...(receiverAddress && { receiverAddress })
       };
 

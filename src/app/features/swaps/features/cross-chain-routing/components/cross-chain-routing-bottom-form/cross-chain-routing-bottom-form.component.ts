@@ -71,6 +71,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import UnsupportedDeflationToken from '@app/core/errors/models/common/unsupported-deflation-token.warning';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -530,7 +531,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       const error = RubicSdkErrorParser.parseError(err);
       if (
         error instanceof NotWhitelistedProviderWarning ||
-        error instanceof ExecutionRevertedError
+        error instanceof ExecutionRevertedError ||
+        error instanceof UnsupportedDeflationToken
       ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType

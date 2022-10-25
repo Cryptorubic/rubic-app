@@ -10,7 +10,8 @@ import {
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
   NotWhitelistedProviderError as SdkNotWhitelistedProviderError,
   WalletNotConnectedError as SdkWalletNotConnectedError,
-  WrongNetworkError as SdkWrongNetworkError
+  WrongNetworkError as SdkWrongNetworkError,
+  DeflationTokenError as SdkDeflationTokenError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -25,6 +26,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import UnsupportedDeflationToken from './common/unsupported-deflation-token.warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -61,6 +63,9 @@ export class RubicSdkErrorParser {
         console.error('Provider gateway: ', err.providerGateway);
       }
       return new NotWhitelistedProviderWarning();
+    }
+    if (err instanceof SdkDeflationTokenError) {
+      return new UnsupportedDeflationToken();
     }
     if (err instanceof SdkWalletNotConnectedError) {
       return new WalletError();
