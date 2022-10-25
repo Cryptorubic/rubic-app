@@ -36,11 +36,6 @@
   </div>
 
   <div class="vertical-iframe-input__row cards-container">
-    <app-usd-price-container
-      *ngIf="usdPrice?.gt(0)"
-      [usdPrice]="usdPrice"
-    ></app-usd-price-container>
-
     <app-user-balance-container
       [token]="selectedToken"
       hide="maxButton"
