@@ -67,6 +67,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SHIBA_SWAP]: 'ShibaSwap',
   [ON_CHAIN_TRADE_TYPE.SMOOTHY]: 'Smoothy',
   [ON_CHAIN_TRADE_TYPE.SOLAR_BEAM]: 'SolarBeam',
+  [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
   [ON_CHAIN_TRADE_TYPE.SPIRIT_SWAP]: 'SpiritSwap',
   [ON_CHAIN_TRADE_TYPE.SPL_TOKEN_SWAP]: 'SplTokenSwap',
   [ON_CHAIN_TRADE_TYPE.SPOOKY_SWAP]: 'Spooky',

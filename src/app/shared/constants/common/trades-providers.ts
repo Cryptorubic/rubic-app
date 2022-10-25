@@ -331,6 +331,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
   },
+  [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: {
+    name: 'SoulSwap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
 
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: {
     name: 'Trisolaris',
