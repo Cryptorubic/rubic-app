@@ -270,9 +270,11 @@ export class TokensService {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
       blockchain as EvmBlockchainName
     );
-    const balance$ = this.userAddress
-      ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
-      : of(null);
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const balance$ =
+      this.userAddress && this.authService.userChainType === chainType
+        ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
+        : of(null);
     const token$ = SdkToken.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
@@ -580,7 +582,10 @@ export class TokensService {
    * @param query Search query.
    * @param blockchain Tokens blockchain.
    */
-  public fetchQueryTokens(query: string, blockchain: BlockchainName): Observable<List<Token>> {
+  public fetchQueryTokens(
+    query: string,
+    blockchain: BlockchainName
+  ): Observable<List<TokenAmount>> {
     query = query.toLowerCase();
     const isAddress = query.length >= 42;
 
@@ -604,7 +609,13 @@ export class TokensService {
       ...(isAddress && { address: query })
     };
 
-    return this.tokensApiService.fetchQueryTokens(params);
+    return this.tokensApiService.fetchQueryTokens(params).pipe(
+      switchMap(async backendTokens => {
+        return List(
+          await this.getTokensWithBalance(this.setDefaultTokensParams(backendTokens, false))
+        );
+      })
+    );
   }
 
   /**

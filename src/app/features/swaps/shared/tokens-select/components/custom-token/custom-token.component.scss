@@ -1,4 +1,4 @@
-@use 'src/scss/vars' as *;
+@use 'src/scss/core' as *;
 
 :host {
   width: 100%;
@@ -10,6 +10,11 @@
 
   padding-top: 15px;
   padding-left: 24px;
+
+  @include iframe-horizontal {
+    display: flex;
+    align-items: center;
+  }
 
   &__element {
     padding: 5px 10px;
@@ -31,5 +36,9 @@
   &__button {
     display: block;
     margin-top: 15px;
+
+    @include iframe-horizontal {
+      margin-top: 0;
+    }
   }
 }
