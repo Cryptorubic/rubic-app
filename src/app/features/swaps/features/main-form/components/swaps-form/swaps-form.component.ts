@@ -3,7 +3,6 @@ import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
-import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
@@ -67,9 +66,9 @@ export class SwapsFormComponent implements OnInit {
 
   private _supportedFavoriteTokens: List<TokenAmount>;
 
-  private _bridgeTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
+  // private _bridgeTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
 
-  private _bridgeFavoriteTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
+  // private _bridgeFavoriteTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
 
   public availableTokens: AvailableTokens;
 
@@ -189,9 +188,9 @@ export class SwapsFormComponent implements OnInit {
   private subscribeOnTokens(): void {
     combineLatest([
       this.swapsService.availableTokens$,
-      this.swapsService.availableFavoriteTokens$,
-      this.swapsService.bridgeTokenPairsByBlockchainsArray$,
-      this.swapsService.bridgeTokenPairsByBlockchainsFavoriteArray$
+      this.swapsService.availableFavoriteTokens$
+      // this.swapsService.bridgeTokenPairsByBlockchainsArray$,
+      // this.swapsService.bridgeTokenPairsByBlockchainsFavoriteArray$
     ])
       .pipe(debounceTime(0), takeUntil(this.destroy$))
       .subscribe(tokensChangesTuple => this.handleTokensChange(tokensChangesTuple));
@@ -206,14 +205,14 @@ export class SwapsFormComponent implements OnInit {
    */
   private handleTokensChange([
     supportedTokens,
-    supportedFavoriteTokens,
-    bridgeTokenPairsByBlockchainsArray,
-    bridgeFavoriteTokenPairsByBlockchainsArray
-  ]: [
+    supportedFavoriteTokens
+  ]: // bridgeTokenPairsByBlockchainsArray,
+  // bridgeFavoriteTokenPairsByBlockchainsArray
+  [
     List<TokenAmount>,
-    List<TokenAmount>,
-    List<BridgeTokenPairsByBlockchains>,
-    List<BridgeTokenPairsByBlockchains>
+    List<TokenAmount>
+    // List<BridgeTokenPairsByBlockchains>,
+    // List<BridgeTokenPairsByBlockchains>
   ]): void {
     this.isLoading = true;
     if (!supportedTokens) {
@@ -223,8 +222,8 @@ export class SwapsFormComponent implements OnInit {
     this._supportedTokens = supportedTokens;
     this._supportedFavoriteTokens = supportedFavoriteTokens;
 
-    this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
-    this._bridgeFavoriteTokenPairsByBlockchainsArray = bridgeFavoriteTokenPairsByBlockchainsArray;
+    // this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
+    // this._bridgeFavoriteTokenPairsByBlockchainsArray = bridgeFavoriteTokenPairsByBlockchainsArray;
 
     this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
     this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');

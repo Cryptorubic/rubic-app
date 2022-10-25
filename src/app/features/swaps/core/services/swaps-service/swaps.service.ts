@@ -26,13 +26,13 @@ export class SwapsService {
 
   private _availableFavoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
 
-  private _bridgeTokenPairsByBlockchainsArray$ = new BehaviorSubject<
-    List<BridgeTokenPairsByBlockchains>
-  >(undefined);
+  // private _bridgeTokenPairsByBlockchainsArray$ = new BehaviorSubject<
+  //   List<BridgeTokenPairsByBlockchains>
+  // >(undefined);
 
-  private _bridgeTokenPairsByBlockchainsFavoriteArray$ = new BehaviorSubject<
-    List<BridgeTokenPairsByBlockchains>
-  >(undefined);
+  // private _bridgeTokenPairsByBlockchainsFavoriteArray$ = new BehaviorSubject<
+  //   List<BridgeTokenPairsByBlockchains>
+  // >(undefined);
 
   private intervalId: NodeJS.Timeout;
 
@@ -44,15 +44,15 @@ export class SwapsService {
     return this._availableFavoriteTokens$.asObservable();
   }
 
-  get bridgeTokenPairsByBlockchainsArray$(): Observable<List<BridgeTokenPairsByBlockchains>> {
-    return this._bridgeTokenPairsByBlockchainsArray$.asObservable();
-  }
+  // get bridgeTokenPairsByBlockchainsArray$(): Observable<List<BridgeTokenPairsByBlockchains>> {
+  //   return this._bridgeTokenPairsByBlockchainsArray$.asObservable();
+  // }
 
-  get bridgeTokenPairsByBlockchainsFavoriteArray$(): Observable<
-    List<BridgeTokenPairsByBlockchains>
-  > {
-    return this._bridgeTokenPairsByBlockchainsFavoriteArray$.asObservable();
-  }
+  // get bridgeTokenPairsByBlockchainsFavoriteArray$(): Observable<
+  //   List<BridgeTokenPairsByBlockchains>
+  // > {
+  //   return this._bridgeTokenPairsByBlockchainsFavoriteArray$.asObservable();
+  // }
 
   get swapMode$(): Observable<SWAP_PROVIDER_TYPE | null> {
     return this._swapProviderType$.asObservable();
@@ -78,47 +78,44 @@ export class SwapsService {
 
   private subscribeOnTokens(): void {
     combineLatest([
-      this.bridgeService.tokens$.pipe(filter(tokens => !!tokens)),
       this.tokensService.tokens$.pipe(filter(tokens => !!tokens)),
       this.tokensService.favoriteTokens$
-    ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts, favoriteTokenAmounts]) => {
+    ]).subscribe(([tokenAmounts, favoriteTokenAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
       const updatedFavoriteTokenAmounts = favoriteTokenAmounts.toArray();
 
-      const updatedBridgeTokenPairsByBlockchainsArray =
-        this.getBridgePairsArrayAndModifyTokensAmount(
-          bridgeTokenPairsByBlockchainsArray,
-          tokenAmounts,
-          updatedTokenAmounts
-        );
+      // const updatedBridgeTokenPairsByBlockchainsArray =
+      //   this.getBridgePairsArrayAndModifyTokensAmount(
+      //     tokenAmounts,
+      //     updatedTokenAmounts
+      //   );
 
-      const updatedBridgeFavoriteTokenPairsByBlockchainsArray =
-        this.getBridgePairsArrayAndModifyTokensAmount(
-          bridgeTokenPairsByBlockchainsArray,
-          favoriteTokenAmounts,
-          updatedFavoriteTokenAmounts
-        );
+      // const updatedBridgeFavoriteTokenPairsByBlockchainsArray =
+      //   this.getBridgePairsArrayAndModifyTokensAmount(
+      //     favoriteTokenAmounts,
+      //     updatedFavoriteTokenAmounts
+      //   );
 
       // filter and remove bridge specific tokens in widget
-      updatedBridgeTokenPairsByBlockchainsArray.forEach(
-        item =>
-          (item.tokenPairs = item.tokenPairs.filter(pair =>
-            Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
-          ))
-      );
-      updatedBridgeFavoriteTokenPairsByBlockchainsArray.forEach(
-        item =>
-          (item.tokenPairs = item.tokenPairs.filter(pair =>
-            Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
-          ))
-      );
+      // updatedBridgeTokenPairsByBlockchainsArray.forEach(
+      //   item =>
+      //     (item.tokenPairs = item.tokenPairs.filter(pair =>
+      //       Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
+      //     ))
+      // );
+      // updatedBridgeFavoriteTokenPairsByBlockchainsArray.forEach(
+      //   item =>
+      //     (item.tokenPairs = item.tokenPairs.filter(pair =>
+      //       Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
+      //     ))
+      // );
 
-      this._bridgeTokenPairsByBlockchainsArray$.next(
-        List(updatedBridgeTokenPairsByBlockchainsArray)
-      );
-      this._bridgeTokenPairsByBlockchainsFavoriteArray$.next(
-        List(updatedBridgeFavoriteTokenPairsByBlockchainsArray)
-      );
+      // this._bridgeTokenPairsByBlockchainsArray$.next(
+      //   List(updatedBridgeTokenPairsByBlockchainsArray)
+      // );
+      // this._bridgeTokenPairsByBlockchainsFavoriteArray$.next(
+      //   List(updatedBridgeFavoriteTokenPairsByBlockchainsArray)
+      // );
 
       this._availableTokens$.next(List(updatedTokenAmounts));
 
