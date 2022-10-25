@@ -25,11 +25,7 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade,
-  DeflanationTokenManager,
-  EvmBlockchainName,
-  celerCrossChainSupportedBlockchains,
-  CelerCrossChainSupportedBlockchain
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -77,8 +73,6 @@ export type AllProviders = {
 })
 export class CrossChainRoutingService extends TradeService {
   private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
-
-  private readonly dtm = new DeflanationTokenManager();
 
   public setSelectedProvider(type: CrossChainTradeType): void {
     this._selectedProvider$.next(type);
@@ -178,24 +172,6 @@ export class CrossChainRoutingService extends TradeService {
 
       if (isViaDisabled) {
         disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
-      }
-
-      if (
-        celerCrossChainSupportedBlockchains.includes(
-          toToken.blockchain as CelerCrossChainSupportedBlockchain
-        ) &&
-        celerCrossChainSupportedBlockchains.includes(
-          fromToken.blockchain as CelerCrossChainSupportedBlockchain
-        )
-      ) {
-        try {
-          this.dtm.checkTokenForFees({
-            address: toToken.address,
-            blockchain: toToken.blockchain as EvmBlockchainName
-          });
-        } catch (error) {
-          disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.CELER);
-        }
       }
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
