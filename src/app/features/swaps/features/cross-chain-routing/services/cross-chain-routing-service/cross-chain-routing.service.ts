@@ -40,7 +40,15 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  from,
+  Observable,
+  of,
+  Subscription,
+  distinctUntilChanged,
+  debounceTime
+} from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -56,7 +64,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -114,7 +122,7 @@ export class CrossChainRoutingService extends TradeService {
     map(allProviders => {
       const providers = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListSortingService.setTags(trades);
+      return trades;
     }),
     debounceTime(10)
   );
