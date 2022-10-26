@@ -69,7 +69,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
-import UnsupportedDeflationToken from '@app/core/errors/models/common/unsupported-deflation-token.warning';
+import UnsupportedDeflationTokenWarning from '@app/core/errors/models/common/unsupported-deflation-token.warning';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -124,8 +124,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private hiddenTradeData: CrossChainProviderTrade | null = null;
 
   private calculateTradeSubscription$: Subscription;
-
-  private hiddenCalculateTradeSubscription$: Subscription;
 
   public readonly displayTargetAddressInput$ =
     this.settingsService.crossChainRoutingValueChanges.pipe(
@@ -199,6 +197,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        this.crossChainRoutingService.unmarkAllDangerousProviders();
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -494,7 +493,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     } catch (err) {
       const error = RubicSdkErrorParser.parseError(err);
 
-      if (error instanceof UnsupportedDeflationToken) {
+      if (error instanceof UnsupportedDeflationTokenWarning) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
@@ -539,7 +538,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       if (
         error instanceof NotWhitelistedProviderWarning ||
         error instanceof ExecutionRevertedError ||
-        error instanceof UnsupportedDeflationToken
+        error instanceof UnsupportedDeflationTokenWarning
       ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType

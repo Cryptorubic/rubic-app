@@ -26,7 +26,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
-import UnsupportedDeflationToken from './common/unsupported-deflation-token.warning';
+import UnsupportedDeflationTokenWarning from './common/unsupported-deflation-token.warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -65,7 +65,7 @@ export class RubicSdkErrorParser {
       return new NotWhitelistedProviderWarning();
     }
     if (err instanceof SdkDeflationTokenError) {
-      return new UnsupportedDeflationToken();
+      return new UnsupportedDeflationTokenWarning();
     }
     if (err instanceof SdkWalletNotConnectedError) {
       return new WalletError();

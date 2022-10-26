@@ -118,6 +118,10 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
+  public get dangerousProviders(): CrossChainTradeType[] {
+    return this._dangerousProviders$.getValue();
+  }
+
   public readonly providers$ = this.allProviders$.pipe(
     map(allProviders => {
       const providers = allProviders.data;
@@ -166,6 +170,10 @@ export class CrossChainRoutingService extends TradeService {
   public unmarkProviderAsDangerous(type: CrossChainTradeType): void {
     const providers = this._dangerousProviders$.value.filter(providerType => providerType !== type);
     this._dangerousProviders$.next(providers);
+  }
+
+  public unmarkAllDangerousProviders(): void {
+    this.dangerousProviders.forEach(tradeType => this.unmarkProviderAsDangerous(tradeType));
   }
 
   public calculateTrade(
