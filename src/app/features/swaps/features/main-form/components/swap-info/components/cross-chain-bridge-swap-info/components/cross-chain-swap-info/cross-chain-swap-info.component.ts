@@ -25,7 +25,8 @@ import {
   EvmBridgersCrossChainTrade,
   SymbiosisCrossChainTrade,
   DebridgeCrossChainTrade,
-  ViaCrossChainTrade
+  ViaCrossChainTrade,
+  MultichainCrossChainTrade
 } from 'rubic-sdk';
 
 @Component({
@@ -150,7 +151,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 trade instanceof ViaCrossChainTrade ||
                 trade instanceof RangoCrossChainTrade ||
                 trade instanceof EvmBridgersCrossChainTrade ||
-                trade instanceof TronBridgersCrossChainTrade
+                trade instanceof TronBridgersCrossChainTrade ||
+                trade instanceof MultichainCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 
