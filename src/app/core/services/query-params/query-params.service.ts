@@ -193,33 +193,38 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    const blockchainNames = Object.values(BLOCKCHAIN_NAME);
-    const fromChain = blockchainNames.includes(queryParams?.fromChain)
-      ? queryParams.fromChain
-      : DEFAULT_PARAMETERS.swap.fromChain;
+    return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
+      first(pairsArray => !!pairsArray?.size),
+      map(() => {
+        const blockchainNames = Object.values(BLOCKCHAIN_NAME);
+        const fromChain = blockchainNames.includes(queryParams?.fromChain)
+          ? queryParams.fromChain
+          : DEFAULT_PARAMETERS.swap.fromChain;
 
-    const toChain = blockchainNames.includes(queryParams?.toChain)
-      ? queryParams.toChain
-      : DEFAULT_PARAMETERS.swap.toChain;
+        const toChain = blockchainNames.includes(queryParams?.toChain)
+          ? queryParams.toChain
+          : DEFAULT_PARAMETERS.swap.toChain;
 
-    const newParams = {
-      ...queryParams,
-      fromChain,
-      toChain,
-      ...(queryParams.from && { from: queryParams.from }),
-      ...(queryParams.to && { to: queryParams.to }),
-      ...(queryParams.amount && { amount: queryParams.amount })
-    };
+        const newParams = {
+          ...queryParams,
+          fromChain,
+          toChain,
+          ...(queryParams.from && { from: queryParams.from }),
+          ...(queryParams.to && { to: queryParams.to }),
+          ...(queryParams.amount && { amount: queryParams.amount })
+        };
 
-    if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-      if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
-        newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
-      } else {
-        newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
-      }
-    }
+        if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
+          if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
+            newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
+          } else {
+            newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
+          }
+        }
 
-    return of(newParams);
+        return newParams;
+      })
+    );
   }
 
   /**

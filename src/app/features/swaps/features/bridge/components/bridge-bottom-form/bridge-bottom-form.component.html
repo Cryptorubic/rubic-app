@@ -1,0 +1,26 @@
+<section class="bridge-bottom-form">
+  <div class="bridge-bottom-form__container">
+    <app-rubic-tokens
+      [loading]="loading"
+      formType="to"
+      [tokens]="tokens"
+      [formService]="swapFormService"
+      [favoriteTokens]="favoriteTokens"
+    ></app-rubic-tokens>
+    <app-amount-estimated [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-estimated>
+  </div>
+
+  <div class="bridge-bottom-form__footer">
+    <div class="bridge-bottom-form__button">
+      <app-swap-button-container
+        [needApprove]="needApprove"
+        [withApproveButton]="needApprove"
+        [status]="tradeStatus"
+        [minAmount]="minError"
+        [maxAmount]="maxError"
+        (onSwapClick)="handleClick('swap')"
+        (onApproveClick)="handleClick('approve')"
+      ></app-swap-button-container>
+    </div>
+  </div>
+</section>

@@ -17,14 +17,17 @@
     *noFrame
     class="rubic-header__menu"
     [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+    [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
     [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
     (swapClick)="navigateToSwaps()"
+    (bridgeClick)="navigateToBridgeOrCrossChain('bridge')"
+    (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
   ></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
     <a
       class="button-link"
-      (click)="navigateToSwaps()"
+      (click)="navigateToBridgeOrCrossChain('cross-chain')"
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       "
