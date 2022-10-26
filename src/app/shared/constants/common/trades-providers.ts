@@ -1,4 +1,3 @@
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
 import {
   BRIDGE_TYPE,
@@ -16,17 +15,6 @@ export type Provider = {
 };
 
 const imageBasePath = 'assets/images/icons/providers/';
-
-const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
-  [BRIDGE_PROVIDER.SWAP_RBC]: {
-    name: 'Rubic',
-    image: `${imageBasePath}rubic.svg`
-  },
-  [BRIDGE_PROVIDER.POLYGON]: {
-    name: 'Polygon',
-    image: `${imageBasePath}polygon.svg`
-  }
-};
 
 const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
@@ -600,7 +588,6 @@ const GAS_REFUND_PROVIDER: Provider = {
 };
 
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
-  ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDER,
   ...CROSS_CHAIN_BRIDGE_PROVIDER,
   ...CROSS_CHAIN_TRADE_PROVIDER,
