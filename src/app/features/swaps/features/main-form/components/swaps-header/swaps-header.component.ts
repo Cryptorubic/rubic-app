@@ -35,7 +35,6 @@ export class SwapsHeaderComponent {
     map(mode => {
       if (mode) {
         const swapTypeLabel = {
-          [SWAP_PROVIDER_TYPE.BRIDGE]: 'Bridge',
           [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'Instant Trade',
           [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'Cross-Chain'
         };
