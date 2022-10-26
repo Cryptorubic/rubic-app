@@ -219,6 +219,9 @@ export class TokensService {
    */
   private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     try {
+      if (!this.authService.user) {
+        return tokens.toArray();
+      }
       const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
 
       const tokensWithBlockchain: { [p: string]: TokenAmount[] } = Object.fromEntries(
