@@ -128,7 +128,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: Boolean(this.authService?.user?.address),
+      autoRefresh: false,
       showReceiverAddress: false
     };
   }
@@ -141,7 +141,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: Boolean(this.authService?.user?.address),
+      autoRefresh: false,
       showReceiverAddress: false
     };
   }
@@ -197,14 +197,14 @@ export class SettingsService {
         this.storeService.setItem('settings', this.serializeForm(form));
       });
 
-    this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
-      this.instantTrade.patchValue({
-        autoRefresh: widgetIntoViewport
-      });
-      this.crossChainRouting.patchValue({
-        autoRefresh: widgetIntoViewport
-      });
-    });
+    // this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
+    //   this.instantTrade.patchValue({
+    //     autoRefresh: widgetIntoViewport
+    //   });
+    //   this.crossChainRouting.patchValue({
+    //     autoRefresh: widgetIntoViewport
+    //   });
+    // });
 
     this.targetNetworkAddressService.isAddressRequired$.subscribe(isAddressRequired => {
       if (isAddressRequired) {
