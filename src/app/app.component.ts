@@ -33,7 +33,7 @@ export class AppComponent implements AfterViewInit {
     this.printTimestamp();
     this.initQueryParamsSubscription();
     this.setupLanguage();
-    this.checkHealth();
+    this.loadPlatformConfig();
   }
 
   ngAfterViewInit() {
@@ -124,10 +124,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   /**
-   * Checks health of backend server.
+   * Loads platform config and checks is server active.
    */
-  private checkHealth(): void {
-    this.healthCheckService.healthCheck().then(isAvailable => {
+  private loadPlatformConfig(): void {
+    this.healthCheckService.loadPlatformConfig().subscribe(isAvailable => {
       this.isBackendAvailable = isAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */

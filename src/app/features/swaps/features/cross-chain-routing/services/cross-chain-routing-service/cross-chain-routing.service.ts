@@ -64,6 +64,9 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { HealthcheckService } from '@app/core/services/backend/healthcheck/healthcheck.service';
+import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -135,7 +138,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly healthCheckService: HealthcheckService
   ) {
     super('cross-chain-routing');
   }
@@ -243,6 +247,15 @@ export class CrossChainRoutingService extends TradeService {
     providerTrade: CrossChainProviderTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const fromBlockchain = providerTrade.trade.from.blockchain;
+    const toBlockchain = providerTrade.trade.to.blockchain;
+    if (!this.healthCheckService.isAvailableBlockchain(fromBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+    if (!this.healthCheckService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
+
     if (!providerTrade?.trade) {
       throw new RubicError('Cross chain trade object not found.');
     }
