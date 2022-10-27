@@ -26,7 +26,7 @@ import {
   SymbiosisCrossChainTrade,
   DebridgeCrossChainTrade,
   ViaCrossChainTrade,
-  MultichainCrossChainTrade
+  DexMultichainCrossChainTrade
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 
@@ -154,14 +154,18 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 trade instanceof RangoCrossChainTrade ||
                 trade instanceof EvmBridgersCrossChainTrade ||
                 trade instanceof TronBridgersCrossChainTrade ||
-                trade instanceof MultichainCrossChainTrade
+                trade instanceof DexMultichainCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 
                 this.estimateGasInEth = tradeInfo.estimatedGas;
                 this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
-                this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+                if (trade instanceof DexMultichainCrossChainTrade && !trade.onChainTrade) {
+                  this.slippage = 0;
+                } else {
+                  this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+                }
                 this.minimumReceived = toAmount.multipliedBy(1 - this.slippage / 100);
 
                 this.setSymbiosisOrLifiTradeInfoParameters(tradeInfo as SymbiosisTradeInfo);
