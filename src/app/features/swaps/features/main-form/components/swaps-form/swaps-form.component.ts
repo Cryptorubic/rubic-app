@@ -157,6 +157,18 @@ export class SwapsFormComponent implements OnInit {
     this.subscribeOnTokens();
     this.subscribeOnSettings();
 
+    this.swapsService.swapMode$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(swapMode => {
+        this.swapType = swapMode;
+        if (this.authService?.user?.address) {
+          this.autoRefresh =
+            swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+              ? this.settingsService.instantTradeValue.autoRefresh
+              : this.settingsService.crossChainRoutingValue.autoRefresh;
+        }
+      });
+
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
