@@ -55,6 +55,12 @@
             mode="table-row"
             *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
           ></tr>
+          <tr
+            multichain-trade
+            [trade]="trade"
+            mode="table-row"
+            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
+          ></tr>
         </ng-container>
       </tbody>
     </table>
