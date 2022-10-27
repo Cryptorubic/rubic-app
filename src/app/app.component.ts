@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { DOCUMENT } from '@angular/common';
-import { HealthcheckService } from '@core/services/backend/healthcheck/healthcheck.service';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -25,7 +25,7 @@ export class AppComponent implements AfterViewInit {
     private readonly cookieService: CookieService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly healthCheckService: HealthcheckService,
+    private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly errorService: ErrorsService
@@ -127,7 +127,7 @@ export class AppComponent implements AfterViewInit {
    * Loads platform config and checks is server active.
    */
   private loadPlatformConfig(): void {
-    this.healthCheckService.loadPlatformConfig().subscribe(isAvailable => {
+    this.platformConfigurationService.loadPlatformConfig().subscribe(isAvailable => {
       this.isBackendAvailable = isAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */

@@ -30,7 +30,6 @@ import {
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -52,7 +51,6 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -64,7 +62,7 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { HealthcheckService } from '@app/core/services/backend/healthcheck/healthcheck.service';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
@@ -128,18 +126,16 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly healthCheckService: HealthcheckService
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {
     super('cross-chain-routing');
   }
@@ -249,10 +245,10 @@ export class CrossChainRoutingService extends TradeService {
   ): Promise<void> {
     const fromBlockchain = providerTrade.trade.from.blockchain;
     const toBlockchain = providerTrade.trade.to.blockchain;
-    if (!this.healthCheckService.isAvailableBlockchain(fromBlockchain)) {
+    if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
     }
-    if (!this.healthCheckService.isAvailableBlockchain(toBlockchain)) {
+    if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
     }
 
@@ -423,10 +419,15 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
+    const blockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
+
+    if (blockchain && !this.platformConfigurationService.isAvailableBlockchain(blockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[blockchain]);
+    }
+
     this.checkDeviceAndShowNotification();
     let approveInProgressSubscription$: Subscription;
 
-    const blockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
     const swapOptions = {
       onTransactionHash: () => {

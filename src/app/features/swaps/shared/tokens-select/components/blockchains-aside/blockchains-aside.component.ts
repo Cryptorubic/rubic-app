@@ -13,7 +13,7 @@ import { allBlockchains } from '@features/swaps/shared/tokens-select/constants/a
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { HealthcheckService } from '@app/core/services/backend/healthcheck/healthcheck.service';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -66,7 +66,7 @@ export class BlockchainsAsideComponent {
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly queryParamsService: QueryParamsService,
-    private readonly healthCheckService: HealthcheckService
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
@@ -75,6 +75,6 @@ export class BlockchainsAsideComponent {
   }
 
   public isAvailableBlockchain(blockchainName: BlockchainName): boolean {
-    return !this.healthCheckService.isAvailableBlockchain(blockchainName);
+    return !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
   }
 }

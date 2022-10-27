@@ -7,29 +7,42 @@ import {
 } from '@app/shared/constants/blockchain/backend-blockchains';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { BlockchainName } from 'rubic-sdk';
+import { BACKEND_CROSS_CHAIN_PROVIDERS } from '../instant-trades-api/constants/backend-providers';
 
-interface PlatformConfig {
+export interface CrossChainProviderStatus {
+  active: boolean;
+  disabledProviders: string[];
+}
+
+export interface PlatformConfig {
   server_is_active: boolean;
   networks: {
     [key: BackendBlockchain]: boolean;
   };
-  providers: {
-    [key: string]: boolean;
+  cross_chain_providers: {
+    [key: string]: CrossChainProviderStatus;
   };
+}
+
+export interface ProvidersConfiguration {
+  disabledBridgeTypes: { [key: string]: string[] };
+  disabledCrossChainProviders: string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class HealthcheckService {
-  private readonly _availableCcrProviders$ = new BehaviorSubject<string[]>([]);
+export class PlatformConfigurationService {
+  private readonly _disabledCrossChainProviders$ = new BehaviorSubject<ProvidersConfiguration>(
+    undefined
+  );
 
-  public get availableCcrProviders$(): Observable<string[]> {
-    return this._availableCcrProviders$.asObservable();
+  public get disabledCrossChainProviders$(): Observable<ProvidersConfiguration> {
+    return this._disabledCrossChainProviders$.asObservable();
   }
 
-  public get availableCcrProviders(): string[] {
-    return this._availableCcrProviders$.getValue();
+  public get disabledCrossChainProviders(): ProvidersConfiguration {
+    return this._disabledCrossChainProviders$.getValue();
   }
 
   private readonly _availableBlockchains$ = new BehaviorSubject<BlockchainName[]>(undefined);
@@ -49,10 +62,14 @@ export class HealthcheckService {
       tap(response => {
         if (response.server_is_active === true) {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
+          this._disabledCrossChainProviders$.next(
+            this.mapDisabledCrossChainProviders(response.cross_chain_providers)
+          );
         }
       }),
       map(response => response.server_is_active),
-      catchError(() => of(true))
+      catchError(() => of(true)),
+      tap(() => console.log(this.disabledCrossChainProviders))
     );
   }
 
@@ -69,6 +86,25 @@ export class HealthcheckService {
         console.log(FROM_BACKEND_BLOCKCHAINS[entry[0]], entry[0]);
         return FROM_BACKEND_BLOCKCHAINS[entry[0]];
       });
+  }
+
+  private mapDisabledCrossChainProviders(crossChainProviders: {
+    [key: string]: CrossChainProviderStatus;
+  }): ProvidersConfiguration {
+    const disabledCrossChainProviders = Object.entries(crossChainProviders)
+      .filter(([_, { active }]) => {
+        return !active;
+      })
+      .map(([providerName]) => BACKEND_CROSS_CHAIN_PROVIDERS[providerName]);
+
+    const disabledBridgeTypes = Object.entries(crossChainProviders)
+      .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
+      .reduce((acc, [providerName, { disabledProviders }]) => {
+        acc[BACKEND_CROSS_CHAIN_PROVIDERS[providerName]] = disabledProviders;
+        return acc;
+      }, {} as { [key: string]: string[] });
+
+    return { disabledBridgeTypes, disabledCrossChainProviders };
   }
 
   public healthCheck(): Promise<boolean> {
