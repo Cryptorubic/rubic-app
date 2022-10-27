@@ -128,7 +128,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: false,
+      autoRefresh: Boolean(this.authService?.user?.address),
       showReceiverAddress: false
     };
   }
@@ -141,7 +141,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: false,
+      autoRefresh: Boolean(this.authService?.user?.address),
       showReceiverAddress: false
     };
   }
