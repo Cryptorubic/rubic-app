@@ -67,6 +67,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/target-netwo
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
+import { CrossChainRoutingApiService } from '@app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -137,7 +138,8 @@ export class CrossChainRoutingService extends TradeService {
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService
   ) {
     super('cross-chain-routing');
   }
@@ -573,5 +575,9 @@ export class CrossChainRoutingService extends TradeService {
         }
       })
       .subscribe();
+  }
+
+  public saveNewProvider(blockchain: BlockchainName, title: string, address: string): void {
+    this.crossChainRoutingApiService.saveNewProvider(blockchain, title, address).subscribe();
   }
 }
