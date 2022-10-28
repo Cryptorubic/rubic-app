@@ -193,8 +193,6 @@ export class SwapButtonContainerErrorsService {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
     }
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false; // @todo return
-    return;
 
     if (fromToken.amount?.isFinite()) {
       this._errorLoading$.next(false);

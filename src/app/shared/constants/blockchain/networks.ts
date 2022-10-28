@@ -23,7 +23,6 @@ export interface Network<T = BlockchainName> {
   nativeCoin: NativeCoin;
 }
 
-// @todo remove
 const networks: ReadonlyArray<Network> = [
   {
     id: 1,
