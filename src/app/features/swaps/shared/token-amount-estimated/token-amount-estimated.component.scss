@@ -58,15 +58,15 @@
     }
   }
 
-  app-usd-price-container {
+  app-tokens-rate {
     @include iframe-horizontal {
       position: absolute;
       bottom: -33px;
-      left: 0;
+      left: 5px;
+    }
 
-      span {
-        margin-left: 0;
-      }
+    @include iframe-vertical {
+      margin-left: 5px;
     }
   }
 

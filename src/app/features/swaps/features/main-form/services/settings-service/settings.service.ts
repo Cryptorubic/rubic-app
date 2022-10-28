@@ -197,15 +197,6 @@ export class SettingsService {
         this.storeService.setItem('settings', this.serializeForm(form));
       });
 
-    this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
-      this.instantTrade.patchValue({
-        autoRefresh: widgetIntoViewport
-      });
-      this.crossChainRouting.patchValue({
-        autoRefresh: widgetIntoViewport
-      });
-    });
-
     this.targetNetworkAddressService.isAddressRequired$.subscribe(isAddressRequired => {
       if (isAddressRequired) {
         this.ccrShowReceiverAddressUserValue = this.crossChainRoutingValue.showReceiverAddress;

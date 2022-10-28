@@ -15,4 +15,5 @@ export interface RecentTrade {
   bridgeType?: string;
   viaUuid?: string;
   rangoRequestId?: string;
+  amountOutMin?: string;
 }

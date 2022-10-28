@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { BridgeTokenPairsByBlockchains } from '@features/swaps/features/bridge/models/bridge-token-pairs-by-blockchains';
-import { filter, first, pairwise, startWith } from 'rxjs/operators';
+import { filter, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
@@ -201,30 +201,7 @@ export class SwapsService {
         this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
       }
     } else {
-      this.bridgeTokenPairsByBlockchainsArray$
-        .pipe(first())
-        .subscribe(bridgeTokenPairsByBlockchainsArray => {
-          const foundBridgeToken = bridgeTokenPairsByBlockchainsArray
-            .find(
-              tokenPairsByBlockchains =>
-                tokenPairsByBlockchains.fromBlockchain === fromBlockchain &&
-                tokenPairsByBlockchains.toBlockchain === toBlockchain
-            )
-            ?.tokenPairs.find(
-              tokenPair =>
-                compareAddresses(
-                  tokenPair.tokenByBlockchain[fromBlockchain].address,
-                  fromToken.address
-                ) &&
-                compareAddresses(tokenPair.tokenByBlockchain[toBlockchain].address, toToken.address)
-            );
-
-          if (foundBridgeToken) {
-            this.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
-          } else {
-            this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-          }
-        });
+      this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
     }
   }
 
