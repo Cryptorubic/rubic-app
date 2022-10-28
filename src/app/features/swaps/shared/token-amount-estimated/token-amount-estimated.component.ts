@@ -44,7 +44,7 @@ export class AmountEstimatedComponent implements OnInit {
 
   public tokenAmount: BigNumber;
 
-  public fromAmount: BigNumber;
+  public fromAmount: BigNumber = new BigNumber(null);
 
   public blockchain: BlockchainName;
 
@@ -68,7 +68,7 @@ export class AmountEstimatedComponent implements OnInit {
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
-        this.fromAmount = form.fromAmount;
+        this.fromAmount = form.fromAmount ? form.fromAmount : new BigNumber(null);
         this.blockchain = form.toBlockchain;
       });
 
