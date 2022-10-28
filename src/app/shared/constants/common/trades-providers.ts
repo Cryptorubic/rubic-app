@@ -226,7 +226,7 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: {
     name: 'Open Ocean',
     image: `${imageBasePath}open-ocean.png`,
-    color: ''
+    color: '#15D9E1'
   },
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: {
     name: 'OrcaSwap',
@@ -393,7 +393,7 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   [ON_CHAIN_TRADE_TYPE.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`,
-    color: ''
+    color: '#34A5F5'
   },
 
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: {

@@ -25,7 +25,9 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  LifiBridgeTypes,
+  RangoBridgeTypes
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -173,16 +175,29 @@ export class CrossChainRoutingService extends TradeService {
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
+      const { disabledCrossChainProviders, disabledBridgeTypes } =
+        this.platformConfigurationService.disabledProviders;
       const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+      const disabledProviders = Array.from(
+        new Set([
+          ...(isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []),
+          ...(disabledCrossChainProviders || []),
+          ...(disabledProvidersForLandingIframe || [])
+        ])
+      ) as CrossChainTradeType[];
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || [])],
-        ...(receiverAddress && { receiverAddress })
+        disabledProviders,
+        ...(receiverAddress && { receiverAddress }),
+        lifiDisabledBridgeTypes: disabledBridgeTypes?.[
+          CROSS_CHAIN_TRADE_TYPE.LIFI
+        ] as LifiBridgeTypes[],
+        rangoDisabledBridgeTypes: disabledBridgeTypes?.[
+          CROSS_CHAIN_TRADE_TYPE.RANGO
+        ] as RangoBridgeTypes[]
       };
 
       return this.sdk.crossChain
