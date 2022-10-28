@@ -105,8 +105,8 @@ export class AppComponent implements AfterViewInit {
           this.queryParamsService
             .setupQueryParams({
               ...queryParams,
-              from: queryParams?.from?.toUpperCase(),
-              to: queryParams?.to?.toUpperCase()
+              from: queryParams?.from,
+              to: queryParams?.to
             })
             .then(() => {
               if (queryParams?.hideUnusedUI) {

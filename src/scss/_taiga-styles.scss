@@ -25,6 +25,8 @@ tui-dialog {
     width: 51em !important;
     margin-bottom: auto !important;
 
+    border: 7px solid transparent !important;
+
     > .content {
       padding: 1.5em 1.5em 0 !important;
     }
@@ -167,9 +169,22 @@ tui-value-decoration {
 }
 
 html.iframe-horizontal tui-dialog > div.content {
-  padding: 0 2rem !important;
+  padding: 0.5rem 2rem !important;
+}
+
+html.iframe-horizontal tui-dialog {
+  &[data-size='s'] {
+    width: 31rem;
+
+    border: 0 !important;
+  }
 }
 
 html.iframe-vertical tui-dialog > div.content {
+  height: 100%;
   padding: 0 !important;
+}
+
+html.iframe-vertical tui-dialog > div.content > h2 {
+  padding: 2rem 0.5rem 0 1rem;
 }
