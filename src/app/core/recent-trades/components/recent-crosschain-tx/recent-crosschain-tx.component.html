@@ -111,6 +111,12 @@
           mode="mobile"
           *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
         ></div>
+        <div
+          multichain-trade
+          [trade]="trade"
+          mode="mobile"
+          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
+        ></div>
       </ng-container>
     </div>
   </ng-template>

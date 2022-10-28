@@ -440,7 +440,7 @@ const networks: ReadonlyArray<Network> = [
     id: 2222,
     name: BLOCKCHAIN_NAME.KAVA,
     label: 'KAVA',
-    scannerUrl: 'https://tronscan.org/#/',
+    scannerUrl: 'https://explorer.kava.io/',
     rpcList: ['https://evm.kava.io'],
     imagePath: 'assets/images/icons/coins/kava.png',
     nativeCoin: {
