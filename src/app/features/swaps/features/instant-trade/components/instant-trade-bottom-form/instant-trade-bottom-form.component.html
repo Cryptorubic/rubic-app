@@ -59,11 +59,7 @@
 
         <ng-container *ngIf="selectedProvider || wrapProvider">
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
-            <app-usd-price-container
-              [usdPrice]="
-                wrapProvider ? getUsdPriceOfToAmount(fromAmount) : getUsdPriceOfToAmount()
-              "
-            ></app-usd-price-container>
+            <app-tokens-rate></app-tokens-rate>
 
             <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
               Est. fee ${{ getGas(selectedProvider)?.toFixed(2) }}

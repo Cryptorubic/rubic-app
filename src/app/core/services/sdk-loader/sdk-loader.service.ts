@@ -24,7 +24,7 @@ export class SdkLoaderService {
     await this.sdkService.initSDK(
       new URLSearchParams(this.window.location.search).get('feeTarget')
     );
-    await this.loadUser();
+    this.loadUser();
   }
 
   private async loadUser(): Promise<void> {

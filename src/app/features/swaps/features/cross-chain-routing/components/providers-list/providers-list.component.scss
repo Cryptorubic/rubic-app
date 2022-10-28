@@ -4,26 +4,38 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 20px;
+
+  padding-right: 20px;
 }
 
 .provider {
   display: flex;
-  gap: 20px;
   align-items: center;
+  justify-content: center;
   height: 52px;
-  padding: 10px 20px;
+  padding: 10px 0;
 
   border-radius: 14px;
 
   transition: 0.2s ease-in-out;
 
   @include b($mobile-sm-plus) {
-    flex-direction: column;
     height: auto;
+  }
 
-    app-smart-routing {
-      width: 100%;
+  &__container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    width: 85%;
+
+    @include b($mobile-sm-plus) {
+      flex-direction: column;
+
+      app-smart-routing {
+        width: 100%;
+      }
     }
   }
 
@@ -53,9 +65,8 @@ ul {
 
 app-smart-routing {
   display: block;
-  width: 50%;
+  width: 55%;
 }
-
 
 :host ::ng-deep {
   .route {

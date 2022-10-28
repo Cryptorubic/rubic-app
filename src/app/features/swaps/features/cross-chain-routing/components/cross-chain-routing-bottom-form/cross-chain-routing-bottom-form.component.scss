@@ -65,10 +65,12 @@
     z-index: 9999;
 
     min-height: 110px;
-    padding: 30px 0 15px;
+    margin: 30px 0 15px;
 
     @include iframe-vertical {
       position: relative;
+
+      margin: 0;
     }
 
     @include iframe-horizontal {
@@ -79,6 +81,7 @@
       width: $iframe-horizontal-input-width;
       height: 50px;
       min-height: unset;
+      margin: 0;
       padding: 0 7px 0 16px;
 
       background: var(--main-background);

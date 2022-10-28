@@ -1,19 +1,19 @@
-<ng-container *ngIf="providers$ | async as providers">
-  <tui-loader [showLoader]="providers?.length === 0" [overlay]="true">
-    <ul @listAnimation>
-      <ng-container *ngFor="let provider of providers; let i = index; trackBy: trackByType">
-        <li
-          class="provider"
-          [ngClass]="{
-            provider_selected:
-              (selectedProvider$ | async) === provider.tradeType ||
-              ((selectedProvider$ | async) === null && i === 0)
-          }"
-          (click)="selectProvider(provider?.tradeType)"
-          @fadeAnimation
-        >
+<ng-container>
+  <ul @listAnimation>
+    <ng-container *ngFor="let provider of providers; let i = index; trackBy: trackByType">
+      <li
+        class="provider"
+        [ngClass]="{
+          provider_selected:
+            (selectedProvider$ | async) === provider.tradeType ||
+            ((selectedProvider$ | async) === null && i === 0)
+        }"
+        (click)="selectProvider(provider?.tradeType)"
+        @fadeAnimation
+      >
+        <div class="provider__container">
           <app-smart-routing
-            *ngIf="(smartRoutingList$ | async)?.[i] as smartRouting"
+            *ngIf="smartRoutingList?.[i] as smartRouting"
             [smartRouting]="smartRouting"
           ></app-smart-routing>
 
@@ -25,22 +25,17 @@
             }}
           </span>
 
-          <div class="provider__statuses">
+          <div class="provider__statuses" *ngIf="showTags(provider)">
             <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
             <tui-badge
-              *ngIf="provider.tags.maxAmountWarning || provider.tags.maxAmountWarning"
+              *ngIf="provider.tags.minAmountWarning || provider.tags.maxAmountWarning"
               status="warning"
               [value]="getMinMaxError(provider)"
             ></tui-badge>
             <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
-            <tui-badge
-              *ngIf="provider.tags.similarTrade"
-              status="warning"
-              [value]="provider.tradeType.charAt(0) + provider.tradeType.slice(1).toLowerCase()"
-            ></tui-badge>
           </div>
-        </li>
-      </ng-container>
-    </ul>
-  </tui-loader>
+        </div>
+      </li>
+    </ng-container>
+  </ul>
 </ng-container>

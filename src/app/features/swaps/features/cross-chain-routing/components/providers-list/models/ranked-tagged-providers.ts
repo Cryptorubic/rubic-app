@@ -1,4 +1,4 @@
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
+import { WrappedCrossChainTrade } from 'rubic-sdk';
 
 export type RankedTaggedProviders = WrappedCrossChainTrade & {
   rank: number;
@@ -6,6 +6,5 @@ export type RankedTaggedProviders = WrappedCrossChainTrade & {
     best: boolean;
     minAmountWarning: boolean;
     maxAmountWarning: boolean;
-    similarTrade: boolean;
   };
 };

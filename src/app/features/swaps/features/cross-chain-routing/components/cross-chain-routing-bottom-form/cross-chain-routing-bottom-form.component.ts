@@ -19,7 +19,6 @@ import {
   Subject,
   combineLatest,
   Subscription,
-  throwError,
   firstValueFrom
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -28,7 +27,6 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  first,
   map,
   startWith,
   switchMap,
@@ -58,7 +56,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
-  RubicSdkError
+  RubicSdkError,
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
@@ -67,12 +66,11 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/providers/common/models/wrapped-cross-chain-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -142,9 +140,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private isViaDisabled = false;
 
-  private readonly _selectionHandler$ = new Subject<void>();
-
-  public readonly selectionHandler$ = this._selectionHandler$.asObservable();
+  private swapStarted = false;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -180,8 +176,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly iframeService: IframeService,
-    private readonly providersListSortingService: ProvidersListSortingService
+    private readonly iframeService: IframeService
   ) {}
 
   ngOnInit() {
@@ -206,7 +201,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       )
       .subscribe(form => {
         this.setFormValues(form);
-        this.conditionalCalculate('normal');
         this.cdr.markForCheck();
       });
 
@@ -242,11 +236,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         debounceTime(200),
         takeUntil(this.destroy$)
       )
-      .subscribe(async () => {
+      .subscribe(async dangerousProviders => {
         const providers = await firstValueFrom(this.crossChainRoutingService.providers$);
-        const secondProvider = providers?.[1];
-        if (secondProvider) {
-          this.crossChainRoutingService.setSelectedProvider(secondProvider?.tradeType);
+        const nextProvider = providers?.find(provider =>
+          dangerousProviders.every(dangerousProvider => dangerousProvider !== provider.tradeType)
+        );
+        if (nextProvider) {
+          this.crossChainRoutingService.setSelectedProvider(nextProvider?.tradeType);
           this.errorsService.catch(new NotWhitelistedProviderWarning());
         }
       });
@@ -281,15 +277,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     if (
       form.fromToken &&
       form.toToken &&
-      !this.crossChainRoutingService.isSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
+      !this.crossChainRoutingService.areSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
     ) {
-      const unsupportedBlockchain = !CrossChainRoutingService.isSupportedBlockchain(
-        form.fromBlockchain
-      )
-        ? form.fromBlockchain
-        : !CrossChainRoutingService.isSupportedBlockchain(form.toBlockchain)
-        ? form.toBlockchain
-        : null;
+      let unsupportedBlockchain = null;
+      if (this.crossChainRoutingService.isSupportedBlockchain(form.fromBlockchain)) {
+        unsupportedBlockchain = form.fromBlockchain;
+      } else if (!this.crossChainRoutingService.isSupportedBlockchain(form.toBlockchain)) {
+        unsupportedBlockchain = form.toBlockchain;
+      }
+
       if (unsupportedBlockchain) {
         this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
       } else {
@@ -297,6 +293,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       }
       return;
     }
+
+    this.conditionalCalculate('normal');
   }
 
   private conditionalCalculate(type: CalculateTradeType): void {
@@ -312,6 +310,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
+    this.swapStarted = false;
     this.onCalculateTrade$.next(type);
   }
 
@@ -367,8 +366,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
                 hasBestTrade: Boolean(trade)
               };
             }),
-            map(providerTrade => this.selectProvider(providerTrade)),
-            // eslint-disable-next-line rxjs/no-implicit-any-catch
+            map(providerTrade => {
+              if (!this.swapStarted) {
+                this.selectProvider(providerTrade);
+              }
+            }),
             catchError((err: RubicSdkError | undefined) => this.onCalculateError(err))
           );
         }),
@@ -435,6 +437,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     } else if (currentProviders === totalProviders) {
       throw error;
     }
+    this.swapStarted = false;
     this.cdr.detectChanges();
   }
 
@@ -475,41 +478,31 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public async approveTrade(): Promise<void> {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.selectionHandler$
-      .pipe(first())
-      .pipe(
-        tap(() => {
-          this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
-        }),
-        switchMap(() => from(this.crossChainRoutingService.approve(this.crossChainProviderTrade))),
-        tap(() => {
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.needApprove = false;
+    this.swapStarted = true;
 
-          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
-        }),
-        switchMap(() => this.tokensService.updateNativeTokenBalance(fromBlockchain)),
-        catchError((err: unknown) =>
-          throwError(() => {
-            throw err;
-          })
-        )
-      )
-      .subscribe({
-        error: (err: unknown) => {
-          this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
-          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-        },
-        complete: () => {
-          this.cdr.detectChanges();
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-        }
-      });
-    this.crossChainRoutingService.setSelectedProvider(this.crossChainProviderTrade.tradeType);
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+
+    try {
+      await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
+
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = false;
+
+      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
+
+      await this.tokensService.updateNativeTokenBalance(fromBlockchain);
+    } catch (err) {
+      this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
+      this.swapStarted = false;
+      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
   }
 
   public async createTrade(): Promise<void> {
+    this.swapStarted = true;
     if (!this.isSlippageCorrect()) {
       return;
     }
@@ -527,14 +520,18 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainProviderTrade.tradeType
       );
 
-      this.conditionalCalculate('hidden');
+      this.conditionalCalculate('normal');
 
       await this.tokensService.updateTokenBalanceAfterCcrSwap({
         address: fromToken.address,
         blockchain: fromBlockchain
       });
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderWarning || err instanceof ExecutionRevertedError) {
+      const error = RubicSdkErrorParser.parseError(err);
+      if (
+        error instanceof NotWhitelistedProviderWarning ||
+        error instanceof ExecutionRevertedError
+      ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
@@ -579,7 +576,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             allProviders.data.find(provider => provider.tradeType === type);
           return forkJoin([
             of(selectedProvider),
-            from(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
+            of(this.crossChainRoutingService.calculateSmartRouting(selectedProvider)),
             from(selectedProvider.trade.needApprove()).pipe(catchError(() => of(false)))
           ]);
         })
@@ -593,7 +590,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           smartRouting
         };
         this.selectProvider(provider);
-        this._selectionHandler$.next();
       });
   }
 }
