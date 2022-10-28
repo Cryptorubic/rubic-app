@@ -69,8 +69,7 @@ export class PlatformConfigurationService {
         }
       }),
       map(response => response.server_is_active),
-      catchError(() => of(true)),
-      tap(() => console.log(this.disabledProviders))
+      catchError(() => of(true))
     );
   }
 
@@ -83,19 +82,14 @@ export class PlatformConfigurationService {
   }): BlockchainName[] {
     return Object.entries(availableBlockchains)
       .filter(([_, availability]) => availability)
-      .map(entry => {
-        console.log(FROM_BACKEND_BLOCKCHAINS[entry[0]], entry[0]);
-        return FROM_BACKEND_BLOCKCHAINS[entry[0]];
-      });
+      .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain]);
   }
 
   private mapDisabledProviders(crossChainProviders: {
     [key: string]: CrossChainProviderStatus;
   }): ProvidersConfiguration {
     const disabledCrossChainProviders = Object.entries(crossChainProviders)
-      .filter(([_, { active }]) => {
-        return !active;
-      })
+      .filter(([_, { active }]) => !active)
       .map(([providerName]) => BACKEND_CROSS_CHAIN_PROVIDERS[providerName]);
 
     const disabledBridgeTypes = Object.entries(crossChainProviders)
@@ -113,16 +107,5 @@ export class PlatformConfigurationService {
       }, {} as DisabledBridgeTypes);
 
     return { disabledBridgeTypes, disabledCrossChainProviders };
-  }
-
-  public healthCheck(): Promise<boolean> {
-    return new Promise(resolve => {
-      this.httpClient
-        .get(`${ENVIRONMENT.apiBaseUrl}/v1/healthcheck`, { observe: 'response' })
-        .subscribe(
-          response => resolve(response.status === 200),
-          () => resolve(false)
-        );
-    });
   }
 }
