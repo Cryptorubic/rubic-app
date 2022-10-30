@@ -61,7 +61,7 @@
   app-tokens-rate {
     @include iframe-horizontal {
       position: absolute;
-      bottom: -25px;
+      bottom: -33px;
       left: 5px;
     }
 
@@ -204,6 +204,7 @@
   animation: blink 2s ease-in-out infinite;
   opacity: 1;
   color: var(--tui-text-01);
+  font-size: 22px;
 }
 
 @keyframes blink {

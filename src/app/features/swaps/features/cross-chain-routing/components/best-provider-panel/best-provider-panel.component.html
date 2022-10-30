@@ -2,10 +2,14 @@
   <div class="provider-panel__row">
     <ng-container *ngLet="calculatedProviders$ | async as providers">
       <div class="provider-panel__header">
-        <div class="provider-panel__text" *ngIf="providers > 1">
+        <div class="provider-panel__text">
           <app-providers-counter [calculatedProvider]="calculatedProvider"></app-providers-counter>
 
-          <button class="provider-panel__expand-button" (click)="toggleExpanded()">
+          <button
+            class="provider-panel__expand-button"
+            (click)="toggleExpanded()"
+            *ngIf="providers > 1"
+          >
             Other routes
             <img
               src="assets/images/icons/arrow-down.svg"
