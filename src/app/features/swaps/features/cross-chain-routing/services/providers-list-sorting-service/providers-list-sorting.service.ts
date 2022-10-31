@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   CelerCrossChainTrade,
   compareCrossChainTrades,
+  CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
   WrappedCrossChainTrade
@@ -22,7 +23,7 @@ export class ProvidersListSortingService {
           best: index === 0,
           minAmountWarning: provider.error instanceof MinAmountError,
           maxAmountWarning: provider.error instanceof MaxAmountError,
-          ...(provider.tradeType === 'CELER' && {
+          ...(provider.tradeType === CROSS_CHAIN_TRADE_TYPE.CELER && {
             deflationTokenWarning: (provider.trade as CelerCrossChainTrade)
               .isDeflationTokenInTargetNetwork
           })
