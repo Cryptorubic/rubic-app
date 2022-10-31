@@ -271,7 +271,7 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   },
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: {
     name: 'PhotonSwap',
-    image: `${imageBasePath}photonswap.svg`,
+    image: `${imageBasePath}photonswap.png`,
     color: '#8829E2'
   },
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: {
