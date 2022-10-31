@@ -27,6 +27,7 @@ import {
   DebridgeCrossChainTrade,
   ViaCrossChainTrade
 } from 'rubic-sdk';
+import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -92,6 +93,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
+    private readonly swapButtonService: SwapButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -244,5 +246,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
         ? Math.max(this.priceImpactFrom, this.priceImpactTo)
         : null;
     this.priceImpactService.setPriceImpact(maxPriceImpact);
+    this.swapButtonService.setupPriceImpactCalculation();
   }
 }

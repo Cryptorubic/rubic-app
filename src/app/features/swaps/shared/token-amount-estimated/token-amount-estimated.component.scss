@@ -1,4 +1,4 @@
-@use '../../../../../scss/core' as *;
+@use 'src/scss/core' as *;
 
 :host {
   overflow: hidden;
@@ -58,15 +58,15 @@
     }
   }
 
-  app-usd-price-container {
+  app-tokens-rate {
     @include iframe-horizontal {
       position: absolute;
       bottom: -33px;
-      left: 0;
+      left: 5px;
+    }
 
-      span {
-        margin-left: 0;
-      }
+    @include iframe-vertical {
+      margin-left: 5px;
     }
   }
 
@@ -204,6 +204,7 @@
   animation: blink 2s ease-in-out infinite;
   opacity: 1;
   color: var(--tui-text-01);
+  font-size: 22px;
 }
 
 @keyframes blink {

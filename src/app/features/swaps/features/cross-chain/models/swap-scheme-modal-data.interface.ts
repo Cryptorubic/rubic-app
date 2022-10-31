@@ -15,4 +15,5 @@ export interface SwapSchemeModalData {
   bridgeType?: Provider;
   viaUuid?: string;
   rangoRequestId?: string;
+  amountOutMin?: string;
 }

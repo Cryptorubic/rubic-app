@@ -331,6 +331,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
   },
+  [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: {
+    name: 'SoulSwap',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
 
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: {
     name: 'Trisolaris',
@@ -450,7 +455,8 @@ const CROSS_CHAIN_TRADE_PROVIDER: Record<CrossChainTradeType, Provider> = {
   },
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: {
     name: 'Rango',
-    image: `${imageBasePath}rango.svg`
+    image: `${imageBasePath}rango.svg`,
+    color: '#128535'
   },
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',

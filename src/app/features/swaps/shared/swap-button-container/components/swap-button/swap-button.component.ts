@@ -1,15 +1,26 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  Self
+} from '@angular/core';
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 import { SwapButtonContainerService } from '@features/swaps/shared/swap-button-container/services/swap-button-container.service';
+import { takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-swap-button',
   templateUrl: './swap-button.component.html',
   styleUrls: ['./swap-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class SwapButtonComponent {
+export class SwapButtonComponent implements OnInit {
   @Output() readonly onClick = new EventEmitter<void>();
 
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
@@ -26,8 +37,15 @@ export class SwapButtonComponent {
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
-    private readonly swapButtonService: SwapButtonService
+    private readonly swapButtonService: SwapButtonService,
+    private readonly cdr: ChangeDetectorRef,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
+
+  ngOnInit(): void {
+    // @TODO get rid of manual change detection
+    this.disabled$.pipe(takeUntil(this.destroy$)).subscribe(() => this.cdr.detectChanges());
+  }
 
   public onSwapClick(): void {
     if (this.swapButtonService.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {

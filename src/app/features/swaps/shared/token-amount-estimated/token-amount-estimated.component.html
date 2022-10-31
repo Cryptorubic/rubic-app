@@ -19,6 +19,7 @@
           [ngClass]="{
             'bottom-amount__output_error-text': errorText
           }"
+          *ngIf="fromAmount.isFinite()"
         >
           <ng-container *ngIf="errorText && !loading">
             {{ 'errors.tradingIsNotAvailable' | translate }}
@@ -37,7 +38,7 @@
         </div>
 
         <div
-          *ngIf="errorText && !loading"
+          *ngIf="errorText && !loading && fromAmount.isFinite()"
           tuiHintMode="error"
           class="bottom-amount__hint bottom-amount__hint_error"
           [inlineSVG]="'/assets/images/icons/hint.svg'"
@@ -45,11 +46,6 @@
         ></div>
       </div>
     </div>
-
-    <app-usd-price-container
-      *onlyFrame
-      [usdPrice]="usdPrice"
-      [loading]="loading"
-    ></app-usd-price-container>
+    <app-tokens-rate *onlyFrame></app-tokens-rate>
   </ng-container>
 </div>

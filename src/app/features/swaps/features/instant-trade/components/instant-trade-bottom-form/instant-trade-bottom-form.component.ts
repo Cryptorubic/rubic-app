@@ -518,8 +518,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!to.price.isFinite()) {
       return to.tokenAmount;
     }
+
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
-    const gasFeeInfo = trade instanceof EvmOnChainTrade ? trade.gasFeeInfo?.gasFeeInUsd : 0;
+    const gasFeeInfo =
+      trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasFeeInUsd.isFinite()
+        ? trade.gasFeeInfo?.gasFeeInUsd
+        : 0;
+
     return amountInUsd.minus(gasFeeInfo);
   }
 
@@ -843,6 +848,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public getGas(selectedProvider: InstantTradeProviderData): BigNumber {
     const trade = selectedProvider.trade;
-    return trade instanceof EvmOnChainTrade ? trade.gasFeeInfo?.gasFeeInUsd : new BigNumber(0);
+    return trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasFeeInUsd
+      ? trade.gasFeeInfo?.gasFeeInUsd
+      : new BigNumber(0);
   }
 }

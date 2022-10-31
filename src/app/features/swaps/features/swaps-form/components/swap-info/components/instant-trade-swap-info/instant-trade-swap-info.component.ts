@@ -15,6 +15,7 @@ import {
   PriceTokenAmount,
   TokenAmountSymbol
 } from 'rubic-sdk';
+import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -78,6 +79,7 @@ export class InstantTradeSwapInfoComponent {
     private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
     private readonly withRoundPipe: WithRoundPipe,
+    private readonly swapButtonService: SwapButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.rateType = 'fromTokenRate';
@@ -110,7 +112,7 @@ export class InstantTradeSwapInfoComponent {
     }
   }
 
-  private setPriceImpact(): void {
+  public setPriceImpact(): void {
     const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
@@ -127,5 +129,6 @@ export class InstantTradeSwapInfoComponent {
       this.priceImpact = null;
     }
     this.priceImpactService.setPriceImpact(this.priceImpact);
+    this.swapButtonService.setupPriceImpactCalculation();
   }
 }

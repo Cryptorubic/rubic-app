@@ -3,6 +3,7 @@ import { OnChainTradeType, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
+  [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
   [ON_CHAIN_TRADE_TYPE.JOE]: 'joe',
   [ON_CHAIN_TRADE_TYPE.ONE_INCH]: 'oneinch',
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'pancakeswap',
@@ -10,6 +11,7 @@ export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: 'quickswap',
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: 'raydium',
   [ON_CHAIN_TRADE_TYPE.SOLAR_BEAM]: 'solarbeam',
+  [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'soulswap',
   [ON_CHAIN_TRADE_TYPE.SPIRIT_SWAP]: 'spiritswap',
   [ON_CHAIN_TRADE_TYPE.SPOOKY_SWAP]: 'spookyswap',
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'sushiswap',

@@ -464,7 +464,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
                 return {
                   ...el,
                   available: true,
-                  amount: new BigNumber(NaN),
                   favorite: false
                 };
               })

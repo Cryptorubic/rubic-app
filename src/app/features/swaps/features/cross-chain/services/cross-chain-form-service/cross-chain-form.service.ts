@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CrossChainModule } from '@features/swaps/features/cross-chain/cross-chain.module';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, from, of, Subject } from 'rxjs';
@@ -15,7 +14,7 @@ import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/se
 import { CalculatedCrossChainTrade } from '@features/swaps/features/cross-chain/models/calculated-cross-chain-trade';
 
 @Injectable({
-  providedIn: CrossChainModule
+  providedIn: 'root'
 })
 export class CrossChainFormService {
   /**

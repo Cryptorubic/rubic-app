@@ -279,7 +279,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         rangoRequestId:
           providerTrade.trade instanceof RangoCrossChainTrade
             ? providerTrade.trade.requestId
-            : undefined
+            : undefined,
+        amountOutMin: providerTrade.trade.toTokenAmountMin.toFixed()
       };
 
       if (providerTrade.route) {
@@ -522,6 +523,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? providerTrade.trade.requestId
         : undefined;
 
+    const amountOutMin = providerTrade.trade.toTokenAmountMin.toFixed();
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -537,7 +540,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
           bridgeType: bridgeProvider,
           viaUuid,
           rangoRequestId,
-          timestamp
+          timestamp,
+          amountOutMin
         }
       })
       .subscribe();
