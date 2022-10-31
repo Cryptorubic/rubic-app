@@ -298,7 +298,8 @@ export class CrossChainRoutingService extends TradeService {
         rangoRequestId:
           providerTrade.trade instanceof RangoCrossChainTrade
             ? providerTrade.trade.requestId
-            : undefined
+            : undefined,
+        amountOutMin: providerTrade.trade.toTokenAmountMin.toFixed()
       };
 
       if (providerTrade.smartRouting) {
@@ -541,6 +542,8 @@ export class CrossChainRoutingService extends TradeService {
         ? providerTrade.trade.requestId
         : undefined;
 
+    const amountOutMin = providerTrade.trade.toTokenAmountMin.toFixed();
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -556,7 +559,8 @@ export class CrossChainRoutingService extends TradeService {
           bridgeType: bridgeProvider,
           viaUuid,
           rangoRequestId,
-          timestamp
+          timestamp,
+          amountOutMin
         }
       })
       .subscribe();
