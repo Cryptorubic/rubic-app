@@ -1,6 +1,6 @@
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
-export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
+const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -25,10 +25,15 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
   [BLOCKCHAIN_NAME.TRON]: 'tron',
-  [BLOCKCHAIN_NAME.KAVA]: 'kava'
+  [BLOCKCHAIN_NAME.KAVA]: 'kava',
+  [BLOCKCHAIN_NAME.BITGERT]: 'bitgert'
+} as const;
+
+export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
+  ...BLOCKCHAINS_MAPPING
 };
 
-export type BackendBlockchain = typeof TO_BACKEND_BLOCKCHAINS[keyof typeof TO_BACKEND_BLOCKCHAINS];
+export type BackendBlockchain = typeof BLOCKCHAINS_MAPPING[keyof typeof BLOCKCHAINS_MAPPING];
 
 export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName> = {
   ethereum: BLOCKCHAIN_NAME.ETHEREUM,
@@ -54,5 +59,7 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   bitcoin: BLOCKCHAIN_NAME.BITCOIN,
   'ethereum-pow': BLOCKCHAIN_NAME.ETHEREUM_POW,
   tron: BLOCKCHAIN_NAME.TRON,
-  kava: BLOCKCHAIN_NAME.KAVA
+  kava: BLOCKCHAIN_NAME.KAVA,
+  bitgert: BLOCKCHAIN_NAME.BITGERT,
+  astar: BLOCKCHAIN_NAME.ASTAR
 };

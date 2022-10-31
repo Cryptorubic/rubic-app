@@ -25,5 +25,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TRON]: 'Tron',
   [BLOCKCHAIN_NAME.BITCOIN]: 'Bitcoin',
   [BLOCKCHAIN_NAME.SOLANA]: 'Solana',
-  [BLOCKCHAIN_NAME.NEAR]: 'Near'
+  [BLOCKCHAIN_NAME.NEAR]: 'Near',
+  [BLOCKCHAIN_NAME.BITGERT]: 'Bitgert'
 };

@@ -73,5 +73,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.KAVA]: {
     name: 'Kava EVM',
     rpc: 'https://evm.kava.io'
+  },
+  [BLOCKCHAIN_NAME.BITGERT]: {
+    name: 'Bitgert',
+    rpc: 'https://serverrpc.com'
   }
 };

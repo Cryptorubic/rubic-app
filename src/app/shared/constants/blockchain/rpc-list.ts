@@ -58,7 +58,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
     }
-  ]
+  ],
   /*
   [BLOCKCHAIN_NAME.SOLANA]: [
     'https://green-hidden-shape.solana-mainnet.quiknode.pro/',
@@ -66,4 +66,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
    */
+  [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://serverrpc.com',
+    'https://dedicated.brisescan.com/',
+    'https://rpc-bitgert-vefi.com',
+    'https://rpc.icecreamswap.com',
+    'https://mainnet-rpc.brisescan.com',
+    'https://chainrpc.com'
+  ]
 };
