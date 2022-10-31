@@ -22,9 +22,9 @@ export class RefreshService {
   public readonly onRefresh$ = this._onRefresh$.asObservable();
 
   /**
-   * Refresh timeout in seconds.
+   * Refresh timeout in milliseconds.
    */
-  private readonly timeout = 30;
+  private readonly timeout = 30_000;
 
   private timeoutId: NodeJS.Timeout;
 
@@ -59,6 +59,6 @@ export class RefreshService {
       clearTimeout(this.timeoutId);
 
       this._onRefresh$.next({ isForced: false });
-    }, this.timeout * 1000);
+    }, this.timeout);
   }
 }

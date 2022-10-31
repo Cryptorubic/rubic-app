@@ -21,11 +21,7 @@
     ></app-target-network-address>
 
     <ng-container *ngIf="tradeStatus !== TRADE_STATUS.DISABLED">
-      <app-best-trade-panel
-        *noFrame
-        [route]="route"
-        [needApprove]="needApprove"
-      ></app-best-trade-panel>
+      <app-best-trade-panel *noFrame></app-best-trade-panel>
     </ng-container>
   </div>
 

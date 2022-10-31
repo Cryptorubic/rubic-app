@@ -5,25 +5,21 @@ import {
   MinAmountError,
   WrappedCrossChainTrade
 } from 'rubic-sdk';
-import { RankedTaggedProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/models/ranked-tagged-providers';
+import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
+import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProvidersListSortingService {
-  public static setTags(
-    sortedProviders: readonly (WrappedCrossChainTrade & { rank: number })[]
-  ): RankedTaggedProviders[] {
-    return sortedProviders.map((provider, index) => {
-      return {
-        ...provider,
-        tags: {
-          best: index === 0,
-          minAmountWarning: provider.error instanceof MinAmountError,
-          maxAmountWarning: provider.error instanceof MaxAmountError
-        }
-      };
-    });
+  public static setTags(calculatedTrade: CrossChainCalculatedTrade): CrossChainTaggedTrade {
+    return {
+      ...calculatedTrade,
+      tags: {
+        minAmountWarning: calculatedTrade.error instanceof MinAmountError,
+        maxAmountWarning: calculatedTrade.error instanceof MaxAmountError
+      }
+    };
   }
 
   public static sortTrades(

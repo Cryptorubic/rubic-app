@@ -78,9 +78,9 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
-  public disabledProviders: CrossChainTradeType[];
+  public disabledProviders: CrossChainTradeType[] | undefined;
 
-  public enabledProviders: CrossChainTradeType[];
+  public enabledProviders: CrossChainTradeType[] | undefined;
 
   public enabledBlockchains: BlockchainName[];
 

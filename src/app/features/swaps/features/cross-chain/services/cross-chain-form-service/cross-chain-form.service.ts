@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, from, of, Subject } from 'rxjs';
-import { BlockchainsInfo, RubicSdkError } from 'rubic-sdk';
+import { BlockchainsInfo, compareCrossChainTrades } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
@@ -11,7 +11,12 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
-import { CalculatedCrossChainTrade } from '@features/swaps/features/cross-chain/models/calculated-cross-chain-trade';
+import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
+import { RubicError } from '@core/errors/models/rubic-error';
+import CrossChainUnsupportedBlockchain from '@core/errors/models/cross-chain-routing/cross-chain-unsupported-blockchain';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
+import { ProvidersListSortingService } from '@features/swaps/features/cross-chain/services/providers-list-sorting-service/providers-list-sorting.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +26,11 @@ export class CrossChainFormService {
    * Controls trade calculation flow.
    * When `next` is called, recalculation is started.
    */
-  private readonly _calculateTrade$ = new Subject();
+  private readonly _calculateTrade$ = new Subject<void>();
 
+  /**
+   * Current status of trade.
+   */
   private readonly _tradeStatus$ = new BehaviorSubject<TRADE_STATUS>(TRADE_STATUS.DISABLED);
 
   public readonly tradeStatus$ = this._tradeStatus$.asObservable();
@@ -35,6 +43,9 @@ export class CrossChainFormService {
     this._tradeStatus$.next(value);
   }
 
+  /**
+   * Stores amounts of total and calculated trades.
+   */
   private readonly _calculatedTradesAmounts$ = new BehaviorSubject<
     CalculatedTradesAmounts | undefined
   >(undefined);
@@ -45,21 +56,46 @@ export class CrossChainFormService {
     this._calculatedTradesAmounts$.next(value);
   }
 
-  private readonly _selectedTrade$ = new BehaviorSubject<CalculatedCrossChainTrade | undefined>(
-    undefined
-  );
+  /**
+   * Contains calculated tagged trades.
+   */
+  private readonly _taggedTrades$ = new BehaviorSubject<CrossChainTaggedTrade[]>([]);
+
+  public readonly taggedTrades$ = this._taggedTrades$.asObservable();
+
+  public get taggedTrades(): CrossChainTaggedTrade[] {
+    return this._taggedTrades$.getValue();
+  }
+
+  private set taggedTrades(value: CrossChainTaggedTrade[]) {
+    this._taggedTrades$.next(value);
+  }
+
+  /**
+   * Currently selected trade to show in form.
+   */
+  private readonly _selectedTrade$ = new BehaviorSubject<CrossChainTaggedTrade | null>(null);
 
   public readonly selectedTrade$ = this._selectedTrade$.asObservable();
 
-  public get selectedTrade(): CalculatedCrossChainTrade | undefined {
+  public get selectedTrade(): CrossChainTaggedTrade | null {
     return this._selectedTrade$.getValue();
   }
 
-  public set selectedTrade(value: CalculatedCrossChainTrade | undefined) {
+  private set selectedTrade(value: CrossChainTaggedTrade | null) {
     this._selectedTrade$.next(value);
   }
 
-  public errorMessage: string;
+  /**
+   * Contains error to show in form, in case there is no successfully calculated trade.
+   */
+  private readonly _error$ = new BehaviorSubject<RubicError<ERROR_TYPE> | undefined>(undefined);
+
+  public readonly error$ = this._error$.asObservable();
+
+  private set error(value: RubicError<ERROR_TYPE> | undefined) {
+    this._error$.next(value);
+  }
 
   constructor(
     private readonly swapFormService: SwapFormService,
@@ -67,14 +103,26 @@ export class CrossChainFormService {
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
     private readonly tokensService: TokensService
-  ) {}
+  ) {
+    this.subscribeOnCalculation();
 
+    this.subscribeOnFormChanges();
+  }
+
+  private startRecalculation(): void {
+    this._calculateTrade$.next();
+  }
+
+  /**
+   * Subscribe on 'calculate' subject, which controls flow of calculation.
+   * Can be called only once in constructor.
+   */
   private subscribeOnCalculation(): void {
     this._calculateTrade$
       .pipe(
         debounceTime(200),
         map(() => {
-          this.errorMessage = '';
+          this.error = undefined;
 
           if (!this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -107,14 +155,14 @@ export class CrossChainFormService {
 
           return crossChainTrade$.pipe(
             switchTap(() => balance$),
-            tap(({ totalProviders, currentProviders }) => {
+            map(({ total, calculated, lastCalculatedTrade }) => {
               this.calculatedTradesAmounts = {
-                calculated: currentProviders,
-                total: totalProviders
+                calculated,
+                total
               };
-            }),
-            map(calculatedTrade => {
-              this.selectTrade(calculatedTrade);
+              if (lastCalculatedTrade) {
+                this.updateTradesList(lastCalculatedTrade, calculated === total);
+              }
             })
           );
         }),
@@ -127,15 +175,22 @@ export class CrossChainFormService {
       .subscribe();
   }
 
-  public selectTrade(calculatedTrade: CalculatedCrossChainTrade): void {
-    this.selectedTrade = calculatedTrade;
+  private updateTradesList(
+    lastCalculatedTrade: CrossChainCalculatedTrade,
+    calculationEnded: boolean
+  ): void {
+    const updatedTaggedTrades = this.taggedTrades.filter(
+      taggedTrade => taggedTrade.tradeType !== lastCalculatedTrade.tradeType
+    );
+    updatedTaggedTrades.push(ProvidersListSortingService.setTags(lastCalculatedTrade));
+    updatedTaggedTrades.sort(compareCrossChainTrades);
+    this.taggedTrades = updatedTaggedTrades;
 
-    const { trade, error, needApprove, totalProviders, currentProviders } = calculatedTrade;
-    if (currentProviders === 0) {
-      return;
-    }
+    const bestTaggedTrade = updatedTaggedTrades[0];
+    if (bestTaggedTrade.trade?.to?.tokenAmount) {
+      const { trade, error, needApprove } = bestTaggedTrade;
 
-    if (trade?.to?.tokenAmount) {
+      this.selectedTrade = bestTaggedTrade;
       this.swapFormService.output.patchValue({
         toAmount: trade.to.tokenAmount
       });
@@ -145,18 +200,56 @@ export class CrossChainFormService {
       } else {
         this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
       }
-    } else if (currentProviders === totalProviders) {
+    } else if (calculationEnded) {
+      this.selectedTrade = null;
       this.swapFormService.output.patchValue({
         toAmount: new BigNumber(NaN)
       });
+
       this.tradeStatus = TRADE_STATUS.DISABLED;
 
-      this.setCalculationError(error);
+      this.error = this.crossChainCalculationService.parseCalculationError(bestTaggedTrade.error);
     }
   }
 
-  public setCalculationError(error: RubicSdkError | undefined): void {
-    const parsedError = this.crossChainCalculationService.parseCalculationError(error);
-    this.errorMessage = parsedError.translateKey || parsedError.message;
+  /**
+   * Subscribes on input form changes and controls recalculation after it.
+   */
+  private subscribeOnFormChanges(): void {
+    this.swapFormService.inputValueChanges
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        })
+      )
+      .subscribe(form => {
+        this.taggedTrades = [];
+
+        if (
+          !this.crossChainCalculationService.areSupportedBlockchains(
+            form.fromBlockchain,
+            form.toBlockchain
+          )
+        ) {
+          let unsupportedBlockchain = undefined;
+          if (this.crossChainCalculationService.isSupportedBlockchain(form.fromBlockchain)) {
+            unsupportedBlockchain = form.fromBlockchain;
+          } else if (!this.crossChainCalculationService.isSupportedBlockchain(form.toBlockchain)) {
+            unsupportedBlockchain = form.toBlockchain;
+          }
+
+          this.error = new CrossChainUnsupportedBlockchain(unsupportedBlockchain);
+          return;
+        }
+
+        this.startRecalculation();
+      });
   }
 }

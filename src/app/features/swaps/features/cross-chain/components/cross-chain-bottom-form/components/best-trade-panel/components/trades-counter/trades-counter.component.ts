@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { iif, of, switchMap, timer } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -15,28 +14,25 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
   animations: [
     trigger('fadeAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('200ms', style({ opacity: 1 }))]),
-      transition(':leave', [style({ opacity: 1 }), animate('600ms 1500ms', style({ opacity: 0 }))])
+      transition(':leave', [style({ opacity: 1 }), animate('600ms 1000ms', style({ opacity: 0 }))])
     ])
   ]
 })
 export class TradesCounterComponent {
-  private _calculatedValue: CalculatedTradesAmounts;
-
-  public showData$ = this.crossChainFormService.calculatedTradesAmounts$.pipe(
-    map(info => info?.total && info.total < info.calculated)
+  public readonly isCalculating$ = this.crossChainFormService.calculatedTradesAmounts$.pipe(
+    map(amounts => amounts && amounts.calculated < amounts.total)
   );
 
-  // @todo CHECK
+  public readonly showData$ = this.isCalculating$.pipe(
+    distinctUntilChanged(),
+    switchMap(isCalculating =>
+      iif(() => isCalculating, of(true), timer(1000).pipe(map(() => false)))
+    )
+  );
+
   public readonly fakeProvider$ = timer(0, 1000).pipe(
-    map(index => {
-      console.log(index);
-      return fakeProviders[index % fakeProviders.length];
-    })
+    map(index => fakeProviders[index % fakeProviders.length])
   );
-
-  public get calculatedProvider(): CalculatedTradesAmounts {
-    return this._calculatedValue;
-  }
 
   public get isBestRouteFound(): boolean {
     const { tradeStatus } = this.crossChainFormService;

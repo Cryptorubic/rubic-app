@@ -1,8 +1,6 @@
 <ng-container *ngIf="showData$ | async">
   <div @fadeAnimation class="calculated-trades">
-    <span
-      *ngIf="calculatedProvider.total !== calculatedProvider.calculated; else calculationFinished"
-    >
+    <span *ngIf="isCalculating$ | async; else calculationFinished">
       Finding Optimal Route<span class="calculated-trades__dashes"></span>
       {{ fakeProvider$ | async }}
     </span>

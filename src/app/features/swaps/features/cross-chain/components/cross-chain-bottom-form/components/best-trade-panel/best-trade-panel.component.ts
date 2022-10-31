@@ -1,18 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input
-} from '@angular/core';
-import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
-import { TUI_ANIMATIONS_DURATION, TuiDialogService } from '@taiga-ui/core';
-import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
+import { TUI_ANIMATIONS_DURATION } from '@taiga-ui/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-best-trade-panel',
@@ -23,31 +16,27 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
     {
       provide: TUI_ANIMATIONS_DURATION,
       useFactory: () => 10000
-    }
+    },
+    TuiDestroyService
   ]
 })
 export class BestTradePanelComponent {
-  @Input() public route: CrossChainRoute = null;
-
-  @Input() public needApprove: boolean;
-
-  public readonly calculatedProviders$ = this.crossChainRoutingService.allProviders$.pipe(
-    map(providers => providers.data.filter(provider => Boolean(provider.trade)).length)
+  public readonly trades$ = this.crossChainFormService.taggedTrades$.pipe(
+    map(taggedTrades => taggedTrades.filter(taggedTrade => taggedTrade.trade))
   );
 
-  public readonly providers$ = this.crossChainRoutingService.providers$;
+  public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
   public expanded = false;
 
   public showProviders = false;
 
   constructor(
-    private readonly dialogService: TuiDialogService,
-    private readonly crossChainRoutingService: CrossChainCalculationService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly cdr: ChangeDetectorRef,
+    private readonly crossChainFormService: CrossChainFormService,
     private readonly formService: SwapFormService,
-    @Inject(TuiDestroyService) protected readonly destroy$: TuiDestroyService
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Self() protected readonly destroy$: TuiDestroyService
   ) {
     this.formSubscribe();
   }

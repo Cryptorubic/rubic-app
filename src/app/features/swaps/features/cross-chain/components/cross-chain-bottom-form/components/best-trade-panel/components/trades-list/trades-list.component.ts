@@ -14,8 +14,8 @@ import {
   WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
-import { RankedTaggedProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/models/ranked-tagged-providers';
-import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
+import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
+import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 
 @Component({
   selector: 'app-trades-list',
@@ -25,14 +25,14 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/c
   animations: [fadeAnimation, listAnimation]
 })
 export class TradesListComponent {
-  @Input() public set providers(value: RankedTaggedProviders[]) {
+  @Input() public set providers(value: CrossChainTaggedTrade[]) {
     this._providers = value;
     this.smartRoutingList = this._providers?.map(provider =>
-      this.crossChainService.calculateSmartRouting(provider)
+      this.crossChainService.parseRoute(provider)
     );
   }
 
-  public get providers(): RankedTaggedProviders[] {
+  public get providers(): CrossChainTaggedTrade[] {
     return this._providers;
   }
 
@@ -42,7 +42,7 @@ export class TradesListComponent {
 
   public smartRoutingList: CrossChainRoute[];
 
-  private _providers: RankedTaggedProviders[];
+  private _providers: CrossChainTaggedTrade[];
 
   public getMinMaxError(provider: WrappedCrossChainTrade): string {
     const error = provider.error;
@@ -64,11 +64,11 @@ export class TradesListComponent {
     this.selectionHandler.emit();
   }
 
-  public trackByType(_index: number, provider: RankedTaggedProviders): CrossChainTradeType {
+  public trackByType(_index: number, provider: CrossChainTaggedTrade): CrossChainTradeType {
     return provider.tradeType;
   }
 
-  public showTags(provider: RankedTaggedProviders): boolean {
-    return Object.values(provider.tags).some(val => val) || provider.rank === 0;
+  public showTags(provider: CrossChainTaggedTrade): boolean {
+    return Object.values(provider.tags).some(val => val);
   }
 }

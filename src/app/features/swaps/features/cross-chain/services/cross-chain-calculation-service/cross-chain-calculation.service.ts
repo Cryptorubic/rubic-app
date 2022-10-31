@@ -38,7 +38,7 @@ import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-trade-info';
-import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
+import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
@@ -58,11 +58,13 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { CalculatedCrossChainTrade } from '@features/swaps/features/cross-chain/models/calculated-cross-chain-trade';
+import {
+  CrossChainCalculatedTrade,
+  CrossChainCalculatedTradeData
+} from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { ProvidersListSortingService } from '@features/swaps/features/cross-chain/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 
 export type AllProviders = {
@@ -73,6 +75,7 @@ export type AllProviders = {
 @Injectable({
   providedIn: 'root'
 })
+// @todo rename all DI
 export class CrossChainCalculationService extends TradeCalculationService {
   private readonly _selectedProvider$ = new BehaviorSubject<CrossChainTradeType | null>(null);
 
@@ -81,13 +84,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public readonly selectedProvider$ = this._selectedProvider$.asObservable();
-
-  private readonly _allProviders$ = new BehaviorSubject<AllProviders>({ totalAmount: 0, data: [] });
-
-  public readonly allProviders$ = this._allProviders$.asObservable().pipe(
-    debounceTime(100),
-    distinctUntilChanged((prev, curr) => prev.data.length === curr.data.length)
-  );
 
   private readonly defaultTimeout = 25_000;
 
@@ -107,19 +103,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
     return this.targetNetworkAddressService.address;
   }
-
-  private readonly _dangerousProviders$ = new BehaviorSubject<CrossChainTradeType[]>([]);
-
-  public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
-
-  public readonly providers$ = this.allProviders$.pipe(
-    map(allProviders => {
-      const providers = allProviders.data;
-      const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListSortingService.setTags(trades);
-    }),
-    debounceTime(10)
-  );
 
   constructor(
     private readonly sdk: RubicSdkService,
@@ -155,89 +138,49 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
   }
 
-  public markProviderAsDangerous(type: CrossChainTradeType): void {
-    this._dangerousProviders$.next([...this._dangerousProviders$.value, type]);
-  }
+  public calculateTrade(isUserAuthorized: boolean): Observable<CrossChainCalculatedTradeData> {
+    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
-  public unmarkProviderAsDangerous(type: CrossChainTradeType): void {
-    const providers = this._dangerousProviders$.value.filter(providerType => providerType !== type);
-    this._dangerousProviders$.next(providers);
-  }
+    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    const receiverAddress = this.receiverAddress;
+    const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+    const options: CrossChainManagerCalculationOptions = {
+      fromSlippageTolerance: slippageTolerance / 2,
+      toSlippageTolerance: slippageTolerance / 2,
+      slippageTolerance,
+      timeout: this.defaultTimeout,
+      disabledProviders: disabledProvidersForLandingIframe || [],
+      ...(receiverAddress && { receiverAddress })
+    };
 
-  public calculateTrade(userAuthorized: boolean): Observable<CalculatedCrossChainTrade> {
-    try {
-      const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+    return this.sdk.crossChain
+      .calculateTradesReactively(fromToken, fromAmount, toToken, options)
+      .pipe(
+        switchMap(reactivelyCalculatedTradeData => {
+          const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
+          const trade = wrappedTrade?.trade;
 
-      const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-      const receiverAddress = this.receiverAddress;
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
-      const options: CrossChainManagerCalculationOptions = {
-        fromSlippageTolerance: slippageTolerance / 2,
-        toSlippageTolerance: slippageTolerance / 2,
-        slippageTolerance,
-        timeout: this.defaultTimeout,
-        disabledProviders: [...(disabledProvidersForLandingIframe || [])],
-        ...(receiverAddress && { receiverAddress })
-      };
-
-      return this.sdk.crossChain
-        .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
-        .pipe(
-          tap(tradeData => {
-            const rankedProviders = [...tradeData.trades].map(trade => ({
-              ...trade,
-              rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
-            }));
-            const sortedProviders = ProvidersListSortingService.sortTrades(rankedProviders);
-            this._allProviders$.next({
-              totalAmount: tradeData.total,
-              data: sortedProviders
-            });
-          }),
-          switchMap(tradeData => {
-            const bestProvider = this._selectedProvider$.value
-              ? tradeData.trades.find(
-                  provider => provider.tradeType === this._selectedProvider$.value
-                )
-              : this._allProviders$.value.data[0];
-            // @todo check
-            console.log(bestProvider);
-            const trade = bestProvider?.trade;
-
-            if (!trade) {
-              return of({
-                ...bestProvider,
-                needApprove: false,
-                totalProviders: tradeData.total,
-                currentProviders: tradeData.calculated,
-                route: null
-              });
-            }
-
-            return from(
-              userAuthorized && trade?.needApprove ? from(trade.needApprove()) : of(false)
-            ).pipe(
-              map(needApprove => {
-                const smartRouting = this.calculateSmartRouting(bestProvider);
-                return {
-                  ...bestProvider,
-                  needApprove,
-                  totalProviders: tradeData.total,
-                  currentProviders: tradeData.calculated,
-                  route: smartRouting
-                };
-              })
-            );
-          })
-        );
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+          return from(isUserAuthorized && trade ? from(trade.needApprove()) : of(false)).pipe(
+            map((needApprove): CrossChainCalculatedTradeData => {
+              return {
+                total: total,
+                calculated: calculated,
+                lastCalculatedTrade: wrappedTrade
+                  ? {
+                      ...wrappedTrade,
+                      needApprove,
+                      route: this.parseRoute(wrappedTrade)
+                    }
+                  : null
+              };
+            })
+          );
+        })
+      );
   }
 
   public async createTrade(
-    providerTrade: CalculatedCrossChainTrade,
+    providerTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
     if (!providerTrade?.trade) {
@@ -379,7 +322,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 
-  public calculateSmartRouting(wrappedTrade: WrappedCrossChainTrade): CrossChainRoute | null {
+  public parseRoute(wrappedTrade: WrappedCrossChainTrade): CrossChainRoute | null {
     if (!wrappedTrade?.trade) {
       return null;
     }
@@ -432,6 +375,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
   }
 
+  // @todo add error types
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
@@ -481,7 +425,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public openSwapSchemeModal(
-    providerTrade: CalculatedCrossChainTrade,
+    providerTrade: CrossChainCalculatedTrade,
     txHash: string,
     timestamp: number
   ): void {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Provider, TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { CrossChainRoute } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-route';
+import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 
 @Component({
   selector: 'app-cross-chain-route',
