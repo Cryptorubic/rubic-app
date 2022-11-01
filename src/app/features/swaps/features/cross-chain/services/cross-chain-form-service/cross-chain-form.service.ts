@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
@@ -41,6 +41,15 @@ import { SettingsService } from '@features/swaps/core/services/settings-service/
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { ErrorsService } from '@core/errors/errors.service';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { TuiDialogService } from '@taiga-ui/core';
 
 @Injectable({
   providedIn: 'root'
@@ -156,7 +165,12 @@ export class CrossChainFormService {
     private readonly crossChainCalculationService: CrossChainCalculationService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly errorsService: ErrorsService,
+    private readonly iframeService: IframeService,
+    private readonly dialogService: TuiDialogService,
+    @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.subscribeOnCalculation();
 
@@ -519,5 +533,84 @@ export class CrossChainFormService {
     }
 
     throw new RubicError('[RUBIC SDK] Unknown trade provider.');
+  }
+
+  public async approveTrade(): Promise<void> {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+    this.refreshService.startInProgress();
+
+    try {
+      await this.crossChainCalculationService.approve(this.selectedTrade);
+
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.selectedTrade = {
+        ...this.selectedTrade,
+        needApprove: false
+      };
+
+      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
+
+      await this.tokensService.updateNativeTokenBalance(fromBlockchain);
+    } catch (err) {
+      this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
+      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    }
+
+    this.refreshService.stopInProgress();
+  }
+
+  public async createTrade(): Promise<void> {
+    if (!this.isSlippageCorrect()) {
+      return;
+    }
+
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    this.refreshService.startInProgress();
+
+    try {
+      const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
+      await this.crossChainCalculationService.createTrade(this.selectedTrade, () => {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.refreshService.stopInProgress();
+      });
+
+      this.startRecalculation();
+
+      await this.tokensService.updateTokenBalanceAfterCcrSwap({
+        address: fromToken.address,
+        blockchain: fromBlockchain
+      });
+    } catch (err) {
+      const error = RubicSdkErrorParser.parseError(err);
+      if (
+        !(error instanceof NotWhitelistedProviderWarning || error instanceof ExecutionRevertedError)
+      ) {
+        this.errorsService.catch(err);
+      }
+
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+      this.refreshService.stopInProgress();
+    }
+  }
+
+  private isSlippageCorrect(): boolean {
+    if (
+      this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
+      (this.selectedTrade.trade.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
+        this.selectedTrade.trade.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
+    ) {
+      return true;
+    }
+
+    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    this.dialogService
+      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
+        size
+      })
+      .subscribe();
+    return false;
   }
 }
