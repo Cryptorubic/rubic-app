@@ -141,7 +141,9 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.GNOSIS,
       BLOCKCHAIN_NAME.BOBA,
       BLOCKCHAIN_NAME.FUSE,
-      BLOCKCHAIN_NAME.ETHEREUM_POW
+      BLOCKCHAIN_NAME.ETHEREUM_POW,
+      BLOCKCHAIN_NAME.KAVA,
+      BLOCKCHAIN_NAME.BITGERT
     ];
     const backendTokens$ = this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)

@@ -16,6 +16,7 @@ import {
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -25,7 +26,8 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  MultichainCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -201,6 +203,12 @@ export class CrossChainRoutingService extends TradeService {
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
           tap(tradeData => {
+            if ((tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter) {
+              console.error(
+                'Provider router:',
+                (tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter
+              );
+            }
             const rankedProviders = [...tradeData.trades].map(trade => ({
               ...trade,
               rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
@@ -343,13 +351,14 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
-      trade instanceof TronBridgersCrossChainTrade
+      trade instanceof TronBridgersCrossChainTrade ||
+      trade instanceof MultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent || 0,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol

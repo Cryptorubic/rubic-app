@@ -52,12 +52,13 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BOBA]: ['https://mainnet.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR]: ['https://rpc.astar.network:8545'],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
+  [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
   [BLOCKCHAIN_NAME.TRON]: [
     {
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
     }
-  ]
+  ],
   /*
   [BLOCKCHAIN_NAME.SOLANA]: [
     'https://green-hidden-shape.solana-mainnet.quiknode.pro/',
@@ -65,4 +66,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
    */
+  [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://serverrpc.com',
+    'https://dedicated.brisescan.com/',
+    'https://rpc-bitgert-vefi.com',
+    'https://rpc.icecreamswap.com',
+    'https://mainnet-rpc.brisescan.com',
+    'https://chainrpc.com'
+  ]
 };
