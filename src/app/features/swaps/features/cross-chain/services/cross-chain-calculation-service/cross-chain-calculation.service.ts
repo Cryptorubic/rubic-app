@@ -146,7 +146,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         switchMap(reactivelyCalculatedTradeData => {
           const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
-          if (wrappedTrade.error instanceof NotWhitelistedProviderError) {
+          if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
             console.error('Provider router:', wrappedTrade.error.providerRouter);
             if (wrappedTrade.error.providerGateway) {
               console.error('Provider gateway:', wrappedTrade.error.providerGateway);

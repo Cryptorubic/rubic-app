@@ -253,6 +253,7 @@ export class CrossChainFormService {
             }),
             catchError((error: RubicSdkError) => {
               this.tradeStatus = TRADE_STATUS.DISABLED;
+              this.refreshService.setStopped();
 
               this.error = this.crossChainCalculationService.parseCalculationError(error);
 
