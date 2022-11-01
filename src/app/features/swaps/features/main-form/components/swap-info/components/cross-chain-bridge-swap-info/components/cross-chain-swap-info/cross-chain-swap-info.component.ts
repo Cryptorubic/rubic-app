@@ -189,6 +189,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
   private setSymbiosisOrLifiTradeInfoParameters(tradeInfo: SymbiosisTradeInfo): void {
     this.priceImpact = parseFloat(tradeInfo.priceImpact);
     this.priceImpactService.setPriceImpact(this.priceImpact);
+    this.swapButtonService.setupPriceImpactCalculation();
 
     this.symbiosisOrLifiCryptoFee = tradeInfo.networkFee;
     this.symbiosisOrLifiCryptoFeeSymbol = tradeInfo.networkFeeSymbol;
