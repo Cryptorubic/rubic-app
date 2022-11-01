@@ -3,7 +3,9 @@ import {
   compareCrossChainTrades,
   MaxAmountError,
   MinAmountError,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  CelerCrossChainTrade,
+  CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
 
@@ -20,7 +22,11 @@ export class ProvidersListSortingService {
         tags: {
           best: index === 0,
           minAmountWarning: provider.error instanceof MinAmountError,
-          maxAmountWarning: provider.error instanceof MaxAmountError
+          maxAmountWarning: provider.error instanceof MaxAmountError,
+          ...(provider.tradeType === CROSS_CHAIN_TRADE_TYPE.CELER && {
+            deflationTokenWarning: (provider.trade as CelerCrossChainTrade)
+              .isDeflationTokenInTargetNetwork
+          })
         }
       };
     });

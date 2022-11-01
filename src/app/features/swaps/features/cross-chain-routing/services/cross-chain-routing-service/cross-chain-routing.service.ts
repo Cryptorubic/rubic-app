@@ -112,11 +112,15 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
+  public get dangerousProviders(): CrossChainTradeType[] {
+    return this._dangerousProviders$.getValue();
+  }
+
   public readonly providers$ = this.allProviders$.pipe(
     map(allProviders => {
       const providers = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListSortingService.setTags(trades);
+      return trades;
     }),
     debounceTime(10)
   );
@@ -164,6 +168,10 @@ export class CrossChainRoutingService extends TradeService {
     this._dangerousProviders$.next(providers);
   }
 
+  public unmarkAllDangerousProviders(): void {
+    this.dangerousProviders.forEach(tradeType => this.unmarkProviderAsDangerous(tradeType));
+  }
+
   public calculateTrade(
     userAuthorized: boolean,
     isViaDisabled: boolean
@@ -171,17 +179,21 @@ export class CrossChainRoutingService extends TradeService {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
+      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+      const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
+
+      if (isViaDisabled) {
+        disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
+      }
+
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || [])],
+        disabledProviders: disabledProviders,
         ...(receiverAddress && { receiverAddress })
       };
 
