@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {
-  CelerCrossChainTrade,
   compareCrossChainTrades,
-  CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  CelerCrossChainTrade,
+  CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
 

@@ -54,6 +54,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
+  MultichainCrossChainTrade,
   MaxAmountError,
   MinAmountError,
   RubicSdkError,
@@ -66,6 +67,8 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -124,6 +127,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private hiddenTradeData: CrossChainProviderTrade | null = null;
 
   private calculateTradeSubscription$: Subscription;
+
+  private hiddenCalculateTradeSubscription$: Subscription;
 
   public readonly displayTargetAddressInput$ =
     this.settingsService.crossChainRoutingValueChanges.pipe(
@@ -396,6 +401,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       error !== undefined &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      trade?.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
       ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
         (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
     ) {
@@ -501,6 +507,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.errorsService.catch(err);
       }
 
+      this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
       this.swapStarted = false;
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
@@ -559,7 +566,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       !this.crossChainProviderTrade ||
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
       (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
-        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS &&
+        this.crossChainProviderTrade?.trade.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
+        this.crossChainProviderTrade.trade instanceof MultichainCrossChainTrade)
     ) {
       return true;
     }

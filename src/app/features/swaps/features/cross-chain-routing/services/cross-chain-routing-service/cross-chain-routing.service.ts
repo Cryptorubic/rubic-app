@@ -16,6 +16,7 @@ import {
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -25,11 +26,13 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  MultichainCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -40,15 +43,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import {
-  BehaviorSubject,
-  from,
-  Observable,
-  of,
-  Subscription,
-  distinctUntilChanged,
-  debounceTime
-} from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -59,12 +54,13 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -135,11 +131,13 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
+    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
@@ -187,7 +185,7 @@ export class CrossChainRoutingService extends TradeService {
       const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
 
       if (isViaDisabled) {
-        disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
+        disabledProviders.push(CROSS_CHAIN_TRADE_TYPE.VIA);
       }
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
@@ -205,6 +203,12 @@ export class CrossChainRoutingService extends TradeService {
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
           tap(tradeData => {
+            if ((tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter) {
+              console.error(
+                'Provider router:',
+                (tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter
+              );
+            }
             const rankedProviders = [...tradeData.trades].map(trade => ({
               ...trade,
               rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
@@ -347,13 +351,14 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
-      trade instanceof TronBridgersCrossChainTrade
+      trade instanceof TronBridgersCrossChainTrade ||
+      trade instanceof MultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent || 0,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
