@@ -20,6 +20,7 @@ import {
   LifiCrossChainTrade,
   MaxAmountError,
   MinAmountError,
+  MultichainCrossChainTrade,
   RangoCrossChainTrade,
   RubicSdkError,
   SymbiosisCrossChainTrade,
@@ -58,6 +59,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
+import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 
 @Injectable({
   providedIn: 'root'
@@ -496,7 +498,8 @@ export class CrossChainFormService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
-      trade instanceof TronBridgersCrossChainTrade
+      trade instanceof TronBridgersCrossChainTrade ||
+      trade instanceof MultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -597,7 +600,11 @@ export class CrossChainFormService {
     } catch (err) {
       const error = RubicSdkErrorParser.parseError(err);
       if (
-        !(error instanceof NotWhitelistedProviderWarning || error instanceof ExecutionRevertedError)
+        !(
+          error instanceof NotWhitelistedProviderWarning ||
+          error instanceof UnsupportedDeflationTokenWarning ||
+          error instanceof ExecutionRevertedError
+        )
       ) {
         this.errorsService.catch(err);
       }
@@ -611,8 +618,11 @@ export class CrossChainFormService {
   private isSlippageCorrect(): boolean {
     if (
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      (this.selectedTrade.trade.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
-        this.selectedTrade.trade.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
+      [
+        CROSS_CHAIN_TRADE_TYPE.VIA,
+        CROSS_CHAIN_TRADE_TYPE.BRIDGERS,
+        CROSS_CHAIN_TRADE_TYPE.MULTICHAIN
+      ].every(crossChainType => crossChainType !== this.selectedTrade.trade.type)
     ) {
       return true;
     }

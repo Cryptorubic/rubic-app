@@ -19,7 +19,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}arbitrum-bridge.svg`,
     color: '#1275b7'
   },
-  // @todo check lifi
   [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,

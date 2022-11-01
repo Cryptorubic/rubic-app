@@ -36,7 +36,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
     name: 'AuroraSwap',
-    image: '${imageBasePath}auroraswap.svg',
+    image: `${imageBasePath}auroraswap.svg`,
     color: '#34A5F5'
   },
 
@@ -144,6 +144,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}jupiter.svg`,
     color: '#34A5F5'
   },
+  [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: {
+    name: 'JupiterSwap',
+    image: `${imageBasePath}jupiterswap.svg`,
+    color: '#F27523'
+  },
   [ON_CHAIN_TRADE_TYPE.J_SWAP]: {
     name: 'JSwap',
     image: `${imageBasePath}jswap.jpg`,
@@ -239,6 +244,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}paraswap.svg`,
     color: '#2e58b0'
   },
+  [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: {
+    name: 'PhotonSwap',
+    image: `${imageBasePath}photonswap.png`,
+    color: '#8829E2'
+  },
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: {
     name: 'Polydex',
     image: `${imageBasePath}polydex.svg`,
@@ -247,6 +257,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
 
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: {
     name: 'QuickSwap',
+    image: `${imageBasePath}quickswap.svg`,
+    color: '#36C2EA'
+  },
+  [ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3]: {
+    name: 'QuickSwapV3',
     image: `${imageBasePath}quickswap.svg`,
     color: '#36C2EA'
   },

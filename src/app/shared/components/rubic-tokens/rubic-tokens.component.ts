@@ -24,6 +24,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
 import { SwapFormService } from '@app/features/swaps/core/services/swap-form-service/swap-form.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -112,7 +113,7 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromBlockchain, toBlockchain } = this.formService.inputValue;
+    const { fromBlockchain, toBlockchain, fromToken } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.gtmService.reloadGtmSession();
@@ -127,8 +128,14 @@ export class RubicTokensComponent implements OnInit {
         this.allowedBlockchains,
         idPrefix
       )
-      .subscribe((token: TokenAmount) => {
-        if (token) {
+      .subscribe((selectedToken: TokenAmount) => {
+        if (selectedToken) {
+          const token = {
+            ...selectedToken,
+            amount: selectedToken?.amount?.isFinite()
+              ? selectedToken.amount
+              : fromToken?.amount || new BigNumber(NaN)
+          };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
           const isSwapsForm = this.formService instanceof SwapFormService;

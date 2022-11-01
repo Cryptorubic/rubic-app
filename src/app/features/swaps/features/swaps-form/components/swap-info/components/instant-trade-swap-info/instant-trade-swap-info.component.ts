@@ -92,7 +92,7 @@ export class InstantTradeSwapInfoComponent {
   private setTradeData(trade: OnChainTrade): void {
     if (trade) {
       this.minimumReceived = trade.toTokenAmountMin.tokenAmount;
-      this.slippage = trade.slippageTolerance;
+      this.slippage = trade.slippageTolerance * 100;
       this.path = trade?.path?.map(token => token.symbol);
       this.setPriceImpact();
 

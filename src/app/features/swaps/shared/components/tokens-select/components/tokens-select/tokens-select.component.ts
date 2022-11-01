@@ -547,7 +547,9 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.ASTAR]: 'astar',
       [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
-      [BLOCKCHAIN_NAME.TRON]: 'tron'
+      [BLOCKCHAIN_NAME.TRON]: 'tron',
+      [BLOCKCHAIN_NAME.KAVA]: 'kava',
+      [BLOCKCHAIN_NAME.BITGERT]: 'bitgert'
     };
 
     if (!blockchains[token.blockchain]) {

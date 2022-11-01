@@ -56,6 +56,7 @@
           [expandableField]="true"
         ></app-tokens-search-bar>
       </ng-container>
+
       <div class="token-list-container__list">
         <ng-container *onlyFrame>
           <tui-loader
@@ -64,6 +65,7 @@
             size="l"
           ></tui-loader>
         </ng-container>
+
         <ng-container *ngIf="!searchQueryLoading">
           <app-tokens-list
             *ngIf="!customToken"

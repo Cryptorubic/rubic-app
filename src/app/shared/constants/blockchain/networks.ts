@@ -436,6 +436,43 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'TRON',
       decimals: 6
     }
+  },
+  {
+    id: 2222,
+    name: BLOCKCHAIN_NAME.KAVA,
+    label: 'KAVA',
+    scannerUrl: 'https://explorer.kava.io/',
+    rpcList: ['https://evm.kava.io'],
+    imagePath: 'assets/images/icons/coins/kava.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.KAVA,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'KAVA',
+      symbol: 'KAVA',
+      decimals: 18
+    }
+  },
+  {
+    id: 32520,
+    name: BLOCKCHAIN_NAME.BITGERT,
+    label: 'Bitgert',
+    scannerUrl: 'https://brisescan.com/',
+    rpcList: [
+      'https://serverrpc.com',
+      'https://dedicated.brisescan.com/',
+      'https://rpc-bitgert-vefi.com',
+      'https://rpc.icecreamswap.com',
+      'https://mainnet-rpc.brisescan.com',
+      'https://chainrpc.com'
+    ],
+    imagePath: 'assets/images/icons/coins/bitgert.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.BITGERT,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Brise',
+      symbol: 'BRISE',
+      decimals: 18
+    }
   }
 ];
 

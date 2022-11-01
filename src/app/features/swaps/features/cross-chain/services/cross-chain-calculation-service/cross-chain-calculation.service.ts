@@ -9,6 +9,7 @@ import {
   CrossChainTradeType,
   LifiCrossChainTrade,
   LowSlippageError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -146,8 +147,15 @@ export class CrossChainCalculationService extends TradeCalculationService {
       .pipe(
         switchMap(reactivelyCalculatedTradeData => {
           const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
-          const trade = wrappedTrade?.trade;
 
+          if (wrappedTrade.error instanceof NotWhitelistedProviderError) {
+            console.error('Provider router:', wrappedTrade.error.providerRouter);
+            if (wrappedTrade.error.providerGateway) {
+              console.error('Provider gateway:', wrappedTrade.error.providerGateway);
+            }
+          }
+
+          const trade = wrappedTrade?.trade;
           return from(isUserAuthorized && trade ? from(trade.needApprove()) : of(false)).pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
