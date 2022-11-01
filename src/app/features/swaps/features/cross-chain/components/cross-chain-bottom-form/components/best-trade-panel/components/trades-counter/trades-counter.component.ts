@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { iif, of, switchMap, timer } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
   animations: [
     trigger('fadeAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('200ms', style({ opacity: 1 }))]),
-      transition(':leave', [style({ opacity: 1 }), animate('600ms 1000ms', style({ opacity: 0 }))])
+      transition(':leave', [style({ opacity: 1 }), animate('600ms', style({ opacity: 0 }))])
     ])
   ]
 })
@@ -23,10 +23,10 @@ export class TradesCounterComponent {
     map(amounts => amounts && amounts.calculated < amounts.total)
   );
 
-  public readonly showData$ = this.isCalculating$.pipe(
+  public readonly displayCounter$ = this.isCalculating$.pipe(
     distinctUntilChanged(),
     switchMap(isCalculating =>
-      iif(() => isCalculating, of(true), timer(1000).pipe(map(() => false)))
+      iif(() => isCalculating, of(true), timer(2000).pipe(map(() => false)))
     )
   );
 
@@ -41,8 +41,5 @@ export class TradesCounterComponent {
     );
   }
 
-  constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly crossChainFormService: CrossChainFormService
-  ) {}
+  constructor(private readonly crossChainFormService: CrossChainFormService) {}
 }

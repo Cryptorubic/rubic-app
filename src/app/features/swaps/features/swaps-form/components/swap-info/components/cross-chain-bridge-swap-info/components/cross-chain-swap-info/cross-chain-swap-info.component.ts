@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
-import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
@@ -13,7 +12,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import {
   CelerRubicTradeInfo,
   SymbiosisTradeInfo
-} from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/models/cross-chain-trade-info';
+} from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/cross-chain-trade-info';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import {
   LifiCrossChainTrade,
@@ -28,6 +27,7 @@ import {
   ViaCrossChainTrade
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -89,7 +89,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
-    private readonly crossChainRoutingService: CrossChainCalculationService,
+    private readonly crossChainFormService: CrossChainFormService,
     private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
@@ -127,12 +127,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
           }
 
           const { fromBlockchain } = this.swapFormService.inputValue;
+          const tokens = this.tokensService.tokens;
+
           return forkJoin([
-            this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)),
             from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)),
-            this.crossChainRoutingService.getTradeInfo()
+            this.crossChainFormService.getTradeInfo()
           ]).pipe(
-            map(([tokens, nativeCoinPrice, tradeInfo]) => {
+            map(([nativeCoinPrice, tradeInfo]) => {
               const nativeToken = tokens.find(
                 token =>
                   token.blockchain === fromBlockchain &&
@@ -143,7 +144,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
               this.nativeCoinSymbol = nativeToken.symbol;
 
-              const trade = this.crossChainRoutingService.crossChainTrade;
+              const trade = this.crossChainFormService.selectedTrade.trade;
 
               if (
                 trade instanceof SymbiosisCrossChainTrade ||
@@ -222,7 +223,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;
 
-    this.minimumReceived = this.crossChainRoutingService.crossChainTrade.toTokenAmountMin;
+    this.minimumReceived = this.crossChainFormService.selectedTrade.trade.toTokenAmountMin;
     this.slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
 
     this.usingCelerBridge = tradeInfo.usingCelerBridge;

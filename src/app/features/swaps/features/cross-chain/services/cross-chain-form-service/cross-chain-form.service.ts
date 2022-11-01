@@ -1,8 +1,23 @@
 import { Injectable } from '@angular/core';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, from, of, Subject } from 'rxjs';
-import { BlockchainsInfo, compareCrossChainTrades } from 'rubic-sdk';
+import {
+  BlockchainsInfo,
+  CelerCrossChainTrade,
+  compareCrossChainTrades,
+  CROSS_CHAIN_TRADE_TYPE,
+  DebridgeCrossChainTrade,
+  EvmBridgersCrossChainTrade,
+  EvmCrossChainTrade,
+  LifiCrossChainTrade,
+  MaxAmountError,
+  MinAmountError,
+  RangoCrossChainTrade,
+  SymbiosisCrossChainTrade,
+  TronBridgersCrossChainTrade,
+  ViaCrossChainTrade
+} from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
@@ -16,12 +31,26 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import CrossChainUnsupportedBlockchain from '@core/errors/models/cross-chain-routing/cross-chain-unsupported-blockchain';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
-import { ProvidersListSortingService } from '@features/swaps/features/cross-chain/services/providers-list-sorting-service/providers-list-sorting.service';
+import {
+  CelerRubicTradeInfo,
+  SymbiosisTradeInfo
+} from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/cross-chain-trade-info';
+import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossChainFormService {
+  private static setTags(calculatedTrade: CrossChainCalculatedTrade): CrossChainTaggedTrade {
+    return {
+      ...calculatedTrade,
+      tags: {
+        minAmountWarning: calculatedTrade.error instanceof MinAmountError,
+        maxAmountWarning: calculatedTrade.error instanceof MaxAmountError
+      }
+    };
+  }
+
   /**
    * Controls trade calculation flow.
    * When `next` is called, recalculation is started.
@@ -160,21 +189,24 @@ export class CrossChainFormService {
                 calculated,
                 total
               };
+              const calculationEnded = calculated === total;
+              if (calculationEnded) {
+                this.refreshService.setStopped();
+              }
+
               if (lastCalculatedTrade) {
-                this.updateTradesList(lastCalculatedTrade, calculated === total);
+                this.updateTradesList(lastCalculatedTrade, calculationEnded);
               }
             })
           );
-        }),
-        tap(() => {
-          if (this.calculatedTradesAmounts?.calculated === this.calculatedTradesAmounts?.total) {
-            this.refreshService.setStopped();
-          }
         })
       )
       .subscribe();
   }
 
+  /**
+   * Adds last calculated trade to trades list, resorts it and updates form.
+   */
   private updateTradesList(
     lastCalculatedTrade: CrossChainCalculatedTrade,
     calculationEnded: boolean
@@ -182,7 +214,7 @@ export class CrossChainFormService {
     const updatedTaggedTrades = this.taggedTrades.filter(
       taggedTrade => taggedTrade.tradeType !== lastCalculatedTrade.tradeType
     );
-    updatedTaggedTrades.push(ProvidersListSortingService.setTags(lastCalculatedTrade));
+    updatedTaggedTrades.push(CrossChainFormService.setTags(lastCalculatedTrade));
     updatedTaggedTrades.sort(compareCrossChainTrades);
     this.taggedTrades = updatedTaggedTrades;
 
@@ -251,5 +283,75 @@ export class CrossChainFormService {
 
         this.startRecalculation();
       });
+  }
+
+  /**
+   * Gets trade info to show in transaction info panel.
+   */
+  // @todo move to another service
+  public async getTradeInfo(): Promise<CelerRubicTradeInfo | SymbiosisTradeInfo> {
+    if (!this.selectedTrade?.trade) {
+      return null;
+    }
+
+    const trade = this.selectedTrade.trade;
+    const { estimatedGas } = trade as EvmCrossChainTrade;
+
+    if (
+      trade instanceof SymbiosisCrossChainTrade ||
+      trade instanceof LifiCrossChainTrade ||
+      trade instanceof DebridgeCrossChainTrade ||
+      trade instanceof ViaCrossChainTrade ||
+      trade instanceof RangoCrossChainTrade ||
+      trade instanceof EvmBridgersCrossChainTrade ||
+      trade instanceof TronBridgersCrossChainTrade
+    ) {
+      return {
+        estimatedGas,
+        feeAmount: new BigNumber(1),
+        feeTokenSymbol: 'USDC',
+        feePercent: trade.feeInfo.platformFee.percent,
+        priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
+        networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
+        networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
+      };
+    }
+
+    if (trade instanceof CelerCrossChainTrade) {
+      const { fromTrade, toTrade } = trade;
+      const fromProvider = fromTrade.provider.type;
+      const toProvider = toTrade.provider.type;
+
+      const priceImpactFrom = PriceImpactService.calculatePriceImpact(
+        fromTrade.fromToken.price.toNumber(),
+        fromTrade.toToken.price.toNumber(),
+        fromTrade.fromToken.tokenAmount,
+        fromTrade.toToken.tokenAmount
+      );
+
+      const priceImpactTo = PriceImpactService.calculatePriceImpact(
+        toTrade.fromToken.price.toNumber(),
+        toTrade.toToken.price.toNumber(),
+        toTrade.fromToken.tokenAmount,
+        toTrade.toToken.tokenAmount
+      );
+
+      return {
+        feePercent: trade.feeInfo.platformFee.percent,
+        feeAmount: new BigNumber(1),
+        feeTokenSymbol: 'USDC',
+        cryptoFee: new BigNumber(trade.feeInfo?.cryptoFee?.amount).toNumber(),
+        estimatedGas,
+        priceImpactFrom: Number.isNaN(priceImpactFrom) ? 0 : priceImpactFrom,
+        priceImpactTo: Number.isNaN(priceImpactTo) ? 0 : priceImpactTo,
+        fromProvider,
+        toProvider,
+        fromPath: null,
+        toPath: null,
+        usingCelerBridge: trade.type === CROSS_CHAIN_TRADE_TYPE.CELER
+      };
+    }
+
+    throw new RubicError('[RUBIC SDK] Unknown trade provider.');
   }
 }

@@ -17,6 +17,7 @@ export type Provider = {
 
 const imageBasePath = 'assets/images/icons/providers/';
 
+// @todo move to another folder
 const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
@@ -226,7 +227,7 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
   [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: {
     name: 'Open Ocean',
     image: `${imageBasePath}open-ocean.png`,
-    color: ''
+    color: '#15D9E1'
   },
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: {
     name: 'OrcaSwap',
