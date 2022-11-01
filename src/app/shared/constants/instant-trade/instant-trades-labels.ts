@@ -61,6 +61,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: 'Polydex',
 
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: 'QuickSwap',
+  [ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3]: 'QuickSwap v3',
 
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: 'Raydium',
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'RefFinance',

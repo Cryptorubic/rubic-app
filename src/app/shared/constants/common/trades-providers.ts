@@ -285,6 +285,11 @@ const INSTANT_TRADES_PROVIDER: Record<OnChainTradeType, Provider> = {
     image: `${imageBasePath}quickswap.svg`,
     color: '#36C2EA'
   },
+  [ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3]: {
+    name: 'QuickSwapV3',
+    image: `${imageBasePath}quickswap.svg`,
+    color: '#36C2EA'
+  },
 
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: {
     name: 'Raydium',
