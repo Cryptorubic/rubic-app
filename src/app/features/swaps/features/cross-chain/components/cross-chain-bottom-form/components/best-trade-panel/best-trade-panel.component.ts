@@ -21,7 +21,7 @@ import { CrossChainFormService } from '@features/swaps/features/cross-chain/serv
   ]
 })
 export class BestTradePanelComponent {
-  public readonly trades$ = this.crossChainFormService.taggedTrades$.pipe(
+  public readonly taggedTrades$ = this.crossChainFormService.taggedTrades$.pipe(
     map(taggedTrades => taggedTrades.filter(taggedTrade => taggedTrade.trade))
   );
 
@@ -29,7 +29,7 @@ export class BestTradePanelComponent {
 
   public expanded = false;
 
-  public showProviders = false;
+  public showTradesList = false;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -48,21 +48,21 @@ export class BestTradePanelComponent {
   }
 
   public handleSelection(): void {
-    this.showProviders = false;
+    this.showTradesList = false;
     this.expanded = false;
     this.cdr.detectChanges();
   }
 
   public toggleExpanded(): void {
     if (this.expanded) {
-      this.showProviders = false;
+      this.showTradesList = false;
       setTimeout(() => {
         this.expanded = false;
         this.cdr.detectChanges();
       }, 150);
     } else {
       this.expanded = true;
-      this.showProviders = true;
+      this.showTradesList = true;
     }
   }
 }

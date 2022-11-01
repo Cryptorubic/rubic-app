@@ -4,12 +4,12 @@ import { map, startWith } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Component({
-  selector: 'app-amount-estimated',
-  templateUrl: './token-amount-estimated.component.html',
-  styleUrls: ['./token-amount-estimated.component.scss'],
+  selector: 'app-to-amount-estimated',
+  templateUrl: './to-amount-estimated.component.html',
+  styleUrls: ['./to-amount-estimated.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AmountEstimatedComponent {
+export class ToAmountEstimatedComponent {
   @Input() errorText = '';
 
   public readonly toBlockchain$ = this.swapFormService.inputValueChanges.pipe(

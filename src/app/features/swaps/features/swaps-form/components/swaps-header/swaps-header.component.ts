@@ -4,7 +4,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/s
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { map } from 'rxjs/operators';
 import { SelectedToken } from '@features/swaps/features/swaps-form/swaps-form.component';
-import networks, { Network } from '@shared/constants/blockchain/networks';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+
+interface BlockchainItem {
+  icon: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-swaps-header',
@@ -15,13 +21,13 @@ import networks, { Network } from '@shared/constants/blockchain/networks';
 export class SwapsHeaderComponent {
   @Input() public set fromBlockchain(blockchain: BlockchainName) {
     if (blockchain) {
-      this.fromBlockchainItem = networks.find(el => el.name === blockchain);
+      this.fromBlockchainItem = this.getBlockchainItem(blockchain);
     }
   }
 
   @Input() public set toBlockchain(blockchain: BlockchainName) {
     if (blockchain) {
-      this.toBlockchainItem = networks.find(el => el.name === blockchain);
+      this.toBlockchainItem = this.getBlockchainItem(blockchain);
     }
   }
 
@@ -44,15 +50,20 @@ export class SwapsHeaderComponent {
     })
   );
 
-  public fromBlockchainItem: Network;
+  public fromBlockchainItem: BlockchainItem;
 
-  public toBlockchainItem: Network;
-
-  public OnChainTradeType: string;
+  public toBlockchainItem: BlockchainItem;
 
   constructor(private readonly swapsService: SwapsService) {
-    const ethBlockchain = networks.find(el => el.name === BLOCKCHAIN_NAME.ETHEREUM);
-    this.fromBlockchainItem = ethBlockchain;
-    this.toBlockchainItem = ethBlockchain;
+    this.fromBlockchainItem = this.toBlockchainItem = this.getBlockchainItem(
+      BLOCKCHAIN_NAME.ETHEREUM
+    );
+  }
+
+  private getBlockchainItem(blockchain: BlockchainName): BlockchainItem {
+    return {
+      icon: blockchainIcon[blockchain],
+      label: blockchainLabel[blockchain]
+    };
   }
 }

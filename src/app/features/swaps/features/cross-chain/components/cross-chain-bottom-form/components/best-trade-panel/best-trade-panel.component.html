@@ -1,11 +1,11 @@
 <ng-container *ngLet="selectedTrade$ | async as selectedTrade">
   <div class="trade-panel">
     <div class="trade-panel__row">
-      <ng-container *ngLet="trades$ | async as trades">
+      <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
         <div class="trade-panel__header">
           <app-trades-counter></app-trades-counter>
 
-          <div class="trade-panel__text" *ngIf="trades.length > 1">
+          <div class="trade-panel__text" *ngIf="taggedTrades.length > 1">
             <button class="trade-panel__expand-button" (click)="toggleExpanded()">
               Other routes
               <img
@@ -26,7 +26,7 @@
         >
           <tui-scrollbar>
             <app-trades-list
-              [providers]="showProviders ? trades : []"
+              [taggedTrades]="showTradesList ? taggedTrades : []"
               (selectionHandler)="handleSelection()"
             ></app-trades-list>
           </tui-scrollbar>

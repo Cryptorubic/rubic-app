@@ -3,7 +3,7 @@ import { RubicWarning } from '@core/errors/models/rubic-warning';
 
 class UnsupportedDeflationTokenWarning extends RubicWarning<ERROR_TYPE.COMPONENT> {
   constructor() {
-    super();
+    super(null);
     Object.setPrototypeOf(this, UnsupportedDeflationTokenWarning.prototype);
   }
 }

@@ -1,29 +1,26 @@
 <ng-container>
   <ul @listAnimation>
-    <ng-container *ngFor="let provider of providers; let i = index; trackBy: trackByType">
+    <ng-container *ngFor="let taggedTrade of taggedTrades; let i = index; trackBy: trackByType">
       <li
         class="trade"
         [ngClass]="{
           trade_selected:
-            (selectedProvider$ | async) === provider.tradeType ||
-            ((selectedProvider$ | async) === null && i === 0)
+            (selectedTrade$ | async) === taggedTrade.tradeType ||
+            ((selectedTrade$ | async) === null && i === 0)
         }"
-        (click)="selectProvider(provider?.tradeType)"
+        (click)="selectTrade(taggedTrade?.tradeType)"
         @fadeAnimation
       >
         <div class="trade__container">
-          <app-cross-chain-route
-            *ngIf="smartRoutingList?.[i] as smartRouting"
-            [route]="smartRouting"
-          ></app-cross-chain-route>
+          <app-cross-chain-route [route]="taggedTrade.route"></app-cross-chain-route>
 
           <span>
             {{
-              provider.trade?.to?.tokenAmount
+              taggedTrade.trade?.to?.tokenAmount
                 | bigNumberFormat
                 | withRound
                   : 'toClosestValue'
-                  : { minRound: 2, maxRound: 3, decimals: provider.trade?.to?.decimals }
+                  : { minRound: 2, maxRound: 3, decimals: taggedTrade.trade?.to?.decimals }
             }}
           </span>
 
@@ -31,9 +28,11 @@
             <tui-badge *ngIf="i === 0" status="success" value="Best"></tui-badge>
 
             <tui-badge
-              *ngIf="i > 0 && (provider.tags.minAmountWarning || provider.tags.maxAmountWarning)"
+              *ngIf="
+                i > 0 && (taggedTrade.tags.minAmountWarning || taggedTrade.tags.maxAmountWarning)
+              "
               status="warning"
-              [value]="getMinMaxError(provider)"
+              [value]="getMinMaxError(taggedTrade)"
             ></tui-badge>
           </div>
         </div>

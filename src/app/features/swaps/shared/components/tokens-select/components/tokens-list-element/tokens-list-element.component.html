@@ -14,8 +14,7 @@
   </div>
 
   <div class="token-card__amount" *ngIf="token.amount.gt(0)">
-    <!-- TODO check tui direction correctness -->
-    <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top" tuiHintMode="onDark">{{
+    <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
       token.amount | bigNumberFormat | shortenAmount: (isHorizontalFrame ? 6 : 12):4
     }}</span>
     <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>

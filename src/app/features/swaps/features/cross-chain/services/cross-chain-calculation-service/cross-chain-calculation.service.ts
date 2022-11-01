@@ -39,7 +39,6 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -103,7 +102,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,

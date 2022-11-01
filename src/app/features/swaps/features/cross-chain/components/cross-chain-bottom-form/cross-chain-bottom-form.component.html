@@ -13,7 +13,7 @@
             ></app-rubic-tokens>
           </div>
 
-          <app-amount-estimated [errorText]="errorText$ | async"></app-amount-estimated>
+          <app-to-amount-estimated [errorText]="errorText$ | async"></app-to-amount-estimated>
         </div>
         <app-target-network-address
           *ngIf="displayTargetAddressInput$ | async"

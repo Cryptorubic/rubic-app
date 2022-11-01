@@ -48,7 +48,6 @@ export class SwapFormService implements FormService {
 
   public readonly isFilled$: Observable<boolean>;
 
-  // @todo add
   public get isFilled(): boolean {
     return this._isFilled$.getValue();
   }

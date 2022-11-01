@@ -7,15 +7,10 @@ import {
   Input
 } from '@angular/core';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
-import {
-  CrossChainTradeType,
-  MaxAmountError,
-  MinAmountError,
-  WrappedCrossChainTrade
-} from 'rubic-sdk';
+import { CrossChainTradeType, MaxAmountError, MinAmountError } from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
-import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-trades-list',
@@ -25,30 +20,23 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cro
   animations: [fadeAnimation, listAnimation]
 })
 export class TradesListComponent {
-  @Input() public set providers(value: CrossChainTaggedTrade[]) {
-    this._providers = value;
-    this.smartRoutingList = this._providers?.map(provider =>
-      this.crossChainService.parseRoute(provider)
-    );
-  }
-
-  public get providers(): CrossChainTaggedTrade[] {
-    return this._providers;
-  }
+  @Input() taggedTrades: CrossChainTaggedTrade[];
 
   @Output() public readonly selectionHandler = new EventEmitter<void>();
 
-  public readonly selectedProvider$ = this.crossChainService.selectedProvider$;
+  public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
-  public smartRoutingList: CrossChainRoute[];
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly crossChainService: CrossChainCalculationService,
+    private readonly crossChainFormService: CrossChainFormService
+  ) {}
 
-  private _providers: CrossChainTaggedTrade[];
-
-  public getMinMaxError(provider: WrappedCrossChainTrade): string {
-    const error = provider.error;
+  public getMinMaxError(taggedTrade: CrossChainTaggedTrade): string {
+    const error = taggedTrade.error;
     const isUsd =
       (error instanceof MinAmountError || error instanceof MinAmountError) &&
-      error.tokenSymbol !== provider.trade.from.symbol &&
+      error.tokenSymbol !== taggedTrade.trade.from.symbol &&
       error.tokenSymbol === 'USDC';
 
     if (error instanceof MaxAmountError) {
@@ -59,17 +47,12 @@ export class TradesListComponent {
     }
   }
 
-  constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly crossChainService: CrossChainCalculationService
-  ) {}
-
-  public selectProvider(tradeType: CrossChainTradeType): void {
+  public selectTrade(tradeType: CrossChainTradeType): void {
     this.crossChainService.setSelectedProvider(tradeType);
     this.selectionHandler.emit();
   }
 
-  public trackByType(_index: number, provider: CrossChainTaggedTrade): CrossChainTradeType {
-    return provider.tradeType;
+  public trackByType(_index: number, taggedTrade: CrossChainTaggedTrade): CrossChainTradeType {
+    return taggedTrade.tradeType;
   }
 }
