@@ -346,7 +346,7 @@ export class CrossChainRoutingService extends TradeService {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent || 0,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
