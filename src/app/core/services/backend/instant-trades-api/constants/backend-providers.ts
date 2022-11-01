@@ -9,6 +9,7 @@ export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'pancakeswap',
   [ON_CHAIN_TRADE_TYPE.PANGOLIN]: 'pangolin',
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: 'quickswap',
+  [ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3]: 'quickswap3',
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: 'raydium',
   [ON_CHAIN_TRADE_TYPE.SOLAR_BEAM]: 'solarbeam',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'soulswap',

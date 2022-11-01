@@ -30,6 +30,7 @@ import {
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -40,15 +41,7 @@ import {
 import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import {
-  BehaviorSubject,
-  from,
-  Observable,
-  of,
-  Subscription,
-  distinctUntilChanged,
-  debounceTime
-} from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
@@ -59,12 +52,13 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -118,15 +112,11 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
-  public get dangerousProviders(): CrossChainTradeType[] {
-    return this._dangerousProviders$.getValue();
-  }
-
   public readonly providers$ = this.allProviders$.pipe(
     map(allProviders => {
       const providers = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return trades;
+      return ProvidersListSortingService.setTags(trades);
     }),
     debounceTime(10)
   );
@@ -135,11 +125,13 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
+    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
@@ -172,10 +164,6 @@ export class CrossChainRoutingService extends TradeService {
     this._dangerousProviders$.next(providers);
   }
 
-  public unmarkAllDangerousProviders(): void {
-    this.dangerousProviders.forEach(tradeType => this.unmarkProviderAsDangerous(tradeType));
-  }
-
   public calculateTrade(
     userAuthorized: boolean,
     isViaDisabled: boolean
@@ -183,21 +171,17 @@ export class CrossChainRoutingService extends TradeService {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
-      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
-      const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
-
-      if (isViaDisabled) {
-        disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
-      }
-
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
+      const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: disabledProviders,
+        disabledProviders: isViaDisabled
+          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
+          : [...(disabledProvidersForLandingIframe || [])],
         ...(receiverAddress && { receiverAddress })
       };
 

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-  CelerCrossChainTrade,
   compareCrossChainTrades,
-  CROSS_CHAIN_TRADE_TYPE,
   MaxAmountError,
   MinAmountError,
   WrappedCrossChainTrade
@@ -16,17 +14,13 @@ export class ProvidersListSortingService {
   public static setTags(
     sortedProviders: readonly (WrappedCrossChainTrade & { rank: number })[]
   ): RankedTaggedProviders[] {
-    return sortedProviders?.map((provider, index) => {
+    return sortedProviders.map((provider, index) => {
       return {
         ...provider,
         tags: {
           best: index === 0,
           minAmountWarning: provider.error instanceof MinAmountError,
-          maxAmountWarning: provider.error instanceof MaxAmountError,
-          ...(provider.tradeType === CROSS_CHAIN_TRADE_TYPE.CELER && {
-            deflationTokenWarning: (provider.trade as CelerCrossChainTrade)
-              .isDeflationTokenInTargetNetwork
-          })
+          maxAmountWarning: provider.error instanceof MaxAmountError
         }
       };
     });

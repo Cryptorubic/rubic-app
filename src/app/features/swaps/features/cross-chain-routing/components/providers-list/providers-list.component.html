@@ -32,11 +32,7 @@
               status="warning"
               [value]="getMinMaxError(provider)"
             ></tui-badge>
-            <tui-badge
-              *ngIf="provider.rank === 0 || provider.tags.deflationTokenWarning"
-              status="warning"
-              value="Warning"
-            ></tui-badge>
+            <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
           </div>
         </div>
       </li>

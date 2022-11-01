@@ -16,7 +16,6 @@ import {
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
 import { SmartRouting } from '../../services/cross-chain-routing-service/models/smart-routing.interface';
-import { ProvidersListSortingService } from '../../services/providers-list-sorting-service/providers-list-sorting.service';
 
 @Component({
   selector: 'app-providers-list',
@@ -27,7 +26,7 @@ import { ProvidersListSortingService } from '../../services/providers-list-sorti
 })
 export class ProvidersListComponent {
   @Input() public set providers(value: RankedTaggedProviders[]) {
-    this._providers = ProvidersListSortingService.setTags(value);
+    this._providers = value;
     this.smartRoutingList = this._providers?.map(provider =>
       this.crossChainService.calculateSmartRouting(provider)
     );
