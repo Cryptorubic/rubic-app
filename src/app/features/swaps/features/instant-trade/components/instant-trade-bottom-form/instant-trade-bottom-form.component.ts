@@ -327,8 +327,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
-    // @todo update
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (
+      fromBlockchain !== toBlockchain ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
@@ -698,7 +699,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
-    this.refreshService.setInProgress();
+    this.refreshService.startInProgress();
     const provider = this.selectedProvider;
     try {
       await this.instantTradeService.approve(provider.trade);
@@ -726,7 +727,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.refreshService.setStopped();
+    this.refreshService.stopInProgress();
   }
 
   public async createTrade(): Promise<void> {
@@ -754,7 +755,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       INSTANT_TRADE_STATUS.TX_IN_PROGRESS
     );
 
-    this.refreshService.setInProgress();
+    this.refreshService.startInProgress();
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
@@ -790,7 +791,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
       this.cdr.detectChanges();
 
-      this.refreshService.setStopped();
+      this.refreshService.stopInProgress();
     }
   }
 

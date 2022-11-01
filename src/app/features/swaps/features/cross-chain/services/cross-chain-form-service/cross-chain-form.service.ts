@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, from, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
   BlockchainsInfo,
   CelerCrossChainTrade,
@@ -37,6 +37,10 @@ import {
 } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
@@ -146,17 +150,33 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
+    this.subscribeOnSettingsChanges();
+    this.subscribeOnReceiverAddressChanges();
+    this.subscribeOnUserAddressChanges();
+
+    this.subscribeOnRefreshServiceCalls();
   }
 
   private startRecalculation(): void {
+    if (
+      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
+    ) {
+      return;
+    }
+
     this._calculateTrade$.next();
   }
 
@@ -179,7 +199,12 @@ export class CrossChainFormService {
             return false;
           }
 
-          this.tradeStatus = TRADE_STATUS.LOADING;
+          if (
+            this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
+            this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP
+          ) {
+            this.tradeStatus = TRADE_STATUS.LOADING;
+          }
           this.refreshService.setRefreshing();
           return true;
         }),
@@ -320,21 +345,17 @@ export class CrossChainFormService {
     this.swapFormService.inputValueChanges
       .pipe(
         startWith(this.swapFormService.inputValue),
-        distinctUntilChanged((prev, next) => {
-          return (
+        distinctUntilChanged(
+          (prev, next) =>
             prev.toBlockchain === next.toBlockchain &&
             prev.fromBlockchain === next.fromBlockchain &&
             prev.fromToken?.address === next.fromToken?.address &&
             prev.toToken?.address === next.toToken?.address &&
             prev.fromAmount === next.fromAmount
-          );
-        })
+        )
       )
       .subscribe(form => {
-        this.taggedTrades = [];
-        this.replacedTaggedTrades = [];
-
-        this.updateSelectedTrade(null);
+        this.unsetCalculatedTrades();
 
         if (
           !this.crossChainCalculationService.areSupportedBlockchains(
@@ -355,6 +376,79 @@ export class CrossChainFormService {
 
         this.startRecalculation();
       });
+  }
+
+  /**
+   * Subscribes on cross-chain settings changes and controls recalculation after it.
+   */
+  private subscribeOnSettingsChanges(): void {
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance)
+      )
+      .subscribe(() => {
+        this.unsetCalculatedTrades();
+
+        this.startRecalculation();
+      });
+  }
+
+  /**
+   * Subscribes on receiver address changes and controls recalculation after it.
+   */
+  private subscribeOnReceiverAddressChanges(): void {
+    combineLatest([
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        map(settings => settings.showReceiverAddress)
+      ),
+      this.targetNetworkAddressService.address$
+    ])
+      .pipe(
+        map(([showReceiverAddress, address]) => (showReceiverAddress ? address : null)),
+        distinctUntilChanged((prev, cur) => (!prev && !cur) || prev === cur)
+      )
+      .subscribe(() => {
+        this.unsetCalculatedTrades();
+
+        this.startRecalculation();
+      });
+  }
+
+  /**
+   * Subscribes on user address changes and controls recalculation after it.
+   */
+  private subscribeOnUserAddressChanges(): void {
+    this.authService.currentUser$
+      .pipe(
+        map(user => user?.address),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.unsetCalculatedTrades();
+
+        this.startRecalculation();
+      });
+  }
+
+  /**
+   * Sets stored trades to empty values.
+   */
+  private unsetCalculatedTrades(): void {
+    this.taggedTrades = [];
+    this.replacedTaggedTrades = [];
+
+    this.updateSelectedTrade(null);
+  }
+
+  /**
+   * Subscribes on refresh button calls and controls recalculation after it.
+   */
+  private subscribeOnRefreshServiceCalls(): void {
+    this.refreshService.onRefresh$.subscribe(() => {
+      this.startRecalculation();
+    });
   }
 
   /**

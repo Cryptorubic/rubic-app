@@ -7,13 +7,11 @@ import {
   Injector,
   INJECTOR,
   Input,
-  OnInit,
   Output,
   Self
 } from '@angular/core';
-import { combineLatest } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { distinctUntilChanged, filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -29,7 +27,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/s
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
-import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -52,7 +49,7 @@ type CalculateTradeType = 'normal' | 'hidden';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class CrossChainBottomFormComponent implements OnInit {
+export class CrossChainBottomFormComponent {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
@@ -60,8 +57,6 @@ export class CrossChainBottomFormComponent implements OnInit {
   @Input() favoriteTokens: AvailableTokenAmount[];
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
-
-  public calculatedProviders: CalculatedTradesAmounts | null = null;
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -80,7 +75,7 @@ export class CrossChainBottomFormComponent implements OnInit {
   public readonly displayTargetAddressInput$ =
     this.settingsService.crossChainRoutingValueChanges.pipe(
       startWith(this.settingsService.crossChainRoutingValue),
-      map(value => value.showReceiverAddress)
+      map(settings => settings.showReceiverAddress)
     );
 
   public route: CrossChainRoute = null;
@@ -120,54 +115,6 @@ export class CrossChainBottomFormComponent implements OnInit {
     @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
-
-  ngOnInit() {
-    // We did not use distinctUntilChanged because the PREV value was not updated.
-    let prevToggleValue: boolean;
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(
-        startWith(this.settingsService.crossChainRoutingValue),
-        distinctUntilChanged((prev, next) => {
-          return (
-            prev.autoSlippageTolerance === next.autoSlippageTolerance &&
-            prev.slippageTolerance === next.slippageTolerance
-          );
-        }),
-        filter(settings => {
-          if (settings.showReceiverAddress === prevToggleValue) {
-            prevToggleValue = settings.showReceiverAddress;
-            return true;
-          }
-          prevToggleValue = settings.showReceiverAddress;
-          return false;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.conditionalCalculate('normal');
-      });
-
-    this.authService.currentUser$
-      .pipe(
-        filter(user => !!user?.address),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.conditionalCalculate('normal');
-      });
-
-    this.refreshService.onRefresh$.pipe(takeUntil(this.destroy$)).subscribe(({ isForced }) => {
-      if (isForced || this.settingsService.crossChainRoutingValue.autoRefresh) {
-        this.conditionalCalculate('normal');
-      }
-    });
-
-    combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.conditionalCalculate('normal');
-      });
-  }
 
   private conditionalCalculate(_type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
@@ -211,7 +158,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     this.swapStarted = true;
 
     // this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.refreshService.setInProgress();
+    this.refreshService.startInProgress();
 
     try {
       await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
@@ -228,7 +175,7 @@ export class CrossChainBottomFormComponent implements OnInit {
       // this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
     this.cdr.detectChanges();
-    this.refreshService.setStopped();
+    this.refreshService.stopInProgress();
   }
 
   public async createTrade(): Promise<void> {
@@ -238,7 +185,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     }
 
     // this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.refreshService.setInProgress();
+    this.refreshService.startInProgress();
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
@@ -264,7 +211,7 @@ export class CrossChainBottomFormComponent implements OnInit {
       // this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
-      this.refreshService.setStopped();
+      this.refreshService.stopInProgress();
     }
   }
 

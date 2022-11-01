@@ -9,6 +9,12 @@ import { distinctUntilChanged } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class RefreshService {
+  /**
+   * Stores current refresh status.
+   *
+   * If status was set to `IN_PROGRESS`, it cannot be set to another status,
+   * until {@link stopInProgress} is not called.
+   */
   private readonly _status$ = new BehaviorSubject<REFRESH_STATUS>(REFRESH_STATUS.STOPPED);
 
   public readonly status$ = this._status$.asObservable();
@@ -17,6 +23,9 @@ export class RefreshService {
     return this._status$.getValue();
   }
 
+  /**
+   * Sends calls to services to start new recalculation.
+   */
   private readonly _onRefresh$ = new Subject<OnRefreshData>();
 
   public readonly onRefresh$ = this._onRefresh$.asObservable();
@@ -24,9 +33,14 @@ export class RefreshService {
   /**
    * Refresh timeout in milliseconds.
    */
-  private readonly timeout = 30_000;
+  private readonly timeout = 5_000;
 
   private timeoutId: NodeJS.Timeout;
+
+  /**
+   * True, if form is in recalculation.
+   */
+  private isRefreshing = false;
 
   constructor(private readonly swapFormService: SwapFormService) {
     this.swapFormService.isFilled$.pipe(distinctUntilChanged()).subscribe(isFilled => {
@@ -37,28 +51,64 @@ export class RefreshService {
     });
   }
 
+  /**
+   * Handles user's click on refresh button.
+   */
   public onButtonClick(): void {
     this._onRefresh$.next({ isForced: true });
   }
 
+  /**
+   * Needs to be called, when recalculation is started.
+   */
   public setRefreshing(): void {
-    this._status$.next(REFRESH_STATUS.REFRESHING);
+    clearTimeout(this.timeoutId);
+
+    this.isRefreshing = true;
+    if (this.status !== REFRESH_STATUS.IN_PROGRESS) {
+      this._status$.next(REFRESH_STATUS.REFRESHING);
+    }
   }
 
-  public setInProgress(): void {
-    this._status$.next(REFRESH_STATUS.IN_PROGRESS);
-  }
-
+  /**
+   * Needs to be called, when recalculation is ended.
+   * Setups timer to next recalculation start.
+   */
   public setStopped(): void {
-    this._status$.next(REFRESH_STATUS.STOPPED);
+    this.isRefreshing = false;
+    if (this.status !== REFRESH_STATUS.IN_PROGRESS) {
+      this._status$.next(REFRESH_STATUS.STOPPED);
+    }
+
     this.setupTimer();
   }
 
+  /**
+   * Timer, which makes refresh service call to services to start new recalculation.
+   */
   private setupTimer(): void {
-    this.timeoutId = setTimeout(() => {
-      clearTimeout(this.timeoutId);
+    clearTimeout(this.timeoutId);
 
+    this.timeoutId = setTimeout(() => {
       this._onRefresh$.next({ isForced: false });
     }, this.timeout);
+  }
+
+  /**
+   * Needs to be called, when approve/swap is started.
+   */
+  public startInProgress(): void {
+    this._status$.next(REFRESH_STATUS.IN_PROGRESS);
+  }
+
+  /**
+   * Needs to be called after user confirmed approve/swap transaction.
+   */
+  public stopInProgress(): void {
+    if (this.isRefreshing) {
+      this._status$.next(REFRESH_STATUS.REFRESHING);
+    } else {
+      this._status$.next(REFRESH_STATUS.STOPPED);
+    }
   }
 }
