@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 import {
   BlockchainName,
   BLOCKCHAIN_NAME,
@@ -288,7 +288,7 @@ export class BridgeService extends TradeCalculationService {
   }
 
   private notifyGtmAfterSignTx(txHash: string, trade: BridgeTrade): void {
-    if (trade.provider === BRIDGE_PROVIDER.SWAP_RBC) {
+    if (trade.provider === RUBIC_BRIDGE_PROVIDER.SWAP_RBC) {
       this.gtmService.fireTxSignedEvent(
         SWAP_PROVIDER_TYPE.BRIDGE,
         txHash,

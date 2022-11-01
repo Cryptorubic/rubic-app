@@ -47,13 +47,13 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import { map, switchMap } from 'rxjs/operators';
-import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import {
   CrossChainCalculatedTrade,
   CrossChainCalculatedTradeData
 } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -202,7 +202,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
           providerTrade.trade instanceof LifiCrossChainTrade ||
           providerTrade.trade instanceof ViaCrossChainTrade ||
           providerTrade.trade instanceof RangoCrossChainTrade
-            ? providerTrade.trade?.bridgeType
+            ? providerTrade.trade?.bridgeSubtype.type
             : undefined,
         viaUuid:
           providerTrade.trade instanceof ViaCrossChainTrade ? providerTrade.trade.uuid : undefined,
@@ -246,8 +246,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
 
     let smartRouting: CrossChainRoute = {
-      fromProvider: wrappedTrade.trade.itType.from,
-      toProvider: wrappedTrade.trade.itType.to,
+      fromProvider: wrappedTrade.trade.onChainSubtype.from,
+      toProvider: wrappedTrade.trade.onChainSubtype.to,
       bridgeProvider: wrappedTrade.tradeType
     };
 
@@ -262,7 +262,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ) {
       return {
         ...smartRouting,
-        bridgeProvider: wrappedTrade.trade.bridgeType
+        bridgeProvider: wrappedTrade.trade.bridgeSubtype.type
       };
     }
     return smartRouting;
@@ -359,7 +359,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade
     ) {
-      routingBridgeProvider = trade.bridgeType;
+      routingBridgeProvider = trade.bridgeSubtype.type;
     } else {
       routingBridgeProvider = trade.type;
     }

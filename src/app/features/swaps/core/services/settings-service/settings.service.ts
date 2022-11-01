@@ -11,7 +11,7 @@ import { copyObject } from '@shared/utils/utils';
 import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;

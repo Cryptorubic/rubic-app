@@ -4,7 +4,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 import { BridgeService } from '@features/swaps/features/bridge/services/bridge-service/bridge.service';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 
@@ -20,11 +20,11 @@ export class BridgeSwapInfoComponent implements OnInit {
 
   public readonly Infinity = Infinity;
 
-  private readonly averageTimeInProvider: Record<BRIDGE_PROVIDER, string>;
+  private readonly averageTimeInProvider: Record<RUBIC_BRIDGE_PROVIDER, string>;
 
   public isFromPolygonToEth: boolean;
 
-  private bridgeProvider: BRIDGE_PROVIDER;
+  private bridgeProvider: RUBIC_BRIDGE_PROVIDER;
 
   public fromTokenSymbol: string;
 
@@ -46,8 +46,7 @@ export class BridgeSwapInfoComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.averageTimeInProvider = {
-      [BRIDGE_PROVIDER.SWAP_RBC]: '5m',
-      [BRIDGE_PROVIDER.POLYGON]: '30m'
+      [RUBIC_BRIDGE_PROVIDER.SWAP_RBC]: '5m'
     };
   }
 

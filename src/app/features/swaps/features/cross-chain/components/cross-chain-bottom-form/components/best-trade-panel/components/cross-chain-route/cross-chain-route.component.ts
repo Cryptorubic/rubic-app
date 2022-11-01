@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Provider, TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
+import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
+import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 
 @Component({
   selector: 'app-cross-chain-route',
@@ -9,29 +10,28 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cro
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainRouteComponent {
-  public fromProvider: Provider;
+  public fromProvider: ProviderInfo;
 
-  public bridgeProvider: Provider;
+  public bridgeProvider: ProviderInfo;
 
-  public toProvider: Provider;
+  public toProvider: ProviderInfo;
 
   @Input() set route(routing: CrossChainRoute) {
-    this.bridgeProvider = this.tradesProviders[routing.bridgeProvider];
+    this.bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
+
     this.fromProvider = routing.fromProvider
-      ? this.tradesProviders[routing.fromProvider]
+      ? TRADES_PROVIDERS[routing.fromProvider]
       : {
-          ...this.tradesProviders[routing.bridgeProvider],
-          name: this.tradesProviders[routing.bridgeProvider].name + ' Pool'
+          ...TRADES_PROVIDERS[routing.bridgeProvider],
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
         };
     this.toProvider = routing.toProvider
-      ? this.tradesProviders[routing.toProvider]
+      ? TRADES_PROVIDERS[routing.toProvider]
       : {
-          ...this.tradesProviders[routing.bridgeProvider],
-          name: this.tradesProviders[routing.bridgeProvider].name + ' Pool'
+          ...TRADES_PROVIDERS[routing.bridgeProvider],
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
         };
   }
-
-  public readonly tradesProviders = TRADES_PROVIDERS;
 
   constructor() {}
 }

@@ -60,7 +60,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/s
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';

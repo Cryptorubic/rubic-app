@@ -1,0 +1,89 @@
+@use '../../../../../../scss/mixins' as *;
+
+:host {
+  display: block;
+  margin-top: 20px;
+
+  @include iframe-vertical {
+    position: absolute;
+    top: 89px;
+    right: 0;
+  }
+
+  @include iframe-horizontal {
+    position: absolute;
+    top: 47px;
+    right: 0;
+  }
+
+  tui-input {
+    ::ng-deep {
+      input {
+        padding: 0;
+      }
+    }
+  }
+
+  ::ng-deep .network-container {
+    &__input-status-icon {
+      width: 26px;
+      height: 26px;
+    }
+
+    &__iframe-input {
+      width: 182px;
+    }
+
+    tui-wrapper[data-appearance='textfield'] {
+      --tui-base-01: var(--rubic-base-18);
+      border-radius: 50px;
+      box-shadow: none;
+
+      @include iframe {
+        --tui-base-01: var(--main-background);
+        border-radius: 10px;
+        box-shadow: none;
+
+        &::after {
+          border: none;
+        }
+      }
+
+      input {
+        border-left-width: 30px !important;
+
+        @include iframe {
+          padding-right: 0 !important;
+
+          border-left-width: 0 !important;
+        }
+      }
+
+      .content {
+        padding-left: 33px !important;
+
+        @include iframe {
+          padding: 0 0 0 var(--tui-padding-s) !important;
+        }
+      }
+    }
+
+    &__row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    &__hint {
+      display: flex;
+      margin-left: 10px;
+
+      cursor: pointer;
+
+      svg {
+        width: 21px;
+        height: 21px;
+      }
+    }
+  }
+}

@@ -15,7 +15,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({

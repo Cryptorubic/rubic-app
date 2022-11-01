@@ -1,14 +1,8 @@
 import { Injectable } from '@angular/core';
-import BigNumber from 'bignumber.js';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { EMPTY, Observable } from 'rxjs';
 import { first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { TableTrade } from '@shared/models/my-trades/table-trade';
-import {
-  BridgeBlockchainApi,
-  BridgeTableTradeApi
-} from '@core/services/backend/bridge-api/models/bridge-table-trade-api';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
@@ -20,75 +14,7 @@ import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly tradeBlockchain: Record<BridgeBlockchainApi, BlockchainName> = {
-    ETH: BLOCKCHAIN_NAME.ETHEREUM,
-    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    POL: BLOCKCHAIN_NAME.POLYGON
-  };
-
-  private readonly whitelistedPolygonBridgeHashes = [
-    '0x8dc2ebcac1a3576711a1631b73d57ae233231dd4043e2a0a53d57af3eea5b8ea'
-  ];
-
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
-
-  /**
-   * Gets user's bridges transactions.
-   * @param walletAddress User's wallet address.
-   * @return Observable Trade object.
-   */
-  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
-    return this.httpService
-      .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
-      .pipe(
-        map((tradesApi: BridgeTableTradeApi[]) =>
-          tradesApi
-            .filter(trade =>
-              this.whitelistedPolygonBridgeHashes.includes(trade.fromTransactionHash)
-            )
-            .map(trade => this.parseTradeApiToTableTrade(trade))
-        )
-      );
-  }
-
-  /**
-   * Parses bridge trade api response.
-   * @param trade Trade from bridge api response.
-   * @return TableTrade Parsed trade object.
-   */
-  private parseTradeApiToTableTrade(trade: BridgeTableTradeApi): TableTrade {
-    const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
-    const toBlockchain = this.tradeBlockchain[trade.toNetwork];
-
-    let status = trade.status.toLowerCase() as TRANSACTION_STATUS;
-    if (
-      fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT
-    ) {
-      status = TRANSACTION_STATUS.WAITING_FOR_RECEIVING;
-    }
-
-    return {
-      transactionId: trade.transaction_id,
-      fromTransactionHash: trade.fromTransactionHash,
-      toTransactionHash: trade.toTransactionHash,
-      status,
-      provider: trade.type,
-      fromToken: {
-        blockchain: fromBlockchain,
-        symbol: trade.ethSymbol,
-        amount: new BigNumber(trade.actualFromAmount).toFixed(),
-        image: trade.image_link
-      },
-      toToken: {
-        blockchain: toBlockchain,
-        symbol: trade.bscSymbol,
-        amount: new BigNumber(trade.actualToAmount).toFixed(),
-        image: trade.image_link
-      },
-      date: new Date(trade.updateTime)
-    };
-  }
 
   /**
    * Makes POST request to add transaction to database.

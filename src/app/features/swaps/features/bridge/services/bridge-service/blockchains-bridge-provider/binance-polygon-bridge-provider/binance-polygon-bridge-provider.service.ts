@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { first } from 'rxjs/operators';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 import { Observable } from 'rxjs';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { TransactionReceipt } from 'web3-eth';
@@ -19,9 +19,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       .subscribe(rubicToken => this._tokenPairs$.next(rubicToken));
   }
 
-  public getProviderType(token?: BridgeTokenPair): BRIDGE_PROVIDER {
+  public getProviderType(token?: BridgeTokenPair): RUBIC_BRIDGE_PROVIDER {
     if (this.isRBCToken(token?.symbol)) {
-      return BRIDGE_PROVIDER.SWAP_RBC;
+      return RUBIC_BRIDGE_PROVIDER.SWAP_RBC;
     }
     throw new UnknownError();
   }

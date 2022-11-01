@@ -7,7 +7,7 @@ import { EthereumBinanceRubicBridgeProviderService } from '@features/swaps/featu
 import { BridgeBottomFormComponent } from 'src/app/features/swaps/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
 import { BinancePolygonBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
-import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
+import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 
 @NgModule({

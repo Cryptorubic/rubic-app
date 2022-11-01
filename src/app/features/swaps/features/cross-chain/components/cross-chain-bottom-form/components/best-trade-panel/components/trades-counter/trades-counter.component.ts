@@ -23,6 +23,10 @@ export class TradesCounterComponent {
     map(amounts => amounts && amounts.calculated < amounts.total)
   );
 
+  public readonly isDisabled$ = this.crossChainFormService.tradeStatus$.pipe(
+    map(status => status === TRADE_STATUS.DISABLED)
+  );
+
   public readonly displayCounter$ = this.isCalculating$.pipe(
     distinctUntilChanged(),
     switchMap(isCalculating =>

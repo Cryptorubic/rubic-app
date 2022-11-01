@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensSelectService } from 'src/app/features/swaps/shared/tokens-select/services/tokens-select.service';
+import { TokensSelectService } from 'src/app/features/swaps/shared/components/tokens-select/services/tokens-select.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';

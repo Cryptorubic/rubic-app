@@ -126,6 +126,12 @@ export class CrossChainFormService {
     this._error$.next(value);
   }
 
+  /**
+   * Contains calculated tagged trades, which cannot be shown, because they
+   * are identical in route to those trades, which are already displayed.
+   */
+  private replacedTaggedTrades: CrossChainTaggedTrade[] = [];
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly refreshService: RefreshService,
@@ -195,7 +201,7 @@ export class CrossChainFormService {
               }
 
               if (lastCalculatedTrade) {
-                this.updateTradesList(lastCalculatedTrade, calculationEnded);
+                this.updateBestTrade(lastCalculatedTrade, calculationEnded);
               }
             })
           );
@@ -205,20 +211,15 @@ export class CrossChainFormService {
   }
 
   /**
-   * Adds last calculated trade to trades list, resorts it and updates form.
+   * Adds last calculated trade to trades lists and updates form with best trade.
    */
-  private updateTradesList(
+  private updateBestTrade(
     lastCalculatedTrade: CrossChainCalculatedTrade,
     calculationEnded: boolean
   ): void {
-    const updatedTaggedTrades = this.taggedTrades.filter(
-      taggedTrade => taggedTrade.tradeType !== lastCalculatedTrade.tradeType
-    );
-    updatedTaggedTrades.push(CrossChainFormService.setTags(lastCalculatedTrade));
-    updatedTaggedTrades.sort(compareCrossChainTrades);
-    this.taggedTrades = updatedTaggedTrades;
+    this.taggedTrades = this.getUpdatedTradesList(lastCalculatedTrade);
 
-    const bestTaggedTrade = updatedTaggedTrades[0];
+    const bestTaggedTrade = this.taggedTrades[0];
     if (bestTaggedTrade.trade?.to?.tokenAmount) {
       const { trade, error, needApprove } = bestTaggedTrade;
 
@@ -245,6 +246,55 @@ export class CrossChainFormService {
   }
 
   /**
+   * Returns updated trades lists with last calculated trades.
+   */
+  private getUpdatedTradesList(
+    lastCalculatedTrade: CrossChainCalculatedTrade
+  ): CrossChainTaggedTrade[] {
+    let updatedTaggedTrades = this.taggedTrades.filter(
+      taggedTrade => taggedTrade.tradeType !== lastCalculatedTrade.tradeType
+    );
+    const taggedLastCalculatedTrade = CrossChainFormService.setTags(lastCalculatedTrade);
+
+    const lastTrade = lastCalculatedTrade.trade;
+    if (lastTrade) {
+      const identicalTrade = updatedTaggedTrades.find(taggedTrade => {
+        const listedTrade = taggedTrade.trade;
+        if (!listedTrade) {
+          return false;
+        }
+        return (
+          listedTrade.onChainSubtype.from === lastTrade.onChainSubtype.from &&
+          listedTrade.onChainSubtype.to === lastTrade.onChainSubtype.to &&
+          listedTrade.bridgeSubtype.type === lastTrade.bridgeSubtype.type
+        );
+      });
+
+      if (identicalTrade) {
+        const updatedReplacedTaggedTrades = this.replacedTaggedTrades.filter(
+          replacedTaggedTrade => replacedTaggedTrade.tradeType !== lastCalculatedTrade.tradeType
+        );
+
+        if (
+          identicalTrade.trade.bridgeSubtype.isNative ||
+          identicalTrade.trade.to.tokenAmount.gt(lastTrade.to.tokenAmount)
+        ) {
+          this.replacedTaggedTrades = updatedReplacedTaggedTrades.concat(taggedLastCalculatedTrade);
+
+          return updatedTaggedTrades;
+        } else {
+          this.replacedTaggedTrades = updatedReplacedTaggedTrades.concat(identicalTrade);
+
+          updatedTaggedTrades = updatedTaggedTrades.filter(
+            taggedTrade => taggedTrade.tradeType !== identicalTrade.tradeType
+          );
+        }
+      }
+    }
+    return updatedTaggedTrades.concat(taggedLastCalculatedTrade).sort(compareCrossChainTrades);
+  }
+
+  /**
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
@@ -263,6 +313,7 @@ export class CrossChainFormService {
       )
       .subscribe(form => {
         this.taggedTrades = [];
+        this.replacedTaggedTrades = [];
 
         if (
           !this.crossChainCalculationService.areSupportedBlockchains(

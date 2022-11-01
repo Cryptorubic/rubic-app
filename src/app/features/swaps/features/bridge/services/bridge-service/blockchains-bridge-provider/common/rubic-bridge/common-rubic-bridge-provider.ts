@@ -15,7 +15,7 @@ import { BridgeApiService } from '@core/services/backend/bridge-api/bridge-api.s
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { TransactionReceipt } from 'web3-eth';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/swaps/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
@@ -143,8 +143,8 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     };
   }
 
-  public getProviderType(): BRIDGE_PROVIDER {
-    return BRIDGE_PROVIDER.SWAP_RBC;
+  public getProviderType(): RUBIC_BRIDGE_PROVIDER {
+    return RUBIC_BRIDGE_PROVIDER.SWAP_RBC;
   }
 
   public getFee(

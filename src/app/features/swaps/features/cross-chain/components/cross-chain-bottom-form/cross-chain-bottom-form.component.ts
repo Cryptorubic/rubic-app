@@ -25,7 +25,7 @@ import { CrossChainCalculationService } from '@features/swaps/features/cross-cha
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';

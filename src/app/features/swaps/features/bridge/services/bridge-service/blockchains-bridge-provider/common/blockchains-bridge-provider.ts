@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/swaps/features/bridge/models/bridge-trade';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 import { RubicBridgeSupportedBlockchains } from './rubic-bridge/models/types';
 
 export abstract class BlockchainsBridgeProvider {
@@ -19,14 +19,13 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * get type of provider
    */
-  public abstract getProviderType?(token?: BridgeTokenPair): BRIDGE_PROVIDER;
+  public abstract getProviderType?(token?: BridgeTokenPair): RUBIC_BRIDGE_PROVIDER;
 
   /**
    * get price blockchain provider's fee
    * @param tokenPair bridge token pair
    * @param fromBlockchain source blockchain
    * @param toBlockchain destination blockchain
-   * @param amount swap input amount
    * @return observable number fee price
    */
   public abstract getFee(

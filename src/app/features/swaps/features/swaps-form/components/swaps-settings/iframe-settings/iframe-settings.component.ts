@@ -10,7 +10,7 @@ import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 
 export interface IframeSettingsForm {
   autoSlippageTolerance: boolean;

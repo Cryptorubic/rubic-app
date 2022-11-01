@@ -24,7 +24,7 @@ import {
   TuiToggleModule
 } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TokensSelectModule } from 'src/app/features/swaps/shared/tokens-select/tokens-select.module';
+import { TokensSelectModule } from 'src/app/features/swaps/shared/components/tokens-select/tokens-select.module';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { CrossChainModule } from 'src/app/features/swaps/features/cross-chain/cross-chain.module';
 import { TokenAmountInputComponent } from 'src/app/features/swaps/features/swaps-form/components/amount-input/components/token-amount-input/token-amount-input.component';

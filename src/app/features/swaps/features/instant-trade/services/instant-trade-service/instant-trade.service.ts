@@ -41,7 +41,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';

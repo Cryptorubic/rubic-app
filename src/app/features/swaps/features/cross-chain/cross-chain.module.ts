@@ -17,7 +17,7 @@ import {
 import { TuiAccordionModule, TuiBadgeModule, TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { CrossChainRouteComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/cross-chain-route/cross-chain-route.component';
-import { SwapButtonContainerModule } from '@features/swaps/shared/swap-button-container/swap-button-container.module';
+import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-scheme-modal.component';
 import { TradesCounterComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/trades-counter.component';

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { Provider } from '@app/shared/constants/common/trades-providers';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -35,6 +34,7 @@ import {
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -45,9 +45,9 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
 export class SwapSchemeModalComponent implements OnInit {
   public trade: SwapSchemeModalData;
 
-  public srcProvider: Provider;
+  public srcProvider: ProviderInfo;
 
-  public dstProvider: Provider;
+  public dstProvider: ProviderInfo;
 
   public fromToken: TokenAmount;
 
@@ -83,7 +83,7 @@ export class SwapSchemeModalComponent implements OnInit {
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
-  public bridgeType: Provider;
+  public bridgeType: ProviderInfo;
 
   public viaUuid: string | undefined;
 

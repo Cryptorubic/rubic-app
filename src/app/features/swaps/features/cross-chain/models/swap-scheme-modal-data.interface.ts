@@ -1,10 +1,10 @@
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
-import { Provider } from '@shared/constants/common/trades-providers';
+import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 
 export interface SwapSchemeModalData {
-  srcProvider: Provider;
-  dstProvider: Provider;
+  srcProvider: ProviderInfo;
+  dstProvider: ProviderInfo;
   fromToken: TokenAmount;
   toToken: TokenAmount;
   fromBlockchain: BlockchainName;
@@ -12,7 +12,7 @@ export interface SwapSchemeModalData {
   crossChainProvider: CrossChainTradeType;
   srcTxHash: string;
   timestamp: number;
-  bridgeType?: Provider;
+  bridgeType?: ProviderInfo;
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;

@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { BlockchainName } from 'rubic-sdk';
 import { BridgeTokenPair } from '@features/swaps/features/bridge/models/bridge-token-pair';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { RUBIC_BRIDGE_PROVIDER } from '@features/swaps/shared/models/trade-provider/bridge-provider';
 
 export interface BridgeTrade {
-  provider: BRIDGE_PROVIDER;
+  provider: RUBIC_BRIDGE_PROVIDER;
   token: BridgeTokenPair;
   fromBlockchain: BlockchainName;
   toBlockchain: BlockchainName;

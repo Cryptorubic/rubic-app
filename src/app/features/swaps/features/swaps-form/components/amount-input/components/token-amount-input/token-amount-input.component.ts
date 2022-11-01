@@ -17,7 +17,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { fromBlockchains } from '@features/swaps/shared/tokens-select/constants/from-blockchains';
+import { fromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/from-blockchains';
 
 @Component({
   selector: 'app-token-amount-input',

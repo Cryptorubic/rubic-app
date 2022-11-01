@@ -15,7 +15,7 @@ import {
   PriceTokenAmount,
   TokenAmountSymbol
 } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
+import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',

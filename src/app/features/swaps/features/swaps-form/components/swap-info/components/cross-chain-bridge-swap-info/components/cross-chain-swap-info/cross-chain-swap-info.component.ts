@@ -26,7 +26,7 @@ import {
   DebridgeCrossChainTrade,
   ViaCrossChainTrade
 } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
+import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
