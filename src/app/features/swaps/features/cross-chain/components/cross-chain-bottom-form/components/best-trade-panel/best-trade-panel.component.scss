@@ -50,8 +50,6 @@
   }
 
   &__trades-content {
-    $self: &;
-
     position: absolute;
     left: -24px;
     z-index: 999;
@@ -78,10 +76,6 @@
 
       @include b($mobile-md) {
         height: 186px;
-      }
-
-      &#{$self}_with-approve {
-        height: 228px;
       }
     }
 

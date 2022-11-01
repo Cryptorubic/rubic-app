@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { ApproveSwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/approve-swap-button.service';
 
 @Component({
   selector: 'app-approve-swap-button',
@@ -12,10 +11,5 @@ export class ApproveSwapButtonComponent {
 
   @Output() readonly onSwapClick = new EventEmitter<void>();
 
-  public readonly approveIndicatorDisabled$ =
-    this.approveSwapButtonService.approveIndicatorDisabled$;
-
-  public readonly swapIndicatorDisabled$ = this.approveSwapButtonService.swapIndicatorDisabled$;
-
-  constructor(private readonly approveSwapButtonService: ApproveSwapButtonService) {}
+  constructor() {}
 }

@@ -404,8 +404,4 @@ export class SwapButtonContainerErrorsService {
     }
     this.updateError();
   }
-
-  public isError(errorType: ERROR_TYPE): boolean {
-    return this.errorType[errorType];
-  }
 }

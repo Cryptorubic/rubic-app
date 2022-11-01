@@ -23,24 +23,6 @@ export class ApproveSwapButtonService {
     map(tradeStatus => tradeStatus !== TRADE_STATUS.READY_TO_APPROVE)
   );
 
-  public readonly approveIndicatorDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
-    map(
-      tradeStatus =>
-        tradeStatus === TRADE_STATUS.READY_TO_SWAP ||
-        tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS ||
-        tradeStatus === TRADE_STATUS.DISABLED
-    )
-  );
-
-  public readonly swapIndicatorDisabled$ = this.swapButtonContainerService.tradeStatus$.pipe(
-    map(
-      tradeStatus =>
-        tradeStatus === TRADE_STATUS.READY_TO_APPROVE ||
-        tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-        tradeStatus === TRADE_STATUS.DISABLED
-    )
-  );
-
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService

@@ -5,6 +5,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number';
 
 @Component({
   selector: 'app-trades-counter',
@@ -34,8 +35,8 @@ export class TradesCounterComponent {
     )
   );
 
-  public readonly fakeProvider$ = timer(0, 1000).pipe(
-    map(index => fakeProviders[index % fakeProviders.length])
+  public readonly fakeProvider$ = timer(0, 1200).pipe(
+    map(() => fakeProviders[getRandomNumber(fakeProviders.length)])
   );
 
   public get isBestRouteFound(): boolean {

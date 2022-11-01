@@ -132,6 +132,17 @@ export class CrossChainFormService {
    */
   private replacedTaggedTrades: CrossChainTaggedTrade[] = [];
 
+  /**
+   * Contains true, in case `approve` button must be shown in form.
+   */
+  private readonly _displayApproveButton$ = new BehaviorSubject<boolean>(false);
+
+  public readonly displayApproveButton$ = this._displayApproveButton$.asObservable();
+
+  private set displayApproveButton(value: boolean) {
+    this._displayApproveButton$.next(value);
+  }
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly refreshService: RefreshService,
@@ -232,6 +243,7 @@ export class CrossChainFormService {
         this.tradeStatus = TRADE_STATUS.DISABLED;
       } else {
         this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
+        this.displayApproveButton = needApprove;
       }
     } else if (calculationEnded) {
       this.selectedTrade = null;

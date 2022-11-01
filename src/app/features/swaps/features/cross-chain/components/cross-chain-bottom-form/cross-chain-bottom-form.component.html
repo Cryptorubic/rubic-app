@@ -1,4 +1,4 @@
-<section class="bottom-form">
+<section class="bottom-form" *ngLet="tradeStatus$ | async as tradeStatus">
   <div class="bottom-form__container">
     <div class="bottom-form__estimate-container">
       <div>
@@ -28,9 +28,9 @@
   <div class="bottom-form__footer">
     <div class="bottom-form__button">
       <app-swap-button-container
-        [needApprove]="needApprove"
-        [withApproveButton]="withApproveButton"
-        [status]="tradeStatus"
+        [needApprove]="needApprove$ | async"
+        [withApproveButton]="displayApproveButton$ | async"
+        [status]="tradeStatus$ | async"
         [minAmount]="minError"
         [maxAmount]="maxError"
         buttonText="Swap"

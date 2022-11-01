@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { distinctUntilChanged, filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -20,7 +20,6 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -42,6 +41,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -71,15 +71,6 @@ export class CrossChainBottomFormComponent implements OnInit {
 
   private toAmount: BigNumber;
 
-  private _tradeStatus: TRADE_STATUS;
-
-  public needApprove: boolean;
-
-  /**
-   * True, if 'approve' button should be shown near 'swap' button.
-   */
-  public withApproveButton: boolean;
-
   public minError: false | { amount: BigNumber; symbol: string };
 
   public maxError: false | { amount: BigNumber; symbol: string };
@@ -87,8 +78,6 @@ export class CrossChainBottomFormComponent implements OnInit {
   public errorText: string;
 
   private hiddenTradeData: CrossChainCalculatedTrade | null = null;
-
-  private calculateTradeSubscription$: Subscription;
 
   public readonly displayTargetAddressInput$ =
     this.settingsService.crossChainRoutingValueChanges.pipe(
@@ -100,18 +89,15 @@ export class CrossChainBottomFormComponent implements OnInit {
 
   private crossChainProviderTrade: CrossChainCalculatedTrade;
 
-  private isViaDisabled = false;
-
   private swapStarted = false;
 
-  get tradeStatus(): TRADE_STATUS {
-    return this._tradeStatus;
-  }
+  public readonly tradeStatus$ = this.crossChainFormService.tradeStatus$;
 
-  set tradeStatus(value: TRADE_STATUS) {
-    this._tradeStatus = value;
-    this.tradeStatusChange.emit(value);
-  }
+  public readonly needApprove$ = this.crossChainFormService.selectedTrade$.pipe(
+    map(trade => trade?.needApprove || false)
+  );
+
+  public readonly displayApproveButton$ = this.crossChainFormService.displayApproveButton$;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -121,6 +107,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingService: CrossChainCalculationService,
+    private readonly crossChainFormService: CrossChainFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly dialogService: TuiDialogService,
@@ -178,30 +165,6 @@ export class CrossChainBottomFormComponent implements OnInit {
       });
   }
 
-  private setFormValues(form: SwapFormInput): void {
-    if (
-      form.fromToken &&
-      form.toToken &&
-      !this.crossChainRoutingService.areSupportedBlockchains(form.fromBlockchain, form.toBlockchain)
-    ) {
-      let unsupportedBlockchain = null;
-      if (this.crossChainRoutingService.isSupportedBlockchain(form.fromBlockchain)) {
-        unsupportedBlockchain = form.fromBlockchain;
-      } else if (!this.crossChainRoutingService.isSupportedBlockchain(form.toBlockchain)) {
-        unsupportedBlockchain = form.toBlockchain;
-      }
-
-      if (unsupportedBlockchain) {
-        this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
-      } else {
-        this.errorText = 'Selected blockchains are not supported in Cross-Chain.';
-      }
-      return;
-    }
-
-    this.conditionalCalculate('normal');
-  }
-
   private conditionalCalculate(_type: CalculateTradeType): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
@@ -232,13 +195,13 @@ export class CrossChainBottomFormComponent implements OnInit {
       });
       this.route = this.hiddenTradeData.route;
 
-      this.tradeStatus = this.needApprove
-        ? TRADE_STATUS.READY_TO_APPROVE
-        : TRADE_STATUS.READY_TO_SWAP;
+      // this.tradeStatus = this.needApprove
+      //   ? TRADE_STATUS.READY_TO_APPROVE
+      //   : TRADE_STATUS.READY_TO_SWAP;
     } else {
       this.route = null;
 
-      this.tradeStatus = TRADE_STATUS.DISABLED;
+      // this.tradeStatus = TRADE_STATUS.DISABLED;
     }
   }
 
@@ -246,14 +209,14 @@ export class CrossChainBottomFormComponent implements OnInit {
     const { fromBlockchain } = this.swapFormService.inputValue;
     this.swapStarted = true;
 
-    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+    // this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.refreshService.setInProgress();
 
     try {
       await this.crossChainRoutingService.approve(this.crossChainProviderTrade);
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.needApprove = false;
+      // this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      // this.needApprove = false;
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 
@@ -261,7 +224,7 @@ export class CrossChainBottomFormComponent implements OnInit {
     } catch (err) {
       this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
       this.swapStarted = false;
-      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+      // this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
     this.cdr.detectChanges();
     this.refreshService.setStopped();
@@ -273,13 +236,13 @@ export class CrossChainBottomFormComponent implements OnInit {
       return;
     }
 
-    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    // this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.refreshService.setInProgress();
 
     try {
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
       await this.crossChainRoutingService.createTrade(this.crossChainProviderTrade, () => {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        // this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.cdr.detectChanges();
       });
 
@@ -297,7 +260,7 @@ export class CrossChainBottomFormComponent implements OnInit {
         this.errorsService.catch(err);
       }
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      // this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
       this.refreshService.setStopped();
