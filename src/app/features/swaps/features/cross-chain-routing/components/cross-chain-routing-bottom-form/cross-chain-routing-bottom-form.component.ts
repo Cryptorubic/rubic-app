@@ -542,7 +542,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       const error = RubicSdkErrorParser.parseError(err);
       if (
         error instanceof NotWhitelistedProviderWarning ||
-        error instanceof ExecutionRevertedError
+        error instanceof ExecutionRevertedError ||
+        error instanceof UnsupportedDeflationTokenWarning
       ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType

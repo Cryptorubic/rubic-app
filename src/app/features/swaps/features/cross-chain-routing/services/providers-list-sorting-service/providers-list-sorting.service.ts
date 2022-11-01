@@ -16,7 +16,7 @@ export class ProvidersListSortingService {
   public static setTags(
     sortedProviders: readonly (WrappedCrossChainTrade & { rank: number })[]
   ): RankedTaggedProviders[] {
-    return sortedProviders.map((provider, index) => {
+    return sortedProviders?.map((provider, index) => {
       return {
         ...provider,
         tags: {
