@@ -1,4 +1,4 @@
-@use '../../../../../../scss/core' as *;
+@use 'src/scss/core' as *;
 
 :host {
   overflow: hidden;
@@ -15,50 +15,33 @@
   justify-content: space-between;
 
   max-width: 350px;
-  height: 100%;
+  height: 58px;
+  margin-bottom: 10px;
 
-  padding-left: 2px;
-
-  @include b($mobile-sm) {
-    align-items: flex-start;
+  @include iframe {
+    height: 100%;
   }
 
   @include iframe-vertical {
     align-items: flex-start;
     max-width: unset;
-
-    padding-left: 0;
-
-    &_hidden-iframe-stub {
-      height: 50px;
-
-      background-color: var(--main-background);
-      border-radius: 10px;
-    }
   }
 
-  @include iframe-vertical-light {
-    &_hidden-iframe-stub {
-      background-color: var(--rubic-base-14);
-    }
+  @include iframe-horizontal {
+    margin-bottom: 0;
   }
 
   &__blockchain-and-value {
-    display: flex;
-    width: 100%;
-    margin-bottom: 10px;
+    height: 100%;
 
     app-iframe-blockchain-indicator {
       margin-right: 15px;
     }
-
-    /* stylelint-disable */
-    @include iframe-horizontal {
-      margin-bottom: 0;
-    }
   }
 
   app-tokens-rate {
+    display: block;
+
     @include iframe-horizontal {
       position: absolute;
       bottom: -33px;
@@ -70,30 +53,27 @@
     }
   }
 
-  &__tokens-container {
-    width: 100%;
-    min-width: 200px;
-    overflow: auto;
-    justify-content: flex-end;
+  &__output {
 
-    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 100%;
+    overflow: auto;
+
     font-size: 22px;
     line-height: 35px;
     letter-spacing: 0.1em;
-    // todo check property name
-    scrollbar-width: none;
-
     text-align: right;
 
     transition: opacity ease-in-out 0.3s;
 
     @include b($mobile-sm) {
-      justify-content: flex-start;
+      text-align: left;
     }
 
     @include iframe-horizontal {
-      margin-bottom: 0;
-
       font-size: 20px;
       text-align: left;
     }
@@ -121,91 +101,40 @@
     }
 
     &_error {
-      display: flex;
+      flex-direction: row;
 
-      height: initial;
+      height: 35px;
 
       font-weight: 300;
-      font-size: 24px;
+      font-size: 16px;
       letter-spacing: 2px;
-
-      @include b($mobile-sm) {
-        font-size: 16px;
-      }
     }
-
-    &_placeholder {
-      color: rgb(117, 117, 117);
-    }
-
-    &_loading {
-      opacity: 0.25;
-    }
-  }
-
-  app-tokens-rate {
-    display: block;
-    margin-top: 6px;
-  }
-
-  &__output_error-text {
-    font-size: 16px;
   }
 
   &__hint {
     display: flex;
     align-items: center;
+
+    width: 15px;
     margin-left: 10px;
 
-    cursor: pointer;
+    cursor: help;
 
-    &_error {
-      float: right;
-
-      ::ng-deep {
-        svg path {
-          fill: $rubic-warning;
-        }
+    ::ng-deep {
+      svg path {
+        fill: $rubic-warning;
       }
-    }
-  }
-
-  &__fee {
-    color: var(--form-dim-text-color);
-    font-weight: 400;
-    font-size: 14px;
-  }
-}
-
-@include b($mobile-md) {
-  .bottom-amount {
-    display: flex;
-    flex-direction: column;
-
-    &__tokens-container {
-      padding-top: 0;
-    }
-
-    &__fee {
-      margin-right: 0;
-    }
-  }
-}
-
-@include b($mobile-sm) {
-  .bottom-amount {
-    padding-left: 0;
-    &__tokens-container {
-      text-align: left;
     }
   }
 }
 
 .blink-animation {
-  animation: blink 2s ease-in-out infinite;
-  opacity: 1;
   color: var(--tui-text-01);
   font-size: 22px;
+
+  opacity: 1;
+
+  animation: blink 2s ease-in-out infinite;
 }
 
 @keyframes blink {

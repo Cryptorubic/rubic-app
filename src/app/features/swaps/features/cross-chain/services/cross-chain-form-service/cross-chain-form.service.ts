@@ -36,6 +36,7 @@ import {
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 
 @Injectable({
   providedIn: 'root'
@@ -118,11 +119,11 @@ export class CrossChainFormService {
   /**
    * Contains error to show in form, in case there is no successfully calculated trade.
    */
-  private readonly _error$ = new BehaviorSubject<RubicError<ERROR_TYPE> | undefined>(undefined);
+  private readonly _error$ = new BehaviorSubject<RubicError<ERROR_TYPE> | null>(null);
 
   public readonly error$ = this._error$.asObservable();
 
-  private set error(value: RubicError<ERROR_TYPE> | undefined) {
+  private set error(value: RubicError<ERROR_TYPE> | null) {
     this._error$.next(value);
   }
 
@@ -168,7 +169,7 @@ export class CrossChainFormService {
       .pipe(
         debounceTime(200),
         map(() => {
-          this.error = undefined;
+          this.error = null;
 
           if (!this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -211,9 +212,7 @@ export class CrossChainFormService {
                 this.refreshService.setStopped();
               }
 
-              if (lastCalculatedTrade) {
-                this.updateBestTrade(lastCalculatedTrade, calculationEnded);
-              }
+              this.updateBestTrade(lastCalculatedTrade, calculationEnded);
             })
           );
         })
@@ -225,20 +224,18 @@ export class CrossChainFormService {
    * Adds last calculated trade to trades lists and updates form with best trade.
    */
   private updateBestTrade(
-    lastCalculatedTrade: CrossChainCalculatedTrade,
+    lastCalculatedTrade: CrossChainCalculatedTrade | null,
     calculationEnded: boolean
   ): void {
-    this.taggedTrades = this.getUpdatedTradesList(lastCalculatedTrade);
+    if (lastCalculatedTrade) {
+      this.taggedTrades = this.getUpdatedTradesList(lastCalculatedTrade);
+    }
 
     const bestTaggedTrade = this.taggedTrades[0];
-    if (bestTaggedTrade.trade?.to?.tokenAmount) {
-      const { trade, error, needApprove } = bestTaggedTrade;
+    if (bestTaggedTrade?.trade?.to.tokenAmount) {
+      this.updateSelectedTrade(bestTaggedTrade);
 
-      this.selectedTrade = bestTaggedTrade;
-      this.swapFormService.output.patchValue({
-        toAmount: trade.to.tokenAmount
-      });
-
+      const { error, needApprove } = bestTaggedTrade;
       if (error) {
         this.tradeStatus = TRADE_STATUS.DISABLED;
       } else {
@@ -246,14 +243,13 @@ export class CrossChainFormService {
         this.displayApproveButton = needApprove;
       }
     } else if (calculationEnded) {
-      this.selectedTrade = null;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
+      this.updateSelectedTrade(null);
 
       this.tradeStatus = TRADE_STATUS.DISABLED;
 
-      this.error = this.crossChainCalculationService.parseCalculationError(bestTaggedTrade.error);
+      this.error = this.crossChainCalculationService.parseCalculationError(
+        bestTaggedTrade?.error || new CrossChainIsUnavailableWarning()
+      );
     }
   }
 
@@ -307,6 +303,17 @@ export class CrossChainFormService {
   }
 
   /**
+   * Updates currently selected trade and output form value.
+   */
+  private updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null): void {
+    this.selectedTrade = taggedTrade;
+
+    this.swapFormService.output.patchValue({
+      toAmount: taggedTrade ? taggedTrade.trade.to.tokenAmount : new BigNumber(NaN)
+    });
+  }
+
+  /**
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
@@ -326,6 +333,8 @@ export class CrossChainFormService {
       .subscribe(form => {
         this.taggedTrades = [];
         this.replacedTaggedTrades = [];
+
+        this.updateSelectedTrade(null);
 
         if (
           !this.crossChainCalculationService.areSupportedBlockchains(

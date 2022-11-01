@@ -75,8 +75,6 @@ export class CrossChainBottomFormComponent implements OnInit {
 
   public maxError: false | { amount: BigNumber; symbol: string };
 
-  public errorText: string;
-
   private hiddenTradeData: CrossChainCalculatedTrade | null = null;
 
   public readonly displayTargetAddressInput$ =
@@ -98,6 +96,12 @@ export class CrossChainBottomFormComponent implements OnInit {
   );
 
   public readonly displayApproveButton$ = this.crossChainFormService.displayApproveButton$;
+
+  public readonly error$ = this.crossChainFormService.error$;
+
+  public readonly errorText$ = this.error$.pipe(
+    map(error => error?.translateKey || error?.message)
+  );
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -175,7 +179,6 @@ export class CrossChainBottomFormComponent implements OnInit {
     if (!fromToken?.address || !toToken?.address) {
       this.maxError = false;
       this.minError = false;
-      this.errorText = '';
     }
 
     this.swapStarted = false;
@@ -186,8 +189,6 @@ export class CrossChainBottomFormComponent implements OnInit {
     this.toAmount = this.hiddenTradeData.trade?.to?.tokenAmount;
 
     if (this.toAmount?.isFinite()) {
-      this.errorText = '';
-
       this.crossChainProviderTrade = this.hiddenTradeData;
       this.crossChainRoutingService.crossChainTrade = this.hiddenTradeData.trade;
       this.swapFormService.output.patchValue({

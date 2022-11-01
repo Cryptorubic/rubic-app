@@ -1,51 +1,44 @@
-<div class="bottom-amount" [ngClass]="{ 'bottom-amount_hidden-iframe-stub': hidden }">
-  <ng-container *ngIf="!hidden">
-    <div class="bottom-amount__blockchain-and-value">
-      <app-iframe-blockchain-indicator
-        *onlyFrame="'vertical'"
-        [blockchain]="blockchain"
-      ></app-iframe-blockchain-indicator>
+<div class="bottom-amount" *ngLet="isFormFilled$ | async as isFormFilled">
+  <div class="bottom-amount__blockchain-and-value">
+    <app-iframe-blockchain-indicator
+      *onlyFrame="'vertical'"
+      [blockchain]="toBlockchain$ | async"
+    ></app-iframe-blockchain-indicator>
 
-      <div
-        class="bottom-amount__tokens-container"
-        [ngClass]="{
-          'bottom-amount__tokens-container_loading': loading && tokenAmount,
-          'bottom-amount__tokens-container_error': errorText,
-          'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
-        }"
-      >
-        <div
-          class="bottom-amount__output"
-          [ngClass]="{
-            'bottom-amount__output_error-text': errorText
-          }"
-          *ngIf="fromAmount.isFinite()"
-        >
-          <ng-container *ngIf="errorText && !loading">
-            {{ 'errors.tradingIsNotAvailable' | translate }}
-          </ng-container>
-          <ng-container *ngIf="loading && !tokenAmount"
-            ><span class="blink-animation">Loading</span></ng-container
-          >
-          <ng-container *ngIf="tokenAmount?.gt(0)">
-            {{
-              tokenAmount
-                | bigNumberFormat
-                | withRound: 'toClosestValue':{ decimals: tokenDecimals }
-            }}
-            <app-tokens-rate *noFrame></app-tokens-rate>
-          </ng-container>
-        </div>
+    <div
+      class="bottom-amount__output"
+      [ngClass]="{
+        'bottom-amount__output_error': errorText
+      }"
+      *ngIf="isFormFilled"
+    >
+      <ng-container *ngLet="toAmount$ | async as toAmount">
+        <ng-container *ngIf="!errorText && !toAmount">
+          <span class="blink-animation">Loading</span>
+        </ng-container>
 
-        <div
-          *ngIf="errorText && !loading && fromAmount.isFinite()"
-          tuiHintMode="error"
-          class="bottom-amount__hint bottom-amount__hint_error"
-          [inlineSVG]="'/assets/images/icons/hint.svg'"
-          [tuiHint]="errorText | translate"
-        ></div>
-      </div>
+        <ng-container *ngIf="toAmount?.gt(0)">
+          {{
+            toAmount
+              | bigNumberFormat
+              | withRound: 'toClosestValue':{ decimals: (toTokenDecimals$ | async) }
+          }}
+          <app-tokens-rate *noFrame></app-tokens-rate>
+        </ng-container>
+
+        <ng-container *ngIf="errorText">
+          {{ 'errors.tradingIsNotAvailable' | translate }}
+
+          <div
+            tuiHintMode="error"
+            class="bottom-amount__hint bottom-amount__hint_error"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="errorText | translate"
+          ></div>
+        </ng-container>
+      </ng-container>
     </div>
-    <app-tokens-rate *onlyFrame></app-tokens-rate>
-  </ng-container>
+  </div>
+
+  <app-tokens-rate *onlyFrame></app-tokens-rate>
 </div>
