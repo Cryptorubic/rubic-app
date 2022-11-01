@@ -9,8 +9,6 @@ import {
   CrossChainTradeType,
   LifiCrossChainTrade,
   LowSlippageError,
-  MaxAmountError,
-  MinAmountError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -27,7 +25,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -54,6 +52,9 @@ import {
 } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -312,12 +313,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
-    if (error instanceof MinAmountError || error instanceof MaxAmountError) {
-      return new RubicError(error.message);
+
+    const parsedError = RubicSdkErrorParser.parseError(error);
+    if (parsedError instanceof ExecutionRevertedError) {
+      return new CrossChainPairCurrentlyUnavailableError();
+    } else {
+      return parsedError;
     }
-    return new RubicError(
-      'The swap between this pair of tokens is currently unavailable. Please try again later.'
-    );
   }
 
   private checkDeviceAndShowNotification(): void {

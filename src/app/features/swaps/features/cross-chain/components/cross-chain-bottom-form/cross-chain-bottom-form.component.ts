@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import BigNumber from 'bignumber.js';
 import { map, startWith } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -45,10 +44,6 @@ export class CrossChainBottomFormComponent {
   public readonly errorText$ = this.error$.pipe(
     map(error => error?.translateKey || error?.message)
   );
-
-  public minError: false | { amount: BigNumber; symbol: string };
-
-  public maxError: false | { amount: BigNumber; symbol: string };
 
   constructor(
     public readonly swapFormService: SwapFormService,

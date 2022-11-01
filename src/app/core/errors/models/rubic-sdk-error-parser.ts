@@ -10,7 +10,9 @@ import {
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
   NotWhitelistedProviderError as SdkNotWhitelistedProviderError,
   WalletNotConnectedError as SdkWalletNotConnectedError,
-  WrongNetworkError as SdkWrongNetworkError
+  WrongNetworkError as SdkWrongNetworkError,
+  MinAmountError as SdkMinAmountError,
+  MaxAmountError as SdkMaxAmountError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -21,10 +23,12 @@ import InsufficientFundsError from '@core/errors/models/instant-trade/insufficie
 import { LowGasError } from '@core/errors/models/provider/low-gas-error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
-import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
-import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import MinAmountError from '@core/errors/models/common/min-amount-error';
+import MaxAmountError from '@core/errors/models/common/max-amount-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -67,6 +71,12 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkWrongNetworkError) {
       return new NetworkError(err.requiredBlockchain);
+    }
+    if (err instanceof SdkMinAmountError) {
+      return new MinAmountError(err);
+    }
+    if (err instanceof SdkMaxAmountError) {
+      return new MaxAmountError(err);
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);

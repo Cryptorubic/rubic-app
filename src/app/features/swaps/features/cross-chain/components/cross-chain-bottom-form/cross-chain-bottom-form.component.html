@@ -1,39 +1,42 @@
-<section class="bottom-form" *ngLet="tradeStatus$ | async as tradeStatus">
-  <div class="bottom-form__container">
-    <div class="bottom-form__estimate-container">
-      <div>
-        <app-rubic-tokens
-          [loading]="loading"
-          formType="to"
-          [tokens]="tokens"
-          [favoriteTokens]="favoriteTokens"
-          [formService]="swapFormService"
-        ></app-rubic-tokens>
+<ng-container *ngLet="tradeStatus$ | async as tradeStatus">
+  <ng-container *ngLet="error$ | async as error">
+    <section class="bottom-form">
+      <div class="bottom-form__container">
+        <div class="bottom-form__estimate-container">
+          <div>
+            <app-rubic-tokens
+              [loading]="loading"
+              formType="to"
+              [tokens]="tokens"
+              [favoriteTokens]="favoriteTokens"
+              [formService]="swapFormService"
+            ></app-rubic-tokens>
+          </div>
+
+          <app-amount-estimated [errorText]="errorText$ | async"></app-amount-estimated>
+        </div>
+        <app-target-network-address
+          *ngIf="displayTargetAddressInput$ | async"
+        ></app-target-network-address>
+
+        <ng-container *ngIf="!error">
+          <app-best-trade-panel *noFrame></app-best-trade-panel>
+        </ng-container>
       </div>
 
-      <app-amount-estimated [errorText]="errorText$ | async"></app-amount-estimated>
-    </div>
-    <app-target-network-address
-      *ngIf="displayTargetAddressInput$ | async"
-    ></app-target-network-address>
-
-    <ng-container *ngIf="tradeStatus !== TRADE_STATUS.DISABLED">
-      <app-best-trade-panel *noFrame></app-best-trade-panel>
-    </ng-container>
-  </div>
-
-  <div class="bottom-form__footer">
-    <div class="bottom-form__button">
-      <app-swap-button-container
-        [needApprove]="needApprove$ | async"
-        [withApproveButton]="displayApproveButton$ | async"
-        [status]="tradeStatus$ | async"
-        [minAmount]="minError"
-        [maxAmount]="maxError"
-        buttonText="Swap"
-        (onSwapClick)="createTrade()"
-        (onApproveClick)="approveTrade()"
-      ></app-swap-button-container>
-    </div>
-  </div>
-</section>
+      <div class="bottom-form__footer">
+        <div class="bottom-form__button">
+          <app-swap-button-container
+            [needApprove]="needApprove$ | async"
+            [withApproveButton]="displayApproveButton$ | async"
+            [status]="tradeStatus$ | async"
+            [error]="error"
+            buttonText="Swap"
+            (onSwapClick)="createTrade()"
+            (onApproveClick)="approveTrade()"
+          ></app-swap-button-container>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</ng-container>

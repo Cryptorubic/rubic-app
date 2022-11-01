@@ -21,18 +21,20 @@
             {{
               provider.trade?.to?.tokenAmount
                 | bigNumberFormat
-                | withRound: 'toClosestValue':{ decimals: provider.trade?.to?.decimals }
+                | withRound
+                  : 'toClosestValue'
+                  : { minRound: 2, maxRound: 3, decimals: provider.trade?.to?.decimals }
             }}
           </span>
 
-          <div class="trade__statuses" *ngIf="showTags(provider)">
-            <tui-badge *ngIf="provider.tags.best" status="success" value="Best"></tui-badge>
+          <div class="trade__statuses">
+            <tui-badge *ngIf="i === 0" status="success" value="Best"></tui-badge>
+
             <tui-badge
-              *ngIf="provider.tags.minAmountWarning || provider.tags.maxAmountWarning"
+              *ngIf="i > 0 && (provider.tags.minAmountWarning || provider.tags.maxAmountWarning)"
               status="warning"
               [value]="getMinMaxError(provider)"
             ></tui-badge>
-            <tui-badge *ngIf="provider.rank === 0" status="warning" value="Warning"></tui-badge>
           </div>
         </div>
       </li>

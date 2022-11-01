@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/error-type';
+import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -41,10 +41,10 @@ export class ErrorButtonComponent {
     private readonly sdkService: RubicSdkService
   ) {}
 
-  public allowChangeNetwork(err: ERROR_TYPE): boolean {
+  public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {
     const { fromBlockchain } = this.swapFormService.inputValue;
     if (
-      err !== ERROR_TYPE.WRONG_BLOCKCHAIN ||
+      err !== BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN ||
       !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
     ) {
       return false;
@@ -72,7 +72,9 @@ export class ErrorButtonComponent {
     }
   }
 
-  public isMinMaxError(err: ERROR_TYPE): boolean {
-    return err === ERROR_TYPE.LESS_THAN_MINIMUM || err === ERROR_TYPE.MORE_THAN_MAXIMUM;
+  public isMinMaxError(err: BUTTON_ERROR_TYPE): boolean {
+    return (
+      err === BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM || err === BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM
+    );
   }
 }

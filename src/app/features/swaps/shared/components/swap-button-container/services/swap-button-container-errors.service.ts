@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/error-type';
+import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
@@ -20,6 +20,10 @@ import { isNil } from '@shared/utils/utils';
 import { fromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/from-blockchains';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import MinAmountError from '@core/errors/models/common/min-amount-error';
+import MaxAmountError from '@core/errors/models/common/max-amount-error';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -27,7 +31,7 @@ export class SwapButtonContainerErrorsService {
    * Either contains error's text.
    */
   private readonly _errorBody$ = new BehaviorSubject<{
-    type: ERROR_TYPE;
+    type: BUTTON_ERROR_TYPE;
     text: string;
   }>(undefined);
 
@@ -39,7 +43,7 @@ export class SwapButtonContainerErrorsService {
   public readonly errorLoading$ = this._errorLoading$.asObservable();
 
   public readonly error$: Observable<{
-    type: ERROR_TYPE | null;
+    type: BUTTON_ERROR_TYPE | null;
     text: string;
     loading: boolean;
   }> = combineLatest([this._errorBody$, this._errorLoading$]).pipe(
@@ -49,13 +53,13 @@ export class SwapButtonContainerErrorsService {
     }))
   );
 
-  private errorType: Record<ERROR_TYPE, boolean> = Object.values(ERROR_TYPE).reduce(
+  private errorType: Record<BUTTON_ERROR_TYPE, boolean> = Object.values(BUTTON_ERROR_TYPE).reduce(
     (acc, key) => ({
       ...acc,
       [key]: false
     }),
     {}
-  ) as Record<ERROR_TYPE, boolean>;
+  ) as Record<BUTTON_ERROR_TYPE, boolean>;
 
   private minAmount: string;
 
@@ -92,7 +96,7 @@ export class SwapButtonContainerErrorsService {
       .pipe(startWith(this.swapFormService.inputValue))
       .subscribe((form: SwapFormInput) => {
         const { fromAmount } = form;
-        this.errorType[ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
+        this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
         this.checkWalletSupportsFromBlockchain();
         this.checkSelectedToken();
@@ -152,7 +156,7 @@ export class SwapButtonContainerErrorsService {
             break;
         }
 
-        this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
+        this.errorType[BUTTON_ERROR_TYPE.INVALID_TARGET_ADDRESS] =
           isWithReceiverAddress && !isAddressValid;
 
         this.updateError();
@@ -166,12 +170,12 @@ export class SwapButtonContainerErrorsService {
   private checkWalletSupportsFromBlockchain(): void {
     const fromToken = this.swapFormService.inputValue.fromToken;
     if (!fromToken) {
-      this.errorType[ERROR_TYPE.WRONG_WALLET] = false;
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
       return;
     }
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    this.errorType[ERROR_TYPE.WRONG_WALLET] =
+    this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
   }
@@ -190,20 +194,20 @@ export class SwapButtonContainerErrorsService {
       !this.authService.userAddress ||
       fromChainType !== this.authService.userChainType
     ) {
-      this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
     }
 
     if (fromToken.amount?.isFinite()) {
       this._errorLoading$.next(false);
-      this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = fromToken.amount.lt(fromAmount);
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = fromToken.amount.lt(fromAmount);
     } else {
       this._errorLoading$.next(true);
     }
   }
 
   private checkSelectedToken(): void {
-    this.errorType[ERROR_TYPE.NO_SELECTED_TOKEN] =
+    this.errorType[BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN] =
       isNil(this.swapFormService.inputValue?.fromToken) &&
       isNil(this.queryParamsService.currentQueryParams?.from);
   }
@@ -215,12 +219,12 @@ export class SwapButtonContainerErrorsService {
     const { fromToken } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && fromToken) {
-      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
-      this.errorType[ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(
         fromToken.blockchain
       );
     } else {
-      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
     }
   }
 
@@ -230,14 +234,14 @@ export class SwapButtonContainerErrorsService {
   public updateError(): void {
     this.translateSub$?.unsubscribe();
 
-    let type: ERROR_TYPE | null = null;
+    let type: BUTTON_ERROR_TYPE | null = null;
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
     const { fromBlockchain } = this.swapFormService.inputValue;
 
     switch (true) {
-      case err[ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
-        type = ERROR_TYPE.WRONG_SOURCE_NETWORK;
+      case err[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
+        type = BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK;
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
@@ -247,8 +251,8 @@ export class SwapButtonContainerErrorsService {
         break;
       }
       // @TODO Solana. Remove after blockchain stabilization.
-      case err[ERROR_TYPE.SOLANA_UNAVAILABLE]: {
-        type = ERROR_TYPE.SOLANA_UNAVAILABLE;
+      case err[BUTTON_ERROR_TYPE.SOLANA_UNAVAILABLE]: {
+        type = BUTTON_ERROR_TYPE.SOLANA_UNAVAILABLE;
         if (this.iframeService.iframeAppearance === 'horizontal') {
           translateParams = {
             key: 'Unavailable'
@@ -260,8 +264,8 @@ export class SwapButtonContainerErrorsService {
         }
         break;
       }
-      case err[ERROR_TYPE.WRONG_WALLET]: {
-        type = ERROR_TYPE.WRONG_WALLET;
+      case err[BUTTON_ERROR_TYPE.WRONG_WALLET]: {
+        type = BUTTON_ERROR_TYPE.WRONG_WALLET;
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
@@ -270,57 +274,57 @@ export class SwapButtonContainerErrorsService {
         };
         break;
       }
-      case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
-        type = ERROR_TYPE.MULTICHAIN_WALLET;
+      case err[BUTTON_ERROR_TYPE.MULTICHAIN_WALLET]: {
+        type = BUTTON_ERROR_TYPE.MULTICHAIN_WALLET;
         translateParams = { key: 'errors.multichainWallet' };
         break;
       }
-      case err[ERROR_TYPE.NO_SELECTED_TOKEN]: {
-        type = ERROR_TYPE.NO_SELECTED_TOKEN;
+      case err[BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN]: {
+        type = BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN;
         translateParams = { key: 'errors.noSelectedToken' };
         break;
       }
-      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
-        type = ERROR_TYPE.WRONG_BLOCKCHAIN;
+      case err[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN]: {
+        type = BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
           key: 'errors.chooseNetworkWallet',
           interpolateParams: { blockchain: fromBlockchain }
         };
         break;
       }
-      case err[ERROR_TYPE.NO_AMOUNT]: {
-        type = ERROR_TYPE.NO_AMOUNT;
+      case err[BUTTON_ERROR_TYPE.NO_AMOUNT]: {
+        type = BUTTON_ERROR_TYPE.NO_AMOUNT;
         translateParams = { key: 'errors.noEnteredAmount' };
         break;
       }
-      case err[ERROR_TYPE.LESS_THAN_MINIMUM]: {
-        type = ERROR_TYPE.LESS_THAN_MINIMUM;
+      case err[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM]: {
+        type = BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM;
         translateParams = {
           key: 'errors.minimumAmount',
           interpolateParams: { amount: this.minAmount, token: this.minAmountTokenSymbol }
         };
         break;
       }
-      case err[ERROR_TYPE.MORE_THAN_MAXIMUM]: {
-        type = ERROR_TYPE.MORE_THAN_MAXIMUM;
+      case err[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM]: {
+        type = BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM;
         translateParams = {
           key: 'errors.maximumAmount',
           interpolateParams: { amount: this.maxAmount, token: this.maxAmountTokenSymbol }
         };
         break;
       }
-      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]: {
-        type = ERROR_TYPE.INSUFFICIENT_FUNDS;
+      case err[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS]: {
+        type = BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS;
         translateParams = { key: 'errors.InsufficientBalance' };
         break;
       }
-      case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
-        type = ERROR_TYPE.INVALID_TARGET_ADDRESS;
+      case err[BUTTON_ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
+        type = BUTTON_ERROR_TYPE.INVALID_TARGET_ADDRESS;
         translateParams = { key: 'errors.invalidTargetAddress' };
         break;
       }
-      case err[ERROR_TYPE.SOL_SWAP]: {
-        type = ERROR_TYPE.SOL_SWAP;
+      case err[BUTTON_ERROR_TYPE.SOL_SWAP]: {
+        type = BUTTON_ERROR_TYPE.SOL_SWAP;
         translateParams = { key: 'errors.solSwap' };
         break;
       }
@@ -371,9 +375,9 @@ export class SwapButtonContainerErrorsService {
           ? value.symbol
           : this.swapFormService.inputValue.fromToken.symbol;
 
-      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
+      this.errorType[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
-      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
+      this.errorType[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM] = false;
     }
     this.updateError();
   }
@@ -398,10 +402,22 @@ export class SwapButtonContainerErrorsService {
           ? value.symbol
           : this.swapFormService.inputValue.fromToken.symbol;
 
-      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
+      this.errorType[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
-      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
+      this.errorType[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
     }
     this.updateError();
+  }
+
+  public setRubicError(error?: RubicError<ERROR_TYPE>): void {
+    if (!error) {
+      this.errorType[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
+      this.errorType[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM] = false;
+      this.updateError();
+    } else if (error instanceof MinAmountError) {
+      this.setMinAmountError({ amount: error.amount, symbol: error.tokenSymbol });
+    } else if (error instanceof MaxAmountError) {
+      this.setMaxAmountError({ amount: error.amount, symbol: error.tokenSymbol });
+    }
   }
 }

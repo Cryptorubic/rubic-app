@@ -1,4 +1,4 @@
-export enum ERROR_TYPE {
+export enum BUTTON_ERROR_TYPE {
   WRONG_BLOCKCHAIN = 'Wrong user network',
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
   WRONG_WALLET = 'Wrong wallet',

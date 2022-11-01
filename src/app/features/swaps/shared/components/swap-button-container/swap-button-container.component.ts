@@ -7,6 +7,8 @@ import { SwapButtonContainerService } from '@features/swaps/shared/components/sw
 import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 @Component({
   selector: 'app-swap-button-container',
@@ -29,6 +31,10 @@ export class SwapButtonContainerComponent {
 
   get idPrefix(): string {
     return this.swapButtonContainerService.idPrefix;
+  }
+
+  @Input() set error(error: RubicError<ERROR_TYPE> | null) {
+    this.swapButtonContainerErrorsService.setRubicError(error);
   }
 
   @Input() set minAmount(

@@ -45,7 +45,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/components/t
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';
-import { TransactionFailed } from '@core/errors/models/common/transaction-failed';
+import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -252,7 +252,7 @@ export class InstantTradeService extends TradeCalculationService {
         if (txStatusData.status === TxStatus.SUCCESS) {
           this.showSuccessTrxNotification();
         } else {
-          throw new TransactionFailed(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
         }
       } else {
         subscription$.unsubscribe();

@@ -46,11 +46,16 @@ export class TradesListComponent {
 
   public getMinMaxError(provider: WrappedCrossChainTrade): string {
     const error = provider.error;
+    const isUsd =
+      (error instanceof MinAmountError || error instanceof MinAmountError) &&
+      error.tokenSymbol !== provider.trade.from.symbol &&
+      error.tokenSymbol === 'USDC';
+
     if (error instanceof MaxAmountError) {
-      return `Max: ${error.maxAmount.toFixed(2)}`;
+      return `Max: ${error.maxAmount.toFixed(2)}${isUsd ? '$' : ''}`;
     }
     if (error instanceof MinAmountError) {
-      return `Min: ${error.minAmount.toFixed(2)}`;
+      return `Min: ${error.minAmount.toFixed(2)}${isUsd ? '$' : ''}`;
     }
   }
 
@@ -66,9 +71,5 @@ export class TradesListComponent {
 
   public trackByType(_index: number, provider: CrossChainTaggedTrade): CrossChainTradeType {
     return provider.tradeType;
-  }
-
-  public showTags(provider: CrossChainTaggedTrade): boolean {
-    return Object.values(provider.tags).some(val => val);
   }
 }

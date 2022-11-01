@@ -28,7 +28,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
-import CrossChainUnsupportedBlockchain from '@core/errors/models/cross-chain-routing/cross-chain-unsupported-blockchain';
+import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import {
@@ -36,7 +36,6 @@ import {
   SymbiosisTradeInfo
 } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
@@ -44,12 +43,13 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/components/t
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
-import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
-import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
+import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 
 @Injectable({
   providedIn: 'root'
@@ -286,9 +286,9 @@ export class CrossChainFormService {
 
       this.tradeStatus = TRADE_STATUS.DISABLED;
 
-      this.error = this.crossChainCalculationService.parseCalculationError(
-        bestTaggedTrade?.error || new CrossChainIsUnavailableWarning()
-      );
+      this.error = bestTaggedTrade?.error
+        ? this.crossChainCalculationService.parseCalculationError(bestTaggedTrade.error)
+        : new CrossChainPairCurrentlyUnavailableError();
     }
   }
 
@@ -384,7 +384,7 @@ export class CrossChainFormService {
             unsupportedBlockchain = form.toBlockchain;
           }
 
-          this.error = new CrossChainUnsupportedBlockchain(unsupportedBlockchain);
+          this.error = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
           return;
         }
 
@@ -454,6 +454,8 @@ export class CrossChainFormService {
     this.replacedTaggedTrades = [];
 
     this.updateSelectedTrade(null);
+
+    this.error = null;
   }
 
   /**
