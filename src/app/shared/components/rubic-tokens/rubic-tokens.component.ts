@@ -112,7 +112,7 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromBlockchain, toBlockchain } = this.formService.inputValue;
+    const { fromBlockchain, toBlockchain, fromToken } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.gtmService.reloadGtmSession();
@@ -127,8 +127,12 @@ export class RubicTokensComponent implements OnInit {
         this.allowedBlockchains,
         idPrefix
       )
-      .subscribe((token: TokenAmount) => {
-        if (token) {
+      .subscribe((selectedToken: TokenAmount) => {
+        if (selectedToken) {
+          const token = {
+            ...selectedToken,
+            amount: selectedToken.amount?.isFinite() ? selectedToken.amount : fromToken.amount
+          };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
           const isSwapsForm = this.formService instanceof SwapFormService;
