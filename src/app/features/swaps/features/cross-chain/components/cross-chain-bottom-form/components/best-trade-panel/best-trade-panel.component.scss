@@ -13,7 +13,6 @@
 
   &__row {
     min-height: 18px;
-    margin-bottom: 25px;
   }
 
   &__header {
@@ -83,4 +82,8 @@
       max-height: 100%;
     }
   }
+}
+
+app-cross-chain-route {
+  margin-top: 22px;
 }
