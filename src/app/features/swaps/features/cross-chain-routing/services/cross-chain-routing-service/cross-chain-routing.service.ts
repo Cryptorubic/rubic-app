@@ -183,7 +183,7 @@ export class CrossChainRoutingService extends TradeService {
       const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
 
       if (isViaDisabled) {
-        disabledProviders.concat(CROSS_CHAIN_TRADE_TYPE.VIA);
+        disabledProviders.push(CROSS_CHAIN_TRADE_TYPE.VIA);
       }
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
