@@ -1,5 +1,12 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap
+} from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
@@ -14,6 +21,7 @@ import {
   MaxAmountError,
   MinAmountError,
   RangoCrossChainTrade,
+  RubicSdkError,
   SymbiosisCrossChainTrade,
   TronBridgersCrossChainTrade,
   ViaCrossChainTrade
@@ -28,7 +36,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
-import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import {
@@ -50,6 +57,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
+import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 
 @Injectable({
   providedIn: 'root'
@@ -182,18 +190,6 @@ export class CrossChainFormService {
     this.subscribeOnRefreshServiceCalls();
   }
 
-  private startRecalculation(): void {
-    if (
-      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
-      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
-    ) {
-      return;
-    }
-
-    this._calculateTrade$.next();
-  }
-
   /**
    * Subscribe on 'calculate' subject, which controls flow of calculation.
    * Can be called only once in constructor.
@@ -252,6 +248,13 @@ export class CrossChainFormService {
               }
 
               this.updateBestTrade(lastCalculatedTrade, calculationEnded);
+            }),
+            catchError((error: RubicSdkError) => {
+              this.tradeStatus = TRADE_STATUS.DISABLED;
+
+              this.error = this.crossChainCalculationService.parseCalculationError(error);
+
+              return of(null);
             })
           );
         })
@@ -368,25 +371,8 @@ export class CrossChainFormService {
             prev.fromAmount === next.fromAmount
         )
       )
-      .subscribe(form => {
+      .subscribe(() => {
         this.unsetCalculatedTrades();
-
-        if (
-          !this.crossChainCalculationService.areSupportedBlockchains(
-            form.fromBlockchain,
-            form.toBlockchain
-          )
-        ) {
-          let unsupportedBlockchain = undefined;
-          if (this.crossChainCalculationService.isSupportedBlockchain(form.fromBlockchain)) {
-            unsupportedBlockchain = form.fromBlockchain;
-          } else if (!this.crossChainCalculationService.isSupportedBlockchain(form.toBlockchain)) {
-            unsupportedBlockchain = form.toBlockchain;
-          }
-
-          this.error = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
-          return;
-        }
 
         this.startRecalculation();
       });
@@ -465,6 +451,30 @@ export class CrossChainFormService {
     this.refreshService.onRefresh$.subscribe(() => {
       this.startRecalculation();
     });
+  }
+
+  /**
+   * Makes pre-calculation checks and start recalculation.
+   */
+  private startRecalculation(): void {
+    if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+      return;
+    }
+
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    if (!this.crossChainCalculationService.areSupportedBlockchains(fromBlockchain, toBlockchain)) {
+      let unsupportedBlockchain = undefined;
+      if (!this.crossChainCalculationService.isSupportedBlockchain(fromBlockchain)) {
+        unsupportedBlockchain = fromBlockchain;
+      } else if (!this.crossChainCalculationService.isSupportedBlockchain(toBlockchain)) {
+        unsupportedBlockchain = toBlockchain;
+      }
+
+      this.error = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
+      return;
+    }
+
+    this._calculateTrade$.next();
   }
 
   /**
