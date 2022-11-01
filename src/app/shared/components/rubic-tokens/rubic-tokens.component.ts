@@ -24,6 +24,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
 import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -131,7 +132,9 @@ export class RubicTokensComponent implements OnInit {
         if (selectedToken) {
           const token = {
             ...selectedToken,
-            amount: selectedToken.amount?.isFinite() ? selectedToken.amount : fromToken.amount
+            amount: selectedToken?.amount?.isFinite()
+              ? selectedToken.amount
+              : fromToken?.amount || new BigNumber(NaN)
           };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
