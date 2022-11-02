@@ -32,8 +32,10 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    this.refreshService.status$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
+    this.refreshService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
+      if (status !== REFRESH_STATUS.STOPPED) {
+        this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
+      }
     });
 
     this.$refreshIconListener = fromEvent(
@@ -43,7 +45,7 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe(() => {
-        if (this.refreshService.status !== REFRESH_STATUS.REFRESHING) {
+        if (this.refreshService.status === REFRESH_STATUS.STOPPED) {
           this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
         }
       });

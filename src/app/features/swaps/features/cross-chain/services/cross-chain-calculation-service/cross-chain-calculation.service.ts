@@ -286,13 +286,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ? TRADES_PROVIDERS[route.fromProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider + ' Pool'
+          name: bridgeProvider.name + ' Pool'
         };
     const toTradeProvider = route.toProvider
       ? TRADES_PROVIDERS[route.toProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider + ' Pool'
+          name: bridgeProvider.name + ' Pool'
         };
 
     const viaUuid =
