@@ -436,22 +436,30 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
-    const blockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
+    const fromBlockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
+    const toBlockchain = wrappedTrade?.trade?.to?.blockchain as BlockchainName;
 
-    if (blockchain && !this.platformConfigurationService.isAvailableBlockchain(blockchain)) {
-      throw new BlockchainIsUnavailableWarning(blockchainLabel[blockchain]);
+    if (
+      fromBlockchain &&
+      !this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)
+    ) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+
+    if (toBlockchain && !this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
     }
 
     this.checkDeviceAndShowNotification();
     let approveInProgressSubscription$: Subscription;
 
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+    const shouldCalculateGasPrice = shouldCalculateGas[fromBlockchain];
     const swapOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
       },
       ...(Boolean(shouldCalculateGasPrice) && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromBlockchain))
       })
     };
 
