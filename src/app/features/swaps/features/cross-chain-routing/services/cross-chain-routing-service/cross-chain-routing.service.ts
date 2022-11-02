@@ -176,17 +176,13 @@ export class CrossChainRoutingService extends TradeService {
 
   public calculateTrade(
     userAuthorized: boolean,
-    isViaDisabled: boolean
+    _isViaDisabled: boolean
   ): Observable<CrossChainProviderTrade> {
     try {
       const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
       const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
       const disabledProviders = [...(disabledProvidersForLandingIframe || [])];
-
-      if (isViaDisabled) {
-        disabledProviders.push(CROSS_CHAIN_TRADE_TYPE.VIA);
-      }
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
@@ -195,7 +191,7 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: disabledProviders,
+        disabledProviders: [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.VIA],
         ...(receiverAddress && { receiverAddress })
       };
 
