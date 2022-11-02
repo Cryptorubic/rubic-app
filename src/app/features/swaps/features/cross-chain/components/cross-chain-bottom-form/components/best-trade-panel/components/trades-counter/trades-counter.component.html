@@ -1,5 +1,5 @@
-<ng-container *ngIf="(displayCounter$ | async) && (isDisabled$ | async) === false">
-  <div @fadeAnimation class="calculated-trades">
+<div *ngIf="(isDisabled$ | async) === false">
+  <div @fadeAnimation *ngIf="displayCounter$ | async" class="calculated-trades">
     <span *ngIf="isCalculating$ | async; else calculationFinished">
       Finding Optimal Route<span class="calculated-trades__dashes"></span>
       {{ fakeProvider$ | async }}
@@ -18,4 +18,4 @@
       <ng-template #routeNotFound>Optimal routing not found</ng-template>
     </ng-template>
   </div>
-</ng-container>
+</div>

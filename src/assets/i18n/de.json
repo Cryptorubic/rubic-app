@@ -346,7 +346,7 @@
     "discountRBC": "Rabatt mit RBC",
     "blockchainsHint": "Mehr Blockchains",
     "tradingNotAvailable": "Nicht verfügbar",
-    "rateIsUpdated": "Aktuelle Konditionen. Um sie neu abzurufen, bitte klicken."
+    "rateIsUpdated": "Aktuelle Konditionen"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",

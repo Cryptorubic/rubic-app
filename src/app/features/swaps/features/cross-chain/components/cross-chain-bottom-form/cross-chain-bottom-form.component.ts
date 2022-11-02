@@ -55,6 +55,10 @@ export class CrossChainBottomFormComponent {
     });
   }
 
+  public onUpdateRate(): void {
+    this.crossChainFormService.updateRate();
+  }
+
   public onApproveTrade(): void {
     this.crossChainFormService.approveTrade();
   }

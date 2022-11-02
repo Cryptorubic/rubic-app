@@ -520,7 +520,7 @@
     "discountRBC": "RBC ile indirim",
     "blockchainsHint": "Daha fazla blok zinciri",
     "tradingNotAvailable": "Ticaret yapılamıyor",
-    "rateIsUpdated": "Fiyat güncellendi, en son fiyatları almak için dokunun"
+    "rateIsUpdated": "Fiyat güncellendi"
   },
   "lpProviding": {
     "liquidityTime": "Liquidity time"

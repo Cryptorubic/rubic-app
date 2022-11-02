@@ -286,7 +286,7 @@
     "discountRBC": "discount with RBC",
     "blockchainsHint": "More blockchains",
     "tradingNotAvailable": "Trading is not available",
-    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
+    "rateIsUpdated": "Rate is updated"
   },
   "gasRefund": {
     "title": "Кэшбэк на Газ",

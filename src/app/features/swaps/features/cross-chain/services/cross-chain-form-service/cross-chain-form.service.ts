@@ -146,6 +146,12 @@ export class CrossChainFormService {
   }
 
   /**
+   * Contains trade, which must be selected after `Rate is updated`
+   * button is clicked.
+   */
+  private updatedSelectedTrade: CrossChainTaggedTrade | null = null;
+
+  /**
    * Contains error to show in form, in case there is no successfully calculated trade.
    */
   private readonly _error$ = new BehaviorSubject<RubicError<ERROR_TYPE> | null>(null);
@@ -265,7 +271,7 @@ export class CrossChainFormService {
                 this.refreshService.setStopped();
               }
 
-              this.updateBestTrade(lastCalculatedTrade, calculationEnded);
+              this.checkLastCalculatedTrade(lastCalculatedTrade, calculationEnded);
             }),
             catchError((error: RubicSdkError) => {
               this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -283,19 +289,27 @@ export class CrossChainFormService {
   }
 
   /**
-   * Adds last calculated trade to trades lists and updates form with best trade.
+   * Checks if last calculated trade can be added to list and updates form with best trade.
    */
-  private updateBestTrade(
+  private checkLastCalculatedTrade(
     lastCalculatedTrade: CrossChainCalculatedTrade | null,
     calculationEnded: boolean
   ): void {
     if (lastCalculatedTrade) {
       this.updateTradesList(lastCalculatedTrade);
-    }
 
-    const bestTaggedTrade = this.taggedTrades[0];
-    if (bestTaggedTrade?.trade?.to.tokenAmount || calculationEnded) {
-      this.updateSelectedTrade(bestTaggedTrade);
+      if (this.isSwapStarted !== SWAP_PROCESS.NONE) {
+        this.compareSelectedTradeToBestTrade();
+      } else {
+        const bestTaggedTrade = this.taggedTrades[0];
+        if (bestTaggedTrade?.trade?.to.tokenAmount || calculationEnded) {
+          this.updateSelectedTrade(bestTaggedTrade);
+        }
+      }
+    } else {
+      if (calculationEnded && !this.taggedTrades.length) {
+        this.updateSelectedTrade(null);
+      }
     }
   }
 
@@ -348,10 +362,50 @@ export class CrossChainFormService {
   }
 
   /**
+   * Compares currently selected trade and best trade in list, and
+   * sets {@link updatedSelectedTrade} value.
+   */
+  public compareSelectedTradeToBestTrade(): void {
+    let updatedSelectedTrade: CrossChainTaggedTrade;
+    if (this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE) {
+      updatedSelectedTrade = this.taggedTrades[0];
+    } else {
+      updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+    }
+
+    if (
+      this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
+      !this.selectedTrade.trade.to.tokenAmount.eq(updatedSelectedTrade.trade.to.tokenAmount) ||
+      (!this.selectedTrade.error && updatedSelectedTrade.error)
+    ) {
+      this.updatedSelectedTrade = updatedSelectedTrade;
+
+      if (
+        this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE ||
+        this.tradeStatus === TRADE_STATUS.READY_TO_SWAP
+      ) {
+        this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+      }
+    } else {
+      this.selectedTrade = updatedSelectedTrade;
+    }
+  }
+
+  /**
+   * Updates currently selected trade with updated one.
+   */
+  public updateRate(): void {
+    if (this.updatedSelectedTrade) {
+      this.updateSelectedTrade(this.updatedSelectedTrade);
+    }
+  }
+
+  /**
    * Updates currently selected trade and output form value.
    */
   public updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null | undefined): void {
     this.selectedTrade = taggedTrade;
+    this.updatedSelectedTrade = null;
 
     if (taggedTrade?.trade?.to.tokenAmount) {
       this.swapFormService.output.patchValue({
@@ -491,6 +545,8 @@ export class CrossChainFormService {
     this.updateSelectedTrade(null);
 
     this.error = null;
+
+    this.isSwapStarted = SWAP_PROCESS.NONE;
   }
 
   /**
@@ -607,11 +663,15 @@ export class CrossChainFormService {
       const fromBlockchain = this.selectedTrade.trade.from.blockchain;
       await this.crossChainCalculationService.approve(this.selectedTrade);
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.selectedTrade = {
-        ...this.selectedTrade,
-        needApprove: false
-      };
+      if (this.updatedSelectedTrade) {
+        this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+      } else {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.selectedTrade = {
+          ...this.selectedTrade,
+          needApprove: false
+        };
+      }
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 
@@ -624,7 +684,11 @@ export class CrossChainFormService {
 
       this.errorsService.catch(parsedError);
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+      if (this.updatedSelectedTrade) {
+        this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+      } else {
+        this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+      }
     }
 
     this.refreshService.stopInProgress();
@@ -646,6 +710,10 @@ export class CrossChainFormService {
     try {
       await this.crossChainCalculationService.swapTrade(currentSelectedTrade, () => {
         this.isSwapStarted = SWAP_PROCESS.NONE;
+
+        if (this.updatedSelectedTrade) {
+          this.updateSelectedTrade(this.updatedSelectedTrade);
+        }
 
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.refreshService.stopInProgress();
@@ -678,7 +746,11 @@ export class CrossChainFormService {
         this.errorsService.catch(parsedError);
       }
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      if (this.updatedSelectedTrade) {
+        this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+      } else {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      }
 
       this.refreshService.stopInProgress();
     }

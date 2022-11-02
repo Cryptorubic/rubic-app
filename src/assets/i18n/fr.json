@@ -451,7 +451,7 @@
     "discountRBC": "discount en RBC",
     "blockchainsHint": "Plus de blockchains",
     "tradingNotAvailable": "Échanges non disponibles",
-    "rateIsUpdated": "Le prix est à jour, cliquez pour rafraîchir le prix"
+    "rateIsUpdated": "Le prix est à jour"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
