@@ -370,6 +370,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
               };
             }),
             map(providerTrade => {
+              console.log(providerTrade);
               if (!this.swapStarted) {
                 this.selectProvider(providerTrade);
               }

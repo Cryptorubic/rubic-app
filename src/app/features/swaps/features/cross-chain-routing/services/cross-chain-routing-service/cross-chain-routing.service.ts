@@ -24,6 +24,7 @@ import {
   TooLowAmountError,
   TronBridgersCrossChainTrade,
   UnsupportedReceiverAddressError,
+  NotSupportedTokensError,
   ViaCrossChainTrade,
   Web3Pure,
   WrappedCrossChainTrade,
@@ -195,7 +196,8 @@ export class CrossChainRoutingService extends TradeService {
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: disabledProviders,
+        // disabledProviders: disabledProviders,
+        disabledProviders: [CROSS_CHAIN_TRADE_TYPE.MULTICHAIN, CROSS_CHAIN_TRADE_TYPE.LIFI],
         ...(receiverAddress && { receiverAddress })
       };
 
@@ -457,6 +459,9 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof NotSupportedTokensError) {
+      return new RubicError('Multichain provider doesn’t support provided tokens.');
+    }
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
     }
@@ -465,6 +470,14 @@ export class CrossChainRoutingService extends TradeService {
     }
     if (error?.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
+    }
+    if (error?.message?.includes('No available routs')) {
+      return new RubicError('No available routs');
+    }
+    if (error?.message?.includes('There are no providers for trade')) {
+      return new RubicError(
+        'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.'
+      );
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
