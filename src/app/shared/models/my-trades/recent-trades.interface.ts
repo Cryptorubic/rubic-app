@@ -1,18 +1,21 @@
-import { Token } from '../tokens/token';
-import { BlockchainName, BridgeType, CrossChainTradeType, TxStatus } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType, TxStatus } from 'rubic-sdk';
+import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 
 export interface RecentTrade {
   srcTxHash: string;
   dstTxHash?: string;
-  fromBlockchain: BlockchainName;
-  toBlockchain: BlockchainName;
-  fromToken: Token;
-  toToken: Token;
-  crossChainProviderType: CrossChainTradeType;
+
+  fromToken: BlockchainToken;
+  toToken: BlockchainToken;
+
+  crossChainTradeType: CrossChainTradeType;
+  bridgeType?: BridgeType;
+
   timestamp: number;
+
   calculatedStatusTo?: TxStatus;
   calculatedStatusFrom?: TxStatus;
-  bridgeType?: BridgeType;
+
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;

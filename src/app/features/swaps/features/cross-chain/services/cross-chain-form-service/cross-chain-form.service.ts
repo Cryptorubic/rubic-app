@@ -14,17 +14,21 @@ import {
   CelerCrossChainTrade,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
+  CrossChainIsUnavailableError,
   DebridgeCrossChainTrade,
   EvmBridgersCrossChainTrade,
   EvmCrossChainTrade,
   LifiCrossChainTrade,
+  LowSlippageError,
   MaxAmountError,
   MinAmountError,
   MultichainCrossChainTrade,
   RangoCrossChainTrade,
   RubicSdkError,
   SymbiosisCrossChainTrade,
+  TooLowAmountError,
   TronBridgersCrossChainTrade,
+  UnsupportedReceiverAddressError,
   ViaCrossChainTrade
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
@@ -60,6 +64,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
 
 @Injectable({
   providedIn: 'root'
@@ -255,7 +260,7 @@ export class CrossChainFormService {
               this.tradeStatus = TRADE_STATUS.DISABLED;
               this.refreshService.setStopped();
 
-              this.error = this.crossChainCalculationService.parseCalculationError(error);
+              this.error = this.parseCalculationError(error);
 
               return of(null);
             })
@@ -279,22 +284,8 @@ export class CrossChainFormService {
     const bestTaggedTrade = this.taggedTrades[0];
     if (bestTaggedTrade?.trade?.to.tokenAmount) {
       this.updateSelectedTrade(bestTaggedTrade);
-
-      const { error, needApprove } = bestTaggedTrade;
-      if (error) {
-        this.tradeStatus = TRADE_STATUS.DISABLED;
-      } else {
-        this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
-        this.displayApproveButton = needApprove;
-      }
     } else if (calculationEnded) {
       this.updateSelectedTrade(null);
-
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-
-      this.error = bestTaggedTrade?.error
-        ? this.crossChainCalculationService.parseCalculationError(bestTaggedTrade.error)
-        : new CrossChainPairCurrentlyUnavailableError();
     }
   }
 
@@ -350,12 +341,57 @@ export class CrossChainFormService {
   /**
    * Updates currently selected trade and output form value.
    */
-  private updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null): void {
+  public updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null): void {
     this.selectedTrade = taggedTrade;
 
-    this.swapFormService.output.patchValue({
-      toAmount: taggedTrade ? taggedTrade.trade.to.tokenAmount : new BigNumber(NaN)
-    });
+    if (taggedTrade) {
+      this.swapFormService.output.patchValue({
+        toAmount: taggedTrade.trade.to.tokenAmount
+      });
+
+      const { error, needApprove } = taggedTrade;
+      if (error) {
+        this.tradeStatus = TRADE_STATUS.DISABLED;
+      } else {
+        this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
+        this.displayApproveButton = needApprove;
+      }
+    } else {
+      this.swapFormService.output.patchValue({
+        toAmount: new BigNumber(NaN)
+      });
+
+      this.tradeStatus = TRADE_STATUS.DISABLED;
+
+      this.error = this.parseCalculationError(taggedTrade?.error);
+    }
+  }
+
+  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof UnsupportedReceiverAddressError) {
+      return new RubicError('This provider doesn’t support the receiver address.');
+    }
+    if (error instanceof CrossChainIsUnavailableError) {
+      return new CrossChainIsUnavailableWarning();
+    }
+    if (error?.message?.includes('Representation of ')) {
+      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
+    }
+    if (error instanceof LowSlippageError) {
+      return new RubicError('Slippage is too low for transaction.');
+    }
+    if (error instanceof TooLowAmountError) {
+      return new RubicError(
+        "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
+      );
+    }
+
+    const parsedError = RubicSdkErrorParser.parseError(error);
+    if (!parsedError || parsedError instanceof ExecutionRevertedError) {
+      return new CrossChainPairCurrentlyUnavailableError();
+    } else {
+      return parsedError;
+    }
   }
 
   /**
@@ -570,7 +606,7 @@ export class CrossChainFormService {
 
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (err) {
-      this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
+      this.errorsService.catch(err);
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
 

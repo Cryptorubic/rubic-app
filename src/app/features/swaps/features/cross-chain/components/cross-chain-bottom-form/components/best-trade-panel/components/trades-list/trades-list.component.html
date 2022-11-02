@@ -4,11 +4,9 @@
       <li
         class="trade"
         [ngClass]="{
-          trade_selected:
-            (selectedTrade$ | async) === taggedTrade.tradeType ||
-            ((selectedTrade$ | async) === null && i === 0)
+          trade_selected: (selectedTrade$ | async).tradeType === taggedTrade.tradeType
         }"
-        (click)="selectTrade(taggedTrade?.tradeType)"
+        (click)="selectTrade(taggedTrade)"
         @fadeAnimation
       >
         <div class="trade__container">

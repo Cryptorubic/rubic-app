@@ -6,7 +6,6 @@ import {
   EventEmitter,
   Input
 } from '@angular/core';
-import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { CrossChainTradeType, MaxAmountError, MinAmountError } from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
@@ -28,7 +27,6 @@ export class TradesListComponent {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly crossChainService: CrossChainCalculationService,
     private readonly crossChainFormService: CrossChainFormService
   ) {}
 
@@ -47,8 +45,8 @@ export class TradesListComponent {
     }
   }
 
-  public selectTrade(tradeType: CrossChainTradeType): void {
-    this.crossChainService.setSelectedProvider(tradeType);
+  public selectTrade(taggedTrade: CrossChainTaggedTrade): void {
+    this.crossChainFormService.updateSelectedTrade(taggedTrade);
     this.selectionHandler.emit();
   }
 

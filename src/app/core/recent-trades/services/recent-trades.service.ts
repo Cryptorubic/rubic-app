@@ -47,19 +47,12 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const {
-      srcTxHash,
-      crossChainProviderType,
-      fromToken,
-      toToken,
-      timestamp,
-      dstTxHash: calculatedDstTxHash
-    } = trade;
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
+    const { srcTxHash, fromToken, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromToken.blockchain);
+    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toToken.blockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
       srcTxHash,
-      trade.fromBlockchain,
+      trade.fromToken.blockchain,
       ADDRESS_TYPE.TRANSACTION
     );
     const uiTrade: UiRecentTrade = {
@@ -69,8 +62,7 @@ export class RecentTradesService {
       toToken,
       timestamp,
       srcTxLink,
-      srcTxHash,
-      crossChainProviderType
+      srcTxHash
     };
 
     if (calculatedDstTxHash) {
@@ -89,15 +81,15 @@ export class RecentTradesService {
       return uiTrade;
     }
 
-    if (trade.crossChainProviderType === CROSS_CHAIN_TRADE_TYPE.BRIDGERS && !trade.amountOutMin) {
+    if (trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.BRIDGERS && !trade.amountOutMin) {
       console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
     }
 
     const { srcTxStatus, dstTxStatus, dstTxHash } =
       await this.sdk.crossChainStatusManager.getCrossChainStatus(
         {
-          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain,
-          toBlockchain: trade.toBlockchain,
+          fromBlockchain: trade.fromToken.blockchain as Web3PublicSupportedBlockchain,
+          toBlockchain: trade.toToken.blockchain,
           srcTxHash: srcTxHash,
           txTimestamp: trade.timestamp,
           lifiBridgeType: trade.bridgeType,
@@ -105,7 +97,7 @@ export class RecentTradesService {
           rangoRequestId: trade.rangoRequestId,
           amountOutMin: trade.amountOutMin
         },
-        trade.crossChainProviderType
+        trade.crossChainTradeType
       );
 
     uiTrade.statusFrom = srcTxStatus;

@@ -19,7 +19,7 @@ export class ToAmountEstimatedComponent {
 
   public readonly toTokenDecimals$ = this.swapFormService.inputValueChanges.pipe(
     startWith(this.swapFormService.inputValue),
-    map(form => form.toToken.decimals)
+    map(form => form.toToken?.decimals || 18)
   );
 
   public readonly isFormFilled$ = this.swapFormService.isFilled$;
