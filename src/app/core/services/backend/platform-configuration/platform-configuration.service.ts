@@ -38,7 +38,10 @@ export interface ProvidersConfiguration {
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
-  private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>(undefined);
+  private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
+    disabledBridgeTypes: undefined,
+    disabledCrossChainProviders: undefined
+  });
 
   public get disabledProviders$(): Observable<ProvidersConfiguration> {
     return this._disabledProviders$.asObservable();
@@ -74,7 +77,7 @@ export class PlatformConfigurationService {
   }
 
   public isAvailableBlockchain(blockchain: BlockchainName): boolean {
-    return this.availableBlockchains.includes(blockchain);
+    return this.availableBlockchains ? this.availableBlockchains.includes(blockchain) : true;
   }
 
   private mapAvailableBlockchains(availableBlockchains: {

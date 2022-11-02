@@ -193,13 +193,13 @@ export class CrossChainRoutingService extends TradeService {
         slippageTolerance,
         timeout: this.defaultTimeout,
         disabledProviders,
-        ...(receiverAddress && { receiverAddress }),
         lifiDisabledBridgeTypes: disabledBridgeTypes?.[
           CROSS_CHAIN_TRADE_TYPE.LIFI
         ] as LifiBridgeTypes[],
         rangoDisabledBridgeTypes: disabledBridgeTypes?.[
           CROSS_CHAIN_TRADE_TYPE.RANGO
-        ] as RangoBridgeTypes[]
+        ] as RangoBridgeTypes[],
+        ...(receiverAddress && { receiverAddress })
       };
 
       return this.sdk.crossChain
