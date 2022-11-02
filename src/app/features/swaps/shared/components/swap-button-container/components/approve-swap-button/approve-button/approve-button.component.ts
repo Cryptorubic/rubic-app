@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { ApproveSwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/approve-swap-button.service';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Component({
   selector: 'app-approve-button',
@@ -19,6 +20,11 @@ export class ApproveButtonComponent {
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
-    private readonly approveSwapButtonService: ApproveSwapButtonService
+    private readonly approveSwapButtonService: ApproveSwapButtonService,
+    private readonly tradeService: TradeService
   ) {}
+
+  public onHoveredChange(isHovered: boolean): void {
+    this.tradeService.isButtonHovered = isHovered;
+  }
 }

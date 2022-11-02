@@ -69,6 +69,7 @@ import { UserRejectError } from '@core/errors/models/provider/user-reject-error'
 import { SWAP_PROCESS } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/swap-process';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Injectable({
   providedIn: 'root'
@@ -194,6 +195,11 @@ export class CrossChainFormService {
 
   private tradeSelectedByUserTimeout: NodeJS.Timeout;
 
+  /**
+   * True, when user is hovered on approve/swap button.
+   */
+  private isButtonHovered = false;
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
@@ -207,6 +213,7 @@ export class CrossChainFormService {
     private readonly errorsService: ErrorsService,
     private readonly iframeService: IframeService,
     private readonly dialogService: TuiDialogService,
+    private readonly tradeService: TradeService,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.subscribeOnCalculation();
@@ -217,6 +224,8 @@ export class CrossChainFormService {
     this.subscribeOnUserAddressChanges();
 
     this.subscribeOnRefreshServiceCalls();
+
+    this.subscribeOnIsButtonHoveredChanges();
   }
 
   /**
@@ -303,7 +312,11 @@ export class CrossChainFormService {
     if (lastCalculatedTrade) {
       this.updateTradesList(lastCalculatedTrade);
 
-      if (this.isTradeSelectedByUser || this.isSwapStarted !== SWAP_PROCESS.NONE) {
+      if (
+        this.isTradeSelectedByUser ||
+        this.isButtonHovered ||
+        this.isSwapStarted !== SWAP_PROCESS.NONE
+      ) {
         this.compareSelectedTradeToBestTrade();
       } else {
         const bestTaggedTrade = this.taggedTrades[0];
@@ -374,7 +387,10 @@ export class CrossChainFormService {
           taggedTrade?.trade && compareTradesRoutes(taggedTrade?.trade, this.selectedTrade.trade)
       );
     } else {
-      if (this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE) {
+      if (
+        this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE ||
+        (this.isSwapStarted === SWAP_PROCESS.NONE && this.isButtonHovered)
+      ) {
         updatedSelectedTrade = this.taggedTrades[0];
       } else {
         updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
@@ -611,6 +627,15 @@ export class CrossChainFormService {
     }
 
     this._calculateTrade$.next();
+  }
+
+  private subscribeOnIsButtonHoveredChanges(): void {
+    this.tradeService.isButtonHovered$.subscribe(isHovered => {
+      this.isButtonHovered = isHovered;
+      if (!isHovered && this.isSwapStarted === SWAP_PROCESS.NONE && this.updatedSelectedTrade) {
+        this.updateSelectedTrade(this.updatedSelectedTrade);
+      }
+    });
   }
 
   /**

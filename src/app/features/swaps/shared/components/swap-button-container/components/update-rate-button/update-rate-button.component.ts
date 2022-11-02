@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Component({
   selector: 'app-update-rate-button',
@@ -9,5 +10,9 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angul
 export class UpdateRateButtonComponent {
   @Output() readonly onClick = new EventEmitter<void>();
 
-  constructor() {}
+  constructor(private readonly tradeService: TradeService) {}
+
+  public onHoveredChange(isHovered: boolean): void {
+    this.tradeService.isButtonHovered = isHovered;
+  }
 }

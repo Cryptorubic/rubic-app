@@ -38,10 +38,7 @@ export class TradesCounterComponent {
   );
 
   public get isBestRouteFound(): boolean {
-    const { tradeStatus } = this.crossChainFormService;
-    return (
-      tradeStatus === TRADE_STATUS.READY_TO_APPROVE || tradeStatus === TRADE_STATUS.READY_TO_SWAP
-    );
+    return this.crossChainFormService.selectedTrade?.trade?.to.tokenAmount.isFinite();
   }
 
   constructor(private readonly crossChainFormService: CrossChainFormService) {}

@@ -8,6 +8,7 @@
   [loading]="loading$ | async"
   [disabled]="disabled$ | async"
   (onClick)="onSwapClick()"
+  (onHoveredChange)="onHoveredChange($event)"
 >
   {{ buttonText$ | async }}
 </app-rubic-button>

@@ -5,7 +5,6 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -65,8 +64,6 @@ export class SwapButtonContainerComponent {
 
   public readonly error$ = this.swapButtonContainerErrorsService.error$;
 
-  public readonly sdkLoading$ = this.sdkService.sdkLoading$;
-
   public readonly isIframe = this.iframeService.isIframe;
 
   constructor(
@@ -74,7 +71,6 @@ export class SwapButtonContainerComponent {
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly swapButtonService: SwapButtonService,
     private readonly authService: AuthService,
-    private readonly sdkService: RubicSdkService,
     private readonly iframeService: IframeService
   ) {}
 }

@@ -1,3 +1,8 @@
-<app-rubic-button [attr.rate-is-updated]="true" (onClick)="onClick.emit()" appearance="secondary">
+<app-rubic-button
+  [attr.rate-is-updated]="true"
+  appearance="secondary"
+  (onClick)="onClick.emit()"
+  (onHoveredChange)="onHoveredChange($event)"
+>
   {{ 'tradePage.rateIsUpdated' | translate }}
 </app-rubic-button>

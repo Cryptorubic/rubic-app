@@ -4,6 +4,7 @@
   [loading]="approveButtonLoading$ | async"
   [disabled]="approveButtonDisabled$ | async"
   (onClick)="onClick.emit()"
+  (onHoveredChange)="onHoveredChange($event)"
 >
   Approve
 </app-rubic-button>

@@ -12,6 +12,7 @@ import { SwapButtonService } from '@features/swaps/shared/components/swap-button
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @Component({
   selector: 'app-swap-button',
@@ -39,6 +40,7 @@ export class SwapButtonComponent implements OnInit {
     private readonly swapButtonContainerService: SwapButtonContainerService,
     private readonly swapButtonService: SwapButtonService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly tradeService: TradeService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -59,5 +61,9 @@ export class SwapButtonComponent implements OnInit {
       }
     }
     this.onClick.emit();
+  }
+
+  public onHoveredChange(isHovered: boolean): void {
+    this.tradeService.isButtonHovered = isHovered;
   }
 }
