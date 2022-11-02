@@ -6,7 +6,6 @@ import { StoreService } from '@core/services/store/store.service';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { PromoCode } from '@core/services/backend/promo-code-api/models/promo-code';
 import { copyObject } from '@shared/utils/utils';
 import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -28,8 +27,6 @@ export interface BridgeSettingsForm {}
 export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
-  autoRefresh: boolean;
-  promoCode: PromoCode | null;
   showReceiverAddress: boolean;
 }
 
@@ -55,7 +52,7 @@ export class SettingsService {
 
   public defaultItSettings: ItSettingsForm;
 
-  public defaultCcrSettings: ItSettingsForm;
+  public defaultCcrSettings: CcrSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
 
@@ -71,18 +68,6 @@ export class SettingsService {
 
   public get instantTradeValueChanges(): Observable<ItSettingsForm> {
     return this.instantTrade.valueChanges;
-  }
-
-  public get bridge(): FormGroup<BridgeSettingsForm> {
-    return this.settingsForm.controls.BRIDGE;
-  }
-
-  public get bridgeValue(): BridgeSettingsForm {
-    return this.bridge.value;
-  }
-
-  public get bridgeValueChanges(): Observable<BridgeSettingsForm> {
-    return this.bridge.valueChanges;
   }
 
   public get crossChainRouting(): FormGroup<CcrSettingsForm> {
@@ -133,15 +118,11 @@ export class SettingsService {
     };
   }
 
-  private getDefaultCCRSettings(slippageCcr?: number): ItSettingsForm {
+  private getDefaultCCRSettings(slippageCcr?: number): CcrSettingsForm {
     return {
       autoSlippageTolerance: true,
       slippageTolerance:
         this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
-      deadline: 20,
-      disableMultihops: false,
-      rubicOptimisation: true,
-      autoRefresh: Boolean(this.authService?.user?.address),
       showReceiverAddress: false
     };
   }
@@ -172,8 +153,6 @@ export class SettingsService {
           this.defaultItSettings.autoSlippageTolerance
         ),
         slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
-        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh),
-        promoCode: new FormControl<PromoCode | null>(null),
         showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress)
       })
     });
@@ -220,8 +199,6 @@ export class SettingsService {
    */
   private serializeForm(form: ControlsValue<SettingsForm>): string {
     const formClone = copyObject(form);
-    delete formClone.CROSS_CHAIN_ROUTING.promoCode;
-
     return JSON.stringify(formClone);
   }
 }

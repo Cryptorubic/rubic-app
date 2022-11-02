@@ -58,7 +58,7 @@ export class IframeSettingsComponent implements OnInit {
       slippageTolerance: new FormControl<number>(settingsForm.slippageTolerance),
       disableMultihops: new FormControl<boolean>(itSettingsForm.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(itSettingsForm.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(settingsForm.autoRefresh),
+      autoRefresh: new FormControl<boolean>(itSettingsForm.autoRefresh),
       showReceiverAddress: new FormControl<boolean>(settingsForm.showReceiverAddress)
     });
     this.slippageTolerance = this.iframeSettingsForm.value.slippageTolerance;

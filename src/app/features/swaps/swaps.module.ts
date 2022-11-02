@@ -39,7 +39,6 @@ import { SwapsFormComponent } from 'src/app/features/swaps/features/swaps-form/s
 import { SettingsBridgeComponent } from './features/swaps-form/components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './features/swaps-form/components/swaps-settings/settings-ccr/settings-ccr.component';
 import { IframeSettingsComponent } from './features/swaps-form/components/swaps-settings/iframe-settings/iframe-settings.component';
-import { CcrPromocodeComponent } from './features/swaps-form/components/swaps-settings/settings-ccr/ccr-promocode/ccr-promocode.component';
 import { SwapInfoContainerComponent } from './features/swaps-form/components/swap-info/components/swap-info-container/swap-info-container.component';
 import { InstantTradeSwapInfoComponent } from './features/swaps-form/components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
 import { BridgeSwapInfoComponent } from './features/swaps-form/components/swap-info/components/cross-chain-bridge-swap-info/components/bridge-swap-info/bridge-swap-info.component';
@@ -60,7 +59,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     CrossChainSwapInfoComponent,
     IframeSettingsComponent,
     VerticalIframeTokenAmountInputComponent,
-    CcrPromocodeComponent,
     SwapInfoContainerComponent,
     InstantTradeSwapInfoComponent,
     BridgeSwapInfoComponent,

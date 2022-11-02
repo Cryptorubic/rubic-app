@@ -4,7 +4,6 @@ import {
   CcrSettingsForm,
   SettingsService
 } from '@features/swaps/core/services/settings-service/settings.service';
-import { PromoCode } from '@core/services/backend/promo-code-api/models/promo-code';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -30,8 +29,6 @@ export class SettingsCcrComponent implements OnInit {
 
   public slippageTolerance: number;
 
-  public promoCode: PromoCode | null = null;
-
   public readonly minimumSlippageTolerance = 3;
 
   constructor(
@@ -51,12 +48,9 @@ export class SettingsCcrComponent implements OnInit {
     this.crossChainRoutingForm = new FormGroup<CcrSettingsForm>({
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
-      autoRefresh: new FormControl<boolean>(formValue.autoRefresh),
-      promoCode: new FormControl<PromoCode | null>(null),
       showReceiverAddress: new FormControl<boolean>(formValue.showReceiverAddress)
     });
     this.slippageTolerance = formValue.slippageTolerance;
-    this.promoCode = formValue.promoCode;
     this.setFormChanges();
 
     this.targetNetworkAddressService.isAddressRequired$
@@ -78,7 +72,6 @@ export class SettingsCcrComponent implements OnInit {
       .subscribe(settings => {
         this.crossChainRoutingForm.patchValue({ ...settings }, { emitEvent: false });
         this.slippageTolerance = settings.slippageTolerance;
-        this.promoCode = settings.promoCode;
       });
   }
 
@@ -105,9 +98,5 @@ export class SettingsCcrComponent implements OnInit {
       autoSlippageTolerance: false,
       slippageTolerance: this.slippageTolerance
     });
-  }
-
-  public onPromoCodeChanges(promoCode: PromoCode | null): void {
-    this.crossChainRoutingForm.patchValue({ promoCode });
   }
 }

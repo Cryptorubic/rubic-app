@@ -33,19 +33,6 @@
     </div>
 
     <div class="settings__form-row">
-      <label>{{ 'settings.crossChainRouting.autoRefreshTitle' | translate }}</label>
-      <div
-        class="settings__hint"
-        [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'settings.crossChainRouting.autoRefresh' | translate"
-      ></div>
-      <tui-toggle
-        class="settings__toggle"
-        id="autoRefresh"
-        formControlName="autoRefresh"
-      ></tui-toggle>
-    </div>
-    <div class="settings__form-row">
       <label>{{ 'settings.crossChainRouting.showReceiverAddressTitle' | translate }}</label>
       <div
         class="settings__hint"
@@ -57,13 +44,6 @@
         id="showReceiverAddress"
         formControlName="showReceiverAddress"
       ></tui-toggle>
-    </div>
-
-    <div class="settings__form-row">
-      <app-ccr-promocode
-        [(promoCode)]="promoCode"
-        (promoCodeChange)="onPromoCodeChanges($event)"
-      ></app-ccr-promocode>
     </div>
   </form>
 </div>

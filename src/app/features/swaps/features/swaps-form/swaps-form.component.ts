@@ -53,8 +53,6 @@ export class SwapsFormComponent implements OnInit {
 
   public tradeStatus: TRADE_STATUS;
 
-  public autoRefresh: boolean;
-
   public allowRefresh: boolean = true;
 
   private _supportedTokens: List<TokenAmount>;
@@ -138,19 +136,6 @@ export class SwapsFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnTokens();
-    this.subscribeOnSettings();
-
-    this.swapsService.swapMode$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(swapMode => {
-        this.swapType = swapMode;
-        if (this.authService?.user?.address) {
-          this.autoRefresh =
-            swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-              ? this.settingsService.instantTradeValue.autoRefresh
-              : this.settingsService.crossChainRoutingValue.autoRefresh;
-        }
-      });
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
@@ -215,25 +200,6 @@ export class SwapsFormComponent implements OnInit {
 
     this.isLoading = false;
     this.cdr.detectChanges();
-  }
-
-  private subscribeOnSettings(): void {
-    combineLatest([
-      this.settingsService.instantTradeValueChanges.pipe(
-        startWith(this.settingsService.instantTradeValue)
-      ),
-      this.settingsService.crossChainRoutingValueChanges.pipe(
-        startWith(this.settingsService.crossChainRoutingValue)
-      )
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([instantTradeSettings, crossChainRoutingSettings]) => {
-        if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-          this.autoRefresh = instantTradeSettings.autoRefresh;
-        } else {
-          this.autoRefresh = crossChainRoutingSettings.autoRefresh;
-        }
-      });
   }
 
   private setFormValues(form: SwapFormInput): void {
