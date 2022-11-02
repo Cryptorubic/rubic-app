@@ -3,7 +3,7 @@ import { RubicWarning } from '@core/errors/models/rubic-warning';
 
 class NotWhitelistedProviderWarning extends RubicWarning<ERROR_TYPE.TEXT> {
   constructor() {
-    super('errors.notWhitelistedProvider');
+    super(null);
     Object.setPrototypeOf(this, NotWhitelistedProviderWarning.prototype);
   }
 }

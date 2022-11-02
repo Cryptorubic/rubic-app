@@ -20,9 +20,7 @@ import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number'
   ]
 })
 export class TradesCounterComponent {
-  public readonly isCalculating$ = this.crossChainFormService.calculatedTradesAmounts$.pipe(
-    map(amounts => amounts && amounts.calculated < amounts.total)
-  );
+  public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
 
   public readonly isDisabled$ = this.crossChainFormService.tradeStatus$.pipe(
     map(status => status === TRADE_STATUS.DISABLED)

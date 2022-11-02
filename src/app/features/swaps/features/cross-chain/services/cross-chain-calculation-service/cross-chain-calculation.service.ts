@@ -3,6 +3,7 @@ import {
   BlockchainName,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
+  CrossChainTradeType,
   LifiCrossChainTrade,
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
@@ -87,18 +88,23 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
   }
 
-  public calculateTrade(isUserAuthorized: boolean): Observable<CrossChainCalculatedTradeData> {
+  public calculateTrade(
+    calculateNeedApprove: boolean,
+    disabledTradeTypes: CrossChainTradeType[]
+  ): Observable<CrossChainCalculatedTradeData> {
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
 
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
-    const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+    const disabledProviders = disabledTradeTypes.concat(
+      this.queryParamsService.disabledProviders || []
+    );
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders: disabledProvidersForLandingIframe || [],
+      disabledProviders: disabledProviders,
       ...(receiverAddress && { receiverAddress })
     };
 
@@ -116,7 +122,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
           }
 
           const trade = wrappedTrade?.trade;
-          return from(isUserAuthorized && trade ? from(trade.needApprove()) : of(false)).pipe(
+          return from(calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)).pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
                 total: total,
@@ -191,7 +197,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
   }
 
-  public async createTrade(
+  public async swapTrade(
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {

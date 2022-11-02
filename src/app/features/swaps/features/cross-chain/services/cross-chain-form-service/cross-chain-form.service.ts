@@ -15,6 +15,7 @@ import {
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
+  CrossChainTradeType,
   DebridgeCrossChainTrade,
   EvmBridgersCrossChainTrade,
   EvmCrossChainTrade,
@@ -38,7 +39,6 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { CalculatedTradesAmounts } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/calculated-trades-amounts';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -65,6 +65,9 @@ import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-c
 import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { SWAP_PROCESS } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/swap-process';
+import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 
 @Injectable({
   providedIn: 'root'
@@ -102,16 +105,14 @@ export class CrossChainFormService {
   }
 
   /**
-   * Stores amounts of total and calculated trades.
+   * True, if calculation process is in progress.
    */
-  private readonly _calculatedTradesAmounts$ = new BehaviorSubject<
-    CalculatedTradesAmounts | undefined
-  >(undefined);
+  private readonly _isCalculating$ = new BehaviorSubject<boolean>(false);
 
-  public readonly calculatedTradesAmounts$ = this._calculatedTradesAmounts$.asObservable();
+  public readonly isCalculating$ = this._isCalculating$.asObservable();
 
-  private set calculatedTradesAmounts(value: CalculatedTradesAmounts) {
-    this._calculatedTradesAmounts$.next(value);
+  private set isCalculating(value: boolean) {
+    this._isCalculating$.next(value);
   }
 
   /**
@@ -162,6 +163,11 @@ export class CrossChainFormService {
   private replacedTaggedTrades: CrossChainTaggedTrade[] = [];
 
   /**
+   * Contains trades types, which were disabled due to critical errors.
+   */
+  private disabledTradesTypes: CrossChainTradeType[] = [];
+
+  /**
    * Contains true, in case `approve` button must be shown in form.
    */
   private readonly _displayApproveButton$ = new BehaviorSubject<boolean>(false);
@@ -171,6 +177,11 @@ export class CrossChainFormService {
   private set displayApproveButton(value: boolean) {
     this._displayApproveButton$.next(value);
   }
+
+  /**
+   * True, if swap (approve-swap) process has started.
+   */
+  private isSwapStarted: SWAP_PROCESS = SWAP_PROCESS.NONE;
 
   constructor(
     private readonly swapFormService: SwapFormService,
@@ -222,6 +233,7 @@ export class CrossChainFormService {
           ) {
             this.tradeStatus = TRADE_STATUS.LOADING;
           }
+          this.isCalculating = true;
           this.refreshService.setRefreshing();
           return true;
         }),
@@ -235,8 +247,10 @@ export class CrossChainFormService {
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
 
-          const crossChainTrade$ =
-            this.crossChainCalculationService.calculateTrade(isUserAuthorized);
+          const crossChainTrade$ = this.crossChainCalculationService.calculateTrade(
+            isUserAuthorized,
+            this.disabledTradesTypes
+          );
 
           const balance$ = from(
             this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
@@ -245,12 +259,9 @@ export class CrossChainFormService {
           return crossChainTrade$.pipe(
             switchTap(() => balance$),
             map(({ total, calculated, lastCalculatedTrade }) => {
-              this.calculatedTradesAmounts = {
-                calculated,
-                total
-              };
               const calculationEnded = calculated === total;
               if (calculationEnded) {
+                this.isCalculating = false;
                 this.refreshService.setStopped();
               }
 
@@ -258,6 +269,7 @@ export class CrossChainFormService {
             }),
             catchError((error: RubicSdkError) => {
               this.tradeStatus = TRADE_STATUS.DISABLED;
+              this.isCalculating = false;
               this.refreshService.setStopped();
 
               this.error = this.parseCalculationError(error);
@@ -278,25 +290,24 @@ export class CrossChainFormService {
     calculationEnded: boolean
   ): void {
     if (lastCalculatedTrade) {
-      this.taggedTrades = this.getUpdatedTradesList(lastCalculatedTrade);
+      this.updateTradesList(lastCalculatedTrade);
     }
 
     const bestTaggedTrade = this.taggedTrades[0];
-    if (bestTaggedTrade?.trade?.to.tokenAmount) {
+    if (bestTaggedTrade?.trade?.to.tokenAmount || calculationEnded) {
       this.updateSelectedTrade(bestTaggedTrade);
-    } else if (calculationEnded) {
-      this.updateSelectedTrade(null);
     }
   }
 
   /**
-   * Returns updated trades lists with last calculated trades.
+   * Updates trades lists with last calculated trades.
    */
-  private getUpdatedTradesList(
-    lastCalculatedTrade: CrossChainCalculatedTrade
-  ): CrossChainTaggedTrade[] {
+  private updateTradesList(lastCalculatedTrade: CrossChainCalculatedTrade): void {
     let updatedTaggedTrades = this.taggedTrades.filter(
       taggedTrade => taggedTrade.tradeType !== lastCalculatedTrade.tradeType
+    );
+    this.replacedTaggedTrades = this.replacedTaggedTrades.filter(
+      replacedTaggedTrade => replacedTaggedTrade.tradeType !== lastCalculatedTrade.tradeType
     );
     const taggedLastCalculatedTrade = CrossChainFormService.setTags(lastCalculatedTrade);
 
@@ -315,19 +326,15 @@ export class CrossChainFormService {
       });
 
       if (identicalTrade) {
-        const updatedReplacedTaggedTrades = this.replacedTaggedTrades.filter(
-          replacedTaggedTrade => replacedTaggedTrade.tradeType !== lastCalculatedTrade.tradeType
-        );
-
         if (
           identicalTrade.trade.bridgeSubtype.isNative ||
           identicalTrade.trade.to.tokenAmount.gt(lastTrade.to.tokenAmount)
         ) {
-          this.replacedTaggedTrades = updatedReplacedTaggedTrades.concat(taggedLastCalculatedTrade);
-
-          return updatedTaggedTrades;
+          this.replacedTaggedTrades = this.replacedTaggedTrades.concat(taggedLastCalculatedTrade);
+          this.taggedTrades = updatedTaggedTrades;
+          return;
         } else {
-          this.replacedTaggedTrades = updatedReplacedTaggedTrades.concat(identicalTrade);
+          this.replacedTaggedTrades = this.replacedTaggedTrades.concat(identicalTrade);
 
           updatedTaggedTrades = updatedTaggedTrades.filter(
             taggedTrade => taggedTrade.tradeType !== identicalTrade.tradeType
@@ -335,16 +342,18 @@ export class CrossChainFormService {
         }
       }
     }
-    return updatedTaggedTrades.concat(taggedLastCalculatedTrade).sort(compareCrossChainTrades);
+    this.taggedTrades = updatedTaggedTrades
+      .concat(taggedLastCalculatedTrade)
+      .sort(compareCrossChainTrades);
   }
 
   /**
    * Updates currently selected trade and output form value.
    */
-  public updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null): void {
+  public updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null | undefined): void {
     this.selectedTrade = taggedTrade;
 
-    if (taggedTrade) {
+    if (taggedTrade?.trade?.to.tokenAmount) {
       this.swapFormService.output.patchValue({
         toAmount: taggedTrade.trade.to.tokenAmount
       });
@@ -386,7 +395,7 @@ export class CrossChainFormService {
       );
     }
 
-    const parsedError = RubicSdkErrorParser.parseError(error);
+    const parsedError = error && RubicSdkErrorParser.parseError(error);
     if (!parsedError || parsedError instanceof ExecutionRevertedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
@@ -477,6 +486,7 @@ export class CrossChainFormService {
   private unsetCalculatedTrades(): void {
     this.taggedTrades = [];
     this.replacedTaggedTrades = [];
+    this.disabledTradesTypes = [];
 
     this.updateSelectedTrade(null);
 
@@ -588,12 +598,13 @@ export class CrossChainFormService {
   }
 
   public async approveTrade(): Promise<void> {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    this.isSwapStarted = SWAP_PROCESS.APPROVE_STARTED;
 
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.refreshService.startInProgress();
 
     try {
+      const fromBlockchain = this.selectedTrade.trade.from.blockchain;
       await this.crossChainCalculationService.approve(this.selectedTrade);
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
@@ -605,15 +616,25 @@ export class CrossChainFormService {
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
 
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
-    } catch (err) {
-      this.errorsService.catch(err);
+    } catch (error) {
+      const parsedError = RubicSdkErrorParser.parseError(error);
+      if (parsedError instanceof UserRejectError) {
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+      }
+
+      this.errorsService.catch(parsedError);
+
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
 
     this.refreshService.stopInProgress();
   }
 
-  public async createTrade(): Promise<void> {
+  public async swapTrade(): Promise<void> {
+    if (this.isSwapStarted === SWAP_PROCESS.NONE) {
+      this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
+    }
+
     if (!this.isSlippageCorrect()) {
       return;
     }
@@ -621,29 +642,40 @@ export class CrossChainFormService {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.refreshService.startInProgress();
 
+    const currentSelectedTrade = this.selectedTrade;
     try {
-      const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
-      await this.crossChainCalculationService.createTrade(this.selectedTrade, () => {
+      await this.crossChainCalculationService.swapTrade(currentSelectedTrade, () => {
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.refreshService.stopInProgress();
+
+        this.startRecalculation();
       });
 
-      this.startRecalculation();
-
-      await this.tokensService.updateTokenBalanceAfterCcrSwap({
-        address: fromToken.address,
-        blockchain: fromBlockchain
-      });
-    } catch (err) {
-      const error = RubicSdkErrorParser.parseError(err);
+      const fromToken = currentSelectedTrade.trade.from;
+      await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
+    } catch (error) {
+      const parsedError = RubicSdkErrorParser.parseError(error);
       if (
-        !(
-          error instanceof NotWhitelistedProviderWarning ||
-          error instanceof UnsupportedDeflationTokenWarning ||
-          error instanceof ExecutionRevertedError
-        )
+        parsedError instanceof NotWhitelistedProviderWarning ||
+        parsedError instanceof UnsupportedDeflationTokenWarning ||
+        parsedError instanceof ExecutionRevertedError
       ) {
-        this.errorsService.catch(err);
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+
+        this.errorsService.catch(new CrossChainSwapUnavailableWarning());
+
+        this.disableUnavailableTrade(currentSelectedTrade.tradeType);
+      } else {
+        if (
+          parsedError instanceof UserRejectError &&
+          this.isSwapStarted === SWAP_PROCESS.SWAP_STARTED
+        ) {
+          this.isSwapStarted = SWAP_PROCESS.NONE;
+        }
+
+        this.errorsService.catch(parsedError);
       }
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
@@ -671,5 +703,18 @@ export class CrossChainFormService {
       })
       .subscribe();
     return false;
+  }
+
+  private disableUnavailableTrade(unavailableTradeType: CrossChainTradeType): void {
+    this.taggedTrades = this.taggedTrades.filter(
+      taggedTrade => taggedTrade.tradeType === unavailableTradeType
+    );
+    this.replacedTaggedTrades.forEach(replacedTrade => {
+      this.updateTradesList(replacedTrade);
+    });
+    this.disabledTradesTypes.push(unavailableTradeType);
+
+    const bestTaggedTrade = this.taggedTrades[0];
+    this.updateSelectedTrade(bestTaggedTrade);
   }
 }

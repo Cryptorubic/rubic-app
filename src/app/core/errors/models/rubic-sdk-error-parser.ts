@@ -122,14 +122,16 @@ export class RubicSdkErrorParser {
     return new ExecutionRevertedError(err.message);
   }
 
-  public static parseError(err: RubicError<ERROR_TYPE> | RubicSdkError): RubicError<ERROR_TYPE> {
+  public static parseError(
+    err: RubicError<ERROR_TYPE> | RubicSdkError | Error
+  ): RubicError<ERROR_TYPE> {
+    if (err instanceof RubicError<ERROR_TYPE>) {
+      return err;
+    }
+
     if (err instanceof RubicSdkError) {
       return RubicSdkErrorParser.parseErrorByType(err);
     }
-    if (err?.message) {
-      return RubicSdkErrorParser.parseErrorByMessage(err);
-    }
-
-    return err;
+    return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 }

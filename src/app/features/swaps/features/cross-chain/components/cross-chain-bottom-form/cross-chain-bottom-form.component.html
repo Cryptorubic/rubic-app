@@ -32,8 +32,8 @@
             [status]="tradeStatus$ | async"
             [error]="error"
             buttonText="Swap"
-            (onSwapClick)="createTrade()"
-            (onApproveClick)="approveTrade()"
+            (onSwapClick)="onSwapTrade()"
+            (onApproveClick)="onApproveTrade()"
           ></app-swap-button-container>
         </div>
       </div>

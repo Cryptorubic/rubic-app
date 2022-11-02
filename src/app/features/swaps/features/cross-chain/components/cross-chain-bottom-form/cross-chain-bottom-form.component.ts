@@ -55,11 +55,11 @@ export class CrossChainBottomFormComponent {
     });
   }
 
-  public approveTrade(): void {
+  public onApproveTrade(): void {
     this.crossChainFormService.approveTrade();
   }
 
-  public createTrade(): void {
-    this.crossChainFormService.createTrade();
+  public onSwapTrade(): void {
+    this.crossChainFormService.swapTrade();
   }
 }
