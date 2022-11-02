@@ -15,6 +15,7 @@ ul {
   height: 52px;
   padding: 10px 0;
 
+  border: 1px solid var(--panel-border);
   border-radius: 14px;
 
   transition: 0.2s ease-in-out;
@@ -45,7 +46,7 @@ ul {
   }
 
   &_selected {
-    border: 1px solid green;
+    border: 1px solid var(--form-rubic-text-color);
   }
 
   > div {

@@ -17,7 +17,6 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { fromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/from-blockchains';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -39,18 +38,6 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   private get formattedAmount(): string {
     return this.amount?.value.split(',').join('');
-  }
-
-  public readonly fromBlockchains = fromBlockchains;
-
-  get usdPrice(): BigNumber {
-    if (!this.formattedAmount || !this.selectedToken) {
-      return null;
-    }
-    if (!this.selectedToken?.price) {
-      return new BigNumber(NaN);
-    }
-    return new BigNumber(this.formattedAmount).multipliedBy(this.selectedToken.price);
   }
 
   public readonly DEFAULT_DECIMALS = 18;

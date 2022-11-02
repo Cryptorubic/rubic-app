@@ -4,17 +4,25 @@
       class="blockchain-aside__blockchains-list"
       [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
     >
-      <li *ngFor="let blockchainName of blockchains" [id]="idPrefix + 'Network_' + blockchainName">
-        <app-icon-button
-          [icon]="blockchainIcon[blockchainName]"
-          [disabled]="blockchain === blockchainName"
-          [border]="blockchain === blockchainName"
-          [borderRadiusPercent]="50"
-          [label]="blockchainLabel[blockchainName]"
-          (iconButtonClick)="onBlockchainSelect(blockchainName)"
+      <ng-container *ngFor="let blockchainName of blockchains">
+        <li
+          [id]="idPrefix + 'Network_' + blockchainName"
+          *ngLet="isDisabledBlockchain(blockchainName) as disabled"
+          [ngClass]="{ disabled: disabled }"
+          tuiHintMode="error"
+          [tuiHint]="disabled ? 'Selected only as target network' : null"
         >
-        </app-icon-button>
-      </li>
+          <app-icon-button
+            [icon]="blockchainIcon[blockchainName]"
+            [disabled]="blockchain === blockchainName || disabled"
+            [border]="blockchain === blockchainName"
+            [borderRadiusPercent]="50"
+            [label]="blockchainLabel[blockchainName]"
+            (iconButtonClick)="onBlockchainSelect(blockchainName)"
+          >
+          </app-icon-button>
+        </li>
+      </ng-container>
     </ul>
   </tui-scrollbar>
 </aside>

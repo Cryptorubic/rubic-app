@@ -63,7 +63,6 @@ type ComponentInput = {
   formType: 'from' | 'to';
   currentBlockchain: BlockchainName;
   form: FormGroup<ISwapFormInput>;
-  allowedBlockchains: BlockchainName[] | undefined;
   idPrefix: string;
 };
 
@@ -86,9 +85,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   private form: FormGroup<ISwapFormInput>;
 
-  private formType: 'from' | 'to';
-
-  public allowedBlockchains: BlockchainName[] | undefined;
+  public formType: 'from' | 'to';
 
   /**
    * Current selected blockchain in modal.
@@ -237,7 +234,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     this.idPrefix = context.idPrefix;
     this.form = context.form;
     this.formType = context.formType;
-    this.allowedBlockchains = context.allowedBlockchains;
     this._blockchain = context.currentBlockchain;
     this.tokens$ = context.tokens$;
     this.favoriteTokens$ = context.favoriteTokens$;

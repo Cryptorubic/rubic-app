@@ -26,7 +26,6 @@ export class TokensSelectService {
    * @param formType Tokens type (from || to)
    * @param currentBlockchain Tokens blockchain.
    * @param form Swap form information.
-   * @param allowedBlockchains Allowed blockchains for list.
    * @param idPrefix Id prefix for GA.
    */
   public showDialog(
@@ -35,7 +34,6 @@ export class TokensSelectService {
     formType: 'from' | 'to',
     currentBlockchain: BlockchainName,
     form: FormGroup<ISwapFormInput>,
-    allowedBlockchains: BlockchainName[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
     const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
@@ -49,7 +47,6 @@ export class TokensSelectService {
           currentBlockchain,
           formType,
           form,
-          allowedBlockchains,
           idPrefix
         }
       }

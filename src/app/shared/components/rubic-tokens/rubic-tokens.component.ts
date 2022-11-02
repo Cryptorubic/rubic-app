@@ -13,7 +13,6 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
-import { BlockchainName } from 'rubic-sdk';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -55,8 +54,6 @@ export class RubicTokensComponent implements OnInit {
   }
 
   @Input() formService: FormService;
-
-  @Input() allowedBlockchains: BlockchainName[] | undefined;
 
   @Input() disabled = false;
 
@@ -125,7 +122,6 @@ export class RubicTokensComponent implements OnInit {
         this.formType,
         currentBlockchain,
         this.formService.input,
-        this.allowedBlockchains,
         idPrefix
       )
       .subscribe((selectedToken: TokenAmount) => {
@@ -162,12 +158,6 @@ export class RubicTokensComponent implements OnInit {
           }
         }
       });
-  }
-
-  public clearToken(): void {
-    this.selectedToken = null;
-    const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
-    this.formService.input.patchValue({ [formKey]: null });
   }
 
   public onImageError($event: Event): void {

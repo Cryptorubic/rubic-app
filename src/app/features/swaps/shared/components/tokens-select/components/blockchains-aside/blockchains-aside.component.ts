@@ -13,6 +13,7 @@ import { allBlockchains } from '@features/swaps/shared/components/tokens-select/
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -23,7 +24,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 export class BlockchainsAsideComponent {
   @Input() blockchain: BlockchainName;
 
-  @Input() allowedBlockchains: BlockchainName[] | undefined;
+  @Input() formType: 'from' | 'to';
 
   @Input() idPrefix: string;
 
@@ -52,11 +53,6 @@ export class BlockchainsAsideComponent {
       });
     }
 
-    if (this.allowedBlockchains) {
-      return BlockchainsAsideComponent.allBlockchains.filter(blockchain =>
-        this.allowedBlockchains.includes(blockchain)
-      );
-    }
     return BlockchainsAsideComponent.allBlockchains;
   }
 
@@ -66,6 +62,10 @@ export class BlockchainsAsideComponent {
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly queryParamsService: QueryParamsService
   ) {}
+
+  public isDisabledBlockchain(blockchain: BlockchainName): boolean {
+    return this.formType === 'from' && disabledFromBlockchains.includes(blockchain);
+  }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.blockchain = blockchainName;

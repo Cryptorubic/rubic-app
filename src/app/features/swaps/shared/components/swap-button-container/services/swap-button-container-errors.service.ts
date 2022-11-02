@@ -17,7 +17,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
-import { fromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/from-blockchains';
+import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -220,7 +220,7 @@ export class SwapButtonContainerErrorsService {
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && fromToken) {
       this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = !fromBlockchains.includes(
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = disabledFromBlockchains.includes(
         fromToken.blockchain
       );
     } else {
