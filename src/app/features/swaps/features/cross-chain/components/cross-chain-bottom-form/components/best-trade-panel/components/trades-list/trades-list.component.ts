@@ -46,7 +46,7 @@ export class TradesListComponent {
   }
 
   public selectTrade(taggedTrade: CrossChainTaggedTrade): void {
-    this.crossChainFormService.updateSelectedTrade(taggedTrade);
+    this.crossChainFormService.updateSelectedTrade(taggedTrade, true);
     this.selectionHandler.emit();
   }
 

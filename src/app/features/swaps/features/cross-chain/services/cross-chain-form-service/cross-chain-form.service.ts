@@ -68,6 +68,7 @@ import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cros
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { SWAP_PROCESS } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/models/swap-process';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
+import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
 
 @Injectable({
   providedIn: 'root'
@@ -189,6 +190,10 @@ export class CrossChainFormService {
    */
   private isSwapStarted: SWAP_PROCESS = SWAP_PROCESS.NONE;
 
+  private isTradeSelectedByUser = false;
+
+  private tradeSelectedByUserTimeout: NodeJS.Timeout;
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
@@ -298,7 +303,7 @@ export class CrossChainFormService {
     if (lastCalculatedTrade) {
       this.updateTradesList(lastCalculatedTrade);
 
-      if (this.isSwapStarted !== SWAP_PROCESS.NONE) {
+      if (this.isTradeSelectedByUser || this.isSwapStarted !== SWAP_PROCESS.NONE) {
         this.compareSelectedTradeToBestTrade();
       } else {
         const bestTaggedTrade = this.taggedTrades[0];
@@ -332,11 +337,7 @@ export class CrossChainFormService {
         if (!listedTrade) {
           return false;
         }
-        return (
-          listedTrade.onChainSubtype.from === lastTrade.onChainSubtype.from &&
-          listedTrade.onChainSubtype.to === lastTrade.onChainSubtype.to &&
-          listedTrade.bridgeSubtype.type === lastTrade.bridgeSubtype.type
-        );
+        return compareTradesRoutes(listedTrade, lastTrade);
       });
 
       if (identicalTrade) {
@@ -367,10 +368,17 @@ export class CrossChainFormService {
    */
   public compareSelectedTradeToBestTrade(): void {
     let updatedSelectedTrade: CrossChainTaggedTrade;
-    if (this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE) {
-      updatedSelectedTrade = this.taggedTrades[0];
+    if (this.isTradeSelectedByUser) {
+      updatedSelectedTrade = this.taggedTrades.find(
+        taggedTrade =>
+          taggedTrade?.trade && compareTradesRoutes(taggedTrade?.trade, this.selectedTrade.trade)
+      );
     } else {
-      updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+      if (this.tradeStatus === TRADE_STATUS.READY_TO_APPROVE) {
+        updatedSelectedTrade = this.taggedTrades[0];
+      } else {
+        updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+      }
     }
 
     if (
@@ -403,7 +411,10 @@ export class CrossChainFormService {
   /**
    * Updates currently selected trade and output form value.
    */
-  public updateSelectedTrade(taggedTrade: CrossChainTaggedTrade | null | undefined): void {
+  public updateSelectedTrade(
+    taggedTrade: CrossChainTaggedTrade | null | undefined,
+    selectedByUser = false
+  ): void {
     this.selectedTrade = taggedTrade;
     this.updatedSelectedTrade = null;
 
@@ -418,6 +429,13 @@ export class CrossChainFormService {
       } else {
         this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
         this.displayApproveButton = needApprove;
+      }
+
+      if (selectedByUser) {
+        this.isTradeSelectedByUser = true;
+        this.tradeSelectedByUserTimeout = setTimeout(() => {
+          this.isTradeSelectedByUser = false;
+        }, 10_000_000);
       }
     } else {
       this.swapFormService.output.patchValue({
@@ -547,15 +565,28 @@ export class CrossChainFormService {
     this.error = null;
 
     this.isSwapStarted = SWAP_PROCESS.NONE;
+
+    this.unsetTradeSelectedByUser();
   }
 
   /**
    * Subscribes on refresh button calls and controls recalculation after it.
    */
   private subscribeOnRefreshServiceCalls(): void {
-    this.refreshService.onRefresh$.subscribe(() => {
+    this.refreshService.onRefresh$.subscribe(({ isForced }) => {
+      if (isForced) {
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+
+        this.unsetTradeSelectedByUser();
+      }
+
       this.startRecalculation();
     });
+  }
+
+  private unsetTradeSelectedByUser(): void {
+    this.isTradeSelectedByUser = false;
+    clearTimeout(this.tradeSelectedByUserTimeout);
   }
 
   /**
@@ -710,6 +741,7 @@ export class CrossChainFormService {
     try {
       await this.crossChainCalculationService.swapTrade(currentSelectedTrade, () => {
         this.isSwapStarted = SWAP_PROCESS.NONE;
+        this.unsetTradeSelectedByUser();
 
         if (this.updatedSelectedTrade) {
           this.updateSelectedTrade(this.updatedSelectedTrade);
@@ -724,35 +756,7 @@ export class CrossChainFormService {
       const fromToken = currentSelectedTrade.trade.from;
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
     } catch (error) {
-      const parsedError = RubicSdkErrorParser.parseError(error);
-      if (
-        parsedError instanceof NotWhitelistedProviderWarning ||
-        parsedError instanceof UnsupportedDeflationTokenWarning ||
-        parsedError instanceof ExecutionRevertedError
-      ) {
-        this.isSwapStarted = SWAP_PROCESS.NONE;
-
-        this.errorsService.catch(new CrossChainSwapUnavailableWarning());
-
-        this.disableUnavailableTrade(currentSelectedTrade.tradeType);
-      } else {
-        if (
-          parsedError instanceof UserRejectError &&
-          this.isSwapStarted === SWAP_PROCESS.SWAP_STARTED
-        ) {
-          this.isSwapStarted = SWAP_PROCESS.NONE;
-        }
-
-        this.errorsService.catch(parsedError);
-      }
-
-      if (this.updatedSelectedTrade) {
-        this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
-      } else {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      }
-
-      this.refreshService.stopInProgress();
+      this.handleSwapError(error, currentSelectedTrade.tradeType);
     }
   }
 
@@ -775,6 +779,39 @@ export class CrossChainFormService {
       })
       .subscribe();
     return false;
+  }
+
+  private handleSwapError(error: RubicSdkError, tradeType: CrossChainTradeType): void {
+    const parsedError = RubicSdkErrorParser.parseError(error);
+    if (
+      parsedError instanceof NotWhitelistedProviderWarning ||
+      parsedError instanceof UnsupportedDeflationTokenWarning ||
+      parsedError instanceof ExecutionRevertedError
+    ) {
+      this.isSwapStarted = SWAP_PROCESS.NONE;
+      this.unsetTradeSelectedByUser();
+
+      this.errorsService.catch(new CrossChainSwapUnavailableWarning());
+
+      this.disableUnavailableTrade(tradeType);
+    } else {
+      if (
+        parsedError instanceof UserRejectError &&
+        this.isSwapStarted === SWAP_PROCESS.SWAP_STARTED
+      ) {
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+      }
+
+      this.errorsService.catch(parsedError);
+    }
+
+    if (this.updatedSelectedTrade) {
+      this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+    } else {
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+    }
+
+    this.refreshService.stopInProgress();
   }
 
   private disableUnavailableTrade(unavailableTradeType: CrossChainTradeType): void {
