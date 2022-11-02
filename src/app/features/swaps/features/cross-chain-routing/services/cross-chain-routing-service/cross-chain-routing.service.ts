@@ -27,7 +27,7 @@ import {
   ViaCrossChainTrade,
   Web3Pure,
   WrappedCrossChainTrade,
-  MultichainCrossChainTrade
+  DexMultichainCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -352,7 +352,7 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
       trade instanceof TronBridgersCrossChainTrade ||
-      trade instanceof MultichainCrossChainTrade
+      trade instanceof DexMultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
