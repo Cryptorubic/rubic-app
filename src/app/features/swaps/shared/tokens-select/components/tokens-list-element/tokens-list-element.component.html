@@ -1,12 +1,4 @@
-<div
-  class="token-card"
-  *ngLet="isHorizontalFrame as isHorizontalFrame"
-  [tuiHint]="token.address"
-  tuiHintMode="onDark"
-  tuiHintShowDelay="1500"
-  tuiHintDirection="left"
-  tuiHintHideDelay="100"
->
+<div class="token-card">
   <div class="token-card__image-container">
     <img
       [src]="token.image || DEFAULT_TOKEN_IMAGE"
@@ -17,7 +9,52 @@
   </div>
 
   <div class="token-card__name-container">
-    <span>{{ token.symbol }}</span>
+    <span
+      >{{ token.symbol }}
+
+      <svg
+        *ngIf="hintShown"
+        width="20"
+        height="21"
+        viewBox="0 0 20 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        (click)="copyToClipboard($event)"
+        [tuiHint]="token.address"
+        tuiHintMode="onDark"
+        tuiHintShowDelay="50"
+        tuiHintDirection="top-right"
+        tuiHintHideDelay="100"
+      >
+        <path
+          d="M2 0.5C0.895 0.5 0 1.395 0 2.5V16.5H2V2.5H16V0.5H2ZM6
+          4.5C4.895 4.5 4 5.395 4 6.5V18.5C4 19.605 4.895 20.5 6 20.5H18C19.105
+          20.5 20 19.605 20 18.5V6.5C20 5.395 19.105 4.5 18 4.5H6ZM6 6.5H18V18.5H6V6.5Z"
+          fill="#FFFFFF"
+        />
+      </svg>
+      <span *ngIf="!hintShown" class="token-card__name-container-copy">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M8 15.5C12.1421 15.5 15.5 12.1421 15.5 8C15.5 6.53401 15.0794 5.16626
+          14.3523 4.01084L8.52169 10.4893C7.82902 11.2589 6.66346 11.3726 5.83511
+          10.7513L3.23333 8.8C2.7915 8.46863 2.70196 7.84183 3.03333 7.4C3.3647
+          6.95817 3.9915 6.86863 4.43333 7.2L7.03511 9.15133L13.0565 2.46085C11.7231
+          1.24289 9.94829 0.5 8 0.5C3.85786 0.5 0.5 3.85786 0.5 8C0.5 12.1421 3.85786 15.5 8 15.5Z"
+            fill="#FFFFFF"
+          />
+        </svg>
+        <span style="margin-top: 1px"> Copied </span>
+      </span>
+    </span>
     <small>{{ token.name }}</small>
   </div>
 

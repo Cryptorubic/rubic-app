@@ -1,5 +1,17 @@
 @use 'src/scss/core' as *;
 
+::ng-deep tui-hint-box {
+  max-width: 100% !important;
+
+  @include b($mobile-md-minus) {
+    max-width: 160px !important;
+  }
+
+  span {
+    font-size: 13px !important;
+  }
+}
+
 .token-card {
   display: flex;
   align-items: center;
@@ -52,6 +64,36 @@
       @include iframe {
         font-size: 12px;
         line-height: 14px;
+      }
+    }
+
+    &-copy {
+      display: flex !important;
+      gap: 5px;
+      align-items: center;
+      margin-top: -2px;
+
+      @include b($mobile-sm) {
+        span {
+          display: none;
+        }
+
+      }
+
+      svg {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    >span {
+      display: flex;
+      align-items: center;
+
+      svg {
+        width: 13px;
+        height: 15px;
+        margin-bottom: 2px;
+        margin-left: 10px;
       }
     }
   }

@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   Output
 } from '@angular/core';
@@ -13,6 +14,8 @@ import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-imag
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
+import { timer } from 'rxjs';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -37,12 +40,15 @@ export class TokensListElementComponent {
    */
   public readonly isHorizontalFrame: boolean;
 
+  public hintShown: boolean = true;
+
   constructor(
     iframeService: IframeService,
     private readonly tokensService: TokensService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {
     this.loadingFavoriteToken = false;
     this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
@@ -77,6 +83,26 @@ export class TokensListElementComponent {
         this.cdr.markForCheck();
         this.toggleFavoriteToken.emit();
       }
+    });
+  }
+
+  /**
+   * Copy error message to clipboard.
+   */
+  public copyToClipboard(event: MouseEvent): void {
+    event.stopPropagation();
+    this.showHint();
+    this.navigator.clipboard.writeText(this.token.address);
+  }
+
+  /**
+   * Show copy to clipboard hint.
+   */
+  private showHint(): void {
+    this.hintShown = false;
+    timer(1000).subscribe(() => {
+      this.hintShown = true;
+      this.cdr.markForCheck();
     });
   }
 }
