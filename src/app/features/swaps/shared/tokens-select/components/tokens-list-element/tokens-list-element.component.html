@@ -1,4 +1,12 @@
-<div class="token-card" *ngLet="isHorizontalFrame as isHorizontalFrame">
+<div
+  class="token-card"
+  *ngLet="isHorizontalFrame as isHorizontalFrame"
+  [tuiHint]="token.address"
+  tuiHintMode="onDark"
+  tuiHintShowDelay="1500"
+  tuiHintDirection="left"
+  tuiHintHideDelay="100"
+>
   <div class="token-card__image-container">
     <img
       [src]="token.image || DEFAULT_TOKEN_IMAGE"
