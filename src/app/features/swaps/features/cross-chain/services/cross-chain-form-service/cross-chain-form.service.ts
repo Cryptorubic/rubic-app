@@ -280,7 +280,8 @@ export class CrossChainFormService {
 
               if (
                 this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
-                this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP
+                this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
+                this.tradeStatus !== TRADE_STATUS.OLD_TRADE_DATA
               ) {
                 this.tradeStatus = TRADE_STATUS.LOADING;
               }
