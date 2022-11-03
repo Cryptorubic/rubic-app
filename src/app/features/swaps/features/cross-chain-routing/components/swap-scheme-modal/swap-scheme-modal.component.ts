@@ -91,6 +91,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private timestamp: number;
 
+  private amountOutMin: string;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -128,7 +130,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 txTimestamp: this.timestamp,
                 lifiBridgeType: this.bridgeType.name,
                 viaUuid: this.viaUuid,
-                rangoRequestId: this.rangoRequestId
+                rangoRequestId: this.rangoRequestId,
+                amountOutMin: this.amountOutMin
               },
               this.crossChainProvider
             )
@@ -294,5 +297,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this.rangoRequestId = data.rangoRequestId;
 
     this.timestamp = data.timestamp;
+
+    this.amountOutMin = data.amountOutMin;
   }
 }

@@ -16,6 +16,7 @@ import {
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -27,7 +28,8 @@ import {
   Web3Pure,
   WrappedCrossChainTrade,
   LifiBridgeTypes,
-  RangoBridgeTypes
+  RangoBridgeTypes,
+  MultichainCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
@@ -116,11 +118,15 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
+  public get dangerousProviders(): CrossChainTradeType[] {
+    return this._dangerousProviders$.getValue();
+  }
+
   public readonly providers$ = this.allProviders$.pipe(
     map(allProviders => {
       const providers = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListSortingService.setTags(trades);
+      return trades;
     }),
     debounceTime(10)
   );
@@ -168,6 +174,10 @@ export class CrossChainRoutingService extends TradeService {
     this._dangerousProviders$.next(providers);
   }
 
+  public unmarkAllDangerousProviders(): void {
+    this.dangerousProviders.forEach(tradeType => this.unmarkProviderAsDangerous(tradeType));
+  }
+
   public calculateTrade(
     userAuthorized: boolean,
     isViaDisabled: boolean
@@ -206,6 +216,12 @@ export class CrossChainRoutingService extends TradeService {
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
           tap(tradeData => {
+            if ((tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter) {
+              console.error(
+                'Provider router:',
+                (tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter
+              );
+            }
             const rankedProviders = [...tradeData.trades].map(trade => ({
               ...trade,
               rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
@@ -308,7 +324,8 @@ export class CrossChainRoutingService extends TradeService {
         rangoRequestId:
           providerTrade.trade instanceof RangoCrossChainTrade
             ? providerTrade.trade.requestId
-            : undefined
+            : undefined,
+        amountOutMin: providerTrade.trade.toTokenAmountMin.toFixed()
       };
 
       if (providerTrade.smartRouting) {
@@ -356,13 +373,14 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
-      trade instanceof TronBridgersCrossChainTrade
+      trade instanceof TronBridgersCrossChainTrade ||
+      trade instanceof MultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent || 0,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
@@ -564,6 +582,8 @@ export class CrossChainRoutingService extends TradeService {
         ? providerTrade.trade.requestId
         : undefined;
 
+    const amountOutMin = providerTrade.trade.toTokenAmountMin.toFixed();
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -579,7 +599,8 @@ export class CrossChainRoutingService extends TradeService {
           bridgeType: bridgeProvider,
           viaUuid,
           rangoRequestId,
-          timestamp
+          timestamp,
+          amountOutMin
         }
       })
       .subscribe();

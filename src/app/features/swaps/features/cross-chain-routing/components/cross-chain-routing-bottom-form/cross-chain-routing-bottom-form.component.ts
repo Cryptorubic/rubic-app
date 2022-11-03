@@ -54,6 +54,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
+  MultichainCrossChainTrade,
   MaxAmountError,
   MinAmountError,
   RubicSdkError,
@@ -71,6 +72,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import UnsupportedDeflationTokenWarning from '@app/core/errors/models/common/unsupported-deflation-token.warning';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -200,6 +202,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        this.crossChainRoutingService.unmarkAllDangerousProviders();
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -398,6 +401,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       error !== undefined &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.LIFI &&
       trade?.type !== CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      trade?.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
       ((error instanceof MinAmountError && fromAmount.gte(error.minAmount)) ||
         (error instanceof MaxAmountError && fromAmount.lte(error.maxAmount)))
     ) {
@@ -493,6 +497,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (err) {
+      const error = RubicSdkErrorParser.parseError(err);
+
+      if (error instanceof UnsupportedDeflationTokenWarning) {
+        this.crossChainRoutingService.markProviderAsDangerous(
+          this.crossChainProviderTrade.tradeType
+        );
+      } else {
+        this.errorsService.catch(err);
+      }
+
       this.errorsService.catch(err as RubicError<ERROR_TYPE> | Error);
       this.swapStarted = false;
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
@@ -530,7 +544,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       const error = RubicSdkErrorParser.parseError(err);
       if (
         error instanceof NotWhitelistedProviderWarning ||
-        error instanceof ExecutionRevertedError
+        error instanceof ExecutionRevertedError ||
+        error instanceof UnsupportedDeflationTokenWarning
       ) {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
@@ -559,7 +574,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       !this.crossChainProviderTrade ||
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
       (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
-        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS &&
+        this.crossChainProviderTrade?.trade.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
+        this.crossChainProviderTrade.trade instanceof MultichainCrossChainTrade)
     ) {
       return true;
     }

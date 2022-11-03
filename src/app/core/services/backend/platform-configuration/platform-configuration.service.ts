@@ -17,10 +17,10 @@ interface CrossChainProviderStatus {
 interface PlatformConfig {
   server_is_active: boolean;
   networks: {
-    [key: BackendBlockchain]: boolean;
+    [chain: string]: boolean;
   };
   cross_chain_providers: {
-    [key: string]: CrossChainProviderStatus;
+    [provider: string]: CrossChainProviderStatus;
   };
 }
 
@@ -81,11 +81,11 @@ export class PlatformConfigurationService {
   }
 
   private mapAvailableBlockchains(availableBlockchains: {
-    [key: BackendBlockchain]: boolean;
+    [chain: string]: boolean;
   }): BlockchainName[] {
     return Object.entries(availableBlockchains)
       .filter(([_, availability]) => availability)
-      .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain]);
+      .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
   }
 
   private mapDisabledProviders(crossChainProviders: {
