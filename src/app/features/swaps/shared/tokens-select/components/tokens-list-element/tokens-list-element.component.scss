@@ -1,5 +1,17 @@
 @use 'src/scss/core' as *;
 
+::ng-deep tui-hint-box {
+  max-width: 100% !important;
+
+  @include b($mobile-md-minus) {
+    max-width: 160px !important;
+  }
+
+  span {
+    font-size: 13px !important;
+  }
+}
+
 .token-card {
   display: flex;
   align-items: center;
@@ -28,7 +40,6 @@
 
     span,
     small {
-      display: block;
       overflow: hidden;
 
       white-space: nowrap;
@@ -46,6 +57,8 @@
     }
 
     small {
+      display: block;
+
       font-size: 13px;
       line-height: 18px;
 
@@ -53,6 +66,66 @@
         font-size: 12px;
         line-height: 14px;
       }
+    }
+
+    &-copy-icon {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2px;
+      margin-left: 10px;
+
+      @include iframe-vertical {
+        margin-bottom: 0;
+      }
+
+      ::ng-deep svg {
+        width: 13px;
+        height: 17px;
+
+        path {
+          fill: var(--rubic-base-02);
+        }
+      }
+    }
+
+    &-copied-container {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      margin-top: -2px;
+    }
+
+    &-copied-icon {
+      display: flex;
+      margin-bottom: 1px;
+      margin-left: 10px;
+
+      ::ng-deep svg {
+        width: 13px;
+        height: 17px;
+        margin-bottom: 0 !important;
+
+        path {
+          fill: var(--rubic-base-02);
+        }
+      }
+    }
+
+    &-copied-text {
+      margin-bottom: 0 !important;
+
+      @include b($mobile-sm) {
+        display: none !important;
+      }
+
+      @include iframe-horizontal {
+        display: none !important;
+      }
+    }
+
+    &-symbol {
+      display: flex;
+      align-items: center;
     }
   }
 
