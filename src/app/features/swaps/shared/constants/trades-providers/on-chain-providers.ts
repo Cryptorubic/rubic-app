@@ -398,7 +398,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`,
-    color: ''
+    color: '#34A5F5'
   },
 
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: {

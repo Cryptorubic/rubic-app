@@ -14,6 +14,7 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -60,15 +61,20 @@ export class BlockchainsAsideComponent {
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(USER_AGENT) private readonly userAgent: string,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
-  public isDisabledBlockchain(blockchain: BlockchainName): boolean {
+  public isDisabledFromBlockchain(blockchain: BlockchainName): boolean {
     return this.formType === 'from' && disabledFromBlockchains.includes(blockchain);
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
+  }
+
+  public isDisabledConfigurationBlockchain(blockchainName: BlockchainName): boolean {
+    return this.platformConfigurationService.isAvailableBlockchain(blockchainName);
   }
 }

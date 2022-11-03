@@ -62,11 +62,7 @@ export class RubicSdkErrorParser {
       return new InsufficientFundsOneinchError(nativeTokensList[err.blockchain].symbol);
     }
     if (err instanceof SdkNotWhitelistedProviderError) {
-      console.error('Provider router: ', err.providerRouter);
-      if (err.providerGateway) {
-        console.error('Provider gateway: ', err.providerGateway);
-      }
-      return new NotWhitelistedProviderWarning();
+      return new NotWhitelistedProviderWarning(err.providerRouter);
     }
     if (err instanceof SdkDeflationTokenError) {
       return new UnsupportedDeflationTokenWarning();

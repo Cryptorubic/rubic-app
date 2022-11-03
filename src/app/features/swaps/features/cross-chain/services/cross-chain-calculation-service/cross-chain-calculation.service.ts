@@ -1,6 +1,7 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
 import {
   BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
   CrossChainTradeType,
@@ -41,6 +42,10 @@ import {
 } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +73,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly crossChainApiService: CrossChainApiService
   ) {
     super('cross-chain-routing');
   }
@@ -96,15 +103,26 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
-    const disabledProviders = disabledTradeTypes.concat(
-      this.queryParamsService.disabledProviders || []
+
+    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
+      this.platformConfigurationService.disabledProviders;
+    const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
+    const disabledProviders = Array.from(
+      new Set<CrossChainTradeType>([
+        ...disabledTradeTypes,
+        ...(apiDisabledTradeTypes || []),
+        ...(iframeDisabledTradeTypes || [])
+      ])
     );
+
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders: disabledProviders,
+      disabledProviders,
+      lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
+      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress })
     };
 
@@ -115,10 +133,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
           if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
-            console.error('Provider router:', wrappedTrade.error.providerRouter);
-            if (wrappedTrade.error.providerGateway) {
-              console.error('Provider gateway:', wrappedTrade.error.providerGateway);
-            }
+            this.saveNotWhitelistedProvider(
+              fromToken.blockchain,
+              wrappedTrade.tradeType,
+              wrappedTrade.error.providerRouter,
+              wrappedTrade.error.providerGateway
+            );
           }
 
           const trade = wrappedTrade?.trade;
@@ -173,6 +193,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
+    this.checkBlockchainsAvailable(wrappedTrade);
     this.checkDeviceAndShowNotification();
 
     const blockchain = wrappedTrade.trade.from.blockchain;
@@ -201,6 +222,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
     const fromAddress = this.authService.userAddress;
@@ -244,9 +266,31 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ...(gasPrice && { gasPrice })
     };
 
-    await calculatedTrade.trade.swap(swapOptions);
+    try {
+      await calculatedTrade.trade.swap(swapOptions);
+      this.showSuccessTrxNotification(calculatedTrade.tradeType);
+    } catch (err) {
+      if (err instanceof NotWhitelistedProviderError) {
+        this.saveNotWhitelistedProvider(
+          calculatedTrade.trade.from.blockchain,
+          calculatedTrade.tradeType,
+          err.providerRouter,
+          err.providerGateway
+        );
+      }
+      throw err;
+    }
+  }
 
-    this.showSuccessTrxNotification(calculatedTrade.tradeType);
+  private checkBlockchainsAvailable(wrappedTrade: WrappedCrossChainTrade): void | never {
+    const fromBlockchain = wrappedTrade.trade.from.blockchain;
+    const toBlockchain = wrappedTrade.trade.to.blockchain;
+    if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+    if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
   }
 
   private checkDeviceAndShowNotification(): void {
@@ -323,6 +367,17 @@ export class CrossChainCalculationService extends TradeCalculationService {
           amountOutMin
         }
       })
+      .subscribe();
+  }
+
+  private saveNotWhitelistedProvider(
+    blockchain: BlockchainName,
+    tradeType: CrossChainTradeType,
+    routerAddress: string,
+    gatewayAddress?: string
+  ): void {
+    this.crossChainApiService
+      .saveNotWhitelistedProvider(blockchain, tradeType, routerAddress, gatewayAddress)
       .subscribe();
   }
 }

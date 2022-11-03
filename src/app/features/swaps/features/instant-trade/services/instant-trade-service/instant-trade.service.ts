@@ -36,7 +36,6 @@ import {
 } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
@@ -46,6 +45,9 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
+import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -70,10 +72,10 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly sdk: RubicSdkService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly gasService: GasService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {
     super('instant-trade');
   }
@@ -98,6 +100,12 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public async approve(trade: OnChainTrade): Promise<void> {
+    if (!this.platformConfigurationService.isAvailableBlockchain(trade.from.blockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.from.blockchain]);
+    }
+    if (!this.platformConfigurationService.isAvailableBlockchain(trade.to.blockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.to.blockchain]);
+    }
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
@@ -190,9 +198,18 @@ export class InstantTradeService extends TradeCalculationService {
     trade: OnChainTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     this.checkDeviceAndShowNotification();
+
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
+
+    if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+    if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
 
     const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
     await blockchainAdapter.checkBalance(
