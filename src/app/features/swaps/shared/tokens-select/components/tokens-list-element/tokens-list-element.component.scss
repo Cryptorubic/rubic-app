@@ -72,16 +72,34 @@
       gap: 5px;
       align-items: center;
       margin-top: -2px;
+      margin-bottom: 0 !important;
 
       @include b($mobile-sm) {
-        span {
-          display: none;
+        .token-card__name-container-copy-text {
+          display: none !important;
         }
 
+        span {
+          margin-bottom: -2px !important;
+        }
       }
 
-      svg {
+      &-text {
         margin-bottom: 0 !important;
+      }
+
+      span {
+        margin-left: 0 !important;
+
+        ::ng-deep svg {
+          width: 13px;
+          height: 17px;
+          margin-bottom: 0 !important;
+
+          path {
+            fill: var(--rubic-base-02);
+          }
+        }
       }
     }
 
@@ -89,11 +107,20 @@
       display: flex;
       align-items: center;
 
-      svg {
-        width: 13px;
-        height: 15px;
+      span {
+        display: flex;
+        align-items: center;
         margin-bottom: 2px;
         margin-left: 10px;
+
+        ::ng-deep svg {
+          width: 13px;
+          height: 17px;
+
+          path {
+            fill: var(--rubic-base-02);
+          }
+        }
       }
     }
   }

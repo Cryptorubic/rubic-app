@@ -100,7 +100,7 @@ export class TokensListElementComponent {
    */
   private showHint(): void {
     this.hintShown = false;
-    timer(1000).subscribe(() => {
+    timer(1500).subscribe(() => {
       this.hintShown = true;
       this.cdr.markForCheck();
     });
