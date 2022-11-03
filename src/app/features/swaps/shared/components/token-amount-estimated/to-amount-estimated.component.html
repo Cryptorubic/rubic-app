@@ -10,10 +10,9 @@
       [ngClass]="{
         'bottom-amount__output_error': errorText
       }"
-      *ngIf="isFormFilled"
     >
       <ng-container *ngLet="toAmount$ | async as toAmount">
-        <ng-container *ngIf="!errorText && !toAmount">
+        <ng-container *ngIf="!errorText && !toAmount && isFormFilled">
           <span class="blink-animation">Loading</span>
         </ng-container>
 
