@@ -91,11 +91,18 @@ export class PlatformConfigurationService {
   private mapDisabledProviders(crossChainProviders: {
     [key: string]: CrossChainProviderStatus;
   }): ProvidersConfiguration {
-    const disabledCrossChainProviders = Object.entries(crossChainProviders)
-      .filter(([_, { active }]) => !active)
-      .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName]);
+    const crossChainProvidersEntries = Object.entries(crossChainProviders);
 
-    const disabledBridgeTypes = Object.entries(crossChainProviders)
+    if (!crossChainProvidersEntries.length) {
+      return { disabledBridgeTypes: undefined, disabledCrossChainProviders: undefined };
+    }
+
+    const disabledCrossChainProviders = crossChainProvidersEntries
+      .filter(([_, { active }]) => !active)
+      .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
+      .filter(provider => Boolean(provider));
+
+    const disabledBridgeTypes = crossChainProvidersEntries
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
