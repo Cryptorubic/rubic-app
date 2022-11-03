@@ -9,9 +9,10 @@
   </div>
 
   <div class="token-card__name-container">
-    <span
+    <span class="token-card__name-container-symbol"
       >{{ token.symbol }}
       <span
+        class="token-card__name-container-copy-icon"
         *ngIf="hintShown"
         [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
         (click)="copyToClipboard($event)"
@@ -22,9 +23,12 @@
         tuiHintHideDelay="100"
       ></span>
 
-      <span *ngIf="!hintShown" class="token-card__name-container-copy">
-        <span [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"></span>
-        <span class="token-card__name-container-copy-text"> Copied </span>
+      <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
+        <span
+          class="token-card__name-container-copied-icon"
+          [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+        ></span>
+        <span class="token-card__name-container-copied-text"> Copied </span>
       </span>
     </span>
     <small>{{ token.name }}</small>
