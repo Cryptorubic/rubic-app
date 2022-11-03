@@ -32,7 +32,6 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade
 } from 'rubic-sdk';
-import { switchTap } from '@shared/utils/utils';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
@@ -89,7 +88,7 @@ export class CrossChainFormService {
    * Controls trade calculation flow.
    * When `next` is called, recalculation is started.
    */
-  private readonly _calculateTrade$ = new Subject<void>();
+  private readonly _calculateTrade$ = new Subject<{ isForced: boolean }>();
 
   /**
    * Current status of trade.
@@ -200,6 +199,11 @@ export class CrossChainFormService {
    */
   private isButtonHovered = false;
 
+  /**
+   * Counts amount of auto-refresh calls.
+   */
+  private refreshServiceCallsCounter = 0;
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
@@ -236,33 +240,22 @@ export class CrossChainFormService {
     this._calculateTrade$
       .pipe(
         debounceTime(200),
-        map(() => {
-          this.error = null;
-
+        map(calculateData => {
           if (!this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
             this.swapFormService.output.patchValue({
               toAmount: new BigNumber(NaN)
             });
-            return false;
+            return { ...calculateData, isFormFilled: false };
           }
-
-          if (
-            this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
-            this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP
-          ) {
-            this.tradeStatus = TRADE_STATUS.LOADING;
-          }
-          this.isCalculating = true;
-          this.refreshService.setRefreshing();
-          return true;
+          return { ...calculateData, isFormFilled: true };
         }),
-        switchMap(isFormFilled => {
-          if (!isFormFilled) {
+        switchMap(calculateData => {
+          if (!calculateData.isFormFilled) {
             return of(null);
           }
 
-          const { fromBlockchain } = this.swapFormService.inputValue;
+          const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
           const isUserAuthorized =
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
@@ -271,30 +264,49 @@ export class CrossChainFormService {
             isUserAuthorized,
             this.disabledTradesTypes
           );
+          const balance$ = isUserAuthorized
+            ? from(
+                this.tokensService.getAndUpdateTokenBalance(
+                  this.swapFormService.inputValue.fromToken
+                )
+              )
+            : of(null);
 
-          const balance$ = from(
-            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
-          );
-
-          return crossChainTrade$.pipe(
-            switchTap(() => balance$),
-            map(({ total, calculated, lastCalculatedTrade }) => {
-              const calculationEnded = calculated === total;
-              if (calculationEnded) {
-                this.isCalculating = false;
-                this.refreshService.setStopped();
+          return balance$.pipe(
+            switchMap(balance => {
+              if (!calculateData.isForced && balance !== null && balance.lt(fromAmount)) {
+                return of(null);
               }
 
-              this.checkLastCalculatedTrade(lastCalculatedTrade, calculationEnded);
-            }),
-            catchError((error: RubicSdkError) => {
-              this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.isCalculating = false;
-              this.refreshService.setStopped();
+              if (
+                this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
+                this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP
+              ) {
+                this.tradeStatus = TRADE_STATUS.LOADING;
+              }
+              this.isCalculating = true;
+              this.refreshService.setRefreshing();
 
-              this.error = this.parseCalculationError(error);
+              return crossChainTrade$.pipe(
+                map(({ total, calculated, lastCalculatedTrade }) => {
+                  const calculationEnded = calculated === total;
+                  if (calculationEnded) {
+                    this.isCalculating = false;
+                    this.refreshService.setStopped();
+                  }
 
-              return of(null);
+                  this.checkLastCalculatedTrade(lastCalculatedTrade, calculationEnded);
+                }),
+                catchError((error: RubicSdkError) => {
+                  this.tradeStatus = TRADE_STATUS.DISABLED;
+                  this.isCalculating = false;
+                  this.refreshService.setStopped();
+
+                  this.error = this.parseCalculationError(error);
+
+                  return of(null);
+                })
+              );
             })
           );
         })
@@ -325,8 +337,9 @@ export class CrossChainFormService {
         }
       }
     } else {
-      if (calculationEnded && !this.taggedTrades.length) {
-        this.updateSelectedTrade(null);
+      if (calculationEnded) {
+        const bestTaggedTrade = this.taggedTrades[0];
+        this.updateSelectedTrade(bestTaggedTrade || null);
       }
     }
   }
@@ -577,12 +590,12 @@ export class CrossChainFormService {
     this.disabledTradesTypes = [];
 
     this.updateSelectedTrade(null);
-
+    this.unsetTradeSelectedByUser();
     this.error = null;
 
     this.isSwapStarted = SWAP_PROCESS.NONE;
 
-    this.unsetTradeSelectedByUser();
+    this.refreshServiceCallsCounter = 0;
   }
 
   /**
@@ -591,12 +604,25 @@ export class CrossChainFormService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.isSwapStarted = SWAP_PROCESS.NONE;
-
+        this.error = null;
         this.unsetTradeSelectedByUser();
-      }
+        this.isSwapStarted = SWAP_PROCESS.NONE;
+        this.refreshServiceCallsCounter = 0;
 
-      this.startRecalculation();
+        this.startRecalculation();
+      } else {
+        if (
+          !this.authService.userAddress ||
+          !this.selectedTrade ||
+          this.selectedTrade.error ||
+          this.refreshServiceCallsCounter >= 4
+        ) {
+          return;
+        }
+
+        this.refreshServiceCallsCounter += 1;
+        this.startRecalculation(false);
+      }
     });
   }
 
@@ -608,7 +634,7 @@ export class CrossChainFormService {
   /**
    * Makes pre-calculation checks and start recalculation.
    */
-  private startRecalculation(): void {
+  private startRecalculation(isForced = true): void {
     if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
       return;
     }
@@ -626,7 +652,7 @@ export class CrossChainFormService {
       return;
     }
 
-    this._calculateTrade$.next();
+    this._calculateTrade$.next({ isForced });
   }
 
   private subscribeOnIsButtonHoveredChanges(): void {
