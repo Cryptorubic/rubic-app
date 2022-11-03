@@ -62,7 +62,7 @@ export class RubicSdkErrorParser {
       if (err.providerGateway) {
         console.error('Provider gateway: ', err.providerGateway);
       }
-      return new NotWhitelistedProviderWarning();
+      return new NotWhitelistedProviderWarning(err.providerRouter);
     }
     if (err instanceof SdkDeflationTokenError) {
       return new UnsupportedDeflationTokenWarning();
