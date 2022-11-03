@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import { Observable } from 'rxjs';
-import { BACKEND_CROSS_CHAIN_PROVIDERS } from '../instant-trades-api/constants/backend-providers';
+import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from './constants/to-backend-cross-chain-providers';
 
 export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
 
@@ -17,12 +17,12 @@ export class CrossChainRoutingApiService {
 
   public saveNewProvider(
     blockchain: BlockchainName,
-    title: string,
+    tradeType: CrossChainTradeType,
     address: string
   ): Observable<void> {
-    return this.httpService.post(`${ENVIRONMENT.apiBaseUrl}/info/new_provider`, {
+    return this.httpService.post(`info/new_provider`, {
       blockchain: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: BACKEND_CROSS_CHAIN_PROVIDERS[title],
+      title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address
     });
   }

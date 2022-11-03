@@ -511,6 +511,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
+      throw new NotWhitelistedProviderWarning('0x11111');
       const { fromBlockchain, fromToken } = this.swapFormService.inputValue;
       await this.crossChainRoutingService.createTrade(this.crossChainProviderTrade, () => {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;

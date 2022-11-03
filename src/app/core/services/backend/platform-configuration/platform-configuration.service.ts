@@ -7,14 +7,14 @@ import {
 } from '@app/shared/constants/blockchain/backend-blockchains';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
-import { BACKEND_CROSS_CHAIN_PROVIDERS } from '../instant-trades-api/constants/backend-providers';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
-export interface CrossChainProviderStatus {
+interface CrossChainProviderStatus {
   active: boolean;
   disabledProviders: string[];
 }
 
-export interface PlatformConfig {
+interface PlatformConfig {
   server_is_active: boolean;
   networks: {
     [key: BackendBlockchain]: boolean;
@@ -29,7 +29,7 @@ interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: string[];
 }
 
-export interface ProvidersConfiguration {
+interface ProvidersConfiguration {
   disabledBridgeTypes: DisabledBridgeTypes;
   disabledCrossChainProviders: string[];
 }
@@ -93,16 +93,16 @@ export class PlatformConfigurationService {
   }): ProvidersConfiguration {
     const disabledCrossChainProviders = Object.entries(crossChainProviders)
       .filter(([_, { active }]) => !active)
-      .map(([providerName]) => BACKEND_CROSS_CHAIN_PROVIDERS[providerName]);
+      .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName]);
 
     const disabledBridgeTypes = Object.entries(crossChainProviders)
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
-        if (BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
+        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
           acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = disabledProviders;
         }
 
-        if (BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
+        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
           acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders;
         }
 

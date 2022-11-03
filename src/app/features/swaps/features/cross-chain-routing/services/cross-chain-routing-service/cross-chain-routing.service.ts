@@ -585,7 +585,11 @@ export class CrossChainRoutingService extends TradeService {
       .subscribe();
   }
 
-  public saveNewProvider(blockchain: BlockchainName, title: string, address: string): void {
-    this.crossChainRoutingApiService.saveNewProvider(blockchain, title, address).subscribe();
+  public saveNewProvider(
+    blockchain: BlockchainName,
+    tradeType: CrossChainTradeType,
+    address: string
+  ): void {
+    this.crossChainRoutingApiService.saveNewProvider(blockchain, tradeType, address).subscribe();
   }
 }

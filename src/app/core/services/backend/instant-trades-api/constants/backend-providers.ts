@@ -1,9 +1,4 @@
-import {
-  CrossChainTradeType,
-  CROSS_CHAIN_TRADE_TYPE,
-  OnChainTradeType,
-  ON_CHAIN_TRADE_TYPE
-} from 'rubic-sdk';
+import { OnChainTradeType, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   // Rubic integrated dexes
@@ -45,14 +40,4 @@ export const BACKEND_PROVIDERS: Partial<Record<OnChainTradeType, string>> = {
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
 
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers'
-};
-
-export const BACKEND_CROSS_CHAIN_PROVIDERS: Record<string, CrossChainTradeType> = {
-  celer: CROSS_CHAIN_TRADE_TYPE.CELER,
-  rango: CROSS_CHAIN_TRADE_TYPE.RANGO,
-  symbiosis: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS,
-  lifi: CROSS_CHAIN_TRADE_TYPE.LIFI,
-  via: CROSS_CHAIN_TRADE_TYPE.VIA,
-  bridgers: CROSS_CHAIN_TRADE_TYPE.BRIDGERS,
-  debridge: CROSS_CHAIN_TRADE_TYPE.DEBRIDGE
 };
