@@ -21,7 +21,7 @@ export class CrossChainRoutingApiService {
     address: string
   ): Observable<void> {
     return this.httpService.post(`info/new_provider`, {
-      blockchain: TO_BACKEND_BLOCKCHAINS[blockchain],
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address
     });
