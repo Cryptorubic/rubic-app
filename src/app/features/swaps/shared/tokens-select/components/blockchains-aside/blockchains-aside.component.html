@@ -4,7 +4,11 @@
       class="blockchain-aside__blockchains-list"
       [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
     >
-      <li *ngFor="let blockchainName of blockchains" [id]="idPrefix + 'Network_' + blockchainName">
+      <li
+        *ngFor="let blockchainName of blockchains"
+        [id]="idPrefix + 'Network_' + blockchainName"
+        [class.disabled]="blockchainName | functionCall: isAvailableBlockchain:this"
+      >
         <app-icon-button
           [icon]="blockchainIcon[blockchainName]"
           [disabled]="blockchain === blockchainName"
