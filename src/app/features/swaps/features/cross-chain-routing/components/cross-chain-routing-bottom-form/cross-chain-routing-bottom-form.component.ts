@@ -554,6 +554,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.errorsService.catch(err);
       }
 
+      if (error instanceof NotWhitelistedProviderWarning) {
+        await this.crossChainRoutingService.saveNewProvider(
+          this.crossChainProviderTrade.trade.from.blockchain,
+          this.crossChainProviderTrade.trade.type,
+          error.providerRouter
+        );
+      }
+
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.cdr.detectChanges();
 
