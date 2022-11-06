@@ -1,0 +1,12 @@
+<div *ngIf="highSlippage">
+  <h1>Your slippage {{ highSlippage }}</h1>
+  <h2>Slippage text</h2>
+</div>
+<div *ngIf="highPriceImpact">
+  <h1>Your slippage {{ highPriceImpact }}</h1>
+  <h2>Price impact text</h2>
+</div>
+<div>
+  <span><button (click)="confirm()">OK</button></span>
+  <span><button (click)="cancel()">CANCEL</button></span>
+</div>

@@ -41,7 +41,7 @@ import { SettingsService } from '@features/swaps/features/main-form/services/set
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainRoutingService } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing.service';
 import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -49,20 +49,18 @@ import { SwapFormService } from 'src/app/features/swaps/features/main-form/servi
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  MultichainCrossChainTrade,
   MaxAmountError,
   MinAmountError,
   RubicSdkError,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  DexMultichainCrossChainTrade
 } from 'rubic-sdk';
 import { switchTap } from '@shared/utils/utils';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
-import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-provider-trade';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -73,6 +71,8 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import UnsupportedDeflationTokenWarning from '@app/core/errors/models/common/unsupported-deflation-token.warning';
+import { SmartRouting } from '../../models/smart-routing.interface';
+import { CrossChainProviderTrade } from '../../models/cross-chain-provider-trade';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -517,7 +517,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public async createTrade(): Promise<void> {
     this.swapStarted = true;
-    if (!this.isSlippageCorrect()) {
+    // if (!this.isSlippageCorrect()) {
+    //   return;
+    // }
+
+    if (
+      !(await this.settingsService.checkSlippageAndPriceImpact(
+        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+        this.crossChainProviderTrade.trade
+      ))
+    ) {
       return;
     }
 
@@ -568,7 +577,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
         this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS &&
         this.crossChainProviderTrade?.trade.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
-        this.crossChainProviderTrade.trade instanceof MultichainCrossChainTrade)
+        this.crossChainProviderTrade.trade instanceof DexMultichainCrossChainTrade)
     ) {
       return true;
     }

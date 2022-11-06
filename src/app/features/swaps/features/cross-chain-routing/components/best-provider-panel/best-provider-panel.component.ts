@@ -5,15 +5,15 @@ import {
   Inject,
   Input
 } from '@angular/core';
-import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { TUI_ANIMATIONS_DURATION, TuiDialogService } from '@taiga-ui/core';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainRoutingService } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { CalculatedProvider } from '@features/swaps/features/cross-chain-routing/models/calculated-provider';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SmartRouting } from '../../models/smart-routing.interface';
 
 @Component({
   selector: 'app-best-provider-panel',

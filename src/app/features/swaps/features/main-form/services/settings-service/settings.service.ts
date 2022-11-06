@@ -1,10 +1,10 @@
 /* eslint-disable rxjs/finnish */
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from '@core/services/store/store.service';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { PromoCode } from '@features/swaps/features/main-form/models/promo-code';
 import { copyObject } from '@shared/utils/utils';
@@ -12,6 +12,11 @@ import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SettingsWarningModalComponent } from '../../../../shared/settings-warning-modal/settings-warning-modal.component';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -101,7 +106,8 @@ export class SettingsService {
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
     private readonly authService: AuthService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     this.defaultItSettings = this.getDefaultITSettings();
     this.defaultCcrSettings = this.getDefaultCCRSettings();
@@ -223,5 +229,37 @@ export class SettingsService {
     delete formClone.CROSS_CHAIN_ROUTING.promoCode;
 
     return JSON.stringify(formClone);
+  }
+
+  public async checkSlippageAndPriceImpact(
+    swapProviderType: SWAP_PROVIDER_TYPE,
+    trade: CrossChainTrade | OnChainTrade
+  ): Promise<boolean> {
+    const slippage =
+      swapProviderType === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+        ? this.crossChainRoutingValue.slippageTolerance
+        : this.instantTradeValue.slippageTolerance;
+    const priceImpact = PriceImpactService.calculatePriceImpact(
+      trade.from.price.toNumber(),
+      trade.to.price.toNumber(),
+      trade.from.tokenAmount,
+      trade.to.tokenAmount
+    );
+
+    const settingsChecks = {
+      highSlippage: slippage > 5 && slippage,
+      highPriceImpact: priceImpact > 50 && priceImpact
+    };
+
+    if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
+      return firstValueFrom(
+        this.dialogService.open<boolean>(new PolymorpheusComponent(SettingsWarningModalComponent), {
+          data: settingsChecks,
+          size: 'l'
+        })
+      );
+    }
+
+    return true;
   }
 }

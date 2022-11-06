@@ -6,7 +6,7 @@ import {
   EventEmitter,
   Input
 } from '@angular/core';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainRoutingService } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing.service';
 import {
   CrossChainTradeType,
   MaxAmountError,
@@ -15,8 +15,8 @@ import {
 } from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { RankedTaggedProviders } from '@features/swaps/features/cross-chain-routing/components/providers-list/models/ranked-tagged-providers';
-import { SmartRouting } from '../../services/cross-chain-routing-service/models/smart-routing.interface';
-import { ProvidersListSortingService } from '../../services/providers-list-sorting-service/providers-list-sorting.service';
+import { ProvidersListSortingService } from '../../services/providers-list-sorting.service';
+import { SmartRouting } from '../../models/smart-routing.interface';
 
 @Component({
   selector: 'app-providers-list',

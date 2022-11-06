@@ -1,5 +1,5 @@
-import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
 import { WrappedCrossChainTrade } from 'rubic-sdk';
+import { SmartRouting } from './smart-routing.interface';
 
 export type CrossChainProviderTrade = WrappedCrossChainTrade & {
   needApprove: boolean;

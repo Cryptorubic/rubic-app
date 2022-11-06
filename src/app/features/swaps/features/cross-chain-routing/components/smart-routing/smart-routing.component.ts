@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { Provider, TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
-import { SmartRouting } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/smart-routing.interface';
+import { SmartRouting } from '../../models/smart-routing.interface';
 
 @Component({
   selector: 'app-smart-routing',

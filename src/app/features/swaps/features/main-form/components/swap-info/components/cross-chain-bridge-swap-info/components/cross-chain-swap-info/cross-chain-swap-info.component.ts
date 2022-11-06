@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { CrossChainRoutingService } from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { CrossChainRoutingService } from '@app/features/swaps/features/cross-chain-routing/services/cross-chain-routing.service';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
@@ -10,10 +10,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import {
-  CelerRubicTradeInfo,
-  SymbiosisTradeInfo
-} from '@features/swaps/features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { SettingsService } from '@app/features/swaps/features/main-form/services/settings-service/settings.service';
 import {
   LifiCrossChainTrade,
@@ -29,6 +25,10 @@ import {
   MultichainCrossChainTrade
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/swap-button-container/services/swap-button.service';
+import {
+  CelerRubicTradeInfo,
+  SymbiosisTradeInfo
+} from '@app/features/swaps/features/cross-chain-routing/models/cross-chain-trade-info';
 
 @Component({
   selector: 'app-cross-chain-swap-info',

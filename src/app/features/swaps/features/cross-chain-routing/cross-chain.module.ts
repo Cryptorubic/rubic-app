@@ -23,6 +23,7 @@ import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-sc
 import { ProvidersCounterComponent } from './components/providers-counter/providers-counter.component';
 import { ProvidersListComponent } from './components/providers-list/providers-list.component';
 import { BestProviderPanelComponent } from './components/best-provider-panel/best-provider-panel.component';
+import { SettingsWarningModalComponent } from '../../shared/settings-warning-modal/settings-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { BestProviderPanelComponent } from './components/best-provider-panel/bes
     SwapSchemeModalComponent,
     ProvidersCounterComponent,
     ProvidersListComponent,
-    BestProviderPanelComponent
+    BestProviderPanelComponent,
+    SettingsWarningModalComponent
   ],
   imports: [
     CommonModule,
