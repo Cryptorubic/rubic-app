@@ -503,6 +503,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
+        const allProviders = await firstValueFrom(this.crossChainRoutingService.providers$);
+        if (allProviders.length === this.crossChainRoutingService.dangerousProviders.length) {
+          this.errorsService.catch(err);
+        }
       } else {
         this.errorsService.catch(err);
       }
@@ -550,6 +554,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
+        const allProviders = await firstValueFrom(this.crossChainRoutingService.providers$);
+        if (allProviders.length === this.crossChainRoutingService.dangerousProviders.length) {
+          this.errorsService.catch(err);
+        }
       } else {
         this.errorsService.catch(err);
       }
