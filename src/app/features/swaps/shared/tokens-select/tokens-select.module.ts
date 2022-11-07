@@ -7,7 +7,8 @@ import {
   TuiManualHintModule,
   TuiScrollbarModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiTooltipModule
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
@@ -48,7 +49,8 @@ import { TuiAutoFocusModule } from '@taiga-ui/cdk';
     TuiManualHintModule,
     TuiLoaderModule,
     InlineSVGModule,
-    TuiAutoFocusModule
+    TuiAutoFocusModule,
+    TuiTooltipModule
   ],
   providers: [TokensSelectService]
 })
