@@ -420,6 +420,9 @@ export class CrossChainFormService {
         updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
       }
     }
+    if (!updatedSelectedTrade) {
+      return;
+    }
 
     if (
       this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
