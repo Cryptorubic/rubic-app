@@ -16,6 +16,7 @@ import {
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
+  NotWhitelistedProviderError,
   RangoCrossChainTrade,
   RubicSdkError,
   SwapTransactionOptions,
@@ -25,12 +26,14 @@ import {
   UnsupportedReceiverAddressError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  LifiBridgeTypes,
+  RangoBridgeTypes,
+  MultichainCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import BigNumber from 'bignumber.js';
@@ -52,7 +55,6 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -64,6 +66,10 @@ import { CrossChainProviderTrade } from '@features/swaps/features/cross-chain-ro
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@features/swaps/features/cross-chain-routing/services/providers-list-sorting-service/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
+import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
+import { CrossChainRoutingApiService } from '@app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 export type AllProviders = {
   readonly totalAmount: number;
@@ -112,11 +118,15 @@ export class CrossChainRoutingService extends TradeService {
 
   public readonly dangerousProviders$ = this._dangerousProviders$.asObservable();
 
+  public get dangerousProviders(): CrossChainTradeType[] {
+    return this._dangerousProviders$.getValue();
+  }
+
   public readonly providers$ = this.allProviders$.pipe(
     map(allProviders => {
       const providers = allProviders.data;
       const trades = [...providers].filter(provider => Boolean(provider.trade));
-      return ProvidersListSortingService.setTags(trades);
+      return trades;
     }),
     debounceTime(10)
   );
@@ -125,17 +135,17 @@ export class CrossChainRoutingService extends TradeService {
     private readonly sdk: RubicSdkService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService
   ) {
     super('cross-chain-routing');
   }
@@ -164,6 +174,10 @@ export class CrossChainRoutingService extends TradeService {
     this._dangerousProviders$.next(providers);
   }
 
+  public unmarkAllDangerousProviders(): void {
+    this.dangerousProviders.forEach(tradeType => this.unmarkProviderAsDangerous(tradeType));
+  }
+
   public calculateTrade(
     userAuthorized: boolean,
     isViaDisabled: boolean
@@ -173,15 +187,28 @@ export class CrossChainRoutingService extends TradeService {
 
       const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
       const receiverAddress = this.receiverAddress;
+      const { disabledCrossChainProviders, disabledBridgeTypes } =
+        this.platformConfigurationService.disabledProviders;
       const disabledProvidersForLandingIframe = this.queryParamsService.disabledProviders;
+      const disabledProviders = Array.from(
+        new Set([
+          ...(isViaDisabled ? [CROSS_CHAIN_TRADE_TYPE.VIA] : []),
+          ...(disabledCrossChainProviders || []),
+          ...(disabledProvidersForLandingIframe || [])
+        ])
+      ) as CrossChainTradeType[];
       const options: CrossChainManagerCalculationOptions = {
         fromSlippageTolerance: slippageTolerance / 2,
         toSlippageTolerance: slippageTolerance / 2,
         slippageTolerance,
         timeout: this.defaultTimeout,
-        disabledProviders: isViaDisabled
-          ? [...(disabledProvidersForLandingIframe || []), CROSS_CHAIN_TRADE_TYPE.VIA]
-          : [...(disabledProvidersForLandingIframe || [])],
+        disabledProviders,
+        lifiDisabledBridgeTypes: disabledBridgeTypes?.[
+          CROSS_CHAIN_TRADE_TYPE.LIFI
+        ] as LifiBridgeTypes[],
+        rangoDisabledBridgeTypes: disabledBridgeTypes?.[
+          CROSS_CHAIN_TRADE_TYPE.RANGO
+        ] as RangoBridgeTypes[],
         ...(receiverAddress && { receiverAddress })
       };
 
@@ -189,6 +216,12 @@ export class CrossChainRoutingService extends TradeService {
         .calculateTradesReactively(fromToken, fromAmount.toString(), toToken, options)
         .pipe(
           tap(tradeData => {
+            if ((tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter) {
+              console.error(
+                'Provider router:',
+                (tradeData.trades[0]?.error as NotWhitelistedProviderError)?.providerRouter
+              );
+            }
             const rankedProviders = [...tradeData.trades].map(trade => ({
               ...trade,
               rank: this._dangerousProviders$.value.includes(trade.tradeType) ? 0 : 1
@@ -243,6 +276,15 @@ export class CrossChainRoutingService extends TradeService {
     providerTrade: CrossChainProviderTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const fromBlockchain = providerTrade.trade.from.blockchain;
+    const toBlockchain = providerTrade.trade.to.blockchain;
+    if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+    if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
+
     if (!providerTrade?.trade) {
       throw new RubicError('Cross chain trade object not found.');
     }
@@ -282,7 +324,8 @@ export class CrossChainRoutingService extends TradeService {
         rangoRequestId:
           providerTrade.trade instanceof RangoCrossChainTrade
             ? providerTrade.trade.requestId
-            : undefined
+            : undefined,
+        amountOutMin: providerTrade.trade.toTokenAmountMin.toFixed()
       };
 
       if (providerTrade.smartRouting) {
@@ -330,13 +373,14 @@ export class CrossChainRoutingService extends TradeService {
       trade instanceof ViaCrossChainTrade ||
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
-      trade instanceof TronBridgersCrossChainTrade
+      trade instanceof TronBridgersCrossChainTrade ||
+      trade instanceof MultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
         feeAmount: new BigNumber(1),
         feeTokenSymbol: 'USDC',
-        feePercent: trade.feeInfo.platformFee.percent,
+        feePercent: trade.feeInfo.platformFee?.percent || 0,
         priceImpact: trade.priceImpact ? String(trade.priceImpact) : '0',
         networkFee: new BigNumber(trade.feeInfo.cryptoFee?.amount),
         networkFeeSymbol: trade.feeInfo.cryptoFee?.tokenSymbol
@@ -410,17 +454,30 @@ export class CrossChainRoutingService extends TradeService {
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
+    const fromBlockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
+    const toBlockchain = wrappedTrade?.trade?.to?.blockchain as BlockchainName;
+
+    if (
+      fromBlockchain &&
+      !this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)
+    ) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    }
+
+    if (toBlockchain && !this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
+
     this.checkDeviceAndShowNotification();
     let approveInProgressSubscription$: Subscription;
 
-    const blockchain = wrappedTrade?.trade?.from?.blockchain as BlockchainName;
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+    const shouldCalculateGasPrice = shouldCalculateGas[fromBlockchain];
     const swapOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
       },
       ...(Boolean(shouldCalculateGasPrice) && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromBlockchain))
       })
     };
 
@@ -525,6 +582,8 @@ export class CrossChainRoutingService extends TradeService {
         ? providerTrade.trade.requestId
         : undefined;
 
+    const amountOutMin = providerTrade.trade.toTokenAmountMin.toFixed();
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
@@ -540,9 +599,18 @@ export class CrossChainRoutingService extends TradeService {
           bridgeType: bridgeProvider,
           viaUuid,
           rangoRequestId,
-          timestamp
+          timestamp,
+          amountOutMin
         }
       })
       .subscribe();
+  }
+
+  public saveNewProvider(
+    blockchain: BlockchainName,
+    tradeType: CrossChainTradeType,
+    address: string
+  ): void {
+    this.crossChainRoutingApiService.saveNewProvider(blockchain, tradeType, address).subscribe();
   }
 }

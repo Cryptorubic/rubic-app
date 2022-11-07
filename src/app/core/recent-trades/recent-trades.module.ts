@@ -9,10 +9,10 @@ import { SymbiosisTradeComponent } from './components/symbiosis-trade/symbiosis-
 import { RubicTradeComponent } from './components/rubic-trade/rubic-trade.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LiFiTradeComponent } from '@core/recent-trades/components/li-fi-trade/li-fi-trade.component';
-import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge-trade/de-bridge-trade.component';
 import { ViaTradeComponent } from '@core/recent-trades/components/via-trade/via-trade.component';
 import { RangoTradeComponent } from './components/rango-trade/rango-trade.component';
 import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-trade/bridgers-trade.component';
+import { MultichainTradeComponent } from '@core/recent-trades/components/multichain-trade/multichain-trade.component';
 
 @NgModule({
   declarations: [
@@ -21,10 +21,11 @@ import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-
     SymbiosisTradeComponent,
     RubicTradeComponent,
     LiFiTradeComponent,
-    DeBridgeTradeComponent,
+    MultichainTradeComponent,
     ViaTradeComponent,
     RangoTradeComponent,
-    BridgersTradeComponent
+    BridgersTradeComponent,
+    MultichainTradeComponent
   ],
   imports: [CommonModule, TuiLoaderModule, SharedModule, TranslateModule],
   exports: [RecentCrosschainTxComponent],
