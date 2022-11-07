@@ -1,17 +1,5 @@
 @use 'src/scss/core' as *;
 
-::ng-deep tui-hint-box {
-  max-width: 100% !important;
-
-  @include b($mobile-md-minus) {
-    max-width: 160px !important;
-  }
-
-  span {
-    font-size: 13px !important;
-  }
-}
-
 .token-card {
   display: flex;
   align-items: center;
@@ -65,6 +53,14 @@
       @include iframe {
         font-size: 12px;
         line-height: 14px;
+      }
+    }
+
+    &-address-hint {
+      display: block;
+
+      span {
+        font-size: 13px !important;
       }
     }
 
