@@ -75,6 +75,6 @@ export class BlockchainsAsideComponent {
   }
 
   public isDisabledConfigurationBlockchain(blockchainName: BlockchainName): boolean {
-    return this.platformConfigurationService.isAvailableBlockchain(blockchainName);
+    return !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
   }
 }
