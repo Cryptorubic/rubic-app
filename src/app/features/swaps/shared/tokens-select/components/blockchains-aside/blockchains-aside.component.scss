@@ -84,10 +84,15 @@
       }
 
       &.disabled {
-        cursor: not-allowed !important;
-        opacity: 0.5;
+        cursor: not-allowed;
 
-        pointer-events: none;
+        app-icon-button {
+          display: block;
+
+          opacity: 0.5;
+
+          pointer-events: none;
+        }
       }
     }
   }
