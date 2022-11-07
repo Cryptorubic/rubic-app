@@ -459,7 +459,7 @@ export class CrossChainRoutingService extends TradeService {
 
   public parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
-      return new RubicError('Multichain provider doesn’t support provided tokens.');
+      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
@@ -474,9 +474,7 @@ export class CrossChainRoutingService extends TradeService {
       return new RubicError('No available routs');
     }
     if (error?.message?.includes('There are no providers for trade')) {
-      return new RubicError(
-        'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.'
-      );
+      return new RubicError('There are no providers for trade.');
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
