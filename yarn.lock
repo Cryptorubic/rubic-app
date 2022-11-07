@@ -14743,10 +14743,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.4.4:
-  version "3.4.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.4.4.tgz#f9954d0446fea669918b6101265aa96ab0f1cf40"
-  integrity sha512-JcT8YIkBig3P1se3RqXUJJP2WnuNhxgiLMKQ/cARMHEYhDI5lUJEJwhF1X4zBjG5j749jPbSu3myNePsehtpTQ==
+rubic-sdk@3.4.6:
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.4.6.tgz#45514647d207cc7587a179c94390f7ab5cac6e90"
+  integrity sha512-HhbzlIYhOgBUnYWaaXFxx6I4CrFoK9rtJx0FwOKsbLyadnUsIwpIKL9MzHoy330tboft+EwSKTYt5LmkR8yweA==
   dependencies:
     "@lifi/sdk" "^1.0.2"
     "@viaprotocol/router-sdk" "^1.0.7"
