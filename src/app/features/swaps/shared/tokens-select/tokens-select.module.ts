@@ -7,8 +7,7 @@ import {
   TuiManualHintModule,
   TuiScrollbarModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule,
-  TuiTooltipModule
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +22,6 @@ import { TokensListElementComponent } from '@features/swaps/shared/tokens-select
 import { SharedModule } from '@shared/shared.module';
 import { CustomTokenComponent } from '@features/swaps/shared/tokens-select/components/custom-token/custom-token.component';
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/tokens-select/components/custom-token-warning-modal/custom-token-warning-modal.component';
-import { TuiAutoFocusModule } from '@taiga-ui/cdk';
 
 @NgModule({
   declarations: [
@@ -48,9 +46,7 @@ import { TuiAutoFocusModule } from '@taiga-ui/cdk';
     TuiHintModule,
     TuiManualHintModule,
     TuiLoaderModule,
-    InlineSVGModule,
-    TuiAutoFocusModule,
-    TuiTooltipModule
+    InlineSVGModule
   ],
   providers: [TokensSelectService]
 })

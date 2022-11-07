@@ -17,14 +17,14 @@
         *ngIf="hintShown"
         [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
         (click)="copyToClipboard($event)"
-        [tuiHint]="ts123"
+        [tuiHint]="tokenAddressHint"
         tuiHintMode="onDark"
         tuiHintShowDelay="50"
         tuiHintDirection="top-right"
         tuiHintHideDelay="100"
       ></span>
 
-      <ng-template #ts123
+      <ng-template #tokenAddressHint
         ><span class="token-card__name-container-address-hint">{{
           token.address
         }}</span></ng-template
