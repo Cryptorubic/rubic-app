@@ -470,8 +470,8 @@ export class CrossChainRoutingService extends TradeService {
     if (error?.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
-    if (error?.message?.includes('No available routs')) {
-      return new RubicError('No available routs');
+    if (error?.message?.includes('No available routes')) {
+      return new RubicError('No available routes.');
     }
     if (error?.message?.includes('There are no providers for trade')) {
       return new RubicError('There are no providers for trade.');
