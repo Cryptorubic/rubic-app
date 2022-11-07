@@ -435,6 +435,8 @@ export class CrossChainFormService {
   public updateRate(): void {
     if (this.updatedSelectedTrade) {
       this.updateSelectedTrade(this.updatedSelectedTrade);
+    } else {
+      this.startRecalculation();
     }
   }
 
@@ -612,12 +614,11 @@ export class CrossChainFormService {
 
         this.startRecalculation();
       } else {
-        if (
-          !this.authService.userAddress ||
-          !this.selectedTrade ||
-          this.selectedTrade.error ||
-          this.refreshServiceCallsCounter >= 4
-        ) {
+        if (!this.authService.userAddress || !this.selectedTrade || this.selectedTrade.error) {
+          return;
+        }
+        if (this.refreshServiceCallsCounter >= 4) {
+          this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
           return;
         }
 
