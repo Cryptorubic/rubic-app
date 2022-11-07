@@ -144,7 +144,17 @@ export class CrossChainFormService {
 
   private set selectedTrade(value: CrossChainTaggedTrade | null) {
     this._selectedTrade$.next(value);
+    this._selectedTradeError$.next(value?.error ? this.parseCalculationError(value.error) : null);
   }
+
+  /**
+   * Currently selected trade's error to show in button.
+   */
+  private readonly _selectedTradeError$ = new BehaviorSubject<RubicError<ERROR_TYPE.TEXT> | null>(
+    null
+  );
+
+  public readonly selectedTradeError$ = this._selectedTradeError$.asObservable();
 
   /**
    * Contains trade, which must be selected after `Rate is updated`
@@ -155,12 +165,12 @@ export class CrossChainFormService {
   /**
    * Contains error to show in form, in case there is no successfully calculated trade.
    */
-  private readonly _error$ = new BehaviorSubject<RubicError<ERROR_TYPE> | null>(null);
+  private readonly _criticalError$ = new BehaviorSubject<RubicError<ERROR_TYPE> | null>(null);
 
-  public readonly error$ = this._error$.asObservable();
+  public readonly criticalError$ = this._criticalError$.asObservable();
 
-  private set error(value: RubicError<ERROR_TYPE> | null) {
-    this._error$.next(value);
+  private set criticalError(value: RubicError<ERROR_TYPE> | null) {
+    this._criticalError$.next(value);
   }
 
   /**
@@ -303,7 +313,7 @@ export class CrossChainFormService {
                   this.isCalculating = false;
                   this.refreshService.setStopped();
 
-                  this.error = this.parseCalculationError(error);
+                  this.criticalError = this.parseCalculationError(error);
 
                   return of(null);
                 })
@@ -476,7 +486,7 @@ export class CrossChainFormService {
 
       this.tradeStatus = TRADE_STATUS.DISABLED;
 
-      this.error = this.parseCalculationError(taggedTrade?.error);
+      this.criticalError = this.parseCalculationError(taggedTrade?.error);
     }
   }
 
@@ -594,7 +604,7 @@ export class CrossChainFormService {
 
     this.updateSelectedTrade(null);
     this.unsetTradeSelectedByUser();
-    this.error = null;
+    this.criticalError = null;
 
     this.isSwapStarted = SWAP_PROCESS.NONE;
 
@@ -607,7 +617,7 @@ export class CrossChainFormService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.error = null;
+        this.criticalError = null;
         this.unsetTradeSelectedByUser();
         this.isSwapStarted = SWAP_PROCESS.NONE;
         this.refreshServiceCallsCounter = 0;
@@ -650,7 +660,7 @@ export class CrossChainFormService {
         unsupportedBlockchain = toBlockchain;
       }
 
-      this.error = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
+      this.criticalError = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
       return;
     }
 

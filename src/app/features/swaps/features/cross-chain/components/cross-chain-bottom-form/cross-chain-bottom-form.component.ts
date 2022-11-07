@@ -39,11 +39,13 @@ export class CrossChainBottomFormComponent {
 
   public readonly displayApproveButton$ = this.crossChainFormService.displayApproveButton$;
 
-  public readonly error$ = this.crossChainFormService.error$;
+  public readonly criticalError$ = this.crossChainFormService.criticalError$;
 
-  public readonly errorText$ = this.error$.pipe(
+  public readonly criticalErrorText$ = this.criticalError$.pipe(
     map(error => error?.translateKey || error?.message)
   );
+
+  public readonly selectedTradeError$ = this.crossChainFormService.selectedTradeError$;
 
   constructor(
     public readonly swapFormService: SwapFormService,

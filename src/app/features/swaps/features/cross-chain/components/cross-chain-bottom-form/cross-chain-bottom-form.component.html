@@ -1,5 +1,5 @@
 <ng-container *ngLet="tradeStatus$ | async as tradeStatus">
-  <ng-container *ngLet="error$ | async as error">
+  <ng-container *ngLet="criticalError$ | async as error">
     <section class="bottom-form">
       <div class="bottom-form__container">
         <div class="bottom-form__estimate-container">
@@ -13,7 +13,9 @@
             ></app-rubic-tokens>
           </div>
 
-          <app-to-amount-estimated [errorText]="errorText$ | async"></app-to-amount-estimated>
+          <app-to-amount-estimated
+            [errorText]="criticalErrorText$ | async"
+          ></app-to-amount-estimated>
         </div>
         <app-target-network-address
           *ngIf="displayTargetAddressInput$ | async"
@@ -30,7 +32,7 @@
             [needApprove]="needApprove$ | async"
             [withApproveButton]="displayApproveButton$ | async"
             [status]="tradeStatus$ | async"
-            [error]="error"
+            [error]="selectedTradeError$ | async"
             buttonText="Swap"
             (onUpdateRateClick)="onUpdateRate()"
             (onSwapClick)="onSwapTrade()"
