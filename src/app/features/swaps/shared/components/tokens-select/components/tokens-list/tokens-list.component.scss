@@ -189,6 +189,10 @@ $token-card-height: 55px;
   ::ng-deep {
     .cdk-virtual-scroll-content-wrapper {
       padding-left: 24px;
+
+      @include b($mobile-md) {
+        padding-left: 10px;
+      }
     }
   }
 }
