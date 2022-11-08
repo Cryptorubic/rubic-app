@@ -27,8 +27,6 @@ import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import { ENVIRONMENT } from '../../../../../environments/environment';
 
-const SERVER_REST_TOKEN_URL = `${ENVIRONMENT.apiTokenUrl}/`;
-
 /**
  * Perform backend requests and transforms to get valid tokens.
  */
@@ -36,6 +34,8 @@ const SERVER_REST_TOKEN_URL = `${ENVIRONMENT.apiTokenUrl}/`;
   providedIn: 'root'
 })
 export class TokensApiService {
+  private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
+
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
@@ -88,7 +88,7 @@ export class TokensApiService {
       .get<BackendToken[]>(
         ENDPOINTS.FAVORITE_TOKENS,
         { user: this.authService.userAddress },
-        SERVER_REST_TOKEN_URL
+        this.tokensApiUrl
       )
       .pipe(
         map(tokens => TokensApiService.prepareTokens(tokens)),
@@ -106,7 +106,7 @@ export class TokensApiService {
       address: token.address,
       user: this.authService.userAddress
     };
-    return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body, SERVER_REST_TOKEN_URL);
+    return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body, this.tokensApiUrl);
   }
 
   /**
@@ -119,7 +119,7 @@ export class TokensApiService {
       address: token.address,
       user: this.authService.userAddress
     };
-    return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body }, SERVER_REST_TOKEN_URL);
+    return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body }, this.tokensApiUrl);
   }
 
   /**
@@ -153,7 +153,7 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.BITGERT
     ];
     const backendTokens$ = this.httpService
-      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, SERVER_REST_TOKEN_URL)
+      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
       .pipe(
         map(backendTokens =>
           backendTokens.filter(token => {
@@ -182,11 +182,7 @@ export class TokensApiService {
 
     const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
       this.httpService
-        .get<TokensBackendResponse>(
-          ENDPOINTS.TOKENS,
-          { ...options, network },
-          SERVER_REST_TOKEN_URL
-        )
+        .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
           tap(networkTokens => {
             const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
@@ -229,7 +225,7 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, SERVER_REST_TOKEN_URL)
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
       .pipe(
         map(tokensResponse =>
           tokensResponse.results.length
@@ -253,7 +249,7 @@ export class TokensApiService {
       pageSize: DEFAULT_PAGE_SIZE
     };
     return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, SERVER_REST_TOKEN_URL)
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
       .pipe(
         map(tokensResponse => {
           return {
