@@ -1,19 +1,19 @@
-<!--<div class="info-line" *ngIf="estimateGasInEth?.isFinite()">-->
-<!--  <div class="info-line__title title">-->
-<!--    <span class="title__text">Estimated gas fee</span>-->
-<!--    <img-->
-<!--      src="assets/images/swaps/swaps-info/question-icon.svg"-->
-<!--      alt="question"-->
-<!--      [tuiHint]="'Estimated gas fee in source network'"-->
-<!--    />-->
-<!--  </div>-->
-<!--  <div class="info-line__value" *ngIf="estimateGasInEth">-->
-<!--    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue' }}-->
-<!--    {{ nativeCoinSymbol }} ≈ ${{-->
-<!--      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }-->
-<!--    }}-->
-<!--  </div>-->
-<!--</div>-->
+<div class="info-line" *ngIf="estimateGasInEth?.isFinite()">
+  <div class="info-line__title title">
+    <span class="title__text">Estimated gas fee</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="'Estimated gas fee in source network'"
+    />
+  </div>
+  <div class="info-line__value" *ngIf="estimateGasInEth">
+    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue' }}
+    {{ nativeCoinSymbol }} ≈ ${{
+      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
+    }}
+  </div>
+</div>
 
 <div class="info-line" *ngIf="feeInfo.cryptoFee">
   <div class="info-line__title title">
@@ -25,20 +25,13 @@
     />
   </div>
 
-  <div class="info-line__value" *ngIf="feeInfo.cryptoFee.amount">
+  <div class="info-line__value" *ngIf="feeInfo?.cryptoFee.amount">
     {{ feeInfo.cryptoFee.amount | bigNumberFormat | withRound: 'toClosestValue' }}&nbsp;
     {{ feeInfo.cryptoFee.tokenSymbol }}
-    <!--    <ng-container *ngIf="cryptoFeeInUsd.gt(0)">-->
-    <!--      ≈ ${{-->
-    <!--      cryptoFeeInUsd-->
-    <!--        | bigNumberFormat-->
-    <!--        | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }-->
-    <!--      }}-->
-    <!--    </ng-container>-->
   </div>
 </div>
 
-<div class="info-line" *ngIf="feeInfo.fixedFee || feeInfo.platformFee">
+<div class="info-line" *ngIf="feeInfo?.fixedFee || feeInfo?.platformFee">
   <div class="info-line__title title">
     <span class="title__text">Protocol fee</span>
     <img
@@ -51,15 +44,9 @@
   <div class="info-line__value">
     <ng-container *ngIf="feeInfo.platformFee.percent !== 0">
       {{ feeInfo.platformFee.percent }}%
-      <ng-container *ngIf="feeInfo.fixedFee.amount">
-        &nbsp;+&nbsp;{{ feeInfo.fixedFee.amount }}&nbsp;{{ feeInfo.fixedFee.tokenSymbol }}
-      </ng-container>
+      <ng-container *ngIf="feeInfo.fixedFee.amount"> + 1 USD</ng-container>
     </ng-container>
-
-    <ng-container *ngIf="feeInfo.fixedFee.amount; else zero">
-      {{ feeInfo.fixedFee.amount }}&nbsp;{{ feeInfo.fixedFee.tokenSymbol }}
-    </ng-container>
-
+    <ng-container *ngIf="feeInfo.fixedFee.amount; else zero">~ 1 USD</ng-container>
     <ng-template #zero> 0% </ng-template>
   </div>
 </div>

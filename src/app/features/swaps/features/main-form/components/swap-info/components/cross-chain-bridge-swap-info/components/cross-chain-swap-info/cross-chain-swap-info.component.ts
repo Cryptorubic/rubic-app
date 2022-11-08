@@ -200,6 +200,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
     this.minimumReceived = trade.toTokenAmountMin.multipliedBy(1 - this.slippage / 100);
     this.feeInfo = tradeInfo.feeInfo;
+    this.cryptoFeeInUsd = new BigNumber(tradeInfo.feeInfo.cryptoFee?.amount || 0).multipliedBy(
+      nativeCoinPrice
+    );
 
     if ('total' in tradeInfo.slippage) {
       this.slippage = tradeInfo.slippage.total;
