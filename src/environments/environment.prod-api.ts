@@ -4,7 +4,7 @@ import { STAKING_CONFIG_PROD } from './constants/staking';
 export const ENVIRONMENT = {
   production: false,
   environmentName: 'prod-api',
-  apiBaseUrl: '//api.rubic.exchange/api',
+  apiBaseUrl: '//tokens.rubic.exchange/api',
   zrxAffiliateAddress: undefined as string,
   crossChain: CROSS_CHAIN_PROD,
   staking: STAKING_CONFIG_PROD
