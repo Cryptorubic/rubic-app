@@ -25,7 +25,7 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
-import { ENVIRONMENT } from '../../../../../environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
