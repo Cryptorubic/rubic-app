@@ -294,8 +294,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         form.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW ||
         form.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW
       ) {
-        this.errorText =
-          'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.';
+        this.onCalculateError({
+          message:
+            'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.',
+          name: 'Error'
+        });
       } else if (unsupportedBlockchain) {
         this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
       } else {
