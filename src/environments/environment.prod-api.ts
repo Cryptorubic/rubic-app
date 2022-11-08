@@ -5,7 +5,7 @@ export const ENVIRONMENT = {
   production: false,
   environmentName: 'prod-api',
   apiBaseUrl: '//api.rubic.exchange/api',
-  apiTokenUrl: 'https://tokens.rubic.exchange/api/',
+  apiTokenUrl: 'https://tokens.rubic.exchange/api',
   zrxAffiliateAddress: undefined as string,
   crossChain: CROSS_CHAIN_PROD,
   staking: STAKING_CONFIG_PROD
