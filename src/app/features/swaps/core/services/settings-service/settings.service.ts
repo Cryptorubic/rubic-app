@@ -22,8 +22,6 @@ export interface ItSettingsForm {
   showReceiverAddress: boolean;
 }
 
-export interface BridgeSettingsForm {}
-
 export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
@@ -32,7 +30,6 @@ export interface CcrSettingsForm {
 
 export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormGroup<ItSettingsForm>;
-  [SWAP_PROVIDER_TYPE.BRIDGE]: FormGroup<BridgeSettingsForm>;
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsForm>;
 }
 
@@ -147,7 +144,6 @@ export class SettingsService {
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
         showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
       }),
-      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({}),
       [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance

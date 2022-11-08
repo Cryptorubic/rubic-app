@@ -26,8 +26,6 @@ import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import BigNumber from 'bignumber.js';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
@@ -133,36 +131,7 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  public async navigateToSwaps(
-    fromToken?: TokenAmount,
-    toToken?: TokenAmount,
-    amount?: BigNumber
-  ): Promise<void> {
-    const form = this.swapFormService.commonTrade.controls.input;
-    const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      fromToken: fromToken || null,
-      toToken: toToken || null,
-      fromAmount: amount || null
-    } as SwapFormInput;
-    form.patchValue(params);
-
-    this.gtmService.reloadGtmSession();
-
-    await this.router.navigate(['/'], {
-      queryParams: {
-        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-        toChain: BLOCKCHAIN_NAME.ETHEREUM,
-        amount: fromToken || undefined,
-        from: toToken || undefined,
-        to: amount || undefined
-      },
-      queryParamsHandling: 'merge'
-    });
-  }
-
-  public async navigateToBridgeOrCrossChain(type: 'bridge' | 'cross-chain'): Promise<void> {
+  public async navigateToSwaps(): Promise<void> {
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -179,18 +148,7 @@ export class HeaderComponent implements AfterViewInit {
       to: undefined
     };
 
-    if (type === 'bridge') {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
-      queryParams.amount = 1000;
-      queryParams.from = 'RBC';
-      queryParams.to = 'BRBC';
-
-      params.fromToken = this.tokensService.tokens.find(token => token.symbol === 'RBC');
-      params.toToken = this.tokensService.tokens.find(token => token.symbol === 'BRBC');
-      params.fromAmount = new BigNumber(1000);
-    } else {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-    }
+    this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
     this.swapFormService.input.patchValue(params);
     this.gtmService.reloadGtmSession();

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SwapsRoutingModule } from 'src/app/features/swaps/swaps-routing.module';
 import { InstantTradeModule } from 'src/app/features/swaps/features/instant-trade/instant-trade.module';
-import { BridgeModule } from 'src/app/features/swaps/features/bridge/bridge.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import {
   TuiDataListModule,
@@ -36,12 +35,10 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CrossChainBridgeSwapInfoComponent } from '@features/swaps/features/swaps-form/components/swap-info/components/cross-chain-bridge-swap-info/cross-chain-bridge-swap-info.component';
 import { PriceImpactInfoLineComponent } from 'src/app/features/swaps/features/swaps-form/components/swap-info/components/price-impact-info-line/price-impact-info-line.component';
 import { SwapsFormComponent } from 'src/app/features/swaps/features/swaps-form/swaps-form.component';
-import { SettingsBridgeComponent } from './features/swaps-form/components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './features/swaps-form/components/swaps-settings/settings-ccr/settings-ccr.component';
 import { IframeSettingsComponent } from './features/swaps-form/components/swaps-settings/iframe-settings/iframe-settings.component';
 import { SwapInfoContainerComponent } from './features/swaps-form/components/swap-info/components/swap-info-container/swap-info-container.component';
 import { InstantTradeSwapInfoComponent } from './features/swaps-form/components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
-import { BridgeSwapInfoComponent } from './features/swaps-form/components/swap-info/components/cross-chain-bridge-swap-info/components/bridge-swap-info/bridge-swap-info.component';
 import { SwapsSwitcherComponent } from '@features/swaps/features/swaps-form/components/swaps-switcher/swaps-switcher.component';
 import { PlatformTokensAmountComponent } from './features/swaps-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { SwapsHeaderComponent } from '@features/swaps/features/swaps-form/components/swaps-header/swaps-header.component';
@@ -52,7 +49,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     SwapsFormComponent,
     SettingsContainerComponent,
     SettingsItComponent,
-    SettingsBridgeComponent,
     SettingsCcrComponent,
     TokenAmountInputComponent,
     UserBalanceContainerComponent,
@@ -61,7 +57,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     VerticalIframeTokenAmountInputComponent,
     SwapInfoContainerComponent,
     InstantTradeSwapInfoComponent,
-    BridgeSwapInfoComponent,
     CrossChainBridgeSwapInfoComponent,
     PriceImpactInfoLineComponent,
     SwapsSwitcherComponent,
@@ -74,7 +69,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     SharedModule,
     SwapsRoutingModule,
     InstantTradeModule,
-    BridgeModule,
     CrossChainModule,
     TuiHostedDropdownModule,
     TuiDataListModule,

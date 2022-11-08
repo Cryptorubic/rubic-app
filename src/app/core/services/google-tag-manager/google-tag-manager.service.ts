@@ -14,8 +14,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
-  [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'swap',
-  [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge'
+  [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'swap'
 };
 
 const formStepsInitial = {
@@ -40,7 +39,6 @@ export class GoogleTagManagerService {
   private readonly _multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
   private readonly forms = {
-    [SWAP_PROVIDER_TYPE.BRIDGE]: this._bridgeSteps$,
     [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: this._multiChainSteps$,
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this._instantTradeSteps$
   };
