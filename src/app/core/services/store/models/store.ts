@@ -36,11 +36,6 @@ export interface Store {
   targetAddress: string;
 
   /**
-   * Passed form steps for bridge swap.
-   */
-  [SWAP_PROVIDER_TYPE.BRIDGE]: FormSteps;
-
-  /**
    * Passed form steps for instant-trade swap.
    */
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormSteps;
