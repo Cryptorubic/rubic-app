@@ -24,6 +24,7 @@ import {
   MaxAmountError,
   MinAmountError,
   MultichainCrossChainTrade,
+  NotSupportedTokensError,
   RangoCrossChainTrade,
   RubicSdkError,
   SymbiosisCrossChainTrade,
@@ -180,6 +181,15 @@ export class CrossChainFormService {
   private replacedTaggedTrades: CrossChainTaggedTrade[] = [];
 
   /**
+   * Contains list of errors and warnings, after which provider must be disabled.
+   */
+  private executionCriticalErrors = [
+    NotWhitelistedProviderWarning,
+    UnsupportedDeflationTokenWarning,
+    ExecutionRevertedError
+  ];
+
+  /**
    * Contains trades types, which were disabled due to critical errors.
    */
   private disabledTradesTypes: CrossChainTradeType[] = [];
@@ -270,10 +280,6 @@ export class CrossChainFormService {
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
 
-          const crossChainTrade$ = this.crossChainCalculationService.calculateTrade(
-            isUserAuthorized,
-            this.disabledTradesTypes
-          );
           const balance$ = isUserAuthorized
             ? from(
                 this.tokensService.getAndUpdateTokenBalance(
@@ -281,7 +287,6 @@ export class CrossChainFormService {
                 )
               )
             : of(null);
-
           return balance$.pipe(
             switchMap(balance => {
               if (!calculateData.isForced && balance !== null && balance.lt(fromAmount)) {
@@ -298,6 +303,10 @@ export class CrossChainFormService {
               this.isCalculating = true;
               this.refreshService.setRefreshing();
 
+              const crossChainTrade$ = this.crossChainCalculationService.calculateTrade(
+                isUserAuthorized,
+                this.disabledTradesTypes
+              );
               return crossChainTrade$.pipe(
                 map(({ total, calculated, lastCalculatedTrade }) => {
                   const calculationEnded = calculated === total;
@@ -332,7 +341,16 @@ export class CrossChainFormService {
     lastCalculatedTrade: CrossChainCalculatedTrade | null,
     calculationEnded: boolean
   ): void {
-    if (lastCalculatedTrade) {
+    let isExecutionCriticalError = false;
+    if (lastCalculatedTrade?.error) {
+      const parsedError = this.parseCalculationError(lastCalculatedTrade.error);
+      if (this.isExecutionCriticalError(parsedError)) {
+        isExecutionCriticalError = true;
+        this.disableUnavailableTrade(lastCalculatedTrade.tradeType);
+      }
+    }
+
+    if (lastCalculatedTrade && !isExecutionCriticalError) {
       this.updateTradesList(lastCalculatedTrade);
 
       if (
@@ -494,14 +512,14 @@ export class CrossChainFormService {
   }
 
   private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof NotSupportedTokensError) {
+      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
+    }
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
     }
     if (error instanceof CrossChainIsUnavailableError) {
       return new CrossChainIsUnavailableWarning();
-    }
-    if (error?.message?.includes('Representation of ')) {
-      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
@@ -510,6 +528,15 @@ export class CrossChainFormService {
       return new RubicError(
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
+    }
+    if (error?.message?.includes('No available routes')) {
+      return new RubicError('No available routes.');
+    }
+    if (error?.message?.includes('There are no providers for trade')) {
+      return new RubicError('There are no providers for trade.');
+    }
+    if (error?.message?.includes('Representation of ')) {
+      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
 
     const parsedError = error && RubicSdkErrorParser.parseError(error);
@@ -849,11 +876,7 @@ export class CrossChainFormService {
 
   private handleSwapError(error: RubicSdkError, tradeType: CrossChainTradeType): void {
     const parsedError = RubicSdkErrorParser.parseError(error);
-    if (
-      parsedError instanceof NotWhitelistedProviderWarning ||
-      parsedError instanceof UnsupportedDeflationTokenWarning ||
-      parsedError instanceof ExecutionRevertedError
-    ) {
+    if (this.isExecutionCriticalError(parsedError)) {
       this.isSwapStarted = SWAP_PROCESS.NONE;
       this.unsetTradeSelectedByUser();
 
@@ -880,9 +903,13 @@ export class CrossChainFormService {
     this.refreshService.stopInProgress();
   }
 
+  private isExecutionCriticalError(error: RubicError<ERROR_TYPE>): boolean {
+    return this.executionCriticalErrors.some(CriticalError => error instanceof CriticalError);
+  }
+
   private disableUnavailableTrade(unavailableTradeType: CrossChainTradeType): void {
     this.taggedTrades = this.taggedTrades.filter(
-      taggedTrade => taggedTrade.tradeType === unavailableTradeType
+      taggedTrade => taggedTrade.tradeType !== unavailableTradeType
     );
     this.replacedTaggedTrades.forEach(replacedTrade => {
       this.updateTradesList(replacedTrade);
