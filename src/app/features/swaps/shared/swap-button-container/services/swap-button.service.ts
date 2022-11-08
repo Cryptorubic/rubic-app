@@ -7,7 +7,6 @@ import { SwapButtonContainerErrorsService } from '@features/swaps/shared/swap-bu
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
@@ -127,14 +126,7 @@ export class SwapButtonService {
       if (status === TRADE_STATUS.LOADING) {
         this._priceImpactLoading$.next(true);
       } else {
-        if (
-          this.iframeService.isIframe ||
-          this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE
-        ) {
-          this._priceImpact$.next(0);
-        } else {
-          this._priceImpact$.next(this.priceImpactService.priceImpact);
-        }
+        this._priceImpact$.next(this.priceImpactService.priceImpact);
         this._priceImpactLoading$.next(false);
       }
     });
