@@ -16,12 +16,12 @@ export class CrossChainApiService {
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType,
     routerAddress: string,
-    gateWayAddress?: string
+    gatewayAddress?: string
   ): Observable<void> {
     return this.httpService.post(`info/new_provider`, {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-      address: routerAddress + (gateWayAddress ? `_${gateWayAddress}` : '')
+      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : '')
     });
   }
 }
