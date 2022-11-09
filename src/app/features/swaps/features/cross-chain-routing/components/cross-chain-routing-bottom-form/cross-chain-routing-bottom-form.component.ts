@@ -54,7 +54,6 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  MultichainCrossChainTrade,
   MaxAmountError,
   MinAmountError,
   RubicSdkError,
@@ -593,9 +592,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       !this.crossChainProviderTrade ||
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
       (this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.VIA &&
-        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS &&
-        this.crossChainProviderTrade?.trade.type !== CROSS_CHAIN_TRADE_TYPE.MULTICHAIN &&
-        this.crossChainProviderTrade.trade instanceof MultichainCrossChainTrade)
+        this.crossChainProviderTrade.trade?.type !== CROSS_CHAIN_TRADE_TYPE.BRIDGERS)
     ) {
       return true;
     }
