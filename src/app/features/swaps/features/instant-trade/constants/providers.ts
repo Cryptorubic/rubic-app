@@ -136,5 +136,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
   ]),
   [BLOCKCHAIN_NAME.BITCOIN]: getDefaultStateByProviders([]),
   [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS]),
-  [BLOCKCHAIN_NAME.BITGERT]: getDefaultStateByProviders([])
+  [BLOCKCHAIN_NAME.BITGERT]: getDefaultStateByProviders([]),
+  [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([]),
+  [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([])
 };
