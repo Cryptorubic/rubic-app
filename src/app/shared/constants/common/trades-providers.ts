@@ -492,7 +492,7 @@ export const CROSS_CHAIN_BRIDGE_PROVIDER: Record<BridgeType, Provider> = {
   [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
-    color: ''
+    color: '#c2c2c2'
   },
 
   [BRIDGE_TYPE.CELER_BRIDGE]: {

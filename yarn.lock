@@ -2529,7 +2529,7 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lifi/sdk@^1.0.2":
+"@lifi/sdk@1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@lifi/sdk/-/sdk-1.6.0.tgz#abb849c10def311708e0ae241ca307bbfa64a2f3"
   integrity sha512-C6TjVLnIcb2DJI4FAyVWuTTIsgIJE3eXaQCwJwNWz54TXyCAgIdr4DM6lPmE8RwYWAL5xpwPkNTBnzccy3sowg==
@@ -2543,9 +2543,9 @@
     ethers "^5.7.1"
 
 "@lifi/types@^1.7.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-1.8.0.tgz#509430b070a6cbc9d97ea9fc4e9e678c248f6bdd"
-  integrity sha512-2WSfk7sFPnOS3+XuSOIPFjxcIUqza9qwsypQRdV+U5sURMx++BYh9bW0Tb13gj3Aq7Z/qRF140Xkx6GfFTSgKg==
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-1.14.1.tgz#218299959881781b9b94e5ee85047e2fc67e776c"
+  integrity sha512-KeOdWfLfhzxJSz5F4iVUUU9ZC7kVCuoLWjOg0Qjzwofa2UWJkwb6qmUoRHq7HZr2lQXHq+TPqZviHQ57N0wJsg==
   dependencies:
     ethers "^5.6.9"
 
@@ -8014,7 +8014,7 @@ ethers@5.6.9:
     "@ethersproject/web" "5.6.1"
     "@ethersproject/wordlists" "5.6.1"
 
-ethers@^5.4.4:
+ethers@^5.4.4, ethers@^5.7.1:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -8050,7 +8050,7 @@ ethers@^5.4.4:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^5.6.7, ethers@^5.6.8, ethers@^5.6.9, ethers@^5.7.1:
+ethers@^5.6.7, ethers@^5.6.8, ethers@^5.6.9:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.1.tgz#48c83a44900b5f006eb2f65d3ba6277047fd4f33"
   integrity sha512-5krze4dRLITX7FpU8J4WscXqADiKmyeNlylmmDLbS95DaZpBhDe2YSwRQwKXWNyXcox7a3gBgm/MkGXV1O1S/Q==
@@ -14743,12 +14743,12 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.4.8:
-  version "3.4.8"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.4.8.tgz#a6c0196bbdc2c7b27fff0009f1b58173b935a062"
-  integrity sha512-JAABC0ll5OapjkwtngIGH73Ho9SyL0Uhk6SDiw5LBjmO3YCC+JIVOa0zl+/IRJonX0pBMtSzGemfwri8VCwGLQ==
+rubic-sdk@3.4.9:
+  version "3.4.9"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.4.9.tgz#c37ac312ddc361f55850a1ced4a571ff634b8d0f"
+  integrity sha512-gqeUEZtebxhlaKufu7Da/d48y77jk1RrFX0durfqJrVxmPyPRf9l1GfAizHVav1u70uJXl4uf6ywDKGopp0gAw==
   dependencies:
-    "@lifi/sdk" "^1.0.2"
+    "@lifi/sdk" "1.6.0"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
     axios "^0.26.1"
