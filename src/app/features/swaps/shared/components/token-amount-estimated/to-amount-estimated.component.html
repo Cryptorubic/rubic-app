@@ -1,8 +1,8 @@
 <div class="bottom-amount" *ngLet="isFormFilled$ | async as isFormFilled">
-  <div class="bottom-amount__blockchain-and-value">
+  <div class="bottom-amount__blockchain-and-value" *ngLet="formData$ | async as formData">
     <app-iframe-blockchain-indicator
       *onlyFrame="'vertical'"
-      [blockchain]="toBlockchain$ | async"
+      [blockchain]="formData.toBlockchain"
     ></app-iframe-blockchain-indicator>
 
     <div
@@ -20,7 +20,7 @@
           {{
             toAmount
               | bigNumberFormat
-              | withRound: 'toClosestValue':{ decimals: (toTokenDecimals$ | async) }
+              | withRound: 'toClosestValue':{ decimals: formData.toToken?.decimals }
           }}
           <app-tokens-rate *noFrame></app-tokens-rate>
         </ng-container>

@@ -41,10 +41,6 @@ export class CrossChainBottomFormComponent {
 
   public readonly criticalError$ = this.crossChainFormService.criticalError$;
 
-  public readonly criticalErrorText$ = this.criticalError$.pipe(
-    map(error => error?.translateKey || error?.message)
-  );
-
   public readonly selectedTradeError$ = this.crossChainFormService.selectedTradeError$;
 
   constructor(

@@ -12,14 +12,8 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 export class ToAmountEstimatedComponent {
   @Input() errorText = '';
 
-  public readonly toBlockchain$ = this.swapFormService.inputValueChanges.pipe(
-    startWith(this.swapFormService.inputValue),
-    map(form => form.toBlockchain)
-  );
-
-  public readonly toTokenDecimals$ = this.swapFormService.inputValueChanges.pipe(
-    startWith(this.swapFormService.inputValue),
-    map(form => form.toToken?.decimals || 18)
+  public readonly formData$ = this.swapFormService.inputValueChanges.pipe(
+    startWith(this.swapFormService.inputValue)
   );
 
   public readonly isFormFilled$ = this.swapFormService.isFilled$;
