@@ -17,13 +17,13 @@ import {
   CrossChainIsUnavailableError,
   CrossChainTradeType,
   DebridgeCrossChainTrade,
+  DexMultichainCrossChainTrade,
   EvmBridgersCrossChainTrade,
   EvmCrossChainTrade,
   LifiCrossChainTrade,
   LowSlippageError,
   MaxAmountError,
   MinAmountError,
-  MultichainCrossChainTrade,
   NotSupportedTokensError,
   RangoCrossChainTrade,
   RubicSdkError,
@@ -717,7 +717,7 @@ export class CrossChainFormService {
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
       trade instanceof TronBridgersCrossChainTrade ||
-      trade instanceof MultichainCrossChainTrade
+      trade instanceof DexMultichainCrossChainTrade
     ) {
       return {
         estimatedGas,
@@ -847,11 +847,9 @@ export class CrossChainFormService {
   private isSlippageCorrect(): boolean {
     if (
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      [
-        CROSS_CHAIN_TRADE_TYPE.VIA,
-        CROSS_CHAIN_TRADE_TYPE.BRIDGERS,
-        CROSS_CHAIN_TRADE_TYPE.MULTICHAIN
-      ].every(crossChainType => crossChainType !== this.selectedTrade.trade.type)
+      [CROSS_CHAIN_TRADE_TYPE.VIA, CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
+        crossChainType => crossChainType !== this.selectedTrade.trade.type
+      )
     ) {
       return true;
     }
