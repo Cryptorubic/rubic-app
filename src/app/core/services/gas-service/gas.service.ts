@@ -232,7 +232,7 @@ export class GasService {
   }
 
   /**
-   * Gets BSC gas.
+   * Gets Optimism gas.
    * @return Observable<number> Average gas price in Gwei.
    */
   @Cacheable({
