@@ -9,6 +9,7 @@ import {
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
+  UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
   WrappedCrossChainTrade
@@ -211,6 +212,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
       await wrappedTrade.trade.approve(swapOptions);
 
       this.notificationsService.showApproveSuccessful();
+    } catch (err) {
+      if (err instanceof UnnecessaryApproveError) {
+        return;
+      }
+      throw err;
     } finally {
       approveInProgressSubscription$?.unsubscribe();
     }
