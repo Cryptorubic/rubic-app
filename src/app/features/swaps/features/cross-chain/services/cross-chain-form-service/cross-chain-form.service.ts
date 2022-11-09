@@ -87,7 +87,7 @@ export class CrossChainFormService {
    * Controls trade calculation flow.
    * When `next` is called, recalculation is started.
    */
-  private readonly _calculateTrade$ = new Subject<{ isForced: boolean }>();
+  private readonly _calculateTrade$ = new Subject<{ isForced?: boolean; stop?: boolean }>();
 
   /**
    * Current status of trade.
@@ -250,11 +250,13 @@ export class CrossChainFormService {
       .pipe(
         debounceTime(200),
         map(calculateData => {
-          if (!this.swapFormService.isFilled) {
+          if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.refreshService.setStopped();
             this.swapFormService.output.patchValue({
               toAmount: new BigNumber(NaN)
             });
+
             return { ...calculateData, isFormFilled: false };
           }
           return { ...calculateData, isFormFilled: true };
@@ -680,6 +682,7 @@ export class CrossChainFormService {
       }
 
       this.criticalError = new CrossChainUnsupportedBlockchainError(unsupportedBlockchain);
+      this._calculateTrade$.next({ stop: true });
       return;
     }
 
