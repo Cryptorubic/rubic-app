@@ -517,9 +517,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public async createTrade(): Promise<void> {
     this.swapStarted = true;
-    // if (!this.isSlippageCorrect()) {
-    //   return;
-    // }
+
+    if (!this.isSlippageCorrect()) {
+      return;
+    }
 
     if (
       !(await this.settingsService.checkSlippageAndPriceImpact(

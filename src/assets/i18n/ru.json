@@ -42,7 +42,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "Обновить сделку"
+    "refreshTrade": "Обновить сделку",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -492,7 +493,11 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "autoSlippage": "К сожалению, для этого свопа не допускается пользовательский Slippage. Пожалуйста, включите настройку автоматического Slippage в настройках."
+      "autoSlippage": "К сожалению, для этого свопа не допускается пользовательский Slippage. Пожалуйста, включите настройку автоматического Slippage в настройках.",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {

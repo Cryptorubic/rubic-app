@@ -44,10 +44,10 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/sw
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { TuiDialogService } from '@taiga-ui/core';
-import { SwapSchemeModalComponent } from '../components/swap-scheme-modal/swap-scheme-modal.component';
+import { SwapSchemeModalComponent } from '@app/features/swaps/features/cross-chain-routing/components/swap-scheme-modal/swap-scheme-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { SwapSchemeModalData } from '../models/swap-scheme-modal-data.interface';
+import { SwapSchemeModalData } from '@app/features/swaps/features/cross-chain-routing/models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
@@ -60,9 +60,12 @@ import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ProvidersListSortingService } from '@app/features/swaps/features/cross-chain-routing/services/providers-list-sorting.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
-import { CrossChainProviderTrade } from '../models/cross-chain-provider-trade';
-import { CelerRubicTradeInfo, SymbiosisTradeInfo } from '../models/cross-chain-trade-info';
-import { SmartRouting } from '../models/smart-routing.interface';
+import { CrossChainProviderTrade } from '@app/features/swaps/features/cross-chain-routing/models/cross-chain-provider-trade';
+import {
+  CelerRubicTradeInfo,
+  SymbiosisTradeInfo
+} from '@app/features/swaps/features/cross-chain-routing/models/cross-chain-trade-info';
+import { SmartRouting } from '@app/features/swaps/features/cross-chain-routing/models/smart-routing.interface';
 
 export type AllProviders = {
   readonly totalAmount: number;

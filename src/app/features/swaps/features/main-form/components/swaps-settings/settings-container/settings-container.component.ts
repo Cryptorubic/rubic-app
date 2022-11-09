@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Injector, OnInit, Type } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
 import { SettingsItComponent } from '@features/swaps/features/main-form/components/swaps-settings/settings-it/settings-it.component';
@@ -25,12 +24,9 @@ export class SettingsContainerComponent implements OnInit {
   private prevMode: SWAP_PROVIDER_TYPE;
 
   constructor(
-    private readonly settingsService: SettingsService,
     private readonly swapService: SwapsService,
     private readonly swapFormService: SwapFormService
-  ) {
-    this.open = false;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.settingsComponent = this.getSettingsComponent();

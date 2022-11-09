@@ -16,7 +16,7 @@ import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SettingsWarningModalComponent } from '../../../../shared/settings-warning-modal/settings-warning-modal.component';
+import { SettingsWarningModalComponent } from '@app/features/swaps/shared/settings-warning-modal/settings-warning-modal.component';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -255,7 +255,7 @@ export class SettingsService {
       return firstValueFrom(
         this.dialogService.open<boolean>(new PolymorpheusComponent(SettingsWarningModalComponent), {
           data: settingsChecks,
-          size: 'l'
+          size: 'm'
         })
       );
     }

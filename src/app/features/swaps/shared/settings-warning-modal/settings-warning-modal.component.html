@@ -1,12 +1,39 @@
-<div *ngIf="highSlippage">
-  <h1>Your slippage {{ highSlippage }}</h1>
-  <h2>Slippage text</h2>
-</div>
-<div *ngIf="highPriceImpact">
-  <h1>Your slippage {{ highPriceImpact }}</h1>
-  <h2>Price impact text</h2>
-</div>
-<div>
-  <span><button (click)="confirm()">OK</button></span>
-  <span><button (click)="cancel()">CANCEL</button></span>
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+    </main>
+
+    <div class="modal__footer">
+      <div class="modal__footer-text" *ngIf="highSlippage">
+        {{ 'modals.warningModal.slippageAmount' | translate: { slippage: highSlippage } }}
+        <img
+          src="assets/images/swaps/swaps-info/question-icon.svg"
+          alt="question"
+          [tuiHint]="'modals.warningModal.highSlippage' | translate"
+        />
+      </div>
+      <div class="modal__footer-text" *ngIf="highPriceImpact">
+        {{ 'modals.warningModal.priceImpactAmount' | translate: { priceImpact: highPriceImpact } }}
+        <img
+          src="assets/images/swaps/swaps-info/question-icon.svg"
+          alt="question"
+          [tuiHint]="'modals.warningModal.highPriceImpact' | translate"
+        />
+      </div>
+
+      <div class="modal__footer-actions">
+        <app-rubic-button appearance="secondary" (onClick)="confirm()">
+          {{ 'common.complete' | translate }}
+        </app-rubic-button>
+        <app-rubic-button appearance="primary" (onClick)="cancel()">
+          {{ 'common.cancel' | translate }}
+        </app-rubic-button>
+      </div>
+    </div>
+  </div>
 </div>
