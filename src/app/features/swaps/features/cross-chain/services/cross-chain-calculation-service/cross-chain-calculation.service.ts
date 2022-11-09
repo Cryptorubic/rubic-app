@@ -186,7 +186,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ) {
       return {
         ...smartRouting,
-        bridgeProvider: wrappedTrade.trade.bridgeSubtype.type
+        bridgeProvider: wrappedTrade.trade.bridgeType
       };
     }
     return smartRouting;
@@ -241,7 +241,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         toToken: calculatedTrade.trade.to,
         crossChainTradeType: calculatedTrade.tradeType,
         timestamp,
-        bridgeType: calculatedTrade.trade.bridgeSubtype.type,
+        bridgeType: calculatedTrade.trade.bridgeType,
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
 
         ...(viaUuid && { viaUuid }),
@@ -323,7 +323,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
     const { trade, route } = calculatedTrade;
 
-    const bridgeType = trade.bridgeSubtype.type;
+    const bridgeType = trade.bridgeType;
     const bridgeProvider = TRADES_PROVIDERS[bridgeType];
 
     const fromTradeProvider = route.fromProvider

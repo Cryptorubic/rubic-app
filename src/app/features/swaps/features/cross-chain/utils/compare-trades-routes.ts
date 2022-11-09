@@ -7,6 +7,6 @@ export function compareTradesRoutes(
   return (
     firstTrade.onChainSubtype.from === secondTrade.onChainSubtype.from &&
     firstTrade.onChainSubtype.to === secondTrade.onChainSubtype.to &&
-    firstTrade.bridgeSubtype.type === secondTrade.bridgeSubtype.type
+    firstTrade.bridgeType === secondTrade.bridgeType
   );
 }

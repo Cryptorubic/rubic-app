@@ -388,7 +388,7 @@ export class CrossChainFormService {
 
       if (identicalTrade) {
         if (
-          identicalTrade.trade.bridgeSubtype.isNative ||
+          !identicalTrade.trade.isAggregator ||
           identicalTrade.trade.to.tokenAmount.gt(lastTrade.to.tokenAmount)
         ) {
           this.replacedTaggedTrades = this.replacedTaggedTrades.concat(taggedLastCalculatedTrade);
