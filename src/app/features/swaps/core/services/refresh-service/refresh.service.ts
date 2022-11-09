@@ -5,9 +5,7 @@ import { OnRefreshData } from '@features/swaps/core/services/refresh-service/mod
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RefreshService {
   /**
    * Stores current refresh status.

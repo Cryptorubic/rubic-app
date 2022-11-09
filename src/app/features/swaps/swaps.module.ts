@@ -43,6 +43,9 @@ import { SwapsSwitcherComponent } from '@features/swaps/features/swaps-form/comp
 import { PlatformTokensAmountComponent } from './features/swaps-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { SwapsHeaderComponent } from '@features/swaps/features/swaps-form/components/swaps-header/swaps-header.component';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { RefreshButtonComponent } from '@features/swaps/features/swaps-form/components/refresh-button/refresh-button.component';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
 @NgModule({
   declarations: [
@@ -61,7 +64,8 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     PriceImpactInfoLineComponent,
     SwapsSwitcherComponent,
     PlatformTokensAmountComponent,
-    SwapsHeaderComponent
+    SwapsHeaderComponent,
+    RefreshButtonComponent
   ],
   exports: [TokenAmountInputComponent, VerticalIframeTokenAmountInputComponent],
   imports: [
@@ -88,6 +92,6 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
     ClipboardModule,
     TuiAccordionModule
   ],
-  providers: [SwapsService, SuccessTxModalService, RubicSdkService]
+  providers: [SwapsService, SuccessTxModalService, RubicSdkService, RefreshService, TradeService]
 })
 export class SwapsModule {}

@@ -71,9 +71,7 @@ import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cr
 import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CrossChainFormService {
   private static setTags(calculatedTrade: CrossChainCalculatedTrade): CrossChainTaggedTrade {
     return {

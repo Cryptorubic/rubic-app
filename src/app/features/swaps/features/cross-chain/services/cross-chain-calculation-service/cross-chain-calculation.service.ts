@@ -47,9 +47,7 @@ import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchai
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
   private readonly defaultTimeout = 25_000;
 

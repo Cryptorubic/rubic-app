@@ -23,6 +23,8 @@ import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-sc
 import { TradesCounterComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/trades-counter.component';
 import { TradesListComponent } from 'src/app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/trades-list.component';
 import { BestTradePanelComponent } from 'src/app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/best-trade-panel.component';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,6 @@ import { BestTradePanelComponent } from 'src/app/features/swaps/features/cross-c
     TuiScrollbarModule
   ],
   exports: [CrossChainBottomFormComponent],
-  providers: []
+  providers: [CrossChainFormService, CrossChainCalculationService]
 })
 export class CrossChainModule {}

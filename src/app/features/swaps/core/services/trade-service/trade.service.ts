@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TradeService {
   private readonly _isButtonHovered$ = new BehaviorSubject<boolean>(false);
 
