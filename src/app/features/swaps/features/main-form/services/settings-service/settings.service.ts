@@ -248,7 +248,7 @@ export class SettingsService {
 
     const settingsChecks = {
       highSlippage: slippage > 5 && slippage,
-      highPriceImpact: priceImpact > 50 && priceImpact
+      highPriceImpact: priceImpact > 30 && priceImpact
     };
 
     if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
