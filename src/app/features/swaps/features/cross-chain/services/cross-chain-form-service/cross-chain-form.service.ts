@@ -181,15 +181,6 @@ export class CrossChainFormService {
   private replacedTaggedTrades: CrossChainTaggedTrade[] = [];
 
   /**
-   * Contains list of errors and warnings, after which provider must be disabled.
-   */
-  private executionCriticalErrors = [
-    NotWhitelistedProviderWarning,
-    UnsupportedDeflationTokenWarning,
-    ExecutionRevertedError
-  ];
-
-  /**
    * Contains trades types, which were disabled due to critical errors.
    */
   private disabledTradesTypes: CrossChainTradeType[] = [];
@@ -903,10 +894,20 @@ export class CrossChainFormService {
     this.refreshService.stopInProgress();
   }
 
+  /**
+   * Checks if error is critical, after which provider must be disabled.
+   */
   private isExecutionCriticalError(error: RubicError<ERROR_TYPE>): boolean {
-    return this.executionCriticalErrors.some(CriticalError => error instanceof CriticalError);
+    return [
+      NotWhitelistedProviderWarning,
+      UnsupportedDeflationTokenWarning,
+      ExecutionRevertedError
+    ].some(CriticalError => error instanceof CriticalError);
   }
 
+  /**
+   * Disables trade, which thrown execution critical error.
+   */
   private disableUnavailableTrade(unavailableTradeType: CrossChainTradeType): void {
     this.taggedTrades = this.taggedTrades.filter(
       taggedTrade => taggedTrade.tradeType !== unavailableTradeType
