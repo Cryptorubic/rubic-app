@@ -511,6 +511,11 @@ export class CrossChainRoutingService extends TradeService {
     if (error?.message?.includes('There are no providers for trade')) {
       return new RubicError('There are no providers for trade.');
     }
+    if (error?.message?.includes('Cross-Chain Swaps between ETH PoW')) {
+      return new RubicError(
+        'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.'
+      );
+    }
     if (error instanceof LowSlippageError) {
       return new RubicError('Slippage is too low for transaction.');
     }
