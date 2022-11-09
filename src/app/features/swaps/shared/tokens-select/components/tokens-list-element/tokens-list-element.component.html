@@ -11,17 +11,24 @@
   <div class="token-card__name-container">
     <span class="token-card__name-container-symbol"
       >{{ token.symbol }}
+
       <span
         class="token-card__name-container-copy-icon"
         *ngIf="hintShown"
         [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
         (click)="copyToClipboard($event)"
-        [tuiHint]="token.address"
+        [tuiHint]="tokenAddressHint"
         tuiHintMode="onDark"
         tuiHintShowDelay="50"
         tuiHintDirection="top-right"
         tuiHintHideDelay="100"
       ></span>
+
+      <ng-template #tokenAddressHint
+        ><span class="token-card__name-container-address-hint">{{
+          token.address
+        }}</span></ng-template
+      >
 
       <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
         <span

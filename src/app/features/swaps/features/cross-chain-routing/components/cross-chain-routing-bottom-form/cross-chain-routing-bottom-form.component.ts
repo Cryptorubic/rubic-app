@@ -73,6 +73,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import UnsupportedDeflationTokenWarning from '@app/core/errors/models/common/unsupported-deflation-token.warning';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -229,7 +230,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.conditionalCalculate('normal');
+        this.setFormValues(this.swapFormService.inputValue);
       });
 
     this.crossChainRoutingService.dangerousProviders$
@@ -256,17 +257,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.conditionalCalculate('normal');
+        this.setFormValues(this.swapFormService.inputValue);
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.conditionalCalculate('normal');
+      this.setFormValues(this.swapFormService.inputValue);
     });
 
     combineLatest([this.targetNetworkAddressService.address$, this.displayTargetAddressInput$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.conditionalCalculate('normal');
+        this.setFormValues(this.swapFormService.inputValue);
       });
   }
 
@@ -289,7 +290,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         unsupportedBlockchain = form.toBlockchain;
       }
 
-      if (unsupportedBlockchain) {
+      if (
+        form.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW ||
+        form.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW
+      ) {
+        this.onCalculateError({
+          message:
+            'Cross-Chain Swaps between ETH PoW and other networks is currently not supported.',
+          name: 'Error'
+        });
+      } else if (unsupportedBlockchain) {
         this.errorText = `Swaps to and from ${unsupportedBlockchain} are temporarily disabled for extended maintenance.`;
       } else {
         this.errorText = 'Selected blockchains are not supported in Cross-Chain.';
@@ -346,6 +356,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
             return of(null);
           }
           const { fromBlockchain } = this.swapFormService.inputValue;
+
           const isUserAuthorized =
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
@@ -503,6 +514,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
+        const allProviders = await firstValueFrom(this.crossChainRoutingService.providers$);
+        if (allProviders.length === this.crossChainRoutingService.dangerousProviders.length) {
+          this.errorsService.catch(err);
+        }
       } else {
         this.errorsService.catch(err);
       }
@@ -550,6 +565,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.crossChainRoutingService.markProviderAsDangerous(
           this.crossChainProviderTrade.tradeType
         );
+        const allProviders = await firstValueFrom(this.crossChainRoutingService.providers$);
+        if (allProviders.length === this.crossChainRoutingService.dangerousProviders.length) {
+          this.errorsService.catch(err);
+        }
       } else {
         this.errorsService.catch(err);
       }

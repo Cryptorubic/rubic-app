@@ -32,7 +32,7 @@ export class HttpService {
     return this.http.request<T>('delete', SERVER_REST_URL + (url || ''), options);
   }
 
-  public delete<T>(url: string, params?: {}): Observable<T> {
-    return this.http.delete<T>(SERVER_REST_URL + (url || ''), params);
+  public delete<T>(url: string, params?: {}, path?: string): Observable<T> {
+    return this.http.delete<T>((path || SERVER_REST_URL) + (url || ''), params);
   }
 }
