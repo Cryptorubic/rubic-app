@@ -22,7 +22,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
-    color: ''
+    color: '#c2c2c2'
   },
 
   [BRIDGE_TYPE.BRIDGERS]: {

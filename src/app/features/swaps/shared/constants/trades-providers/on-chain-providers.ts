@@ -12,7 +12,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.ALDRIN_EXCHANGE]: {
     name: 'AldrinExchange',
     image: `${imageBasePath}aldrin.svg`,
-    color: ''
+    color: '#383838'
   },
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: {
     name: 'Algebra',
