@@ -1,0 +1,40 @@
+<ng-container>
+  <ul @listAnimation>
+    <ng-container *ngFor="let taggedTrade of taggedTrades; let i = index; trackBy: trackByType">
+      <li
+        class="trade"
+        [ngClass]="{
+          trade_selected: (selectedTrade$ | async).tradeType === taggedTrade.tradeType
+        }"
+        (click)="selectTrade(taggedTrade)"
+        @fadeAnimation
+      >
+        <div class="trade__container">
+          <app-cross-chain-route [route]="taggedTrade.route"></app-cross-chain-route>
+
+          <span>
+            {{
+              taggedTrade.trade?.to?.tokenAmount
+                | bigNumberFormat
+                | withRound
+                  : 'toClosestValue'
+                  : { minRound: 3, maxRound: 5, decimals: taggedTrade.trade?.to?.decimals }
+            }}
+          </span>
+
+          <div class="trade__statuses">
+            <tui-badge *ngIf="i === 0" status="success" value="Best"></tui-badge>
+
+            <tui-badge
+              *ngIf="
+                i > 0 && (taggedTrade.tags.minAmountWarning || taggedTrade.tags.maxAmountWarning)
+              "
+              status="warning"
+              [value]="getMinMaxError(taggedTrade)"
+            ></tui-badge>
+          </div>
+        </div>
+      </li>
+    </ng-container>
+  </ul>
+</ng-container>

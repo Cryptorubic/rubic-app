@@ -58,7 +58,7 @@ export class RecentTradesStoreService {
     const updatedUserTrades = this.currentUserRecentTrades.map(localStorageTrade => {
       if (
         trade.srcTxHash === localStorageTrade.srcTxHash &&
-        trade.fromBlockchain === localStorageTrade.fromBlockchain
+        trade.fromToken.blockchain === localStorageTrade.fromToken.blockchain
       ) {
         return trade;
       } else {
@@ -74,7 +74,7 @@ export class RecentTradesStoreService {
 
   public getSpecificTrade(srcTxHash: string, fromBlockchain: BlockchainName): RecentTrade {
     return this.currentUserRecentTrades.find(
-      trade => trade.srcTxHash === srcTxHash && trade.fromBlockchain === fromBlockchain
+      trade => trade.srcTxHash === srcTxHash && trade.fromToken.blockchain === fromBlockchain
     );
   }
 
