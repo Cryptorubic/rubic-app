@@ -1,15 +1,12 @@
 import { Configuration, RpcProviders } from 'rubic-sdk';
-import networks from '@shared/constants/blockchain/networks';
+import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
-const rpcProviders = networks.reduce((acc, curr) => {
-  if (!curr.rpcList.length) {
-    return acc;
-  }
+const rpcProviders = Object.keys(rpcList).reduce((acc, blockchain: keyof typeof rpcList) => {
   const provider = {
-    rpcList: curr.rpcList,
+    rpcList: rpcList[blockchain],
     mainRpcTimeout: 8000
   };
-  return { ...acc, [curr.name]: provider };
+  return { ...acc, [blockchain]: provider };
 }, {} as RpcProviders);
 
 export const rubicSdkDefaultConfig: Configuration = { rpcProviders };

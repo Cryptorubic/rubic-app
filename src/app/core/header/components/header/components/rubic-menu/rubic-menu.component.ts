@@ -12,8 +12,6 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
@@ -37,25 +35,19 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 export class RubicMenuComponent implements AfterViewInit {
   @Input() public swapActive: boolean;
 
-  @Input() public bridgeActive: boolean;
-
   @Input() public crossChainActive: boolean;
 
-  @Output() public readonly swapClick: EventEmitter<void>;
-
-  @Output() public readonly bridgeClick: EventEmitter<void>;
-
-  @Output() public readonly crossChainClick: EventEmitter<void>;
+  @Output() public readonly swapClick = new EventEmitter<void>();
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
 
   public isOpened = false;
 
-  public currentUser$: Observable<UserInterface>;
+  public readonly currentUser$ = this.authService.currentUser$;
 
   public currentBlockchainIcon: string;
 
-  public readonly navigationList: NavigationItem[];
+  public readonly navigationList = NAVIGATION_LIST;
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
@@ -71,13 +63,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly commonModalService: CommonModalService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    this.currentUser$ = this.authService.currentUser$;
-    this.navigationList = NAVIGATION_LIST;
-    this.bridgeClick = new EventEmitter<void>();
-    this.swapClick = new EventEmitter<void>();
-    this.crossChainClick = new EventEmitter<void>();
-  }
+  ) {}
 
   public ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$
@@ -96,29 +82,17 @@ export class RubicMenuComponent implements AfterViewInit {
     this.isOpened = false;
   }
 
-  // TODO refactor: define type for links
-  public menuClickHandler(
-    linkType: 'swaps' | 'bridge' | 'cross-chain' | 'staking' | 'promotion'
-  ): void {
+  public menuClickHandler(): void {
     this.handleButtonClick();
     this.closeMenu();
-    switch (linkType) {
-      case 'swaps':
-        this.swapClick.emit();
-        break;
-      case 'bridge':
-        this.bridgeClick.emit();
-        break;
-      case 'cross-chain':
-        this.crossChainClick.emit();
-    }
+    this.swapClick.emit();
   }
 
   public logout(): void {
     this.authService.disconnectWallet();
   }
 
-  isLinkActive(url: string): boolean {
+  public isLinkActive(url: string): boolean {
     return this.window.location.pathname === url;
   }
 

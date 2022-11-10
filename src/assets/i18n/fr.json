@@ -94,7 +94,7 @@
     "buttonLink": "En savoir plus",
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
-    "notWhitelistedProvider": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
+    "crossChainSwapUnavailable": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
     "noSelectedToken": "Sélectionnez le token",
     "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
@@ -452,7 +452,7 @@
     "discountRBC": "discount en RBC",
     "blockchainsHint": "Plus de blockchains",
     "tradingNotAvailable": "Échanges non disponibles",
-    "rateIsUpdated": "Le prix est à jour, cliquez pour rafraîchir le prix"
+    "rateIsUpdated": "Le prix est à jour"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",

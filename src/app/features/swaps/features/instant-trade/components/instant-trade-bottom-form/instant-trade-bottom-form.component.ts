@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -24,7 +24,7 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
@@ -33,7 +33,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
@@ -46,27 +46,27 @@ import {
   tap
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { REFRESH_BUTTON_STATUS } from '@shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
-import { SwapInfoService } from '@features/swaps/features/main-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -86,16 +86,11 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
-  @Input() onRefreshTrade: Subject<void>;
-
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() favoriteTokens: AvailableTokenAmount[];
-
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
@@ -218,6 +213,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: TuiDialogService,
+    private readonly refreshService: RefreshService,
     @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
@@ -284,9 +280,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.onRefreshTrade
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.conditionalCalculate('normal'));
+    this.refreshService.onRefresh$.pipe(takeUntil(this.destroy$)).subscribe(({ isForced }) => {
+      this.conditionalCalculate(
+        isForced || this.settingsService.instantTradeValue.autoRefresh ? 'normal' : 'hidden'
+      );
+    });
   }
 
   /**
@@ -329,7 +327,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (
+      fromBlockchain !== toBlockchain ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
@@ -359,7 +359,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
           }
 
           this.setProvidersStateCalculating();
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshService.setRefreshing();
 
           const disableInstantTrade =
             this.queryParamsService.disabledProviders && this.queryParamsService.enabledBlockchains;
@@ -384,7 +384,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+        this.refreshService.setStopped();
         this.cdr.markForCheck();
       });
   }
@@ -565,7 +565,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+          this.refreshService.setRefreshing();
 
           const instantTrades$ = this.instantTradeService.calculateTrades(
             this.fromToken,
@@ -578,7 +578,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
             tap(hiddenTrades => {
               this.hiddenProvidersTrades = hiddenTrades;
               this.checkSelectedProviderHiddenData();
-              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
+              this.refreshService.setStopped();
             }),
             watch(this.cdr)
           );
@@ -698,7 +699,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     this.setProviderState(this.selectedProvider.name, TRADE_STATUS.APPROVE_IN_PROGRESS);
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshService.startInProgress();
     const provider = this.selectedProvider;
     try {
       await this.instantTradeService.approve(provider.trade);
@@ -726,7 +727,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
     this.cdr.detectChanges();
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+    this.refreshService.stopInProgress();
   }
 
   public async createTrade(): Promise<void> {
@@ -763,7 +764,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       INSTANT_TRADE_STATUS.TX_IN_PROGRESS
     );
 
-    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
+    this.refreshService.startInProgress();
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
@@ -799,7 +800,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
       this.cdr.detectChanges();
 
-      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+      this.refreshService.stopInProgress();
     }
   }
 
