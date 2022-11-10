@@ -17,49 +17,49 @@
             celer-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.CELER"
           ></tr>
           <tr
             symbiosis-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
           ></tr>
           <tr
             li-fi-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.LIFI"
           ></tr>
           <tr
             de-bridge-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
           ></tr>
           <tr
             via-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.VIA"
           ></tr>
           <tr
             rango-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.RANGO"
           ></tr>
           <tr
             bridgers-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.BRIDGERS"
           ></tr>
           <tr
             multichain-trade
             [trade]="trade"
             mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
+            *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
           ></tr>
         </ng-container>
       </tbody>
@@ -73,49 +73,49 @@
           celer-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.CELER"
         ></div>
         <div
           symbiosis-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
         ></div>
         <div
           li-fi-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.LIFI"
         ></div>
         <div
           de-bridge-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
         ></div>
         <div
           via-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.VIA"
         ></div>
         <div
           rango-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.RANGO"
         ></div>
         <div
           bridgers-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.BRIDGERS"
         ></div>
         <div
           multichain-trade
           [trade]="trade"
           mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
+          *ngIf="trade.crossChainTradeType === CROSS_CHAIN_PROVIDER.MULTICHAIN"
         ></div>
       </ng-container>
     </div>
