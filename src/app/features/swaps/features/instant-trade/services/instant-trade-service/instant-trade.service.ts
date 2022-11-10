@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { firstValueFrom, interval, Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
@@ -27,7 +27,7 @@ import {
   BlockchainsInfo
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import {
   IT_PROXY_FEE_CONTRACT_ABI,
@@ -40,17 +40,17 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { TargetNetworkAddressService } from '@features/swaps/shared/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';
-import { TransactionFailed } from '@core/errors/models/common/transaction-failed';
+import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Injectable()
-export class InstantTradeService extends TradeService {
+export class InstantTradeService extends TradeCalculationService {
   private static readonly unsupportedItNetworks: BlockchainName[] = [];
 
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -269,7 +269,7 @@ export class InstantTradeService extends TradeService {
         if (txStatusData.status === TxStatus.SUCCESS) {
           this.showSuccessTrxNotification();
         } else {
-          throw new TransactionFailed(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
         }
       } else {
         subscription$.unsubscribe();

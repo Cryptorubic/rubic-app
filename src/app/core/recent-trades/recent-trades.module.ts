@@ -13,6 +13,7 @@ import { ViaTradeComponent } from '@core/recent-trades/components/via-trade/via-
 import { RangoTradeComponent } from './components/rango-trade/rango-trade.component';
 import { BridgersTradeComponent } from '@core/recent-trades/components/bridgers-trade/bridgers-trade.component';
 import { MultichainTradeComponent } from '@core/recent-trades/components/multichain-trade/multichain-trade.component';
+import { DeBridgeTradeComponent } from '@core/recent-trades/components/de-bridge-trade/de-bridge-trade.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { MultichainTradeComponent } from '@core/recent-trades/components/multich
     SymbiosisTradeComponent,
     RubicTradeComponent,
     LiFiTradeComponent,
-    MultichainTradeComponent,
+    DeBridgeTradeComponent,
     ViaTradeComponent,
     RangoTradeComponent,
     BridgersTradeComponent,

@@ -44,6 +44,8 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
 
   @Output() onClick = new EventEmitter<Event>();
 
+  @Output() onHoveredChange = new EventEmitter<boolean>();
+
   public _border: boolean;
 
   public _fullWidth: boolean;

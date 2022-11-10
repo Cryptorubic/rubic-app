@@ -46,7 +46,7 @@ export class SymbiosisTradeComponent extends CommonTrade {
 
     const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
       this.trade.srcTxHash,
-      this.trade.fromBlockchain
+      this.trade.fromToken.blockchain
     );
 
     if (revertTxReceipt.status) {

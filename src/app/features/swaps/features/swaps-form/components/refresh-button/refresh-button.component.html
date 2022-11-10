@@ -1,0 +1,14 @@
+<div class="refresh-button" [tuiHint]="refreshIconTooltip" (click)="toggleClick()">
+  <img
+    class="refresh-button__icon"
+    src="assets/images/icons/reload.svg"
+    width="18"
+    height="18"
+    alt="Toggle auto refresh"
+    #refreshIcon
+  />
+</div>
+
+<ng-template #refreshIconTooltip>
+  <span class="refresh-icon-tooltip">{{ 'common.refreshTrade' | translate }}</span>
+</ng-template>
