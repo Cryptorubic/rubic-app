@@ -6,7 +6,13 @@ import {
   FROM_BACKEND_BLOCKCHAINS
 } from '@app/shared/constants/blockchain/backend-blockchains';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
-import { BlockchainName, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import {
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  LifiBridgeTypes,
+  RangoBridgeTypes
+} from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
 interface CrossChainProviderStatus {
@@ -25,13 +31,13 @@ interface PlatformConfig {
 }
 
 interface DisabledBridgeTypes {
-  [CROSS_CHAIN_TRADE_TYPE.RANGO]: string[];
-  [CROSS_CHAIN_TRADE_TYPE.LIFI]: string[];
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
+  [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
 }
 
 interface ProvidersConfiguration {
   disabledBridgeTypes: DisabledBridgeTypes;
-  disabledCrossChainProviders: string[];
+  disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
 @Injectable({
@@ -40,12 +46,10 @@ interface ProvidersConfiguration {
 export class PlatformConfigurationService {
   private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
     disabledBridgeTypes: undefined,
-    disabledCrossChainProviders: undefined
+    disabledCrossChainTradeTypes: undefined
   });
 
-  public get disabledProviders$(): Observable<ProvidersConfiguration> {
-    return this._disabledProviders$.asObservable();
-  }
+  public readonly disabledProviders$ = this._disabledProviders$.asObservable();
 
   public get disabledProviders(): ProvidersConfiguration {
     return this._disabledProviders$.getValue();
@@ -53,9 +57,7 @@ export class PlatformConfigurationService {
 
   private readonly _availableBlockchains$ = new BehaviorSubject<BlockchainName[]>(undefined);
 
-  public get availableBlockchains$(): Observable<BlockchainName[]> {
-    return this._availableBlockchains$.asObservable();
-  }
+  public readonly availableBlockchains$ = this._availableBlockchains$.asObservable();
 
   public get availableBlockchains(): BlockchainName[] {
     return this._availableBlockchains$.getValue();
@@ -94,7 +96,7 @@ export class PlatformConfigurationService {
     const crossChainProvidersEntries = Object.entries(crossChainProviders);
 
     if (!crossChainProvidersEntries.length) {
-      return { disabledBridgeTypes: undefined, disabledCrossChainProviders: undefined };
+      return { disabledBridgeTypes: undefined, disabledCrossChainTradeTypes: undefined };
     }
 
     const disabledCrossChainProviders = crossChainProvidersEntries
@@ -106,16 +108,16 @@ export class PlatformConfigurationService {
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
-          acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = disabledProviders;
+          acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = disabledProviders as RangoBridgeTypes[];
         }
 
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-          acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders;
+          acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiBridgeTypes[];
         }
 
         return acc;
       }, {} as DisabledBridgeTypes);
 
-    return { disabledBridgeTypes, disabledCrossChainProviders };
+    return { disabledBridgeTypes, disabledCrossChainTradeTypes: disabledCrossChainProviders };
   }
 }
