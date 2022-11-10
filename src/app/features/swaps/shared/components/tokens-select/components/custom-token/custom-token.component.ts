@@ -17,6 +17,7 @@ import { Web3PublicSupportedBlockchain, Web3Pure } from 'rubic-sdk';
 import { Injector as RubicInjector } from 'rubic-sdk';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-custom-token',
@@ -59,25 +60,27 @@ export class CustomTokenComponent {
         label: this.translateService.instant('modals.confirmImportModal.title'),
         size: 's'
       })
-      .subscribe(async confirm => {
-        if (confirm) {
-          if (this.walletConnectorService.address) {
-            const tokenBalance = await RubicInjector.web3PublicService
-              .getWeb3Public(this.token.blockchain as Web3PublicSupportedBlockchain)
-              .getTokenBalance(this.walletConnectorService.address, this.token.address);
-            this.tokenSelected.emit({
-              ...this.token,
-              amount: Web3Pure.fromWei(tokenBalance, this.token.decimals)
-            });
-          } else {
-            this.tokenSelected.emit(this.token);
+      .pipe(
+        switchMap(async confirm => {
+          if (confirm) {
+            if (this.walletConnectorService.address) {
+              const tokenBalance = await RubicInjector.web3PublicService
+                .getWeb3Public(this.token.blockchain as Web3PublicSupportedBlockchain)
+                .getTokenBalance(this.walletConnectorService.address, this.token.address);
+              return {
+                ...this.token,
+                amount: Web3Pure.fromWei(tokenBalance, this.token.decimals)
+              };
+            }
+
+            return this.token;
           }
+        })
+      )
+      .subscribe(token => {
+        if (token) {
+          this.tokenSelected.emit(token);
         }
       });
-  }
-
-  public toggleFavorite(): void {
-    this.token.favorite = !this.token.favorite;
-    this.cdr.markForCheck();
   }
 }

@@ -73,6 +73,7 @@ export class TokensListElementComponent {
     const request$ = this.token.favorite
       ? this.tokensService.removeFavoriteToken(this.token)
       : this.tokensService.addFavoriteToken(this.token);
+    this.token.favorite = !this.token.favorite;
 
     request$.subscribe({
       error: () => {
