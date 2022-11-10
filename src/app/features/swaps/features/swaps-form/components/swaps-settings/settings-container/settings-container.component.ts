@@ -25,7 +25,9 @@ export class SettingsContainerComponent implements OnInit {
   constructor(
     private readonly swapService: SwapsService,
     private readonly swapFormService: SwapFormService
-  ) {}
+  ) {
+    this.open = false;
+  }
 
   ngOnInit(): void {
     this.settingsComponent = this.getSettingsComponent();

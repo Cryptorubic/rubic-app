@@ -61,13 +61,17 @@ export class CustomTokenComponent {
       })
       .subscribe(async confirm => {
         if (confirm) {
-          const tokenBalance = await RubicInjector.web3PublicService
-            .getWeb3Public(this.token.blockchain as Web3PublicSupportedBlockchain)
-            .getTokenBalance(this.walletConnectorService.address, this.token.address);
-          this.tokenSelected.emit({
-            ...this.token,
-            amount: Web3Pure.fromWei(tokenBalance, this.token.decimals)
-          });
+          if (this.walletConnectorService.address) {
+            const tokenBalance = await RubicInjector.web3PublicService
+              .getWeb3Public(this.token.blockchain as Web3PublicSupportedBlockchain)
+              .getTokenBalance(this.walletConnectorService.address, this.token.address);
+            this.tokenSelected.emit({
+              ...this.token,
+              amount: Web3Pure.fromWei(tokenBalance, this.token.decimals)
+            });
+          } else {
+            this.tokenSelected.emit(this.token);
+          }
         }
       });
   }
