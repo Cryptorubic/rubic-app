@@ -74,6 +74,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://mainnet-rpc.brisescan.com',
     'https://chainrpc.com'
   ],
-  [BLOCKCHAIN_NAME.OASIS]: ['https://evm.kava.io'],
-  [BLOCKCHAIN_NAME.METIS]: ['https://emerald.oasis.dev']
+  [BLOCKCHAIN_NAME.OASIS]: ['https://emerald.oasis.dev'],
+  [BLOCKCHAIN_NAME.METIS]: ['https://andromeda.metis.io/?owner=1088']
 };
