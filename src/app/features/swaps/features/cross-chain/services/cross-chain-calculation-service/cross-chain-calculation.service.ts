@@ -241,8 +241,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
-        fromToken: calculatedTrade.trade.from,
-        toToken: calculatedTrade.trade.to,
+        fromToken: this.swapFormService.inputValue.fromToken,
+        toToken: this.swapFormService.inputValue.toToken,
         crossChainTradeType: calculatedTrade.tradeType,
         timestamp,
         bridgeType: calculatedTrade.trade.bridgeType,
