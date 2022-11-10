@@ -472,6 +472,36 @@ const networks: ReadonlyArray<Network> = [
       symbol: 'BRISE',
       decimals: 18
     }
+  },
+  {
+    id: 42262,
+    name: BLOCKCHAIN_NAME.OASIS,
+    label: 'Oasis',
+    scannerUrl: 'https://www.oasisscan.com/',
+    rpcList: ['https://emerald.oasis.dev'],
+    imagePath: 'assets/images/icons/coins/oasis.png',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.OASIS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ROSE',
+      symbol: 'ROSE',
+      decimals: 18
+    }
+  },
+  {
+    id: 1088,
+    name: BLOCKCHAIN_NAME.METIS,
+    label: 'Metis',
+    scannerUrl: 'https://andromeda-explorer.metis.io/',
+    rpcList: ['https://andromeda.metis.io/?owner=1088'],
+    imagePath: 'assets/images/icons/coins/metis.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.METIS,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'METIS',
+      symbol: 'METIS',
+      decimals: 18
+    }
   }
 ];
 
