@@ -20,7 +20,9 @@
           {{
             toAmount
               | bigNumberFormat
-              | withRound: 'toClosestValue':{ decimals: formData.toToken?.decimals }
+              | withRound
+                : 'toClosestValue'
+                : { minRound: 3, maxRound: 5, decimals: formData.toToken?.decimals }
           }}
           <app-tokens-rate *noFrame></app-tokens-rate>
         </ng-container>

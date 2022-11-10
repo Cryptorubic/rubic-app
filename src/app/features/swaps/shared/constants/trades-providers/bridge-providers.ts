@@ -133,7 +133,8 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
 
   [BRIDGE_TYPE.VIA]: {
     name: 'Via',
-    image: ``
+    image: `${imageBasePath}via.ico`,
+    color: '#008141'
   },
 
   [BRIDGE_TYPE.WORMHOLE]: {
