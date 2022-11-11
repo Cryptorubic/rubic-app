@@ -212,6 +212,12 @@ export class SettingsService {
       swapProviderType === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
         ? this.crossChainRoutingValue.slippageTolerance
         : this.instantTradeValue.slippageTolerance;
+
+    if (!trade.from.price.toNumber() || !trade.to.price.toNumber()) {
+      await trade.from.getAndUpdateTokenPrice();
+      await trade.to.getAndUpdateTokenPrice();
+    }
+
     const priceImpact = PriceImpactService.calculatePriceImpact(
       trade.from.price.toNumber(),
       trade.to.price.toNumber(),
