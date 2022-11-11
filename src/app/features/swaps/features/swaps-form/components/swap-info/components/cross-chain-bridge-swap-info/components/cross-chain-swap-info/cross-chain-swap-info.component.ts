@@ -143,7 +143,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
                   )
               );
 
-              this.nativeCoinSymbol = nativeToken.symbol;
+              this.nativeCoinSymbol = nativeToken?.symbol;
 
               const trade = this.crossChainFormService.selectedTrade.trade;
 
