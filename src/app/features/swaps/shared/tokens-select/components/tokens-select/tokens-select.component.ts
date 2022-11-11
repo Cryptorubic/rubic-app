@@ -203,6 +203,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     this.listType = 'default';
     this.tokensListUpdating = false;
     this.initiateContextParams(context.data);
+    this.checkAndRefetchTokenList();
   }
 
   ngOnInit(): void {
@@ -297,6 +298,13 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   public onBlockchainChange(): void {
     this.searchQuery = '';
+    this.checkAndRefetchTokenList();
+  }
+
+  private checkAndRefetchTokenList(): void {
+    if (this.tokensService.needRefetchTokens) {
+      this.tokensService.tokensRequestParameters = undefined;
+    }
   }
 
   /**

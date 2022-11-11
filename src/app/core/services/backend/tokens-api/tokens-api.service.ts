@@ -34,6 +34,8 @@ import { defaultTokens } from './models/default-tokens';
   providedIn: 'root'
 })
 export class TokensApiService {
+  public needRefetchTokens: boolean;
+
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
@@ -175,30 +177,29 @@ export class TokensApiService {
     const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
 
     const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
-      this.httpService
-        .get<TokensBackendResponse>(ENDPOINTS.TOKENS + '1', { ...options, network })
-        .pipe(
-          tap(networkTokens => {
-            const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
-            if (networkTokens?.results) {
-              tokensNetworkState$.next({
-                ...tokensNetworkState$.value,
-                [blockchain]: {
-                  ...tokensNetworkState$.value[blockchain],
-                  page: options.page,
-                  maxPage: Math.ceil(networkTokens.count / options.pageSize)
-                }
-              });
-            }
-          }),
-          catchError(() => {
-            return of(null);
-          })
-        )
+      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }).pipe(
+        tap(networkTokens => {
+          const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
+          if (networkTokens?.results) {
+            tokensNetworkState$.next({
+              ...tokensNetworkState$.value,
+              [blockchain]: {
+                ...tokensNetworkState$.value[blockchain],
+                page: options.page,
+                maxPage: Math.ceil(networkTokens.count / options.pageSize)
+              }
+            });
+          }
+        }),
+        catchError(() => {
+          return of(null);
+        })
+      )
     );
     const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
         if (results.every(el => el === null)) {
+          this.needRefetchTokens = true;
           return List(
             blockchainsToFetch
               .map(blockchain => defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]])
@@ -207,6 +208,7 @@ export class TokensApiService {
           );
         }
 
+        this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
         return TokensApiService.prepareTokens(backendTokens);
       })
