@@ -102,7 +102,8 @@ module.exports = {
             checkDestroy: false
           }
         ],
-        'rxjs/no-implicit-any-catch': 'off'
+        'rxjs/no-implicit-any-catch': 'off',
+        'rxjs/no-ignored-takewhile-value': 'off'
       }
     },
     {
