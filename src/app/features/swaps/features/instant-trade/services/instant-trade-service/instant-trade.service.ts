@@ -51,7 +51,11 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
-  private static readonly unsupportedItNetworks: BlockchainName[] = [];
+  private static readonly unsupportedItNetworks: BlockchainName[] = [
+    BLOCKCHAIN_NAME.BITGERT,
+    BLOCKCHAIN_NAME.OASIS,
+    BLOCKCHAIN_NAME.METIS
+  ];
 
   public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
