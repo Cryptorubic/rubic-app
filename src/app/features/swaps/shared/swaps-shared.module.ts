@@ -9,10 +9,21 @@ import { TargetNetworkAddressComponent } from '@features/swaps/shared/components
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SettingsWarningModalComponent } from './settings-warning-modal/settings-warning-modal.component';
 
 @NgModule({
-  declarations: [ToAmountEstimatedComponent, TokensRateComponent, TargetNetworkAddressComponent],
-  exports: [ToAmountEstimatedComponent, TokensRateComponent, TargetNetworkAddressComponent],
+  declarations: [
+    ToAmountEstimatedComponent,
+    TokensRateComponent,
+    TargetNetworkAddressComponent,
+    SettingsWarningModalComponent
+  ],
+  exports: [
+    ToAmountEstimatedComponent,
+    TokensRateComponent,
+    TargetNetworkAddressComponent,
+    SettingsWarningModalComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

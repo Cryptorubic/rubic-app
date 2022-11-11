@@ -735,6 +735,15 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return;
     }
 
+    if (
+      !(await this.settingsService.checkSlippageAndPriceImpact(
+        SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        this.selectedProvider.trade
+      ))
+    ) {
+      return;
+    }
+
     let providerName: OnChainTradeType;
     let providerTrade: OnChainTrade | WrapTrade;
     if (!this.ethWethTrade) {
