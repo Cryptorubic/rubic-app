@@ -24,7 +24,8 @@ import {
   EvmBlockchainName,
   Token as SdkToken,
   BlockchainsInfo,
-  Web3PublicService
+  Web3PublicService,
+  Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
@@ -627,9 +628,19 @@ export class TokensService {
    */
   public addFavoriteToken(favoriteToken: TokenAmount): Observable<unknown> {
     return this.tokensApiService.addFavoriteToken(favoriteToken).pipe(
-      tap(() => {
+      switchMap(() => {
+        return from(
+          Injector.web3PublicService
+            .getWeb3Public(favoriteToken.blockchain as Web3PublicSupportedBlockchain)
+            .getTokenBalance(this.walletConnectorService.address, favoriteToken.address)
+        );
+      }),
+      tap((favoriteTokenBalance: BigNumber) => {
+        const tokenBalance = Web3Pure.fromWei(favoriteTokenBalance, favoriteToken.decimals);
         if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
-          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+          this._favoriteTokens$.next(
+            this._favoriteTokens$.value.push({ ...favoriteToken, amount: tokenBalance })
+          );
         }
       })
     );

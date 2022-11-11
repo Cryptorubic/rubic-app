@@ -42,7 +42,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "刷新交易"
+    "refreshTrade": "刷新交易",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -492,7 +493,11 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "autoSlippage": "不幸的是，此掉期不允許自定義滑點。 請在設置中開啟 Auto Slippage 容差設置。"
+      "autoSlippage": "不幸的是，此掉期不允許自定義滑點。 請在設置中開啟 Auto Slippage 容差設置。",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {

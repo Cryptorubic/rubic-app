@@ -49,16 +49,8 @@ export class SwapButtonService {
 
   public readonly disabled$ = combineLatest([
     this.swapButtonContainerService.tradeStatus$,
-    this._priceImpact$,
     this.loading$
-  ]).pipe(
-    map(
-      ([tradeStatus, priceImpact, loading]) =>
-        tradeStatus !== TRADE_STATUS.READY_TO_SWAP ||
-        priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED ||
-        loading
-    )
-  );
+  ]).pipe(map(([tradeStatus, loading]) => tradeStatus !== TRADE_STATUS.READY_TO_SWAP || loading));
 
   /**
    * Returns true, if warning is medium.
