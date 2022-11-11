@@ -42,7 +42,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "거래 새로고침"
+    "refreshTrade": "거래 새로고침",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -492,7 +493,11 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "autoSlippage": "유감스럽게도 이 스왑에는 사용자 지정 미끄러짐이 허용되지 않습니다. 설정에서 자동 미끄러짐 허용 오차 설정을 켜십시오."
+      "autoSlippage": "유감스럽게도 이 스왑에는 사용자 지정 미끄러짐이 허용되지 않습니다. 설정에서 자동 미끄러짐 허용 오차 설정을 켜십시오.",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {

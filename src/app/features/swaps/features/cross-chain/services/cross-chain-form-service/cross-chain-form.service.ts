@@ -819,6 +819,15 @@ export class CrossChainFormService {
       return;
     }
 
+    if (
+      !(await this.settingsService.checkSlippageAndPriceImpact(
+        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+        this.selectedTrade.trade
+      ))
+    ) {
+      return;
+    }
+
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.refreshService.startInProgress();
 
