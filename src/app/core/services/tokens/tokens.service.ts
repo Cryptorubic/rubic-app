@@ -118,7 +118,10 @@ export class TokensService {
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
       .pipe(
-        switchMap(params => this.tokensApiService.getTokensList(params, this._tokensNetworkState$)),
+        switchMap(params => {
+          console.log(params);
+          return this.tokensApiService.getTokensList(params, this._tokensNetworkState$);
+        }),
         switchMap(tokens => {
           const newTokens = this.setDefaultTokensParams(tokens, false);
           return this.calculateTokensBalancesByType('default', newTokens);

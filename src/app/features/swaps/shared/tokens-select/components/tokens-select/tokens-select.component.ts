@@ -309,6 +309,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
     if (!this.form.value[tokenType]) {
       const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+      debugger;
       this.form.patchValue({
         [blockchainType]: this._blockchain
       });
