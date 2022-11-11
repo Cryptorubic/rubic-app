@@ -218,7 +218,6 @@ export class TokensApiService {
 
     return forkJoin([backendTokens$, staticTokens$]).pipe(
       map(([backendTokens, staticTokens]) => {
-        console.log(backendTokens);
         return backendTokens.concat(staticTokens);
       })
     );
