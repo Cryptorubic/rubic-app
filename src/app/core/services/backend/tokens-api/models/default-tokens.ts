@@ -7,7 +7,7 @@ import {
 } from 'rubic-sdk';
 
 const defaultTokenParams = {
-  rank: 1,
+  rank: 0.001,
   price: 0,
   image: ''
 };
