@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName, EvmBlockchainName, Injector, Token, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  EvmBlockchainName,
+  EvmWeb3Pure,
+  Injector,
+  Token,
+  Web3Pure
+} from 'rubic-sdk';
 import wethContractAbi from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-abi';
 import {
   SupportedEthWethSwapBlockchain,
@@ -13,7 +20,6 @@ import { compareAddresses } from '@shared/utils/utils';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
-import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-pure/evm-web3-pure';
 
 @Injectable({
   providedIn: 'root'
