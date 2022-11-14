@@ -219,7 +219,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.OASIS]: {
-    baseUrl: 'https://www.oasisscan.com/',
+    baseUrl: 'https://explorer.emerald.oasis.dev/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
