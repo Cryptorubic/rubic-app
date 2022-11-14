@@ -17,7 +17,8 @@ import {
   TronBridgersCrossChainTrade,
   EvmBridgersCrossChainTrade,
   CelerCrossChainTrade,
-  FeeInfo
+  FeeInfo,
+  nativeTokensList
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
@@ -57,6 +58,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public isBridgers: boolean;
 
   public feeInfo: FeeInfo;
+
+  public nativeCoinDecimals: number;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -158,6 +161,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.cryptoFeeInUsd = new BigNumber(tradeInfo.feeInfo.cryptoFee?.amount || 0).multipliedBy(
       nativeCoinPrice
     );
+    this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
 
     if ('total' in tradeInfo.slippage) {
       this.slippage = tradeInfo.slippage.total;
