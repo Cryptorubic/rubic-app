@@ -106,6 +106,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
     const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
+    // eslint-disable-next-line unused-imports/no-unused-vars
     const disabledProviders = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
@@ -119,7 +120,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders,
+      disabledProviders: [
+        'bridgers',
+        'cbridge',
+        'debridge',
+        'lifi',
+        'multichain',
+        'rango',
+        'via',
+        'symbiosis'
+      ],
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress })

@@ -1433,6 +1433,18 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@chainge/sdk@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@chainge/sdk/-/sdk-0.1.2.tgz#e14661e9416972c595e8b4739bb62f1de07d89d5"
+  integrity sha512-UFsoGFiEKuUEhnLEfCqKyimc0wr/tg5GdxiFzvNzck1wJk3bpt3nPVbq7Apzgv7QjeW+zMIPfdyhclC9qCDL7w==
+  dependencies:
+    "@ethereumjs/tx" "^4.0.0"
+    "@ethereumjs/util" "^8.0.0"
+    axios "^0.27.2"
+    bignumber.js "^9.1.0"
+    buffer "^6.0.3"
+    ethers "^5.7.0"
+
 "@colors/colors@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
@@ -1664,6 +1676,19 @@
     crc-32 "^1.2.0"
     ethereumjs-util "^7.1.5"
 
+"@ethereumjs/common@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/common/-/common-3.0.1.tgz#c2dbd444d96e4014c7f7befd0529b5c1a02f590b"
+  integrity sha512-AHsJB7ydfb7TFCT7ORGY0tRiKkAylWZd/Qt6Lmc3Oycs66bMeE1JuYHbc0U6qsAZKZMFsUmL/UJDT/w7Z0cytw==
+  dependencies:
+    "@ethereumjs/util" "^8.0.0"
+    crc-32 "^1.2.0"
+
+"@ethereumjs/rlp@^4.0.0", "@ethereumjs/rlp@^4.0.0-beta.2":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/rlp/-/rlp-4.0.0.tgz#66719891bd727251a7f233f9ca80212d1994f8c8"
+  integrity sha512-LM4jS5n33bJN60fM5EC8VeyhUgga6/DjCPBV2vWjnfVtobqtOiNC4SQ1MRFqyBSmJGGdB533JZWewyvlcdJtkQ==
+
 "@ethereumjs/tx@^3.3.2":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.5.2.tgz#197b9b6299582ad84f9527ca961466fce2296c1c"
@@ -1671,6 +1696,26 @@
   dependencies:
     "@ethereumjs/common" "^2.6.4"
     ethereumjs-util "^7.1.5"
+
+"@ethereumjs/tx@^4.0.0":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-4.0.1.tgz#bb8333e883952b61c40dbc7a3335d99cc5f1c2e4"
+  integrity sha512-JFq66cjjwnWOdKuDNNq0Hr1j04A546ymUo/8xnPa7wAm3s+RyGVt8VbaNF71/GJqN4tuY62gxvTfZ+B62foyPw==
+  dependencies:
+    "@ethereumjs/common" "^3.0.1"
+    "@ethereumjs/rlp" "^4.0.0"
+    "@ethereumjs/util" "^8.0.0"
+    ethereum-cryptography "^1.1.2"
+    ethers "^5.7.1"
+
+"@ethereumjs/util@^8.0.0":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/util/-/util-8.0.2.tgz#b7348fc7253649b0f00685a94546c6eee1fad819"
+  integrity sha512-b1Fcxmq+ckCdoLPhVIBkTcH8szigMapPuEmD8EDakvtI5Na5rzmX1sBW73YQqaPc7iUxGCAzZP1LrFQ7aEMugA==
+  dependencies:
+    "@ethereumjs/rlp" "^4.0.0-beta.2"
+    async "^3.2.4"
+    ethereum-cryptography "^1.1.2"
 
 "@ethersproject/abi@5.6.4":
   version "5.6.4"
@@ -2619,10 +2664,15 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
   integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
 
-"@noble/hashes@^1.1.2":
+"@noble/hashes@^1.1.2", "@noble/hashes@~1.1.1":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.3.tgz#360afc77610e0a61f3417e497dcf36862e4f8111"
   integrity sha512-CE0FCR57H2acVI5UOzIGSSIYxZ6v/HOhDR0Ro9VLyhnzLwx0o8W1mmgaqlEUx4049qJDlIBRztv5k+MM8vbO3A==
+
+"@noble/secp256k1@1.6.3", "@noble/secp256k1@~1.6.0":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.6.3.tgz#7eed12d9f4404b416999d0c87686836c4c5c9b94"
+  integrity sha512-T04e4iTurVy7I8Sw4+c5OSN9/RkPlo1uKxAomtxQNLq8j1uPAqnsqG1bqvY3Jv7c13gyr6dui0zmh/I3+f/JaQ==
 
 "@noble/secp256k1@^1.6.3":
   version "1.7.0"
@@ -2848,6 +2898,28 @@
     "@angular-devkit/core" "14.2.5"
     "@angular-devkit/schematics" "14.2.5"
     jsonc-parser "3.1.0"
+
+"@scure/base@~1.1.0":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
+  integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
+
+"@scure/bip32@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.1.0.tgz#dea45875e7fbc720c2b4560325f1cf5d2246d95b"
+  integrity sha512-ftTW3kKX54YXLCxH6BB7oEEoJfoE2pIgw7MINKAs5PsS6nqKPuKk1haTF/EuHmYqG330t5GSrdmtRuHaY1a62Q==
+  dependencies:
+    "@noble/hashes" "~1.1.1"
+    "@noble/secp256k1" "~1.6.0"
+    "@scure/base" "~1.1.0"
+
+"@scure/bip39@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.1.0.tgz#92f11d095bae025f166bef3defcc5bf4945d419a"
+  integrity sha512-pwrPOS16VeTKg98dYXQyIjJEcWfz7/1YJIwxUEPFfQPtc86Ym/1sVgQ2RLoD43AazMk2l/unK4ITySSpW2+82w==
+  dependencies:
+    "@noble/hashes" "~1.1.1"
+    "@scure/base" "~1.1.0"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -3113,6 +3185,11 @@
   version "2.8.12"
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.12.tgz#6b2c510a7ad7039e98e7b8d3d6598f4359e5c080"
   integrity sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==
+
+"@types/crypto-js@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.1.1.tgz#602859584cecc91894eb23a4892f38cfa927890d"
+  integrity sha512-BG7fQKZ689HIoc5h+6D2Dgq1fABRa0RbBWKBd9SP/MVRVXROflpm5fhwyATX5duFmbStzyzyycPB8qUYKDH3NA==
 
 "@types/date-and-time@^0.13.0":
   version "0.13.0"
@@ -4486,7 +4563,7 @@ async@^2.0.1, async@^2.1.2, async@^2.4.0, async@^2.5.0:
   dependencies:
     lodash "^4.17.14"
 
-async@^3.2.3:
+async@^3.2.3, async@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.4.tgz#2d22e00f8cddeb5fde5dd33522b56d1cf569a81c"
   integrity sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==
@@ -4553,7 +4630,7 @@ axios@0.21.1:
   dependencies:
     follow-redirects "^1.10.0"
 
-axios@0.27.2:
+axios@0.27.2, axios@^0.27.2:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
   integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
@@ -6280,7 +6357,7 @@ crypto-js@^3.1.9-1:
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.3.0.tgz#846dd1cce2f68aacfa156c8578f926a609b7976b"
   integrity sha512-DIT51nX0dCfKltpRiXV+/TVZq+Qq2NgF4644+K7Ttnla7zEzqc+kjJyiB96BHNyUTBxyjzRcZYpUdZa+QAqi6Q==
 
-crypto-js@^4.0.0:
+crypto-js@^4.0.0, crypto-js@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
   integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
@@ -7867,6 +7944,16 @@ ethereum-cryptography@^0.1.3:
     secp256k1 "^4.0.1"
     setimmediate "^1.0.5"
 
+ethereum-cryptography@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/ethereum-cryptography/-/ethereum-cryptography-1.1.2.tgz#74f2ac0f0f5fe79f012c889b3b8446a9a6264e6d"
+  integrity sha512-XDSJlg4BD+hq9N2FjvotwUET9Tfxpxc3kWGE2AqUG5vcbeunnbImVk3cj6e/xT3phdW21mE8R5IugU4fspQDcQ==
+  dependencies:
+    "@noble/hashes" "1.1.2"
+    "@noble/secp256k1" "1.6.3"
+    "@scure/bip32" "1.1.0"
+    "@scure/bip39" "1.1.0"
+
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
@@ -8052,7 +8139,7 @@ ethers@^5.4.4, ethers@^5.6.7, ethers@^5.6.8, ethers@^5.6.9:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^5.7.2:
+ethers@^5.7.0, ethers@^5.7.1, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -14750,17 +14837,18 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.4.10:
-  version "3.4.10"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.4.10.tgz#2b3482636b8361565d49934c8e1bd016777ffc89"
-  integrity sha512-h5moItelvL/S1CUVpStK/iqXcC8T4751HgWaesV76yntwT/oXGcEzvsQRDjaYzrrCkpWB4baQ8aaRqHYzepnVw==
+"rubic-sdk@file:../rubic-sdk":
+  version "3.4.50"
   dependencies:
+    "@chainge/sdk" "^0.1.2"
     "@lifi/sdk" "^1.6.3"
+    "@types/crypto-js" "^4.1.1"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
     axios "^0.26.1"
     bignumber.js "9.1.0"
     bitcoin-address-validation "2.2.1"
+    crypto-js "^4.1.1"
     ethers "^5.6.8"
     rango-sdk-basic "^0.0.7"
     rxjs "^7.5.7"

@@ -3,8 +3,12 @@ import { HttpClient } from '@angular/common/http';
 export class SdkHttpClient {
   constructor(private readonly httpClient: HttpClient) {}
 
-  public post<ResponseBody>(url: string, body: Object): Promise<ResponseBody> {
-    return this.httpClient.post<ResponseBody>(url, body).toPromise();
+  public post<ResponseBody>(
+    url: string,
+    body: Object,
+    headers?: Record<string, string | string[]>
+  ): Promise<ResponseBody> {
+    return this.httpClient.post<ResponseBody>(url, body, { headers }).toPromise();
   }
 
   public get<ResponseBody>(

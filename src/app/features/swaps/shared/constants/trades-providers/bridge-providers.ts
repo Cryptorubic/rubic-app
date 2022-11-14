@@ -98,6 +98,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}rango.svg`,
     color: '#128535'
   },
+  [BRIDGE_TYPE.CHAINGE]: {
+    name: 'Chainge',
+    image: `${imageBasePath}rango.svg`,
+    color: '#128535'
+  },
   [BRIDGE_TYPE.REFUEL]: {
     name: 'Refuel',
     image: `${imageBasePath}refuel.png`,
