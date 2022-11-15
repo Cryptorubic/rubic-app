@@ -163,10 +163,12 @@ export class CrossChainSwapInfoComponent implements OnInit {
     );
     this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
 
-    if ('total' in tradeInfo.slippage) {
-      this.slippage = tradeInfo.slippage.total;
-    } else if (tradeInfo.slippage) {
-      this.slippage = tradeInfo.slippage?.from + tradeInfo.slippage?.to;
+    if (tradeInfo.slippage) {
+      if ('total' in tradeInfo.slippage) {
+        this.slippage = tradeInfo.slippage.total;
+      } else {
+        this.slippage = tradeInfo.slippage?.from + tradeInfo.slippage?.to;
+      }
     } else {
       this.slippage = 0;
     }
