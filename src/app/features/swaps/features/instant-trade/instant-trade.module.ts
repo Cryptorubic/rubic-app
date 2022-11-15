@@ -7,6 +7,8 @@ import { ProvidersPanelsContainerComponent } from 'src/app/features/swaps/featur
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { TuiHintModule } from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,13 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
   ],
   providers: [InstantTradeService],
   exports: [InstantTradeBottomFormComponent],
-  imports: [CommonModule, SharedModule, SwapButtonContainerModule, SwapsSharedModule]
+  imports: [
+    CommonModule,
+    SharedModule,
+    SwapButtonContainerModule,
+    SwapsSharedModule,
+    InlineSVGModule,
+    TuiHintModule
+  ]
 })
 export class InstantTradeModule {}
