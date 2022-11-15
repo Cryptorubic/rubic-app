@@ -25,10 +25,7 @@ import {
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
-import {
-  INSTANT_TRADE_PROVIDERS,
-  SupportedOnChainNetworks
-} from '@features/swaps/features/instant-trade/constants/providers';
+import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
@@ -70,6 +67,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;

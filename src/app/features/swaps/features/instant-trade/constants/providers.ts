@@ -1,8 +1,9 @@
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
+import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,
@@ -18,10 +19,6 @@ function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTrade
     label: instantTradesLabels[provider]
   }));
 }
-
-export type NonOnChainNetworks = 'OASIS' | 'METIS' | 'BITGERT' | 'ASTAR' | 'BITCOIN';
-
-export type SupportedOnChainNetworks = Exclude<BlockchainName, NonOnChainNetworks>;
 
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
   {
