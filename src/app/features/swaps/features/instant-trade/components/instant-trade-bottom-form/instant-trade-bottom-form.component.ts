@@ -133,6 +133,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public isIframe: boolean;
 
+  public errorText: string;
+
   /**
    * True, if user clicked on provider.
    */
@@ -317,6 +319,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.providersData = [];
       this.errorService.catch(new NotSupportedItNetwork());
+      this.errorText = 'Chosen network is not supported for instant trades';
       return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];
