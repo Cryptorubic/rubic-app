@@ -203,8 +203,8 @@ export class TokensApiService {
           return List(
             blockchainsToFetch
               .map(blockchain => defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]])
-              .filter(i => i.length > 0)
-              .flatMap(el => el)
+              .filter(tokens => tokens.length > 0)
+              .flat()
           );
         }
 
