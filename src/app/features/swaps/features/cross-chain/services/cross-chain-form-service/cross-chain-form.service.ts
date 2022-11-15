@@ -759,10 +759,7 @@ export class CrossChainFormService {
         priceImpactFrom: Number.isNaN(priceImpactFrom) ? 0 : priceImpactFrom,
         priceImpactTo: Number.isNaN(priceImpactTo) ? 0 : priceImpactTo,
         fromProvider,
-        toProvider,
-        fromPath: null,
-        toPath: null,
-        usingCelerBridge: trade.type === CROSS_CHAIN_TRADE_TYPE.CELER
+        toProvider
       };
     }
 
