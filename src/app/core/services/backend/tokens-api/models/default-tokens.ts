@@ -8,20 +8,28 @@ import {
 
 const defaultTokenParams = {
   rank: 0.001,
-  price: 0,
-  image: ''
+  price: 0
 };
 
 export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
       name: 'Rubic',
       symbol: 'RBC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/rbc.png',
       ...defaultTokenParams
     },
     {
@@ -30,6 +38,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     },
     {
@@ -38,14 +47,20 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/bnb.png'
+    } as Token,
     {
       ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
-      ...defaultTokenParams
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wbnb.png'
     } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -53,6 +68,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -61,6 +77,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     },
     {
@@ -69,18 +86,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Rubic',
       symbol: 'BRBC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/rbc.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.POLYGON], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.POLYGON], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.POLYGON],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/matic.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.POLYGON],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wmatic.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.POLYGON,
       address: '0xc3cffdaf8f3fdf07da6d5e3a89b8723d5e385ff8',
       name: 'Rubic (PoS)',
       symbol: 'RBC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/rbc.png',
       ...defaultTokenParams
     },
     {
@@ -89,6 +116,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'USD Coin (PoS)',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -97,18 +125,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: '(PoS) Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.AVALANCHE], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.AVALANCHE], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.AVALANCHE],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/avax.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.AVALANCHE],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/avax.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE,
       address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
       name: 'USD Coin',
       symbol: 'USDC.e',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -117,18 +155,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'TetherToken',
       symbol: 'USDt',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/ethw.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -137,30 +185,49 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.FANTOM], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FANTOM], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.FANTOM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/ftm.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FANTOM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wftm.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.FANTOM,
       address: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.OPTIMISM], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.OPTIMISM], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.OPTIMISM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.OPTIMISM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.OPTIMISM,
       address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -169,19 +236,24 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.BITCOIN]: [],
   [BLOCKCHAIN_NAME.TRON]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.TRON], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.TRON], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.TRON],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/trx.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.TRON,
       address: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -190,18 +262,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.MOONRIVER]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.MOONRIVER], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.MOONRIVER], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.MOONRIVER],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/movr.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.MOONRIVER],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wmovr.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,
       address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -210,18 +292,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.HARMONY]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.HARMONY], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.HARMONY], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.HARMONY],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/one.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.HARMONY],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/one.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.HARMONY,
-      address: '0x12f839b098d1446ba9b25c4f6f7ef49cc1846ded',
-      name: 'OneUSDT',
-      symbol: '1USDT',
+      address: '0x985458e523db3d53125813ed68c274899e9dfab4',
+      name: 'USD Coin',
+      symbol: '1USDC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -230,18 +322,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: '1USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.ARBITRUM], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ARBITRUM], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ARBITRUM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ARBITRUM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.ARBITRUM,
       address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       name: 'USD Coin Arb1',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -250,18 +352,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.AURORA]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.AURORA], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.AURORA], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.AURORA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.AURORA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.AURORA,
       address: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802',
       name: 'usd coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -270,18 +382,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'tetherus',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.TELOS]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.TELOS], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.TELOS], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.TELOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/tlos.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.TELOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/tlos.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.TELOS,
       address: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -290,18 +412,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.CRONOS]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.CRONOS], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.CRONOS], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.CRONOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/cro.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.CRONOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wcro.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.CRONOS,
       address: '0xc21223249ca28397b4b6541dffaecc539bff0c59',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -310,30 +442,49 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.GNOSIS]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.GNOSIS], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.GNOSIS], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.GNOSIS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/xdai.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.GNOSIS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wxdai.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.GNOSIS,
       address: '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
-      name: 'USD//C on xDai',
+      name: 'USDC on xDai',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.FUSE]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.FUSE], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FUSE], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.FUSE],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/fuse.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FUSE],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wfuse.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.FUSE,
       address: '0x620fd5fa44be6af63715ef4e65ddfa0387ad13f5',
       name: 'USD Coin on Fuse',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -342,18 +493,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD on Fuse',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.KAVA]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.KAVA], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.KAVA], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.KAVA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/kava.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.KAVA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/kava.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.KAVA,
       address: '0xfa9343c3897324496a05fc75abed6bac29f8a40f',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -362,18 +523,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.MOONBEAM]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.MOONBEAM], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.MOONBEAM], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.MOONBEAM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/glmr.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.MOONBEAM],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/glmr.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.MOONBEAM,
       address: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -382,18 +553,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.CELO]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.CELO], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.CELO], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.CELO],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/celo.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.CELO],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.CELO,
       address: '0xef4229c8c3250c675f21bcefa42f58efbff6002a',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -402,18 +583,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.BOBA]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.BOBA], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BOBA], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.BOBA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BOBA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.BOBA,
       address: '0x66a2a913e447d6b4bf33efbec43aaef87890fbbc',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -422,6 +613,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
@@ -434,6 +626,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -442,18 +635,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.BITGERT]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.BITGERT], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BITGERT], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.BITGERT],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/brise.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BITGERT],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/brise.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.BITGERT,
       address: '0x765277eebeca2e31912c9946eae1021199b39c61',
       name: 'USD Coin',
       symbol: 'USDC',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -462,18 +665,28 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'Tether USD',
       symbol: 'USDT',
       decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.OKE_X_CHAIN], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.OKE_X_CHAIN], ...defaultTokenParams } as Token,
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.OKE_X_CHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/okt.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.OKE_X_CHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/okt.png'
+    } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.OKE_X_CHAIN,
       address: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
       name: 'USDC',
       symbol: 'USDC',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     },
     {
@@ -482,6 +695,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       name: 'USDT',
       symbol: 'USDT',
       decimals: 18,
+      image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams
     }
   ],
