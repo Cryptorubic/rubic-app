@@ -25,7 +25,10 @@ import {
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
-import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
+import {
+  INSTANT_TRADE_PROVIDERS,
+  SupportedOnChainNetworks
+} from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
@@ -299,8 +302,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
 
     if (
-      !InstantTradeService.isSupportedBlockchain(form.fromBlockchain) &&
-      this.fromAmount.isFinite() &&
+      !Object.keys(INSTANT_TRADE_PROVIDERS).includes(form.fromBlockchain) &&
+      this.fromAmount &&
       this.fromAmount.gt(0)
     ) {
       this.errorText = 'Chosen network is not supported for instant trades';
@@ -316,7 +319,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       form.fromBlockchain === form.toBlockchain
     ) {
       this.currentBlockchain = form.fromBlockchain;
-      const isSuccessful = this.initiateProviders(this.currentBlockchain);
+      const isSuccessful = this.initiateProviders(
+        this.currentBlockchain as SupportedOnChainNetworks
+      );
       if (!isSuccessful) {
         return;
       }
@@ -325,8 +330,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BlockchainName): boolean {
-    if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+  private initiateProviders(blockchain: SupportedOnChainNetworks): boolean {
+    if (!Object.keys(INSTANT_TRADE_PROVIDERS).includes(blockchain)) {
       this.providersData = [];
       this.errorService.catch(new NotSupportedItNetwork());
       return false;
@@ -342,6 +347,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (
       fromBlockchain !== toBlockchain ||
+      !Object.keys(INSTANT_TRADE_PROVIDERS).includes(this.currentBlockchain) ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {

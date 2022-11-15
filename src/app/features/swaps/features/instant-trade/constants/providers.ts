@@ -19,7 +19,14 @@ function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTrade
   }));
 }
 
-export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProviderData[]> = {
+export type NonOnChainNetworks = 'OASIS' | 'METIS' | 'BITGERT' | 'ASTAR' | 'BITCOIN';
+
+export type SupportedOnChainNetworks = Exclude<BlockchainName, NonOnChainNetworks>;
+
+export const INSTANT_TRADE_PROVIDERS: Record<
+  Exclude<BlockchainName, NonOnChainNetworks>,
+  InstantTradeProviderData[]
+> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
     ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
     ON_CHAIN_TRADE_TYPE.ONE_INCH,
@@ -124,7 +131,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
     ON_CHAIN_TRADE_TYPE.UBE_SWAP
   ]),
   [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]),
-  [BLOCKCHAIN_NAME.ASTAR]: getDefaultStateByProviders([]),
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: getDefaultStateByProviders([
     ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
     ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
@@ -134,9 +140,5 @@ export const INSTANT_TRADE_PROVIDERS: Record<BlockchainName, InstantTradeProvide
     ON_CHAIN_TRADE_TYPE.JUPITER_SWAP,
     ON_CHAIN_TRADE_TYPE.PHOTON_SWAP
   ]),
-  [BLOCKCHAIN_NAME.BITCOIN]: getDefaultStateByProviders([]),
-  [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS]),
-  [BLOCKCHAIN_NAME.BITGERT]: getDefaultStateByProviders([]),
-  [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([]),
-  [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([])
+  [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS])
 };
