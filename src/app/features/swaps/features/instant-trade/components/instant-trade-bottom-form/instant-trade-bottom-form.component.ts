@@ -289,8 +289,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private isSupportedOnChainNetwork(blockchain: SupportedOnChainNetworks): boolean {
-    return Object.keys(INSTANT_TRADE_PROVIDERS).includes(blockchain);
+  private isSupportedOnChainNetwork(
+    blockchain: BlockchainName
+  ): blockchain is SupportedOnChainNetworks {
+    return Object.keys(INSTANT_TRADE_PROVIDERS).some(
+      supportedNetwork => supportedNetwork === blockchain
+    );
   }
 
   /**
@@ -303,7 +307,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
 
     if (
-      !this.isSupportedOnChainNetwork(form.fromBlockchain as SupportedOnChainNetworks) &&
+      !this.isSupportedOnChainNetwork(form.fromBlockchain) &&
       this.fromAmount &&
       this.fromAmount.gt(0)
     ) {
@@ -320,9 +324,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       form.fromBlockchain === form.toBlockchain
     ) {
       this.currentBlockchain = form.fromBlockchain;
-      const isSuccessful = this.initiateProviders(
-        this.currentBlockchain as SupportedOnChainNetworks
-      );
+      const isSuccessful = this.initiateProviders(this.currentBlockchain);
       if (!isSuccessful) {
         return;
       }
@@ -331,7 +333,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: SupportedOnChainNetworks): boolean {
+  private initiateProviders(blockchain: BlockchainName): boolean {
     if (!this.isSupportedOnChainNetwork(blockchain)) {
       this.providersData = [];
       return false;
