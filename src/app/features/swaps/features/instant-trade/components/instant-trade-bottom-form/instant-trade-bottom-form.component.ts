@@ -298,6 +298,16 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toToken = form.toToken;
     this.toBlockchain = form.toBlockchain;
 
+    if (
+      !InstantTradeService.isSupportedBlockchain(form.fromBlockchain) &&
+      this.fromAmount.isFinite() &&
+      this.fromAmount.gt(0)
+    ) {
+      this.errorText = 'Chosen network is not supported for instant trades';
+    } else {
+      this.errorText = '';
+    }
+
     this.ethWethTrade = this.instantTradeService.getEthWethTrade();
     this.allowRefreshChange.emit(!this.ethWethTrade);
 
@@ -319,7 +329,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.providersData = [];
       this.errorService.catch(new NotSupportedItNetwork());
-      this.errorText = 'Chosen network is not supported for instant trades';
       return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];

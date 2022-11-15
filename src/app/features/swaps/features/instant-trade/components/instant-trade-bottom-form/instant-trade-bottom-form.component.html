@@ -24,7 +24,7 @@
         }"
         *ngLet="allowTrade && ethWethTrade as wrapProvider"
       >
-        <ng-container *ngIf="errorText && !isIframe">
+        <ng-container *ngIf="errorText && !isIframe && fromAmount">
           {{ 'errors.tradingIsNotAvailable' | translate }}
 
           <div
