@@ -25,7 +25,8 @@ import {
   SymbiosisCrossChainTrade,
   DebridgeCrossChainTrade,
   ViaCrossChainTrade,
-  DexMultichainCrossChainTrade
+  DexMultichainCrossChainTrade,
+  XyCrossChainTrade
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
@@ -155,7 +156,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 trade instanceof RangoCrossChainTrade ||
                 trade instanceof EvmBridgersCrossChainTrade ||
                 trade instanceof TronBridgersCrossChainTrade ||
-                trade instanceof DexMultichainCrossChainTrade
+                trade instanceof DexMultichainCrossChainTrade ||
+                trade instanceof XyCrossChainTrade
               ) {
                 this.isSymbiosisOrLifi = true;
 

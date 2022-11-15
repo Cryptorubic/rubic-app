@@ -31,7 +31,8 @@ import {
   TooLowAmountError,
   TronBridgersCrossChainTrade,
   UnsupportedReceiverAddressError,
-  ViaCrossChainTrade
+  ViaCrossChainTrade,
+  XyCrossChainTrade
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
@@ -718,7 +719,8 @@ export class CrossChainFormService {
       trade instanceof RangoCrossChainTrade ||
       trade instanceof EvmBridgersCrossChainTrade ||
       trade instanceof TronBridgersCrossChainTrade ||
-      trade instanceof DexMultichainCrossChainTrade
+      trade instanceof DexMultichainCrossChainTrade ||
+      trade instanceof XyCrossChainTrade
     ) {
       return {
         estimatedGas,
