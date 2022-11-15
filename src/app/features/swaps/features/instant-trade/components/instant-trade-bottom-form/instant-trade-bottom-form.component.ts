@@ -289,7 +289,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
-  private isSupportedOnChainNetworks(blockchain: SupportedOnChainNetworks): boolean {
+  private isSupportedOnChainNetwork(blockchain: SupportedOnChainNetworks): boolean {
     return Object.keys(INSTANT_TRADE_PROVIDERS).includes(blockchain);
   }
 
@@ -303,7 +303,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
 
     if (
-      !this.isSupportedOnChainNetworks(form.fromBlockchain as SupportedOnChainNetworks) &&
+      !this.isSupportedOnChainNetwork(form.fromBlockchain as SupportedOnChainNetworks) &&
       this.fromAmount &&
       this.fromAmount.gt(0)
     ) {
@@ -332,7 +332,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   private initiateProviders(blockchain: SupportedOnChainNetworks): boolean {
-    if (!this.isSupportedOnChainNetworks(blockchain)) {
+    if (!this.isSupportedOnChainNetwork(blockchain)) {
       this.providersData = [];
       return false;
     }
@@ -347,7 +347,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (
       fromBlockchain !== toBlockchain ||
-      !Object.keys(INSTANT_TRADE_PROVIDERS).includes(this.currentBlockchain) ||
+      !this.isSupportedOnChainNetwork(this.currentBlockchain as SupportedOnChainNetworks) ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
