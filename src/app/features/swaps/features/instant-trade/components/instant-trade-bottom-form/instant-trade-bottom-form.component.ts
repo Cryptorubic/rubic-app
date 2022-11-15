@@ -32,7 +32,6 @@ import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
@@ -290,6 +289,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
+  private isSupportedITNetworks(blockchain: SupportedOnChainNetworks): boolean {
+    return Object.keys(INSTANT_TRADE_PROVIDERS).includes(blockchain);
+  }
+
   /**
    * Updates values, taken from form, and starts recalculation.
    */
@@ -300,7 +303,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.toBlockchain = form.toBlockchain;
 
     if (
-      !Object.keys(INSTANT_TRADE_PROVIDERS).includes(form.fromBlockchain) &&
+      !this.isSupportedITNetworks(form.fromBlockchain as SupportedOnChainNetworks) &&
       this.fromAmount &&
       this.fromAmount.gt(0)
     ) {
@@ -329,9 +332,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   private initiateProviders(blockchain: SupportedOnChainNetworks): boolean {
-    if (!Object.keys(INSTANT_TRADE_PROVIDERS).includes(blockchain)) {
+    if (!this.isSupportedITNetworks(blockchain)) {
       this.providersData = [];
-      this.errorService.catch(new NotSupportedItNetwork());
       return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];
