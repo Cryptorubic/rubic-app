@@ -185,11 +185,15 @@ export class InstantTradeService extends TradeCalculationService {
       shouldCalculateGas[fromToken.blockchain] &&
       this.authService.userAddress &&
       Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
+
+    const useProxy = this.platformConfigurationService.useOnChainProxy;
+
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
       gasCalculation: calculateGas ? 'calculate' : 'disabled',
-      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
+      useProxy
     });
   }
 
