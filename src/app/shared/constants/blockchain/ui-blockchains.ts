@@ -1,5 +1,6 @@
-import { BlockchainName } from 'rubic-sdk';
-import networks from '@shared/constants/blockchain/networks';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 export interface Blockchain {
   key: BlockchainName;
@@ -8,12 +9,12 @@ export interface Blockchain {
 }
 
 export const BLOCKCHAINS: Record<BlockchainName, Blockchain> = Object.fromEntries(
-  networks.map(network => [
-    network.name,
+  Object.values(BLOCKCHAIN_NAME).map(blockchainName => [
+    blockchainName,
     {
-      key: network.name,
-      name: network.label,
-      img: network.imagePath
+      key: blockchainName,
+      name: blockchainLabel[blockchainName],
+      img: blockchainIcon[blockchainName]
     }
   ])
 ) as Record<BlockchainName, Blockchain>;

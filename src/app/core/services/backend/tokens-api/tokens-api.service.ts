@@ -26,6 +26,7 @@ import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import { defaultTokens } from './models/default-tokens';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -35,6 +36,8 @@ import { defaultTokens } from './models/default-tokens';
 })
 export class TokensApiService {
   public needRefetchTokens: boolean;
+
+  private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
 
   constructor(
     private readonly httpService: HttpService,
@@ -85,7 +88,11 @@ export class TokensApiService {
    */
   public fetchFavoriteTokens(): Observable<List<Token>> {
     return this.httpService
-      .get<BackendToken[]>(ENDPOINTS.FAVORITE_TOKENS, { user: this.authService.userAddress })
+      .get<BackendToken[]>(
+        ENDPOINTS.FAVORITE_TOKENS,
+        { user: this.authService.userAddress },
+        this.tokensApiUrl
+      )
       .pipe(
         map(tokens => TokensApiService.prepareTokens(tokens)),
         catchError(() => of(List([])))
@@ -102,7 +109,7 @@ export class TokensApiService {
       address: token.address,
       user: this.authService.userAddress
     };
-    return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body);
+    return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body, this.tokensApiUrl);
   }
 
   /**
@@ -115,7 +122,7 @@ export class TokensApiService {
       address: token.address,
       user: this.authService.userAddress
     };
-    return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body });
+    return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body }, this.tokensApiUrl);
   }
 
   /**
@@ -146,10 +153,12 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.FUSE,
       BLOCKCHAIN_NAME.ETHEREUM_POW,
       BLOCKCHAIN_NAME.KAVA,
-      BLOCKCHAIN_NAME.BITGERT
+      BLOCKCHAIN_NAME.BITGERT,
+      BLOCKCHAIN_NAME.OASIS,
+      BLOCKCHAIN_NAME.METIS
     ];
     const backendTokens$ = this.httpService
-      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params)
+      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
       .pipe(
         map(backendTokens =>
           backendTokens.filter(token => {
@@ -177,24 +186,26 @@ export class TokensApiService {
     const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
 
     const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
-      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }).pipe(
-        tap(networkTokens => {
-          const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
-          if (networkTokens?.results) {
-            tokensNetworkState$.next({
-              ...tokensNetworkState$.value,
-              [blockchain]: {
-                ...tokensNetworkState$.value[blockchain],
-                page: options.page,
-                maxPage: Math.ceil(networkTokens.count / options.pageSize)
-              }
-            });
-          }
-        }),
-        catchError(() => {
-          return of(null);
-        })
-      )
+      this.httpService
+        .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
+        .pipe(
+          tap(networkTokens => {
+            const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
+            if (networkTokens?.results) {
+              tokensNetworkState$.next({
+                ...tokensNetworkState$.value,
+                [blockchain]: {
+                  ...tokensNetworkState$.value[blockchain],
+                  page: options.page,
+                  maxPage: Math.ceil(networkTokens.count / options.pageSize)
+                }
+              });
+            }
+          }),
+          catchError(() => {
+            return of(null);
+          })
+        )
     );
     const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
@@ -235,7 +246,7 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options)
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
       .pipe(
         map(tokensResponse =>
           tokensResponse.results.length
@@ -258,15 +269,17 @@ export class TokensApiService {
       page: requestOptions.page,
       pageSize: DEFAULT_PAGE_SIZE
     };
-    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
-      map(tokensResponse => {
-        return {
-          total: tokensResponse.count,
-          result: TokensApiService.prepareTokens(tokensResponse.results),
-          next: tokensResponse.next
-        };
-      })
-    );
+    return this.httpService
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
+      .pipe(
+        map(tokensResponse => {
+          return {
+            total: tokensResponse.count,
+            result: TokensApiService.prepareTokens(tokensResponse.results),
+            next: tokensResponse.next
+          };
+        })
+      );
   }
 
   private fetchStaticTokens(): Observable<Token[]> {

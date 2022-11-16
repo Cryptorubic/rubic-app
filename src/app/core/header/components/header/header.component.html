@@ -1,4 +1,3 @@
-<app-referral-banner *noFrame href="https://rubic.exchange/staking"></app-referral-banner>
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
@@ -17,17 +16,14 @@
     *noFrame
     class="rubic-header__menu"
     [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-    [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
     [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
     (swapClick)="navigateToSwaps()"
-    (bridgeClick)="navigateToBridgeOrCrossChain('bridge')"
-    (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
   ></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
     <a
       class="button-link"
-      (click)="navigateToBridgeOrCrossChain('cross-chain')"
+      (click)="navigateToSwaps()"
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       "

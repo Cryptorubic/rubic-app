@@ -699,6 +699,70 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
+  [BLOCKCHAIN_NAME.OASIS]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.OASIS,
+      address: '0xe6801928061cdbe32ac5ad0634427e140efd05f9',
+      name: 'BetSwirl Token',
+      symbol: 'BETS',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.OASIS,
+      address: '0x65e66a61d0a8f1e686c2d6083ad611a10d84d97a',
+      name: 'beefy.finance',
+      symbol: 'BIFI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.OASIS,
+      address: '0xc9baa8cfdde8e328787e29b4b078abf2dadc2055',
+      name: 'ChainLink Token',
+      symbol: 'LINK',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
+  ],
+  [BLOCKCHAIN_NAME.METIS]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.METIS,
+      address: '0x80a16016cc4a2e6a2caca8a4a498b1699ff0f844',
+      name: 'Avalanche',
+      symbol: 'AVAX',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.METIS,
+      address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+      name: 'Binance',
+      symbol: 'BNB',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.METIS,
+      address: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
+      name: 'Matic',
+      symbol: 'MATIC',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
+  ],
   [BLOCKCHAIN_NAME.SOLANA]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token,
     { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token

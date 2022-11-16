@@ -26,7 +26,9 @@ const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
   [BLOCKCHAIN_NAME.TRON]: 'tron',
   [BLOCKCHAIN_NAME.KAVA]: 'kava',
-  [BLOCKCHAIN_NAME.BITGERT]: 'bitgert'
+  [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
+  [BLOCKCHAIN_NAME.OASIS]: 'oasis',
+  [BLOCKCHAIN_NAME.METIS]: 'metis'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
@@ -61,5 +63,7 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   tron: BLOCKCHAIN_NAME.TRON,
   kava: BLOCKCHAIN_NAME.KAVA,
   bitgert: BLOCKCHAIN_NAME.BITGERT,
-  astar: BLOCKCHAIN_NAME.ASTAR
+  astar: BLOCKCHAIN_NAME.ASTAR,
+  oasis: BLOCKCHAIN_NAME.OASIS,
+  metis: BLOCKCHAIN_NAME.METIS
 };

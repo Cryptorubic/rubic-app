@@ -41,7 +41,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "Actualizar comercio"
+    "refreshTrade": "Actualizar comercio",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
@@ -93,7 +94,7 @@
     "buttonLink": "Más información",
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada.",
-    "notWhitelistedProvider": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
+    "crossChainSwapUnavailable": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
     "noSelectedToken": "Seleccionar token",
     "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
   },
@@ -347,7 +348,7 @@
     "discountRBC": "descuento con RBC",
     "blockchainsHint": "Más blockchains",
     "tradingNotAvailable": "El trading no está disponible",
-    "rateIsUpdated": "La tarifa está actualizada, toque para obtener las últimas tarifas"
+    "rateIsUpdated": "La tarifa está actualizada"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
@@ -491,7 +492,11 @@
       "swapMyself": "Intercabio por mi cuenta"
     },
     "warningModal": {
-      "autoSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración."
+      "autoSlippage": "Desafortunadamente, el deslizamiento personalizado no está permitido para este intercambio. Active la configuración de tolerancia de deslizamiento automático en la configuración.",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {
