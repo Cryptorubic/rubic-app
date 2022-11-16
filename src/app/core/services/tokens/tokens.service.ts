@@ -103,6 +103,8 @@ export class TokensService {
     );
   }
 
+  public needRefetchTokens: boolean;
+
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
@@ -119,7 +121,9 @@ export class TokensService {
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
       .pipe(
-        switchMap(params => this.tokensApiService.getTokensList(params, this._tokensNetworkState$)),
+        switchMap(params => {
+          return this.tokensApiService.getTokensList(params, this._tokensNetworkState$);
+        }),
         switchMap(tokens => {
           const newTokens = this.setDefaultTokensParams(tokens, false);
           return this.calculateTokensBalancesByType('default', newTokens);
@@ -129,7 +133,9 @@ export class TokensService {
           return of();
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.needRefetchTokens = this.tokensApiService.needRefetchTokens;
+      });
 
     this.authService.currentUser$.subscribe(async user => {
       this.userAddress = user?.address;
