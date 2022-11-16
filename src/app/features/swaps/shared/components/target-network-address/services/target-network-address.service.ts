@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl } from '@ngneat/reactive-forms';
-import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { correctAddressValidator } from '@features/swaps/shared/components/target-network-address/services/utils/correct-address-validator';
 import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
+import { correctAddressValidator } from './utils/correct-address-validator';
 
 @Injectable()
 export class TargetNetworkAddressService {
@@ -32,7 +32,6 @@ export class TargetNetworkAddressService {
     private readonly swapFormService: SwapFormService
   ) {
     this.initSubscriptions();
-    this.setupTargetAddress();
   }
 
   private initSubscriptions(): void {
@@ -46,13 +45,13 @@ export class TargetNetworkAddressService {
     });
 
     this.swapFormService.inputValueChanges
-      .pipe(
-        startWith(this.swapFormService.inputValue),
-        distinctUntilChanged(
-          (prev, cur) =>
-            prev.fromBlockchain === cur.fromBlockchain && prev.toBlockchain === cur.toBlockchain
-        )
-      )
+      .pipe(filter(form => !Object.values(form).some(value => !Boolean(value))))
+      .subscribe(() => {
+        console.log('clearAddress');
+      });
+
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue))
       .subscribe(form => {
         const { fromBlockchain, toBlockchain } = form;
 
@@ -64,7 +63,8 @@ export class TargetNetworkAddressService {
         this.addressForm.clearValidators();
         this.addressForm.setValidators(correctAddressValidator(fromBlockchain, toBlockchain));
 
-        this._address$.next(this.addressForm.valid ? this.addressForm.value : null);
+        this.addressForm.patchValue(null);
+        this._address$.next(null);
         this._isAddressValid$.next(this.addressForm.valid);
       });
   }

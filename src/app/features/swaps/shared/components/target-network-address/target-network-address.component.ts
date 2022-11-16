@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { startWith } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { Observable } from 'rxjs';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-target-network-address',
@@ -20,12 +21,18 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.toBlockchain$ = this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
       startWith(this.swapFormService.inputValue.toBlockchain)
     );
+  }
+
+  public async setValueFromClipboard(): Promise<void> {
+    const clipboardContent = await this.window.navigator.clipboard.readText();
+    this.address.patchValue(clipboardContent);
   }
 }
