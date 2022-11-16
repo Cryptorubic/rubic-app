@@ -756,6 +756,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     if (
+      !this.ethWethTrade &&
       !(await this.settingsService.checkSlippageAndPriceImpact(
         SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         this.selectedProvider.trade
