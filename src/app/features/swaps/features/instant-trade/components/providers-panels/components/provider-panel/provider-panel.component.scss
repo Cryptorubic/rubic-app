@@ -220,6 +220,7 @@ $white: white;
       width: 100%;
 
       font-size: 20px;
+      letter-spacing: 1px;
 
       @include b($mobile-sm) {
         font-size: 16px;
