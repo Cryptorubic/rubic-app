@@ -32,7 +32,6 @@ import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { NotSupportedItNetwork } from '@core/errors/models/instant-trade/not-supported-it-network';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
@@ -67,6 +66,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -132,6 +132,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public withApproveButton: boolean;
 
   public isIframe: boolean;
+
+  public errorText: string;
 
   /**
    * True, if user clicked on provider.
@@ -287,6 +289,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
   }
 
+  private isSupportedOnChainNetwork(
+    blockchain: BlockchainName
+  ): blockchain is SupportedOnChainNetworks {
+    return Object.keys(INSTANT_TRADE_PROVIDERS).some(
+      supportedNetwork => supportedNetwork === blockchain
+    );
+  }
+
   /**
    * Updates values, taken from form, and starts recalculation.
    */
@@ -295,6 +305,16 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
     this.toBlockchain = form.toBlockchain;
+
+    if (
+      !this.isSupportedOnChainNetwork(form.fromBlockchain) &&
+      this.fromAmount &&
+      this.fromAmount.gt(0)
+    ) {
+      this.errorText = 'Chosen network is not supported for instant trades';
+    } else {
+      this.errorText = '';
+    }
 
     this.ethWethTrade = this.instantTradeService.getEthWethTrade();
     this.allowRefreshChange.emit(!this.ethWethTrade);
@@ -314,9 +334,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   private initiateProviders(blockchain: BlockchainName): boolean {
-    if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+    if (!this.isSupportedOnChainNetwork(blockchain)) {
       this.providersData = [];
-      this.errorService.catch(new NotSupportedItNetwork());
       return false;
     }
     this.providersData = INSTANT_TRADE_PROVIDERS[blockchain];
@@ -330,6 +349,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (
       fromBlockchain !== toBlockchain ||
+      !this.isSupportedOnChainNetwork(this.currentBlockchain as SupportedOnChainNetworks) ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {

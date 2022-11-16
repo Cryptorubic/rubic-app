@@ -14,11 +14,6 @@ export interface CelerRubicTradeInfo {
 
   fromProvider: OnChainTradeType;
   toProvider: OnChainTradeType;
-
-  fromPath: string[] | null; // null if `tokenIn` = `transitToken`
-  toPath: string[] | null; // null if `tokenOut` = `transitToken`
-
-  usingCelerBridge: boolean; // true if bridging pair of tokens through Celer bridge
 }
 
 export interface SymbiosisTradeInfo {
