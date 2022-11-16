@@ -6,7 +6,7 @@ import { fakeProviders } from '@features/swaps/features/cross-chain/components/c
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { distinctArrayUntilChanged } from '@shared/utils/distinct-array-until-changed';
+import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 @Component({
   selector: 'app-trades-counter',
@@ -27,7 +27,7 @@ export class TradesCounterComponent {
     this.swapFormService.isFilled$,
     this.crossChainFormService.isCalculating$
   ]).pipe(
-    distinctArrayUntilChanged(),
+    distinctObjectUntilChanged(),
     switchMap(([isFilled, isCalculating]) => {
       if (!isFilled) {
         return of(false);
