@@ -4,8 +4,8 @@ import { iif, of, switchMap, timer } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
-import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Component({
   selector: 'app-trades-counter',
@@ -22,9 +22,7 @@ import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number'
 export class TradesCounterComponent {
   public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
 
-  public readonly isDisabled$ = this.crossChainFormService.tradeStatus$.pipe(
-    map(status => status === TRADE_STATUS.DISABLED)
-  );
+  public readonly isFormFilled$ = this.swapFormService.isFilled$;
 
   public readonly displayCounter$ = this.isCalculating$.pipe(
     distinctUntilChanged(),
@@ -38,8 +36,15 @@ export class TradesCounterComponent {
   );
 
   public get isBestRouteFound(): boolean {
-    return this.crossChainFormService.selectedTrade?.trade?.to.tokenAmount.isFinite();
+    const { selectedTrade } = this.crossChainFormService;
+    return (
+      !selectedTrade?.error &&
+      this.crossChainFormService.selectedTrade?.trade?.to.tokenAmount.isFinite()
+    );
   }
 
-  constructor(private readonly crossChainFormService: CrossChainFormService) {}
+  constructor(
+    private readonly crossChainFormService: CrossChainFormService,
+    private readonly swapFormService: SwapFormService
+  ) {}
 }
