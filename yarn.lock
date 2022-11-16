@@ -10526,14 +10526,6 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-isomorphic-unfetch@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-3.1.0.tgz#87341d5f4f7b63843d468438128cb087b7c3e98f"
-  integrity sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==
-  dependencies:
-    node-fetch "^2.6.1"
-    unfetch "^4.2.0"
-
 isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
@@ -14750,10 +14742,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.5.7-alpha-ao-1:
-  version "3.5.7-alpha-ao-1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.5.7-alpha-ao-1.tgz#bf16329a6fa0b7bd21083e805c83fd5390c43bdf"
-  integrity sha512-ivYZX83c8Vyt6RXR/qwn26UaQ20TRba3EJ4Bn97MtS2XkMHgBMH+Y95mJ6IMPWv8O66hz2d8P1VLeLJ5Zuzpyg==
+rubic-sdk@3.5.7-alpha-ao-2:
+  version "3.5.7-alpha-ao-2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.5.7-alpha-ao-2.tgz#4dde298f22689c8ee32eca01fb6c2ffef093e097"
+  integrity sha512-YoCa+Ru+Y1pnljZdlSMDMfBSEd1ipM819PD/fdUEXB/Mu0lJ0j+3Cu8WpMU9pL4uikGhM6HVFKNqHfgq8lOXaw==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -16134,24 +16126,6 @@ symbiosis-js-sdk@2.8.13:
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-symbiosis-js-sdk@^2.7.7:
-  version "2.8.15"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.15.tgz#b1bbf9e8bfe4945f5e67acfeb3d3a09c367ac9a7"
-  integrity sha512-qpKBJm8tOa8efxhZ949laD8lfpffHxHGRoFs/4OdYjCq58aAP+N3K69pMNQWpacnLAruNTebRok5lEsRBDhFRA==
-  dependencies:
-    "@renproject/chains-bitcoin" "^3.4.2"
-    "@renproject/chains-ethereum" "^3.4.3"
-    "@renproject/ren" "~3.3.0"
-    big.js "^5.2.2"
-    bignumber.js "^9.0.1"
-    decimal.js-light "^2.5.0"
-    isomorphic-unfetch "^3.1.0"
-    jsbi "^3.1.1"
-    lodash.flatmap "^4.5.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 symbol-observable@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-4.0.0.tgz#5b425f192279e87f2f9b937ac8540d1984b39205"
@@ -16793,11 +16767,6 @@ underscore@~1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.6.0.tgz#8b38b10cacdef63337b8b24e4ff86d45aea529a8"
   integrity sha512-z4o1fvKUojIWh9XuaVLUDdf86RQiq13AC1dmHbTpoyuu+bquHms76v16CjycCbec87J7z0k//SiQVk0sMdFmpQ==
-
-unfetch@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
-  integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
 unherit@^1.0.4:
   version "1.1.3"
