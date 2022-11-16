@@ -31,7 +31,7 @@ const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.METIS]: 'metis'
 } as const;
 
-export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
+export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
   ...BLOCKCHAINS_MAPPING
 };
 
