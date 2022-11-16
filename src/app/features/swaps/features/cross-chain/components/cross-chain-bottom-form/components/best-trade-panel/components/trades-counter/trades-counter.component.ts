@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { iif, of, switchMap, timer } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { iif, of, switchMap, timer, combineLatest } from 'rxjs';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
-import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 @Component({
   selector: 'app-trades-counter',
@@ -22,14 +23,35 @@ import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number'
 export class TradesCounterComponent {
   public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
 
-  public readonly isDisabled$ = this.crossChainFormService.tradeStatus$.pipe(
-    map(status => status === TRADE_STATUS.DISABLED)
+  public readonly displayCounter$ = combineLatest([
+    this.swapFormService.isFilled$,
+    this.crossChainFormService.isCalculating$
+  ]).pipe(
+    distinctObjectUntilChanged(),
+    switchMap(([isFilled, isCalculating]) => {
+      if (!isFilled) {
+        return of(false);
+      }
+      if (isCalculating) {
+        // stops ':leave' animation and after 1ms begins ':enter'
+        return timer(0, 1).pipe(
+          map(value => value > 0),
+          take(2)
+        );
+      }
+      return of(true);
+    })
   );
 
-  public readonly displayCounter$ = this.isCalculating$.pipe(
+  public readonly displayText$ = this.isCalculating$.pipe(
     distinctUntilChanged(),
     switchMap(isCalculating =>
-      iif(() => isCalculating, of(true), timer(2000).pipe(map(() => false)))
+      iif(
+        () => isCalculating,
+        // starts after 1ms due to ':leave' animation stop (watch displayCounter$)
+        timer(1).pipe(map(() => true)),
+        timer(2000).pipe(map(() => false))
+      )
     )
   );
 
@@ -38,8 +60,15 @@ export class TradesCounterComponent {
   );
 
   public get isBestRouteFound(): boolean {
-    return this.crossChainFormService.selectedTrade?.trade?.to.tokenAmount.isFinite();
+    const { selectedTrade } = this.crossChainFormService;
+    return (
+      !selectedTrade?.error &&
+      this.crossChainFormService.selectedTrade?.trade?.to.tokenAmount.isFinite()
+    );
   }
 
-  constructor(private readonly crossChainFormService: CrossChainFormService) {}
+  constructor(
+    private readonly crossChainFormService: CrossChainFormService,
+    private readonly swapFormService: SwapFormService
+  ) {}
 }
