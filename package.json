@@ -60,7 +60,7 @@
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^14.0.1",
     "ngx-cookie-service": "^14.0.1",
-    "rubic-sdk": "3.7.0-alpha-ao-0",
+    "rubic-sdk": "3.7.0-alpha-ao-1",
     "rxjs": "^7.5.7",
     "ts-cacheable": "^1.0.5",
     "walletlink": "^2.1.0",
@@ -130,13 +130,8 @@
     "stylelint-scss": "^3.19.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "^4.8.3",
+    "typescript": "~4.8.3",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.4.2"
-  },
-  "overrides": {
-    "rubic-sdk": {
-      "bignumber.js": "^9.1.0"
-    }
   }
 }
