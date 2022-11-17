@@ -74,6 +74,8 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: 'omnidex',
   [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'yuzuswap',
   [ON_CHAIN_TRADE_TYPE.NET_SWAP]: 'netswap',
+  [ON_CHAIN_TRADE_TYPE.ELK]: 'elk',
+  [ON_CHAIN_TRADE_TYPE.SURFDEX]: 'surfdex',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',

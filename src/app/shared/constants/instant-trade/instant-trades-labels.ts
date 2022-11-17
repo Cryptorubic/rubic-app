@@ -22,6 +22,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.CRO_DEX]: 'CroDex',
   [ON_CHAIN_TRADE_TYPE.CURVE]: 'Curve',
 
+  [ON_CHAIN_TRADE_TYPE.ELK]: 'Elk',
+
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: 'DefiPlaza',
   [ON_CHAIN_TRADE_TYPE.DEFI_SWAP]: 'DefiSwap',
   [ON_CHAIN_TRADE_TYPE.DFYN]: 'Dfyn',
@@ -80,6 +82,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SPL_TOKEN_SWAP]: 'SplTokenSwap',
   [ON_CHAIN_TRADE_TYPE.SPOOKY_SWAP]: 'Spooky',
   [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'StellaSwap',
+  [ON_CHAIN_TRADE_TYPE.SURFDEX]: 'Surfdex',
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'SushiSwap',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
 
