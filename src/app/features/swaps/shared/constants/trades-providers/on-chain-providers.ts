@@ -97,6 +97,12 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: ''
   },
 
+  [ON_CHAIN_TRADE_TYPE.ELK]: {
+    name: 'Elk',
+    image: `${imageBasePath}elk.png`,
+    color: '#009A5C'
+  },
+
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
     image: `${imageBasePath}defiplaza.png`,
@@ -335,6 +341,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'StellaSwap',
     image: `${imageBasePath}stellaswap.svg`,
     color: '#E2107B'
+  },
+  [ON_CHAIN_TRADE_TYPE.SURFDEX]: {
+    name: 'Surfdex',
+    image: `${imageBasePath}surfswap.png`,
+    color: '#39E4DD'
   },
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: {
     name: 'SushiSwap',

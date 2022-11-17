@@ -71,6 +71,8 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]: 'oolong',
   [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: 'jupiter',
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'photon',
+  [ON_CHAIN_TRADE_TYPE.ELK]: 'elk',
+  [ON_CHAIN_TRADE_TYPE.SURFDEX]: 'surfdex',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
