@@ -102,8 +102,8 @@ export class InstantTradeSwapInfoComponent {
       this.toToken = trade.to;
 
       if (trade instanceof EvmOnChainTrade) {
-        this.fixedFeeToken = trade.proxyFeeInfo.fixedFeeToken;
-        this.platformFee = trade.proxyFeeInfo.platformFee;
+        this.fixedFeeToken = trade.proxyFeeInfo?.fixedFeeToken;
+        this.platformFee = trade.proxyFeeInfo?.platformFee;
       }
 
       this.isBridgers = trade instanceof BridgersTrade;
