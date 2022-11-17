@@ -37,7 +37,7 @@ export class WithRoundPipe implements PipeTransform {
         if (bnValue.isGreaterThanOrEqualTo(1)) {
           decimalSymbols = minRound;
         } else {
-          let startZeroesAmount = 0;
+          var startZeroesAmount = 0;
           for (let i = startIndex; i < value.length; ++i) {
             if (value[i] === '0') {
               startZeroesAmount++;
@@ -47,7 +47,10 @@ export class WithRoundPipe implements PipeTransform {
           }
           decimalSymbols = startZeroesAmount + maxRound;
         }
-        decimalSymbols = Math.min(decimalSymbols, decimals);
+        decimalSymbols =
+          startZeroesAmount > 6
+            ? Math.max(decimalSymbols, decimals)
+            : Math.min(decimalSymbols, decimals);
 
         value = bnValue
           .dp(decimalSymbols, additionalArgs?.roundingMode)
