@@ -137,6 +137,5 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.PHOTON_SWAP
     ]),
     [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS]),
-    [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.YUZU_SWAP]),
-    [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.NET_SWAP])
+    [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.YUZU_SWAP])
   };
