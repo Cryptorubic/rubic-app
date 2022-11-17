@@ -199,6 +199,17 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#0AC4DD'
   },
 
+  [ON_CHAIN_TRADE_TYPE.NET_SWAP]: {
+    name: 'NetSwap',
+    image: `${imageBasePath}netswap.png`,
+    color: '#257AF1'
+  },
+
+  [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
+    name: 'Omnidex',
+    image: `${imageBasePath}omnidex.png`,
+    color: '#B18D4F'
+  },
   [ON_CHAIN_TRADE_TYPE.ONE_INCH]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`,
@@ -426,5 +437,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
     color: '#34A5F5'
+  },
+
+  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: {
+    name: 'YuzuSwap',
+    image: `${imageBasePath}yuzuswap.png`,
+    color: '#EE5466'
   }
 };
