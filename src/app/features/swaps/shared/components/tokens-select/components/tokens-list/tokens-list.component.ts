@@ -121,8 +121,6 @@ export class TokensListComponent implements AfterViewInit {
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 
-  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
-
   get user$(): Observable<UserInterface> {
     return this.authService.currentUser$;
   }
@@ -166,8 +164,8 @@ export class TokensListComponent implements AfterViewInit {
           scroll.renderedRangeStream.pipe(
             debounceTime(200),
             filter(renderedRange => {
-              const bigVirtualElementsAmount = 30;
-              const smallVirtualElementsAmount = 7;
+              const bigVirtualElementsAmount = 10;
+              const smallVirtualElementsAmount = 5;
               if (
                 this.loading ||
                 this.hasSearchQuery ||
