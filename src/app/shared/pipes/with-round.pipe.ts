@@ -33,11 +33,11 @@ export class WithRoundPipe implements PipeTransform {
 
       const bnValue = new BigNumber(value.split(',').join(''));
       let decimalSymbols: number;
+      let startZeroesAmount = 0;
       if (roundMode === 'toClosestValue') {
         if (bnValue.isGreaterThanOrEqualTo(1)) {
           decimalSymbols = minRound;
         } else {
-          var startZeroesAmount = 0;
           for (let i = startIndex; i < value.length; ++i) {
             if (value[i] === '0') {
               startZeroesAmount++;
