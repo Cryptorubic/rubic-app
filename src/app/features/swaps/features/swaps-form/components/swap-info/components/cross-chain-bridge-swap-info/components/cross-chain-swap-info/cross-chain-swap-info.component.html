@@ -44,14 +44,6 @@
   <div class="info-line__value">
     <ng-container *ngIf="feeInfo.platformFee.percent !== 0">
       {{ feeInfo.platformFee.percent }}%
-      <ng-container *ngIf="feeInfo.fixedFee.amount">
-        {{
-          feeInfo.fixedFee.amount
-            | bigNumberFormat
-            | withRound: 'toClosestValue':{ decimals: nativeCoinDecimals }
-        }}&nbsp;
-        {{ feeInfo.fixedFee.tokenSymbol }}
-      </ng-container>
     </ng-container>
     <ng-container *ngIf="feeInfo.fixedFee.amount; else zero">
       {{
