@@ -554,7 +554,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
       [BLOCKCHAIN_NAME.METIS]: 'metis',
-      [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms'
+      [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
+      [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn'
     };
 
     if (!blockchains[token.blockchain]) {

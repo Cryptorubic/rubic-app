@@ -29,5 +29,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITGERT]: 'Bitgert',
   [BLOCKCHAIN_NAME.OASIS]: 'Oasis',
   [BLOCKCHAIN_NAME.METIS]: 'Metis',
-  [BLOCKCHAIN_NAME.DFK]: 'DFK'
+  [BLOCKCHAIN_NAME.DFK]: 'DFK',
+  [BLOCKCHAIN_NAME.KLAYTN]: 'Klaytn'
 };

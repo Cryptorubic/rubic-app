@@ -241,5 +241,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.KLAYTN]: {
+    baseUrl: 'https://scope.klaytn.com',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };

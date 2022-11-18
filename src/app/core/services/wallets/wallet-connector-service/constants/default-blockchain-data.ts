@@ -89,5 +89,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.DFK]: {
     name: 'DeFi Kingdoms',
     rpc: 'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
+  },
+  [BLOCKCHAIN_NAME.KLAYTN]: {
+    name: 'Klaytn',
+    rpc: 'https://public-node-api.klaytnapi.com/v1/cypress'
   }
 };

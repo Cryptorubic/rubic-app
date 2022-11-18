@@ -792,5 +792,47 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       rank: 0.001,
       price: null
     }
+  ],
+  [BLOCKCHAIN_NAME.KLAYTN]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'KLAY',
+      symbol: 'KLAY',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x3f56e0c36d275367b8c502090edf38289b3dea0d',
+      name: 'Mai stablecoin',
+      symbol: 'MAI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0xdfa46478f9e5ea86d57387849598dbfb2e964b02',
+      name: 'QiDao',
+      symbol: 'QI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x5096db80b21ef45230c9e423c373f1fc9c0198dd',
+      name: 'WEMIX classic',
+      symbol: 'WEMIX',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
   ]
 };
