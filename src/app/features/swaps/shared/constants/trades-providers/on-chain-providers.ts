@@ -364,6 +364,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#E05DAA'
   },
 
+  [ON_CHAIN_TRADE_TYPE.TRADER]: {
+    name: 'The Trader',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
