@@ -15,6 +15,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.BI_SWAP]: 'BiSwap',
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'Bridgers',
 
+  [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: 'ClaimSwap',
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: 'CremaFinance',
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'CronaSwap',
   [ON_CHAIN_TRADE_TYPE.CROPPER_FINANCE]: 'CropperFinance',
@@ -86,7 +87,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'SushiSwap',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
 
-  [ON_CHAIN_TRADE_TYPE.TRADER]: 'The Trader',
+  [ON_CHAIN_TRADE_TYPE.TRADER]: 'TheTrader',
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: 'Trisolaris',
 
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'UbeSwap',
