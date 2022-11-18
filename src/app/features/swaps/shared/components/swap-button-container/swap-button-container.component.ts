@@ -49,9 +49,7 @@ export class SwapButtonContainerComponent {
     this.swapButtonContainerErrorsService.setMaxAmountError(value);
   }
 
-  @Input() set buttonText(value: string) {
-    this.swapButtonService.defaultButtonText = value;
-  }
+  @Input() buttonText: string;
 
   @Output() readonly onApproveClick = new EventEmitter<void>();
 
