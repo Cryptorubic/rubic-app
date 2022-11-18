@@ -19,8 +19,22 @@
 
       <div
         class="instant-trade-bottom-form__amount"
+        [ngClass]="{
+          'instant-trade-bottom-form__amount__output_error': errorText && !isIframe
+        }"
         *ngLet="allowTrade && ethWethTrade as wrapProvider"
       >
+        <ng-container *ngIf="errorText && !isIframe && fromAmount">
+          {{ 'errors.tradingIsNotAvailable' | translate }}
+
+          <div
+            tuiHintMode="error"
+            class="instant-trade-bottom-form__hint_error"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="errorText | translate"
+          ></div>
+        </ng-container>
+
         <ng-container *onlyFrame="'vertical'">
           <app-iframe-blockchain-indicator
             *ngIf="toToken?.blockchain as blockchain"

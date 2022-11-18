@@ -208,7 +208,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     txTimestamp: this.timestamp,
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
                     viaUuid: this.viaUuid,
-                    rangoRequestId: this.rangoRequestId
+                    rangoRequestId: this.rangoRequestId,
+                    amountOutMin: this.amountOutMin
                   },
                   this.crossChainProvider
                 )

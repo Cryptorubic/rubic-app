@@ -200,6 +200,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     this.listType = 'default';
     this.tokensListUpdating = false;
     this.initiateContextParams(context.data);
+    this.checkAndRefetchTokenList();
   }
 
   ngOnInit(): void {
@@ -293,6 +294,13 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   public onBlockchainChange(): void {
     this.searchQuery = '';
+    this.checkAndRefetchTokenList();
+  }
+
+  private checkAndRefetchTokenList(): void {
+    if (this.tokensService.needRefetchTokens) {
+      this.tokensService.tokensRequestParameters = undefined;
+    }
   }
 
   /**
@@ -545,7 +553,9 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
       [BLOCKCHAIN_NAME.TRON]: 'tron',
       [BLOCKCHAIN_NAME.KAVA]: 'kava',
-      [BLOCKCHAIN_NAME.BITGERT]: 'bitgert'
+      [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
+      [BLOCKCHAIN_NAME.OASIS]: 'oasis',
+      [BLOCKCHAIN_NAME.METIS]: 'metis'
     };
 
     if (!blockchains[token.blockchain]) {

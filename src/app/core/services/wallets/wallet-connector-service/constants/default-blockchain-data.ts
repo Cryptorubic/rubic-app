@@ -77,5 +77,13 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.BITGERT]: {
     name: 'Bitgert',
     rpc: 'https://serverrpc.com'
+  },
+  [BLOCKCHAIN_NAME.OASIS]: {
+    name: 'Oasis',
+    rpc: 'https://emerald.oasis.dev'
+  },
+  [BLOCKCHAIN_NAME.METIS]: {
+    name: 'Metis',
+    rpc: 'https://andromeda.metis.io/?owner=1088'
   }
 };

@@ -25,6 +25,7 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 
 /**
@@ -34,6 +35,8 @@ import { ENVIRONMENT } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class TokensApiService {
+  public needRefetchTokens: boolean;
+
   private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
 
   constructor(
@@ -150,7 +153,9 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.FUSE,
       BLOCKCHAIN_NAME.ETHEREUM_POW,
       BLOCKCHAIN_NAME.KAVA,
-      BLOCKCHAIN_NAME.BITGERT
+      BLOCKCHAIN_NAME.BITGERT,
+      BLOCKCHAIN_NAME.OASIS,
+      BLOCKCHAIN_NAME.METIS
     ];
     const backendTokens$ = this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
@@ -196,12 +201,26 @@ export class TokensApiService {
                 }
               });
             }
+          }),
+          catchError(() => {
+            return of(null);
           })
         )
     );
     const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
-        const backendTokens = results.flatMap(el => el.results || []);
+        if (results.every(el => el === null)) {
+          this.needRefetchTokens = true;
+          return List(
+            blockchainsToFetch
+              .map(blockchain => defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]])
+              .filter(tokens => tokens.length > 0)
+              .flat()
+          );
+        }
+
+        this.needRefetchTokens = false;
+        const backendTokens = results.flatMap(el => el?.results || []);
         return TokensApiService.prepareTokens(backendTokens);
       })
     );
@@ -209,7 +228,9 @@ export class TokensApiService {
     const staticTokens$ = this.fetchStaticTokens();
 
     return forkJoin([backendTokens$, staticTokens$]).pipe(
-      map(([backendTokens, staticTokens]) => backendTokens.concat(staticTokens))
+      map(([backendTokens, staticTokens]) => {
+        return backendTokens.concat(staticTokens);
+      })
     );
   }
 

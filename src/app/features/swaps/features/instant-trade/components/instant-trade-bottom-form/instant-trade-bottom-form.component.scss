@@ -34,6 +34,22 @@ $green: rgb(74, 169, 86);
     background-color: transparent;
   }
 
+  &__hint_error {
+    display: flex;
+    align-items: center;
+
+    width: 15px;
+    margin-left: 10px;
+
+    cursor: help;
+
+    ::ng-deep {
+      svg path {
+        fill: $rubic-warning;
+      }
+    }
+  }
+
   &__left-part {
     display: flex;
     flex-direction: column;
@@ -142,6 +158,18 @@ $green: rgb(74, 169, 86);
     &_skeleton {
       width: 200px;
       height: 40px;
+    }
+
+    &__output_error {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      height: 35px;
+
+      font-weight: 300;
+      font-size: 16px;
+      letter-spacing: 2px;
     }
   }
 

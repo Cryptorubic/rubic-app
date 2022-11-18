@@ -8,6 +8,7 @@ import { SwapButtonService } from '@features/swaps/shared/components/swap-button
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-swap-button-container',
@@ -48,9 +49,7 @@ export class SwapButtonContainerComponent {
     this.swapButtonContainerErrorsService.setMaxAmountError(value);
   }
 
-  @Input() set buttonText(value: string) {
-    this.swapButtonService.defaultButtonText = value;
-  }
+  @Input() buttonText: string;
 
   @Output() readonly onApproveClick = new EventEmitter<void>();
 
@@ -58,7 +57,7 @@ export class SwapButtonContainerComponent {
 
   @Output() readonly onUpdateRateClick = new EventEmitter<void>();
 
-  public readonly user$ = this.authService.currentUser$;
+  public readonly user$ = this.authService.currentUser$.pipe(map(user => user?.address));
 
   public readonly isUpdateRateStatus$ = this.swapButtonContainerService.isUpdateRateStatus$;
 
