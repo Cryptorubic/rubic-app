@@ -182,8 +182,6 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
-  public readonly iframeRubicLink = this.iframeService.rubicLink;
-
   public readonly isHorizontalIframe = this.iframeService.iframeAppearance === 'horizontal';
 
   constructor(
@@ -274,7 +272,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {});
+      .subscribe();
   }
 
   /**
@@ -585,6 +583,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    */
   public fetchNewPageTokens(): void {
     this.tokensListUpdating = true;
+    this.cdr.detectChanges();
     this.tokensService.fetchNetworkTokens(this.blockchain, () => {
       this.tokensListUpdating = false;
       this.cdr.detectChanges();
@@ -621,7 +620,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
         this._tokensToShow$.next(tokensWithFavorite);
         this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
         this.tokensListUpdating = false;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     );
   }
