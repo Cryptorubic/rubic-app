@@ -770,5 +770,27 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.NEAR]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token,
     { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.DFK]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.DFK,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'JEWEL',
+      symbol: 'JEWEL',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.DFK,
+      address: '0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260',
+      name: 'Wrapped JEWEL',
+      symbol: 'WJEWEL',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
   ]
 };

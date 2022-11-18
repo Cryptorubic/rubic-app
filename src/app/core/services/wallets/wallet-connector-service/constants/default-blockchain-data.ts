@@ -85,5 +85,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.METIS]: {
     name: 'Metis',
     rpc: 'https://andromeda.metis.io/?owner=1088'
+  },
+  [BLOCKCHAIN_NAME.DFK]: {
+    name: 'DeFi Kingdoms',
+    rpc: 'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
   }
 };
