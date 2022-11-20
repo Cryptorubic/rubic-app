@@ -30,5 +30,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.OASIS]: false,
   [BLOCKCHAIN_NAME.METIS]: false,
   [BLOCKCHAIN_NAME.DFK]: false,
-  [BLOCKCHAIN_NAME.KLAYTN]: false
+  [BLOCKCHAIN_NAME.KLAYTN]: false,
+  [BLOCKCHAIN_NAME.VELAS]: false
 };

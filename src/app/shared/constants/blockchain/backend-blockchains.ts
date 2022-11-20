@@ -30,7 +30,8 @@ const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.OASIS]: 'oasis',
   [BLOCKCHAIN_NAME.METIS]: 'metis',
   [BLOCKCHAIN_NAME.DFK]: 'defikingdoms',
-  [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn'
+  [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+  [BLOCKCHAIN_NAME.VELAS]: 'velas'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
@@ -69,5 +70,6 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   oasis: BLOCKCHAIN_NAME.OASIS,
   metis: BLOCKCHAIN_NAME.METIS,
   defikingdoms: BLOCKCHAIN_NAME.DFK,
-  klaytn: BLOCKCHAIN_NAME.KLAYTN
+  klaytn: BLOCKCHAIN_NAME.KLAYTN,
+  velas: BLOCKCHAIN_NAME.VELAS
 };

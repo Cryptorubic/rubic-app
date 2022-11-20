@@ -834,5 +834,47 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       rank: 0.001,
       price: null
     }
+  ],
+  [BLOCKCHAIN_NAME.VELAS]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
+      name: 'Wrapped BTC',
+      symbol: 'WBTC',
+      decimals: 8,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0x80a16016cc4a2e6a2caca8a4a498b1699ff0f844',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0xc9baa8cfdde8e328787e29b4b078abf2dadc2055',
+      name: 'Binance USD',
+      symbol: 'BUSD',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
   ]
 };
