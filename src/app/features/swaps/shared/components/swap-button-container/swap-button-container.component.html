@@ -14,11 +14,15 @@
           <app-approve-swap-button
             (onApproveClick)="onApproveClick.emit()"
             (onSwapClick)="onSwapClick.emit()"
+            [buttonText]="buttonText"
           ></app-approve-swap-button>
         </ng-container>
 
         <ng-template #swapButton>
-          <app-swap-button (onClick)="onSwapClick.emit()"></app-swap-button>
+          <app-swap-button
+            (onClick)="onSwapClick.emit()"
+            [buttonText]="buttonText"
+          ></app-swap-button>
         </ng-template>
       </ng-container>
 

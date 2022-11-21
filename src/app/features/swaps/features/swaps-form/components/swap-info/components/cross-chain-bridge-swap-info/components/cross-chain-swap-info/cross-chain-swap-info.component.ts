@@ -157,7 +157,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
         ? Math.max(this.priceImpactFrom, this.priceImpactTo)
         : null;
     this.priceImpactService.setPriceImpact(maxPriceImpact);
-    this.swapButtonService.setupPriceImpactCalculation();
   }
 
   private setTradeInfoParams(nativeCoinPrice: number): void {

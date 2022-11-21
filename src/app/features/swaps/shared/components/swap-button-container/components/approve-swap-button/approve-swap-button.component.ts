@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
   selector: 'app-approve-swap-button',
@@ -11,5 +11,5 @@ export class ApproveSwapButtonComponent {
 
   @Output() readonly onSwapClick = new EventEmitter<void>();
 
-  constructor() {}
+  @Input() buttonText: string;
 }
