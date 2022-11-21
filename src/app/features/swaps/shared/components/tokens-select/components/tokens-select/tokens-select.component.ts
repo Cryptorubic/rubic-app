@@ -345,6 +345,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     }
 
     this.searchQueryLoading = false;
+    this.cdr.detectChanges();
   }
 
   /**

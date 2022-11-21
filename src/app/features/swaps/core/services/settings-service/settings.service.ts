@@ -174,9 +174,7 @@ export class SettingsService {
           return this.settingsForm.valueChanges.pipe(startWith(this.settingsForm.value));
         })
       )
-      .subscribe(form => {
-        this.storeService.setItem('settings', this.serializeForm(form));
-      });
+      .subscribe(form => this.saveSettingsToLocalStorage(form));
 
     this.targetNetworkAddressService.isAddressRequired$.subscribe(isAddressRequired => {
       if (isAddressRequired) {
@@ -240,5 +238,11 @@ export class SettingsService {
     }
 
     return true;
+  }
+
+  public saveSettingsToLocalStorage(
+    form: ControlsValue<SettingsForm> = this.settingsForm.value
+  ): void {
+    this.storeService.setItem('settings', this.serializeForm(form));
   }
 }
