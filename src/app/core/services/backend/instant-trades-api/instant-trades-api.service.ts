@@ -9,7 +9,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';
-import { BlockchainName, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, LifiTrade, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
@@ -76,9 +76,13 @@ export class InstantTradesApiService {
       toAddress: toAddress,
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
+    let backendProvider = BACKEND_PROVIDERS[provider];
+    if (trade instanceof LifiTrade) {
+      backendProvider = 'lifi';
+    }
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
-      provider: BACKEND_PROVIDERS[provider],
+      provider: backendProvider,
       from_token: options.fromAddress,
       to_token: options.toAddress,
       from_amount: options.fromAmount,
