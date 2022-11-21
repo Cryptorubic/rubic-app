@@ -9,6 +9,8 @@ import { correctAddressValidator } from './services/utils/correct-address-valida
 import { FormControl } from '@angular/forms';
 import { compareObjects, isNil } from '@app/shared/utils/utils';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { TuiNotification } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-target-network-address',
@@ -32,6 +34,7 @@ export class TargetNetworkAddressComponent implements OnInit {
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly swapFormService: SwapFormService,
+    private readonly notificationsService: NotificationsService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
@@ -67,7 +70,14 @@ export class TargetNetworkAddressComponent implements OnInit {
   }
 
   public async setValueFromClipboard(): Promise<void> {
-    const clipboardContent = await this.window.navigator.clipboard.readText();
-    this.address.patchValue(clipboardContent);
+    try {
+      const clipboardContent = await this.window.navigator.clipboard.readText();
+      this.address.patchValue(clipboardContent);
+    } catch (err) {
+      this.notificationsService.show('Failed to read from clipboard.', {
+        autoClose: 5000,
+        status: TuiNotification.Error
+      });
+    }
   }
 }
