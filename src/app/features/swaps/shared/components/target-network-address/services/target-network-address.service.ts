@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl } from '@ngneat/reactive-forms';
-import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { correctAddressValidator } from '@features/swaps/shared/components/target-network-address/services/utils/correct-address-validator';
@@ -51,7 +51,8 @@ export class TargetNetworkAddressService {
         distinctUntilChanged(
           (prev, cur) =>
             prev.fromBlockchain === cur.fromBlockchain && prev.toBlockchain === cur.toBlockchain
-        )
+        ),
+        filter(form => form.fromBlockchain !== null)
       )
       .subscribe(form => {
         const { fromBlockchain, toBlockchain } = form;

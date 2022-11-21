@@ -48,6 +48,9 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.MM_FINANCE]: 'MMFinance',
   [ON_CHAIN_TRADE_TYPE.MOJITO_SWAP]: 'MojitoSwap',
 
+  [ON_CHAIN_TRADE_TYPE.NET_SWAP]: 'NetSwap',
+
+  [ON_CHAIN_TRADE_TYPE.OMNIDEX]: 'Omnidex',
   [ON_CHAIN_TRADE_TYPE.ONE_INCH]: '1inch',
   [ON_CHAIN_TRADE_TYPE.ONE_MOON]: 'OneMoon',
   [ON_CHAIN_TRADE_TYPE.ONE_SOL]: '1sol',
@@ -100,5 +103,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: 'Zappy',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'ZipSwap',
-  [ON_CHAIN_TRADE_TYPE.ZRX]: '0x'
+  [ON_CHAIN_TRADE_TYPE.ZRX]: '0x',
+
+  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap'
 };

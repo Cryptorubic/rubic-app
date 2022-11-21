@@ -196,7 +196,7 @@ export class QueryParamsService {
     const blockchainNames = Object.values(BLOCKCHAIN_NAME);
     const fromChain = blockchainNames.includes(queryParams?.fromChain)
       ? queryParams.fromChain
-      : DEFAULT_PARAMETERS.swap.fromChain;
+      : this.swapFormService.inputValue.fromBlockchain || DEFAULT_PARAMETERS.swap.fromChain;
 
     const toChain = blockchainNames.includes(queryParams?.toChain)
       ? queryParams.toChain

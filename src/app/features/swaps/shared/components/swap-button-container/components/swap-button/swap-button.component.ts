@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   Self
@@ -21,6 +22,8 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
   providers: [TuiDestroyService]
 })
 export class SwapButtonComponent implements OnInit {
+  @Input() buttonText: string;
+
   @Output() readonly onClick = new EventEmitter<void>();
 
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
@@ -28,12 +31,6 @@ export class SwapButtonComponent implements OnInit {
   public readonly loading$ = this.swapButtonService.loading$;
 
   public readonly disabled$ = this.swapButtonService.disabled$;
-
-  public readonly warningMedium$ = this.swapButtonService.warningMedium$;
-
-  public readonly warningHigh$ = this.swapButtonService.warningHigh$;
-
-  public readonly buttonText$ = this.swapButtonService.buttonText$;
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
