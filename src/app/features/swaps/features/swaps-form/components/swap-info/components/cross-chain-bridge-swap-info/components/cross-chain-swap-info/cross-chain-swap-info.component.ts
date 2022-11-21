@@ -61,6 +61,18 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public nativeCoinDecimals: number;
 
+  public get withPlatformFee(): boolean {
+    return this?.feeInfo?.platformFee?.percent && this?.feeInfo?.platformFee?.percent !== 0;
+  }
+
+  public get withFixedFee(): boolean {
+    return Boolean(this?.feeInfo?.fixedFee?.amount);
+  }
+
+  public get withCryptoFee(): boolean {
+    return Boolean(this?.feeInfo?.cryptoFee?.amount);
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
