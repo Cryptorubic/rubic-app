@@ -695,7 +695,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
     isSelected?: boolean
   ): void {
     this.tradeStatus = tradeStatus;
-    const trade = this.providersData.find(providerData => providerData.name === providerName).trade;
+    const trade = this.providersData.find(
+      providerData => providerData.name === providerName
+    )?.trade;
     const isProxy = trade instanceof EvmOnChainTrade && trade.useProxy;
 
     this.providersData = this.providersData.map(providerData => {
