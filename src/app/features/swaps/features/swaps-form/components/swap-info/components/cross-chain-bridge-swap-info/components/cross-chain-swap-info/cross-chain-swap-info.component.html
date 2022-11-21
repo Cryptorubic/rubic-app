@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="info-line" *ngIf="withCryptoFee || withPlatformFee">
+<div class="info-line" *ngIf="withCryptoFee">
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img
@@ -26,12 +26,12 @@
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="withPlatformFee">{{ feeInfo.platformFee.percent }}%</ng-container>
-    <ng-container *ngIf="withPlatformFee && withCryptoFee"> + </ng-container>
-    <ng-container *ngIf="withCryptoFee">
-      {{ feeInfo.cryptoFee.amount | bigNumberFormat | withRound: 'toClosestValue' }}&nbsp;
-      {{ feeInfo.cryptoFee.tokenSymbol }}
+    <ng-container *ngIf="isBridgers">
+      <ng-container>{{ feeInfo.platformFee.percent }}%</ng-container>
+      <ng-container> + </ng-container>
     </ng-container>
+    {{ feeInfo.cryptoFee.amount | bigNumberFormat | withRound: 'toClosestValue' }}&nbsp;
+    {{ feeInfo.cryptoFee.tokenSymbol }}
   </div>
 </div>
 
@@ -46,6 +46,9 @@
   </div>
 
   <div class="info-line__value">
+    <ng-container *ngIf="!isBridgers && withPlatformFee">
+      {{ feeInfo.platformFee.percent }}%
+    </ng-container>
     <ng-container *ngIf="withFixedFee; else zero">
       {{
         feeInfo.fixedFee.amount
