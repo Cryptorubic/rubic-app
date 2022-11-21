@@ -34,6 +34,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}arth.png`,
     color: '#00C6EE'
   },
+  [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: {
+    name: 'AstroSwap',
+    image: `${imageBasePath}astroswap.png`,
+    color: '#adaaaa'
+  },
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
     name: 'AuroraSwap',
     image: `${imageBasePath}auroraswap.svg`,
@@ -414,7 +419,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
 
   [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: {
     name: 'WagyuSwap',
-    image: `${imageBasePath}wagyuswap.svg`,
+    image: `${imageBasePath}wagyuswap.png`,
     color: '#DE2549'
   },
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: {

@@ -7,6 +7,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ANNEX]: 'Annex',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'ApeSwap',
   [ON_CHAIN_TRADE_TYPE.ARTH_SWAP]: 'ArthSwap',
+  [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: 'AstroSwap',
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
 
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: 'BabySwap',
