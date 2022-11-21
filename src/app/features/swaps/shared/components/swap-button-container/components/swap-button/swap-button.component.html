@@ -1,14 +1,10 @@
 <app-rubic-button
   [class]="idPrefix + 'button-swap'"
-  [ngClass]="{
-    'button-swap_warning-medium': warningMedium$ | async,
-    'button-swap_warning-high': warningHigh$ | async
-  }"
   appearance="secondary"
   [loading]="loading$ | async"
   [disabled]="disabled$ | async"
   (onClick)="onSwapClick()"
   (onHoveredChange)="onHoveredChange($event)"
 >
-  {{ buttonText$ | async }}
+  {{ buttonText }}
 </app-rubic-button>

@@ -98,7 +98,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.ZAPPY,
-      ON_CHAIN_TRADE_TYPE.APE_SWAP
+      ON_CHAIN_TRADE_TYPE.APE_SWAP,
+      ON_CHAIN_TRADE_TYPE.OMNIDEX
     ]),
     [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ZRX]),
     [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
@@ -133,7 +134,11 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.KAVA]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.JUPITER_SWAP,
-      ON_CHAIN_TRADE_TYPE.PHOTON_SWAP
+      ON_CHAIN_TRADE_TYPE.PHOTON_SWAP,
+      ON_CHAIN_TRADE_TYPE.ELK,
+      ON_CHAIN_TRADE_TYPE.SURFDEX
     ]),
-    [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS])
+    [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS]),
+    [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.YUZU_SWAP]),
+    [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.NET_SWAP])
   };

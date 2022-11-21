@@ -10,7 +10,7 @@ export interface SwapForm extends ISwapForm {
 }
 
 export interface SwapFormInput extends ISwapFormInput {
-  fromBlockchain: BlockchainName;
+  fromBlockchain: BlockchainName | null;
   toBlockchain: BlockchainName;
   fromToken: TokenAmount;
   toToken: TokenAmount;

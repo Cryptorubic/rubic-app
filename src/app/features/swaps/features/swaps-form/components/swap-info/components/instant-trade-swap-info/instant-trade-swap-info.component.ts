@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Self, Input } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
@@ -15,7 +14,6 @@ import {
   PriceTokenAmount,
   TokenAmountSymbol
 } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -75,11 +73,9 @@ export class InstantTradeSwapInfoComponent {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService,
     private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
     private readonly withRoundPipe: WithRoundPipe,
-    private readonly swapButtonService: SwapButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.rateType = 'fromTokenRate';
@@ -129,6 +125,5 @@ export class InstantTradeSwapInfoComponent {
       this.priceImpact = null;
     }
     this.priceImpactService.setPriceImpact(this.priceImpact);
-    this.swapButtonService.setupPriceImpactCalculation();
   }
 }

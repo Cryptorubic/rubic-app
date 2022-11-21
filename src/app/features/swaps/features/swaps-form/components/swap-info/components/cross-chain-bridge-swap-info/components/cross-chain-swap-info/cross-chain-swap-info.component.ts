@@ -147,7 +147,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
         ? Math.max(this.priceImpactFrom, this.priceImpactTo)
         : null;
     this.priceImpactService.setPriceImpact(maxPriceImpact);
-    this.swapButtonService.setupPriceImpactCalculation();
   }
 
   private setTradeInfoParams(nativeCoinPrice: number): void {
@@ -173,11 +172,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
       this.slippage = 0;
     }
 
-    if ('total' in tradeInfo.priceImpact) {
-      this.priceImpact = tradeInfo.priceImpact.total;
-      this.priceImpactService.setPriceImpact(this.priceImpact);
-    } else if (tradeInfo.priceImpact) {
-      this.setTwoWayPriceImpact(tradeInfo.priceImpact.from, tradeInfo.priceImpact.to);
+    if (tradeInfo.priceImpact) {
+      if ('total' in tradeInfo.priceImpact) {
+        this.priceImpact = tradeInfo.priceImpact.total;
+        this.priceImpactService.setPriceImpact(this.priceImpact);
+      } else {
+        this.setTwoWayPriceImpact(tradeInfo.priceImpact.from, tradeInfo.priceImpact.to);
+      }
     } else {
       this.priceImpact = 0;
     }
