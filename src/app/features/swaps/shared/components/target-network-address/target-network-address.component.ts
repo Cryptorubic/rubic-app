@@ -1,16 +1,24 @@
+/* eslint-disable unused-imports/no-unused-imports */
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  pairwise,
+  startWith
+} from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { combineLatest } from 'rxjs';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { correctAddressValidator } from './services/utils/correct-address-validator';
 import { FormControl } from '@angular/forms';
 import { compareObjects, isNil } from '@app/shared/utils/utils';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
+import { combineLatest } from 'rxjs';
+import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 
 @Component({
   selector: 'app-target-network-address',
@@ -44,18 +52,15 @@ export class TargetNetworkAddressComponent implements OnInit {
   }
 
   private subsctibeOnFormValues(): void {
-    combineLatest([
-      this.swapFormService.inputControls.fromToken.valueChanges,
-      this.swapFormService.inputControls.toToken.valueChanges
-    ])
+    this.swapFormService.inputValueChanges
       .pipe(
-        filter(form => !form.some(value => isNil(value))),
-        map((form: [TokenAmount, TokenAmount]) => {
-          return form.map(value => {
-            return { address: value.address.toLocaleLowerCase(), blockchain: value.blockchain };
-          });
-        }),
-        distinctUntilChanged((prev, curr) => compareObjects(prev, curr))
+        filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
+        distinctUntilChanged((prev, curr) => {
+          return (
+            compareObjects(prev.fromToken, curr.fromToken) &&
+            compareObjects(prev.toToken, curr.toToken)
+          );
+        })
       )
       .subscribe(() => {
         this.address.patchValue(null);
