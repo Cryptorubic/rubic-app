@@ -25,9 +25,16 @@
   }
 
   ::ng-deep .network-container {
-    &__input-status-icon {
+    &__input-status-icon,
+    &__input-clipboard-icon {
       width: 26px;
       height: 26px;
+    }
+
+    &__input-clipboard-icon {
+      cursor: pointer;
+
+      pointer-events: all;
     }
 
     &__iframe-input {

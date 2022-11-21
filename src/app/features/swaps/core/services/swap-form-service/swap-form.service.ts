@@ -13,6 +13,7 @@ import {
 } from '@features/swaps/features/swaps-form/models/swap-form';
 import { first, map, share } from 'rxjs/operators';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
+import { AbstractControlsOf } from '@ngneat/reactive-forms/lib/types';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
@@ -23,6 +24,10 @@ export class SwapFormService implements FormService {
 
   public get input(): FormGroup<SwapFormInput> {
     return this.commonTrade.controls.input;
+  }
+
+  public get inputControls(): AbstractControlsOf<SwapFormInput> {
+    return this.input.controls;
   }
 
   public get inputValue(): SwapFormInput {
