@@ -271,6 +271,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}paraswap.svg`,
     color: '#2e58b0'
   },
+  [ON_CHAIN_TRADE_TYPE.PEGASYS]: {
+    name: 'Pegasys',
+    image: `${imageBasePath}pegasys.png`,
+    color: '#2CC4D2'
+  },
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: {
     name: 'PhotonSwap',
     image: `${imageBasePath}photonswap.png`,
