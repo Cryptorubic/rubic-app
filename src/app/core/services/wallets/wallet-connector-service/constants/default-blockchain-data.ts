@@ -97,5 +97,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.VELAS]: {
     name: 'Velas',
     rpc: 'https://evmexplorer.velas.com/rpc'
+  },
+  [BLOCKCHAIN_NAME.SYSCOIN]: {
+    name: 'Syscoin',
+    rpc: 'https://rpc.syscoin.org'
   }
 };

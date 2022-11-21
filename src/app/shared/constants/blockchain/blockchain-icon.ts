@@ -33,5 +33,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.METIS]: `${basePath}metis.svg`,
   [BLOCKCHAIN_NAME.DFK]: `${basePath}dfk.png`,
   [BLOCKCHAIN_NAME.KLAYTN]: `${basePath}klaytn.png`,
-  [BLOCKCHAIN_NAME.VELAS]: `${basePath}velas.png`
+  [BLOCKCHAIN_NAME.VELAS]: `${basePath}velas.png`,
+  [BLOCKCHAIN_NAME.SYSCOIN]: `${basePath}syscoin.svg`
 };

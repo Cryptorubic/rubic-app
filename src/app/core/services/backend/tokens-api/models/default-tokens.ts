@@ -876,5 +876,57 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       rank: 0.001,
       price: null
     }
+  ],
+  [BLOCKCHAIN_NAME.SYSCOIN]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0xd3e822f3ef011ca5f17d82c956d952d8d7c3a1bb',
+      name: 'Wrapped SYS',
+      symbol: 'WSYS',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0xe18c200a70908c89ffa18c628fe1b83ac0065ea4',
+      name: 'Pegasys',
+      symbol: 'PSYS',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x7c598c96d02398d89fbcb9d41eab3df0c16f227d',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
+      name: 'LUXY',
+      symbol: 'LUXY',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
   ]
 };

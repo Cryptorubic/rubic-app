@@ -89,5 +89,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://klaytn04.fandom.finance',
     'https://klaytn05.fandom.finance'
   ],
-  [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc']
+  [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
+  [BLOCKCHAIN_NAME.SYSCOIN]: [
+    'https://rpc.syscoin.org',
+    'wss://rpc.syscoin.org/wss',
+    'https://rpc.ankr.com/syscoin'
+  ]
 };
