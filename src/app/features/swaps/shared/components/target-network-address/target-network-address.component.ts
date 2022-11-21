@@ -1,13 +1,5 @@
-/* eslint-disable unused-imports/no-unused-imports */
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  pairwise,
-  startWith
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
@@ -17,8 +9,6 @@ import { FormControl } from '@angular/forms';
 import { compareObjects, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
-import { combineLatest } from 'rxjs';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 
 @Component({
   selector: 'app-target-network-address',
