@@ -412,6 +412,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#2B3852'
   },
 
+  [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: {
+    name: 'WagyuSwap',
+    image: `${imageBasePath}wagyuswap.svg`,
+    color: '#DE2549'
+  },
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.svg`,

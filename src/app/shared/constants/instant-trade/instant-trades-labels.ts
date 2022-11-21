@@ -98,6 +98,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.VOLTAGE_SWAP]: 'VoltageSwap',
   [ON_CHAIN_TRADE_TYPE.VVS_FINANCE]: 'VVSFinance',
 
+  [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: 'WagyuSwap',
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: 'WannaSwap',
   [ON_CHAIN_TRADE_TYPE.WAULT_SWAP]: 'WaultSwap',
   [ON_CHAIN_TRADE_TYPE.WOO_FI]: 'WooFi',

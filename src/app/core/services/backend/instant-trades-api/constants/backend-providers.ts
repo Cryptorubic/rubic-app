@@ -78,6 +78,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SURFDEX]: 'surfdex',
   [ON_CHAIN_TRADE_TYPE.TRADER]: 'defikingdoms',
   [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: 'claimswap',
+  [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: 'wagyuswap',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
