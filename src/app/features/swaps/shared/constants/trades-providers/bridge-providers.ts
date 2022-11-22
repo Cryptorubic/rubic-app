@@ -152,5 +152,10 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Open Ocean',
     image: `${imageBasePath}openocean.png`,
     color: '#15D9E1'
+  },
+  [BRIDGE_TYPE.XY]: {
+    name: 'XY',
+    image: `${imageBasePath}xy.svg`,
+    color: '#1687ee'
   }
 };
