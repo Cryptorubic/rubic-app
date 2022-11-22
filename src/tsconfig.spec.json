@@ -16,6 +16,7 @@
       "crypto": ["node_modules/crypto-browserify"],
       "fs": ["node_modules/browserify-fs"],
       "path": ["node_modules/path-browserify"],
+      "zlib": ["node_modules/browserify-zlib"],
       "@app/*": ["src/app/*"],
       "@core/*": ["src/app/core/*"],
       "@features/*": ["src/app/features/*"],

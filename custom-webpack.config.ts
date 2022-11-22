@@ -17,6 +17,9 @@ export default (
 
     if (sdkDirectoryExists) {
       if (sdkBundleExists) {
+        config.resolve.fallback = {
+          zlib: false
+        };
         config.resolve.alias = {
           ...config.resolve.alias,
           'rubic-sdk': path.resolve(__dirname, sdkDirectory)

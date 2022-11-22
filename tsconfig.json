@@ -32,6 +32,7 @@
       "http": ["./node_modules/stream-http"],
       "crypto": ["./node_modules/crypto-browserify"],
       "url": ["./node_modules/url"],
+      "zlib": ["./node_modules/browserify-zlib"],
       "@app/*": ["./src/app/*"],
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],

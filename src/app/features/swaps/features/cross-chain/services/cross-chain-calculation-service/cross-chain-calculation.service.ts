@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
 import {
   BlockchainName,
@@ -119,7 +120,17 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders,
+      disabledProviders: [
+        'bridgers',
+        'cbridge',
+        'debridge',
+        'lifi',
+        'multichain',
+        'rango',
+        'symbiosis',
+        'via',
+        'xy'
+      ],
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress })
