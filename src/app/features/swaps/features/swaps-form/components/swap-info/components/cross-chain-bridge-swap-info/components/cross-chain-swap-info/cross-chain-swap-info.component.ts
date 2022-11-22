@@ -10,7 +10,6 @@ import { from, of } from 'rxjs';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import {
   Web3Pure,
   BlockchainsInfo as SdkBlockchainsInfo,
@@ -61,12 +60,23 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public nativeCoinDecimals: number;
 
+  public get withPlatformFee(): boolean {
+    return this?.feeInfo?.platformFee?.percent && this.feeInfo.platformFee.percent !== 0;
+  }
+
+  public get withFixedFee(): boolean {
+    return Boolean(this?.feeInfo?.fixedFee?.amount);
+  }
+
+  public get withCryptoFee(): boolean {
+    return Boolean(this?.feeInfo?.cryptoFee?.amount);
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
     private readonly crossChainFormService: CrossChainFormService,
-    private readonly settingsService: SettingsService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
     private readonly swapButtonService: SwapButtonService,

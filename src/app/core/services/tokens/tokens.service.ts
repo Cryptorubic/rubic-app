@@ -556,7 +556,7 @@ export class TokensService {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network: blockchain,
-        page: this._tokensNetworkState$.value[blockchain].page
+        page: this._tokensNetworkState$.value[blockchain].page + 1
       })
       .pipe(
         tap(() => this.updateNetworkPage(blockchain)),
