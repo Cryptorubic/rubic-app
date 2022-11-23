@@ -235,7 +235,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.DFK]: {
-    baseUrl: 'https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer',
+    baseUrl: 'https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -243,7 +243,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.KLAYTN]: {
-    baseUrl: 'https://scope.klaytn.com',
+    baseUrl: 'https://scope.klaytn.com/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -259,7 +259,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.SYSCOIN]: {
-    baseUrl: 'https://explorer.syscoin.org',
+    baseUrl: 'https://explorer.syscoin.org/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
