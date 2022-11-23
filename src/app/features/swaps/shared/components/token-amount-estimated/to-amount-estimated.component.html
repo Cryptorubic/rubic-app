@@ -16,7 +16,7 @@
           <span class="blink-animation">Loading</span>
         </ng-container>
 
-        <ng-container *ngIf="toAmount?.gt(0)">
+        <ng-container *ngIf="toAmount?.gt(0) && !errorText">
           {{
             toAmount
               | bigNumberFormat
