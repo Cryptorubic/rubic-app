@@ -10,9 +10,11 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import {
   BLOCKCHAIN_NAME,
   BridgersTrade,
+  EvmOnChainTrade,
+  OnChainPlatformFee,
   OnChainTrade,
   PriceTokenAmount,
-  TokenAmountSymbol
+  TokenAmount
 } from 'rubic-sdk';
 
 @Component({
@@ -41,9 +43,11 @@ export class InstantTradeSwapInfoComponent {
 
   public isBridgers: boolean;
 
-  public cryptoFeeToken: TokenAmountSymbol;
+  public cryptoFeeToken: TokenAmount;
 
-  public platformFeePercent: number;
+  public fixedFeeToken: TokenAmount;
+
+  public platformFee: OnChainPlatformFee;
 
   public get rate(): string {
     const { fromAmount, fromToken, toToken } = this.swapFormService.inputValue;
@@ -91,14 +95,18 @@ export class InstantTradeSwapInfoComponent {
       this.slippage = trade.slippageTolerance * 100;
       this.path = trade?.path?.map(token => token.symbol);
       this.setPriceImpact();
-
       this.toToken = trade.to;
+
+      if (trade instanceof EvmOnChainTrade) {
+        this.fixedFeeToken = trade.proxyFeeInfo?.fixedFeeToken;
+        this.platformFee = trade.proxyFeeInfo?.platformFee;
+      }
+
+      this.isBridgers = trade instanceof BridgersTrade;
       if (trade instanceof BridgersTrade) {
         this.isBridgers = true;
-        if (this.isBridgers) {
-          this.cryptoFeeToken = trade.cryptoFeeToken;
-          this.platformFeePercent = trade.platformFeePercent;
-        }
+        this.cryptoFeeToken = trade.cryptoFeeToken;
+        this.platformFee = trade.platformFee;
       } else {
         this.isBridgers = false;
       }

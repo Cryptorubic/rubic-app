@@ -542,8 +542,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     const amountInUsd = to?.tokenAmount.multipliedBy(to.price);
     const gasFeeInfo =
-      trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasFeeInUsd.isFinite()
-        ? trade.gasFeeInfo?.gasFeeInUsd
+      trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasFeeInUsd?.isFinite()
+        ? trade.gasFeeInfo.gasFeeInUsd
         : 0;
 
     return amountInUsd.minus(gasFeeInfo);
@@ -695,10 +695,20 @@ export class InstantTradeBottomFormComponent implements OnInit {
     isSelected?: boolean
   ): void {
     this.tradeStatus = tradeStatus;
+    const trade = this.providersData.find(
+      providerData => providerData.name === providerName
+    )?.trade;
+    const isProxy = trade instanceof EvmOnChainTrade && trade.useProxy;
 
     this.providersData = this.providersData.map(providerData => {
       if (providerData.name !== providerName) {
-        return providerData;
+        if (!isProxy) {
+          return providerData;
+        }
+        return {
+          ...providerData,
+          ...(needApprove !== undefined && { needApprove: needApprove })
+        };
       }
       return {
         ...providerData,
@@ -880,7 +890,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public getGas(selectedProvider: InstantTradeProviderData): BigNumber {
     const trade = selectedProvider.trade;
     return trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasFeeInUsd
-      ? trade.gasFeeInfo?.gasFeeInUsd
+      ? trade.gasFeeInfo.gasFeeInUsd
       : new BigNumber(0);
   }
 }

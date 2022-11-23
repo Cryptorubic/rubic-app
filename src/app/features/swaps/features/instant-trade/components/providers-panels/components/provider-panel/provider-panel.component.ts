@@ -59,11 +59,11 @@ export class ProviderPanelComponent implements OnInit {
 
   private setupTradePanelData(trade: OnChainTrade): void {
     const gas =
-      trade instanceof EvmOnChainTrade
+      trade instanceof EvmOnChainTrade && trade.gasFeeInfo?.gasLimit?.isFinite()
         ? {
-            gasLimit: trade.gasFeeInfo?.gasLimit.toFixed(),
-            gasFeeInUsd: trade.gasFeeInfo?.gasFeeInUsd,
-            gasFeeInEth: trade.gasFeeInfo?.gasFeeInEth
+            gasLimit: trade.gasFeeInfo.gasLimit.toFixed(),
+            gasFeeInUsd: trade.gasFeeInfo.gasFeeInUsd,
+            gasFeeInEth: trade.gasFeeInfo.gasFeeInEth
           }
         : {};
 
