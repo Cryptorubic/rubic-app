@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import {
   BLOCKCHAIN_NAME,
@@ -128,9 +127,6 @@ export class InstantTradeSwapInfoComponent {
         fromAmount,
         toAmount
       );
-    }
-    if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
-      this.priceImpact = null;
     }
     this.priceImpactService.setPriceImpact(this.priceImpact);
   }

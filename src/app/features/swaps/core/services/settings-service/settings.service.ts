@@ -22,7 +22,6 @@ export interface ItSettingsForm {
   slippageTolerance: number;
   deadline: number; // in minutes
   disableMultihops: boolean;
-  rubicOptimisation: boolean;
   autoRefresh: boolean;
   showReceiverAddress: boolean;
 }
@@ -115,7 +114,6 @@ export class SettingsService {
         this.parseSlippage(slippageIt) ?? this.defaultSlippageTolerance.instantTrades,
       deadline: 20,
       disableMultihops: false,
-      rubicOptimisation: true,
       autoRefresh: Boolean(this.authService?.user?.address),
       showReceiverAddress: false
     };
@@ -146,7 +144,6 @@ export class SettingsService {
         slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
         deadline: new FormControl<number>(this.defaultItSettings.deadline),
         disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
-        rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
         showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
       }),
