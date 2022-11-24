@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -47,7 +53,7 @@ type AvailableTokens = {
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapsFormComponent implements OnInit {
+export class SwapsFormComponent implements OnInit, OnDestroy {
   public isLoading = true;
 
   public tradeStatus: TRADE_STATUS;
@@ -322,5 +328,9 @@ export class SwapsFormComponent implements OnInit {
           this.gtmService.needTrackFormEventsNow = true;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.settingsService.saveSettingsToLocalStorage();
   }
 }

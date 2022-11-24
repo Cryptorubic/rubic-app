@@ -28,6 +28,11 @@ interface PlatformConfig {
   cross_chain_providers: {
     [provider: string]: CrossChainProviderStatus;
   };
+  on_chain_providers: {
+    proxy: {
+      active: boolean;
+    };
+  };
 }
 
 interface DisabledBridgeTypes {
@@ -63,6 +68,14 @@ export class PlatformConfigurationService {
     return this._availableBlockchains$.getValue();
   }
 
+  private readonly _useOnChainProxy$ = new BehaviorSubject<boolean>(undefined);
+
+  public readonly useOnChainProxy$ = this._useOnChainProxy$.asObservable();
+
+  public get useOnChainProxy(): boolean {
+    return this._useOnChainProxy$.getValue();
+  }
+
   constructor(private httpClient: HttpClient) {}
 
   public loadPlatformConfig(): Observable<boolean> {
@@ -71,6 +84,7 @@ export class PlatformConfigurationService {
         if (response.server_is_active === true) {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
+          this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
         }
       }),
       map(response => response.server_is_active),

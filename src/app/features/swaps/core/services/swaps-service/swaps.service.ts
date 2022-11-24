@@ -92,7 +92,7 @@ export class SwapsService {
   private setSwapProviderType(form: SwapFormInput): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
 
-    if (fromBlockchain === toBlockchain) {
+    if (!fromBlockchain || !toBlockchain || fromBlockchain === toBlockchain) {
       this.swapMode = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
     } else if (!fromToken || !toToken) {
       if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {

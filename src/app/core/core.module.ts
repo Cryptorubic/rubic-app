@@ -1,8 +1,8 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
@@ -17,6 +17,7 @@ import { HeaderModule } from './header/header.module';
 import { httpLoaderFactory, sdkLoader } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
 import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
+import * as Sentry from '@sentry/angular';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -38,7 +39,23 @@ import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
       useClass: RubicExchangeInterceptor,
       multi: true
     },
-    NG_EVENT_PLUGINS
+    NG_EVENT_PLUGINS,
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: false
+      })
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true
+    }
   ],
   imports: [
     CommonModule,
