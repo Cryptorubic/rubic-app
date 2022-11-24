@@ -322,6 +322,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * @param selectedToken Selected token.
    */
   public selectToken(selectedToken: AvailableTokenAmount): void {
+    this.tokensService.addToken(selectedToken);
     this.context.completeWith(selectedToken);
   }
 
@@ -338,13 +339,13 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
         this.updateTokensByQuery$.next();
       } else {
         this.filterFavoriteTokens();
+        this.searchQueryLoading = false;
       }
     } else {
       this.sortTokens();
       this.customToken = null;
+      this.searchQueryLoading = false;
     }
-
-    this.searchQueryLoading = false;
     this.cdr.detectChanges();
   }
 

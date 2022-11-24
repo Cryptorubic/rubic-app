@@ -49,7 +49,6 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -262,7 +261,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
       .pipe(
         distinctUntilChanged((prev, next) => {
           return (
-            prev.rubicOptimisation === next.rubicOptimisation &&
             prev.disableMultihops === next.disableMultihops &&
             prev.slippageTolerance === next.slippageTolerance
           );
@@ -665,26 +663,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   /**
-   * Returns usd cost of output token amount.
-   */
-  public getUsdPriceOfToAmount(toAmount?: BigNumber): BigNumber {
-    toAmount ||= this.toAmount;
-    if (!toAmount.isFinite() || !this.toToken) {
-      return null;
-    }
-    if (!this.toToken?.price) {
-      return new BigNumber(NaN);
-    }
-
-    const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken?.price);
-    const toTokenCost = toAmount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
-      return new BigNumber(NaN);
-    }
-    return toTokenCost;
-  }
-
-  /**
    * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
@@ -830,9 +808,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
         INSTANT_TRADE_STATUS.COMPLETED
       );
       this.cdr.detectChanges();
-
-      this.refreshService.stopInProgress();
     }
+
+    this.refreshService.stopInProgress();
   }
 
   private async getHiddenTradeAndApproveData(
