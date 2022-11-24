@@ -10141,6 +10141,14 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
+isomorphic-unfetch@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-3.1.0.tgz#87341d5f4f7b63843d468438128cb087b7c3e98f"
+  integrity sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==
+  dependencies:
+    node-fetch "^2.6.1"
+    unfetch "^4.2.0"
+
 isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
@@ -11921,11 +11929,6 @@ node-addon-api@^3.0.0, node-addon-api@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.2.1.tgz#81325e0a2117789c0128dab65e7e38f07ceba161"
   integrity sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==
-
-node-fetch-native@~0.1.0:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/node-fetch-native/-/node-fetch-native-0.1.8.tgz#19e2eaf6d86ac14e711ebd2612f40517c3468f2a"
-  integrity sha512-ZNaury9r0NxaT2oL65GvdGDy+5PlSaHTovT6JV5tOW07k1TQmgC0olZETa4C9KZg0+6zBr99ctTYa3Utqj9P/Q==
 
 node-fetch@2, node-fetch@2.6.7, node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.7:
   version "2.6.7"
@@ -14360,10 +14363,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.10.0.tgz#cbfff79073128b6596886b3fb46e871d1c36d5b5"
-  integrity sha512-xn6SLWqkuO4mY9RUGQk2Lc2XMr4g7h8hlFNjELRHXL1zt57+aIHMaQWcIkIe/omuIonwLeEE2l51/VEzia68Cg==
+rubic-sdk@3.10.4:
+  version "3.10.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.10.4.tgz#2d70e1a2a552c77380040afddf55187f985e3849"
+  integrity sha512-qVOC9RGIKN7hL3BmCz4Ro7QMda8SAr94JtfLA42J8NWGBt9uahGcWn2TyGdHUffv+SLkBW297MfItKGeAJQFhw==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -14374,7 +14377,7 @@ rubic-sdk@3.10.0:
     ethers "^5.6.8"
     rango-sdk-basic "^0.0.7"
     rxjs "^7.5.7"
-    symbiosis-js-sdk "2.8.13"
+    symbiosis-js-sdk "2.8.22"
     tronweb "^4.3.0"
     web3 "^1.8.0"
 
@@ -15726,10 +15729,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@2.8.13:
-  version "2.8.13"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.13.tgz#837829f59b2a770b3752c2f9734621b349510493"
-  integrity sha512-0K2y/9P4K9eAb6AbhB+ODKdMmUPGo7ArE0pnUpm6vHRwu05p3ZxTmlvk5V70s2tuBZD60mrUlqNsXdNJxsOGjw==
+symbiosis-js-sdk@2.8.22:
+  version "2.8.22"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.22.tgz#4ec0d90cc3f73fde0770ab05f3a0d13e832a8908"
+  integrity sha512-0YIIw3GoRblP/RZxX2ySqtBWnlloTZAQPds0o+Asnxu+EYY0xsOROoTJ4MGCaeMwkbYZ1DHO/61djA/fezX+iw==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
@@ -15737,9 +15740,9 @@ symbiosis-js-sdk@2.8.13:
     big.js "^5.2.2"
     bignumber.js "^9.0.1"
     decimal.js-light "^2.5.0"
+    isomorphic-unfetch "^3.1.0"
     jsbi "^3.1.1"
     lodash.flatmap "^4.5.0"
-    node-fetch-native "~0.1.0"
     tiny-invariant "^1.1.0"
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
@@ -16393,6 +16396,11 @@ underscore@~1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.6.0.tgz#8b38b10cacdef63337b8b24e4ff86d45aea529a8"
   integrity sha512-z4o1fvKUojIWh9XuaVLUDdf86RQiq13AC1dmHbTpoyuu+bquHms76v16CjycCbec87J7z0k//SiQVk0sMdFmpQ==
+
+unfetch@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
+  integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
 unherit@^1.0.4:
   version "1.1.3"
