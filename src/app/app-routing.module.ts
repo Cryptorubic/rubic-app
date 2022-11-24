@@ -2,12 +2,19 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
-import { TimeGuard } from './shared/guards/time.guard';
+import { TimeGuard } from '@shared/guards/time.guard';
 
 const routes: Routes = [
   {
     path: ROUTE_PATH.NONE,
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
+  },
+  {
+    path: 'onramper',
+    loadChildren: () =>
+      import('./features/onramper-exchange/onramper-exchanger.module').then(
+        m => m.OnramperExchangerModule
+      )
   },
   {
     path: ROUTE_PATH.BYT_CRYPTO,
