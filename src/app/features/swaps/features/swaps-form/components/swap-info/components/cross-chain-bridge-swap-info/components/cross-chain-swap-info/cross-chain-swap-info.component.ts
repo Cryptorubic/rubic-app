@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { from, of } from 'rxjs';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
 import {
@@ -144,13 +143,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
    */
   private setTwoWayPriceImpact(priceImpactFrom: number, priceImpactTo: number): void {
     this.priceImpactFrom = priceImpactFrom;
-    if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {
-      this.priceImpactFrom = null;
-    }
     this.priceImpactTo = priceImpactTo;
-    if (this.priceImpactTo < -PERMITTED_PRICE_DIFFERENCE * 100) {
-      this.priceImpactTo = null;
-    }
 
     const maxPriceImpact =
       this.priceImpactFrom !== null || this.priceImpactTo !== null

@@ -184,6 +184,11 @@ export class InstantTradeService extends TradeCalculationService {
       blockchain: BlockchainName;
     }
   ): Promise<Array<OnChainTrade | OnChainTradeError>> {
+    const settings = this.settingsService.instantTradeValue;
+    const slippageTolerance = settings.slippageTolerance / 100;
+    const disableMultihops = settings.disableMultihops;
+    const deadlineMinutes = settings.deadline;
+
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const calculateGas =
       shouldCalculateGas[fromToken.blockchain] &&
@@ -194,9 +199,11 @@ export class InstantTradeService extends TradeCalculationService {
 
     return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
-      slippageTolerance: this.settingsService.instantTradeValue.slippageTolerance / 100,
       gasCalculation: calculateGas ? 'calculate' : 'disabled',
       zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
+      slippageTolerance,
+      disableMultihops,
+      deadlineMinutes,
       useProxy
     });
   }
