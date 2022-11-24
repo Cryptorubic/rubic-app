@@ -770,5 +770,163 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.NEAR]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token,
     { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.DFK]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.DFK,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'JEWEL',
+      symbol: 'JEWEL',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.DFK,
+      address: '0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260',
+      name: 'Wrapped JEWEL',
+      symbol: 'WJEWEL',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
+  ],
+  [BLOCKCHAIN_NAME.KLAYTN]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'KLAY',
+      symbol: 'KLAY',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x3f56e0c36d275367b8c502090edf38289b3dea0d',
+      name: 'Mai stablecoin',
+      symbol: 'MAI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0xdfa46478f9e5ea86d57387849598dbfb2e964b02',
+      name: 'QiDao',
+      symbol: 'QI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.KLAYTN,
+      address: '0x5096db80b21ef45230c9e423c373f1fc9c0198dd',
+      name: 'WEMIX classic',
+      symbol: 'WEMIX',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
+  ],
+  [BLOCKCHAIN_NAME.VELAS]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
+      name: 'Wrapped BTC',
+      symbol: 'WBTC',
+      decimals: 8,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0x80a16016cc4a2e6a2caca8a4a498b1699ff0f844',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.VELAS,
+      address: '0xc9baa8cfdde8e328787e29b4b078abf2dadc2055',
+      name: 'Binance USD',
+      symbol: 'BUSD',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
+  ],
+  [BLOCKCHAIN_NAME.SYSCOIN]: [
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0xd3e822f3ef011ca5f17d82c956d952d8d7c3a1bb',
+      name: 'Wrapped SYS',
+      symbol: 'WSYS',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0xe18c200a70908c89ffa18c628fe1b83ac0065ea4',
+      name: 'Pegasys',
+      symbol: 'PSYS',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x7c598c96d02398d89fbcb9d41eab3df0c16f227d',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.SYSCOIN,
+      address: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
+      name: 'LUXY',
+      symbol: 'LUXY',
+      decimals: 18,
+      image: '',
+      rank: 0.001,
+      price: null
+    }
   ]
 };

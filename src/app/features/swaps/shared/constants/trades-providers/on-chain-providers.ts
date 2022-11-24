@@ -34,6 +34,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}arth.png`,
     color: '#00C6EE'
   },
+  [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: {
+    name: 'AstroSwap',
+    image: `${imageBasePath}astroswap.png`,
+    color: '#adaaaa'
+  },
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
     name: 'AuroraSwap',
     image: `${imageBasePath}auroraswap.svg`,
@@ -66,6 +71,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: ''
   },
 
+  [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: {
+    name: 'ClaimSwap',
+    image: `${imageBasePath}claimswap.png`,
+    color: '#181E6A'
+  },
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: {
     name: 'CremaFinance',
     image: `${imageBasePath}cremafinance.ico`,
@@ -261,6 +271,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}paraswap.svg`,
     color: '#2e58b0'
   },
+  [ON_CHAIN_TRADE_TYPE.PEGASYS]: {
+    name: 'Pegasys',
+    image: `${imageBasePath}pegasys.png`,
+    color: '#2CC4D2'
+  },
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: {
     name: 'PhotonSwap',
     image: `${imageBasePath}photonswap.png`,
@@ -364,6 +379,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#E05DAA'
   },
 
+  [ON_CHAIN_TRADE_TYPE.TRADER]: {
+    name: 'The Trader',
+    image: `${imageBasePath}sushiswap.svg`,
+    color: '#E05DAA'
+  },
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
@@ -402,6 +422,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#2B3852'
   },
 
+  [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: {
+    name: 'WagyuSwap',
+    image: `${imageBasePath}wagyuswap.png`,
+    color: '#DE2549'
+  },
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.svg`,

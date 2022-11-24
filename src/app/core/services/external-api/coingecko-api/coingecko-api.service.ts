@@ -19,7 +19,11 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.BITGERT,
   BLOCKCHAIN_NAME.OASIS,
-  BLOCKCHAIN_NAME.METIS
+  BLOCKCHAIN_NAME.METIS,
+  BLOCKCHAIN_NAME.DFK,
+  BLOCKCHAIN_NAME.KLAYTN,
+  BLOCKCHAIN_NAME.VELAS,
+  BLOCKCHAIN_NAME.SYSCOIN
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -49,7 +53,11 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis'
+      [BLOCKCHAIN_NAME.METIS]: 'metis',
+      [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
+      [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+      [BLOCKCHAIN_NAME.VELAS]: 'velas',
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
     };
 
     this.tokenBlockchainId = {
@@ -66,7 +74,11 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis'
+      [BLOCKCHAIN_NAME.METIS]: 'metis',
+      [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
+      [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+      [BLOCKCHAIN_NAME.VELAS]: 'velas',
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
     };
   }
 

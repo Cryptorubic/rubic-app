@@ -75,5 +75,21 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://chainrpc.com'
   ],
   [BLOCKCHAIN_NAME.OASIS]: ['https://emerald.oasis.dev'],
-  [BLOCKCHAIN_NAME.METIS]: ['https://andromeda.metis.io/?owner=1088']
+  [BLOCKCHAIN_NAME.METIS]: ['https://andromeda.metis.io/?owner=1088'],
+  [BLOCKCHAIN_NAME.DFK]: [
+    'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc',
+    'https://avax-dfk.gateway.pokt.network/v1/lb/6244818c00b9f0003ad1b619/ext/bc/q2aTwKuyzgs8pynF7UXBZCU7DejbZbZ6EUyHr3JQzYgwNPUPi/rpc'
+  ],
+  [BLOCKCHAIN_NAME.KLAYTN]: [
+    'https://rpc.ankr.com/klaytn/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://public-node-api.klaytnapi.com/v1/cypress',
+    'https://cypress.fandom.finance/archive',
+    'https://klaytn01.fandom.finance',
+    'https://klaytn02.fandom.finance',
+    'https://klaytn03.fandom.finance',
+    'https://klaytn04.fandom.finance',
+    'https://klaytn05.fandom.finance'
+  ],
+  [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
+  [BLOCKCHAIN_NAME.SYSCOIN]: ['https://rpc.syscoin.org', 'https://rpc.ankr.com/syscoin']
 };
