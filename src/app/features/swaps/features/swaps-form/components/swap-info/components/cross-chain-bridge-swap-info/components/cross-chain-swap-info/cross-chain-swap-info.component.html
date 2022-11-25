@@ -46,16 +46,16 @@
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="feeInfo?.proxy?.platformFee?.percent">
-      {{ feeInfo.proxy.platformFee.percent }}%
+    <ng-container *ngIf="feeInfo?.rubicProxy?.platformFee?.percent">
+      {{ feeInfo.rubicProxy.platformFee.percent }}%
     </ng-container>
-    <ng-container *ngIf="feeInfo?.proxy?.fixedFee?.amount.gt(0); else zero">
+    <ng-container *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0); else zero">
       {{
-        feeInfo.proxy.fixedFee.amount
+        feeInfo.rubicProxy.fixedFee.amount
           | bigNumberFormat
           | withRound: 'toClosestValue':{ decimals: nativeCoinDecimals }
       }}&nbsp;
-      {{ feeInfo.proxy.fixedFee.tokenSymbol }}
+      {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
     </ng-container>
     <ng-template #zero> 0% </ng-template>
   </div>
