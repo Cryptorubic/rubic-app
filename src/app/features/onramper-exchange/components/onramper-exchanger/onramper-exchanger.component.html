@@ -1,30 +1,4 @@
-<div class="onramper-form">
-  <main class="onramper-form__container">
-    <app-token-amount-input
-      *noFrame="'vertical'"
-      [loading]="false"
-      [tokens]="[]"
-      [favoriteTokens]="[]"
-    ></app-token-amount-input>
-
-    <div class="onramper-form__delimiter"></div>
-
-    <section class="onramper-form__bottom-form bottom-form">
-      <div class="bottom-form__output">
-        <app-rubic-tokens
-          [loading]="false"
-          formType="to"
-          [tokens]="[]"
-          [favoriteTokens]="[]"
-          [formService]="swapFormService"
-        ></app-rubic-tokens>
-
-        <app-to-amount-estimated></app-to-amount-estimated>
-      </div>
-
-      <div class="bottom-form__buttons">
-        <div class="bottom-form__button"></div>
-      </div>
-    </section>
-  </main>
+<div class="onramper-exchanger">
+  <!--  <app-exchanger-form></app-exchanger-form>-->
+  <app-onramper-widget></app-onramper-widget>
 </div>

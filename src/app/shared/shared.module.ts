@@ -67,6 +67,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
 import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
 
 @NgModule({
   declarations: [
@@ -110,6 +111,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     ThemedIconPipe,
     FalsyPipe,
     FunctionCallPipe,
+    SafeSanitizerPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
@@ -183,8 +185,9 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     FunctionCallPipe,
     StatusBadgeComponent,
     ChipsComponent,
-    IframeLogoutButtonComponent
+    IframeLogoutButtonComponent,
+    SafeSanitizerPipe
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
 export class SharedModule {}
