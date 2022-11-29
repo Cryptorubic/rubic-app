@@ -3,6 +3,7 @@
   [ngClass]="{
     'bottom-amount__output_error': errorText
   }"
+  *ngLet="toAmount$ | async as toAmount"
 >
   <ng-container *ngIf="toAmount?.gt(0) && !errorText">
     {{

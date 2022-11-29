@@ -27,6 +27,8 @@ export class ExchangerFormService {
 
   public readonly input = this.form.controls.input;
 
+  public readonly output = this.form.controls.output;
+
   public get input$(): Observable<ExchangerFormInput> {
     const input = this.form.get('input');
     return input.valueChanges.pipe(startWith(input.value));
@@ -45,6 +47,11 @@ export class ExchangerFormService {
   public get toToken(): TokenAmount | null {
     const toToken = this.form.get('input').get('toToken');
     return toToken.value;
+  }
+
+  public get toAmount$(): Observable<BigNumber | null> {
+    const toAmount = this.form.get('output').get('toAmount');
+    return toAmount.valueChanges.pipe(startWith(toAmount.value));
   }
 
   constructor() {}

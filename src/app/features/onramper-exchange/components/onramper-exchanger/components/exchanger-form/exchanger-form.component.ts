@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { OnramperApiService } from '@features/onramper-exchange/services/onramper-api-service/onramper-api.service';
-import BigNumber from 'bignumber.js';
+import { OnramperCalculationService } from '@features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 
 @Component({
   selector: 'app-exchanger-form',
@@ -10,14 +9,8 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExchangerFormComponent {
-  public toAmount: BigNumber;
-
   constructor(
     public readonly swapFormService: SwapFormService,
-    private readonly onramperApiService: OnramperApiService
-  ) {
-    this.onramperApiService.getOutputNativeTokenAmount().then(toAmount => {
-      this.toAmount = toAmount;
-    });
-  }
+    private readonly onramperCalculationService: OnramperCalculationService
+  ) {}
 }

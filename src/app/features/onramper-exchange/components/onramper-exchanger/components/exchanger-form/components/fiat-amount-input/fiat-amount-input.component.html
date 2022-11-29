@@ -15,7 +15,7 @@
         [placeholder]="placeholder$ | async"
         appTokenAmount
         [formControl]="amount"
-        [decimals]="selectedToken?.decimals || 18"
+        [decimals]="18"
         (amountChange)="onAmountChange($event)"
         inputmode="decimal"
         id="token-amount-input-element"
