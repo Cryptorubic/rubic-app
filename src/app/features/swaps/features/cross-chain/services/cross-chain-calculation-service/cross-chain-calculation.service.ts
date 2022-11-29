@@ -114,12 +114,23 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ])
     );
 
+    console.log('disabledProviders ', disabledProviders);
+
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders,
+      disabledProviders: [
+        CROSS_CHAIN_TRADE_TYPE.RANGO,
+        CROSS_CHAIN_TRADE_TYPE.LIFI,
+        CROSS_CHAIN_TRADE_TYPE.VIA,
+        CROSS_CHAIN_TRADE_TYPE.XY,
+        CROSS_CHAIN_TRADE_TYPE.BRIDGERS,
+        CROSS_CHAIN_TRADE_TYPE.DEBRIDGE,
+        CROSS_CHAIN_TRADE_TYPE.CELER,
+        CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+      ],
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress })
