@@ -70,7 +70,7 @@ export class OnramperCalculationService {
           gasCalculation: 'disabled'
         }
       );
-      const bestTrade = onChainTrades[0];
+      const bestTrade = onChainTrades[onChainTrades.length - 1];
       if (bestTrade instanceof OnChainTrade) {
         this.exchangerFormService.output.patchValue({
           toAmount: bestTrade.to.tokenAmount
