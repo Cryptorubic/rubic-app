@@ -1,0 +1,35 @@
+<div class="tokens">
+  <div class="tokens__container" *ngLet="toToken$ | async as toToken">
+    <app-rubic-button
+      class="tokens__btn"
+      [size]="'s'"
+      [loading]="loading"
+      (onClick)="openTokensSelect()"
+      [appearance]="toToken ? 'primary' : 'secondary'"
+    >
+      <ng-container *ngIf="toToken">
+        <div class="tokens__inner">
+          <div class="tokens__image-container">
+            <img
+              [src]="toToken.image || DEFAULT_TOKEN_IMAGE"
+              width="18px"
+              height="18px"
+              [alt]="toToken.symbol"
+              (error)="onImageError($event)"
+            />
+          </div>
+
+          <div class="tokens__symbol">
+            {{ toToken.symbol }}
+          </div>
+
+          <img *noFrame="'vertical'" src="assets/images/icons/arrow-down.svg" alt="Choose token" />
+        </div>
+      </ng-container>
+
+      <span class="tokens__inner-text" *ngIf="!toToken">{{
+        'common.chooseToken' | translate
+      }}</span>
+    </app-rubic-button>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { OnramperApiService } from '@features/onramper-exchange/services/onramper-widget-service/onramper-api.service';
+import { OnramperApiService } from '@features/onramper-exchange/services/onramper-api-service/onramper-api.service';
 import BigNumber from 'bignumber.js';
 
 @Component({

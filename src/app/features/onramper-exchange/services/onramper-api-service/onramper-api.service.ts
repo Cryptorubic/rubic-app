@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { onramperApiKey } from '@features/onramper-exchange/constants/onramper-api-key';
-import { OnramperRateResponse } from '@features/onramper-exchange/services/onramper-widget-service/models/onramper-rate-response';
+import { OnramperRateResponse } from '@features/onramper-exchange/services/onramper-api-service/models/onramper-rate-response';
 import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 

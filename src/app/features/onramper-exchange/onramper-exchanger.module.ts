@@ -9,13 +9,16 @@ import { ExchangerFormComponent } from './components/onramper-exchanger/componen
 import { OnramperWidgetComponent } from './components/onramper-exchanger/components/onramper-widget/onramper-widget.component';
 import { OnramperToAmountEstimatedComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/token-amount-estimated/onramper-to-amount-estimated.component';
 import { CommonModule } from '@angular/common';
+import { TokensSelectorModule } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/tokens-selector.module';
+import { SelectTokenButtonComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/select-token-button/select-token-button.component';
 
 @NgModule({
   declarations: [
     OnramperExchangerComponent,
     ExchangerFormComponent,
     OnramperWidgetComponent,
-    OnramperToAmountEstimatedComponent
+    OnramperToAmountEstimatedComponent,
+    SelectTokenButtonComponent
   ],
   exports: [],
   imports: [
@@ -24,7 +27,8 @@ import { CommonModule } from '@angular/common';
     SwapsModule,
     SharedModule,
     SwapsSharedModule,
-    SwapButtonContainerModule
+    SwapButtonContainerModule,
+    TokensSelectorModule
   ]
 })
 export class OnramperExchangerModule {}
