@@ -7,11 +7,19 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 import { ExchangerFormComponent } from './components/onramper-exchanger/components/exchanger-form/exchanger-form.component';
 import { OnramperWidgetComponent } from './components/onramper-exchanger/components/onramper-widget/onramper-widget.component';
+import { OnramperToAmountEstimatedComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/token-amount-estimated/onramper-to-amount-estimated.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  declarations: [OnramperExchangerComponent, ExchangerFormComponent, OnramperWidgetComponent],
+  declarations: [
+    OnramperExchangerComponent,
+    ExchangerFormComponent,
+    OnramperWidgetComponent,
+    OnramperToAmountEstimatedComponent
+  ],
   exports: [],
   imports: [
+    CommonModule,
     OnramperExchangerRoutingModule,
     SwapsModule,
     SharedModule,

@@ -1,0 +1,14 @@
+<div
+  class="bottom-amount__output"
+  [ngClass]="{
+    'bottom-amount__output_error': errorText
+  }"
+>
+  <ng-container *ngIf="toAmount?.gt(0) && !errorText">
+    {{
+      toAmount
+        | bigNumberFormat
+        | withRound: 'toClosestValue':{ minRound: 3, maxRound: 5, decimals: 18 }
+    }}
+  </ng-container>
+</div>
