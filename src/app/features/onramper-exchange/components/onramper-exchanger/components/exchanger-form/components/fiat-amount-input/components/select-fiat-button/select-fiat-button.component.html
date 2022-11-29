@@ -1,0 +1,31 @@
+<div class="tokens">
+  <div class="tokens__container" *ngLet="fromFiat$ | async as fromFiat">
+    <app-rubic-button
+      class="tokens__btn"
+      [size]="'s'"
+      (onClick)="openFiatSelector()"
+      [appearance]="fromFiat ? 'primary' : 'secondary'"
+    >
+      <ng-container *ngIf="fromFiat">
+        <div class="tokens__inner">
+          <div class="tokens__image-container">
+            <img
+              [src]="fromFiat.image || DEFAULT_TOKEN_IMAGE"
+              width="18px"
+              height="18px"
+              [alt]="fromFiat.name"
+            />
+          </div>
+
+          <div class="tokens__symbol">
+            {{ fromFiat.name }}
+          </div>
+
+          <img *noFrame="'vertical'" src="assets/images/icons/arrow-down.svg" alt="Choose fiat" />
+        </div>
+      </ng-container>
+
+      <span class="tokens__inner-text" *ngIf="!fromFiat">Select fiat</span>
+    </app-rubic-button>
+  </div>
+</div>

@@ -11,6 +11,10 @@ import { OnramperToAmountEstimatedComponent } from '@features/onramper-exchange/
 import { CommonModule } from '@angular/common';
 import { TokensSelectorModule } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/tokens-selector.module';
 import { SelectTokenButtonComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/select-token-button/select-token-button.component';
+import { FiatAmountInputComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/fiat-amount-input.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FiatsSelectorModule } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/fiats-selector.module';
+import { SelectFiatButtonComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/select-fiat-button/select-fiat-button.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +22,9 @@ import { SelectTokenButtonComponent } from '@features/onramper-exchange/componen
     ExchangerFormComponent,
     OnramperWidgetComponent,
     OnramperToAmountEstimatedComponent,
-    SelectTokenButtonComponent
+    SelectTokenButtonComponent,
+    FiatAmountInputComponent,
+    SelectFiatButtonComponent
   ],
   exports: [],
   imports: [
@@ -28,7 +34,9 @@ import { SelectTokenButtonComponent } from '@features/onramper-exchange/componen
     SharedModule,
     SwapsSharedModule,
     SwapButtonContainerModule,
-    TokensSelectorModule
+    TokensSelectorModule,
+    ReactiveFormsModule,
+    FiatsSelectorModule
   ]
 })
 export class OnramperExchangerModule {}

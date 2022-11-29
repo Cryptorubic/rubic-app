@@ -8,7 +8,9 @@
     {{
       toAmount
         | bigNumberFormat
-        | withRound: 'toClosestValue':{ minRound: 3, maxRound: 5, decimals: 18 }
+        | withRound
+          : 'toClosestValue'
+          : { minRound: 3, maxRound: 5, decimals: (toToken$ | async)?.decimals }
     }}
   </ng-container>
 </div>

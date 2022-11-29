@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
+import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
 
 @Component({
   selector: 'app-onramper-to-amount-estimated',
@@ -12,5 +13,7 @@ export class OnramperToAmountEstimatedComponent {
 
   @Input() errorText = '';
 
-  constructor() {}
+  public readonly toToken$ = this.exchangerFormService.toToken$;
+
+  constructor(private readonly exchangerFormService: ExchangerFormService) {}
 }
