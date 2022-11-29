@@ -8,7 +8,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { FiatItem } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/models/fiat-item';
+import { FiatItem } from '@features/onramper-exchange/models/fiat-item';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +37,16 @@ export class ExchangerFormService {
   public get fromFiat$(): Observable<FiatItem | null> {
     const fromFiat = this.form.get('input').get('fromFiat');
     return fromFiat.valueChanges.pipe(startWith(fromFiat.value));
+  }
+
+  public get fromFiat(): FiatItem | null {
+    const fromFiat = this.form.get('input').get('fromFiat');
+    return fromFiat.value;
+  }
+
+  public get fromAmount(): BigNumber | null {
+    const fromAmount = this.form.get('input').get('fromAmount');
+    return fromAmount.value;
   }
 
   public get toToken$(): Observable<TokenAmount | null> {

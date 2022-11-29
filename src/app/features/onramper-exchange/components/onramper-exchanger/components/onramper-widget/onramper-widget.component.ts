@@ -9,6 +9,8 @@ import {
 import { WidgetConfig } from '@features/onramper-exchange/components/onramper-exchanger/components/onramper-widget/models/widget-config';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { defaultWidgetConfig } from '@features/onramper-exchange/components/onramper-exchanger/components/onramper-widget/constants/default-widget-config';
+import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
+import { cryptoCode } from '@features/onramper-exchange/components/onramper-exchanger/components/onramper-widget/constants/crypto-code';
 
 @Component({
   selector: 'app-onramper-widget',
@@ -31,7 +33,8 @@ export class OnramperWidgetComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly exchangerFormService: ExchangerFormService
   ) {}
 
   ngOnInit() {
@@ -44,9 +47,18 @@ export class OnramperWidgetComponent implements OnInit {
 
   private setWidgetConfig(): void {
     const darkMode = this.themeService.theme === 'dark';
+
+    const defaultFiat = this.exchangerFormService.fromFiat.name;
+    const defaultCrypto =
+      cryptoCode[this.exchangerFormService.toToken.blockchain as keyof typeof cryptoCode];
+    const defaultAmount = this.exchangerFormService.fromAmount.toFixed();
+
     this.widgetConfig = {
       ...defaultWidgetConfig,
-      darkMode
+      darkMode,
+      defaultFiat,
+      defaultCrypto,
+      defaultAmount
     };
 
     this.cdr.detectChanges();

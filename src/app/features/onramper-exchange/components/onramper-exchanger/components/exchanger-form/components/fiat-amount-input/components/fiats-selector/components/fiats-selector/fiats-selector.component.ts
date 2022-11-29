@@ -15,8 +15,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/tokens-list.component';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { FiatItem } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/models/fiat-item';
-import { fiats } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/constants/fiats';
+import { FiatItem } from '@features/onramper-exchange/models/fiat-item';
+import { fiats } from '@features/onramper-exchange/constants/fiats';
 
 type ComponentContext = TuiDialogContext<FiatItem, {}>;
 

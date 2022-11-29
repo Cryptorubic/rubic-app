@@ -12,7 +12,15 @@
       </div>
 
       <div class="bottom-form__buttons">
-        <div class="bottom-form__button"></div>
+        <div class="bottom-form__button">
+          <app-rubic-button
+            appearance="secondary"
+            [disabled]="disabled$ | async"
+            (onClick)="onSwapClickHandler()"
+          >
+            Swap
+          </app-rubic-button>
+        </div>
       </div>
     </section>
   </main>

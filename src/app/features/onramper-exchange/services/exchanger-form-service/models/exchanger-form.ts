@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FiatItem } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/models/fiat-item';
+import { FiatItem } from '@features/onramper-exchange/models/fiat-item';
 
 export interface ExchangerFormInput {
   fromFiat: FiatItem | null;

@@ -7,5 +7,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperExchangerComponent {
+  public isWidgetOpened = false;
+
   constructor() {}
+
+  public onSwapClick(): void {
+    this.isWidgetOpened = true;
+  }
 }

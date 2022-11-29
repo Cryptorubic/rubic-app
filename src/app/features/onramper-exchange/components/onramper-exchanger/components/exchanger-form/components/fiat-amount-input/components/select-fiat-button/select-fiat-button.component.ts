@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
 import { FiatsSelectorService } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/services/fiats-selector.service';
-import { FiatItem } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/fiat-amount-input/components/fiats-selector/models/fiat-item';
+import { FiatItem } from '@features/onramper-exchange/models/fiat-item';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
 @Component({

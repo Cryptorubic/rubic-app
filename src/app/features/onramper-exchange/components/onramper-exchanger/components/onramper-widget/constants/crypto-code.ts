@@ -1,0 +1,8 @@
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+
+export const cryptoCode = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
+  [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
+  [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX'
+};

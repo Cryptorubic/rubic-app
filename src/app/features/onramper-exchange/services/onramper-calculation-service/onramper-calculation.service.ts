@@ -9,6 +9,7 @@ import { ExchangerFormInput } from '@features/onramper-exchange/services/exchang
 import { EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { debounceTime } from 'rxjs/operators';
+import { cryptoCode } from '@features/onramper-exchange/components/onramper-exchanger/components/onramper-widget/constants/crypto-code';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class OnramperCalculationService {
   private async setOutputTokenAmount(input: ExchangerFormInput): Promise<void> {
     this._error$.next(false);
     try {
-      const receivedNativeAmount = await this.getOutputNativeAmount(input.fromAmount);
+      const receivedNativeAmount = await this.getOutputNativeAmount(input);
       if (EvmWeb3Pure.isNativeAddress(input.toToken.address)) {
         this.exchangerFormService.output.patchValue({
           toAmount: receivedNativeAmount
@@ -78,14 +79,21 @@ export class OnramperCalculationService {
         this._error$.next(true);
       }
     } catch {
+      this.exchangerFormService.output.patchValue({
+        toAmount: null
+      });
       this._error$.next(true);
     }
   }
 
-  private async getOutputNativeAmount(fromAmount: BigNumber): Promise<BigNumber> {
+  private async getOutputNativeAmount(input: ExchangerFormInput): Promise<BigNumber> {
+    const fromFiat = input.fromFiat.name;
+    const toCrypto = cryptoCode[input.toToken.blockchain as keyof typeof cryptoCode];
+    const fromAmount = input.fromAmount.toFixed();
+
     const trades = await firstValueFrom(
       this.httpClient.get<OnramperRateResponse>(
-        `https://onramper.tech/rate/USD/ETH/creditCard/${fromAmount.toFixed()}`,
+        `https://onramper.tech/rate/${fromFiat}/${toCrypto}/creditCard/${fromAmount}`,
         {
           headers: { Authorization: `Basic ${onramperApiKey}` }
         }
