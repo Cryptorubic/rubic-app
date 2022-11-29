@@ -1,17 +1,31 @@
 <div
   class="bottom-amount__output"
   [ngClass]="{
-    'bottom-amount__output_error': errorText
+    'bottom-amount__output_error': error
   }"
-  *ngLet="toAmount$ | async as toAmount"
+  *ngLet="error$ | async as error"
 >
-  <ng-container *ngIf="toAmount?.gt(0) && !errorText">
-    {{
-      toAmount
-        | bigNumberFormat
-        | withRound
-          : 'toClosestValue'
-          : { minRound: 3, maxRound: 5, decimals: (toToken$ | async)?.decimals }
-    }}
+  <ng-container *ngLet="toAmount$ | async as toAmount">
+    <ng-container *ngIf="loading$ | async; else loadedTemplate">
+      <span class="blink-animation">Loading</span>
+    </ng-container>
+
+    <ng-template #loadedTemplate>
+      <ng-container *ngIf="error; else toAmountTemplate">
+        {{ 'errors.tradingIsNotAvailable' | translate }}
+      </ng-container>
+
+      <ng-template #toAmountTemplate>
+        <ng-container *ngIf="toAmount?.gt(0)">
+          {{
+            toAmount
+              | bigNumberFormat
+              | withRound
+                : 'toClosestValue'
+                : { minRound: 3, maxRound: 5, decimals: (toToken$ | async)?.decimals }
+          }}
+        </ng-container>
+      </ng-template>
+    </ng-template>
   </ng-container>
 </div>
