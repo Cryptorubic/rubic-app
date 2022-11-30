@@ -133,6 +133,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
           if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
             this.saveNotWhitelistedProvider(
+              wrappedTrade.error.cause,
               fromToken.blockchain,
               wrappedTrade.tradeType,
               wrappedTrade.error.providerRouter,
@@ -276,6 +277,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     } catch (err) {
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(
+          err.cause,
           calculatedTrade.trade.from.blockchain,
           calculatedTrade.tradeType,
           err.providerRouter,
@@ -375,13 +377,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private saveNotWhitelistedProvider(
+    cause: string,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType,
     routerAddress: string,
     gatewayAddress?: string
   ): void {
     this.crossChainApiService
-      .saveNotWhitelistedProvider(blockchain, tradeType, routerAddress, gatewayAddress)
+      .saveNotWhitelistedProvider(cause, blockchain, tradeType, routerAddress, gatewayAddress)
       .subscribe();
   }
 }

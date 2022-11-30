@@ -13,6 +13,7 @@ export class CrossChainApiService {
   constructor(private readonly httpService: HttpService) {}
 
   public saveNotWhitelistedProvider(
+    cause: string,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType,
     routerAddress: string,
@@ -21,7 +22,8 @@ export class CrossChainApiService {
     return this.httpService.post(`info/new_provider`, {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : '')
+      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
+      cause
     });
   }
 }

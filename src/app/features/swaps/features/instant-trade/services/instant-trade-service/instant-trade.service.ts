@@ -24,7 +24,8 @@ import {
   OnChainTradeError,
   TxStatus,
   EncodeTransactionOptions,
-  BlockchainsInfo
+  BlockchainsInfo,
+  NotWhitelistedProviderError
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -48,6 +49,8 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
+import { HttpClient } from '@angular/common/http';
+import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -79,7 +82,8 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly authService: AuthService,
     private readonly gasService: GasService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly httpService: HttpClient
   ) {
     super('instant-trade');
   }
@@ -305,6 +309,16 @@ export class InstantTradeService extends TradeCalculationService {
     } catch (err) {
       subscription$?.unsubscribe();
 
+      if (err instanceof NotWhitelistedProviderError) {
+        this.saveNotWhitelistedProvider(
+          err.cause,
+          fromBlockchain,
+          (trade as OnChainTrade)?.type,
+          err.providerRouter,
+          err.providerGateway
+        );
+      }
+
       if (transactionHash && !this.isNotMinedError(err)) {
         this.updateTrade(transactionHash, false);
       }
@@ -446,5 +460,22 @@ export class InstantTradeService extends TradeCalculationService {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.showOpenMobileWallet();
     }
+  }
+
+  public saveNotWhitelistedProvider(
+    cause: string,
+    blockchain: BlockchainName,
+    tradeType: OnChainTradeType,
+    routerAddress: string,
+    gatewayAddress?: string
+  ): void {
+    this.httpService
+      .post(`info/new_provider`, {
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        title: tradeType,
+        address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
+        cause
+      })
+      .subscribe();
   }
 }
