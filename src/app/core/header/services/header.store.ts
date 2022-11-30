@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Data store to use inside header module.
@@ -9,83 +9,64 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class HeaderStore {
   /**
+   * Maximum size of mobile device.
+   */
+  public readonly mobileWidth = 1023;
+
+  private _forceDesktopResolution: boolean;
+
+  /**
    * Determines if confirm logout modal is active.
    */
-  private readonly isConfirmModalOpened$: BehaviorSubject<boolean>;
+  private readonly _isConfirmModalOpened$ = new BehaviorSubject<boolean>(false);
+
+  public readonly isConfirmModalOpened$ = this._isConfirmModalOpened$.asObservable();
 
   /**
    * Determines if mobile navigation menu is active.
    */
-  private readonly isMobileMenuOpened$: BehaviorSubject<boolean>;
+  private readonly _isMobileMenuOpened$ = new BehaviorSubject<boolean>(false);
+
+  public readonly isMobileMenuOpened$ = this._isMobileMenuOpened$.asObservable();
 
   /**
    * Determines if current window width is similar to mobile.
    */
-  private readonly isMobile$: BehaviorSubject<boolean>;
+  private readonly _isMobile$ = new BehaviorSubject<boolean>(false);
 
-  /**
-   * Should wallets buttons be disabled or not.
-   */
-  private walletsLoadingStatusSubject$: BehaviorSubject<boolean>;
-
-  /**
-   * Maximum size of mobile device.
-   */
-  public readonly mobileWidth: number;
+  public readonly isMobile$ = this._isMobile$.asObservable();
 
   /**
    * Returns true if current window width is similar to mobile synchronously.
    */
   public get isMobile(): boolean {
-    return this.isMobile$.getValue();
+    return this._isMobile$.getValue();
   }
 
-  private _forceDesktopResolution: boolean;
+  /**
+   * Should wallets buttons be disabled or not.
+   */
+  private readonly _walletsLoadingStatus$ = new BehaviorSubject<boolean>(false);
 
-  constructor() {
-    this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
-    this.mobileWidth = 1023;
-    this.isConfirmModalOpened$ = new BehaviorSubject<boolean>(false);
-    this.isMobileMenuOpened$ = new BehaviorSubject<boolean>(false);
-    this.isMobile$ = new BehaviorSubject<boolean>(false);
-  }
+  public readonly walletsLoadingStatus$ = this._walletsLoadingStatus$.asObservable();
 
-  public getConfirmModalOpeningStatus(): Observable<boolean> {
-    return this.isConfirmModalOpened$.asObservable();
+  constructor() {}
+
+  public setWalletsLoadingStatus(status: boolean): void {
+    return this._walletsLoadingStatus$.next(status);
   }
 
   public setConfirmModalOpeningStatus(value: boolean): void {
-    this.isConfirmModalOpened$.next(value);
-  }
-
-  public getWalletsLoadingStatus(): Observable<boolean> {
-    return this.walletsLoadingStatusSubject$.asObservable();
-  }
-
-  public setWalletsLoadingStatus(status: boolean): void {
-    return this.walletsLoadingStatusSubject$.next(status);
-  }
-
-  public toggleConfirmModalOpeningStatus(): void {
-    const currentValue = this.isConfirmModalOpened$.value;
-    this.isConfirmModalOpened$.next(!currentValue);
-  }
-
-  public getMobileMenuOpeningStatus(): Observable<boolean> {
-    return this.isMobileMenuOpened$.asObservable();
+    this._isConfirmModalOpened$.next(value);
   }
 
   public setMobileMenuOpeningStatus(value: boolean): void {
-    this.isMobileMenuOpened$.next(value);
+    this._isMobileMenuOpened$.next(value);
   }
 
   public toggleMobileMenuOpeningStatus(): void {
-    const currentValue = this.isMobileMenuOpened$.value;
-    this.isMobileMenuOpened$.next(!currentValue);
-  }
-
-  public getMobileDisplayStatus(): Observable<boolean> {
-    return this.isMobile$.asObservable();
+    const currentValue = this._isMobileMenuOpened$.value;
+    this._isMobileMenuOpened$.next(!currentValue);
   }
 
   public set forceDesktopResolution(isDesktop: string) {
@@ -93,6 +74,6 @@ export class HeaderStore {
   }
 
   public setMobileDisplayStatus(status: boolean): void {
-    this.isMobile$.next(this._forceDesktopResolution ? false : status);
+    this._isMobile$.next(this._forceDesktopResolution ? false : status);
   }
 }

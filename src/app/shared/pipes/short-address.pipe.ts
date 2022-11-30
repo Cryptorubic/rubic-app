@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+// @TODO TEST UNIT 1
 @Pipe({
   name: 'shortAddress'
 })

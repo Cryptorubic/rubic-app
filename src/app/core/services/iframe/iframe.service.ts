@@ -11,6 +11,7 @@ import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-p
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
 import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

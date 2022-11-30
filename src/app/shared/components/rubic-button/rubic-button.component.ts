@@ -59,6 +59,7 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    // @TODO replace subscription to observable
     this.themeSubscription$ = this.themeService.theme$.subscribe(el => {
       if (!this.classList) {
         this.classList = '';

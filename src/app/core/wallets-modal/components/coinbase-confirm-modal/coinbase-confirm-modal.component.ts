@@ -28,11 +28,11 @@ export class CoinbaseConfirmModalComponent {
 
   constructor(@Inject(POLYMORPHEUS_CONTEXT) private context: TuiDialogContext<BlockchainName>) {}
 
-  onConfirm(): void {
+  public onConfirm(): void {
     this.context.completeWith(this.selectedBlockchain);
   }
 
-  onDecline(): void {
+  public onDecline(): void {
     this.context.completeWith(undefined);
   }
 }

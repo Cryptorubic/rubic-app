@@ -16,6 +16,10 @@ export class NoFrameDirective<T> implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.createAppearance();
+  }
+
+  private createAppearance(): void {
     if (!this.noFrameAnd) {
       this.viewContainer.clear();
       return;

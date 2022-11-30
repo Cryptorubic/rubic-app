@@ -45,6 +45,7 @@ interface ProvidersConfiguration {
   disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

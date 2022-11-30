@@ -1,1 +1,3 @@
-<img [src]="currentLanguage.imgSrc" width="32" height="32" [alt]="currentLanguage.title" />
+<ng-container *ngLet="currentLanguage$ | async as language">
+  <img [src]="language.imgSrc" width="32" height="32" [alt]="language.title" />
+</ng-container>

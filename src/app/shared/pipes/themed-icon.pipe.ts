@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 
+// @TODO TEST UNIT 2
 @Pipe({
   name: 'themedIcon'
 })

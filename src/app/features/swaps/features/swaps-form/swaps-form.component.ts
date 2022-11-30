@@ -128,7 +128,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       from: undefined,
       to: undefined
     };
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
+    this.isMobile$ = this.headerStore.isMobile$;
   }
 
   ngOnInit(): void {

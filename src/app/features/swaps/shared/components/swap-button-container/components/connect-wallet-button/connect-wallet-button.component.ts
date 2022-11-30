@@ -34,6 +34,6 @@ export class ConnectWalletButtonComponent {
   ) {}
 
   public onLogin(): void {
-    this.walletsModalService.open().subscribe();
+    this.walletsModalService.getWalletModal().subscribe();
   }
 }

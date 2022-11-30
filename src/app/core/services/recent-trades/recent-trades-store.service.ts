@@ -7,6 +7,7 @@ import { BlockchainName } from 'rubic-sdk';
 
 const MAX_LATEST_TRADES = 5;
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

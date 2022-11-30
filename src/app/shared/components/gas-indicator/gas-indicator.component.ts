@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { map } from 'rxjs/operators';
@@ -14,11 +13,9 @@ export class GasIndicatorComponent {
   /**
    * Current gas price.
    */
-  public gasPrice$: Observable<string>;
+  public readonly gasPrice$ = this.gasService
+    .getGasPrice$(BLOCKCHAIN_NAME.ETHEREUM)
+    .pipe(map(gasPrice => Number(gasPrice).toFixed(2).toString()));
 
-  constructor(private readonly gasService: GasService) {
-    this.gasPrice$ = this.gasService
-      .getGasPrice$(BLOCKCHAIN_NAME.ETHEREUM)
-      .pipe(map(gasPrice => Number(gasPrice).toFixed(2).toString()));
-  }
+  constructor(private readonly gasService: GasService) {}
 }

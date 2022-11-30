@@ -25,6 +25,4 @@ export class NotificationBadgeComponent {
    * Background color of notification component
    */
   @Input() color: 'red' | 'green';
-
-  constructor() {}
 }

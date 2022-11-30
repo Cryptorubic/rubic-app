@@ -15,7 +15,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected selectedChain: BlockchainName | null;
 
-  protected isEnabled: boolean;
+  protected isEnabled = false;
 
   public wallet: T = null;
 
@@ -54,9 +54,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     protected readonly errorsService: ErrorsService,
     protected readonly zone: NgZone,
     protected readonly window: RubicWindow
-  ) {
-    this.isEnabled = false;
-  }
+  ) {}
 
   public abstract activate(): Promise<void>;
 

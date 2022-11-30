@@ -157,7 +157,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public login(): void {
-    this.walletsModalService.open().subscribe();
+    this.walletsModalService.getWalletModal().subscribe();
   }
 
   public async switchNetwork(): Promise<void> {

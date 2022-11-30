@@ -6,6 +6,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./maintenance.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MaintenanceComponent {
-  constructor() {}
-}
+export class MaintenanceComponent {}

@@ -26,6 +26,7 @@ interface TokenPair {
   to: TokenInfo;
 }
 
+// @TODO TEST UNIT 3
 @Component({
   selector: 'app-buy-token',
   templateUrl: './buy-token.component.html',

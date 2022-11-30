@@ -7,6 +7,7 @@ import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blo
 import { catchError, map } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 
+// @TODO TEST 2
 @Injectable({
   providedIn: 'root'
 })

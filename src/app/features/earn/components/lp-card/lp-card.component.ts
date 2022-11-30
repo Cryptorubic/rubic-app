@@ -45,7 +45,7 @@ export class LpCardComponent {
 
   public readonly roundStatus = RoundStatus;
 
-  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+  public readonly isMobile$ = this.headerStore.isMobile$;
 
   constructor(private readonly headerStore: HeaderStore) {}
 

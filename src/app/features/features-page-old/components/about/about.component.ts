@@ -34,7 +34,7 @@ export class AboutPageComponent {
     private readonly translateService: TranslateService,
     private readonly headerStore: HeaderStore
   ) {
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
+    this.isMobile$ = this.headerStore.isMobile$;
     const benefitsTranslateKey = 'aboutPage.benefits';
     const featuresTranslateKey = 'aboutPage.features.data';
     const roadmapTranslateKey = 'aboutPage.roadmap.data';

@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { map } from 'rxjs/operators';
 
@@ -10,14 +9,12 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThemeSwitcherComponent {
-  public readonly isDark$: Observable<boolean>;
+  public readonly isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly themeService: ThemeService
-  ) {
-    this.isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
-  }
+  ) {}
 
   /**
    * Toggles theme on dark or light.

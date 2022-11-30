@@ -5,6 +5,13 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 
+interface ModalContext {
+  amount: string;
+  tokenSymbol: string;
+  tokenAddress: string;
+  blockchain: BlockchainName;
+}
+
 @Component({
   selector: 'polymorpheus-symbiosis-warning-tx-modal',
   templateUrl: './symbiosis-warning-tx-modal.component.html',
@@ -13,33 +20,20 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
   providers: [TuiDestroyService]
 })
 export class SymbiosisWarningTxModalComponent {
-  public readonly amount: string;
+  public readonly amount = this.context.data.amount;
 
-  public readonly tokenSymbol: string;
+  public readonly tokenSymbol = this.context.data.tokenSymbol;
 
-  public readonly tokenAddress: string;
+  public readonly tokenAddress = this.context.data.tokenAddress;
 
-  public readonly blockchain: BlockchainName;
+  public readonly blockchain = this.context.data.blockchain;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      boolean,
-      {
-        amount: string;
-        tokenSymbol: string;
-        tokenAddress: string;
-        blockchain: BlockchainName;
-      }
-    >
-  ) {
-    this.amount = context.data.amount;
-    this.tokenSymbol = context.data.tokenSymbol;
-    this.tokenAddress = context.data.tokenAddress;
-    this.blockchain = context.data.blockchain;
-  }
+    private readonly context: TuiDialogContext<boolean, ModalContext>
+  ) {}
 
   public onConfirm(): void {
     this.context.completeWith(null);

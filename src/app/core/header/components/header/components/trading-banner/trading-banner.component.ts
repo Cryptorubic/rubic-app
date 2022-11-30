@@ -1,13 +1,6 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import BigNumber from 'bignumber.js';
-import { TokenInfo } from '@shared/components/buy-token/buy-token.component';
-
-interface TokenPair {
-  from: TokenInfo;
-  to: TokenInfo;
-}
+import { TokenPair } from '@core/header/components/header/components/trading-banner/models/token-pair';
+import { bannerTokens } from '@core/header/components/header/components/trading-banner/constants/banner-tokens';
 
 @Component({
   selector: 'app-trading-banner',
@@ -20,24 +13,7 @@ export class TradingBannerComponent {
   /**
    * Banner type. Component Renders different texts based on type.
    */
-  @Input() type: 'default' | 'custom';
+  @Input() type: 'default' | 'custom' = 'default';
 
-  public readonly bannerTokens: TokenPair;
-
-  constructor() {
-    this.type = 'default';
-    this.bannerTokens = {
-      from: {
-        blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        address: NATIVE_TOKEN_ADDRESS,
-        symbol: 'ETH',
-        amount: new BigNumber(1)
-      },
-      to: {
-        blockchain: BLOCKCHAIN_NAME.MOONRIVER,
-        address: NATIVE_TOKEN_ADDRESS,
-        symbol: 'MOVR'
-      }
-    };
-  }
+  public readonly bannerTokens = bannerTokens;
 }

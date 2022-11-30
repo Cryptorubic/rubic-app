@@ -13,7 +13,7 @@ export class WalletsModalService {
     private readonly iframeService: IframeService
   ) {}
 
-  public open(): Observable<void> {
+  public getWalletModal(): Observable<void> {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService.open(
       new PolymorpheusComponent(WalletsModalComponent, this.injector),
@@ -21,7 +21,7 @@ export class WalletsModalService {
     );
   }
 
-  public open$(): void {
-    this.open().subscribe();
+  public openWalletModal(): void {
+    this.getWalletModal().subscribe();
   }
 }

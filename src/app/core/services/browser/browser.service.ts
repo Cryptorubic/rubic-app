@@ -4,6 +4,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
 
+// @TODO TEST 3
 @Injectable({
   providedIn: 'root'
 })

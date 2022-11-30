@@ -225,6 +225,6 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   public openAuthModal(): void {
-    this.walletsModalService.open$();
+    this.walletsModalService.openWalletModal();
   }
 }

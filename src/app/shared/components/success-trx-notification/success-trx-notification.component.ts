@@ -14,9 +14,9 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuccessTrxNotificationComponent {
-  public type: SuccessTxModalType;
+  public type = this.context.data.type;
 
-  public ccrProviderType?: CrossChainTradeType;
+  public ccrProviderType? = this.context.data.ccrProviderType;
 
   public CROSS_CHAIN_PROVIDER = CROSS_CHAIN_TRADE_TYPE;
 
@@ -28,10 +28,7 @@ export class SuccessTrxNotificationComponent {
     >,
     private readonly modalService: CommonModalService,
     private readonly headerStore: HeaderStore
-  ) {
-    this.type = context.data.type;
-    this.ccrProviderType = context.data.ccrProviderType;
-  }
+  ) {}
 
   public handleLinkClick(): void {
     // CompleteWith doesn't work.

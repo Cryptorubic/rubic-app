@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -22,7 +21,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 @Component({
@@ -32,7 +31,7 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class RubicMenuComponent implements AfterViewInit {
+export class RubicMenuComponent {
   @Input() public swapActive: boolean;
 
   @Input() public crossChainActive: boolean;
@@ -45,7 +44,9 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
-  public currentBlockchainIcon: string;
+  public currentBlockchainIcon$ = this.walletConnectorService.networkChange$.pipe(
+    map(blockchainName => blockchainIcon[blockchainName])
+  );
 
   public readonly navigationList = NAVIGATION_LIST;
 
@@ -65,19 +66,6 @@ export class RubicMenuComponent implements AfterViewInit {
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
-  public ngAfterViewInit(): void {
-    this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(blockchainName => {
-        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        this.cdr.markForCheck();
-      });
-  }
-
-  public getDropdownStatus(opened: boolean): void {
-    this.isOpened = opened;
-  }
-
   public closeMenu(): void {
     this.isOpened = false;
   }
@@ -90,10 +78,6 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public logout(): void {
     this.authService.disconnectWallet();
-  }
-
-  public isLinkActive(url: string): boolean {
-    return this.window.location.pathname === url;
   }
 
   public handleButtonClick(item?: NavigationItem): void {

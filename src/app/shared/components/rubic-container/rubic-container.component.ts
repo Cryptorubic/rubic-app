@@ -6,6 +6,4 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./rubic-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RubicContainerComponent {
-  constructor() {}
-}
+export class RubicContainerComponent {}

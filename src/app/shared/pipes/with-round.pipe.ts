@@ -4,6 +4,7 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 type RoundMode = 'toClosestValue' | 'fixedValue';
 
+// @TODO TEST UNIT 1
 @Pipe({
   name: 'withRound'
 })

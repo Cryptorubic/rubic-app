@@ -21,6 +21,7 @@ import {
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
+// @TODO TEST UNIT 1
 @Injectable()
 export class RecentTradesService {
   public get recentTrades(): RecentTrade[] {

@@ -1,68 +1,70 @@
-<app-dropdown-selector
-  *noFrame
-  (opened)="getDropdownStatus($event)"
-  [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownItems"
-></app-dropdown-selector>
-
-<ng-template #dropdownButtonTemplate>
-  <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-      <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="25" height="25" />
-    </div>
-
-    <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
-      {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
-    </div>
-
-    <app-notification-badge
-      class="notification-counter notification-counter_profile"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-      size="xs"
-      color="red"
-      [value]="unreadTrades$ | async"
-    ></app-notification-badge>
-
-    <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
-  </div>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate>
-  <a class="user-profile__dropdown-item" routerLink="promotion">
-    {{ 'navigation.promotion' | translate }}
-  </a>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate>
-  <button
+<ng-container *ngLet="currentBlockchain$ | async as blockchain">
+  <app-dropdown-selector
     *noFrame
-    class="user-profile__dropdown-item button-link"
-    (click)="openRecentTradesModal()"
-  >
-    {{ 'navigation.recentTrades' | translate }}
-    <app-notification-badge
-      class="notification-counter notification-counter_menu"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-      size="xs"
-      color="red"
-      [value]="unreadTrades$ | async"
-    ></app-notification-badge>
-  </button>
-</ng-template>
+    (opened)="getDropdownStatus($event)"
+    [dropdownButtonTemplate]="dropdownButtonTemplate"
+    [dropdownOptionsTemplates]="dropdownItems"
+  ></app-dropdown-selector>
 
-<ng-template #dropdownOptionTemplate>
-  <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
-    {{ 'navigation.logout' | translate }}
-  </button>
-</ng-template>
+  <ng-template #dropdownButtonTemplate>
+    <div class="user-profile">
+      <div class="user-profile__chain-icon" *ngIf="blockchain.icon && blockchain.name">
+        <img [src]="blockchain.icon" [alt]="blockchain.name" width="25" height="25" />
+      </div>
 
-<ng-container *onlyFrame>
-  <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-      <img [src]="currentBlockchainIcon" alt="Current blockchain" width="25" height="25" />
+      <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
+        {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
+      </div>
+
+      <app-notification-badge
+        class="notification-counter notification-counter_profile"
+        *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
+      ></app-notification-badge>
+
+      <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
     </div>
-    <div class="user-profile__address">
-      {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
+  </ng-template>
+
+  <ng-template #dropdownOptionTemplate>
+    <a class="user-profile__dropdown-item" routerLink="promotion">
+      {{ 'navigation.promotion' | translate }}
+    </a>
+  </ng-template>
+
+  <ng-template #dropdownOptionTemplate>
+    <button
+      *noFrame
+      class="user-profile__dropdown-item button-link"
+      (click)="openRecentTradesModal()"
+    >
+      {{ 'navigation.recentTrades' | translate }}
+      <app-notification-badge
+        class="notification-counter notification-counter_menu"
+        *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
+      ></app-notification-badge>
+    </button>
+  </ng-template>
+
+  <ng-template #dropdownOptionTemplate>
+    <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
+      {{ 'navigation.logout' | translate }}
+    </button>
+  </ng-template>
+
+  <ng-container *onlyFrame>
+    <div class="user-profile">
+      <div class="user-profile__chain-icon" *ngIf="blockchain.icon">
+        <img [src]="blockchain.icon" alt="Current blockchain" width="25" height="25" />
+      </div>
+      <div class="user-profile__address">
+        {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
+      </div>
     </div>
-  </div>
+  </ng-container>
 </ng-container>

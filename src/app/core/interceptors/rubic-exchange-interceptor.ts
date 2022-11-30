@@ -9,6 +9,7 @@ import {
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
+// @TODO TEST UNIT 3
 /**
  * Intercepts requests targeted to '*.rubic.exchange' domains.
  */

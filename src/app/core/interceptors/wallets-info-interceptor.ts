@@ -16,6 +16,7 @@ interface WalletInfo {
   deviceType: 'mobile' | 'desktop';
 }
 
+// @TODO TEST UNIT 3
 /**
  * Intercepts add transaction requests targeted to '*.rubic.exchange'.
  */

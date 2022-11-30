@@ -28,6 +28,4 @@ export class InfoHintComponent {
   @HostBinding('style.height') get height(): string {
     return `${this.size}px`;
   }
-
-  constructor() {}
 }

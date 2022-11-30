@@ -29,6 +29,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 
+// @TODO TEST 1
 const DEFAULT_PARAMETERS = {
   swap: {
     fromChain: BLOCKCHAIN_NAME.ETHEREUM,

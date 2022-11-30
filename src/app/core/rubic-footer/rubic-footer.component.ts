@@ -19,9 +19,7 @@ export class RubicFooterComponent {
   /**
    * Returns landing domain address.
    */
-  public get landingDomain(): string {
-    return EXTERNAL_LINKS.LANDING;
-  }
+  public readonly landingDomain = EXTERNAL_LINKS.LANDING;
 
   constructor(private readonly themeService: ThemeService) {}
 }

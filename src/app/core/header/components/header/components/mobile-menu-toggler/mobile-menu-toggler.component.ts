@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 
 @Component({
@@ -9,11 +8,9 @@ import { HeaderStore } from 'src/app/core/header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MobileMenuTogglerComponent {
-  public readonly isMobileMenuOpened$: Observable<boolean>;
+  public readonly isMobileMenuOpened$ = this.headerStore.isMobileMenuOpened$;
 
-  constructor(private readonly headerStore: HeaderStore) {
-    this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
-  }
+  constructor(private readonly headerStore: HeaderStore) {}
 
   public toggleMenu(): void {
     this.headerStore.toggleMobileMenuOpeningStatus();

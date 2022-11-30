@@ -49,7 +49,7 @@
 
       <tui-opt-group class="rubic-menu__mobile">
         <a
-          (click)="menuClickHandler('cross-chain')"
+          (click)="menuClickHandler()"
           [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
         >
@@ -66,9 +66,9 @@
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
         <button tuiOption class="data-list__address">
           <img
-            *ngIf="currentBlockchainIcon"
+            *ngIf="currentBlockchainIcon$ | async as icon"
             class="rubic-menu__chain-icon"
-            [src]="currentBlockchainIcon"
+            [src]="icon"
             alt="($currentBlockchain | async)?.name"
             width="25"
             height="25"
@@ -93,7 +93,7 @@
           routerLink="promotion"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler('promotion')"
+          (click)="menuClickHandler()"
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.promotion' | translate }}

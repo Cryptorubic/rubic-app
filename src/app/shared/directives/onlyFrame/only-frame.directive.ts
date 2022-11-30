@@ -16,6 +16,10 @@ export class OnlyFrameDirective<T> implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.createAppearance();
+  }
+
+  private createAppearance(): void {
     if (!this.onlyFrameAnd) {
       this.viewContainer.clear();
       return;

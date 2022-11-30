@@ -19,6 +19,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
+// @TODO TEST UNIT 2
 @Component({
   selector: '[trade-row]',
   templateUrl: './trade-row.component.html',

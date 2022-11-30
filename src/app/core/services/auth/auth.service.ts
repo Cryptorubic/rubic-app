@@ -9,6 +9,7 @@ import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { CHAIN_TYPE } from 'rubic-sdk';
 
+// @TODO TEST 1
 /**
  * Service that provides methods for working with authentication and user interaction.
  */

@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/big-number-format';
 
+// @TODO TEST UNIT 1
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormatPipe implements PipeTransform {
   /**

@@ -16,6 +16,7 @@ export class BannerDirective {
     }
   }
 
+  // @TODO TEST UNIT 3
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {
     renderer.addClass(elementRef.nativeElement, 'banner');
   }

@@ -18,6 +18,4 @@ export class IframeBlockchainIndicatorComponent {
   public blockchainIcon: string;
 
   public blockchainLabel: string;
-
-  constructor() {}
 }

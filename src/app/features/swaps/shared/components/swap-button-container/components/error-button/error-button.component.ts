@@ -20,7 +20,7 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
 export class ErrorButtonComponent {
   public readonly error$ = this.swapButtonContainerErrorsService.error$;
 
-  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+  public readonly isMobile$ = this.headerStore.isMobile$;
 
   public loading = false;
 

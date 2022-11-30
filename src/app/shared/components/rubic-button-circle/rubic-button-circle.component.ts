@@ -15,7 +15,7 @@ export class RubicButtonCircleComponent {
 
   @Input() appearance: TuiAppearance | string = 'primary';
 
-  @Input() hint: string;
+  @Input() hint = '';
 
   @Input() hintDirection: TuiDirection = 'bottom-left';
 
@@ -25,11 +25,7 @@ export class RubicButtonCircleComponent {
     this._disabled = disabled === '' || disabled;
   }
 
-  constructor() {
-    this.hint = '';
-  }
-
-  onClick(event: MouseEvent): void {
+  public onClick(event: MouseEvent): void {
     this.clickEmit.emit(event);
   }
 }

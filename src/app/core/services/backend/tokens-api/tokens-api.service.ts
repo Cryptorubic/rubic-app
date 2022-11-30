@@ -28,6 +28,7 @@ import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 
+// @TODO TEST 1
 /**
  * Perform backend requests and transforms to get valid tokens.
  */

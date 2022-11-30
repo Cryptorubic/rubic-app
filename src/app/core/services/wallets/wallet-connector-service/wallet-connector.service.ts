@@ -32,6 +32,7 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

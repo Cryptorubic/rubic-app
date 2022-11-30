@@ -32,6 +32,6 @@ export class StakingPageComponent {
   }
 
   public login(): void {
-    this.walletsModalService.open().subscribe();
+    this.walletsModalService.getWalletModal().subscribe();
   }
 }

@@ -71,7 +71,7 @@ export class PromotionStatsComponent implements OnInit {
   }
 
   public openWalletsModal(): void {
-    this.walletsModalService.open$();
+    this.walletsModalService.openWalletModal();
   }
 
   public reconnectWallet(): void {

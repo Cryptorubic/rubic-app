@@ -6,6 +6,4 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./progress-trx-notification.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgressTrxNotificationComponent {
-  constructor() {}
-}
+export class ProgressTrxNotificationComponent {}

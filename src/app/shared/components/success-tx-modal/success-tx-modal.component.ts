@@ -14,6 +14,14 @@ import { timer } from 'rxjs';
 import { MODAL_CONFIG } from '@shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 
+interface ModalContext {
+  idPrefix: string;
+  type: SuccessTxModalType;
+  txHash: string;
+  blockchain: BlockchainName;
+  ccrProviderType: CrossChainTradeType;
+}
+
 @Component({
   selector: 'polymorpheus-success-tx-modal',
   templateUrl: './success-tx-modal.component.html',
@@ -22,15 +30,15 @@ import { takeUntil } from 'rxjs/operators';
   providers: [TuiDestroyService]
 })
 export class SuccessTxModalComponent {
-  public idPrefix: string;
+  public idPrefix = this.context.data.idPrefix;
 
-  public type: SuccessTxModalType;
+  public type = this.context.data.type;
 
-  public ccrProviderType: CrossChainTradeType;
+  public ccrProviderType = this.context.data.ccrProviderType;
 
-  public txHash: string;
+  public txHash = this.context.data.txHash;
 
-  public blockchain: BlockchainName;
+  public blockchain = this.context.data.blockchain;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
@@ -40,30 +48,18 @@ export class SuccessTxModalComponent {
 
   constructor(
     private readonly destroy$: TuiDestroyService,
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      boolean,
-      {
-        idPrefix: string;
-        type: SuccessTxModalType;
-        txHash: string;
-        blockchain: BlockchainName;
-        ccrProviderType: CrossChainTradeType;
-      }
-    >
+    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<boolean, ModalContext>
   ) {
-    this.idPrefix = context.data.idPrefix;
-    this.type = context.data.type;
-    this.txHash = context.data.txHash;
-    this.blockchain = context.data.blockchain;
-    this.ccrProviderType = context.data.ccrProviderType;
-
-    timer(MODAL_CONFIG.modalLifetime)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.onConfirm());
+    this.initCloseTimer();
   }
 
   public onConfirm(): void {
     this.context.completeWith(null);
+  }
+
+  private initCloseTimer(): void {
+    timer(MODAL_CONFIG.modalLifetime)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onConfirm());
   }
 }

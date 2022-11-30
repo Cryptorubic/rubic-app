@@ -13,6 +13,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { NgChanges } from '@shared/models/utility-types/ng-changes';
 
+// @TODO TEST 2
 /**
  * Rotating icon with smooth rotation completion.
  */

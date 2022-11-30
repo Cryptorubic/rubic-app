@@ -11,6 +11,4 @@ export class UsdPriceContainerComponent {
   @Input() public usdPrice: BigNumber;
 
   @Input() public loading = false;
-
-  constructor() {}
 }

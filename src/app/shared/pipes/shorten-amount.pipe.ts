@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
 
+// @TODO TEST UNIT 1
 @Pipe({
   name: 'shortenAmount'
 })

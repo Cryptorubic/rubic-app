@@ -12,8 +12,6 @@ import {
   NgZone
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -48,17 +46,17 @@ export class HeaderComponent implements AfterViewInit {
   /**
    * Rubic advertisement type. Renders different components based on type.
    */
-  public advertisementType: 'default' | 'custom';
+  public advertisementType: 'default' | 'custom' = 'default';
 
-  public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
+  public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  public readonly isMobileMenuOpened$: Observable<boolean>;
+  public readonly isMobileMenuOpened$ = this.headerStore.isMobileMenuOpened$;
 
-  public readonly isMobile$: Observable<boolean>;
+  public readonly isMobile$ = this.headerStore.isMobile$;
 
-  public currentUser$: Observable<UserInterface>;
+  public readonly currentUser$ = this.authService.currentUser$;
 
-  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
+  public readonly swapType$ = this.swapsService.swapMode$;
 
   public isSettingsOpened = false;
 
@@ -71,7 +69,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   constructor(
-    @Inject(PLATFORM_ID) platformId: Object,
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
@@ -89,26 +87,12 @@ export class HeaderComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone
   ) {
-    this.advertisementType = 'default';
-    this.currentUser$ = this.authService.currentUser$;
-    this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
-    this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
-    if (isPlatformBrowser(platformId)) {
-      this.zone.runOutsideAngular(() => {
-        this.setNotificationPosition();
-        this.window.onscroll = () => {
-          this.setNotificationPosition();
-        };
-      });
-    }
-    this.swapType$ = this.swapsService.swapMode$;
+    this.setDisplayStatus();
+    this.handleNotificationPosition();
   }
 
   public ngAfterViewInit(): void {
-    this.authService.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.cdr.detectChanges());
+    this.subscribeOnUserChange();
   }
 
   /**
@@ -132,13 +116,13 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    const params = {
+    const params: SwapFormInput = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       fromToken: null,
       toToken: null,
       fromAmount: null
-    } as SwapFormInput;
+    };
 
     const queryParams: Params = {
       fromChain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -157,5 +141,26 @@ export class HeaderComponent implements AfterViewInit {
 
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
+  }
+
+  private setDisplayStatus(): void {
+    this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
+  }
+
+  private handleNotificationPosition(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.zone.runOutsideAngular(() => {
+        this.setNotificationPosition();
+        this.window.onscroll = () => {
+          this.setNotificationPosition();
+        };
+      });
+    }
+  }
+
+  private subscribeOnUserChange(): void {
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.cdr.detectChanges());
   }
 }

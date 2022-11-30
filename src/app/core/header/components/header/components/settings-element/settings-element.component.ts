@@ -15,6 +15,4 @@ export class SettingsElementComponent {
   @Input() component: ComponentType<object>;
 
   @Input() withAction: boolean;
-
-  constructor() {}
 }

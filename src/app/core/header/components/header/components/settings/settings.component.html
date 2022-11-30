@@ -22,7 +22,7 @@
     <aside class="header-settings">
       <app-header-settings
         [title]="currentComponentData.titleKey"
-        [haveBackButton]="!this.isDefaultComponent"
+        [haveBackButton]="(isDefaultComponent$ | async) === false"
         (closeClick)="closeSettings()"
         (backClick)="backToSettings()"
       ></app-header-settings>
@@ -30,7 +30,7 @@
       <div
         polymorpheus-outlet
         [content]="currentComponentData.component"
-        [context]="currentComponent$"
+        [context]="dynamicComponent$"
       ></div>
     </aside>
   </ng-template>

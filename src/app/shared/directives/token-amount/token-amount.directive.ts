@@ -2,6 +2,7 @@ import { Directive, ElementRef, HostListener, Output, EventEmitter, Input } from
 import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
+// @TODO TEST UNIT 1
 @Directive({
   selector: '[appTokenAmount]'
 })

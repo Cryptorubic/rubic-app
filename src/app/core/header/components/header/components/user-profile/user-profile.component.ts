@@ -2,23 +2,19 @@ import {
   Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
   ViewChildren,
   QueryList,
   TemplateRef,
   Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
-import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 @Component({
@@ -28,7 +24,24 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit {
+export class UserProfileComponent {
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
+
+  public readonly currentUser$ = this.authService.currentUser$;
+
+  public readonly currentBlockchain$ = this.walletConnectorService.networkChange$.pipe(
+    map(blockchainName => ({
+      name: blockchainName,
+      icon: blockchainName ? blockchainIcon[blockchainName] : ''
+    }))
+  );
+
+  public dropdownIsOpened = false;
+
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
+  @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -39,43 +52,7 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly commonModalService: CommonModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
-    this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
-    this.router.events.pipe(takeUntil(this.destroy$)).subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.headerStore.setMobileMenuOpeningStatus(false);
-        this.headerStore.setConfirmModalOpeningStatus(false);
-      }
-    });
-    this.currentUser$ = this.authService.currentUser$;
-  }
-
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
-
-  public readonly isConfirmModalOpened$: Observable<boolean>;
-
-  public readonly isMobile$: Observable<boolean>;
-
-  public readonly currentUser$: Observable<UserInterface>;
-
-  public currentBlockchainName: BlockchainName;
-
-  public currentBlockchainIcon: string;
-
-  public dropdownIsOpened = false;
-
-  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
-
-  @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
-
-  ngAfterViewInit(): void {
-    this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(blockchainName => {
-        this.currentBlockchainName = blockchainName;
-        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        this.cdr.detectChanges();
-      });
+    this.closeModalOnNavigaiton();
   }
 
   public logout(): void {
@@ -92,5 +69,14 @@ export class UserProfileComponent implements AfterViewInit {
         size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
+  }
+
+  private closeModalOnNavigaiton(): void {
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.headerStore.setMobileMenuOpeningStatus(false);
+        this.headerStore.setConfirmModalOpeningStatus(false);
+      }
+    });
   }
 }

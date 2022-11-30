@@ -21,6 +21,7 @@ const instantTradesApiRoutes = {
   getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
 };
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

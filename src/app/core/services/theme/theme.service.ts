@@ -5,6 +5,7 @@ import { DOCUMENT } from '@angular/common';
 
 export type Theme = 'dark' | 'light';
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

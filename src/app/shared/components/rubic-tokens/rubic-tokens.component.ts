@@ -109,6 +109,7 @@ export class RubicTokensComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // @TODO refactor subscription
   public openTokensSelect(idPrefix: string): void {
     const { fromBlockchain, toBlockchain, fromToken } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;

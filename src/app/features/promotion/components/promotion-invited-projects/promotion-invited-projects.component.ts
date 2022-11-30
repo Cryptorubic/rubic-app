@@ -62,7 +62,7 @@ export class PromotionInvitedProjectsComponent {
   }
 
   public openWalletsModal(): void {
-    this.walletsModalService.open$();
+    this.walletsModalService.openWalletModal();
   }
 
   public reconnectWallet(): void {

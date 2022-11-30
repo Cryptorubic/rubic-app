@@ -30,6 +30,7 @@ type SupportedBlockchain = typeof supportedBlockchains[number];
 
 const API_BASE_URL = 'https://api.coingecko.com/api/v3/';
 
+// @TODO TEST 1
 @Injectable({
   providedIn: 'root'
 })

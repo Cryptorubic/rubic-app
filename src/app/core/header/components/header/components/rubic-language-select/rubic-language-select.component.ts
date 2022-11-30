@@ -29,7 +29,7 @@ export class RubicLanguageSelectComponent {
 
   public readonly languagesList: LanguageListElement[] = LANGUAGES_LIST;
 
-  public readonly currentLanguage: string = this.translateService.currentLang;
+  public readonly currentLanguage = this.translateService.currentLang;
 
   constructor(
     private readonly translateService: TranslateService,
@@ -39,6 +39,7 @@ export class RubicLanguageSelectComponent {
     private readonly context$: BehaviorSubject<SettingsComponentData>
   ) {}
 
+  // @TODO TEST INT
   /**
    * Sets new current language.
    * @param language New current language.

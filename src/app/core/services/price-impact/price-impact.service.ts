@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
 
+// @TODO Remove
 @Injectable({
   providedIn: 'root'
 })

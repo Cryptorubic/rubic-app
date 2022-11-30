@@ -12,7 +12,7 @@ import { LpReward } from './models/lp-rewards';
   providedIn: 'root'
 })
 export class VolumeApiService {
-  private tradeVolume$: BehaviorSubject<TradeVolume>;
+  private tradeVolume$ = new BehaviorSubject<TradeVolume | undefined>(undefined);
 
   /**
    * Returns trading volumes data as observable
@@ -23,7 +23,6 @@ export class VolumeApiService {
   }
 
   constructor(private httpService: HttpService) {
-    this.tradeVolume$ = new BehaviorSubject(undefined);
     this.setTradeVolumeInterval();
   }
 

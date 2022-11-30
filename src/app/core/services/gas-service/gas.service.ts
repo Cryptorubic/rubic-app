@@ -22,6 +22,7 @@ type SupportedBlockchain = typeof supportedBlockchains[number];
 
 type NetworksGasPrice<T> = Record<SupportedBlockchain, T>;
 
+// @TODO TEST 2
 @Injectable({
   providedIn: 'root'
 })
