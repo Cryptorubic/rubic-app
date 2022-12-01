@@ -11,4 +11,9 @@ export interface WidgetConfig {
   defaultAmount?: string;
   wallets?: string;
   onlyCryptos?: string;
+  isAddressEditable?: boolean;
+
+  partnerContext: {
+    walletAddress: string;
+  };
 }

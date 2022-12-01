@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { onramperApiKey } from '@features/onramper-exchange/constants/onramper-api-key';
 import { OnramperRateResponse } from '@features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
@@ -10,6 +10,8 @@ import { EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { debounceTime } from 'rxjs/operators';
 import { cryptoCode } from '@features/onramper-exchange/components/onramper-exchanger/components/onramper-widget/constants/crypto-code';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable({
   providedIn: 'root'
@@ -26,63 +28,59 @@ export class OnramperCalculationService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly exchangerFormService: ExchangerFormService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: RubicSdkService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
+    this.subscribeOnInputFormChange();
+  }
+
+  private subscribeOnInputFormChange(): void {
     this.exchangerFormService.input$
       .pipe(
         debounceTime(200),
         switchMap(input => {
           if (input.fromFiat && input.toToken && input.fromAmount?.isFinite()) {
             this._loading$.next(true);
-            return this.setOutputTokenAmount(input).then(() => {
-              this._loading$.next(false);
+            this._error$.next(false);
+            return this.getOutputTokenAmount(input).catch(() => {
+              this._error$.next(true);
+              return null;
             });
           } else {
-            this.exchangerFormService.output.patchValue({
-              toAmount: null
-            });
             return of(null);
           }
         })
       )
-      .subscribe();
+      .subscribe(toAmount => {
+        this.exchangerFormService.output.patchValue({
+          toAmount
+        });
+        this._loading$.next(false);
+      });
   }
 
-  private async setOutputTokenAmount(input: ExchangerFormInput): Promise<void> {
-    this._error$.next(false);
-    try {
-      const receivedNativeAmount = await this.getOutputNativeAmount(input);
-      if (EvmWeb3Pure.isNativeAddress(input.toToken.address)) {
-        this.exchangerFormService.output.patchValue({
-          toAmount: receivedNativeAmount
-        });
-        return;
-      }
+  private async getOutputTokenAmount(input: ExchangerFormInput): Promise<BigNumber | null> {
+    const receivedNativeAmount = await this.getOutputNativeAmount(input);
+    if (EvmWeb3Pure.isNativeAddress(input.toToken.address)) {
+      return receivedNativeAmount;
+    }
 
-      const onChainTrades = await this.sdkService.instantTrade.calculateTrade(
-        {
-          address: EvmWeb3Pure.nativeTokenAddress,
-          blockchain: input.toToken.blockchain
-        },
-        receivedNativeAmount.toFixed(),
-        input.toToken.address,
-        {
-          gasCalculation: 'disabled'
-        }
-      );
-      const bestTrade = onChainTrades[onChainTrades.length - 1];
-      if (bestTrade instanceof OnChainTrade) {
-        this.exchangerFormService.output.patchValue({
-          toAmount: bestTrade.to.tokenAmount
-        });
-      } else {
-        this._error$.next(true);
+    const onChainTrades = await this.sdkService.instantTrade.calculateTrade(
+      {
+        address: EvmWeb3Pure.nativeTokenAddress,
+        blockchain: input.toToken.blockchain
+      },
+      receivedNativeAmount.toFixed(),
+      input.toToken.address,
+      {
+        gasCalculation: 'disabled'
       }
-    } catch {
-      this.exchangerFormService.output.patchValue({
-        toAmount: null
-      });
-      this._error$.next(true);
+    );
+    const bestTrade = onChainTrades[onChainTrades.length - 1];
+    if (bestTrade instanceof OnChainTrade) {
+      return bestTrade.to.tokenAmount;
+    } else {
+      throw new RubicError('No on-chain trade');
     }
   }
 
@@ -108,7 +106,7 @@ export class OnramperCalculationService {
         return a.receivedCrypto > b.receivedCrypto ? -1 : 1;
       })[0];
     if (!bestTrade?.receivedCrypto) {
-      return new BigNumber(NaN);
+      throw new RubicError('Trade is not available');
     }
     return new BigNumber(bestTrade.receivedCrypto);
   }

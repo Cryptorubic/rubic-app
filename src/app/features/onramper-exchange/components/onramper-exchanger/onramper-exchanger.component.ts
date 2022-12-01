@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AuthService } from '@core/services/auth/auth.service';
+import { ErrorsService } from '@core/errors/errors.service';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Component({
   selector: 'app-onramper-exchanger',
@@ -9,9 +12,16 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 export class OnramperExchangerComponent {
   public isWidgetOpened = false;
 
-  constructor() {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly errorsService: ErrorsService
+  ) {}
 
   public onSwapClick(): void {
-    this.isWidgetOpened = true;
+    if (!this.authService.userAddress) {
+      this.errorsService.catch(new RubicError('Connect wallet!'));
+    } else {
+      this.isWidgetOpened = true;
+    }
   }
 }

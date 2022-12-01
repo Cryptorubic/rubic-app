@@ -4,5 +4,6 @@ export const defaultWidgetConfig = {
   apiKey: onramperApiKey,
   color: '4AA956',
   supportSell: false,
-  supportSwap: false
+  supportSwap: false,
+  isAddressEditable: true
 };
