@@ -49,8 +49,8 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
-import { HttpClient } from '@angular/common/http';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
+import { HttpService } from '@app/core/services/http/http.service';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -83,7 +83,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly gasService: GasService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly httpService: HttpClient
+    private readonly httpService: HttpService
   ) {
     super('instant-trade');
   }
