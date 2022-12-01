@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, pairwise, switchMap } from 'rxjs/operators';
@@ -9,6 +8,9 @@ import { TokensSelectorService } from '@features/swaps/shared/components/tokens-
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { ListAnimationType } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/models/list-animation-type';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
+import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 
 @Injectable()
 export class TokensListService {
@@ -23,18 +25,6 @@ export class TokensListService {
     return this._listUpdating$.value || this.tokensListStoreService.searchLoading;
   }
 
-  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
-
-  public get tokensToShow(): AvailableTokenAmount[] {
-    return this.tokensListStoreService.tokensToShow;
-  }
-
-  public readonly customToken$ = this.tokensListStoreService.customToken$;
-
-  public get customToken(): AvailableTokenAmount {
-    return this.tokensListStoreService.customToken;
-  }
-
   private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
 
   private readonly _listAnimationType$ = new BehaviorSubject<ListAnimationType>('shown');
@@ -45,8 +35,17 @@ export class TokensListService {
     this._listAnimationType$.next(value);
   }
 
+  private get listType(): TokensListType {
+    return this.tokensListTypeService.listType;
+  }
+
+  private get tokensToShow(): AvailableTokenAmount[] {
+    return this.tokensListStoreService.tokensToShow;
+  }
+
   constructor(
     private readonly tokensListStoreService: TokensListStoreService,
+    private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensService: TokensService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly searchQueryService: SearchQueryService,
@@ -54,7 +53,6 @@ export class TokensListService {
   ) {
     this.subscribeOnScroll();
 
-    this.subscribeOnListType();
     this.subscribeOnTokensToShow();
   }
 
@@ -82,7 +80,7 @@ export class TokensListService {
               if (
                 this.loading ||
                 this.searchQueryService.query ||
-                this.tokensSelectorService.listType === 'favorite' ||
+                this.listType === 'favorite' ||
                 !tokensNetworkState ||
                 tokensNetworkState.maxPage === tokensNetworkState.page ||
                 this.iframeService.isIframe
@@ -109,40 +107,36 @@ export class TokensListService {
       });
   }
 
-  private subscribeOnListType(): void {
-    this.tokensSelectorService.listType$.subscribe(() => {
-      this.tokensListStoreService.updateTokens();
-    });
-  }
-
   private subscribeOnTokensToShow(): void {
     let prevSearchQuery: string;
     let prevListType: string;
 
-    this.tokensToShow$.pipe(pairwise()).subscribe(([prevTokensToShow, tokensToShow]) => {
-      if (prevTokensToShow?.length && tokensToShow?.length) {
-        const prevToken = prevTokensToShow[0];
-        const newToken = tokensToShow[0];
-        let shouldAnimate = prevToken.blockchain !== newToken.blockchain;
+    this.tokensListStoreService.tokensToShow$
+      .pipe(pairwise())
+      .subscribe(([prevTokensToShow, tokensToShow]) => {
+        if (prevTokensToShow?.length && tokensToShow?.length) {
+          const prevToken = prevTokensToShow[0];
+          const newToken = tokensToShow[0];
+          let shouldAnimate = prevToken.blockchain !== newToken.blockchain;
 
-        shouldAnimate ||= prevListType !== this.tokensSelectorService.listType;
-        prevListType = this.tokensSelectorService.listType;
+          shouldAnimate ||= prevListType !== this.listType;
+          prevListType = this.listType;
 
-        if (shouldAnimate) {
-          this.listAnimationType = 'hidden';
-          setTimeout(() => {
-            this.listAnimationType = 'shown';
-          });
+          if (shouldAnimate) {
+            this.listAnimationType = 'hidden';
+            setTimeout(() => {
+              this.listAnimationType = 'shown';
+            });
+          }
         }
-      }
 
-      if (
-        prevTokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
-        prevSearchQuery !== this.searchQueryService.query
-      ) {
-        this.resetScrollToTop();
-        prevSearchQuery = this.searchQueryService.query;
-      }
-    });
+        if (
+          prevTokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
+          prevSearchQuery !== this.searchQueryService.query
+        ) {
+          this.resetScrollToTop();
+          prevSearchQuery = this.searchQueryService.query;
+        }
+      });
   }
 }

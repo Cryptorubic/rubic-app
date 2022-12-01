@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
 
 @Component({
   selector: 'app-switch-list-type-button',
@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwitchListTypeButtonComponent {
-  public readonly buttonData$ = this.tokensSelectorService.listType$.pipe(
+  public readonly buttonData$ = this.tokensListTypeService.listType$.pipe(
     map(listType => {
       const icon = listType === 'default' ? 'star.svg' : 'back.svg';
       const hintText =
@@ -21,12 +21,12 @@ export class SwitchListTypeButtonComponent {
     })
   );
 
-  constructor(private readonly tokensSelectorService: TokensSelectorService) {}
+  constructor(private readonly tokensListTypeService: TokensListTypeService) {}
 
   /**
    * Switches tokens display mode (default or favorite).
    */
   public switchMode(): void {
-    this.tokensSelectorService.switchListType();
+    this.tokensListTypeService.switchListType();
   }
 }

@@ -1,23 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Self,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
-import { RubicWindow } from '@shared/utils/rubic-window';
-import { WINDOW } from '@ng-web-apis/common';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
-import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
+import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -32,13 +22,13 @@ export class TokensListComponent {
     this.tokensListService.setListScrollSubject(scroll);
   }
 
-  public readonly tokensToShow$ = this.tokensListService.tokensToShow$;
+  public readonly loading$ = this.tokensListService.loading$;
 
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
-  public readonly customToken$ = this.tokensListService.customToken$;
+  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
-  public readonly loading$ = this.tokensListService.loading$;
+  public readonly customToken$ = this.tokensListStoreService.customToken$;
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
@@ -49,15 +39,11 @@ export class TokensListComponent {
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 
   constructor(
-    private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly tokensListService: TokensListService,
-    private readonly searchQueryService: SearchQueryService,
-    private readonly tokensService: TokensService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    private readonly tokensListStoreService: TokensListStoreService
   ) {}
 
   /**

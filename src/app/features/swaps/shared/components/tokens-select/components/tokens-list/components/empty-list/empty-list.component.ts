@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { map } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
 
 @Component({
   selector: 'app-empty-list',
@@ -18,17 +18,17 @@ export class EmptyListComponent {
     map(query => Boolean(query.length))
   );
 
-  public readonly listType$ = this.tokenSelectService.listType$;
+  public readonly listType$ = this.tokensListTypeService.listType$;
 
   constructor(
-    private readonly tokenSelectService: TokensSelectorService,
+    private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
     private readonly authService: AuthService,
     private readonly walletsModalService: WalletsModalService
   ) {}
 
   public switchToDefaultList(): void {
-    this.tokenSelectService.switchListType();
+    this.tokensListTypeService.switchListType();
   }
 
   public openAuthModal(): void {

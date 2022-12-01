@@ -10,6 +10,7 @@ import {
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
 import { TokensSelectorServices } from '@features/swaps/shared/components/tokens-select/constants/tokens-selector-services';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
 
 @Component({
   selector: 'polymorpheus-tokens-selector',
@@ -23,7 +24,7 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
 
   public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
-  public readonly headerText$ = this.tokensSelectorService.listType$.pipe(
+  public readonly headerText$ = this.tokensListTypeService.listType$.pipe(
     map(listType => {
       if (listType === 'default') {
         return 'modals.tokensListModal.defaultTitle';
@@ -37,6 +38,7 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly iframeService: IframeService,
     private readonly tokensSelectorService: TokensSelectorService,
+    private readonly tokensListTypeService: TokensListTypeService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.initiateContextParams(context.data);

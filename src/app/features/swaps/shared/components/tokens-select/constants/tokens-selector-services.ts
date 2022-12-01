@@ -3,11 +3,14 @@ import { SearchQueryService } from '@features/swaps/shared/components/tokens-sel
 import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
 import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
 import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
 
 export const TokensSelectorServices = [
   TokensSelectorService,
   SearchQueryService,
   BlockchainsListService,
+
+  TokensListTypeService,
   TokensListStoreService,
   TokensListService
 ];

@@ -10,7 +10,6 @@ import {
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
@@ -31,6 +30,8 @@ import { blockchainImageKey } from '@features/swaps/shared/components/tokens-sel
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
+import { TokensListTypeService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-type.service';
+import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 
 @Injectable()
 export class TokensListStoreService {
@@ -84,10 +85,11 @@ export class TokensListStoreService {
   }
 
   private get listType(): TokensListType {
-    return this.tokensSelectorService.listType;
+    return this.tokensListTypeService.listType;
   }
 
   constructor(
+    private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
     private readonly tokensService: TokensService,
     private readonly tokensSelectorService: TokensSelectorService,
@@ -98,6 +100,7 @@ export class TokensListStoreService {
     this.subscribeOnTokensChange();
     this.subscribeOnSearchQueryChange();
     this.subscribeOnBlockchainChange();
+    this.subscribeOnListType();
   }
 
   private subscribeOnTokensChange(): void {
@@ -125,7 +128,13 @@ export class TokensListStoreService {
     });
   }
 
-  public updateTokens(): void {
+  private subscribeOnListType(): void {
+    this.tokensListTypeService.listType$.subscribe(() => {
+      this.updateTokens();
+    });
+  }
+
+  private updateTokens(): void {
     this.updateTokens$.next();
   }
 

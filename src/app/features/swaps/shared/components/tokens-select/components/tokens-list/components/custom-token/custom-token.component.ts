@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CustomTokenService } from '@features/swaps/shared/components/tokens-select/components/tokens-list/services/custom-token-service/custom-token.service';
-import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
+import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
 
 @Component({
   selector: 'app-custom-token',
@@ -10,11 +10,11 @@ import { TokensListService } from '@features/swaps/shared/components/tokens-sele
   providers: [CustomTokenService]
 })
 export class CustomTokenComponent {
-  public readonly token = this.tokensListService.customToken;
+  public readonly token = this.tokensListStoreService.customToken;
 
   constructor(
     private readonly customTokenService: CustomTokenService,
-    private readonly tokensListService: TokensListService
+    private readonly tokensListStoreService: TokensListStoreService
   ) {}
 
   /**

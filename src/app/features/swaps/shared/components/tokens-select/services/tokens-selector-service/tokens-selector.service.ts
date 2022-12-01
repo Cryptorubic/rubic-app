@@ -7,7 +7,6 @@ import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-select/models/tokens-select-polymorpheus-data';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 
 @Injectable()
 export class TokensSelectorService {
@@ -36,21 +35,6 @@ export class TokensSelectorService {
 
   public set blockchain(value: BlockchainName) {
     this._blockchain$.next(value);
-  }
-
-  /**
-   * Defines whether default or favorite tokens are shown.
-   */
-  private readonly _listType$ = new BehaviorSubject<TokensListType>('default');
-
-  public readonly listType$ = this._listType$.asObservable();
-
-  public get listType(): TokensListType {
-    return this._listType$.value;
-  }
-
-  public set listType(value: TokensListType) {
-    this._listType$.next(value);
   }
 
   private readonly _tokenSelected$ = new Subject<AvailableTokenAmount>();
@@ -92,14 +76,6 @@ export class TokensSelectorService {
   private checkAndRefetchTokenList(): void {
     if (this.tokensService.needRefetchTokens) {
       this.tokensService.tokensRequestParameters = undefined;
-    }
-  }
-
-  public switchListType(): void {
-    if (this.listType === 'default') {
-      this.listType = 'favorite';
-    } else {
-      this.listType = 'default';
     }
   }
 
