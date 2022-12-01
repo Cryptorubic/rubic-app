@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
-export const allBlockchains = [
+export const blockchainsList = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,

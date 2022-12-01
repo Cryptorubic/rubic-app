@@ -67,6 +67,8 @@
         </ng-container>
 
         <ng-container *ngIf="!searchQueryLoading">
+          <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
+
           <app-tokens-list
             [(listType)]="listType"
             [hasSearchQuery]="!!searchQuery"

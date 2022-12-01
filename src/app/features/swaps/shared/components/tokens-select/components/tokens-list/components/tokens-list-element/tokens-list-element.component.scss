@@ -1,4 +1,4 @@
-@use '../../../../../../../../../../scss/core' as *;
+@use 'src/scss/core' as *;
 
 .token-card {
   display: flex;
@@ -153,7 +153,7 @@
       stroke: none;
     }
 
-    &:hover:not(&_active)  svg path {
+    &:hover:not(&_active) svg path {
       stroke: var(--main-green);
     }
   }

@@ -23,6 +23,8 @@ import { SharedModule } from '@shared/shared.module';
 import { CustomTokenComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token/custom-token.component';
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { TuiAutoFocusModule } from '@taiga-ui/cdk';
+import { BlockchainsListComponent } from 'src/app/features/swaps/shared/components/tokens-select/components/blockchains-list/blockchains-list.component';
+import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { TuiAutoFocusModule } from '@taiga-ui/cdk';
     TokensListComponent,
     TokensListElementComponent,
     CustomTokenComponent,
-    CustomTokenWarningModalComponent
+    CustomTokenWarningModalComponent,
+    BlockchainsListComponent
   ],
   imports: [
     CommonModule,
@@ -50,6 +53,6 @@ import { TuiAutoFocusModule } from '@taiga-ui/cdk';
     InlineSVGModule,
     TuiAutoFocusModule
   ],
-  providers: [TokensSelectService]
+  providers: [TokensSelectService, BlockchainsListService]
 })
 export class TokensSelectModule {}

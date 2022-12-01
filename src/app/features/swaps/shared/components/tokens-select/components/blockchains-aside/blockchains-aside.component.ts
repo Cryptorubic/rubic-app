@@ -9,12 +9,8 @@ import {
 import { BlockchainName } from 'rubic-sdk';
 import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { USER_AGENT } from '@ng-web-apis/common';
-import { allBlockchains } from '@features/swaps/shared/components/tokens-select/constants/all-blockchains';
-import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
-import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
+import { AvailableBlockchain } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/models/available-blockchain';
+import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -31,11 +27,7 @@ export class BlockchainsAsideComponent {
 
   @Output() blockchainChange = new EventEmitter<BlockchainName>();
 
-  public static readonly allBlockchains: BlockchainName[] = allBlockchains;
-
-  public blockchainIcon = blockchainIcon;
-
-  public blockchainLabel = blockchainLabel;
+  public readonly blockchainsList = this.blockchainsListService.availableBlockchains;
 
   public get showClearFix(): boolean {
     const safariDetector: RegExp = /iPhone/i;
@@ -47,34 +39,23 @@ export class BlockchainsAsideComponent {
     );
   }
 
-  public get blockchains(): BlockchainName[] {
-    if (this.queryParamsService.enabledBlockchains) {
-      return BlockchainsAsideComponent.allBlockchains.filter(blockchain => {
-        return this.queryParamsService.enabledBlockchains.includes(blockchain);
-      });
-    }
-
-    return BlockchainsAsideComponent.allBlockchains;
-  }
-
   constructor(
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(USER_AGENT) private readonly userAgent: string,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly blockchainsListService: BlockchainsListService
   ) {}
 
-  public isDisabledFromBlockchain(blockchain: BlockchainName): boolean {
-    return this.formType === 'from' && disabledFromBlockchains.includes(blockchain);
+  public isDisabled(blockchain: AvailableBlockchain): boolean {
+    return this.blockchainsListService.isDisabled(blockchain, this.formType);
+  }
+
+  public getHintText(blockchain: AvailableBlockchain): string | null {
+    return this.blockchainsListService.getHintText(blockchain, this.formType);
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
-  }
-
-  public isDisabledConfigurationBlockchain(blockchainName: BlockchainName): boolean {
-    return !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
   }
 }

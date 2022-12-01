@@ -1,4 +1,3 @@
-/* eslint-disable rxjs/finnish */
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';

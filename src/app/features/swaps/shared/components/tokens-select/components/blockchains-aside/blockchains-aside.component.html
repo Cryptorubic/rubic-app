@@ -4,28 +4,24 @@
       class="blockchain-aside__blockchains-list"
       [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
     >
-      <ng-container *ngFor="let blockchainName of blockchains">
-        <ng-container *ngLet="isDisabledFromBlockchain(blockchainName) as disabledFrom">
-          <ng-container
-            *ngLet="isDisabledConfigurationBlockchain(blockchainName) as disabledConfiguration"
+      <ng-container *ngFor="let blockchainItem of blockchainsList">
+        <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
+          <li
+            [id]="idPrefix + 'Network_' + blockchainItem.name"
+            [ngClass]="{ disabled: disabled }"
+            tuiHintMode="error"
+            [tuiHint]="blockchainItem | functionCall: getHintText:this"
           >
-            <li
-              [id]="idPrefix + 'Network_' + blockchainName"
-              [ngClass]="{ disabled: disabledFrom || disabledConfiguration }"
-              tuiHintMode="error"
-              [tuiHint]="disabledFrom ? 'Select as target network' : null"
+            <app-icon-button
+              [icon]="blockchainItem.icon"
+              [disabled]="blockchain === blockchainItem.name || disabled"
+              [border]="blockchain === blockchainItem.name"
+              [borderRadiusPercent]="50"
+              [label]="blockchainItem.label"
+              (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
             >
-              <app-icon-button
-                [icon]="blockchainIcon[blockchainName]"
-                [disabled]="blockchain === blockchainName || disabledFrom || disabledConfiguration"
-                [border]="blockchain === blockchainName"
-                [borderRadiusPercent]="50"
-                [label]="blockchainLabel[blockchainName]"
-                (iconButtonClick)="onBlockchainSelect(blockchainName)"
-              >
-              </app-icon-button>
-            </li>
-          </ng-container>
+            </app-icon-button>
+          </li>
         </ng-container>
       </ng-container>
     </ul>

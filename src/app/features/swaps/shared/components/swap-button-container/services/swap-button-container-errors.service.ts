@@ -17,7 +17,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
-import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
+import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
