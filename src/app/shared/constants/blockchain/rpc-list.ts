@@ -29,7 +29,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
-    'https://rpc.ankr.com/arbitrum/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://arb1.arbitrum.io/rpc'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
