@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit,
   Self,
   ViewChild
 } from '@angular/core';
@@ -28,17 +27,14 @@ import { SearchQueryService } from '@features/swaps/shared/components/tokens-sel
   providers: [TuiDestroyService],
   animations: [LIST_ANIMATION]
 })
-export class TokensListComponent implements OnInit {
+export class TokensListComponent {
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.tokensListService.setListScrollSubject(scroll);
   }
 
-  public tokensToShow: AvailableTokenAmount[];
+  public readonly tokensToShow$ = this.tokensListService.tokensToShow$;
 
-  /**
-   * Controls animation of tokens list.
-   */
-  public listAnimationState: 'hidden' | 'shown';
+  public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
   public readonly customToken$ = this.tokensListService.customToken$;
 
@@ -52,8 +48,6 @@ export class TokensListComponent implements OnInit {
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 
-  private searchQuery: string;
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
@@ -66,23 +60,6 @@ export class TokensListComponent implements OnInit {
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
-  ngOnInit() {
-    this.tokensListService.tokensToShow$.subscribe(tokensToShow => {
-      this.startAnimation(tokensToShow);
-
-      if (
-        this.tokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
-        this.searchQuery !== this.searchQueryService.query
-      ) {
-        this.tokensListService.resetScrollToTop();
-      }
-
-      this.searchQuery = this.searchQueryService.query;
-      this.tokensToShow = tokensToShow;
-      this.cdr.detectChanges();
-    });
-  }
-
   /**
    * Function to track list element by unique key: token blockchain and address.
    * @param _index Index of list element.
@@ -91,31 +68,6 @@ export class TokensListComponent implements OnInit {
    */
   public trackByFn(_index: number, tokenListElement: AvailableTokenAmount): string {
     return `${tokenListElement.blockchain}_${tokenListElement.address}`;
-  }
-
-  /**
-   * Starts smooth animation when tokens list is distinctly changed.
-   * @param tokens New tokens list.
-   */
-  private startAnimation(tokens: AvailableTokenAmount[]): void {
-    let shouldAnimate = false;
-    if (this.tokensToShow?.length && tokens.length) {
-      const prevToken = this.tokensToShow[0];
-      const newToken = tokens[0];
-      shouldAnimate = prevToken.blockchain !== newToken.blockchain;
-
-      const arePrevTokensFavourite = this.tokensToShow.every(t => t.favorite);
-      const areNewTokensFavourite = tokens.every(t => t.favorite);
-      shouldAnimate ||= arePrevTokensFavourite !== areNewTokensFavourite;
-    }
-
-    if (shouldAnimate) {
-      this.listAnimationState = 'hidden';
-      setTimeout(() => {
-        this.listAnimationState = 'shown';
-        this.cdr.detectChanges();
-      });
-    }
   }
 
   /**

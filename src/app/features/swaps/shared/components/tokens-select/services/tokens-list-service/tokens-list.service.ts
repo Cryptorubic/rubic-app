@@ -3,11 +3,12 @@ import { TokensListStoreService } from '@features/swaps/shared/components/tokens
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, pairwise, switchMap } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { ListAnimationType } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/models/list-animation-type';
 
 @Injectable()
 export class TokensListService {
@@ -36,6 +37,14 @@ export class TokensListService {
 
   private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
 
+  private readonly _listAnimationType$ = new BehaviorSubject<ListAnimationType>('shown');
+
+  public readonly listAnimationType$ = this._listAnimationType$.asObservable();
+
+  private set listAnimationType(value: ListAnimationType) {
+    this._listAnimationType$.next(value);
+  }
+
   constructor(
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly tokensService: TokensService,
@@ -46,6 +55,7 @@ export class TokensListService {
     this.subscribeOnScroll();
 
     this.subscribeOnListType();
+    this.subscribeOnTokensToShow();
   }
 
   public setListScrollSubject(scroll: CdkVirtualScrollViewport): void {
@@ -102,6 +112,37 @@ export class TokensListService {
   private subscribeOnListType(): void {
     this.tokensSelectorService.listType$.subscribe(() => {
       this.tokensListStoreService.updateTokens();
+    });
+  }
+
+  private subscribeOnTokensToShow(): void {
+    let prevSearchQuery: string;
+    let prevListType: string;
+
+    this.tokensToShow$.pipe(pairwise()).subscribe(([prevTokensToShow, tokensToShow]) => {
+      if (prevTokensToShow?.length && tokensToShow?.length) {
+        const prevToken = prevTokensToShow[0];
+        const newToken = tokensToShow[0];
+        let shouldAnimate = prevToken.blockchain !== newToken.blockchain;
+
+        shouldAnimate ||= prevListType !== this.tokensSelectorService.listType;
+        prevListType = this.tokensSelectorService.listType;
+
+        if (shouldAnimate) {
+          this.listAnimationType = 'hidden';
+          setTimeout(() => {
+            this.listAnimationType = 'shown';
+          });
+        }
+      }
+
+      if (
+        prevTokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
+        prevSearchQuery !== this.searchQueryService.query
+      ) {
+        this.resetScrollToTop();
+        prevSearchQuery = this.searchQueryService.query;
+      }
     });
   }
 }

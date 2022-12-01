@@ -1,4 +1,4 @@
-<ng-container>
+<ng-container *ngLet="tokensToShow$ | async as tokensToShow">
   <tui-scrollbar class="tokens-container">
     <!--standard mode -->
     <ng-container *ngLet="loading$ | async as loading">
@@ -9,7 +9,11 @@
 
         <ng-template #tokenList>
           <ng-container *ngLet="customToken$ | async as customToken">
-            <ul class="tokens-list" *ngIf="!customToken" [@listAnimation]="listAnimationState">
+            <ul
+              class="tokens-list"
+              *ngIf="!customToken"
+              [@listAnimation]="listAnimationState$ | async"
+            >
               <cdk-virtual-scroll-viewport
                 tuiScrollable
                 itemSize="63"
