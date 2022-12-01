@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -10,13 +9,14 @@ import {
 } from '@features/swaps/shared/components/tokens-select/models/tokens-select-polymorpheus-data';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
+import { TokensSelectorServices } from '@features/swaps/shared/components/tokens-select/constants/tokens-selector-services';
 
 @Component({
   selector: 'polymorpheus-tokens-selector',
   templateUrl: './tokens-selector.component.html',
   styleUrls: ['./tokens-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: TokensSelectorServices
 })
 export class TokensSelectorComponent implements OnInit, OnDestroy {
   public idPrefix: string;

@@ -3,12 +3,15 @@
     <!--standard mode -->
     <ng-container *ngLet="loading$ | async as loading">
       <tui-loader *noFrame [showLoader]="loading" [overlay]="true">
-        <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
-          <app-empty-list></app-empty-list>
-        </div>
+        <ng-container *ngLet="customToken$ | async as customToken">
+          <div
+            class="tokens-container__empty-list"
+            *ngIf="!tokensToShow?.length && !customToken; else tokenList"
+          >
+            <app-empty-list></app-empty-list>
+          </div>
 
-        <ng-template #tokenList>
-          <ng-container *ngLet="customToken$ | async as customToken">
+          <ng-template #tokenList>
             <ul
               class="tokens-list"
               *ngIf="!customToken"
@@ -41,8 +44,8 @@
             </ul>
 
             <app-custom-token *ngIf="customToken"></app-custom-token>
-          </ng-container>
-        </ng-template>
+          </ng-template>
+        </ng-container>
       </tui-loader>
     </ng-container>
     <!--standard mode -->

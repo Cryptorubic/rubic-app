@@ -24,13 +24,8 @@ import { CustomTokenComponent } from '@features/swaps/shared/components/tokens-s
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { BlockchainsListComponent } from 'src/app/features/swaps/shared/components/tokens-select/components/blockchains-list/blockchains-list.component';
-import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
-import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { SwitchListTypeButtonComponent } from './components/switch-list-type-button/switch-list-type-button.component';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
-import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
-import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
-import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
 
 @NgModule({
   declarations: [
@@ -61,13 +56,6 @@ import { TokensListStoreService } from '@features/swaps/shared/components/tokens
     InlineSVGModule,
     TuiAutoFocusModule
   ],
-  providers: [
-    TokensSelectorOpenerService,
-    TokensSelectorService,
-    BlockchainsListService,
-    TokensListService,
-    TokensListStoreService,
-    SearchQueryService
-  ]
+  providers: [TokensSelectorOpenerService]
 })
 export class TokensSelectorModule {}

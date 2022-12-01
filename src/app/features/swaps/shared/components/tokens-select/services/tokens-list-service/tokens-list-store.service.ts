@@ -215,7 +215,7 @@ export class TokensListStoreService {
       if (this.searchQuery) {
         const token = await SdkToken.createToken({
           blockchain: this.blockchain,
-          address: this.searchQuery
+          address: this.searchQuery.toLowerCase()
         });
 
         if (token?.name && token?.symbol && token?.decimals) {

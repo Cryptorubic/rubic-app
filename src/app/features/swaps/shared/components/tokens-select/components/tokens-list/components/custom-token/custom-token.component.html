@@ -5,12 +5,9 @@
   >
     <app-tokens-list-element
       [token]="token"
-      [tuiManualHint]="disabledTokenHint"
-      [tuiManualHintShow]="hintShown"
+      [tuiHint]="!token.available ? disabledTokenHint : null"
       tuiHintMode="error"
       tuiHintDirection="bottom-right"
-      (mouseenter)="hintShown = !token.available && true"
-      (mouseleave)="hintShown = false"
     >
     </app-tokens-list-element>
   </div>
