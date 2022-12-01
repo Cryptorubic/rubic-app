@@ -1,7 +1,7 @@
 <section class="tokens-select">
   <header class="tokens-select__header" *noFrame>
     <h2>
-      {{ headerText | translate }}
+      {{ headerText$ | async | translate }}
     </h2>
   </header>
 
@@ -23,8 +23,8 @@
 
     <ng-container *ngLet="searchLoading$ | async as searchLoading">
       <ng-container *noFrame="'horizontal'">
-        <tui-loader *ngIf="searchLoading" [showLoader]="true" size="xl"></tui-loader
-      ></ng-container>
+        <tui-loader *ngIf="searchLoading" [showLoader]="true" size="xl"></tui-loader>
+      </ng-container>
 
       <div class="token-list-container" [class.token-list-container_loading]="searchLoading">
         <ng-container *onlyFrame="'horizontal'">

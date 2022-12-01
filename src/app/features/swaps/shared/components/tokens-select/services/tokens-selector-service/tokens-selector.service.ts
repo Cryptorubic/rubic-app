@@ -98,6 +98,10 @@ export class TokensSelectorService {
 
   public readonly customToken$ = this._customToken$.asObservable();
 
+  public get customToken(): AvailableTokenAmount {
+    return this._customToken$.value;
+  }
+
   private set customToken(value: AvailableTokenAmount) {
     this._customToken$.next(value);
   }
@@ -154,6 +158,7 @@ export class TokensSelectorService {
       }
 
       this.updateTokensList();
+      this.checkAndRefetchTokenList();
     });
   }
 
@@ -374,6 +379,12 @@ export class TokensSelectorService {
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
     return tokens.sort(comparator);
+  }
+
+  private checkAndRefetchTokenList(): void {
+    if (this.tokensService.needRefetchTokens) {
+      this.tokensService.tokensRequestParameters = undefined;
+    }
   }
 
   public switchListType(): void {

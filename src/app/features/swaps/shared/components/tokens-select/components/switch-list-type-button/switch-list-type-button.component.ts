@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-switch-list-type-button',
@@ -9,23 +9,19 @@ import { TokensListType } from '@features/swaps/shared/components/tokens-select/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwitchListTypeButtonComponent {
-  public readonly listType$ = this.tokensSelectorService.listType$;
+  public readonly buttonData$ = this.tokensSelectorService.listType$.pipe(
+    map(listType => {
+      const icon = listType === 'default' ? 'star.svg' : 'back.svg';
+      const hintText =
+        listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list';
+      return {
+        icon,
+        hintText
+      };
+    })
+  );
 
   constructor(private readonly tokensSelectorService: TokensSelectorService) {}
-
-  public getIcon(listType: TokensListType): string {
-    if (listType === 'default') {
-      return 'star.svg';
-    }
-    return 'back.svg';
-  }
-
-  public getHintText(listType: TokensListType): string {
-    if (listType === 'default') {
-      return 'List of favorite tokens';
-    }
-    return 'Back to whole tokens list';
-  }
 
   /**
    * Switches tokens display mode (default or favorite).

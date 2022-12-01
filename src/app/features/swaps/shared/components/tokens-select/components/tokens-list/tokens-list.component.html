@@ -35,11 +35,7 @@
             </cdk-virtual-scroll-viewport>
           </ul>
 
-          <app-custom-token
-            *ngIf="customToken"
-            [token]="customToken"
-            (tokenSelected)="onTokenSelect($event)"
-          ></app-custom-token>
+          <app-custom-token *ngIf="customToken"></app-custom-token>
         </ng-container>
       </ng-template>
     </tui-loader>

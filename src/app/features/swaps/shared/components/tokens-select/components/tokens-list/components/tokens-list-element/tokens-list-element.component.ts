@@ -24,23 +24,17 @@ import { NAVIGATOR } from '@ng-web-apis/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
-  public loadingFavoriteToken: boolean;
-
-  /**
-   * Token element.
-   */
   @Input() token: TokenAmount;
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  /**
-   * Is iframe has horizontal view.
-   */
   public readonly isHorizontalFrame: boolean;
 
   public hintShown: boolean = true;
+
+  public loadingFavoriteToken: boolean = false;
 
   constructor(
     iframeService: IframeService,
@@ -50,7 +44,6 @@ export class TokensListElementComponent {
     private readonly authService: AuthService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {
-    this.loadingFavoriteToken = false;
     this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
   }
 

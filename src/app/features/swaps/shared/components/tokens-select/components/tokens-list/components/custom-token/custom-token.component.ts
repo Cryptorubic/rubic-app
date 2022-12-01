@@ -1,23 +1,13 @@
-/* eslint-disable rxjs/no-async-subscribe */
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  Inject,
-  Injector,
-  ChangeDetectorRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { Web3PublicSupportedBlockchain, Web3Pure } from 'rubic-sdk';
 import { Injector as RubicInjector } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CustomTokenWarningModalComponent } from 'src/app/features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { switchMap } from 'rxjs';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 
 @Component({
   selector: 'app-custom-token',
@@ -26,27 +16,16 @@ import { switchMap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomTokenComponent {
-  /**
-   * Parsed custom token.
-   */
-  @Input() public token: AvailableTokenAmount; // @todo remove
-
-  /**
-   * Events event when custom token is selected.
-   */
-  @Output() public tokenSelected = new EventEmitter<AvailableTokenAmount>();
-
-  /**
-   * Should hint be shown.
-   */
   public hintShown: boolean;
+
+  public readonly token = this.tokensSelectorService.customToken;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensSelectorService: TokensSelectorService
   ) {}
 
   /**
@@ -79,7 +58,7 @@ export class CustomTokenComponent {
       )
       .subscribe(token => {
         if (token) {
-          this.tokenSelected.emit(token);
+          this.tokensSelectorService.onTokenSelect(token);
         }
       });
   }

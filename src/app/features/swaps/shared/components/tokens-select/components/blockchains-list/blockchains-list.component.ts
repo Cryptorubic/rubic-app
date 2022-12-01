@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormType } from '@features/swaps/shared/models/form/form-type';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
 import { AvailableBlockchain } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/models/available-blockchain';
 
@@ -10,8 +9,6 @@ import { AvailableBlockchain } from '@features/swaps/shared/components/tokens-se
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsListComponent {
-  @Input() formType: FormType;
-
   public readonly blockchainsList = this.blockchainsListService.availableBlockchains;
 
   constructor(private readonly blockchainsListService: BlockchainsListService) {}
