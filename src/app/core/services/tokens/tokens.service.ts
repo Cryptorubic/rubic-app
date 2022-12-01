@@ -62,8 +62,6 @@ export class TokensService {
     TOKENS_PAGINATION
   );
 
-  public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
-
   public get tokensNetworkState(): TokensNetworkState {
     return this._tokensNetworkState$.value;
   }

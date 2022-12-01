@@ -21,32 +21,22 @@
       ></app-tokens-search-bar>
     </ng-container>
 
-    <ng-container *ngLet="searchLoading$ | async as searchLoading">
-      <ng-container *noFrame="'horizontal'">
-        <tui-loader *ngIf="searchLoading" [showLoader]="true" size="xl"></tui-loader>
+    <div class="token-list-container">
+      <ng-container *onlyFrame="'horizontal'">
+        <app-tokens-search-bar
+          *ngIf="iframeTokenSearch"
+          class="token-list-container__search"
+          [expandableField]="true"
+        ></app-tokens-search-bar>
       </ng-container>
 
-      <div class="token-list-container" [class.token-list-container_loading]="searchLoading">
-        <ng-container *onlyFrame="'horizontal'">
-          <app-tokens-search-bar
-            *ngIf="iframeTokenSearch"
-            class="token-list-container__search"
-            [expandableField]="true"
-          ></app-tokens-search-bar>
+      <div class="token-list-container__list">
+        <ng-container>
+          <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
+
+          <app-tokens-list></app-tokens-list>
         </ng-container>
-
-        <div class="token-list-container__list">
-          <ng-container *onlyFrame="'horizontal'">
-            <tui-loader *ngIf="searchLoading" [showLoader]="true" size="l"></tui-loader>
-          </ng-container>
-
-          <ng-container *ngIf="!searchLoading">
-            <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
-
-            <app-tokens-list></app-tokens-list>
-          </ng-container>
-        </div>
       </div>
-    </ng-container>
+    </div>
   </div>
 </section>

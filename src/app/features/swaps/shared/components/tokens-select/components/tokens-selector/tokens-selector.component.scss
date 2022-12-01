@@ -134,18 +134,9 @@ tui-loader {
       height: 90px;
       overflow: hidden;
     }
-
-    &_loading {
-      flex: 1;
-      max-height: 90px;
-    }
   }
 
   &__list {
     height: 100%;
-  }
-
-  &_loading {
-    flex: 0;
   }
 }

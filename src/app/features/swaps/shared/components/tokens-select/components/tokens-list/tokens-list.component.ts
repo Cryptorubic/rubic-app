@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -11,9 +10,7 @@ import {
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -31,14 +28,10 @@ import { SearchQueryService } from '@features/swaps/shared/components/tokens-sel
   providers: [TuiDestroyService],
   animations: [LIST_ANIMATION]
 })
-export class TokensListComponent implements OnInit, AfterViewInit {
+export class TokensListComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-    if (scroll) {
-      this.scrollSubject$.next(scroll);
-    }
+    this.tokensListService.setListScrollSubject(scroll);
   }
-
-  public listUpdating: boolean = false;
 
   public tokensToShow: AvailableTokenAmount[];
 
@@ -47,11 +40,9 @@ export class TokensListComponent implements OnInit, AfterViewInit {
    */
   public listAnimationState: 'hidden' | 'shown';
 
-  private readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport> = new BehaviorSubject(
-    undefined
-  );
-
   public readonly customToken$ = this.tokensListService.customToken$;
+
+  public readonly loading$ = this.tokensListService.loading$;
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
@@ -60,6 +51,8 @@ export class TokensListComponent implements OnInit, AfterViewInit {
   }
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
+
+  private searchQuery: string;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -74,21 +67,20 @@ export class TokensListComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.tokensSelectorService.blockchain$.subscribe(() => {
-      if (this.scrollSubject$?.value) {
-        this.scrollSubject$.value.scrollToIndex(0);
-      }
-    });
-
     this.tokensListService.tokensToShow$.subscribe(tokensToShow => {
       this.startAnimation(tokensToShow);
+
+      if (
+        this.tokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
+        this.searchQuery !== this.searchQueryService.query
+      ) {
+        this.tokensListService.resetScrollToTop();
+      }
+
+      this.searchQuery = this.searchQueryService.query;
       this.tokensToShow = tokensToShow;
       this.cdr.detectChanges();
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.observeScroll();
   }
 
   /**
@@ -99,52 +91,6 @@ export class TokensListComponent implements OnInit, AfterViewInit {
    */
   public trackByFn(_index: number, tokenListElement: AvailableTokenAmount): string {
     return `${tokenListElement.blockchain}_${tokenListElement.address}`;
-  }
-
-  /**
-   * Observes list scroll and fetches new tokens if needed.
-   */
-  private observeScroll(): void {
-    this.scrollSubject$
-      .pipe(
-        filter(value => Boolean(value)),
-        switchMap(scroll =>
-          scroll.renderedRangeStream.pipe(
-            debounceTime(200),
-            filter(renderedRange => {
-              const tokensNetworkState =
-                this.tokensService.tokensNetworkState[this.tokensSelectorService.blockchain];
-              if (
-                this.listUpdating ||
-                this.searchQueryService.query ||
-                this.tokensSelectorService.listType === 'favorite' ||
-                !tokensNetworkState ||
-                tokensNetworkState.maxPage === tokensNetworkState.page ||
-                this.iframeService.isIframe
-              ) {
-                return false;
-              }
-
-              const bigVirtualElementsAmount = 10;
-              const smallVirtualElementsAmount = 5;
-              return this.tokensToShow.length > bigVirtualElementsAmount
-                ? renderedRange.end > this.tokensToShow.length - bigVirtualElementsAmount
-                : renderedRange.end > this.tokensToShow.length - smallVirtualElementsAmount;
-            })
-          )
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(shouldUpdate => {
-        if (shouldUpdate) {
-          this.listUpdating = true;
-          this.cdr.detectChanges();
-          this.tokensService.fetchNetworkTokens(this.tokensSelectorService.blockchain, () => {
-            this.listUpdating = false;
-            this.cdr.detectChanges();
-          });
-        }
-      });
   }
 
   /**
@@ -165,7 +111,6 @@ export class TokensListComponent implements OnInit, AfterViewInit {
 
     if (shouldAnimate) {
       this.listAnimationState = 'hidden';
-      this.cdr.detectChanges();
       setTimeout(() => {
         this.listAnimationState = 'shown';
         this.cdr.detectChanges();

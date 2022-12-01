@@ -30,6 +30,7 @@ import { SwitchListTypeButtonComponent } from './components/switch-list-type-but
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
+import { TokensListStoreService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list-store.service';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { SearchQueryService } from '@features/swaps/shared/components/tokens-sel
     TokensSelectorService,
     BlockchainsListService,
     TokensListService,
+    TokensListStoreService,
     SearchQueryService
   ]
 })
