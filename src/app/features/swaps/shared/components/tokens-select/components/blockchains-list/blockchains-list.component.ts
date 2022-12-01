@@ -17,10 +17,10 @@ export class BlockchainsListComponent {
   constructor(private readonly blockchainsListService: BlockchainsListService) {}
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
-    return this.blockchainsListService.isDisabled(blockchain, this.formType);
+    return this.blockchainsListService.isDisabled(blockchain);
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
-    return this.blockchainsListService.getHintText(blockchain, this.formType);
+    return this.blockchainsListService.getHintText(blockchain);
   }
 }

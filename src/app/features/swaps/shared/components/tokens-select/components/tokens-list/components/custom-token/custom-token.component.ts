@@ -29,7 +29,7 @@ export class CustomTokenComponent {
   /**
    * Parsed custom token.
    */
-  @Input() public token: AvailableTokenAmount;
+  @Input() public token: AvailableTokenAmount; // @todo remove
 
   /**
    * Events event when custom token is selected.

@@ -1,0 +1,10 @@
+<app-icon-button
+  *ngLet="listType$ | async as listType"
+  [icon]="'assets/images/icons/' + getIcon(listType)"
+  [tuiHint]="getHintText(listType)"
+  [tuiHintShowDelay]="1100"
+  [border]="true"
+  (iconButtonClick)="switchMode()"
+  buttonSize="s"
+>
+</app-icon-button>

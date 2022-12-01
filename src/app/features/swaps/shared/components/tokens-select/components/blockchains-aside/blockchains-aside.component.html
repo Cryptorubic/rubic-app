@@ -3,6 +3,7 @@
     <ul
       class="blockchain-aside__blockchains-list"
       [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
+      *ngLet="selectedBlockchain$ | async as selectedBlockchain"
     >
       <ng-container *ngFor="let blockchainItem of blockchainsList">
         <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
@@ -14,8 +15,8 @@
           >
             <app-icon-button
               [icon]="blockchainItem.icon"
-              [disabled]="blockchain === blockchainItem.name || disabled"
-              [border]="blockchain === blockchainItem.name"
+              [disabled]="selectedBlockchain === blockchainItem.name || disabled"
+              [border]="selectedBlockchain === blockchainItem.name"
               [borderRadiusPercent]="50"
               [label]="blockchainItem.label"
               (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"

@@ -3,29 +3,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Inject,
-  Input,
-  Output,
+  OnInit,
   Self,
   ViewChild
 } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { PaginatedPage } from '@shared/models/tokens/paginated-tokens';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
-import { AuthService } from '@core/services/auth/auth.service';
-import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
-import { UserInterface } from '@core/services/auth/models/user.interface';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
+import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -35,85 +29,27 @@ import { WINDOW } from '@ng-web-apis/common';
   providers: [TuiDestroyService],
   animations: [LIST_ANIMATION]
 })
-export class TokensListComponent implements AfterViewInit {
-  /**
-   * Defines whether default or favorite tokens are shown.
-   */
-  @Input() public listType: TokensListType;
-
-  /**
-   * True if search query string isn't empty.
-   */
-  @Input() public hasSearchQuery: boolean;
-
-  /**
-   * Backend-api state of tokens in currently selected blockchain.
-   */
-  @Input() public tokensNetworkState: PaginatedPage;
-
-  /**
-   * True if new tokens are being loaded.
-   */
-  @Input() public loading: boolean;
-
-  /**
-   * Token, currently selected in main form.
-   */
-  @Input() public currentlySelectedToken: TokenAmount;
-
-  /**
-   * Sets list of tokens to show.
-   */
-  @Input() public set tokens(tokens: AvailableTokenAmount[]) {
-    this.startAnimation(tokens);
-    this._tokens = tokens;
-    this.hintsShown = Array(this._tokens.length).fill(false);
-  }
-
-  public get tokens(): AvailableTokenAmount[] {
-    return this._tokens;
-  }
-
-  @Input() public customToken: AvailableTokenAmount;
-
-  /**
-   * Emits event when token is selected.
-   */
-  @Output() public tokenSelect = new EventEmitter<AvailableTokenAmount>();
-
-  /**
-   * Emits event when new tokens page should be loaded.
-   */
-  @Output() public pageUpdate = new EventEmitter<number>();
-
-  /**
-   * Emits event when tokens list type is changed.
-   */
-  @Output() public listTypeChange = new EventEmitter<TokensListType>();
-
-  /**
-   * Sets {@link CdkVirtualScrollViewport}
-   */
+export class TokensListComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     if (scroll) {
       this.scrollSubject$.next(scroll);
     }
   }
 
-  private _tokens: AvailableTokenAmount[];
+  public listUpdating: boolean = false;
 
-  /**
-   * Defines whether hint is shown or not for each token.
-   */
-  public hintsShown: boolean[];
+  public tokensToShow: AvailableTokenAmount[];
 
   /**
    * Controls animation of tokens list.
    */
   public listAnimationState: 'hidden' | 'shown';
 
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
+  private readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport> = new BehaviorSubject(
+    undefined
+  );
+
+  public readonly customToken$ = this.tokensSelectService.customToken$;
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
@@ -123,22 +59,33 @@ export class TokensListComponent implements AfterViewInit {
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 
-  get user$(): Observable<UserInterface> {
-    return this.authService.currentUser$;
-  }
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
-    private readonly authService: AuthService,
-    private readonly walletsModalService: WalletsModalService,
+    private readonly tokensSelectService: TokensSelectService,
+    private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: RubicWindow
-  ) {
-    this.loading = false;
-    this.pageUpdate = new EventEmitter();
-    this.scrollSubject$ = new BehaviorSubject(undefined);
+  ) {}
+
+  ngOnInit() {
+    this.tokensSelectService.blockchain$.subscribe(() => {
+      if (this.scrollSubject$?.value) {
+        this.scrollSubject$.value.scrollToIndex(0);
+      }
+    });
+
+    combineLatest([
+      this.tokensSelectService.tokens$,
+      this.tokensSelectService.favoriteTokens$
+    ]).subscribe(([tokens, favoriteTokens]) => {
+      const tokensToShow =
+        this.tokensSelectService.listType === 'default' ? tokens : favoriteTokens;
+      this.startAnimation(tokensToShow);
+      this.tokensToShow = tokensToShow;
+      this.cdr.detectChanges();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -166,28 +113,38 @@ export class TokensListComponent implements AfterViewInit {
           scroll.renderedRangeStream.pipe(
             debounceTime(200),
             filter(renderedRange => {
-              const bigVirtualElementsAmount = 10;
-              const smallVirtualElementsAmount = 5;
+              const tokensNetworkState =
+                this.tokensService.tokensNetworkState[this.tokensSelectService.blockchain];
               if (
-                this.loading ||
-                this.hasSearchQuery ||
-                this.listType === 'favorite' ||
-                !this.tokensNetworkState ||
-                this.tokensNetworkState.maxPage === this.tokensNetworkState.page ||
+                this.listUpdating ||
+                this.tokensSelectService.searchQuery ||
+                this.tokensSelectService.listType === 'favorite' ||
+                !tokensNetworkState ||
+                tokensNetworkState.maxPage === tokensNetworkState.page ||
                 this.iframeService.isIframe
               ) {
                 return false;
               }
-              return this.tokens.length > bigVirtualElementsAmount
-                ? renderedRange.end > this.tokens.length - bigVirtualElementsAmount
-                : renderedRange.end > this.tokens.length - smallVirtualElementsAmount;
+
+              const bigVirtualElementsAmount = 10;
+              const smallVirtualElementsAmount = 5;
+              return this.tokensToShow.length > bigVirtualElementsAmount
+                ? renderedRange.end > this.tokensToShow.length - bigVirtualElementsAmount
+                : renderedRange.end > this.tokensToShow.length - smallVirtualElementsAmount;
             })
           )
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.pageUpdate.emit();
+      .subscribe(shouldUpdate => {
+        if (shouldUpdate) {
+          this.listUpdating = true;
+          this.cdr.detectChanges();
+          this.tokensService.fetchNetworkTokens(this.tokensSelectService.blockchain, () => {
+            this.listUpdating = false;
+            this.cdr.detectChanges();
+          });
+        }
       });
   }
 
@@ -197,21 +154,22 @@ export class TokensListComponent implements AfterViewInit {
    */
   private startAnimation(tokens: AvailableTokenAmount[]): void {
     let shouldAnimate = false;
-    if (this._tokens?.length && tokens.length) {
-      const prevToken = this._tokens[0];
+    if (this.tokensToShow?.length && tokens.length) {
+      const prevToken = this.tokensToShow[0];
       const newToken = tokens[0];
       shouldAnimate = prevToken.blockchain !== newToken.blockchain;
 
-      const arePrevTokensFavourite = this._tokens.every(t => t.favorite);
+      const arePrevTokensFavourite = this.tokensToShow.every(t => t.favorite);
       const areNewTokensFavourite = tokens.every(t => t.favorite);
       shouldAnimate ||= arePrevTokensFavourite !== areNewTokensFavourite;
     }
 
     if (shouldAnimate) {
       this.listAnimationState = 'hidden';
+      this.cdr.detectChanges();
       setTimeout(() => {
         this.listAnimationState = 'shown';
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
     }
   }
@@ -222,11 +180,7 @@ export class TokensListComponent implements AfterViewInit {
    */
   public onTokenSelect(token: AvailableTokenAmount): void {
     if (token.available) {
-      this.tokenSelect.emit(token);
+      this.tokensSelectService.onTokenSelect(token);
     }
-  }
-
-  public openAuthModal(): void {
-    this.walletsModalService.open$();
   }
 }

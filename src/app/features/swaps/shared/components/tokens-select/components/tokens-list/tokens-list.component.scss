@@ -7,8 +7,29 @@ $token-card-height: 55px;
 }
 
 .tokens-container {
+  position: relative;
+  margin-right: 0;
+  margin-top: 15px;
+
+  @include iframe {
+    position: static;
+    left: unset;
+    padding-top: 0;
+
+    width: 100%;
+  }
+
+  @include iframe-vertical {
+    height: 350px;
+  }
+
   @include iframe-horizontal {
     height: $token-card-height + 20px;
+  }
+
+  &__empty-list {
+    position: relative;
+    margin-top: 20px;
   }
 }
 
@@ -102,16 +123,6 @@ $token-card-height: 55px;
       }
     }
 
-    &_active,
-    &:active {
-      background-color: var(--main-background);
-      border-color: $rubic-primary !important;
-    }
-
-    &_active {
-      cursor: not-allowed;
-    }
-
     &_empty {
       border: 0;
       display: flex;
@@ -145,41 +156,6 @@ $token-card-height: 55px;
     &:hover {
       background-color: unset;
     }
-  }
-}
-
-.nothing-to-show-message {
-  position: relative;
-  margin-top: 20px;
-
-  display: block;
-
-  font-size: 16px;
-  text-align: center;
-
-  opacity: 0.6;
-
-  &__link {
-    cursor: pointer;
-    color: var(--primary-color);
-  }
-}
-
-.tokens-container {
-  position: relative;
-  margin-right: 0;
-  margin-top: 15px;
-
-  @include iframe {
-    position: static;
-    left: unset;
-    padding-top: 0;
-
-    width: 100%;
-  }
-
-  @include iframe-vertical {
-    height: 350px;
   }
 }
 

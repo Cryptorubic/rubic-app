@@ -6,7 +6,7 @@ import { blockchainsList } from '@features/swaps/shared/components/tokens-select
 import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { FormType } from '@features/swaps/shared/models/form/form-type';
+import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -14,7 +14,8 @@ export class BlockchainsListService {
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensSelectService: TokensSelectService
   ) {
     let blockchains = blockchainsList;
     if (queryParamsService.enabledBlockchains) {
@@ -37,16 +38,16 @@ export class BlockchainsListService {
     });
   }
 
-  public isDisabled(blockchain: AvailableBlockchain, formType: FormType): boolean {
-    return blockchain.disabledConfiguration || this.isDisabledFrom(blockchain, formType);
+  public isDisabled(blockchain: AvailableBlockchain): boolean {
+    return blockchain.disabledConfiguration || this.isDisabledFrom(blockchain);
   }
 
-  public isDisabledFrom(blockchain: AvailableBlockchain, formType: FormType): boolean {
-    return formType === 'from' && blockchain.disabledFrom;
+  public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
+    return this.tokensSelectService.formType === 'from' && blockchain.disabledFrom;
   }
 
-  public getHintText(blockchain: AvailableBlockchain, formType: FormType): string | null {
-    if (this.isDisabledFrom(blockchain, formType)) {
+  public getHintText(blockchain: AvailableBlockchain): string | null {
+    if (this.isDisabledFrom(blockchain)) {
       return 'Select as target network';
     }
     if (blockchain.disabledConfiguration) {

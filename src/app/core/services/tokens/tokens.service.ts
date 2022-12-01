@@ -64,6 +64,10 @@ export class TokensService {
 
   public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
 
+  public get tokensNetworkState(): TokensNetworkState {
+    return this._tokensNetworkState$.value;
+  }
+
   /**
    * Current user address.
    */

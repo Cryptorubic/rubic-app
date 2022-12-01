@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
 
 @Component({
   selector: 'app-tokens-search-bar',
@@ -7,21 +8,20 @@ import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensSearchBarComponent {
-  @Input() searchQuery: string;
-
   @Input() expandableField: boolean = false;
 
-  @Output() searchQueryChange = new EventEmitter<string>();
-
   public isExpanded = false;
+
+  public readonly searchQuery$ = this.tokensSelectService.searchQuery$;
+
+  constructor(private readonly tokensSelectService: TokensSelectService) {}
 
   /**
    * Handles input query change.
    * @param model Input string.
    */
   public onQueryChanges(model: string): void {
-    this.searchQuery = model;
-    this.searchQueryChange.emit(model);
+    this.tokensSelectService.searchQuery = model;
   }
 
   public expand(): void {

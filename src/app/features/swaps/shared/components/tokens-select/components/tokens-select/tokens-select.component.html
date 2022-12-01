@@ -1,91 +1,52 @@
 <section class="tokens-select">
   <header class="tokens-select__header" *noFrame>
     <h2>
-      {{
-        (listType === 'default'
-          ? 'modals.tokensListModal.defaultTitle'
-          : 'modals.tokensListModal.favoriteTokensTitle'
-        ) | translate
-      }}
+      {{ headerText | translate }}
     </h2>
   </header>
 
   <div class="tokens-select__row" *noFrame>
-    <app-tokens-search-bar [(searchQuery)]="searchQuery"></app-tokens-search-bar>
-    <app-icon-button
-      [icon]="
-        listType === 'default' ? 'assets/images/icons/star.svg' : 'assets/images/icons/back.svg'
-      "
-      [tuiHint]="listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list'"
-      [tuiHintShowDelay]="1100"
-      [border]="true"
-      (iconButtonClick)="switchMode()"
-      buttonSize="s"
-    >
-    </app-icon-button>
+    <app-tokens-search-bar></app-tokens-search-bar>
+
+    <app-switch-list-type-button></app-switch-list-type-button>
   </div>
 
   <div class="tokens-select__content">
-    <app-blockchains-aside
-      [idPrefix]="idPrefix"
-      [(blockchain)]="blockchain"
-      [formType]="formType"
-      (blockchainChange)="onBlockchainChange()"
-    ></app-blockchains-aside>
+    <app-blockchains-aside [idPrefix]="idPrefix"></app-blockchains-aside>
 
-    <ng-container *onlyFrame>
+    <ng-container *onlyFrame="'vertical'">
       <app-tokens-search-bar
-        *ngIf="iframeTokenSearch && !isHorizontalIframe"
+        *ngIf="iframeTokenSearch"
         class="vertical-iframe-token-search"
-        [(searchQuery)]="searchQuery"
       ></app-tokens-search-bar>
     </ng-container>
 
-    <tui-loader
-      *ngIf="searchQueryLoading && !isHorizontalIframe"
-      [showLoader]="true"
-      size="xl"
-    ></tui-loader>
+    <ng-container *ngLet="searchLoading$ | async as searchLoading">
+      <ng-container *noFrame="'horizontal'">
+        <tui-loader *ngIf="searchLoading" [showLoader]="true" size="xl"></tui-loader
+      ></ng-container>
 
-    <div class="token-list-container" [class.token-list-container_loading]="searchQueryLoading">
-      <ng-container *onlyFrame>
-        <app-tokens-search-bar
-          *ngIf="isHorizontalIframe && iframeTokenSearch"
-          class="token-list-container__search"
-          [(searchQuery)]="searchQuery"
-          [expandableField]="true"
-        ></app-tokens-search-bar>
-      </ng-container>
-
-      <div class="token-list-container__list">
-        <ng-container *onlyFrame>
-          <tui-loader
-            *ngIf="searchQueryLoading && isHorizontalIframe"
-            [showLoader]="true"
-            size="l"
-          ></tui-loader>
+      <div class="token-list-container" [class.token-list-container_loading]="searchLoading">
+        <ng-container *onlyFrame="'horizontal'">
+          <app-tokens-search-bar
+            *ngIf="iframeTokenSearch"
+            class="token-list-container__search"
+            [expandableField]="true"
+          ></app-tokens-search-bar>
         </ng-container>
 
-        <ng-container *ngIf="!searchQueryLoading">
-          <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
+        <div class="token-list-container__list">
+          <ng-container *onlyFrame="'horizontal'">
+            <tui-loader *ngIf="searchLoading" [showLoader]="true" size="l"></tui-loader>
+          </ng-container>
 
-          <app-tokens-list
-            [(listType)]="listType"
-            [hasSearchQuery]="!!searchQuery"
-            [tokens]="
-              listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)
-            "
-            [currentlySelectedToken]="
-              currentlySelectedToken?.blockchain === blockchain ? currentlySelectedToken : null
-            "
-            [tokensNetworkState]="tokensNetworkState?.[blockchain]"
-            [loading]="tokensListUpdating"
-            [customToken]="customToken"
-            (tokenSelect)="selectToken($event)"
-            (pageUpdate)="fetchNewPageTokens()"
-          ></app-tokens-list>
-        </ng-container>
+          <ng-container *ngIf="!searchLoading">
+            <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
+
+            <app-tokens-list></app-tokens-list>
+          </ng-container>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 </section>
