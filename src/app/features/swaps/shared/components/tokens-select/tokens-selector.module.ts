@@ -28,6 +28,8 @@ import { BlockchainsListService } from '@features/swaps/shared/components/tokens
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { SwitchListTypeButtonComponent } from './components/switch-list-type-button/switch-list-type-button.component';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
+import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
+import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,12 @@ import { EmptyListComponent } from './components/tokens-list/components/empty-li
     InlineSVGModule,
     TuiAutoFocusModule
   ],
-  providers: [TokensSelectorOpenerService, TokensSelectorService, BlockchainsListService]
+  providers: [
+    TokensSelectorOpenerService,
+    TokensSelectorService,
+    BlockchainsListService,
+    TokensListService,
+    SearchQueryService
+  ]
 })
 export class TokensSelectorModule {}

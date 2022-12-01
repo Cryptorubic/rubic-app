@@ -10,6 +10,7 @@ import {
 } from '@features/swaps/shared/components/tokens-select/models/tokens-select-polymorpheus-data';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
+import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
 
 @Component({
   selector: 'polymorpheus-tokens-selector',
@@ -23,7 +24,7 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
 
   public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
-  public readonly searchLoading$ = this.tokensSelectorService.searchLoading$;
+  public readonly searchLoading$ = this.tokensListService.searchLoading$;
 
   public readonly headerText$ = this.tokensSelectorService.listType$.pipe(
     map(listType => {
@@ -39,6 +40,7 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly iframeService: IframeService,
     private readonly tokensSelectorService: TokensSelectorService,
+    private readonly tokensListService: TokensListService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.initiateContextParams(context.data);

@@ -3,6 +3,7 @@ import { TokensSelectorService } from '@features/swaps/shared/components/tokens-
 import { AuthService } from '@core/services/auth/auth.service';
 import { map } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
+import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 
 @Component({
   selector: 'app-empty-list',
@@ -13,7 +14,7 @@ import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.
 export class EmptyListComponent {
   public readonly user$ = this.authService.currentUser$;
 
-  public readonly hasSearchQuery$ = this.tokenSelectService.searchQuery$.pipe(
+  public readonly hasSearchQuery$ = this.searchQueryService.query$.pipe(
     map(query => Boolean(query.length))
   );
 
@@ -21,6 +22,7 @@ export class EmptyListComponent {
 
   constructor(
     private readonly tokenSelectService: TokensSelectorService,
+    private readonly searchQueryService: SearchQueryService,
     private readonly authService: AuthService,
     private readonly walletsModalService: WalletsModalService
   ) {}

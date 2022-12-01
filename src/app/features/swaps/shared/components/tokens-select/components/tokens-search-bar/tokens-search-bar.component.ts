@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
+import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 
 @Component({
   selector: 'app-tokens-search-bar',
@@ -12,16 +12,16 @@ export class TokensSearchBarComponent {
 
   public isExpanded = false;
 
-  public readonly searchQuery$ = this.tokensSelectorService.searchQuery$;
+  public readonly searchQuery$ = this.searchQueryService.query$;
 
-  constructor(private readonly tokensSelectorService: TokensSelectorService) {}
+  constructor(private readonly searchQueryService: SearchQueryService) {}
 
   /**
    * Handles input query change.
    * @param model Input string.
    */
   public onQueryChanges(model: string): void {
-    this.tokensSelectorService.searchQuery = model;
+    this.searchQueryService.query = model;
   }
 
   public expand(): void {

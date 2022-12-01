@@ -14,7 +14,6 @@ import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-imag
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
-import { timer } from 'rxjs';
 import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
@@ -48,7 +47,7 @@ export class TokensListElementComponent {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event, this.token);
+    this.tokensService.onTokenImageError($event);
   }
 
   /**
@@ -58,10 +57,12 @@ export class TokensListElementComponent {
     if (this.loadingFavoriteToken) {
       return;
     }
+
     if (!this.authService.userAddress) {
       this.errorsService.catch(new WalletError());
       return;
     }
+
     this.loadingFavoriteToken = true;
     const request$ = this.token.favorite
       ? this.tokensService.removeFavoriteToken(this.token)
@@ -94,9 +95,9 @@ export class TokensListElementComponent {
    */
   private showHint(): void {
     this.hintShown = false;
-    timer(1500).subscribe(() => {
+    setTimeout(() => {
       this.hintShown = true;
       this.cdr.markForCheck();
-    });
+    }, 1500);
   }
 }

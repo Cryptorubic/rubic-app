@@ -13,13 +13,15 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { TokensListService } from '@features/swaps/shared/components/tokens-select/services/tokens-list-service/tokens-list.service';
+import { SearchQueryService } from '@features/swaps/shared/components/tokens-select/services/search-query-service/search-query.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -49,7 +51,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
     undefined
   );
 
-  public readonly customToken$ = this.tokensSelectorService.customToken$;
+  public readonly customToken$ = this.tokensListService.customToken$;
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
@@ -65,6 +67,8 @@ export class TokensListComponent implements OnInit, AfterViewInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
     private readonly tokensSelectorService: TokensSelectorService,
+    private readonly tokensListService: TokensListService,
+    private readonly searchQueryService: SearchQueryService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
@@ -76,12 +80,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
       }
     });
 
-    combineLatest([
-      this.tokensSelectorService.tokens$,
-      this.tokensSelectorService.favoriteTokens$
-    ]).subscribe(([tokens, favoriteTokens]) => {
-      const tokensToShow =
-        this.tokensSelectorService.listType === 'default' ? tokens : favoriteTokens;
+    this.tokensListService.tokensToShow$.subscribe(tokensToShow => {
       this.startAnimation(tokensToShow);
       this.tokensToShow = tokensToShow;
       this.cdr.detectChanges();
@@ -117,7 +116,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
                 this.tokensService.tokensNetworkState[this.tokensSelectorService.blockchain];
               if (
                 this.listUpdating ||
-                this.tokensSelectorService.searchQuery ||
+                this.searchQueryService.query ||
                 this.tokensSelectorService.listType === 'favorite' ||
                 !tokensNetworkState ||
                 tokensNetworkState.maxPage === tokensNetworkState.page ||
