@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 
 @Component({
@@ -9,9 +9,9 @@ import { TokensListType } from '@features/swaps/shared/components/tokens-select/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwitchListTypeButtonComponent {
-  public readonly listType$ = this.tokensSelectService.listType$;
+  public readonly listType$ = this.tokensSelectorService.listType$;
 
-  constructor(private readonly tokensSelectService: TokensSelectService) {}
+  constructor(private readonly tokensSelectorService: TokensSelectorService) {}
 
   public getIcon(listType: TokensListType): string {
     if (listType === 'default') {
@@ -31,6 +31,6 @@ export class SwitchListTypeButtonComponent {
    * Switches tokens display mode (default or favorite).
    */
   public switchMode(): void {
-    this.tokensSelectService.switchListType();
+    this.tokensSelectorService.switchListType();
   }
 }

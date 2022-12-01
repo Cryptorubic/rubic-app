@@ -4,7 +4,7 @@ import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { USER_AGENT } from '@ng-web-apis/common';
 import { AvailableBlockchain } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/models/available-blockchain';
 import { BlockchainsListService } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/blockchains-list.service';
-import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -17,7 +17,7 @@ export class BlockchainsAsideComponent {
 
   public readonly blockchainsList = this.blockchainsListService.availableBlockchains;
 
-  public readonly selectedBlockchain$ = this.tokensSelectService.blockchain$;
+  public readonly selectedBlockchain$ = this.tokensSelectorService.blockchain$;
 
   public get showClearFix(): boolean {
     const safariDetector: RegExp = /iPhone/i;
@@ -34,7 +34,7 @@ export class BlockchainsAsideComponent {
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly blockchainsListService: BlockchainsListService,
-    private readonly tokensSelectService: TokensSelectService
+    private readonly tokensSelectorService: TokensSelectorService
   ) {}
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
@@ -46,6 +46,6 @@ export class BlockchainsAsideComponent {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    this.tokensSelectService.blockchain = blockchainName;
+    this.tokensSelectorService.blockchain = blockchainName;
   }
 }

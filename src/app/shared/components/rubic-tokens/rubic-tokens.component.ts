@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensSelectOpenerService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-opener.service';
+import { TokensSelectorOpenerService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-opener.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -77,7 +77,7 @@ export class RubicTokensComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly tokensSelectService: TokensSelectOpenerService,
+    private readonly tokensSelectorOpenerService: TokensSelectorOpenerService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
@@ -114,7 +114,7 @@ export class RubicTokensComponent implements OnInit {
 
     this.gtmService.reloadGtmSession();
 
-    this.tokensSelectService
+    this.tokensSelectorOpenerService
       .showDialog(this.formType, this.formService.input, idPrefix)
       .subscribe((selectedToken: TokenAmount) => {
         if (selectedToken) {

@@ -13,12 +13,12 @@ import BigNumber from 'bignumber.js';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { blockchainImageKey } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/constants/blockchain-image-key';
+import { blockchainImageKey } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/constants/blockchain-image-key';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-select/models/tokens-select-polymorpheus-data';
 import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 
 @Injectable()
-export class TokensSelectService {
+export class TokensSelectorService {
   /**
    * Contains string in search bar.
    */

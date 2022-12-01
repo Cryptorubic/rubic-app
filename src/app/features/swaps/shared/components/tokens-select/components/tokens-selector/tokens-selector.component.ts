@@ -18,16 +18,16 @@ import {
   TokensSelectComponentContext,
   TokensSelectComponentInput
 } from '@features/swaps/shared/components/tokens-select/models/tokens-select-polymorpheus-data';
-import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 
 @Component({
-  selector: 'polymorpheus-tokens-select',
-  templateUrl: './tokens-select.component.html',
-  styleUrls: ['./tokens-select.component.scss'],
+  selector: 'polymorpheus-tokens-selector',
+  templateUrl: './tokens-selector.component.html',
+  styleUrls: ['./tokens-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class TokensSelectComponent implements OnInit, OnDestroy {
+export class TokensSelectorComponent implements OnInit, OnDestroy {
   public idPrefix: string;
 
   /**
@@ -37,10 +37,10 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
-  public readonly searchLoading$ = this.tokensSelectService.searchLoading$;
+  public readonly searchLoading$ = this.tokensSelectorService.searchLoading$;
 
   public get headerText(): string {
-    if (this.tokensSelectService.listType === 'default') {
+    if (this.tokensSelectorService.listType === 'default') {
       return 'modals.tokensListModal.defaultTitle';
     }
     return 'modals.tokensListModal.favoriteTokensTitle';
@@ -51,14 +51,14 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensService: TokensService,
     private readonly iframeService: IframeService,
-    private readonly tokensSelectService: TokensSelectService,
+    private readonly tokensSelectorService: TokensSelectorService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.initiateContextParams(context.data);
     this.checkAndRefetchTokenList();
 
-    this.tokensSelectService.tokenSelected$.subscribe(selectedToken => {
+    this.tokensSelectorService.tokenSelected$.subscribe(selectedToken => {
       this.tokensService.addToken(selectedToken);
       this.context.completeWith(selectedToken);
     });
@@ -75,7 +75,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
 
   private initiateContextParams(context: TokensSelectComponentInput): void {
     this.idPrefix = context.idPrefix;
-    this.tokensSelectService.initParameters(context);
+    this.tokensSelectorService.initParameters(context);
   }
 
   /**
@@ -107,7 +107,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-    this.tokensSelectService.blockchain$.subscribe(() => {
+    this.tokensSelectorService.blockchain$.subscribe(() => {
       this.checkAndRefetchTokenList();
     });
   }

@@ -6,7 +6,7 @@ import { blockchainsList } from '@features/swaps/shared/components/tokens-select
 import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -15,7 +15,7 @@ export class BlockchainsListService {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly tokensSelectService: TokensSelectService
+    private readonly tokensSelectorService: TokensSelectorService
   ) {
     let blockchains = blockchainsList;
     if (queryParamsService.enabledBlockchains) {
@@ -43,7 +43,7 @@ export class BlockchainsListService {
   }
 
   public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
-    return this.tokensSelectService.formType === 'from' && blockchain.disabledFrom;
+    return this.tokensSelectorService.formType === 'from' && blockchain.disabledFrom;
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {

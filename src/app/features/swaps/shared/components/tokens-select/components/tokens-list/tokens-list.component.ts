@@ -18,7 +18,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
-import { TokensSelectService } from '@features/swaps/shared/components/tokens-select/services/tokens-select-service/tokens-select.service';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-select/services/tokens-selector-service/tokens-selector.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
@@ -49,7 +49,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
     undefined
   );
 
-  public readonly customToken$ = this.tokensSelectService.customToken$;
+  public readonly customToken$ = this.tokensSelectorService.customToken$;
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
@@ -64,24 +64,24 @@ export class TokensListComponent implements OnInit, AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
-    private readonly tokensSelectService: TokensSelectService,
+    private readonly tokensSelectorService: TokensSelectorService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   ngOnInit() {
-    this.tokensSelectService.blockchain$.subscribe(() => {
+    this.tokensSelectorService.blockchain$.subscribe(() => {
       if (this.scrollSubject$?.value) {
         this.scrollSubject$.value.scrollToIndex(0);
       }
     });
 
     combineLatest([
-      this.tokensSelectService.tokens$,
-      this.tokensSelectService.favoriteTokens$
+      this.tokensSelectorService.tokens$,
+      this.tokensSelectorService.favoriteTokens$
     ]).subscribe(([tokens, favoriteTokens]) => {
       const tokensToShow =
-        this.tokensSelectService.listType === 'default' ? tokens : favoriteTokens;
+        this.tokensSelectorService.listType === 'default' ? tokens : favoriteTokens;
       this.startAnimation(tokensToShow);
       this.tokensToShow = tokensToShow;
       this.cdr.detectChanges();
@@ -114,11 +114,11 @@ export class TokensListComponent implements OnInit, AfterViewInit {
             debounceTime(200),
             filter(renderedRange => {
               const tokensNetworkState =
-                this.tokensService.tokensNetworkState[this.tokensSelectService.blockchain];
+                this.tokensService.tokensNetworkState[this.tokensSelectorService.blockchain];
               if (
                 this.listUpdating ||
-                this.tokensSelectService.searchQuery ||
-                this.tokensSelectService.listType === 'favorite' ||
+                this.tokensSelectorService.searchQuery ||
+                this.tokensSelectorService.listType === 'favorite' ||
                 !tokensNetworkState ||
                 tokensNetworkState.maxPage === tokensNetworkState.page ||
                 this.iframeService.isIframe
@@ -140,7 +140,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
         if (shouldUpdate) {
           this.listUpdating = true;
           this.cdr.detectChanges();
-          this.tokensService.fetchNetworkTokens(this.tokensSelectService.blockchain, () => {
+          this.tokensService.fetchNetworkTokens(this.tokensSelectorService.blockchain, () => {
             this.listUpdating = false;
             this.cdr.detectChanges();
           });
@@ -180,7 +180,7 @@ export class TokensListComponent implements OnInit, AfterViewInit {
    */
   public onTokenSelect(token: AvailableTokenAmount): void {
     if (token.available) {
-      this.tokensSelectService.onTokenSelect(token);
+      this.tokensSelectorService.onTokenSelect(token);
     }
   }
 }

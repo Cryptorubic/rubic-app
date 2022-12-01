@@ -6,10 +6,10 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { TokensSelectComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-select/tokens-select.component';
+import { TokensSelectorComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-selector/tokens-selector.component';
 
 @Injectable()
-export class TokensSelectOpenerService {
+export class TokensSelectorOpenerService {
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
@@ -29,7 +29,7 @@ export class TokensSelectOpenerService {
   ): Observable<TokenAmount> {
     const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
     return this.dialogService.open(
-      new PolymorpheusComponent(TokensSelectComponent, this.injector),
+      new PolymorpheusComponent(TokensSelectorComponent, this.injector),
       {
         size,
         data: {
