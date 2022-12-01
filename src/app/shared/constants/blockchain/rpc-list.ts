@@ -29,8 +29,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
-    'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
-    'https://arb1.arbitrum.io/rpc'
+    'https://arb1.arbitrum.io/rpc',
+    'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   [BLOCKCHAIN_NAME.TELOS]: ['https://rpc1.eu.telos.net/evm', 'https://mainnet.telos.net/evm'],
