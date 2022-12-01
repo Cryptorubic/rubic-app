@@ -74,6 +74,8 @@ export class TokensListComponent implements AfterViewInit {
     return this._tokens;
   }
 
+  @Input() public customToken: AvailableTokenAmount;
+
   /**
    * Emits event when token is selected.
    */

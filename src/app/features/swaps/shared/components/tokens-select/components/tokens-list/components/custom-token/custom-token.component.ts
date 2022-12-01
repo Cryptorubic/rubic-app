@@ -15,8 +15,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { Web3PublicSupportedBlockchain, Web3Pure } from 'rubic-sdk';
 import { Injector as RubicInjector } from 'rubic-sdk';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { CustomTokenWarningModalComponent } from 'src/app/features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { switchMap } from 'rxjs';
 
 @Component({

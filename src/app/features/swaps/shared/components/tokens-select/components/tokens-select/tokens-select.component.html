@@ -68,7 +68,6 @@
 
         <ng-container *ngIf="!searchQueryLoading">
           <app-tokens-list
-            *ngIf="!customToken"
             [(listType)]="listType"
             [hasSearchQuery]="!!searchQuery"
             [tokens]="
@@ -79,15 +78,10 @@
             "
             [tokensNetworkState]="tokensNetworkState?.[blockchain]"
             [loading]="tokensListUpdating"
+            [customToken]="customToken"
             (tokenSelect)="selectToken($event)"
             (pageUpdate)="fetchNewPageTokens()"
           ></app-tokens-list>
-
-          <app-custom-token
-            *ngIf="customToken"
-            [token]="customToken"
-            (tokenSelected)="selectToken($event)"
-          ></app-custom-token>
         </ng-container>
       </div>
     </div>

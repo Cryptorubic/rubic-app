@@ -18,10 +18,10 @@ import { TokensSelectService } from '@features/swaps/shared/components/tokens-se
 import { BlockchainsAsideComponent } from '@features/swaps/shared/components/tokens-select/components/blockchains-aside/blockchains-aside.component';
 import { TokensSearchBarComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-search-bar/tokens-search-bar.component';
 import { TokensListComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/tokens-list.component';
-import { TokensListElementComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list-element/tokens-list-element.component';
+import { TokensListElementComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/tokens-list-element/tokens-list-element.component';
 import { SharedModule } from '@shared/shared.module';
-import { CustomTokenComponent } from '@features/swaps/shared/components/tokens-select/components/custom-token/custom-token.component';
-import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/tokens-select/components/custom-token-warning-modal/custom-token-warning-modal.component';
+import { CustomTokenComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token/custom-token.component';
+import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { TuiAutoFocusModule } from '@taiga-ui/cdk';
 
 @NgModule({
