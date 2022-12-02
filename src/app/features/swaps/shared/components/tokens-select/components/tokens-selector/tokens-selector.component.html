@@ -1,17 +1,17 @@
-<section class="tokens-select">
-  <header class="tokens-select__header" *noFrame>
+<section class="tokens-selector">
+  <header class="tokens-selector__header" *noFrame>
     <h2>
       {{ headerText$ | async | translate }}
     </h2>
   </header>
 
-  <div class="tokens-select__row" *noFrame>
+  <div class="tokens-selector__row" *noFrame>
     <app-tokens-search-bar></app-tokens-search-bar>
 
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
 
-  <div class="tokens-select__content">
+  <div class="tokens-selector__content">
     <app-blockchains-aside [idPrefix]="idPrefix"></app-blockchains-aside>
 
     <ng-container *onlyFrame="'vertical'">
@@ -31,10 +31,10 @@
       </ng-container>
 
       <div class="token-list-container__list">
-        <ng-container>
-          <!--<app-blockchains-list [formType]="formType"></app-blockchains-list>-->
+        <ng-container *ngLet="selectorListType$ | async as selectorListType">
+          <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
 
-          <app-tokens-list></app-tokens-list>
+          <app-tokens-list *ngIf="selectorListType === 'tokens'"></app-tokens-list>
         </ng-container>
       </div>
     </div>

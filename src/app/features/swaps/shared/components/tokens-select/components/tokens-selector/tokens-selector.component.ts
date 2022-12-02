@@ -33,6 +33,8 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
     })
   );
 
+  public readonly selectorListType$ = this.tokensSelectorService.selectorListType$;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TokensSelectComponentContext,
     private readonly tokensService: TokensService,
