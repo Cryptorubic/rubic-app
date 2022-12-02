@@ -25,6 +25,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 
+// @TODO TEST UNIT 1, INT 1
 @Injectable()
 export class SwapButtonContainerErrorsService {
   /**

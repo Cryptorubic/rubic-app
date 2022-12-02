@@ -5,6 +5,7 @@ import { filter, map } from 'rxjs/operators';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 
+// @TODO TEST INT 2
 @Injectable()
 export class SwapButtonContainerService {
   public idPrefix = '';

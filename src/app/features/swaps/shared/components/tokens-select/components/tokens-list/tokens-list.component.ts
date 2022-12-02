@@ -27,6 +27,7 @@ import { UserInterface } from '@core/services/auth/models/user.interface';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
 
+// @TODO TEST INT 2, UNIT 2
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',

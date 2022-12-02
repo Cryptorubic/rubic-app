@@ -11,6 +11,7 @@ import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
+// @TODO TEST UNIT 2
 @Component({
   selector: 'app-error-button',
   templateUrl: './error-button.component.html',

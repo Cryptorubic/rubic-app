@@ -19,6 +19,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
 import { switchMap } from 'rxjs';
 
+// @TODO TEST INT 2
 @Component({
   selector: 'app-custom-token',
   templateUrl: './custom-token.component.html',

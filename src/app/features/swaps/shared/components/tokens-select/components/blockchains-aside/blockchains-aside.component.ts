@@ -16,6 +16,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-select/constants/disabled-from-blockchains';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
+// @TODO TEST INT 2
 @Component({
   selector: 'app-blockchains-aside',
   templateUrl: './blockchains-aside.component.html',

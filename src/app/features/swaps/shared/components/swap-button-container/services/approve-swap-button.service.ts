@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 
+// @TODO TEST INT 2
 @Injectable()
 export class ApproveSwapButtonService {
   public readonly approveButtonLoading$ = combineLatest([

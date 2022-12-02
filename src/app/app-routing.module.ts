@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 import { TimeGuard } from './shared/guards/time.guard';
 
@@ -16,13 +15,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.ABOUT,
-    loadChildren: () =>
-      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule),
-    canLoad: [LandingRedirectGuard],
-    canActivate: [LandingRedirectGuard],
-    data: {
-      externalUrl: EXTERNAL_LINKS.LANDING
-    }
+    redirectTo: EXTERNAL_LINKS.LANDING
   },
   {
     path: ROUTE_PATH.CONTRACTS,
@@ -30,7 +23,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.FAQ,
-    loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
+    loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
   },
   {
     path: ROUTE_PATH.STAKING,

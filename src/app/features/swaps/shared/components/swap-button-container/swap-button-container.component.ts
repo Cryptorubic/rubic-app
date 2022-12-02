@@ -10,6 +10,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { map } from 'rxjs';
 
+// @TODO TEST INT 1
 @Component({
   selector: 'app-swap-button-container',
   templateUrl: './swap-button-container.component.html',

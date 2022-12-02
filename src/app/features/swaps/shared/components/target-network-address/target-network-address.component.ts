@@ -10,6 +10,7 @@ import { compareObjects, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 
+// @TODO TEST UNIT 1
 @Component({
   selector: 'app-target-network-address',
   templateUrl: './target-network-address.component.html',

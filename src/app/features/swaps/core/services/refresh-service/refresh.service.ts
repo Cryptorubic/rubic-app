@@ -5,6 +5,7 @@ import { OnRefreshData } from '@features/swaps/core/services/refresh-service/mod
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 
+// @TODO TEST UNIT 1
 @Injectable()
 export class RefreshService {
   /**

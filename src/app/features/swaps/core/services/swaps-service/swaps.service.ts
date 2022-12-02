@@ -9,6 +9,7 @@ import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-f
 import { compareTokens } from '@shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 
+// @TODO TEST UNIT 1
 @Injectable()
 export class SwapsService {
   private _swapProviderType$ = new BehaviorSubject<SWAP_PROVIDER_TYPE>(undefined);

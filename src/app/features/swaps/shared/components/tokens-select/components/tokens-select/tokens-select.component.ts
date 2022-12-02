@@ -68,6 +68,7 @@ type ComponentInput = {
 
 type ComponentContext = TuiDialogContext<AvailableTokenAmount, ComponentInput>;
 
+// @TODO REFACTOR, TEST UNIT 1, INT 1
 @Component({
   selector: 'polymorpheus-tokens-select',
   templateUrl: './tokens-select.component.html',

@@ -16,6 +16,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@features/swaps/core/services/rubic-sdk-service/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 
+// @TODO TEST UNIT 1
 @Injectable()
 export class RubicSdkService {
   private readonly _sdkLoading$ = new BehaviorSubject<boolean>(false);

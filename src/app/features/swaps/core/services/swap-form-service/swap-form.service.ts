@@ -16,6 +16,7 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { AbstractControlsOf } from '@ngneat/reactive-forms/lib/types';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
+// @TODO TEST UNIT 1
 @Injectable({
   providedIn: 'root'
 })

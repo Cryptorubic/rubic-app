@@ -6,6 +6,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
+// @TODO TEST INT 2
 @Injectable()
 export class SwapButtonService {
   public readonly loading$ = combineLatest([

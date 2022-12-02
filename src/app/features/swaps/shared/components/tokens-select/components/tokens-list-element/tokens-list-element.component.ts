@@ -96,6 +96,7 @@ export class TokensListElementComponent {
     this.navigator.clipboard.writeText(this.token.address);
   }
 
+  // @TODO Add delay to template, remove fn
   /**
    * Show copy to clipboard hint.
    */
