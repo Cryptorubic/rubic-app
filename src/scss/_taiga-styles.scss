@@ -1,5 +1,12 @@
 @use 'src/scss/core' as *;
 
+tui-dropdown-box {
+  --tui-elevation-01: rgba(255, 255, 255, 0.03);
+  --tui-radius-3: 19px;
+  --tui-base-03: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(50px);
+}
+
 tui-dialog {
   overflow: hidden;
 
@@ -8,6 +15,11 @@ tui-dialog {
       flex: auto !important;
       overflow: auto !important;
     }
+  }
+
+  > .content {
+    background: rgba(white, 0.05) !important;
+    backdrop-filter: blur(50px);
   }
 
   &::after {
@@ -104,6 +116,8 @@ tui-dialog-host {
 
   .overlay {
     overflow: inherit !important;
+
+    background: rgb(0 0 0 / 0%) !important;
   }
 
   .dialog {
@@ -187,4 +201,8 @@ html.iframe-vertical tui-dialog > div.content {
 
 html.iframe-vertical tui-dialog > div.content > h2 {
   padding: 2rem 0.5rem 0 1rem;
+}
+
+tui-wrapper[data-appearance='textfield'] {
+  background: transparent !important;
 }

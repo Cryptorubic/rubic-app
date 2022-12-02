@@ -140,9 +140,6 @@ tui-dropdown-box {
   min-width: 185px;
   max-height: 560px !important;
 
-  border: none !important;
-  border-radius: 18px !important;
-
   tui-data-list-wrapper {
     backdrop-filter: blur(24px);
 
@@ -182,7 +179,7 @@ tui-dropdown-box {
 }
 
 body.default-iframe-background {
-  background: linear-gradient(45deg, #4aa956 20%, white);
+  background: linear-gradient(45deg, var(--primary-color) 20%, white);
 }
 
 #loader {

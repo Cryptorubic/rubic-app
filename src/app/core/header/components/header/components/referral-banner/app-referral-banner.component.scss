@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
 
-  background: linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
+  background: linear-gradient(90deg, var(--primary-color) 0%, #00a2fe 100%);
 
   @include b($mobile-sm-plus) {
     justify-content: flex-start;

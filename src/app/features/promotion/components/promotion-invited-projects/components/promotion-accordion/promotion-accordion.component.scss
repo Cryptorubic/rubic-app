@@ -4,12 +4,6 @@
 @use '../../common-styles';
 
 :host {
-  --tui-secondary-hover: var(--rubic-base-01);
-  --tui-secondary-active: var(--rubic-base-01);
-  --tui-link: #{$rubic-primary};
-  --tui-link-hover: #{$rubic-primary};
-  --tui-link-active: var(--rubic-secondary);
-
   --text-color: rgba(0, 0, 0, 0.7);
   --divider-color: #fff;
   --content-background: #ecf3ec;

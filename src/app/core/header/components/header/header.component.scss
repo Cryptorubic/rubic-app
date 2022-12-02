@@ -4,11 +4,12 @@
   display: inline-block;
   padding: 14px 20px;
 
+  color: white;
+
   font-size: $rubic-font-size-01;
   text-decoration: none;
 
-  border: 1px solid transparent;
-  border-radius: 175px;
+  border-radius: 100px;
 
   cursor: pointer;
 
@@ -16,7 +17,7 @@
   &_active {
     text-decoration: none;
 
-    background-color: var(--rubic-base-10);
+    background-color: rgba(white, 0.05);
   }
 
   &:hover {

@@ -2,7 +2,8 @@
 
 :host {
   --tui-primary-text: #{$rubic-primary};
-  --tui-primary: var(--main-background);
+  --tui-primary: rgba(255, 255, 255, 0.05);
+  --rubic-secondary: rgba(255, 255, 255, 0.2);
   --tui-disabled-opacity: 1;
 
   button {

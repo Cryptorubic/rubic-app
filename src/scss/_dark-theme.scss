@@ -1,10 +1,10 @@
 @use 'src/scss/vars' as *;
 
 html.dark {
-  --main-form-background: #181a19;
-  --main-background: #202622;
+  --main-form-background: #241f2b;
+  --main-background: #1f1825;
   --menu-background: #000;
-  --secondary-background: rgba(50, 50, 50, 0.6);
+  --secondary-background: rgba(255, 255, 255, 0.1);
 
   --form-header-color-1: rgba(94, 94, 94, 0.7);
   --form-header-color-2: rgba(69, 69, 69, 0.7);
@@ -41,7 +41,7 @@ html.dark {
   --rubic-base-25: rgb(166, 168, 167);
   --rubic-base-26: #2a302c;
   --rubic-base-27: #0a0b0b;
-  --plate-invert: rgb(41, 41, 41, 0.6);
+  --plate-invert: rgb(0 0 0 / 25%);
   --bg-banner: rgba(51, 86, 51, 0.8);
 
   --tui-base-01: #181a19;
@@ -54,7 +54,7 @@ html.dark {
   --tui-text-03: var(--form-dim-text-color);
   --tui-elevation-01: rgba(0, 0, 0, 1);
 
-  --selection-color: rgb(0, 0, 0, 0.5);
+  --selection-color: rgba(255, 255, 255, 0.05);
 
   --rubic-shadow-button-hover: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
   --rubic-shadow-button-hover-dim: none;
@@ -80,7 +80,7 @@ html.dark {
     background: var(--main-background);
 
     &.default-iframe-background {
-      background: linear-gradient(45deg, black, #4aa956) !important;
+      background: linear-gradient(45deg, black, var(--primary-color)) !important;
     }
 
     .sort-by-dropdown {
@@ -89,10 +89,6 @@ html.dark {
 
     .settings__button-auto:not(.settings__button-auto_active) {
       border-color: var(--rubic-base-02);
-    }
-
-    .blockchain-aside__blockchains-list button tui-wrapper {
-      --rubic-secondary: rgba(0, 0, 0, 0.8);
     }
 
     #onramper-widget {
@@ -107,13 +103,6 @@ html.dark {
     .tui-skeleton {
       &::after {
         background-color: rgba(130, 130, 130, 0.15);
-      }
-    }
-
-    app-rubic-button {
-      tui-wrapper {
-        --tui-primary: var(--rubic-base-26);
-        --tui-primary-text: var(--form-bright-text-color);
       }
     }
 

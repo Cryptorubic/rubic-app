@@ -1,15 +1,15 @@
 @use 'src/scss/core' as *;
 
-:host {
+:host ::ng-deep {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary: var(--rubic-base-26);
-  --tui-primary-hover: var(--rubic-base-01);
+  --tui-primary: var(white, 0.05);
   --tui-focus: transparent;
-  --tui-primary-text: #{$rubic-text-color-main};
+  --tui-secondary: var(--primary-color);
+  --tui-secondary-hover: rgba(white, 0.2);
+  --tui-link: black;
 
   [tuiButton] {
-    --tui-link: var(--primary-color);
     font-weight: 500;
     font-size: $rubic-font-size-01;
 
@@ -21,29 +21,28 @@
       width: 100%;
     }
 
-    &._hovered {
-      --tui-secondary-hover: var(--rubic-base-01);
-      --tui-primary-text: var(--primary-color);
-      --tui-link-hover: var(--primary-color);
-
-      background-color: var(--rubic-base-01);
-      box-shadow: var(--rubic-shadow-button-hover-dim);
-    }
-
-    &._pressed {
-      --tui-secondary-active: var(--primary-color);
-      --tui-primary-active: var(--primary-color);
-      --tui-primary-text: var(--rubic-base-01);
-      --tui-text-01: white;
-      --tui-link: var(--rubic-base-01);
-
-      background-color: var(--primary-color);
-      box-shadow: var(--rubic-shadow-button-active);
-
-      ::ng-deep img:not(.tokens__clear-icon) {
-        filter: brightness(10);
-      }
-    }
+    //&._hovered {
+    //  --tui-primary-text: var(--primary-color);
+    //  --tui-link-hover: var(--primary-color);
+    //
+    //  background-color: var(--rubic-base-01);
+    //  box-shadow: var(--rubic-shadow-button-hover-dim);
+    //}
+    //
+    //&._pressed {
+    //  --tui-secondary-active: var(--primary-color);
+    //  --tui-primary-active: var(--primary-color);
+    //  --tui-primary-text: var(--rubic-base-01);
+    //  --tui-text-01: white;
+    //  --tui-link: var(--rubic-base-01);
+    //
+    //  background-color: var(--primary-color);
+    //  box-shadow: var(--rubic-shadow-button-active);
+    //
+    //  ::ng-deep img:not(.tokens__clear-icon) {
+    //    filter: brightness(10);
+    //  }
+    //}
 
     &._focused:not(&._pressed) {
       border-color: var(--primary-color);
@@ -108,39 +107,37 @@
   }
 
 
-  ::ng-deep {
-    tui-wrapper[data-appearance='secondary'] {
-      color: white;
-
-      background-color: var(--primary-color);
-
-      &[data-state='hovered'] {
-        box-shadow: var(--rubic-shadow-button-hover-dim);
-      }
-
-      &[data-state='pressed'] {
-        color: var(--primary-color);
-
-        background-color: var(--rubic-base-01) !important;
-        box-shadow: var(--rubic-shadow-button-hover-dim);
-
-        :host-context(html.dark) & {
-          color: var(--rubic-base-02);
-        }
-      }
-
-      &[data-state='disabled'] {
-        color: rgba(white, 0.4);
-
-        background-color: rgba(var(--primary-color) / 0.4);
-        border: 0;
-      }
-    }
-
-    tui-wrapper[data-appearance='outline']::after {
-      display: none;
-    }
-  }
+  //tui-wrapper[data-appearance='secondary'] {
+  //  color: white;
+  //
+  //  background-color: var(--primary-color);
+  //
+  //  &[data-state='hovered'] {
+  //    box-shadow: var(--rubic-shadow-button-hover-dim);
+  //  }
+  //
+  //  &[data-state='pressed'] {
+  //    color: var(--primary-color);
+  //
+  //    background-color: var(--rubic-base-01) !important;
+  //    box-shadow: var(--rubic-shadow-button-hover-dim);
+  //
+  //    :host-context(html.dark) & {
+  //      color: var(--rubic-base-02);
+  //    }
+  //  }
+  //
+  //  &[data-state='disabled'] {
+  //    color: rgba(white, 0.4);
+  //
+  //    background-color: rgba(var(--primary-color) / 0.4);
+  //    border: 0;
+  //  }
+  //}
+  //
+  //tui-wrapper[data-appearance='outline']::after {
+  //  display: none;
+  //}
 }
 
 ::ng-deep .loader {

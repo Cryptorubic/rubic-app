@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 :host {
+  position: relative;
+
   display: block;
   max-width: 565px;
   margin: 0 auto;
@@ -18,12 +20,49 @@
   }
 }
 
+.blob-1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+
+  width: 400px;
+  height: 400px;
+
+  background: rgb(51 160 219 / 30%);
+  filter: blur(100px);
+
+  content: '';
+}
+
+.blob-2 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+
+  width: 400px;
+  height: 400px;
+
+  background: rgba(143, 38, 159, 0.3);
+  filter: blur(100px);
+
+  content: '';
+}
+
 .swaps-form {
+  position: relative;
+
   min-height: 200px;
   margin-bottom: 20px;
   padding: 24px;
 
-  background-color: var(--main-form-background);
+
+  //linear-gradient(180deg, rgb(44 32 52) 16.79%, rgb(47 42 58) 100%) GOOD
+  //background-color: var(--main-form-background);
+  // @TODO
+  background: linear-gradient(180deg, rgba(44, 32, 52, 0.5) 16.79%, rgba(47, 42, 58, 0.5) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 19px;
   backdrop-filter: blur(50px);
 

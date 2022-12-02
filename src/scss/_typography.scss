@@ -5,7 +5,7 @@
   &-roadmap-quarter {
     margin-bottom: 5px;
 
-    color: #4aa956;
+    color: var(--primary-color);
     font-weight: bold;
     font-size: 20px;
     line-height: 27px;
@@ -86,7 +86,7 @@
         height: 24px;
         margin-right: 10px;
 
-        color: #4aa956;
+        color: var(--primary-color);
         font-weight: bold;
         text-align: center;
 
