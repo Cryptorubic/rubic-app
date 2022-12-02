@@ -29,7 +29,7 @@
   width: 400px;
   height: 400px;
 
-  background: rgb(51 160 219 / 30%);
+  background: rgba(35, 152, 187, 0.3);
   filter: blur(100px);
 
   content: '';
@@ -44,7 +44,7 @@
   width: 400px;
   height: 400px;
 
-  background: rgba(143, 38, 159, 0.3);
+  background: rgba(42, 195, 129, 0.3);
   filter: blur(100px);
 
   content: '';
@@ -57,11 +57,7 @@
   margin-bottom: 20px;
   padding: 24px;
 
-
-  //linear-gradient(180deg, rgb(44 32 52) 16.79%, rgb(47 42 58) 100%) GOOD
-  //background-color: var(--main-form-background);
-  // @TODO
-  background: linear-gradient(180deg, rgba(44, 32, 52, 0.5) 16.79%, rgba(47, 42, 58, 0.5) 100%);
+  background: linear-gradient(180deg, rgb(61 54 65 / 50%) 16.79%, rgb(58 56 63 / 50%) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 19px;
   backdrop-filter: blur(50px);
