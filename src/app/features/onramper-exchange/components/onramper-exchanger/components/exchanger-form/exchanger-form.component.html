@@ -12,8 +12,13 @@
       </div>
 
       <div class="bottom-form__buttons">
-        <div class="bottom-form__button">
+        <div class="bottom-form__button" *ngLet="user$ | async as user">
+          <app-rubic-button *ngIf="!user" appearance="secondary" (onClick)="onConnectWallet()">
+            Connect wallet
+          </app-rubic-button>
+
           <app-rubic-button
+            *ngIf="user"
             appearance="secondary"
             [disabled]="disabled$ | async"
             (onClick)="onSwapClickHandler()"
