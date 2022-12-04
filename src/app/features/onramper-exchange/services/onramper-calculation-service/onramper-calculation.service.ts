@@ -70,7 +70,7 @@ export class OnramperCalculationService {
         address: EvmWeb3Pure.nativeTokenAddress,
         blockchain: input.toToken.blockchain
       },
-      receivedNativeAmount.toFixed(),
+      receivedNativeAmount.minus(0.01).toFixed(),
       input.toToken.address,
       {
         gasCalculation: 'disabled'
