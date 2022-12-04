@@ -14,6 +14,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-onramper-exchanger',
@@ -34,18 +35,20 @@ export class OnramperExchangerComponent {
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService
   ) {
+    let subscription$: Subscription;
     this.exchangerWebsocketService.info$.subscribe(info => {
       if (info?.status === OnramperTransactionStatus.PENDING) {
-        this.notificationsService.show(
+        subscription$ = this.notificationsService.show(
           new PolymorpheusComponent(ProgressTrxNotificationComponent),
           {
             status: TuiNotification.Info,
-            autoClose: 15000
+            autoClose: false
           }
         );
       }
 
       if (info?.status === OnramperTransactionStatus.COMPLETED) {
+        subscription$?.unsubscribe();
         this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
           status: TuiNotification.Success,
           autoClose: 15000,
