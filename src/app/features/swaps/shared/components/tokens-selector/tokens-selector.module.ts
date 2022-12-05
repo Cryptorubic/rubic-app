@@ -24,7 +24,7 @@ import { CustomTokenComponent } from '@features/swaps/shared/components/tokens-s
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/tokens-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { BlockchainsListComponent } from 'src/app/features/swaps/shared/components/tokens-selector/components/blockchains-list/blockchains-list.component';
-import { SwitchListTypeButtonComponent } from './components/switch-list-type-button/switch-list-type-button.component';
+import { SwitchTokensListTypeButtonComponent } from 'src/app/features/swaps/shared/components/tokens-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 
 @NgModule({
@@ -37,7 +37,7 @@ import { EmptyListComponent } from './components/tokens-list/components/empty-li
     CustomTokenComponent,
     CustomTokenWarningModalComponent,
     BlockchainsListComponent,
-    SwitchListTypeButtonComponent,
+    SwitchTokensListTypeButtonComponent,
     EmptyListComponent
   ],
   imports: [

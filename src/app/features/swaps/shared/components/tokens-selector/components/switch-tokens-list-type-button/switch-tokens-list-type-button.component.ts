@@ -4,11 +4,11 @@ import { TokensListTypeService } from '@features/swaps/shared/components/tokens-
 
 @Component({
   selector: 'app-switch-list-type-button',
-  templateUrl: './switch-list-type-button.component.html',
-  styleUrls: ['./switch-list-type-button.component.scss'],
+  templateUrl: './switch-tokens-list-type-button.component.html',
+  styleUrls: ['./switch-tokens-list-type-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwitchListTypeButtonComponent {
+export class SwitchTokensListTypeButtonComponent {
   public readonly buttonData$ = this.tokensListTypeService.listType$.pipe(
     map(listType => {
       const icon = listType === 'default' ? 'star.svg' : 'back.svg';
