@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 .blockchain-aside {
-  width: 180px;
+  width: 194px;
   height: 100%;
   padding: 14px 10px;
 
@@ -91,13 +91,13 @@
 
   ::ng-deep app-icon-button {
     button {
-      width: 70px !important;
+      width: 77px !important;
     }
   }
 }
 
 .open-selector {
-  width: 70px;
+  width: 77px;
 
   ::ng-deep app-rubic-button {
     [tuiButton] {
