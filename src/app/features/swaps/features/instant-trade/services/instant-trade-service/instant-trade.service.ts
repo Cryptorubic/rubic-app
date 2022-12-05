@@ -454,18 +454,12 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public saveNotWhitelistedProvider(
-    err: NotWhitelistedProviderError,
+    error: NotWhitelistedProviderError,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
     this.instantTradesApiService
-      .saveNotWhitelistedProvider(
-        err.cause,
-        blockchain,
-        tradeType,
-        err.providerRouter,
-        err.providerGateway
-      )
+      .saveNotWhitelistedProvider(error, blockchain, tradeType)
       .subscribe();
   }
 }

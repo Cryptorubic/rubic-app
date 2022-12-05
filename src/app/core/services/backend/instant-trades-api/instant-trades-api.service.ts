@@ -9,7 +9,14 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';
-import { BlockchainName, LifiTrade, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  LifiTrade,
+  NotWhitelistedProviderError,
+  OnChainTrade,
+  OnChainTradeType,
+  Web3Pure
+} from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
@@ -114,17 +121,15 @@ export class InstantTradesApiService {
   }
 
   public saveNotWhitelistedProvider(
-    cause: string,
+    error: NotWhitelistedProviderError,
     blockchain: BlockchainName,
-    tradeType: OnChainTradeType,
-    routerAddress: string,
-    gatewayAddress?: string
+    tradeType: OnChainTradeType
   ): Observable<void> {
     return this.httpService.post(`info/new_provider`, {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: tradeType,
-      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
-      cause
+      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
+      cause: error.cause
     });
   }
 }

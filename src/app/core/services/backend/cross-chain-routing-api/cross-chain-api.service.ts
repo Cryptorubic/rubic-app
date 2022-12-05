@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
-import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
+import { BlockchainName, CrossChainTradeType, NotWhitelistedProviderError } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import { Observable } from 'rxjs';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from './constants/to-backend-cross-chain-providers';
@@ -13,17 +13,15 @@ export class CrossChainApiService {
   constructor(private readonly httpService: HttpService) {}
 
   public saveNotWhitelistedProvider(
-    cause: string,
+    error: NotWhitelistedProviderError,
     blockchain: BlockchainName,
-    tradeType: CrossChainTradeType,
-    routerAddress: string,
-    gatewayAddress?: string
+    tradeType: CrossChainTradeType
   ): Observable<void> {
     return this.httpService.post(`info/new_provider`, {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
-      cause
+      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
+      cause: error.cause
     });
   }
 }
