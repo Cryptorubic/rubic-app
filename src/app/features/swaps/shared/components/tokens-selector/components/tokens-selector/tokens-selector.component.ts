@@ -9,6 +9,7 @@ import {
 } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 import { TokensSelectorServices } from '@features/swaps/shared/components/tokens-selector/constants/tokens-selector-services';
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 
@@ -24,9 +25,15 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
 
   public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
-  public readonly headerText$ = this.tokensListTypeService.listType$.pipe(
-    map(listType => {
-      if (listType === 'default') {
+  public readonly headerText$ = combineLatest([
+    this.tokensSelectorService.selectorListType$,
+    this.tokensListTypeService.listType$
+  ]).pipe(
+    map(([selectorListType, tokensListType]) => {
+      if (selectorListType === 'blockchains') {
+        return 'Blockchains List';
+      }
+      if (tokensListType === 'default') {
         return 'modals.tokensListModal.defaultTitle';
       }
       return 'modals.tokensListModal.favoriteTokensTitle';

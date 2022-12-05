@@ -6,7 +6,7 @@
   </header>
 
   <div class="tokens-selector__row" *noFrame>
-    <app-tokens-search-bar></app-tokens-search-bar>
+    <app-search-bar></app-search-bar>
 
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
@@ -22,19 +22,19 @@
       <app-blockchains-aside [idPrefix]="idPrefix"></app-blockchains-aside>
 
       <ng-container *onlyFrame="'vertical'">
-        <app-tokens-search-bar
+        <app-search-bar
           *ngIf="iframeTokenSearch"
           class="vertical-iframe-token-search"
-        ></app-tokens-search-bar>
+        ></app-search-bar>
       </ng-container>
 
       <div class="token-list-container">
         <ng-container *onlyFrame="'horizontal'">
-          <app-tokens-search-bar
+          <app-search-bar
             *ngIf="iframeTokenSearch"
             class="token-list-container__search"
             [expandableField]="true"
-          ></app-tokens-search-bar>
+          ></app-search-bar>
         </ng-container>
 
         <div class="token-list-container__list">

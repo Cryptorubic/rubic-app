@@ -4,12 +4,12 @@ import { TokensSelectorService } from '@features/swaps/shared/components/tokens-
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-tokens-search-bar',
-  templateUrl: './tokens-search-bar.component.html',
-  styleUrls: ['./tokens-search-bar.component.scss'],
+  selector: 'app-search-bar',
+  templateUrl: './search-bar.component.html',
+  styleUrls: ['./search-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensSearchBarComponent {
+export class SearchBarComponent {
   @Input() expandableField: boolean = false;
 
   public isExpanded = false;
@@ -18,7 +18,7 @@ export class TokensSearchBarComponent {
 
   public readonly searchBarText$ = this.tokensSelectorService.selectorListType$.pipe(
     map(selectorListType =>
-      selectorListType === 'tokens' ? 'Search name or paste address' : 'Search name'
+      selectorListType === 'tokens' ? 'modals.tokensListModal.searchPlaceholder' : 'Search name'
     )
   );
 
