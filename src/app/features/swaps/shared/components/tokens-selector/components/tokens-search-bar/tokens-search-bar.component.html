@@ -8,7 +8,7 @@
     tuiTextfieldSize="s"
     tuiAutoFocus
   >
-    {{ 'modals.tokensListModal.searchPlaceholder' | translate }}
+    {{ searchBarText$ | async }}
   </tui-input>
 
   <ng-template #expandableInputTpl>

@@ -3,7 +3,11 @@
 .list-container {
   display: flex;
 
-  height: 100%;
+  height: 443px;
+
+  @include b($mobile-md-minus) {
+    height: 100%;
+  }
 }
 
 .back-button {
@@ -31,6 +35,7 @@
 }
 
 .scrollbar {
+  width: 100%;
   height: 100%;
   padding: 15px 0 15px 15px;
 }

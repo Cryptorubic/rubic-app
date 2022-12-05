@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()
 export class SearchQueryService {
@@ -18,5 +20,13 @@ export class SearchQueryService {
     this._query$.next(value);
   }
 
-  constructor() {}
+  constructor(public readonly tokensSelectorService: TokensSelectorService) {
+    this.subscribeOnSelectorListTypeChange();
+  }
+
+  private subscribeOnSelectorListTypeChange(): void {
+    this.tokensSelectorService.selectorListType$.pipe(distinctUntilChanged()).subscribe(() => {
+      this.query = '';
+    });
+  }
 }

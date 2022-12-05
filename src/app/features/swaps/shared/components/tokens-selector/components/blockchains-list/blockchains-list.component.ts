@@ -11,7 +11,7 @@ import { BlockchainName } from 'rubic-sdk';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsListComponent {
-  public readonly blockchainsList = this.blockchainsListService.availableBlockchains;
+  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$;
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,

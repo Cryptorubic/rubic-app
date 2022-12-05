@@ -14,7 +14,7 @@ import { SearchQueryService } from '@features/swaps/shared/components/tokens-sel
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { TokensList } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/models/tokens-list';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
@@ -107,9 +107,11 @@ export class TokensListStoreService {
   }
 
   private subscribeOnSearchQueryChange(): void {
-    this.searchQueryService.query$.pipe(distinctUntilChanged()).subscribe(() => {
-      this.updateTokens();
-    });
+    combineLatest([this.searchQueryService.query$, this.tokensSelectorService.selectorListType$])
+      .pipe(filter(([_, selectorListType]) => selectorListType === 'tokens'))
+      .subscribe(() => {
+        this.updateTokens();
+      });
   }
 
   private subscribeOnBlockchainChange(): void {

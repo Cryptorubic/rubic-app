@@ -13,7 +13,9 @@
 
   <div class="tokens-selector__content" *ngLet="selectorListType$ | async as selectorListType">
     <ng-container *ngIf="selectorListType === 'blockchains'">
-      <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
+      <div class="blockchains-list-container">
+        <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="selectorListType === 'tokens'">
