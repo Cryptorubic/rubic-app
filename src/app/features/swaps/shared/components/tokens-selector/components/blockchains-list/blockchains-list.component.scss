@@ -8,11 +8,13 @@
   @include b($mobile-md-minus) {
     height: 100%;
   }
+
+  &__back-button {
+    margin: 21px 0 0 14px;
+  }
 }
 
 .back-button {
-  padding: 15px 0 0 14px;
-
   &__arrow {
     width: 16px;
     height: 15px;
