@@ -49,8 +49,6 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
-import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
-import { HttpService } from '@app/core/services/http/http.service';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -82,8 +80,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly authService: AuthService,
     private readonly gasService: GasService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly httpService: HttpService
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {
     super('instant-trade');
   }
@@ -310,13 +307,7 @@ export class InstantTradeService extends TradeCalculationService {
       subscription$?.unsubscribe();
 
       if (err instanceof NotWhitelistedProviderError) {
-        this.saveNotWhitelistedProvider(
-          err.cause,
-          fromBlockchain,
-          (trade as OnChainTrade)?.type,
-          err.providerRouter,
-          err.providerGateway
-        );
+        this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
       if (transactionHash && !this.isNotMinedError(err)) {
@@ -463,19 +454,18 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public saveNotWhitelistedProvider(
-    cause: string,
+    err: NotWhitelistedProviderError,
     blockchain: BlockchainName,
-    tradeType: OnChainTradeType,
-    routerAddress: string,
-    gatewayAddress?: string
+    tradeType: OnChainTradeType
   ): void {
-    this.httpService
-      .post(`info/new_provider`, {
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
-        title: tradeType,
-        address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
-        cause
-      })
+    this.instantTradesApiService
+      .saveNotWhitelistedProvider(
+        err.cause,
+        blockchain,
+        tradeType,
+        err.providerRouter,
+        err.providerGateway
+      )
       .subscribe();
   }
 }

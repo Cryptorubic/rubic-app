@@ -112,4 +112,19 @@ export class InstantTradesApiService {
     const url = instantTradesApiRoutes.editData(toBackendWallet);
     return this.httpService.patch(url, body);
   }
+
+  public saveNotWhitelistedProvider(
+    cause: string,
+    blockchain: BlockchainName,
+    tradeType: OnChainTradeType,
+    routerAddress: string,
+    gatewayAddress?: string
+  ): Observable<void> {
+    return this.httpService.post(`info/new_provider`, {
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
+      title: tradeType,
+      address: routerAddress + (gatewayAddress ? `_${gatewayAddress}` : ''),
+      cause
+    });
+  }
 }
