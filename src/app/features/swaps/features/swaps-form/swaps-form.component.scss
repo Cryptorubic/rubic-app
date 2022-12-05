@@ -20,36 +20,6 @@
   }
 }
 
-.blob-1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-
-  width: 400px;
-  height: 400px;
-
-  background: rgba(35, 152, 187, 0.3);
-  filter: blur(100px);
-
-  content: '';
-}
-
-.blob-2 {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: -1;
-
-  width: 400px;
-  height: 400px;
-
-  background: rgba(42, 195, 129, 0.3);
-  filter: blur(100px);
-
-  content: '';
-}
-
 .swaps-form {
   position: relative;
 
@@ -57,10 +27,10 @@
   margin-bottom: 20px;
   padding: 24px;
 
-  background: linear-gradient(180deg, rgb(61 54 65 / 50%) 16.79%, rgb(58 56 63 / 50%) 100%);
+  //background: linear-gradient(180deg, rgb(61 54 65 / 50%) 16.79%, rgb(58 56 63 / 50%) 100%);
+  background: #26282a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 19px;
-  backdrop-filter: blur(50px);
 
   @include iframe-horizontal {
     display: flex;
