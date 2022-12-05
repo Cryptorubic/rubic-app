@@ -123,17 +123,6 @@
   }
 }
 
-.arrow-back {
-  width: 24px;
-  height: 21px;
-
-  ::ng-deep svg {
-    path {
-      fill: var(--rubic-base-02);
-    }
-  }
-}
-
 @include b($mobile-md-minus) {
   .blockchain-aside {
     width: 95px;

@@ -11,32 +11,34 @@
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
 
-  <div class="tokens-selector__content">
-    <app-blockchains-aside [idPrefix]="idPrefix"></app-blockchains-aside>
-
-    <ng-container *onlyFrame="'vertical'">
-      <app-tokens-search-bar
-        *ngIf="iframeTokenSearch"
-        class="vertical-iframe-token-search"
-      ></app-tokens-search-bar>
+  <div class="tokens-selector__content" *ngLet="selectorListType$ | async as selectorListType">
+    <ng-container *ngIf="selectorListType === 'blockchains'">
+      <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
     </ng-container>
 
-    <div class="token-list-container">
-      <ng-container *onlyFrame="'horizontal'">
+    <ng-container *ngIf="selectorListType === 'tokens'">
+      <app-blockchains-aside [idPrefix]="idPrefix"></app-blockchains-aside>
+
+      <ng-container *onlyFrame="'vertical'">
         <app-tokens-search-bar
           *ngIf="iframeTokenSearch"
-          class="token-list-container__search"
-          [expandableField]="true"
+          class="vertical-iframe-token-search"
         ></app-tokens-search-bar>
       </ng-container>
 
-      <div class="token-list-container__list">
-        <ng-container *ngLet="selectorListType$ | async as selectorListType">
-          <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
-
-          <app-tokens-list *ngIf="selectorListType === 'tokens'"></app-tokens-list>
+      <div class="token-list-container">
+        <ng-container *onlyFrame="'horizontal'">
+          <app-tokens-search-bar
+            *ngIf="iframeTokenSearch"
+            class="token-list-container__search"
+            [expandableField]="true"
+          ></app-tokens-search-bar>
         </ng-container>
+
+        <div class="token-list-container__list">
+          <app-tokens-list></app-tokens-list>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 </section>

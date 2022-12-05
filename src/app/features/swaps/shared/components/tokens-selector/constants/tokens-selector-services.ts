@@ -5,6 +5,9 @@ import { TokensListStoreService } from '@features/swaps/shared/components/tokens
 import { TokensListService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 
+/**
+ * Singleton services, which are destroyed after selector is closed.
+ */
 export const TokensSelectorServices = [
   TokensSelectorService,
   SearchQueryService,

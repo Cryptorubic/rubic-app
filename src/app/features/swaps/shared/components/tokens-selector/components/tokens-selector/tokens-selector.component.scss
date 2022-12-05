@@ -104,7 +104,8 @@ tui-loader {
     height: 100%;
 
     &__content {
-      max-height: unset;
+      height: calc(100% - 100px);
+      max-height: calc(100vh - 117.5px);
     }
   }
 }
