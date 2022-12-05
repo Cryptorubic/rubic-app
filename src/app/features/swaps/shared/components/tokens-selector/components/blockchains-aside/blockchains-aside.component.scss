@@ -92,6 +92,15 @@
   ::ng-deep app-icon-button {
     button {
       width: 77px !important;
+      height: 68px !important;
+
+      .content {
+        justify-content: unset;
+
+        img {
+          margin: 5px 0 2px;
+        }
+      }
     }
   }
 }
@@ -101,7 +110,7 @@
 
   ::ng-deep app-rubic-button {
     [tuiButton] {
-      height: 56px;
+      height: 68px;
 
       border-radius: var(--tui-radius-m);
 

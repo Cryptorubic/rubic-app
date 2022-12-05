@@ -26,7 +26,7 @@ export class BlockchainsAsideComponent {
   public readonly shownBlockchainsAmount$ = this.windowWidthService.mobileMdMinus$.pipe(
     map(isMobile => {
       if (!isMobile) {
-        return 11;
+        return 9;
       }
 
       const asideHeight = this.window.innerHeight - 135;
