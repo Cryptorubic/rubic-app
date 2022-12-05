@@ -23,6 +23,11 @@ export class BlockchainsListService {
     this._blockchainsToShow$.next(value);
   }
 
+  /**
+   * Contains last selected blockchain, which is not included by default in blockchains-aside list.
+   */
+  public lastSelectedHiddenBlockchain: AvailableBlockchain | undefined;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly platformConfigurationService: PlatformConfigurationService,

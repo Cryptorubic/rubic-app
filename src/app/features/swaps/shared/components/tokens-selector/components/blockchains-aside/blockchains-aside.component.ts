@@ -17,7 +17,7 @@ import { WindowWidthService } from '@core/services/widnow-width-service/window-w
 export class BlockchainsAsideComponent {
   @Input() idPrefix: string;
 
-  public readonly blockchainsList = this.blockchainsListService.availableBlockchains;
+  public readonly blockchainsAmount = this.blockchainsListService.availableBlockchains.length;
 
   public readonly selectedBlockchain$ = this.tokensSelectorService.blockchain$;
 
@@ -53,6 +53,30 @@ export class BlockchainsAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
+
+  public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
+    const slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
+      0,
+      shownBlockchainsAmount
+    );
+
+    const isSelectedBlockchainIncluded = slicedBlockchains.find(
+      blockchain => blockchain.name === this.tokensSelectorService.blockchain
+    );
+    if (!isSelectedBlockchainIncluded) {
+      this.blockchainsListService.lastSelectedHiddenBlockchain =
+        this.blockchainsListService.availableBlockchains.find(
+          blockchain => blockchain.name === this.tokensSelectorService.blockchain
+        );
+    }
+
+    const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
+    if (hiddenBlockchain) {
+      slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
+    }
+
+    return slicedBlockchains;
+  }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
     return this.blockchainsListService.isDisabled(blockchain);

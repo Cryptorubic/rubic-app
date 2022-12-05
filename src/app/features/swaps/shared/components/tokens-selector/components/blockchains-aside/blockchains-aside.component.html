@@ -7,25 +7,27 @@
     >
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
         <ng-container
-          *ngFor="let blockchainItem of blockchainsList.slice(0, shownBlockchainsAmount)"
+          *ngLet="shownBlockchainsAmount | functionCall: getBlockchainsList:this as blockchainsList"
         >
-          <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
-            <li
-              [id]="idPrefix + 'Network_' + blockchainItem.name"
-              [ngClass]="{ disabled: disabled }"
-              tuiHintMode="error"
-              [tuiHint]="blockchainItem | functionCall: getHintText:this"
-            >
-              <app-icon-button
-                [icon]="blockchainItem.icon"
-                [disabled]="selectedBlockchain === blockchainItem.name || disabled"
-                [border]="selectedBlockchain === blockchainItem.name"
-                [borderRadiusPercent]="50"
-                [label]="blockchainItem.label"
-                (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
+          <ng-container *ngFor="let blockchainItem of blockchainsList">
+            <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
+              <li
+                [id]="idPrefix + 'Network_' + blockchainItem.name"
+                [ngClass]="{ disabled: disabled }"
+                tuiHintMode="error"
+                [tuiHint]="blockchainItem | functionCall: getHintText:this"
               >
-              </app-icon-button>
-            </li>
+                <app-icon-button
+                  [icon]="blockchainItem.icon"
+                  [disabled]="selectedBlockchain === blockchainItem.name || disabled"
+                  [border]="selectedBlockchain === blockchainItem.name"
+                  [borderRadiusPercent]="50"
+                  [label]="blockchainItem.label"
+                  (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
+                >
+                </app-icon-button>
+              </li>
+            </ng-container>
           </ng-container>
         </ng-container>
 
@@ -33,7 +35,7 @@
           <app-rubic-button (onClick)="onSelectorSwitch()">
             <ng-container *ngLet="selectorListType$ | async as selectorListType">
               <div *ngIf="selectorListType === 'tokens'">
-                +{{ blockchainsList.length - shownBlockchainsAmount }}
+                +{{ blockchainsAmount - shownBlockchainsAmount }}
               </div>
 
               <div *ngIf="selectorListType === 'blockchains'">
