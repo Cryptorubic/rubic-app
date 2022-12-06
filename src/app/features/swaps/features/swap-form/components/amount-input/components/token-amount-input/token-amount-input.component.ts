@@ -13,7 +13,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { takeUntil } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { FormControl } from '@angular/forms';

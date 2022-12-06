@@ -7,7 +7,7 @@ import { OnramperTransactionStatus } from '@features/onramper-exchange/services/
 import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure } from 'rubic-sdk';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';

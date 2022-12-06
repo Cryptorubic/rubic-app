@@ -13,7 +13,7 @@ import {
 import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';

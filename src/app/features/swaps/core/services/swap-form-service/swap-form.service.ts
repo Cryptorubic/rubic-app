@@ -11,7 +11,7 @@ import {
   SwapFormInputControl,
   SwapFormOutput,
   SwapFormOutputControl
-} from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+} from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';

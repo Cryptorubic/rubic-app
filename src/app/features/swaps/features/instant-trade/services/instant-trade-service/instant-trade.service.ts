@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import {
   firstValueFrom,
   interval,
@@ -57,7 +57,7 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
-import { SwapFormInputTokens } from '@features/swaps/core/services/swaps-form-service/models/swap-form-tokens';
+import { SwapFormInputTokens } from '@features/swaps/core/services/swap-form-service/models/swap-form-tokens';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 

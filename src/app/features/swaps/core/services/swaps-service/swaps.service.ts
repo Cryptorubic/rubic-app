@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { filter, pairwise, startWith } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { compareTokens } from '@shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapFormInput } from '../swaps-form-service/models/swap-form-controls';
+import { SwapFormInput } from '../swap-form-service/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 

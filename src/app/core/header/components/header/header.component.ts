@@ -21,7 +21,7 @@ import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
@@ -31,7 +31,7 @@ import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.compon
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 @Component({
   selector: 'app-header',

@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -65,7 +65,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import { SwapFormInputTokens } from '@features/swaps/core/services/swaps-form-service/models/swap-form-tokens';
+import { SwapFormInputTokens } from '@features/swaps/core/services/swap-form-service/models/swap-form-tokens';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;

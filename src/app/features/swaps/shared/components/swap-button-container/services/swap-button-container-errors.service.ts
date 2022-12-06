@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
@@ -23,7 +23,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
-import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 
 @Injectable()

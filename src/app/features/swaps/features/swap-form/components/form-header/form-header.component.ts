@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { map } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { getBlockchainItem } from '@features/swaps/features/swap-form/utils/get-blockchain-item';
 
