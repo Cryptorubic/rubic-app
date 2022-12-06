@@ -4,9 +4,9 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
-import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensSelectorComponent } from '@features/swaps/shared/components/tokens-selector/components/tokens-selector/tokens-selector.component';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 
 @Injectable()
 export class TokensSelectorModalService {
@@ -24,7 +24,7 @@ export class TokensSelectorModalService {
    */
   public showDialog(
     formType: 'from' | 'to',
-    form: FormGroup<ISwapFormInput>,
+    form: FormGroup<SwapFormInput>,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
     const size = this.iframeService.isIframe ? 'fullscreen' : 'l';

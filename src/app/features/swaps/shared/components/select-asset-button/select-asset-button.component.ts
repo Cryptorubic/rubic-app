@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
 import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
-import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -21,6 +20,7 @@ import { DOCUMENT } from '@angular/common';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -75,7 +75,7 @@ export class SelectAssetButtonComponent implements OnInit {
       });
   }
 
-  private setFormValues(formValue: ISwapFormInput): void {
+  private setFormValues(formValue: SwapFormInput): void {
     const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
     this.selectedToken = formValue[formKey];
     this.cdr.detectChanges();

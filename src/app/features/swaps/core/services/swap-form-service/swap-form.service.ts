@@ -4,7 +4,6 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
-import { FormService } from '@shared/models/swaps/form-service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   SwapForm,
@@ -19,7 +18,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 @Injectable({
   providedIn: 'root'
 })
-export class SwapFormService implements FormService {
+export class SwapFormService {
   public commonTrade: FormGroup<SwapForm>;
 
   public get input(): FormGroup<SwapFormInput> {

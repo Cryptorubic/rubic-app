@@ -2,14 +2,13 @@ import BigNumber from 'bignumber.js';
 import { BlockchainName } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
-import { ISwapForm, ISwapFormInput, ISwapFormOutput } from '@shared/models/swaps/swap-form';
 
-export interface SwapForm extends ISwapForm {
+export interface SwapForm {
   input: FormGroup<SwapFormInput>;
   output: FormGroup<SwapFormOutput>;
 }
 
-export interface SwapFormInput extends ISwapFormInput {
+export interface SwapFormInput {
   fromBlockchain: BlockchainName | null;
   toBlockchain: BlockchainName;
   fromToken: TokenAmount;
@@ -17,6 +16,6 @@ export interface SwapFormInput extends ISwapFormInput {
   fromAmount: BigNumber;
 }
 
-export interface SwapFormOutput extends ISwapFormOutput {
+export interface SwapFormOutput {
   toAmount: BigNumber;
 }

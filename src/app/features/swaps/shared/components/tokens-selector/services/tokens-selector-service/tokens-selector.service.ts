@@ -5,18 +5,19 @@ import { BlockchainName } from 'rubic-sdk';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { FormGroup } from '@ngneat/reactive-forms';
-import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 
 @Injectable()
 export class TokensSelectorService {
   /**
    * Form containing selected tokens and blockchains.
    */
-  private _form: FormGroup<ISwapFormInput>;
+  // @todo remove
+  private _form: FormGroup<SwapFormInput>;
 
-  public get form(): FormGroup<ISwapFormInput> {
+  public get form(): FormGroup<SwapFormInput> {
     return this._form;
   }
 
