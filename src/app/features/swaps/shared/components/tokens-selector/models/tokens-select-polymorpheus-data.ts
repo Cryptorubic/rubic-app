@@ -1,12 +1,12 @@
-import { FormGroup } from '@ngneat/reactive-forms';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
+import { SwapFormInputControl } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { FormGroup } from '@angular/forms';
 
 export type TokensSelectComponentInput = {
   idPrefix: string;
   formType: 'from' | 'to';
-  form: FormGroup<SwapFormInput>;
+  form: FormGroup<SwapFormInputControl>;
 };
 
 export type TokensSelectComponentContext = TuiDialogContext<

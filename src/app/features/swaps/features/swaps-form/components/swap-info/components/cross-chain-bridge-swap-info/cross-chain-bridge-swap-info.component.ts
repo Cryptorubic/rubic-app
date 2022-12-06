@@ -14,7 +14,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
@@ -59,9 +59,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   private initSubscriptions(): void {
     combineLatest([
-      this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
-        startWith(this.swapFormService.inputValue.toBlockchain)
-      ),
+      this.swapFormService.toBlockchain$,
       this.authService.currentUser$,
       this.targetNetworkAddressService.address$
     ])

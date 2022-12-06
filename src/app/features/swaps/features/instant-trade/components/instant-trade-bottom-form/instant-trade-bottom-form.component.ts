@@ -24,7 +24,6 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
@@ -66,6 +65,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
+import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -227,9 +227,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.swapFormService.inputValueChanges
+    this.swapFormService.inputValue$
       .pipe(
-        startWith(this.swapFormService.inputValue),
         distinctUntilChanged((prev, next) => {
           return (
             prev.toBlockchain === next.toBlockchain &&
@@ -245,17 +244,15 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.setupSwapForm(form);
       });
 
-    this.swapFormService.input.controls.toToken.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(toToken => {
-        if (
-          TokensService.areTokensEqual(this.toToken, toToken) &&
-          this.toToken?.price !== toToken?.price$
-        ) {
-          this.toToken = toToken;
-          this.cdr.markForCheck();
-        }
-      });
+    this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
+      if (
+        TokensService.areTokensEqual(this.toToken, toToken) &&
+        this.toToken?.price !== toToken?.price
+      ) {
+        this.toToken = toToken;
+        this.cdr.markForCheck();
+      }
+    });
 
     this.settingsService.instantTradeValueChanges
       .pipe(
@@ -412,7 +409,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.selectedProvider = null;
     this.isTradeSelectedByUser = false;
 
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: new BigNumber(NaN)
     });
   }
@@ -424,7 +421,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.needApprove = false;
     this.withApproveButton = this.needApprove;
 
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.fromAmount
     });
   }
@@ -504,7 +501,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
 
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: this.selectedProvider.trade.to.tokenAmount
       });
       this.cdr.detectChanges();
@@ -634,7 +631,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
     }
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.selectedProvider.trade.to.tokenAmount
     });
 

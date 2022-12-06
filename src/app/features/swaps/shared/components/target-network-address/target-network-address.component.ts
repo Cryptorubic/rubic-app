@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
@@ -25,9 +25,7 @@ export class TargetNetworkAddressComponent implements OnInit {
     )
   ]);
 
-  public toBlockchain$ = this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
-    startWith(this.swapFormService.inputValue.toBlockchain)
-  );
+  public toBlockchain$ = this.swapFormService.toBlockchain$;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -38,11 +36,11 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscribeOnTargetAddress();
-    this.subsctibeOnFormValues();
+    this.subscribeOnFormValues();
   }
 
-  private subsctibeOnFormValues(): void {
-    this.swapFormService.inputValueChanges
+  private subscribeOnFormValues(): void {
+    this.swapFormService.inputValue$
       .pipe(
         filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {

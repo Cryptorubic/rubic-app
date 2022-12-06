@@ -25,7 +25,7 @@ export class ErrorButtonComponent {
   public loading = false;
 
   public get fromBlockchain$(): Observable<BlockchainName> {
-    return this.swapFormService.inputValueChanges.pipe(
+    return this.swapFormService.inputValue$.pipe(
       startWith(this.swapFormService.inputValue),
       map(form => form.fromBlockchain)
     );

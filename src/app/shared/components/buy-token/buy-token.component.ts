@@ -122,7 +122,7 @@ export class BuyTokenComponent {
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
-        this.swapFormService.input.patchValue({
+        this.swapFormService.inputControl.patchValue({
           fromToken,
           toToken,
           fromBlockchain: fromToken.blockchain,

@@ -239,7 +239,7 @@ export class CrossChainFormService {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
             this.refreshService.setStopped();
-            this.swapFormService.output.patchValue({
+            this.swapFormService.outputControl.patchValue({
               toAmount: new BigNumber(NaN)
             });
 
@@ -460,7 +460,7 @@ export class CrossChainFormService {
     this.updatedSelectedTrade = null;
 
     if (taggedTrade?.trade?.to.tokenAmount.gt(0)) {
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: taggedTrade.trade.to.tokenAmount
       });
 
@@ -479,7 +479,7 @@ export class CrossChainFormService {
         }, 10_000_000);
       }
     } else {
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: new BigNumber(NaN)
       });
 
@@ -529,9 +529,8 @@ export class CrossChainFormService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.swapFormService.inputValueChanges
+    this.swapFormService.inputValue$
       .pipe(
-        startWith(this.swapFormService.inputValue),
         distinctUntilChanged(
           (prev, next) =>
             prev.toBlockchain === next.toBlockchain &&

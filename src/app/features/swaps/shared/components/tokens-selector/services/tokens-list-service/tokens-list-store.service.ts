@@ -357,6 +357,6 @@ export class TokensListStoreService {
   private oppositeToken(): Token {
     const oppositeTokenType =
       this.tokensSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
-    return this.tokensSelectorService.form.value[oppositeTokenType];
+    return this.tokensSelectorService.form.get(oppositeTokenType).value;
   }
 }

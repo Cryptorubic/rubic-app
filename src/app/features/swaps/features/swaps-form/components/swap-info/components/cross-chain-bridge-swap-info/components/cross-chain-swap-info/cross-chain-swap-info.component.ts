@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
@@ -74,21 +74,19 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        this.fromToken = form.fromToken;
-        this.toToken = form.toToken;
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      this.fromToken = form.fromToken;
+      this.toToken = form.toToken;
 
-        this.cdr.markForCheck();
-      });
+      this.cdr.markForCheck();
+    });
   }
 
   /**
    * Subscribes on output form value, and after change gets info from cross chain service to update trade info.
    */
   private subscribeOnOutputValue(): void {
-    this.swapFormService.outputValueChanges
+    this.swapFormService.outputValue$
       .pipe(
         switchMap(form => {
           const { toAmount } = form;

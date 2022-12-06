@@ -20,7 +20,7 @@ import { DOCUMENT } from '@angular/common';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
+import { SwapFormInput } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -59,7 +59,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.setFormValues(this.swapFormService.inputValue);
-    this.swapFormService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
 
@@ -87,7 +87,7 @@ export class SelectAssetButtonComponent implements OnInit {
     this.gtmService.reloadGtmSession();
 
     this.tokensSelectorModalService
-      .showDialog(this.formType, this.swapFormService.input, idPrefix)
+      .showDialog(this.formType, this.swapFormService.inputControl, idPrefix)
       .subscribe((selectedToken: TokenAmount) => {
         if (selectedToken) {
           const token = {
@@ -107,12 +107,12 @@ export class SelectAssetButtonComponent implements OnInit {
           }
 
           if (this.formType === 'from') {
-            this.swapFormService.input.patchValue({
+            this.swapFormService.inputControl.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
-            this.swapFormService.input.patchValue({
+            this.swapFormService.inputControl.patchValue({
               toToken: token,
               toBlockchain: token.blockchain
             });

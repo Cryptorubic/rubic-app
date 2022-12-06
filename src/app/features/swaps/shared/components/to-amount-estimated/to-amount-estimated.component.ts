@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Component({
@@ -12,13 +12,11 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 export class ToAmountEstimatedComponent {
   @Input() errorText = '';
 
-  public readonly formData$ = this.swapFormService.inputValueChanges.pipe(
-    startWith(this.swapFormService.inputValue)
-  );
+  public readonly formData$ = this.swapFormService.inputValue$;
 
   public readonly isFormFilled$ = this.swapFormService.isFilled$;
 
-  public readonly toAmount$ = this.swapFormService.outputValueChanges.pipe(
+  public readonly toAmount$ = this.swapFormService.outputValue$.pipe(
     map(form => (form.toAmount?.isFinite() ? BigNumber.max(0, form.toAmount) : null))
   );
 

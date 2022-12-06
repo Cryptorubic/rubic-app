@@ -8,11 +8,11 @@ import {
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { FormControl } from '@ngneat/reactive-forms';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-vertical-iframe-token-amount-input',
@@ -49,19 +49,17 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        const { fromAmount, fromToken } = form;
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      const { fromAmount, fromToken } = form;
 
-        if (!fromAmount || fromAmount.isNaN()) {
-          this.amount.setValue('');
-        } else if (!fromAmount.eq(this.formattedAmount)) {
-          this.amount.setValue(fromAmount.toFixed());
-        }
+      if (!fromAmount || fromAmount.isNaN()) {
+        this.amount.setValue('');
+      } else if (!fromAmount.eq(this.formattedAmount)) {
+        this.amount.setValue(fromAmount.toFixed());
+      }
 
-        this.selectedToken = fromToken;
-      });
+      this.selectedToken = fromToken;
+    });
   }
 
   public onUserBalanceMaxButtonClick(): void {
@@ -79,7 +77,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
       ((fromAmount && !fromAmount.isNaN()) || this.formattedAmount) &&
       !fromAmount?.eq(this.formattedAmount)
     ) {
-      this.swapFormService.input.patchValue({
+      this.swapFormService.inputControl.patchValue({
         fromAmount: new BigNumber(this.formattedAmount)
       });
     }

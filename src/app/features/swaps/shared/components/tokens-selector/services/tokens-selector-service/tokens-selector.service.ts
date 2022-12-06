@@ -4,10 +4,10 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { BlockchainName } from 'rubic-sdk';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
-import { FormGroup } from '@ngneat/reactive-forms';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
+import { SwapFormInputControl } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { FormGroup } from '@angular/forms';
 
 @Injectable()
 export class TokensSelectorService {
@@ -15,9 +15,9 @@ export class TokensSelectorService {
    * Form containing selected tokens and blockchains.
    */
   // @todo remove
-  private _form: FormGroup<SwapFormInput>;
+  private _form: FormGroup<SwapFormInputControl>;
 
-  public get form(): FormGroup<SwapFormInput> {
+  public get form(): FormGroup<SwapFormInputControl> {
     return this._form;
   }
 
@@ -64,7 +64,7 @@ export class TokensSelectorService {
     this._formType = context.formType;
 
     const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    this.blockchain = this.form.value[blockchainType];
+    this.blockchain = this.form.get(blockchainType).value;
   }
 
   private subscribeOnBlockchainChange(): void {
@@ -76,7 +76,7 @@ export class TokensSelectorService {
       const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
       if (!this.form.value[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-        if (this.form.value[blockchainType] !== blockchain) {
+        if (this.form.get(blockchainType).value !== blockchain) {
           this.form.patchValue({
             [blockchainType]: this.blockchain
           });

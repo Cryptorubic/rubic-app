@@ -12,16 +12,8 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 import { combineLatest, Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  startWith,
-  takeUntil,
-  withLatestFrom
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -35,6 +27,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 type TokenType = 'from' | 'to';
 
@@ -140,19 +133,17 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this.swapType = swapMode;
       });
 
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        if (
-          (this.fromBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
-            form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
-          (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
-            form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
-        ) {
-          this.notifyBeta();
-        }
-        this.setFormValues(form);
-      });
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      if (
+        (this.fromBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
+          form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
+        (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
+          form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+      ) {
+        this.notifyBeta();
+      }
+      this.setFormValues(form);
+    });
 
     this.watchGtmEvents();
   }
@@ -268,14 +259,14 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.selectedToken[tokenType] = updatedToken;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.input.patchValue({
+      this.swapFormService.inputControl.patchValue({
         [formKey]: this.selectedToken[tokenType]
       });
     }
   }
 
   public async revert(): Promise<void> {
-    const formControls = this.swapFormService.commonTrade.controls;
+    const formControls = this.swapFormService.form.controls;
     const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
     const { toAmount } = formControls.output.value;
     const revertData = {
@@ -304,7 +295,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.gtmService.fetchPassedFormSteps();
     this.gtmService.startGtmSession();
 
-    this.swapFormService.inputValueChanges
+    this.swapFormService.inputValue$
       .pipe(
         map(form => [form?.fromToken?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),

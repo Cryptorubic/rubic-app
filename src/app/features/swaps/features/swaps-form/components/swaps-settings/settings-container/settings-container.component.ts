@@ -31,7 +31,7 @@ export class SettingsContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsComponent = this.getSettingsComponent();
-    this.swapFormService.commonTrade.valueChanges.subscribe(() => {
+    this.swapFormService.form.valueChanges.subscribe(() => {
       if (this.prevMode !== this.swapService.swapMode) {
         this.settingsComponent = this.getSettingsComponent();
       }

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { filter, pairwise, startWith } from 'rxjs/operators';
+import { filter, pairwise } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { compareTokens } from '@shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SwapFormInput } from '../swap-form-service/models/swap-form-controls';
 
 @Injectable()
 export class SwapsService {
@@ -67,26 +67,24 @@ export class SwapsService {
   }
 
   private subscribeOnForm(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(null, this.swapFormService.inputValue), pairwise())
-      .subscribe(([prevForm, curForm]) => {
-        this.setSwapProviderType(curForm);
+    this.swapFormService.inputValue$.pipe(pairwise()).subscribe(([prevForm, curForm]) => {
+      this.setSwapProviderType(curForm);
 
-        if (
-          (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-            curForm.fromToken) ||
-          (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
-        ) {
-          this.updateTokensPrices(curForm);
-        }
+      if (
+        (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+          curForm.fromToken) ||
+        (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
+      ) {
+        this.updateTokensPrices(curForm);
+      }
 
-        if (
-          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-          curForm.fromToken
-        ) {
-          this.updateTokenBalance(curForm.fromToken);
-        }
-      });
+      if (
+        !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+        curForm.fromToken
+      ) {
+        this.updateTokenBalance(curForm.fromToken);
+      }
+    });
   }
 
   private setSwapProviderType(form: SwapFormInput): void {

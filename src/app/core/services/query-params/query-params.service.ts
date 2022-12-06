@@ -10,7 +10,7 @@ import {
   EvmWeb3Pure,
   Web3Pure
 } from 'rubic-sdk';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
@@ -102,7 +102,7 @@ export class QueryParamsService {
     private readonly settingsService: SettingsService,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    this.swapFormService.inputValueChanges.subscribe(value => {
+    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
       this.setQueryParams({
         ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
@@ -180,7 +180,7 @@ export class QueryParamsService {
       )
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
         this.gtmService.needTrackFormEventsNow = false;
-        this.swapFormService.input.patchValue({
+        this.swapFormService.inputControl.patchValue({
           fromBlockchain,
           toBlockchain,
           ...(fromToken && { fromToken }),

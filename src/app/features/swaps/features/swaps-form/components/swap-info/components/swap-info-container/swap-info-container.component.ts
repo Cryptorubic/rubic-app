@@ -58,9 +58,7 @@ export class SwapInfoContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.swapFormService.outputValueChanges
-      .pipe(watch(this.cdr), takeUntil(this.destroy$))
-      .subscribe();
+    this.swapFormService.outputValue$.pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
 
     this.swapInfoService.onInfoCalculated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loading = false;

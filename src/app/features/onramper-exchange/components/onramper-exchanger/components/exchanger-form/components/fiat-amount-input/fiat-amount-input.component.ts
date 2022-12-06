@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { FormControl } from '@ngneat/reactive-forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-fiat-amount-input',

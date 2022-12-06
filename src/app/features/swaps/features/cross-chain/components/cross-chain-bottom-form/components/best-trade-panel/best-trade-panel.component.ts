@@ -42,7 +42,7 @@ export class BestTradePanelComponent {
   }
 
   private formSubscribe(): void {
-    this.formService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.formService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.expanded = false;
     });
   }

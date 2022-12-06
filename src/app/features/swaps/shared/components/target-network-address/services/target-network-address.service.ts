@@ -27,8 +27,8 @@ export class TargetNetworkAddressService {
 
   private watchIsAddressRequired(): void {
     combineLatest([
-      this.swapFormService.inputControls.fromBlockchain.valueChanges,
-      this.swapFormService.inputControls.toBlockchain.valueChanges
+      this.swapFormService.fromBlockchain$,
+      this.swapFormService.toBlockchain$
     ]).subscribe(([from, to]) => {
       const isAddressRequired =
         from !== to &&

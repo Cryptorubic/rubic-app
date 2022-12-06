@@ -1,7 +1,6 @@
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
-import { AbstractControl, ValidatorFn } from '@ngneat/reactive-forms';
-import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function correctAddressValidator(
   fromBlockchain: BlockchainName,

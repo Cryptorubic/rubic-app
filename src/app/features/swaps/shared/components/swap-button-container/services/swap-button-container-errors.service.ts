@@ -14,7 +14,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
@@ -24,6 +23,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
+import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -92,19 +92,17 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe((form: SwapFormInput) => {
-        const { fromAmount } = form;
-        this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
+    this.swapFormService.inputValue$.subscribe((form: SwapFormInput) => {
+      const { fromAmount } = form;
+      this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
-        this.checkWalletSupportsFromBlockchain();
-        this.checkSelectedToken();
-        this.checkUserBlockchain();
-        this.checkUserBalance();
+      this.checkWalletSupportsFromBlockchain();
+      this.checkSelectedToken();
+      this.checkUserBlockchain();
+      this.checkUserBalance();
 
-        this.updateError();
-      });
+      this.updateError();
+    });
   }
 
   private subscribeOnSwapMode(): void {

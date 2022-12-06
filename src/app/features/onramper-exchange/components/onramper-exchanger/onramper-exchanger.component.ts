@@ -5,7 +5,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ExchangerWebsocketService } from '@features/onramper-exchange/services/exchanger-websocket-service/exchanger-websocket.service';
 import { OnramperTransactionStatus } from '@features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure, nativeTokensList } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure } from 'rubic-sdk';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
@@ -15,6 +15,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { Subscription } from 'rxjs';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-onramper-exchanger',
@@ -33,7 +34,8 @@ export class OnramperExchangerComponent {
     private readonly exchangerWebsocketService: ExchangerWebsocketService,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly tokensService: TokensService
   ) {
     let subscription$: Subscription;
     this.exchangerWebsocketService.info$.subscribe(info => {
@@ -64,13 +66,13 @@ export class OnramperExchangerComponent {
           this.cdr.detectChanges();
         } else {
           const blockchain = toToken.blockchain;
-          this.swapFormService.input.patchValue({
+          const nativeToken = this.tokensService.tokens.find(
+            token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
+          );
+          this.swapFormService.inputControl.patchValue({
             fromBlockchain: blockchain,
             toBlockchain: blockchain,
-            fromToken: {
-              ...nativeTokensList[blockchain],
-              amount: new BigNumber(NaN)
-            },
+            fromToken: nativeToken,
             toToken,
             fromAmount: new BigNumber(info.out_amount).minus(0.01)
           });

@@ -11,12 +11,12 @@ import {
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { FormControl } from '@ngneat/reactive-forms';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -55,20 +55,18 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        const { fromAmount, fromToken } = form;
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      const { fromAmount, fromToken } = form;
 
-        if (!fromAmount || fromAmount.isNaN()) {
-          this.amount.setValue('');
-        } else if (!fromAmount.eq(this.formattedAmount)) {
-          this.amount.setValue(fromAmount.toFixed());
-        }
+      if (!fromAmount || fromAmount.isNaN()) {
+        this.amount.setValue('');
+      } else if (!fromAmount.eq(this.formattedAmount)) {
+        this.amount.setValue(fromAmount.toFixed());
+      }
 
-        this.selectedToken = fromToken;
-        this.cdr.markForCheck();
-      });
+      this.selectedToken = fromToken;
+      this.cdr.markForCheck();
+    });
   }
 
   public ngAfterViewInit() {
@@ -92,7 +90,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
       ((fromAmount && !fromAmount.isNaN()) || this.formattedAmount) &&
       !fromAmount?.eq(this.formattedAmount)
     ) {
-      this.swapFormService.input.patchValue({
+      this.swapFormService.inputControl.patchValue({
         fromAmount: new BigNumber(this.formattedAmount)
       });
     }
