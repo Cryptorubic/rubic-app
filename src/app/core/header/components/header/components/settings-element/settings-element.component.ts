@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ComponentType } from '@angular/cdk/overlay';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { OptionsComponent } from '@core/header/models/settings-component';
 
 @Component({
   selector: 'app-settings-element',
@@ -12,7 +13,7 @@ export class SettingsElementComponent {
 
   @Input() desc: string;
 
-  @Input() component: ComponentType<object>;
+  @Input() component: PolymorpheusComponent<OptionsComponent, object>;
 
   @Input() withAction: boolean;
 

@@ -24,7 +24,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
-import { isMinimalToken } from '@shared/utils/is-token';
+import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -185,7 +185,7 @@ export class SwapButtonContainerErrorsService {
    */
   private checkUserBalance(): void {
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
-    if (!isMinimalToken(fromAsset)) {
+    if (!isTokenAmount(fromAsset)) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
     }

@@ -34,6 +34,7 @@ import {
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
+import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -51,6 +52,10 @@ export class SwapSchemeModalComponent implements OnInit {
   public fromToken: TokenAmount;
 
   public toToken: TokenAmount;
+
+  public fromBlockchain: Blockchain;
+
+  public toBlockchain: Blockchain;
 
   public crossChainProvider: CrossChainTradeType;
 
@@ -280,6 +285,9 @@ export class SwapSchemeModalComponent implements OnInit {
 
     this.fromToken = data.fromToken;
     this.toToken = data.toToken;
+
+    this.fromBlockchain = BLOCKCHAINS[this.fromToken.blockchain];
+    this.toBlockchain = BLOCKCHAINS[this.toToken.blockchain];
 
     this.srcTxHash = data.srcTxHash;
 

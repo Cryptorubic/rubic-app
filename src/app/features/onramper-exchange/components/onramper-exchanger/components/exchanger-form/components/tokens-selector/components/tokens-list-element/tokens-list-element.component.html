@@ -19,9 +19,9 @@
         (click)="copyToClipboard($event)"
         [tuiHint]="tokenAddressHint"
         tuiHintMode="onDark"
-        tuiHintShowDelay="50"
+        [tuiHintShowDelay]="50"
         tuiHintDirection="top-right"
-        tuiHintHideDelay="100"
+        [tuiHintHideDelay]="100"
       ></span>
 
       <ng-template #tokenAddressHint

@@ -24,6 +24,8 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
+  public readonly fromBlockchain$ = this.swapFormService.fromBlockchain$;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapButtonContainerService: SwapButtonContainerService,
