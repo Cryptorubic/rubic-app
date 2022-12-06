@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import {
-  ItSettingsForm,
-  SettingsService
-} from '@features/swaps/core/services/settings-service/settings.service';
-import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ItSettingsFormControls } from '@features/swaps/core/services/settings-service/models/settings-form-controls';
 
 @Component({
   selector: 'app-settings-it',
@@ -21,7 +19,7 @@ import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 export class SettingsItComponent implements OnInit {
   private readonly defaultSlippageTolerance: number;
 
-  public instantTradeForm: FormGroup<ItSettingsForm>;
+  public instantTradeForm: FormGroup<ItSettingsFormControls>;
 
   public slippageTolerance: number;
 
@@ -35,7 +33,7 @@ export class SettingsItComponent implements OnInit {
 
   private setForm(): void {
     const form = this.settingsService.instantTradeValue;
-    this.instantTradeForm = new FormGroup<ItSettingsForm>({
+    this.instantTradeForm = new FormGroup<ItSettingsFormControls>({
       autoSlippageTolerance: new FormControl<boolean>(form.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(form.slippageTolerance),
       deadline: new FormControl<number>(form.deadline),
@@ -44,14 +42,14 @@ export class SettingsItComponent implements OnInit {
       showReceiverAddress: new FormControl<boolean>(form.showReceiverAddress)
     });
     this.slippageTolerance = form.slippageTolerance;
-    this.setFormChanges(this.settingsService.instantTrade);
+    this.setFormChanges();
   }
 
-  private setFormChanges(form: AbstractControl<ItSettingsForm>): void {
+  private setFormChanges(): void {
     this.instantTradeForm.valueChanges.subscribe(settings => {
-      form.patchValue({ ...settings });
+      this.settingsService.instantTrade.patchValue({ ...settings });
     });
-    form.valueChanges.subscribe(settings => {
+    this.settingsService.instantTradeValueChanges.subscribe(settings => {
       this.instantTradeForm.patchValue({ ...settings }, { emitEvent: false });
       this.slippageTolerance = settings.slippageTolerance;
     });

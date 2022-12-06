@@ -1,24 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
-import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import {
-  CcrSettingsForm,
-  ItSettingsForm,
-  SettingsService
-} from '@features/swaps/core/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
-
-export interface IframeSettingsForm {
-  autoSlippageTolerance: boolean;
-  slippageTolerance: number;
-  disableMultihops: boolean;
-  autoRefresh: boolean;
-  showReceiverAddress: boolean;
-}
+import { FormControl, FormGroup } from '@angular/forms';
+import { IframeSettingsFormControls } from '@features/swaps/features/swaps-form/components/swaps-settings/iframe-settings/models/iframe-settings-form-controls';
+import {
+  CcrSettingsForm,
+  CcrSettingsFormControls,
+  ItSettingsFormControls
+} from '@features/swaps/core/services/settings-service/models/settings-form-controls';
 
 @Component({
   selector: 'app-iframe-settings',
@@ -28,7 +22,7 @@ export interface IframeSettingsForm {
   providers: [TuiDestroyService]
 })
 export class IframeSettingsComponent implements OnInit {
-  public iframeSettingsForm: FormGroup<IframeSettingsForm>;
+  public iframeSettingsForm: FormGroup<IframeSettingsFormControls>;
 
   public slippageTolerance: number;
 
@@ -52,7 +46,7 @@ export class IframeSettingsComponent implements OnInit {
         ? itSettingsForm
         : ccrSettingsForm;
 
-    this.iframeSettingsForm = new FormGroup<IframeSettingsForm>({
+    this.iframeSettingsForm = new FormGroup<IframeSettingsFormControls>({
       autoSlippageTolerance: new FormControl<boolean>(settingsForm.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(settingsForm.slippageTolerance),
       disableMultihops: new FormControl<boolean>(itSettingsForm.disableMultihops),
@@ -66,9 +60,11 @@ export class IframeSettingsComponent implements OnInit {
     this.targetNetworkAddressService.isAddressRequired$
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAddressRequired => {
-        this.iframeSettingsForm.controls.showReceiverAddress.setDisable(isAddressRequired, {
-          emitEvent: false
-        });
+        if (isAddressRequired) {
+          this.iframeSettingsForm.controls.showReceiverAddress.disable({ emitEvent: false });
+        } else {
+          this.iframeSettingsForm.controls.showReceiverAddress.enable({ emitEvent: false });
+        }
       });
   }
 
@@ -114,7 +110,7 @@ export class IframeSettingsComponent implements OnInit {
   }
 
   private updateSettingsForm(
-    settingsForm: FormGroup<ItSettingsForm | CcrSettingsForm>,
+    settingsForm: FormGroup<ItSettingsFormControls> | FormGroup<CcrSettingsFormControls>,
     swapMode: SWAP_PROVIDER_TYPE
   ): void {
     const settings = this.iframeSettingsForm.value;

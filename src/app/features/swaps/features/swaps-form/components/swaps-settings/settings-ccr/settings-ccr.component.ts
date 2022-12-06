@@ -1,13 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, Self } from '@angular/core';
-import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import {
-  CcrSettingsForm,
-  SettingsService
-} from '@features/swaps/core/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
+import { FormControl, FormGroup } from '@angular/forms';
+import { CcrSettingsFormControls } from '@features/swaps/core/services/settings-service/models/settings-form-controls';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -25,7 +23,7 @@ import { takeUntil } from 'rxjs/operators';
 export class SettingsCcrComponent implements OnInit {
   public readonly defaultSlippageTolerance: number;
 
-  public crossChainRoutingForm: FormGroup<CcrSettingsForm>;
+  public crossChainRoutingForm: FormGroup<CcrSettingsFormControls>;
 
   public slippageTolerance: number;
 
@@ -45,7 +43,7 @@ export class SettingsCcrComponent implements OnInit {
 
   private setForm(): void {
     const formValue = this.settingsService.crossChainRoutingValue;
-    this.crossChainRoutingForm = new FormGroup<CcrSettingsForm>({
+    this.crossChainRoutingForm = new FormGroup<CcrSettingsFormControls>({
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
       showReceiverAddress: new FormControl<boolean>(formValue.showReceiverAddress)
@@ -56,9 +54,11 @@ export class SettingsCcrComponent implements OnInit {
     this.targetNetworkAddressService.isAddressRequired$
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAddressRequired => {
-        this.crossChainRoutingForm.controls.showReceiverAddress.setDisable(isAddressRequired, {
-          emitEvent: false
-        });
+        if (isAddressRequired) {
+          this.crossChainRoutingForm.controls.showReceiverAddress.disable({ emitEvent: false });
+        } else {
+          this.crossChainRoutingForm.controls.showReceiverAddress.enable({ emitEvent: false });
+        }
       });
   }
 
