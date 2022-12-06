@@ -11,6 +11,7 @@ import { ListAnimationType } from '@features/swaps/shared/components/tokens-sele
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 
 @Injectable()
 export class TokensListService {
@@ -75,8 +76,11 @@ export class TokensListService {
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
             filter(renderedRange => {
-              const tokensNetworkState =
-                this.tokensService.tokensNetworkState[this.tokensSelectorService.blockchain];
+              const blockchain = this.tokensSelectorService.blockchain;
+              if (!BlockchainsInfo.isBlockchainName(blockchain)) {
+                return false;
+              }
+              const tokensNetworkState = this.tokensService.tokensNetworkState[blockchain];
               if (
                 this.loading ||
                 this.searchQueryService.query ||
@@ -100,9 +104,12 @@ export class TokensListService {
       .subscribe(shouldUpdate => {
         if (shouldUpdate) {
           this._listUpdating$.next(true);
-          this.tokensService.fetchNetworkTokens(this.tokensSelectorService.blockchain, () => {
-            this._listUpdating$.next(false);
-          });
+          this.tokensService.fetchNetworkTokens(
+            this.tokensSelectorService.blockchain as BlockchainName,
+            () => {
+              this._listUpdating$.next(false);
+            }
+          );
         }
       });
   }

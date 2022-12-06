@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
-import { firstValueFrom, interval, Subscription, switchMap, timer } from 'rxjs';
+import {
+  firstValueFrom,
+  interval,
+  Observable,
+  shareReplay,
+  Subscription,
+  switchMap,
+  timer
+} from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -44,11 +52,14 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
+import { SwapFormInputTokens } from '@features/swaps/core/services/swaps-form-service/models/swap-form-tokens';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -67,6 +78,25 @@ export class InstantTradeService extends TradeCalculationService {
       return null;
     }
     return this.targetNetworkAddressService.address;
+  }
+
+  public get inputValue(): SwapFormInputTokens {
+    const inputForm = this.swapsFormService.inputValue;
+    if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
+      throw new RubicError('Cannot use instant trades');
+    }
+    return inputForm as SwapFormInputTokens;
+  }
+
+  public get inputValue$(): Observable<SwapFormInputTokens> {
+    return this.swapsFormService.inputValue$.pipe(
+      filter(
+        inputForm =>
+          inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
+      ),
+      map(inputForm => inputForm as SwapFormInputTokens),
+      shareReplay(shareReplayConfig)
+    );
   }
 
   constructor(
@@ -151,20 +181,20 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public getEthWethTrade(): WrapTrade | null {
-    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapsFormService.inputValue;
+    const { fromAmount, fromAsset, toToken, fromAssetType } = this.inputValue;
 
     if (
-      !fromToken ||
+      !fromAsset ||
       !toToken ||
-      !this.ethWethSwapProvider.isEthAndWethSwap(fromBlockchain, fromToken.address, toToken.address)
+      !this.ethWethSwapProvider.isEthAndWethSwap(fromAssetType, fromAsset.address, toToken.address)
     ) {
       return null;
     }
 
     return {
-      blockchain: fromBlockchain,
+      blockchain: fromAssetType,
       from: {
-        token: fromToken,
+        token: fromAsset,
         amount: fromAmount
       },
       to: {
@@ -214,14 +244,14 @@ export class InstantTradeService extends TradeCalculationService {
     trade: OnChainTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
-    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+    const { fromAssetType, toBlockchain } = this.inputValue;
     this.checkDeviceAndShowNotification();
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
 
-    if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
-      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
+    if (!this.platformConfigurationService.isAvailableBlockchain(fromAssetType)) {
+      throw new BlockchainIsUnavailableWarning(blockchainLabel[fromAssetType]);
     }
     if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
@@ -307,7 +337,7 @@ export class InstantTradeService extends TradeCalculationService {
       subscription$?.unsubscribe();
 
       if (err instanceof NotWhitelistedProviderError) {
-        this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
+        this.saveNotWhitelistedProvider(err, fromAssetType, (trade as OnChainTrade)?.type);
       }
 
       if (transactionHash && !this.isNotMinedError(err)) {

@@ -8,6 +8,8 @@ import { List } from 'immutable';
 import { compareTokens } from '@shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { SwapFormInput } from '../swaps-form-service/models/swap-form-controls';
+import { isMinimalToken } from '@shared/utils/is-token';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Injectable()
 export class SwapsService {
@@ -73,31 +75,29 @@ export class SwapsService {
         this.setSwapProviderType(curForm);
 
         if (
-          (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-            curForm.fromToken) ||
+          (!compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
+            isMinimalToken(curForm.fromAsset)) ||
           (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
         ) {
           this.updateTokensPrices(curForm);
         }
 
         if (
-          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-          curForm.fromToken
+          !compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
+          isMinimalToken(curForm.fromAsset)
         ) {
-          this.updateTokenBalance(curForm.fromToken);
+          this.updateTokenBalance(curForm.fromAsset);
         }
       });
   }
 
   private setSwapProviderType(form: SwapFormInput): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
+    const { fromAssetType, toBlockchain } = form;
 
-    if (!fromBlockchain || !toBlockchain || fromBlockchain === toBlockchain) {
+    if (fromAssetType === 'fiat') {
+      this.swapMode = SWAP_PROVIDER_TYPE.ONRAMPER;
+    } else if (!fromAssetType || !toBlockchain || fromAssetType === toBlockchain) {
       this.swapMode = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
-    } else if (!fromToken || !toToken) {
-      if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-        this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-      }
     } else {
       this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
     }
@@ -114,8 +114,8 @@ export class SwapsService {
     }
 
     const update = () => {
-      if (form?.fromToken) {
-        this.tokensService.getAndUpdateTokenPrice(form.fromToken);
+      if (isMinimalToken(form?.fromAsset)) {
+        this.tokensService.getAndUpdateTokenPrice(form.fromAsset);
       }
       if (form?.toToken) {
         this.tokensService.getAndUpdateTokenPrice(form.toToken);

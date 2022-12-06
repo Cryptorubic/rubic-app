@@ -56,7 +56,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      const { fromAmount, fromToken } = form;
+      const { fromAmount, fromAsset } = form;
 
       if (!fromAmount || fromAmount.isNaN()) {
         this.amount.setValue('');
@@ -64,7 +64,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
         this.amount.setValue(fromAmount.toFixed());
       }
 
-      this.selectedToken = fromToken;
+      this.selectedToken = fromAsset as TokenAmount; // @todo update
       this.cdr.markForCheck();
     });
   }

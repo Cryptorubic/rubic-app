@@ -1,16 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { map } from 'rxjs/operators';
-import { SelectedToken } from '@features/swaps/features/swaps-form/swaps-form.component';
-import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-
-interface BlockchainItem {
-  icon: string;
-  label: string;
-}
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { isMinimalToken } from '@shared/utils/is-token';
+import { getBlockchainItem } from '@features/swaps/features/swaps-form/utils/get-blockchain-item';
 
 @Component({
   selector: 'app-swaps-header',
@@ -19,50 +13,33 @@ interface BlockchainItem {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsHeaderComponent {
-  @Input() public set fromBlockchain(blockchain: BlockchainName) {
-    if (blockchain) {
-      this.fromBlockchainItem = this.getBlockchainItem(blockchain);
-    }
-  }
+  public readonly showBlockchains$ = this.swapsFormService.inputValue$.pipe(
+    map(inputForm => isMinimalToken(inputForm.fromAsset) && inputForm.toToken)
+  );
 
-  @Input() public set toBlockchain(blockchain: BlockchainName) {
-    if (blockchain) {
-      this.toBlockchainItem = this.getBlockchainItem(blockchain);
-    }
-  }
+  public readonly fromBlockchainItem$ = this.swapsFormService.fromBlockchain$.pipe(
+    map(getBlockchainItem)
+  );
 
-  @Input() public set selectedToken(token: SelectedToken) {
-    this.showBlockchains = Boolean(token.from && token.to);
-  }
-
-  public showBlockchains = false;
+  public readonly toBlockchainItem$ = this.swapsFormService.toBlockchain$.pipe(
+    map(getBlockchainItem)
+  );
 
   public readonly swapType$ = this.swapsService.swapMode$.pipe(
     map(mode => {
       if (mode) {
         const swapTypeLabel = {
           [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'Instant Trade',
-          [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'Cross-Chain'
+          [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'Cross-Chain',
+          [SWAP_PROVIDER_TYPE.ONRAMPER]: 'Onramper'
         };
         return swapTypeLabel[mode];
       }
     })
   );
 
-  public fromBlockchainItem: BlockchainItem;
-
-  public toBlockchainItem: BlockchainItem;
-
-  constructor(private readonly swapsService: SwapsService) {
-    this.fromBlockchainItem = this.toBlockchainItem = this.getBlockchainItem(
-      BLOCKCHAIN_NAME.ETHEREUM
-    );
-  }
-
-  private getBlockchainItem(blockchain: BlockchainName): BlockchainItem {
-    return {
-      icon: blockchainIcon[blockchain],
-      label: blockchainLabel[blockchain]
-    };
-  }
+  constructor(
+    private readonly swapsService: SwapsService,
+    private readonly swapsFormService: SwapsFormService
+  ) {}
 }

@@ -15,6 +15,7 @@ import {
   PriceTokenAmount,
   TokenAmount
 } from 'rubic-sdk';
+import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -49,7 +50,7 @@ export class InstantTradeSwapInfoComponent {
   public platformFee: OnChainPlatformFee;
 
   public get rate(): string {
-    const { fromAmount, fromToken, toToken } = this.swapsFormService.inputValue;
+    const { fromAmount, fromAsset, toToken } = this.instantTradeService.inputValue;
     const { toAmount } = this.swapsFormService.outputValue;
     if (!fromAmount?.isFinite() || !toAmount?.isFinite()) {
       return '';
@@ -61,21 +62,22 @@ export class InstantTradeSwapInfoComponent {
         'toClosestValue',
         { decimals: toToken.decimals }
       );
-      return `1 ${fromToken.symbol} = ${rateFormatted} ${toToken.symbol}`;
+      return `1 ${fromAsset.symbol} = ${rateFormatted} ${toToken.symbol}`;
     }
 
     const rateFormatted = this.withRoundPipe.transform(
       this.bigNumberFormatPipe.transform(fromAmount.dividedBy(toAmount)),
       'toClosestValue',
-      { decimals: fromToken.decimals }
+      { decimals: fromAsset.decimals }
     );
-    return `${rateFormatted} ${fromToken.symbol} = 1 ${toToken.symbol}`;
+    return `${rateFormatted} ${fromAsset.symbol} = 1 ${toToken.symbol}`;
   }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapsFormService: SwapsFormService,
+    private readonly instantTradeService: InstantTradeService,
     private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
     private readonly withRoundPipe: WithRoundPipe,
@@ -116,13 +118,13 @@ export class InstantTradeSwapInfoComponent {
   }
 
   public setPriceImpact(): void {
-    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapsFormService.inputValue;
+    const { fromAsset, toToken, fromAmount, fromAssetType } = this.instantTradeService.inputValue;
     const { toAmount } = this.swapsFormService.outputValue;
-    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
+    if (fromAssetType === BLOCKCHAIN_NAME.ETHEREUM_POW) {
       this.priceImpact = null;
     } else {
       this.priceImpact = PriceImpactService.calculatePriceImpact(
-        fromToken?.price,
+        fromAsset?.price,
         toToken?.price,
         fromAmount,
         toAmount

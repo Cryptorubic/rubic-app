@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { getBlockchainItem } from '@features/swaps/features/swaps-form/utils/get-blockchain-item';
+import { BlockchainItem } from '@features/swaps/features/swaps-form/models/blockchain-item';
 import { BlockchainName } from 'rubic-sdk';
-import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-iframe-blockchain-indicator',
@@ -11,13 +11,10 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 })
 export class IframeBlockchainIndicatorComponent {
   @Input() set blockchain(blockchainName: BlockchainName) {
-    this.blockchainIcon = blockchainIcon[blockchainName];
-    this.blockchainLabel = blockchainLabel[blockchainName];
+    this.blockchainItem = getBlockchainItem(blockchainName);
   }
 
-  public blockchainIcon: string;
-
-  public blockchainLabel: string;
+  public blockchainItem: BlockchainItem;
 
   constructor() {}
 }

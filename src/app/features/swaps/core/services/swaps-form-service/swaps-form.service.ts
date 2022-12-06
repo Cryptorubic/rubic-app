@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, first, map } from 'rxjs/operators';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -14,25 +13,24 @@ import {
   SwapFormOutputControl
 } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
-
-function shareReplayConfigured<T>() {
-  return shareReplay<T>({ bufferSize: 1, refCount: true });
-}
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable({
   providedIn: 'root'
 })
+// @todo rename
 export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
-      fromBlockchain: new FormControl<BlockchainName>(null),
-      toBlockchain: new FormControl<BlockchainName>(BLOCKCHAIN_NAME.ETHEREUM),
-      fromToken: new FormControl<TokenAmount>(null),
-      toToken: new FormControl<TokenAmount>(null),
-      fromAmount: new FormControl<BigNumber>(null)
+      fromAssetType: new FormControl(null),
+      fromAsset: new FormControl(null),
+      toBlockchain: new FormControl(BLOCKCHAIN_NAME.ETHEREUM),
+      toToken: new FormControl(null),
+      fromAmount: new FormControl(null)
     }),
     output: new FormGroup<SwapFormOutputControl>({
-      toAmount: new FormControl<BigNumber>(null)
+      toAmount: new FormControl(null)
     })
   });
 
@@ -49,22 +47,25 @@ export class SwapsFormService {
 
   public readonly inputValue$ = this._inputValue$.asObservable();
 
-  public readonly fromBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
-    map(inputValue => inputValue.fromBlockchain),
+  public readonly fromBlockchain$: Observable<BlockchainName | null> = this.inputValue$.pipe(
+    map(inputValue => {
+      const assetType = inputValue.fromAssetType;
+      return BlockchainsInfo.isBlockchainName(assetType) ? assetType : null;
+    }),
     distinctUntilChanged(),
-    shareReplayConfigured()
+    shareReplay(shareReplayConfig)
   );
 
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
     map(inputValue => inputValue.toBlockchain),
     distinctUntilChanged(),
-    shareReplayConfigured()
+    shareReplay(shareReplayConfig)
   );
 
   public readonly toToken$: Observable<TokenAmount> = this.inputValue$.pipe(
     map(inputValue => inputValue.toToken),
     distinctObjectUntilChanged(),
-    shareReplayConfigured()
+    shareReplay(shareReplayConfig)
   );
 
   /**
@@ -84,9 +85,9 @@ export class SwapsFormService {
     this.inputValue$.pipe(
       map(form =>
         Boolean(
-          form.fromBlockchain &&
+          form.fromAssetType &&
+            form.fromAsset &&
             form.toBlockchain &&
-            form.fromToken &&
             form.toToken &&
             form.fromAmount?.gt(0)
         )
@@ -101,8 +102,18 @@ export class SwapsFormService {
     return this._isFilled$.getValue();
   }
 
-  constructor() {
+  constructor(private readonly walletConnectorService: WalletConnectorService) {
+    this.setupFromBlockchain();
+
     this.subscribeOnFormValueChange();
+  }
+
+  private setupFromBlockchain(): void {
+    this.walletConnectorService.networkChange$.pipe(first(Boolean)).subscribe(network => {
+      if (!this.inputValue.fromAssetType) {
+        this.inputControl.patchValue({ fromAssetType: network });
+      }
+    });
   }
 
   private subscribeOnFormValueChange(): void {

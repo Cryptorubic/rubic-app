@@ -12,7 +12,7 @@ import { SwapsFormService } from '@features/swaps/core/services/swaps-form-servi
 import { combineLatest, Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME, BlockchainsInfo } from 'rubic-sdk';
 import { debounceTime, distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { List } from 'immutable';
@@ -28,12 +28,11 @@ import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+import { isMinimalToken } from '@shared/utils/is-token';
+import { FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 type TokenType = 'from' | 'to';
-
-export type SelectedToken = {
-  [tokenType in TokenType]: TokenAmount;
-};
 
 type AvailableTokens = {
   [tokenType in TokenType]: AvailableTokenAmount[];
@@ -61,9 +60,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public availableFavoriteTokens: AvailableTokens;
 
-  public selectedToken: SelectedToken;
-
-  public fromBlockchain: BlockchainName;
+  public fromAssetType: FromAssetType;
 
   public toBlockchain: BlockchainName;
 
@@ -73,7 +70,9 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public currentInstantTradeInfo: InstantTradeInfo;
 
-  public readonly backgroundColor: string = this.queryParams.backgroundColor;
+  public readonly backgroundColor = this.queryParams.backgroundColor;
+
+  public readonly isFormFilled$ = this.swapsFormService.isFilled$;
 
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -81,17 +80,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public get isCrossChainRouting(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-  }
-
-  public get allowTrade(): boolean {
-    const form = this.swapsFormService.inputValue;
-    return Boolean(
-      form.fromAmount?.gt(0) &&
-        form.fromBlockchain &&
-        form.toBlockchain &&
-        form.fromToken &&
-        form.toToken
-    );
   }
 
   public readonly getCurrentUser$ = this.authService.currentUser$;
@@ -117,10 +105,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       from: [],
       to: []
     };
-    this.selectedToken = {
-      from: undefined,
-      to: undefined
-    };
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 
@@ -135,8 +119,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
     this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (
-        (this.fromBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
-          form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
+        (this.fromAssetType !== BLOCKCHAIN_NAME.SOLANA &&
+          form.fromAssetType === BLOCKCHAIN_NAME.SOLANA) ||
         (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
           form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
       ) {
@@ -172,19 +156,14 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
     this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
     this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
-    this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this), 'default');
 
     this.isLoading = false;
     this.cdr.detectChanges();
   }
 
   private setFormValues(form: SwapFormInput): void {
-    this.fromBlockchain = form.fromBlockchain;
+    this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
-    this.selectedToken = {
-      from: form.fromToken,
-      to: form.toToken
-    };
 
     if (this._supportedTokens) {
       this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
@@ -201,8 +180,9 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   private setAvailableTokens(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
-    const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapsFormService.inputValue[oppositeTokenKey];
+    const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromAsset';
+    const oppositeAsset = this.swapsFormService.inputValue[oppositeTokenKey];
+    const oppositeToken = isMinimalToken(oppositeAsset) ? oppositeAsset : null;
 
     const availableTokens =
       tokenListType === 'default' ? this.availableTokens : this.availableFavoriteTokens;
@@ -236,51 +216,24 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateSelectedToken(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
-    const supportedTokens =
-      tokenListType === 'default' ? this._supportedTokens : this._supportedFavoriteTokens;
-    const token = this.selectedToken[tokenType];
-    if (!token) {
+  public async revert(): Promise<void> {
+    const { fromAssetType, toBlockchain, fromAsset, toToken } = this.swapsFormService.inputValue;
+    if (!BlockchainsInfo.isBlockchainName(fromAssetType) || !isMinimalToken(fromAsset)) {
       return;
     }
+    const { toAmount } = this.swapsFormService.outputValue;
 
-    const updatedToken = supportedTokens.find(
-      supportedToken =>
-        supportedToken.blockchain === token.blockchain &&
-        supportedToken.address.toLowerCase() === token.address.toLowerCase()
-    );
-
-    if (
-      updatedToken &&
-      (((!updatedToken.amount?.isNaN() || !token.amount?.isNaN()) &&
-        !updatedToken.amount?.eq(token.amount)) ||
-        token.price !== updatedToken.price)
-    ) {
-      this.selectedToken[tokenType] = updatedToken;
-
-      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapsFormService.inputControl.patchValue({
-        [formKey]: this.selectedToken[tokenType]
-      });
-    }
-  }
-
-  public async revert(): Promise<void> {
-    const formControls = this.swapsFormService.form.controls;
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
-    const { toAmount } = formControls.output.value;
     const revertData = {
-      toToken: fromToken,
-      fromToken: toToken,
-      toBlockchain: fromBlockchain,
-      fromBlockchain: toBlockchain
-    } as Partial<SwapFormInput>;
-    if (toAmount && toAmount.gt(0)) {
-      revertData.fromAmount = toAmount;
-    }
-    // Remove null control values.
-    formControls.input.patchValue(revertData);
-    formControls.output.patchValue({ toAmount: new BigNumber(NaN) });
+      fromAssetType: toBlockchain,
+      fromAsset: toToken,
+      toToken: fromAsset,
+      toBlockchain: fromAssetType,
+      ...(toAmount?.gt(0) && { fromAmount: toAmount })
+    };
+    this.swapsFormService.form.patchValue({
+      input: revertData,
+      output: { toAmount: new BigNumber(NaN) }
+    });
   }
 
   private notifyBeta(): void {
@@ -297,12 +250,19 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
     this.swapsFormService.inputValue$
       .pipe(
-        map(form => [form?.fromToken?.symbol || null, form?.toToken?.symbol || null]),
+        map(form => [form?.fromAsset?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),
         withLatestFrom(this.swapsService.swapMode$),
         takeUntil(this.destroy$)
       )
       .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {
+        if (
+          swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE ||
+          swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        ) {
+          return;
+        }
+
         if (!this.gtmService.isGtmSessionActive) {
           this.gtmService.clearPassedFormSteps();
         }
@@ -323,5 +283,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.settingsService.saveSettingsToLocalStorage();
+  }
+
+  public getFromBlockchain(): BlockchainName {
+    if (this.fromAssetType === 'fiat') {
+      throw new RubicError('From asset type is fiat');
+    }
+    return this.fromAssetType;
   }
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { BlockchainName } from 'rubic-sdk';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class TokensSelectorService {
@@ -16,15 +16,16 @@ export class TokensSelectorService {
     return this._formType;
   }
 
-  private readonly _blockchain$ = new BehaviorSubject<BlockchainName>(undefined);
+  // todo rename
+  private readonly _blockchain$ = new BehaviorSubject<FromAssetType>(undefined);
 
   public readonly blockchain$ = this._blockchain$.asObservable();
 
-  public get blockchain(): BlockchainName {
+  public get blockchain(): FromAssetType {
     return this._blockchain$.value;
   }
 
-  public set blockchain(value: BlockchainName) {
+  public set blockchain(value: FromAssetType) {
     this._blockchain$.next(value);
   }
 
@@ -54,7 +55,7 @@ export class TokensSelectorService {
   public initParameters(context: Omit<TokensSelectComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
-    const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+    const blockchainType = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
     this.blockchain = this.swapsFormService.inputValue[blockchainType];
   }
 
@@ -64,9 +65,9 @@ export class TokensSelectorService {
         return;
       }
 
-      const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
+      const tokenType = this.formType === 'from' ? 'fromAsset' : 'toToken';
       if (!this.swapsFormService.inputValue[tokenType]) {
-        const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+        const blockchainType = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
         if (this.swapsFormService.inputValue[blockchainType] !== blockchain) {
           this.swapsFormService.inputControl.patchValue({
             [blockchainType]: this.blockchain

@@ -4,7 +4,6 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
@@ -44,7 +43,6 @@ export class CrossChainBottomFormComponent {
   public readonly selectedTradeError$ = this.crossChainFormService.selectedTradeError$;
 
   constructor(
-    public readonly swapsFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly crossChainFormService: CrossChainFormService
   ) {

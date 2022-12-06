@@ -33,12 +33,12 @@ export class TokensRateComponent implements OnInit {
         const { toAmount } = outputForm;
 
         if (toAmount?.isFinite()) {
-          const { fromAmount, fromToken, toToken } = this.swapsFormService.inputValue;
+          const { fromAmount, fromAsset, toToken } = this.swapsFormService.inputValue;
 
           return {
             from: {
               amount: fromAmount.dividedBy(toAmount),
-              symbol: fromToken.symbol
+              symbol: fromAsset.symbol
             },
             to: {
               amount: toAmount.dividedBy(fromAmount),

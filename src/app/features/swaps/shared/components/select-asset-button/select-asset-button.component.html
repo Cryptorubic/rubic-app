@@ -7,28 +7,28 @@
       [loading]="loading"
       [disabled]="disabled || iframeForceDisabled"
       (onClick)="openTokensSelect(idPrefix)"
-      [appearance]="selectedToken ? 'primary' : 'secondary'"
+      [appearance]="selectedAsset ? 'primary' : 'secondary'"
       [pseudoHovered]="buttonHovered"
       (mouseleave)="buttonHovered = null"
     >
-      <ng-container *ngIf="selectedToken">
+      <ng-container *ngIf="selectedAsset">
         <div class="tokens__inner">
           <div class="tokens__image-container">
             <img
-              [src]="selectedToken.image || DEFAULT_TOKEN_IMAGE"
+              [src]="selectedAsset.image || DEFAULT_TOKEN_IMAGE"
               width="18px"
               height="18px"
-              [alt]="selectedToken.symbol"
+              [alt]="selectedAsset.symbol"
               (error)="onImageError($event)"
             />
           </div>
           <div class="tokens__symbol">
-            {{ selectedToken.symbol }}
+            {{ selectedAsset.symbol }}
           </div>
           <img *noFrame="'vertical'" src="assets/images/icons/arrow-down.svg" alt="Choose token" />
         </div>
       </ng-container>
-      <span class="tokens__inner-text" *ngIf="!selectedToken">{{
+      <span class="tokens__inner-text" *ngIf="!selectedAsset">{{
         'common.chooseToken' | translate
       }}</span>
     </app-rubic-button>

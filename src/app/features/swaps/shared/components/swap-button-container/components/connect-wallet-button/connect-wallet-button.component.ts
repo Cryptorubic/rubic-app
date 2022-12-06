@@ -16,7 +16,7 @@ export class ConnectWalletButtonComponent {
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
 
   public readonly tokensFilled$ = this.swapsFormService.inputValue$.pipe(
-    map(form => Boolean(form.fromToken && form.toToken))
+    map(form => Boolean(form.fromAsset && form.toToken))
   );
 
   public readonly isIframe = this.iframeService.isIframe;

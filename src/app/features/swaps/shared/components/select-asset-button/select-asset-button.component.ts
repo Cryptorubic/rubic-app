@@ -7,20 +7,20 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { Token } from '@shared/models/tokens/token';
 import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
-import BigNumber from 'bignumber.js';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { SwapFormInput } from '@app/features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+import { FromAsset } from '@features/swaps/shared/models/form/asset';
+import { isMinimalToken } from '@shared/utils/is-token';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -40,7 +40,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public selectedToken: Token;
+  public selectedAsset: FromAsset;
 
   public buttonHovered: boolean = null;
 
@@ -76,31 +76,23 @@ export class SelectAssetButtonComponent implements OnInit {
   }
 
   private setFormValues(formValue: SwapFormInput): void {
-    const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
-    this.selectedToken = formValue[formKey];
+    const formKey = this.formType === 'from' ? 'fromAsset' : 'toToken';
+    this.selectedAsset = formValue[formKey];
     this.cdr.detectChanges();
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromToken } = this.swapsFormService.inputValue;
-
     this.gtmService.reloadGtmSession();
 
     this.tokensSelectorModalService
       .showDialog(this.formType, idPrefix)
-      .subscribe((selectedToken: TokenAmount) => {
-        if (selectedToken) {
-          const token = {
-            ...selectedToken,
-            amount: selectedToken?.amount?.isFinite()
-              ? selectedToken.amount
-              : fromToken?.amount || new BigNumber(NaN)
-          };
-          this.selectedToken = token;
+      .subscribe((asset: FromAsset) => {
+        if (asset) {
+          this.selectedAsset = asset;
           const inputElement = this.document.getElementById('token-amount-input-element');
-          const isToAmountEmpty = !this.swapsFormService?.inputValue?.fromAmount?.isFinite();
+          const isFromAmountEmpty = !this.swapsFormService.inputValue.fromAmount?.isFinite();
 
-          if (inputElement && isToAmountEmpty) {
+          if (inputElement && isFromAmountEmpty) {
             setTimeout(() => {
               inputElement.focus();
             }, 0);
@@ -108,13 +100,13 @@ export class SelectAssetButtonComponent implements OnInit {
 
           if (this.formType === 'from') {
             this.swapsFormService.inputControl.patchValue({
-              fromBlockchain: token.blockchain,
-              fromToken: token
+              fromAssetType: isMinimalToken(asset) ? asset.blockchain : 'fiat',
+              fromAsset: asset
             });
           } else {
             this.swapsFormService.inputControl.patchValue({
-              toToken: token,
-              toBlockchain: token.blockchain
+              toToken: asset as TokenAmount,
+              toBlockchain: (asset as TokenAmount).blockchain
             });
           }
         }

@@ -34,7 +34,7 @@ export class BestTradePanelComponent {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
-    private readonly formService: SwapsFormService,
+    private readonly swapFormService: SwapsFormService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Self() protected readonly destroy$: TuiDestroyService
   ) {
@@ -42,7 +42,7 @@ export class BestTradePanelComponent {
   }
 
   private formSubscribe(): void {
-    this.formService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.expanded = false;
     });
   }

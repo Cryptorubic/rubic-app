@@ -65,7 +65,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
+import { SwapFormInputTokens } from '@features/swaps/core/services/swaps-form-service/models/swap-form-tokens';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -171,11 +171,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public get allowTrade(): boolean {
-    const form = this.swapsFormService.inputValue;
+    const form = this.instantTradeService.inputValue;
 
     return Boolean(
-      form.fromBlockchain &&
-        form.fromToken &&
+      form.fromAssetType &&
+        form.fromAsset &&
         form.toBlockchain &&
         form.toToken &&
         form.fromAmount?.gt(0)
@@ -203,7 +203,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    public readonly swapsFormService: SwapsFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
@@ -227,13 +227,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.swapsFormService.inputValue$
+    this.instantTradeService.inputValue$
       .pipe(
         distinctUntilChanged((prev, next) => {
           return (
             prev.toBlockchain === next.toBlockchain &&
-            prev.fromBlockchain === next.fromBlockchain &&
-            prev.fromToken?.address === next.fromToken?.address &&
+            prev.fromAssetType === next.fromAssetType &&
+            prev.fromAsset?.address === next.fromAsset?.address &&
             prev.toToken?.address === next.toToken?.address &&
             prev.fromAmount === next.fromAmount
           );
@@ -295,14 +295,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Updates values, taken from form, and starts recalculation.
    */
-  private setupSwapForm(form: SwapFormInput): void {
+  private setupSwapForm(form: SwapFormInputTokens): void {
     this.fromAmount = form.fromAmount;
-    this.fromToken = form.fromToken;
+    this.fromToken = form.fromAsset;
     this.toToken = form.toToken;
     this.toBlockchain = form.toBlockchain;
 
     if (
-      !this.isSupportedOnChainNetwork(form.fromBlockchain) &&
+      !this.isSupportedOnChainNetwork(form.fromAssetType) &&
       this.fromAmount &&
       this.fromAmount.gt(0)
     ) {
@@ -314,11 +314,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.ethWethTrade = this.instantTradeService.getEthWethTrade();
     this.allowRefreshChange.emit(!this.ethWethTrade);
 
-    if (
-      this.currentBlockchain !== form.fromBlockchain &&
-      form.fromBlockchain === form.toBlockchain
-    ) {
-      this.currentBlockchain = form.fromBlockchain;
+    if (this.currentBlockchain !== form.fromAssetType && form.fromAssetType === form.toBlockchain) {
+      this.currentBlockchain = form.fromAssetType;
       const isSuccessful = this.initiateProviders(this.currentBlockchain);
       if (!isSuccessful) {
         return;
@@ -341,9 +338,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
-    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+    const { fromAssetType, toBlockchain } = this.instantTradeService.inputValue;
     if (
-      fromBlockchain !== toBlockchain ||
+      fromAssetType !== toBlockchain ||
       !this.isSupportedOnChainNetwork(this.currentBlockchain as SupportedOnChainNetworks) ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
@@ -363,7 +360,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         filter(type => type === 'normal'),
         debounceTime(200),
         switchMap(() => {
-          if (!this.allowTrade) {
+          if (!this.swapsFormService.isFilled) {
             this.setTradeStateIsNotAllowed();
             return of(null);
           }
@@ -576,7 +573,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       .pipe(
         filter(type => type === 'hidden' && Boolean(this.authService.userAddress)),
         switchMap(() => {
-          if (!this.allowTrade) {
+          if (!this.swapsFormService.isFilled) {
             return of(null);
           }
 

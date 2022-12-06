@@ -74,8 +74,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      this.fromToken = form.fromToken;
+    this.crossChainFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      this.fromToken = form.fromAsset;
       this.toToken = form.toToken;
 
       this.cdr.markForCheck();
@@ -95,14 +95,14 @@ export class CrossChainSwapInfoComponent implements OnInit {
             return of(null);
           }
 
-          const { fromBlockchain } = this.swapsFormService.inputValue;
-          return from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)).pipe(
+          const { fromAssetType } = this.crossChainFormService.inputValue;
+          return from(this.tokensService.getNativeCoinPriceInUsd(fromAssetType)).pipe(
             map(nativeCoinPrice => {
               const tokens = this.tokensService.tokens;
 
               const nativeToken = tokens.find(
                 token =>
-                  token.blockchain === fromBlockchain &&
+                  token.blockchain === fromAssetType &&
                   Web3Pure[SdkBlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(
                     token.address
                   )

@@ -6,9 +6,9 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
-import { first, map, startWith } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Component({
@@ -24,13 +24,6 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
-  public get fromBlockchain$(): Observable<BlockchainName> {
-    return this.swapsFormService.inputValue$.pipe(
-      startWith(this.swapsFormService.inputValue),
-      map(form => form.fromBlockchain)
-    );
-  }
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapButtonContainerService: SwapButtonContainerService,
@@ -42,7 +35,8 @@ export class ErrorButtonComponent {
   ) {}
 
   public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {
-    const { fromBlockchain } = this.swapsFormService.inputValue;
+    const { fromAssetType } = this.swapsFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
     if (
       err !== BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN ||
       !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
@@ -57,7 +51,8 @@ export class ErrorButtonComponent {
   }
 
   public async changeNetwork(): Promise<void> {
-    const { fromBlockchain } = this.swapsFormService.inputValue;
+    const { fromAssetType } = this.swapsFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
     if (!BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
       return;
     }

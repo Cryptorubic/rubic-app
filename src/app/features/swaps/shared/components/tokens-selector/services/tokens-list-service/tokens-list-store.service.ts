@@ -9,7 +9,7 @@ import {
   timer
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/tokens-selector/services/search-query-service/search-query.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
@@ -26,6 +26,8 @@ import { Token } from '@shared/models/tokens/token';
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { isMinimalToken } from '@shared/utils/is-token';
+import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class TokensListStoreService {
@@ -74,7 +76,7 @@ export class TokensListStoreService {
     return this.searchQueryService.query;
   }
 
-  private get blockchain(): BlockchainName {
+  private get blockchain(): FromAssetType {
     return this.tokensSelectorService.blockchain;
   }
 
@@ -190,7 +192,7 @@ export class TokensListStoreService {
    * Fetches tokens form backend by search query.
    */
   private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
-    if (!this.searchQuery) {
+    if (!this.searchQuery || !BlockchainsInfo.isBlockchainName(this.blockchain)) {
       return of([]);
     }
 
@@ -217,7 +219,7 @@ export class TokensListStoreService {
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     try {
-      if (this.searchQuery) {
+      if (this.searchQuery && BlockchainsInfo.isBlockchainName(this.blockchain)) {
         const token = await SdkToken.createToken({
           blockchain: this.blockchain,
           address: this.searchQuery.toLowerCase()
@@ -356,9 +358,10 @@ export class TokensListStoreService {
     return !oppositeToken || !compareTokens(oppositeToken, token);
   }
 
-  private oppositeToken(): Token {
-    const oppositeTokenType =
-      this.tokensSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
-    return this.swapsFormService.inputValue[oppositeTokenType];
+  private oppositeToken(): Token | null {
+    const oppositeAssetTypeKey =
+      this.tokensSelectorService.formType === 'from' ? 'toToken' : 'fromAsset';
+    const oppositeAsset = this.swapsFormService.inputValue[oppositeAssetTypeKey];
+    return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
   }
 }

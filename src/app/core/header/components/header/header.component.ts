@@ -133,9 +133,9 @@ export class HeaderComponent implements AfterViewInit {
 
   public async navigateToSwaps(): Promise<void> {
     const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAsset: null,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      fromToken: null,
       toToken: null,
       fromAmount: null
     } as SwapFormInput;

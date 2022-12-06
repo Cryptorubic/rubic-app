@@ -31,6 +31,7 @@ export class TargetNetworkAddressService {
       this.swapsFormService.toBlockchain$
     ]).subscribe(([from, to]) => {
       const isAddressRequired =
+        from &&
         from !== to &&
         blockchainRequiresAddress.some(blockchain => blockchain === from || blockchain === to);
       this._isAddressRequired$.next(isAddressRequired);

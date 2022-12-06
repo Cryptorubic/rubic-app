@@ -1,6 +1,7 @@
 import { BlockchainName } from 'rubic-sdk';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
+import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 
 export type AdditionalTokens =
   | 'eth_tokens'
@@ -14,7 +15,7 @@ export type AdditionalTokens =
 interface AllQueryParams {
   from: string;
   to: string;
-  fromChain: BlockchainName;
+  fromChain: FromAssetType;
   toChain: BlockchainName;
   amount: string;
 

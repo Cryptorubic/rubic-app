@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { compareObjects, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
+import { BlockchainName } from 'rubic-sdk';
 
 @Component({
   selector: 'app-target-network-address',
@@ -20,7 +21,7 @@ import { TuiNotification } from '@taiga-ui/core';
 export class TargetNetworkAddressComponent implements OnInit {
   public readonly address = new FormControl<string>(undefined, [
     correctAddressValidator(
-      this.swapsFormService.inputValue.fromBlockchain,
+      this.swapsFormService.inputValue.fromAssetType as BlockchainName,
       this.swapsFormService.inputValue.toBlockchain
     )
   ]);
@@ -42,10 +43,10 @@ export class TargetNetworkAddressComponent implements OnInit {
   private subscribeOnFormValues(): void {
     this.swapsFormService.inputValue$
       .pipe(
-        filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
+        filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareObjects(prev.fromToken, curr.fromToken) &&
+            compareObjects(prev.fromAsset, curr.fromAsset) &&
             compareObjects(prev.toToken, curr.toToken)
           );
         })

@@ -123,9 +123,9 @@ export class BuyTokenComponent {
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
         this.swapsFormService.inputControl.patchValue({
-          fromToken,
+          fromAsset: fromToken,
           toToken,
-          fromBlockchain: fromToken.blockchain,
+          fromAssetType: fromToken.blockchain,
           toBlockchain: toToken.blockchain,
           fromAmount:
             this.tokensType === 'default'

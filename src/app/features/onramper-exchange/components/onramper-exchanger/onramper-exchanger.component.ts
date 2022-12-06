@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure } from 'rubic-sdk';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
 import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
-import BigNumber from 'bignumber.js';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
@@ -65,17 +64,17 @@ export class OnramperExchangerComponent {
           this.isWidgetOpened = false;
           this.cdr.detectChanges();
         } else {
-          const blockchain = toToken.blockchain;
-          const nativeToken = this.tokensService.tokens.find(
-            token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
-          );
-          this.swapsFormService.inputControl.patchValue({
-            fromBlockchain: blockchain,
-            toBlockchain: blockchain,
-            fromToken: nativeToken,
-            toToken,
-            fromAmount: new BigNumber(info.out_amount).minus(0.01)
-          });
+          // const blockchain = toToken.blockchain;
+          // const nativeToken = this.tokensService.tokens.find(
+          //   token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
+          // );
+          // this.swapsFormService.inputControl.patchValue({
+          //   fromBlockchain: blockchain,
+          //   toBlockchain: blockchain,
+          //   fromToken: nativeToken,
+          //   toToken,
+          //   fromAmount: new BigNumber(info.out_amount).minus(0.01)
+          // });
 
           this.router.navigate(['/']);
         }

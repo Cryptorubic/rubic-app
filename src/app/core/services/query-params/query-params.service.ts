@@ -104,9 +104,9 @@ export class QueryParamsService {
   ) {
     this.swapsFormService.inputValue$.pipe(skip(1)).subscribe(value => {
       this.setQueryParams({
-        ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
+        ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
-        ...(value.fromBlockchain && { fromChain: value.fromBlockchain }),
+        ...(value.fromAssetType && { fromChain: value.fromAssetType }),
         ...(value.toBlockchain && { toChain: value.toBlockchain }),
         ...(value.fromAmount &&
           !value.fromAmount?.eq(0) &&
@@ -153,14 +153,12 @@ export class QueryParamsService {
           )
         ),
         mergeMap(({ tokens, protectedParams }) => {
-          const fromBlockchain = protectedParams.fromChain;
+          const fromAssetType = protectedParams.fromChain;
           const toBlockchain = protectedParams.toChain;
 
-          const findFromToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
-            protectedParams?.from,
-            fromBlockchain
-          );
+          const findFromToken$ = BlockchainsInfo.isBlockchainName(fromAssetType)
+            ? this.getTokenBySymbolOrAddress(tokens, protectedParams?.from, fromAssetType)
+            : of(null);
           const findToToken$ = this.getTokenBySymbolOrAddress(
             tokens,
             protectedParams?.to,
@@ -169,21 +167,21 @@ export class QueryParamsService {
 
           return forkJoin([findFromToken$, findToToken$]).pipe(
             map(([fromToken, toToken]) => ({
-              fromToken,
+              fromAsset: fromToken,
               toToken,
-              fromBlockchain,
+              fromAssetType,
               toBlockchain,
               protectedParams
             }))
           );
         })
       )
-      .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
+      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, protectedParams }) => {
         this.gtmService.needTrackFormEventsNow = false;
         this.swapsFormService.inputControl.patchValue({
-          fromBlockchain,
+          fromAssetType,
           toBlockchain,
-          ...(fromToken && { fromToken }),
+          ...(fromAsset && { fromAsset }),
           ...(toToken && { toToken }),
           ...(protectedParams.amount !== undefined && {
             fromAmount: new BigNumber(protectedParams.amount)
@@ -193,12 +191,12 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    const blockchainNames = Object.values(BLOCKCHAIN_NAME);
-    const fromChain = blockchainNames.includes(queryParams?.fromChain)
-      ? queryParams.fromChain
-      : this.swapsFormService.inputValue.fromBlockchain || DEFAULT_PARAMETERS.swap.fromChain;
+    const fromChain =
+      BlockchainsInfo.isBlockchainName(queryParams?.fromChain) || queryParams?.fromChain === 'fiat'
+        ? queryParams.fromChain
+        : this.swapsFormService.inputValue.fromAssetType || DEFAULT_PARAMETERS.swap.fromChain;
 
-    const toChain = blockchainNames.includes(queryParams?.toChain)
+    const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
       ? queryParams.toChain
       : DEFAULT_PARAMETERS.swap.toChain;
 
