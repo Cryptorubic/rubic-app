@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { filter, pairwise } from 'rxjs/operators';
+import { filter, pairwise, startWith } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
@@ -67,24 +67,26 @@ export class SwapsService {
   }
 
   private subscribeOnForm(): void {
-    this.swapFormService.inputValue$.pipe(pairwise()).subscribe(([prevForm, curForm]) => {
-      this.setSwapProviderType(curForm);
+    this.swapFormService.inputValue$
+      .pipe(startWith(null), pairwise())
+      .subscribe(([prevForm, curForm]) => {
+        this.setSwapProviderType(curForm);
 
-      if (
-        (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-          curForm.fromToken) ||
-        (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
-      ) {
-        this.updateTokensPrices(curForm);
-      }
+        if (
+          (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+            curForm.fromToken) ||
+          (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
+        ) {
+          this.updateTokensPrices(curForm);
+        }
 
-      if (
-        !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
-        curForm.fromToken
-      ) {
-        this.updateTokenBalance(curForm.fromToken);
-      }
-    });
+        if (
+          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+          curForm.fromToken
+        ) {
+          this.updateTokenBalance(curForm.fromToken);
+        }
+      });
   }
 
   private setSwapProviderType(form: SwapFormInput): void {
