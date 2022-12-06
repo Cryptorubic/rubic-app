@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { OnRefreshData } from '@features/swaps/core/services/refresh-service/models/on-refresh-data';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()
@@ -40,8 +40,8 @@ export class RefreshService {
    */
   private isRefreshing = false;
 
-  constructor(private readonly swapsFormService: SwapsFormService) {
-    this.swapsFormService.isFilled$.pipe(distinctUntilChanged()).subscribe(isFilled => {
+  constructor(private readonly swapFormService: SwapFormService) {
+    this.swapFormService.isFilled$.pipe(distinctUntilChanged()).subscribe(isFilled => {
       if (!isFilled) {
         this._status$.next(REFRESH_STATUS.STOPPED);
         clearTimeout(this.timeoutId);

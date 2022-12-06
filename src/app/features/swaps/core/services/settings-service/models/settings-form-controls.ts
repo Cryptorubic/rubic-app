@@ -1,4 +1,4 @@
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { FormControl, FormGroup } from '@angular/forms';
 
 export interface ItSettingsForm {

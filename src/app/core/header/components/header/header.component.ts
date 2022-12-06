@@ -21,9 +21,9 @@ import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -80,7 +80,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
@@ -150,7 +150,7 @@ export class HeaderComponent implements AfterViewInit {
 
     this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
-    this.swapsFormService.inputControl.patchValue(params);
+    this.swapFormService.inputControl.patchValue(params);
     this.gtmService.reloadGtmSession();
     await this.router.navigate(['/'], { queryParams, queryParamsHandling: 'merge' });
   }

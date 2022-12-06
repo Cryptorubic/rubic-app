@@ -15,7 +15,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { SwapFormInput } from '@app/features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 import { FromAsset } from '@features/swaps/shared/models/form/asset';
@@ -52,14 +52,14 @@ export class SelectAssetButtonComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public ngOnInit(): void {
-    this.setFormValues(this.swapsFormService.inputValue);
-    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
+    this.setFormValues(this.swapFormService.inputValue);
+    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
 
@@ -90,7 +90,7 @@ export class SelectAssetButtonComponent implements OnInit {
         if (asset) {
           this.selectedAsset = asset;
           const inputElement = this.document.getElementById('token-amount-input-element');
-          const isFromAmountEmpty = !this.swapsFormService.inputValue.fromAmount?.isFinite();
+          const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
 
           if (inputElement && isFromAmountEmpty) {
             setTimeout(() => {
@@ -99,12 +99,12 @@ export class SelectAssetButtonComponent implements OnInit {
           }
 
           if (this.formType === 'from') {
-            this.swapsFormService.inputControl.patchValue({
+            this.swapFormService.inputControl.patchValue({
               fromAssetType: isMinimalToken(asset) ? asset.blockchain : 'fiat',
               fromAsset: asset
             });
           } else {
-            this.swapsFormService.inputControl.patchValue({
+            this.swapFormService.inputControl.patchValue({
               toToken: asset as TokenAmount,
               toBlockchain: (asset as TokenAmount).blockchain
             });

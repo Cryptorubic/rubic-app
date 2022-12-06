@@ -25,7 +25,7 @@ import {
   UnsupportedReceiverAddressError
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
@@ -36,7 +36,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -202,7 +202,7 @@ export class CrossChainFormService {
   private refreshServiceCallsCounter = 0;
 
   public get inputValue(): SwapFormInputTokens {
-    const inputForm = this.swapsFormService.inputValue;
+    const inputForm = this.swapFormService.inputValue;
     if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
       throw new RubicError('Cannot use instant trades');
     }
@@ -210,7 +210,7 @@ export class CrossChainFormService {
   }
 
   public get inputValue$(): Observable<SwapFormInputTokens> {
-    return this.swapsFormService.inputValue$.pipe(
+    return this.swapFormService.inputValue$.pipe(
       filter(
         inputForm =>
           inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
@@ -221,7 +221,7 @@ export class CrossChainFormService {
   }
 
   constructor(
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
@@ -257,10 +257,10 @@ export class CrossChainFormService {
       .pipe(
         debounceTime(200),
         map(calculateData => {
-          if (calculateData.stop || !this.swapsFormService.isFilled) {
+          if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
             this.refreshService.setStopped();
-            this.swapsFormService.outputControl.patchValue({
+            this.swapFormService.outputControl.patchValue({
               toAmount: new BigNumber(NaN)
             });
 
@@ -480,7 +480,7 @@ export class CrossChainFormService {
     this.updatedSelectedTrade = null;
 
     if (taggedTrade?.trade?.to.tokenAmount.gt(0)) {
-      this.swapsFormService.outputControl.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: taggedTrade.trade.to.tokenAmount
       });
 
@@ -499,7 +499,7 @@ export class CrossChainFormService {
         }, 10_000_000);
       }
     } else {
-      this.swapsFormService.outputControl.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: new BigNumber(NaN)
       });
 

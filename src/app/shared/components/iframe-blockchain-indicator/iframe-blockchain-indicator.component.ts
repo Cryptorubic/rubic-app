@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { getBlockchainItem } from '@features/swaps/features/swaps-form/utils/get-blockchain-item';
-import { BlockchainItem } from '@features/swaps/features/swaps-form/models/blockchain-item';
+import { getBlockchainItem } from '@features/swaps/features/swap-form/utils/get-blockchain-item';
+import { BlockchainItem } from '@features/swaps/features/swap-form/models/blockchain-item';
 import { BlockchainName } from 'rubic-sdk';
 
 @Component({

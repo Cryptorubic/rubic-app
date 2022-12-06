@@ -7,7 +7,7 @@ import { OnramperTransactionStatus } from '@features/onramper-exchange/services/
 import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure } from 'rubic-sdk';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
@@ -32,7 +32,7 @@ export class OnramperExchangerComponent {
     private readonly exchangerFormService: ExchangerFormService,
     private readonly exchangerWebsocketService: ExchangerWebsocketService,
     private readonly router: Router,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     private readonly tokensService: TokensService
   ) {
@@ -68,7 +68,7 @@ export class OnramperExchangerComponent {
           // const nativeToken = this.tokensService.tokens.find(
           //   token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
           // );
-          // this.swapsFormService.inputControl.patchValue({
+          // this.swapFormService.inputControl.patchValue({
           //   fromBlockchain: blockchain,
           //   toBlockchain: blockchain,
           //   fromToken: nativeToken,

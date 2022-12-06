@@ -5,7 +5,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class TokensSelectorService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapFormService: SwapFormService
   ) {
     this.subscribeOnBlockchainChange();
   }
@@ -56,7 +56,7 @@ export class TokensSelectorService {
     this._formType = context.formType;
 
     const blockchainType = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
-    this.blockchain = this.swapsFormService.inputValue[blockchainType];
+    this.blockchain = this.swapFormService.inputValue[blockchainType];
   }
 
   private subscribeOnBlockchainChange(): void {
@@ -66,10 +66,10 @@ export class TokensSelectorService {
       }
 
       const tokenType = this.formType === 'from' ? 'fromAsset' : 'toToken';
-      if (!this.swapsFormService.inputValue[tokenType]) {
+      if (!this.swapFormService.inputValue[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
-        if (this.swapsFormService.inputValue[blockchainType] !== blockchain) {
-          this.swapsFormService.inputControl.patchValue({
+        if (this.swapFormService.inputValue[blockchainType] !== blockchain) {
+          this.swapFormService.inputControl.patchValue({
             [blockchainType]: this.blockchain
           });
         }

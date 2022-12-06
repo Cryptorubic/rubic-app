@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { correctAddressValidator } from './services/utils/correct-address-validator';
@@ -21,16 +21,16 @@ import { BlockchainName } from 'rubic-sdk';
 export class TargetNetworkAddressComponent implements OnInit {
   public readonly address = new FormControl<string>(undefined, [
     correctAddressValidator(
-      this.swapsFormService.inputValue.fromAssetType as BlockchainName,
-      this.swapsFormService.inputValue.toBlockchain
+      this.swapFormService.inputValue.fromAssetType as BlockchainName,
+      this.swapFormService.inputValue.toBlockchain
     )
   ]);
 
-  public toBlockchain$ = this.swapsFormService.toBlockchain$;
+  public toBlockchain$ = this.swapFormService.toBlockchain$;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
@@ -41,7 +41,7 @@ export class TargetNetworkAddressComponent implements OnInit {
   }
 
   private subscribeOnFormValues(): void {
-    this.swapsFormService.inputValue$
+    this.swapFormService.inputValue$
       .pipe(
         filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {

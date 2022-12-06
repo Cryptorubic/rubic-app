@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -48,12 +48,12 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
@@ -203,7 +203,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
@@ -244,7 +244,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.setupSwapForm(form);
       });
 
-    this.swapsFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
+    this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
       if (
         TokensService.areTokensEqual(this.toToken, toToken) &&
         this.toToken?.price !== toToken?.price
@@ -360,7 +360,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         filter(type => type === 'normal'),
         debounceTime(200),
         switchMap(() => {
-          if (!this.swapsFormService.isFilled) {
+          if (!this.swapFormService.isFilled) {
             this.setTradeStateIsNotAllowed();
             return of(null);
           }
@@ -406,7 +406,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.selectedProvider = null;
     this.isTradeSelectedByUser = false;
 
-    this.swapsFormService.outputControl.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: new BigNumber(NaN)
     });
   }
@@ -418,7 +418,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.needApprove = false;
     this.withApproveButton = this.needApprove;
 
-    this.swapsFormService.outputControl.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.fromAmount
     });
   }
@@ -498,7 +498,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
 
-      this.swapsFormService.outputControl.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: this.selectedProvider.trade.to.tokenAmount
       });
       this.cdr.detectChanges();
@@ -573,7 +573,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       .pipe(
         filter(type => type === 'hidden' && Boolean(this.authService.userAddress)),
         switchMap(() => {
-          if (!this.swapsFormService.isFilled) {
+          if (!this.swapFormService.isFilled) {
             return of(null);
           }
 
@@ -628,7 +628,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
     }
-    this.swapsFormService.outputControl.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.selectedProvider.trade.to.tokenAmount
     });
 

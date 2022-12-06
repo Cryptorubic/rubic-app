@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
 
 @Injectable()
@@ -21,14 +21,14 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressValid$ = this._isAddressValid$.asObservable();
 
-  constructor(private readonly swapsFormService: SwapsFormService) {
+  constructor(private readonly swapFormService: SwapFormService) {
     this.watchIsAddressRequired();
   }
 
   private watchIsAddressRequired(): void {
     combineLatest([
-      this.swapsFormService.fromBlockchain$,
-      this.swapsFormService.toBlockchain$
+      this.swapFormService.fromBlockchain$,
+      this.swapFormService.toBlockchain$
     ]).subscribe(([from, to]) => {
       const isAddressRequired =
         from &&

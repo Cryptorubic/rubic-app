@@ -25,7 +25,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 
@@ -90,7 +90,7 @@ export class TokensListStoreService {
     private readonly tokensService: TokensService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly httpClient: HttpClient,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapFormService: SwapFormService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -361,7 +361,7 @@ export class TokensListStoreService {
   private oppositeToken(): Token | null {
     const oppositeAssetTypeKey =
       this.tokensSelectorService.formType === 'from' ? 'toToken' : 'fromAsset';
-    const oppositeAsset = this.swapsFormService.inputValue[oppositeAssetTypeKey];
+    const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
   }
 }

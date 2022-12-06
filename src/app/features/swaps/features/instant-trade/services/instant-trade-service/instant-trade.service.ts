@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import {
   firstValueFrom,
   interval,
@@ -12,7 +12,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
@@ -81,7 +81,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public get inputValue(): SwapFormInputTokens {
-    const inputForm = this.swapsFormService.inputValue;
+    const inputForm = this.swapFormService.inputValue;
     if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
       throw new RubicError('Cannot use instant trades');
     }
@@ -89,7 +89,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public get inputValue$(): Observable<SwapFormInputTokens> {
-    return this.swapsFormService.inputValue$.pipe(
+    return this.swapFormService.inputValue$.pipe(
       filter(
         inputForm =>
           inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
@@ -104,7 +104,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly sdk: RubicSdkService,
     private readonly authService: AuthService,

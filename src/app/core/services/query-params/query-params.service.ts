@@ -13,7 +13,7 @@ import {
 import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
@@ -93,7 +93,7 @@ export class QueryParamsService {
     private readonly tokensService: TokensService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
@@ -102,7 +102,7 @@ export class QueryParamsService {
     private readonly settingsService: SettingsService,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    this.swapsFormService.inputValue$.pipe(skip(1)).subscribe(value => {
+    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
       this.setQueryParams({
         ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
@@ -178,7 +178,7 @@ export class QueryParamsService {
       )
       .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, protectedParams }) => {
         this.gtmService.needTrackFormEventsNow = false;
-        this.swapsFormService.inputControl.patchValue({
+        this.swapFormService.inputControl.patchValue({
           fromAssetType,
           toBlockchain,
           ...(fromAsset && { fromAsset }),
@@ -194,7 +194,7 @@ export class QueryParamsService {
     const fromChain =
       BlockchainsInfo.isBlockchainName(queryParams?.fromChain) || queryParams?.fromChain === 'fiat'
         ? queryParams.fromChain
-        : this.swapsFormService.inputValue.fromAssetType || DEFAULT_PARAMETERS.swap.fromChain;
+        : this.swapFormService.inputValue.fromAssetType || DEFAULT_PARAMETERS.swap.fromChain;
 
     const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
       ? queryParams.toChain

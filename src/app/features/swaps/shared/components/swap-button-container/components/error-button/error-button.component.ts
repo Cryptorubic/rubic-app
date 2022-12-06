@@ -5,7 +5,7 @@ import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { first } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom } from 'rxjs';
@@ -30,12 +30,12 @@ export class ErrorButtonComponent {
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly sdkService: RubicSdkService
   ) {}
 
   public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {
-    const { fromAssetType } = this.swapsFormService.inputValue;
+    const { fromAssetType } = this.swapFormService.inputValue;
     const fromBlockchain = fromAssetType as BlockchainName;
     if (
       err !== BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN ||
@@ -51,7 +51,7 @@ export class ErrorButtonComponent {
   }
 
   public async changeNetwork(): Promise<void> {
-    const { fromAssetType } = this.swapsFormService.inputValue;
+    const { fromAssetType } = this.swapFormService.inputValue;
     const fromBlockchain = fromAssetType as BlockchainName;
     if (!BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
       return;

@@ -5,7 +5,7 @@ import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { fakeProviders } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/constants/fake-providers';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { getRandomNumber } from '@features/swaps/shared/utils/get-random-number';
-import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swaps-form-service/swap-form.service';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 @Component({
@@ -24,7 +24,7 @@ export class TradesCounterComponent {
   public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
 
   public readonly displayCounter$ = combineLatest([
-    this.swapsFormService.isFilled$,
+    this.swapFormService.isFilled$,
     this.crossChainFormService.isCalculating$
   ]).pipe(
     distinctObjectUntilChanged(),
@@ -69,6 +69,6 @@ export class TradesCounterComponent {
 
   constructor(
     private readonly crossChainFormService: CrossChainFormService,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapFormService: SwapFormService
   ) {}
 }
