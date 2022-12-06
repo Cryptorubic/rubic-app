@@ -5,14 +5,12 @@ import {
   Inject,
   OnDestroy,
   OnInit,
-  Self,
-  ViewChild
+  Self
 } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, skip, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokensListComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/tokens-list.component';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { FiatItem } from '@features/onramper-exchange/models/fiat-item';
@@ -28,8 +26,6 @@ type ComponentContext = TuiDialogContext<FiatItem, {}>;
   providers: [TuiDestroyService]
 })
 export class FiatsSelectorComponent implements OnInit, OnDestroy {
-  @ViewChild(TokensListComponent) private tokensList: TokensListComponent;
-
   public fiatsToShow: FiatItem[] = fiats;
 
   private readonly searchQuery$: BehaviorSubject<string> = new BehaviorSubject('');

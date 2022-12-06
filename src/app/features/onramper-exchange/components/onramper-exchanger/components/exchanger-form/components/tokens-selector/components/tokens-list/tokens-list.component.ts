@@ -18,13 +18,13 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PaginatedPage } from '@shared/models/tokens/paginated-tokens';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
-import { LIST_ANIMATION } from '@features/swaps/shared/components/tokens-select/components/tokens-list/animations/list-animation';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
+import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
+import { LIST_ANIMATION } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/components/tokens-list/animations/list-animation';
 
 @Component({
   selector: 'app-tokens-list',

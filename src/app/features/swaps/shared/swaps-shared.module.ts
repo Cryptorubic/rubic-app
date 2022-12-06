@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { TokensRateComponent } from '@features/swaps/shared/components/tokens-rate/tokens-rate.component';
-import { ToAmountEstimatedComponent } from '@features/swaps/shared/components/token-amount-estimated/to-amount-estimated.component';
+import { ToAmountEstimatedComponent } from '@features/swaps/shared/components/to-amount-estimated/to-amount-estimated.component';
 import { SharedModule } from '@shared/shared.module';
 import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';

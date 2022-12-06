@@ -26,15 +26,15 @@ import {
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { TokensListComponent } from '@features/swaps/shared/components/tokens-select/components/tokens-list/tokens-list.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 import { compareTokens } from '@shared/utils/utils';
-import { TokensListType } from '@features/swaps/shared/components/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
+import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
+import { TokensListComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/components/tokens-list/tokens-list.component';
 
 type ComponentContext = TuiDialogContext<TokenAmount, {}>;
 
@@ -171,16 +171,6 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.updateTokensList();
       });
-
-    this.tokensService.tokensNetworkState$
-      .pipe(
-        watch(this.cdr),
-        tap((tokensNetworkState: TokensNetworkState) => {
-          this.tokensNetworkState = tokensNetworkState;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
   }
 
   /**
@@ -369,7 +359,11 @@ export class TokensSelectorComponent implements OnInit, OnDestroy {
       [BLOCKCHAIN_NAME.KAVA]: 'kava',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis'
+      [BLOCKCHAIN_NAME.METIS]: 'metis',
+      [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
+      [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+      [BLOCKCHAIN_NAME.VELAS]: 'velas',
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
     };
 
     if (!blockchains[token.blockchain]) {

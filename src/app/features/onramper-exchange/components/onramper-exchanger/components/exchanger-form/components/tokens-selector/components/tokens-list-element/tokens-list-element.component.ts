@@ -55,7 +55,7 @@ export class TokensListElementComponent {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event, this.token);
+    this.tokensService.onTokenImageError($event);
   }
 
   /**
