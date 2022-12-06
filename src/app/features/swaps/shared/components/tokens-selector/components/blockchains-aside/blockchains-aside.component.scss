@@ -124,6 +124,8 @@
     tui-wrapper {
       --tui-primary: var(--main-background);
 
+      padding: 0 !important;
+
       &:hover {
         background: var(--rubic-secondary);
       }
@@ -133,9 +135,13 @@
 
 @include b($mobile-md-minus) {
   .blockchain-aside {
+    display: flex;
+    align-items: unset;
+    justify-content: center;
+
     width: 95px;
     height: 100%;
-    padding: 0;
+    padding: 14px 0 0;
 
     border-radius: unset;
 
@@ -144,13 +150,48 @@
       flex-direction: column;
       align-items: center;
 
-      margin: 0 auto;
-
       li:not(:last-child) {
         @include iframe {
           margin-right: 15px;
           margin-bottom: unset;
         }
+      }
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .blockchain-aside {
+    width: 76px;
+
+    li {
+      ::ng-deep app-icon-button {
+        button {
+          width: 57px !important;
+          height: 52px !important;
+
+          .content {
+            justify-content: center;
+
+            img {
+              margin: 0;
+            }
+
+            div {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .open-selector {
+    width: 57px;
+
+    ::ng-deep app-rubic-button {
+      [tuiButton] {
+        height: 52px;
       }
     }
   }

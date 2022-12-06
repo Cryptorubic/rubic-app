@@ -174,13 +174,16 @@ tui-loader {
 }
 
 .tokens-scrollbar {
+
   height: 100%;
+  overflow-x: hidden !important;
 
   ::ng-deep {
     .cdk-virtual-scroll-content-wrapper {
+      width: 100%;
       padding-left: 24px;
 
-      @include b($mobile-md) {
+      @include b($mobile-sm-middle) {
         padding-left: 10px;
       }
     }

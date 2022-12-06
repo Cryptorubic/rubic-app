@@ -31,6 +31,10 @@ tui-dialog {
       height: 100%;
       padding: 1.5em 1.5em 0 !important;
 
+      @include b($mobile-sm-middle) {
+        padding: 0 !important;
+      }
+
       > section {
         height: 100%;
       }

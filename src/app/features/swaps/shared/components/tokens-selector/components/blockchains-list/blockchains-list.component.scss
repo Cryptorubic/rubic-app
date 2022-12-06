@@ -11,6 +11,10 @@
 
   &__back-button {
     margin: 21px 0 0 23px;
+
+    @include b($mobile-sm-middle) {
+      margin-left: 10px;
+    }
   }
 }
 

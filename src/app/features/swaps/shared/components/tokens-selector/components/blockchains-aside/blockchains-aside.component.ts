@@ -7,6 +7,7 @@ import { BlockchainsListService } from '@features/swaps/shared/components/tokens
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
+import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -23,14 +24,17 @@ export class BlockchainsAsideComponent {
 
   public readonly selectorListType$ = this.tokensSelectorService.selectorListType$;
 
-  public readonly shownBlockchainsAmount$ = this.windowWidthService.mobileMdMinus$.pipe(
-    map(isMobile => {
-      if (!isMobile) {
+  public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
+    map(windowSize => {
+      if (windowSize === WindowSize.DESKTOP) {
         return 9;
       }
 
       const asideHeight = this.window.innerHeight - 135;
-      return Math.floor(asideHeight / 82) - 1;
+      if (windowSize === WindowSize.MOBILE_MD_MINUS) {
+        return Math.floor(asideHeight / 82) - 1;
+      }
+      return Math.floor(asideHeight / 66) - 1;
     })
   );
 

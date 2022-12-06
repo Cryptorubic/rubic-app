@@ -144,3 +144,19 @@ tui-loader {
     }
   }
 }
+
+@include b($mobile-sm-middle) {
+  .tokens-selector {
+    padding: 1.5em 0 0 10px;
+
+    &__row {
+      padding-right: 10px;
+    }
+
+    &__content {
+      left: -10px;
+
+      width: calc(100% + 10px);
+    }
+  }
+}

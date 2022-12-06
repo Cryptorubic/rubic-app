@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   --tui-primary: #4aa956;
   --tui-font-text-s: normal 16px/20px var(--tui-font-text);
@@ -11,10 +13,20 @@
 
 tui-input {
   ::ng-deep {
+    input {
+      @include b($mobile-sm-middle) {
+        font-size: 14px !important;
+      }
+    }
+
     .placeholder {
       color: var(--form-dim-text-color);
 
       font-size: 16px;
+
+      @include b($mobile-sm-middle) {
+        font-size: 14px;
+      }
     }
 
     .wrapper {
