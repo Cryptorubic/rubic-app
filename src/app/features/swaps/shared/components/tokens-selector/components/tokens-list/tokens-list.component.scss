@@ -8,15 +8,16 @@ $token-card-height: 55px;
 
 .tokens-container {
   position: relative;
-  margin-right: 0;
+
+  height: calc(100% - 15px);
   margin-top: 15px;
 
   @include iframe {
     position: static;
     left: unset;
-    padding-top: 0;
 
     width: 100%;
+    padding-top: 0;
   }
 
   @include iframe-vertical {
@@ -29,11 +30,21 @@ $token-card-height: 55px;
 
   &__empty-list {
     position: relative;
+
     margin-top: 20px;
+  }
+
+  ::ng-deep .content {
+    height: 100%;
   }
 }
 
+tui-loader {
+  height: 100%;
+}
+
 .tokens-list {
+  height: 100%;
   padding-right: 15px;
 
   &__item {
@@ -67,7 +78,9 @@ $token-card-height: 55px;
     &_empty {
       display: flex;
       justify-content: center;
+
       margin-bottom: 20px;
+
       font-size: 18px;
 
       &:hover {
@@ -97,21 +110,20 @@ $token-card-height: 55px;
 
     cursor: pointer;
 
-    &:not(:last-child) {
-      margin-right: 15px;
-    }
-
-    &:hover {
-      background-color: var(--main-background);
-    }
-
-    /* stylelint-disable */
     @include light-iframe {
       border: 1px solid #e9e9e9;
 
       &:hover {
         background-color: var(--rubic-base-14);
       }
+    }
+
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+
+    &:hover {
+      background-color: var(--main-background);
     }
 
     &_disabled {
@@ -124,11 +136,13 @@ $token-card-height: 55px;
     }
 
     &_empty {
-      border: 0;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+
       font-size: 18px;
+
+      border: 0;
       cursor: default;
     
       &:hover {
@@ -160,7 +174,7 @@ $token-card-height: 55px;
 }
 
 .tokens-scrollbar {
-  height: 428px;
+  height: 100%;
 
   ::ng-deep {
     .cdk-virtual-scroll-content-wrapper {
@@ -170,24 +184,6 @@ $token-card-height: 55px;
         padding-left: 10px;
       }
     }
-  }
-}
-
-@include b($mobile-md) {
-  .tokens-container {
-    height: calc(100% - 15px);
-
-    ::ng-deep {
-      .content {
-        height: 100%;
-      }
-    }
-  }
-
-  tui-loader,
-  .tokens-list,
-  .tokens-scrollbar {
-    height: 100%;
   }
 }
 

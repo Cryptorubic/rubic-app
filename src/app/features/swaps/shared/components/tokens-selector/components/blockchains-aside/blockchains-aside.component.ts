@@ -30,7 +30,7 @@ export class BlockchainsAsideComponent {
       }
 
       const asideHeight = this.window.innerHeight - 135;
-      return Math.floor(asideHeight / 70) - 1;
+      return Math.floor(asideHeight / 82) - 1;
     })
   );
 

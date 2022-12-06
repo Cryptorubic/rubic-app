@@ -1,6 +1,9 @@
 @use 'src/scss/core' as *;
 
 .blockchain-aside {
+  display: flex;
+  align-items: center;
+
   width: 194px;
   height: 100%;
   padding: 14px 10px;
@@ -8,10 +11,6 @@
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;
   box-shadow: inset -2px 2px 3px 2px rgba(0, 0, 0, 0.1);
-
-  @include b($mobile-md-minus) {
-    height: 100%;
-  }
 
   @include iframe {
     left: unset;
@@ -136,7 +135,7 @@
   .blockchain-aside {
     width: 95px;
     height: 100%;
-    padding: 14px 0 0;
+    padding: 0;
 
     border-radius: unset;
 
@@ -145,8 +144,9 @@
       flex-direction: column;
       align-items: center;
 
-      li:not(:last-child) {
+      margin: 0 auto;
 
+      li:not(:last-child) {
         @include iframe {
           margin-right: 15px;
           margin-bottom: unset;

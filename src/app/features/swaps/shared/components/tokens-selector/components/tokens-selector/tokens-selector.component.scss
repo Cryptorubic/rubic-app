@@ -55,7 +55,7 @@
     flex: 1;
 
     width: calc(100% + 24px);
-    max-height: 443px;
+    min-height: 443px;
 
     @include iframe {
       left: 0;
@@ -99,17 +99,6 @@ tui-loader {
   width: 100%;
 }
 
-@include b($mobile-md-minus) {
-  .tokens-selector {
-    height: 100%;
-
-    &__content {
-      height: calc(100% - 100px);
-      max-height: calc(100vh - 117.5px);
-    }
-  }
-}
-
 .token-list-container {
   width: 100%;
 
@@ -143,4 +132,15 @@ tui-loader {
 
 .blockchains-list-container {
   width: 100%;
+}
+
+@include b($mobile-md-minus) {
+  .tokens-selector {
+    height: 100%;
+
+    &__content {
+      height: calc(100% - 100px);
+      max-height: calc(100vh - 117.5px);
+    }
+  }
 }
