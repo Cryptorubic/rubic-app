@@ -4,62 +4,41 @@ import {
   Component,
   Inject,
   Input,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
 import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
-import { BehaviorSubject } from 'rxjs';
-import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { takeUntil } from 'rxjs/operators';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { compareObjects } from 'src/app/shared/utils/utils';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
-import { SwapFormService } from '@app/features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
+import { FormType } from '@features/swaps/shared/models/form/form-type';
 
 @Component({
-  selector: 'app-rubic-tokens',
-  templateUrl: './rubic-tokens.component.html',
-  styleUrls: ['./rubic-tokens.component.scss'],
+  selector: 'app-select-asset-button-tokens',
+  templateUrl: './select-asset-button.component.html',
+  styleUrls: ['./select-asset-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class RubicTokensComponent implements OnInit {
+export class SelectAssetButtonComponent implements OnInit {
   @Input() loading: boolean;
 
-  @Input() formType: 'from' | 'to';
-
-  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
-
-  @Input() set tokens(value: AvailableTokenAmount[]) {
-    const deepEquality = compareObjects(value, this._tokens$.value);
-    if (!deepEquality) {
-      this._tokens$.next(value);
-    }
-  }
-
-  @Input() set favoriteTokens(value: AvailableTokenAmount[]) {
-    const deepEquality = compareObjects(value, this._favoriteTokens$.value);
-    if (!deepEquality) {
-      this._favoriteTokens$.next(value);
-    }
-  }
-
-  @Input() formService: FormService;
+  @Input() formType: FormType;
 
   @Input() disabled = false;
 
   @Input() idPrefix: string = '';
 
-  public ADDRESS_TYPE = ADDRESS_TYPE;
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   public selectedToken: Token;
 
@@ -67,27 +46,20 @@ export class RubicTokensComponent implements OnInit {
 
   public iframeForceDisabled = false;
 
-  private readonly _tokens$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject<
-    AvailableTokenAmount[]
-  >([]);
-
-  private readonly _favoriteTokens$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject<
-    AvailableTokenAmount[]
-  >([]);
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectorModalService: TokensSelectorModalService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly destroy$: TuiDestroyService,
+    private readonly swapFormService: SwapFormService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public ngOnInit(): void {
-    this.setFormValues(this.formService.inputValue);
-    this.formService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
+    this.setFormValues(this.swapFormService.inputValue);
+    this.swapFormService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
 
@@ -110,12 +82,12 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromToken } = this.formService.inputValue;
+    const { fromToken } = this.swapFormService.inputValue;
 
     this.gtmService.reloadGtmSession();
 
     this.tokensSelectorModalService
-      .showDialog(this.formType, this.formService.input, idPrefix)
+      .showDialog(this.formType, this.swapFormService.input, idPrefix)
       .subscribe((selectedToken: TokenAmount) => {
         if (selectedToken) {
           const token = {
@@ -126,24 +98,21 @@ export class RubicTokensComponent implements OnInit {
           };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
-          const isSwapsForm = this.formService instanceof SwapFormService;
-          const isToAmountEmpty = !(
-            this.formService as SwapFormService
-          )?.inputValue?.fromAmount?.isFinite();
+          const isToAmountEmpty = !this.swapFormService?.inputValue?.fromAmount?.isFinite();
 
-          if (inputElement && isSwapsForm && isToAmountEmpty) {
+          if (inputElement && isToAmountEmpty) {
             setTimeout(() => {
               inputElement.focus();
             }, 0);
           }
 
           if (this.formType === 'from') {
-            this.formService.input.patchValue({
+            this.swapFormService.input.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
-            this.formService.input.patchValue({
+            this.swapFormService.input.patchValue({
               toToken: token,
               toBlockchain: token.blockchain
             });

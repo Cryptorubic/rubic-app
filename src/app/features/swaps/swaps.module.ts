@@ -46,6 +46,7 @@ import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service
 import { RefreshButtonComponent } from '@features/swaps/features/swaps-form/components/refresh-button/refresh-button.component';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
     FormsModule,
     TuiLoaderModule,
     ClipboardModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    SwapsSharedModule
   ],
   providers: [SwapsService, SuccessTxModalService, RubicSdkService, RefreshService, TradeService]
 })

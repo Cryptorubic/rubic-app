@@ -1,16 +1,13 @@
 <div class="token-amount-input-container">
   <div class="token-amount-input-container__wrapper">
-    <app-rubic-tokens
+    <app-select-asset-button-tokens
       class="token-amount-input-container__token-button"
       [ngClass]="{
         'token-amount-input-container__token-button_attractive': !(selectedToken || loading)
       }"
       [loading]="loading"
       formType="from"
-      [tokens]="tokens"
-      [favoriteTokens]="favoriteTokens"
-      [formService]="swapFormService"
-    ></app-rubic-tokens>
+    ></app-select-asset-button-tokens>
 
     <app-user-balance-container
       *noFrame

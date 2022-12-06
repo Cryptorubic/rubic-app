@@ -27,7 +27,6 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
@@ -79,7 +78,6 @@ import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
-    RubicTokensComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -165,7 +163,6 @@ import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
     FalsyPipe,
     WithRoundPipe,
     SafetyLinkDirective,
-    RubicTokensComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,

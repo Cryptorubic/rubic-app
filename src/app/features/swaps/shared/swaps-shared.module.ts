@@ -10,19 +10,22 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/components/t
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
+import { SelectAssetButtonComponent } from '@features/swaps/shared/components/select-asset-button/select-asset-button.component';
 
 @NgModule({
   declarations: [
     ToAmountEstimatedComponent,
     TokensRateComponent,
     TargetNetworkAddressComponent,
-    SettingsWarningModalComponent
+    SettingsWarningModalComponent,
+    SelectAssetButtonComponent
   ],
   exports: [
     ToAmountEstimatedComponent,
     TokensRateComponent,
     TargetNetworkAddressComponent,
-    SettingsWarningModalComponent
+    SettingsWarningModalComponent,
+    SelectAssetButtonComponent
   ],
   imports: [
     CommonModule,
