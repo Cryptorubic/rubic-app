@@ -115,8 +115,8 @@ export class TokensListService {
   }
 
   private subscribeOnTokensToShow(): void {
-    let prevSearchQuery: string;
-    let prevListType: string;
+    let prevSearchQuery = this.searchQueryService.query;
+    let prevListType = this.listType;
 
     this.tokensListStoreService.tokensToShow$
       .pipe(pairwise())

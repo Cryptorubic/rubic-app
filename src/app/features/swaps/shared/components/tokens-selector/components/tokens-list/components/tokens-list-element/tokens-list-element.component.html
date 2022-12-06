@@ -8,44 +8,44 @@
     />
   </div>
 
-  <div class="token-card__name-container">
-    <span class="token-card__name-container-symbol"
-      >{{ token.symbol }}
+  <div class="token-card__name-amount-container">
+    <div class="token-card__name-container">
+      <div class="token-card__name-container-symbol">
+        {{ token.symbol }}
 
-      <span
-        class="token-card__name-container-copy-icon"
-        *ngIf="hintShown"
-        [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-        (click)="copyToClipboard($event)"
-        [tuiHint]="tokenAddressHint"
-        tuiHintMode="onDark"
-        tuiHintShowDelay="50"
-        tuiHintDirection="top-right"
-        tuiHintHideDelay="100"
-      ></span>
-
-      <ng-template #tokenAddressHint
-        ><span class="token-card__name-container-address-hint">{{
-          token.address
-        }}</span></ng-template
-      >
-
-      <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
         <span
-          class="token-card__name-container-copied-icon"
-          [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+          class="token-card__name-container-copy-icon"
+          *ngIf="hintShown"
+          [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+          (click)="copyToClipboard($event)"
+          [tuiHint]="tokenAddressHint"
+          tuiHintMode="onDark"
+          tuiHintShowDelay="50"
+          tuiHintDirection="top-right"
+          tuiHintHideDelay="100"
         ></span>
-        <span class="token-card__name-container-copied-text"> Copied </span>
-      </span>
-    </span>
-    <small>{{ token.name }}</small>
-  </div>
 
-  <div class="token-card__amount" *ngIf="token.amount.gt(0)">
-    <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
-      token.amount | bigNumberFormat | shortenAmount: (isHorizontalFrame ? 6 : 12):4
-    }}</span>
-    <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+        <ng-template #tokenAddressHint>
+          <span class="token-card__name-container-address-hint">{{ token.address }}</span>
+        </ng-template>
+
+        <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
+          <span
+            class="token-card__name-container-copied-icon"
+            [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+          ></span>
+          <span class="token-card__name-container-copied-text"> Copied </span>
+        </span>
+      </div>
+      <small>{{ token.name }}</small>
+    </div>
+
+    <div class="token-card__amount" *ngIf="token.amount.gt(0)">
+      <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
+        token.amount | bigNumberFormat | shortenAmount: 6:4
+      }}</span>
+      <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+    </div>
   </div>
 
   <tui-loader
