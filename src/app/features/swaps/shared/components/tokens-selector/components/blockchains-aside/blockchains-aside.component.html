@@ -1,0 +1,53 @@
+<aside class="blockchain-aside">
+  <tui-scrollbar class="blockchain-aside__scroll">
+    <ul
+      class="blockchain-aside__blockchains-list"
+      [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
+      *ngLet="selectedBlockchain$ | async as selectedBlockchain"
+    >
+      <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
+        <ng-container
+          *ngLet="shownBlockchainsAmount | functionCall: getBlockchainsList:this as blockchainsList"
+        >
+          <ng-container *ngFor="let blockchainItem of blockchainsList">
+            <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
+              <li
+                [id]="idPrefix + 'Network_' + blockchainItem.name"
+                [ngClass]="{ disabled: disabled }"
+                tuiHintMode="error"
+                [tuiHint]="blockchainItem | functionCall: getHintText:this"
+              >
+                <app-icon-button
+                  [icon]="blockchainItem.icon"
+                  [disabled]="selectedBlockchain === blockchainItem.name || disabled"
+                  [border]="selectedBlockchain === blockchainItem.name"
+                  [borderRadiusPercent]="50"
+                  [label]="blockchainItem.label"
+                  (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
+                >
+                </app-icon-button>
+              </li>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <li class="open-selector">
+          <app-rubic-button (onClick)="onSelectorSwitch()">
+            <ng-container *ngLet="selectorListType$ | async as selectorListType">
+              <div *ngIf="selectorListType === 'tokens'">
+                +{{ blockchainsAmount - shownBlockchainsAmount }}
+              </div>
+
+              <div *ngIf="selectorListType === 'blockchains'">
+                <div
+                  class="arrow-back"
+                  inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"
+                ></div>
+              </div>
+            </ng-container>
+          </app-rubic-button>
+        </li>
+      </ng-container>
+    </ul>
+  </tui-scrollbar>
+</aside>
