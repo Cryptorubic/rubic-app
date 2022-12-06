@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="info-line" *ngIf="withCryptoFee">
+<div class="info-line" *ngIf="feeInfo?.provider?.cryptoFee?.amount.gt(0)">
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img
@@ -26,12 +26,12 @@
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="isBridgers">
-      <ng-container>{{ feeInfo.platformFee.percent }}%</ng-container>
+    <ng-container *ngIf="feeInfo.provider?.platformFee?.percent">
+      <ng-container>{{ feeInfo.provider.platformFee.percent }}%</ng-container>
       <ng-container> + </ng-container>
     </ng-container>
-    {{ feeInfo.cryptoFee.amount | bigNumberFormat | withRound: 'toClosestValue' }}&nbsp;
-    {{ feeInfo.cryptoFee.tokenSymbol }}
+    {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | withRound: 'toClosestValue' }}&nbsp;
+    {{ feeInfo.provider.cryptoFee.tokenSymbol }}
   </div>
 </div>
 
@@ -46,16 +46,16 @@
   </div>
 
   <div class="info-line__value">
-    <ng-container *ngIf="!isBridgers && withPlatformFee">
-      {{ feeInfo.platformFee.percent }}%
+    <ng-container *ngIf="feeInfo?.rubicProxy?.platformFee?.percent">
+      {{ feeInfo.rubicProxy.platformFee.percent }}%
     </ng-container>
-    <ng-container *ngIf="withFixedFee; else zero">
+    <ng-container *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0); else zero">
       {{
-        feeInfo.fixedFee.amount
+        feeInfo.rubicProxy.fixedFee.amount
           | bigNumberFormat
           | withRound: 'toClosestValue':{ decimals: nativeCoinDecimals }
       }}&nbsp;
-      {{ feeInfo.fixedFee.tokenSymbol }}
+      {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
     </ng-container>
     <ng-template #zero> 0% </ng-template>
   </div>

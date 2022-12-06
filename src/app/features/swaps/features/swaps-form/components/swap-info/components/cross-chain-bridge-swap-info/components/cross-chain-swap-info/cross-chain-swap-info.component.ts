@@ -39,8 +39,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public estimateGasInUsd: BigNumber;
 
-  public cryptoFeeInUsd: BigNumber;
-
   public minimumReceived: BigNumber;
 
   public priceImpact: number;
@@ -55,21 +53,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public isBridgers: boolean;
 
-  public feeInfo: FeeInfo;
+  public feeInfo: FeeInfo | undefined;
 
   public nativeCoinDecimals: number;
-
-  public get withPlatformFee(): boolean {
-    return this?.feeInfo?.platformFee?.percent && this.feeInfo.platformFee.percent !== 0;
-  }
-
-  public get withFixedFee(): boolean {
-    return Boolean(this?.feeInfo?.fixedFee?.amount);
-  }
-
-  public get withCryptoFee(): boolean {
-    return Boolean(this?.feeInfo?.cryptoFee?.amount);
-  }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -160,9 +146,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
     this.minimumReceived = trade.toTokenAmountMin.multipliedBy(1 - this.slippage / 100);
     this.feeInfo = tradeInfo.feeInfo;
-    this.cryptoFeeInUsd = new BigNumber(tradeInfo.feeInfo.cryptoFee?.amount || 0).multipliedBy(
-      nativeCoinPrice
-    );
     this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
 
     if (tradeInfo.slippage) {

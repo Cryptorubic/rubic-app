@@ -7,6 +7,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ANNEX]: 'Annex',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'ApeSwap',
   [ON_CHAIN_TRADE_TYPE.ARTH_SWAP]: 'ArthSwap',
+  [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: 'AstroSwap',
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
 
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: 'BabySwap',
@@ -15,6 +16,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.BI_SWAP]: 'BiSwap',
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'Bridgers',
 
+  [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: 'ClaimSwap',
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: 'CremaFinance',
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'CronaSwap',
   [ON_CHAIN_TRADE_TYPE.CROPPER_FINANCE]: 'CropperFinance',
@@ -62,6 +64,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'PancakeSwap',
   [ON_CHAIN_TRADE_TYPE.PANGOLIN]: 'Pangolin',
   [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'ParaSwap',
+  [ON_CHAIN_TRADE_TYPE.PEGASYS]: 'Pegasys',
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'PhotonSwap',
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: 'Polydex',
 
@@ -86,6 +89,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'SushiSwap',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
 
+  [ON_CHAIN_TRADE_TYPE.TRADER]: 'TheTrader',
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: 'Trisolaris',
 
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'UbeSwap',
@@ -96,6 +100,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.VOLTAGE_SWAP]: 'VoltageSwap',
   [ON_CHAIN_TRADE_TYPE.VVS_FINANCE]: 'VVSFinance',
 
+  [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: 'WagyuSwap',
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: 'WannaSwap',
   [ON_CHAIN_TRADE_TYPE.WAULT_SWAP]: 'WaultSwap',
   [ON_CHAIN_TRADE_TYPE.WOO_FI]: 'WooFi',
