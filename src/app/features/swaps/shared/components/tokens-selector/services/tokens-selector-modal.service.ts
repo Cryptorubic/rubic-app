@@ -9,7 +9,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensSelectorComponent } from '@features/swaps/shared/components/tokens-selector/components/tokens-selector/tokens-selector.component';
 
 @Injectable()
-export class TokensSelectorOpenerService {
+export class TokensSelectorModalService {
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,

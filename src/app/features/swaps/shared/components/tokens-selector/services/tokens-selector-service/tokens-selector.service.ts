@@ -14,13 +14,13 @@ export class TokensSelectorService {
   /**
    * Form containing selected tokens and blockchains.
    */
-  public _form: FormGroup<ISwapFormInput>;
+  private _form: FormGroup<ISwapFormInput>;
 
   public get form(): FormGroup<ISwapFormInput> {
     return this._form;
   }
 
-  public _formType: FormType;
+  private _formType: FormType;
 
   public get formType(): FormType {
     return this._formType;

@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TokensSelectorComponent } from '@features/swaps/shared/components/tokens-selector/components/tokens-selector/tokens-selector.component';
-import { TokensSelectorOpenerService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-opener.service';
+import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
 import { BlockchainsAsideComponent } from '@features/swaps/shared/components/tokens-selector/components/blockchains-aside/blockchains-aside.component';
 import { SearchBarComponent } from '@features/swaps/shared/components/tokens-selector/components/search-bar/search-bar.component';
 import { TokensListComponent } from '@features/swaps/shared/components/tokens-selector/components/tokens-list/tokens-list.component';
@@ -56,6 +56,6 @@ import { EmptyListComponent } from './components/tokens-list/components/empty-li
     InlineSVGModule,
     TuiAutoFocusModule
   ],
-  providers: [TokensSelectorOpenerService]
+  providers: [TokensSelectorModalService]
 })
 export class TokensSelectorModule {}

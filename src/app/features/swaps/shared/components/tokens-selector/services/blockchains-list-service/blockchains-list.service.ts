@@ -13,7 +13,11 @@ import { filter, map } from 'rxjs/operators';
 
 @Injectable()
 export class BlockchainsListService {
-  public readonly availableBlockchains: AvailableBlockchain[];
+  private _availableBlockchains: AvailableBlockchain[];
+
+  public get availableBlockchains(): AvailableBlockchain[] {
+    return this._availableBlockchains;
+  }
 
   private readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -34,13 +38,20 @@ export class BlockchainsListService {
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly searchQueryService: SearchQueryService
   ) {
+    this.setAvailableBlockchains();
+    this.blockchainsToShow = this._availableBlockchains;
+
+    this.subscribeOnSearchQuery();
+  }
+
+  private setAvailableBlockchains(): void {
     let blockchains = blockchainsList;
-    if (queryParamsService.enabledBlockchains) {
+    if (this.queryParamsService.enabledBlockchains) {
       blockchains = blockchains.filter(blockchain =>
-        queryParamsService.enabledBlockchains.includes(blockchain)
+        this.queryParamsService.enabledBlockchains.includes(blockchain)
       );
     }
-    this.availableBlockchains = blockchains.map(blockchainName => {
+    this._availableBlockchains = blockchains.map(blockchainName => {
       const disabledConfiguration =
         !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
       const disabledFrom = disabledFromBlockchains.includes(blockchainName);
@@ -53,9 +64,6 @@ export class BlockchainsListService {
         disabledFrom
       };
     });
-    this.blockchainsToShow = this.availableBlockchains;
-
-    this.subscribeOnSearchQuery();
   }
 
   private subscribeOnSearchQuery(): void {
