@@ -8,7 +8,7 @@ import {
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { combineLatest, Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -27,7 +27,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 
 type TokenType = 'from' | 'to';
 
@@ -84,7 +84,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   public get allowTrade(): boolean {
-    const form = this.swapFormService.inputValue;
+    const form = this.swapsFormService.inputValue;
     return Boolean(
       form.fromAmount?.gt(0) &&
         form.fromBlockchain &&
@@ -98,7 +98,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly swapsService: SwapsService,
-    public readonly swapFormService: SwapFormService,
+    public readonly swapsFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
@@ -133,7 +133,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this.swapType = swapMode;
       });
 
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (
         (this.fromBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
           form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
@@ -202,7 +202,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private setAvailableTokens(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
     const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapFormService.inputValue[oppositeTokenKey];
+    const oppositeToken = this.swapsFormService.inputValue[oppositeTokenKey];
 
     const availableTokens =
       tokenListType === 'default' ? this.availableTokens : this.availableFavoriteTokens;
@@ -259,14 +259,14 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.selectedToken[tokenType] = updatedToken;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.inputControl.patchValue({
+      this.swapsFormService.inputControl.patchValue({
         [formKey]: this.selectedToken[tokenType]
       });
     }
   }
 
   public async revert(): Promise<void> {
-    const formControls = this.swapFormService.form.controls;
+    const formControls = this.swapsFormService.form.controls;
     const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
     const { toAmount } = formControls.output.value;
     const revertData = {
@@ -295,7 +295,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.gtmService.fetchPassedFormSteps();
     this.gtmService.startGtmSession();
 
-    this.swapFormService.inputValue$
+    this.swapsFormService.inputValue$
       .pipe(
         map(form => [form?.fromToken?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),

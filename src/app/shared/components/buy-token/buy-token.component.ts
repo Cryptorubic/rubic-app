@@ -3,7 +3,7 @@ import { first, map, switchMap } from 'rxjs/operators';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -54,7 +54,7 @@ export class BuyTokenComponent {
   constructor(
     private readonly router: Router,
     private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly themeService: ThemeService
   ) {
@@ -122,7 +122,7 @@ export class BuyTokenComponent {
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
-        this.swapFormService.inputControl.patchValue({
+        this.swapsFormService.inputControl.patchValue({
           fromToken,
           toToken,
           fromBlockchain: fromToken.blockchain,

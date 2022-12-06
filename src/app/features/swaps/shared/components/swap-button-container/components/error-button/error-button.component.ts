@@ -5,7 +5,7 @@ import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { first, map, startWith } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';
@@ -25,8 +25,8 @@ export class ErrorButtonComponent {
   public loading = false;
 
   public get fromBlockchain$(): Observable<BlockchainName> {
-    return this.swapFormService.inputValue$.pipe(
-      startWith(this.swapFormService.inputValue),
+    return this.swapsFormService.inputValue$.pipe(
+      startWith(this.swapsFormService.inputValue),
       map(form => form.fromBlockchain)
     );
   }
@@ -37,12 +37,12 @@ export class ErrorButtonComponent {
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly sdkService: RubicSdkService
   ) {}
 
   public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain } = this.swapsFormService.inputValue;
     if (
       err !== BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN ||
       !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
@@ -57,7 +57,7 @@ export class ErrorButtonComponent {
   }
 
   public async changeNetwork(): Promise<void> {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain } = this.swapsFormService.inputValue;
     if (!BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
       return;
     }

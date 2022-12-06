@@ -12,7 +12,7 @@ import {
   SwapFormInputControl,
   SwapFormOutput,
   SwapFormOutputControl
-} from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+} from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 function shareReplayConfigured<T>() {
@@ -22,7 +22,7 @@ function shareReplayConfigured<T>() {
 @Injectable({
   providedIn: 'root'
 })
-export class SwapFormService {
+export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
       fromBlockchain: new FormControl<BlockchainName>(null),

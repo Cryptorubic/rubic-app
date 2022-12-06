@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { firstValueFrom, interval, Subscription, switchMap, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
@@ -74,7 +74,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly sdk: RubicSdkService,
     private readonly authService: AuthService,
@@ -151,7 +151,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public getEthWethTrade(): WrapTrade | null {
-    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
+    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapsFormService.inputValue;
 
     if (
       !fromToken ||
@@ -214,7 +214,7 @@ export class InstantTradeService extends TradeCalculationService {
     trade: OnChainTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
     this.checkDeviceAndShowNotification();
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =

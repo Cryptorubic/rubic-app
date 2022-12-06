@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { filter, pairwise, startWith } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { compareTokens } from '@shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
-import { SwapFormInput } from '../swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '../swaps-form-service/models/swap-form-controls';
 
 @Injectable()
 export class SwapsService {
@@ -40,7 +40,7 @@ export class SwapsService {
   }
 
   constructor(
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly tokensService: TokensService
   ) {
     this.subscribeOnTokens();
@@ -67,7 +67,7 @@ export class SwapsService {
   }
 
   private subscribeOnForm(): void {
-    this.swapFormService.inputValue$
+    this.swapsFormService.inputValue$
       .pipe(startWith(null), pairwise())
       .subscribe(([prevForm, curForm]) => {
         this.setSwapProviderType(curForm);

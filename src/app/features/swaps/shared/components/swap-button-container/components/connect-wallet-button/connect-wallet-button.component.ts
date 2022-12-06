@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { map } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -15,7 +15,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 export class ConnectWalletButtonComponent {
   public readonly idPrefix = this.swapButtonContainerService.idPrefix;
 
-  public readonly tokensFilled$ = this.swapFormService.inputValue$.pipe(
+  public readonly tokensFilled$ = this.swapsFormService.inputValue$.pipe(
     map(form => Boolean(form.fromToken && form.toToken))
   );
 
@@ -25,7 +25,7 @@ export class ConnectWalletButtonComponent {
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly walletsModalService: WalletsModalService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService

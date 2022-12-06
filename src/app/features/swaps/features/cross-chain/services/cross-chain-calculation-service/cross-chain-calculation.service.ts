@@ -15,7 +15,7 @@ import {
   WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
@@ -61,7 +61,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
   constructor(
     private readonly sdk: RubicSdkService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
@@ -98,7 +98,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculateNeedApprove: boolean,
     disabledTradeTypes: CrossChainTradeType[]
   ): Observable<CrossChainCalculatedTradeData> {
-    const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
+    const { fromToken, fromAmount, toToken } = this.swapsFormService.inputValue;
 
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -240,8 +240,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
       const tradeData: RecentTrade = {
         srcTxHash: txHash,
-        fromToken: this.swapFormService.inputValue.fromToken,
-        toToken: this.swapFormService.inputValue.toToken,
+        fromToken: this.swapsFormService.inputValue.fromToken,
+        toToken: this.swapsFormService.inputValue.toToken,
         crossChainTradeType: calculatedTrade.tradeType,
         timestamp,
         bridgeType: calculatedTrade.trade.bridgeType,
@@ -302,7 +302,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+    const { fromToken, toToken, fromAmount } = this.swapsFormService.inputValue;
 
     // @TODO remove hardcode
     const fee = new BigNumber(1);
@@ -322,7 +322,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     txHash: string,
     timestamp: number
   ): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapsFormService.inputValue;
     const { trade, route } = calculatedTrade;
 
     const bridgeType = trade.bridgeType;

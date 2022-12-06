@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -60,7 +60,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
@@ -74,7 +74,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       this.fromToken = form.fromToken;
       this.toToken = form.toToken;
 
@@ -86,7 +86,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
    * Subscribes on output form value, and after change gets info from cross chain service to update trade info.
    */
   private subscribeOnOutputValue(): void {
-    this.swapFormService.outputValue$
+    this.swapsFormService.outputValue$
       .pipe(
         switchMap(form => {
           const { toAmount } = form;
@@ -95,7 +95,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
             return of(null);
           }
 
-          const { fromBlockchain } = this.swapFormService.inputValue;
+          const { fromBlockchain } = this.swapsFormService.inputValue;
           return from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)).pipe(
             map(nativeCoinPrice => {
               const tokens = this.tokensService.tokens;

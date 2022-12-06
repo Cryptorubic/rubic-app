@@ -11,7 +11,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -65,7 +65,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -171,7 +171,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public get allowTrade(): boolean {
-    const form = this.swapFormService.inputValue;
+    const form = this.swapsFormService.inputValue;
 
     return Boolean(
       form.fromBlockchain &&
@@ -203,7 +203,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    public readonly swapFormService: SwapFormService,
+    public readonly swapsFormService: SwapsFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
@@ -227,7 +227,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.swapFormService.inputValue$
+    this.swapsFormService.inputValue$
       .pipe(
         distinctUntilChanged((prev, next) => {
           return (
@@ -244,7 +244,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.setupSwapForm(form);
       });
 
-    this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
+    this.swapsFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
       if (
         TokensService.areTokensEqual(this.toToken, toToken) &&
         this.toToken?.price !== toToken?.price
@@ -341,7 +341,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
     if (
       fromBlockchain !== toBlockchain ||
       !this.isSupportedOnChainNetwork(this.currentBlockchain as SupportedOnChainNetworks) ||
@@ -409,7 +409,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.selectedProvider = null;
     this.isTradeSelectedByUser = false;
 
-    this.swapFormService.outputControl.patchValue({
+    this.swapsFormService.outputControl.patchValue({
       toAmount: new BigNumber(NaN)
     });
   }
@@ -421,7 +421,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.needApprove = false;
     this.withApproveButton = this.needApprove;
 
-    this.swapFormService.outputControl.patchValue({
+    this.swapsFormService.outputControl.patchValue({
       toAmount: this.fromAmount
     });
   }
@@ -501,7 +501,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
 
-      this.swapFormService.outputControl.patchValue({
+      this.swapsFormService.outputControl.patchValue({
         toAmount: this.selectedProvider.trade.to.tokenAmount
       });
       this.cdr.detectChanges();
@@ -631,7 +631,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
     }
-    this.swapFormService.outputControl.patchValue({
+    this.swapsFormService.outputControl.patchValue({
       toAmount: this.selectedProvider.trade.to.tokenAmount
     });
 

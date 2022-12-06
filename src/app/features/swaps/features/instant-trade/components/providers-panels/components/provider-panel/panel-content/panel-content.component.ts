@@ -9,7 +9,7 @@ import {
 import { TradePanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/trade-panel-data';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
@@ -34,14 +34,14 @@ export class PanelContentComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
     this.displayGas = this.tradePanelData?.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       const { toToken } = form;
       if (this.toToken?.price !== toToken?.price) {
         this.toToken = toToken;

@@ -17,10 +17,10 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import BigNumber from 'bignumber.js';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
-import { SwapFormInput } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@app/features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -52,14 +52,14 @@ export class SelectAssetButtonComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public ngOnInit(): void {
-    this.setFormValues(this.swapFormService.inputValue);
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
+    this.setFormValues(this.swapsFormService.inputValue);
+    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
 
@@ -82,7 +82,7 @@ export class SelectAssetButtonComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromToken } = this.swapFormService.inputValue;
+    const { fromToken } = this.swapsFormService.inputValue;
 
     this.gtmService.reloadGtmSession();
 
@@ -98,7 +98,7 @@ export class SelectAssetButtonComponent implements OnInit {
           };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
-          const isToAmountEmpty = !this.swapFormService?.inputValue?.fromAmount?.isFinite();
+          const isToAmountEmpty = !this.swapsFormService?.inputValue?.fromAmount?.isFinite();
 
           if (inputElement && isToAmountEmpty) {
             setTimeout(() => {
@@ -107,12 +107,12 @@ export class SelectAssetButtonComponent implements OnInit {
           }
 
           if (this.formType === 'from') {
-            this.swapFormService.inputControl.patchValue({
+            this.swapsFormService.inputControl.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
-            this.swapFormService.inputControl.patchValue({
+            this.swapsFormService.inputControl.patchValue({
               toToken: token,
               toBlockchain: token.blockchain
             });

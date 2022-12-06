@@ -12,7 +12,7 @@ import { SwapInfoService } from '@features/swaps/features/swaps-form/components/
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 
 @Component({
   selector: 'app-swap-info-container',
@@ -41,7 +41,7 @@ export class SwapInfoContainerComponent implements OnInit {
   }
 
   public get showTransactionInfo(): boolean {
-    const { toAmount } = this.swapFormService.outputValue;
+    const { toAmount } = this.swapsFormService.outputValue;
     return (
       (!this.isInstantTrade || this.currentInstantTradeInfo?.isWrappedType === false) &&
       toAmount?.isFinite()
@@ -51,14 +51,14 @@ export class SwapInfoContainerComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.loading = false;
   }
 
   ngOnInit() {
-    this.swapFormService.outputValue$.pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
+    this.swapsFormService.outputValue$.pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
 
     this.swapInfoService.onInfoCalculated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loading = false;

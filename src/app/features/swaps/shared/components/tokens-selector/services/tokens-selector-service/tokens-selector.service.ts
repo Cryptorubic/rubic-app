@@ -6,7 +6,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 
 @Injectable()
 export class TokensSelectorService {
@@ -46,7 +46,7 @@ export class TokensSelectorService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapsFormService: SwapsFormService
   ) {
     this.subscribeOnBlockchainChange();
   }
@@ -55,7 +55,7 @@ export class TokensSelectorService {
     this._formType = context.formType;
 
     const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    this.blockchain = this.swapFormService.inputValue[blockchainType];
+    this.blockchain = this.swapsFormService.inputValue[blockchainType];
   }
 
   private subscribeOnBlockchainChange(): void {
@@ -65,10 +65,10 @@ export class TokensSelectorService {
       }
 
       const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
-      if (!this.swapFormService.inputValue[tokenType]) {
+      if (!this.swapsFormService.inputValue[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-        if (this.swapFormService.inputValue[blockchainType] !== blockchain) {
-          this.swapFormService.inputControl.patchValue({
+        if (this.swapsFormService.inputValue[blockchainType] !== blockchain) {
+          this.swapsFormService.inputControl.patchValue({
             [blockchainType]: this.blockchain
           });
         }

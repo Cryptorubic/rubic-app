@@ -9,7 +9,7 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -44,7 +44,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     @Self() private readonly destroy$: TuiDestroyService,
@@ -59,7 +59,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   private initSubscriptions(): void {
     combineLatest([
-      this.swapFormService.toBlockchain$,
+      this.swapsFormService.toBlockchain$,
       this.authService.currentUser$,
       this.targetNetworkAddressService.address$
     ])

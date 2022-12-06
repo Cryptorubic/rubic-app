@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Self, Input } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
@@ -49,8 +49,8 @@ export class InstantTradeSwapInfoComponent {
   public platformFee: OnChainPlatformFee;
 
   public get rate(): string {
-    const { fromAmount, fromToken, toToken } = this.swapFormService.inputValue;
-    const { toAmount } = this.swapFormService.outputValue;
+    const { fromAmount, fromToken, toToken } = this.swapsFormService.inputValue;
+    const { toAmount } = this.swapsFormService.outputValue;
     if (!fromAmount?.isFinite() || !toAmount?.isFinite()) {
       return '';
     }
@@ -75,7 +75,7 @@ export class InstantTradeSwapInfoComponent {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
     private readonly withRoundPipe: WithRoundPipe,
@@ -116,8 +116,8 @@ export class InstantTradeSwapInfoComponent {
   }
 
   public setPriceImpact(): void {
-    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
-    const { toAmount } = this.swapFormService.outputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapsFormService.inputValue;
+    const { toAmount } = this.swapsFormService.outputValue;
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
       this.priceImpact = null;
     } else {

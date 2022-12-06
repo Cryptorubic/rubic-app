@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
@@ -23,7 +23,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@features/swaps/core/services/swaps-form-service/models/swap-form-controls';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -72,7 +72,7 @@ export class SwapButtonContainerErrorsService {
   private translateSub$: Subscription;
 
   constructor(
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly swapsService: SwapsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
@@ -92,7 +92,7 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValue$.subscribe((form: SwapFormInput) => {
+    this.swapsFormService.inputValue$.subscribe((form: SwapFormInput) => {
       const { fromAmount } = form;
       this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
@@ -166,7 +166,7 @@ export class SwapButtonContainerErrorsService {
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const fromToken = this.swapFormService.inputValue.fromToken;
+    const fromToken = this.swapsFormService.inputValue.fromToken;
     if (!fromToken) {
       this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
       return;
@@ -183,7 +183,7 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
-    const { fromToken, fromAmount } = this.swapFormService.inputValue;
+    const { fromToken, fromAmount } = this.swapsFormService.inputValue;
 
     const fromChainType =
       fromToken?.blockchain && BlockchainsInfo.getChainType(fromToken.blockchain);
@@ -206,7 +206,7 @@ export class SwapButtonContainerErrorsService {
 
   private checkSelectedToken(): void {
     this.errorType[BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN] =
-      isNil(this.swapFormService.inputValue?.fromToken) &&
+      isNil(this.swapsFormService.inputValue?.fromToken) &&
       isNil(this.queryParamsService.currentQueryParams?.from);
   }
 
@@ -214,7 +214,7 @@ export class SwapButtonContainerErrorsService {
    * Checks that user's selected blockchain is equal to from blockchain.
    */
   private checkUserBlockchain(): void {
-    const { fromToken } = this.swapFormService.inputValue;
+    const { fromToken } = this.swapsFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && fromToken) {
       this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
@@ -235,7 +235,7 @@ export class SwapButtonContainerErrorsService {
     let type: BUTTON_ERROR_TYPE | null = null;
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain } = this.swapsFormService.inputValue;
 
     switch (true) {
       case err[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
@@ -371,7 +371,7 @@ export class SwapButtonContainerErrorsService {
       this.minAmountTokenSymbol =
         typeof value === 'object' && 'symbol' in value
           ? value.symbol
-          : this.swapFormService.inputValue.fromToken.symbol;
+          : this.swapsFormService.inputValue.fromToken.symbol;
 
       this.errorType[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
@@ -398,7 +398,7 @@ export class SwapButtonContainerErrorsService {
       this.maxAmountTokenSymbol =
         typeof value === 'object' && 'symbol' in value
           ? value.symbol
-          : this.swapFormService.inputValue.fromToken.symbol;
+          : this.swapsFormService.inputValue.fromToken.symbol;
 
       this.errorType[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {

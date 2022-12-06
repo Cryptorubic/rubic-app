@@ -10,7 +10,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { takeUntil } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
 
@@ -42,14 +42,14 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
   public selectedToken: TokenAmount;
 
   constructor(
-    public readonly swapFormService: SwapFormService,
+    public readonly swapsFormService: SwapsFormService,
     private readonly translateService: TranslateService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+    this.swapsFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       const { fromAmount, fromToken } = form;
 
       if (!fromAmount || fromAmount.isNaN()) {
@@ -72,12 +72,12 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
   }
 
   private updateInputValue(): void {
-    const { fromAmount } = this.swapFormService.inputValue;
+    const { fromAmount } = this.swapsFormService.inputValue;
     if (
       ((fromAmount && !fromAmount.isNaN()) || this.formattedAmount) &&
       !fromAmount?.eq(this.formattedAmount)
     ) {
-      this.swapFormService.inputControl.patchValue({
+      this.swapsFormService.inputControl.patchValue({
         fromAmount: new BigNumber(this.formattedAmount)
       });
     }

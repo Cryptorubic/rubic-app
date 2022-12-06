@@ -25,7 +25,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
 import { TokensListTypeService } from '@features/swaps/shared/components/tokens-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsFormService } from '@features/swaps/core/services/swaps-form-service/swaps-form.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -88,7 +88,7 @@ export class TokensListStoreService {
     private readonly tokensService: TokensService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly httpClient: HttpClient,
-    private readonly swapFormService: SwapFormService
+    private readonly swapsFormService: SwapsFormService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -359,6 +359,6 @@ export class TokensListStoreService {
   private oppositeToken(): Token {
     const oppositeTokenType =
       this.tokensSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
-    return this.swapFormService.inputValue[oppositeTokenType];
+    return this.swapsFormService.inputValue[oppositeTokenType];
   }
 }
