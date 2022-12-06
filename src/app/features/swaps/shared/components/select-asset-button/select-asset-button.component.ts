@@ -87,7 +87,7 @@ export class SelectAssetButtonComponent implements OnInit {
     this.gtmService.reloadGtmSession();
 
     this.tokensSelectorModalService
-      .showDialog(this.formType, this.swapFormService.inputControl, idPrefix)
+      .showDialog(this.formType, idPrefix)
       .subscribe((selectedToken: TokenAmount) => {
         if (selectedToken) {
           const token = {

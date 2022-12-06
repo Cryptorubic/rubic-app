@@ -6,21 +6,10 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
-import { SwapFormInputControl } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
-import { FormGroup } from '@angular/forms';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 
 @Injectable()
 export class TokensSelectorService {
-  /**
-   * Form containing selected tokens and blockchains.
-   */
-  // @todo remove
-  private _form: FormGroup<SwapFormInputControl>;
-
-  public get form(): FormGroup<SwapFormInputControl> {
-    return this._form;
-  }
-
   private _formType: FormType;
 
   public get formType(): FormType {
@@ -55,16 +44,18 @@ export class TokensSelectorService {
     this._selectorListType$.next(value);
   }
 
-  constructor(private readonly tokensService: TokensService) {
+  constructor(
+    private readonly tokensService: TokensService,
+    private readonly swapFormService: SwapFormService
+  ) {
     this.subscribeOnBlockchainChange();
   }
 
   public initParameters(context: Omit<TokensSelectComponentInput, 'idPrefix'>): void {
-    this._form = context.form;
     this._formType = context.formType;
 
     const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    this.blockchain = this.form.get(blockchainType).value;
+    this.blockchain = this.swapFormService.inputValue[blockchainType];
   }
 
   private subscribeOnBlockchainChange(): void {
@@ -74,10 +65,10 @@ export class TokensSelectorService {
       }
 
       const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
-      if (!this.form.value[tokenType]) {
+      if (!this.swapFormService.inputValue[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-        if (this.form.get(blockchainType).value !== blockchain) {
-          this.form.patchValue({
+        if (this.swapFormService.inputValue[blockchainType] !== blockchain) {
+          this.swapFormService.inputControl.patchValue({
             [blockchainType]: this.blockchain
           });
         }
