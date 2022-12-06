@@ -56,6 +56,7 @@
 
     width: calc(100% + 24px);
     min-height: 443px;
+    max-height: 443px;
 
     @include iframe {
       left: 0;

@@ -3,14 +3,14 @@
 .list-container {
   display: flex;
 
-  height: 443px;
-
-  @include b($mobile-md-minus) {
-    height: 100%;
-  }
+  height: 100%;
 
   &__back-button {
-    margin: 21px 0 0 23px;
+    margin: 16px 0 0 23px;
+
+    @include b($mobile-md-minus) {
+      margin-top: 21px;
+    }
 
     @include b($mobile-sm-middle) {
       margin-left: 10px;
@@ -42,8 +42,14 @@
 
 .scrollbar {
   width: 100%;
-  margin-top: 15px;
-  padding: 0 0 15px 15px;
+  height: calc(100% - 15px);
+  margin-top: 10px;
+  padding: 0 0 10px 15px;
+
+  @include b($mobile-md-minus) {
+    height: calc(100% - 20px);
+    margin-top: 15px;
+  }
 }
 
 .list {
