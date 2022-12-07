@@ -12,8 +12,6 @@
 
   margin-bottom: 20px;
 
-  font-family: $sf-pro-font;
-
   @include iframe-horizontal {
     position: relative;
 
@@ -22,13 +20,13 @@
     min-height: 0;
     padding: 0 7px 0 16px;
 
-    background: var(--main-background);
+    background: var(--primary-background);
 
     border-radius: 10px;
   }
 
   @include light-iframe {
-    background-color: var(--rubic-base-14);
+    background-color: var(--iframe-primary-background);
   }
 
   &__token-button {
@@ -94,7 +92,7 @@
 
     padding: 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 400;
     font-size: 22px;
     letter-spacing: 0.1em;

@@ -1,9 +1,8 @@
 @use 'src/scss/core' as *;
 
 :host {
-  --tui-primary-text: #{$rubic-primary};
-  --tui-primary: rgba(255, 255, 255, 0.05);
-  --rubic-secondary: rgba(255, 255, 255, 0.2);
+  //--tui-primary-text: #{var(--primary-color)};
+  //--tui-primary: rgba(255, 255, 255, 0.05);
   --tui-disabled-opacity: 1;
 
   button {
@@ -27,20 +26,11 @@
         overflow: hidden;
 
         .label {
-          color: var(--rubic-base-02);
+          color: var(--primary-text);
           font-weight: normal;
           font-size: $rubic-font-size-main;
         }
       }
-    }
-
-    &[data-state='hovered'] {
-      background-color: var(--rubic-secondary);
-    }
-
-    &[data-state='pressed'] {
-      background: var(--rubic-secondary);
-      box-shadow: $main-shadow;
     }
 
     img {
@@ -57,14 +47,14 @@
 
     /* stylelint-disable */
     @include light-iframe {
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
 
       &[data-state='hovered'] {
-        background-color: var(--rubic-base-14);
+        background-color: var(--iframe-primary-background);
       }
 
       &[data-state='pressed'] {
-        background: var(--rubic-base-14);
+        background: var(--iframe-primary-background);
         box-shadow: unset;
       }
     }
@@ -79,7 +69,7 @@
 }
 
 .bordered {
-  border: 2px solid var(--main-green);
+  border: 2px solid var(--primary-color);
 
   ::ng-deep tui-wrapper {
     .content {

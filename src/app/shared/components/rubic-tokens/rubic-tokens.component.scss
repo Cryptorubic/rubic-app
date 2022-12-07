@@ -2,7 +2,7 @@
 
 :host {
 
-  --tui-primary: rgba(255, 255, 255, 0.1);
+  //--tui-primary: rgba(255, 255, 255, 0.1);
   @include iframe-vertical {
     width: 100%;
   }
@@ -15,7 +15,7 @@
     ::ng-deep app-rubic-button {
       button,
       tui-wrapper {
-        --tui-primary: rgba(white, 0.05);
+        //--tui-primary: rgba(white, 0.05);
         box-shadow: none !important;
       }
     }
@@ -125,64 +125,6 @@
       transition: 0.2s ease-in-out;
     }
   }
-
-  &__clear {
-    position: relative;
-
-    width: 20px;
-    height: 20px;
-    padding: 5px;
-
-    background-color: #{var(--rubic-token-clear)};
-    border: 1px solid #{var(--rubic-token-clear)};
-    border-radius: 50%;
-
-    transition: 0.1s ease-in-out;
-
-    &:hover {
-      background-color: var(--rubic-base-01);
-      border-color: var(--primary-color);
-    }
-
-    &-icon {
-      position: relative;
-
-      display: flex;
-      justify-content: center;
-      height: 100%;
-
-      &::before,
-      &::after {
-        position: absolute;
-
-        width: 2px;
-        height: 100%;
-
-        background-color: var(--rubic-token-clear-icon);
-        border-radius: 10px;
-
-        content: '';
-      }
-
-      &::before {
-        transform: rotate(45deg);
-      }
-
-      &::after {
-        transform: rotate(-45deg);
-      }
-    }
-  }
-
-
-
-  &__clear-mobile {
-    display: none;
-
-    color: $rubic-primary;
-
-    background-color: transparent;
-  }
 }
 
 @include b($mobile-md) {
@@ -201,5 +143,11 @@
       display: block;
       margin-left: 10px;
     }
+  }
+}
+
+.arrow {
+  ::ng-deep svg path {
+    fill: var(--secondary-text);
   }
 }

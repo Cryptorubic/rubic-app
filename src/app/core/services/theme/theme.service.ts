@@ -9,7 +9,7 @@ export type Theme = 'dark' | 'light';
   providedIn: 'root'
 })
 export class ThemeService {
-  private _theme$: BehaviorSubject<Theme>;
+  private _theme$ = new BehaviorSubject<Theme>(this.store.getItem('theme') || 'dark');
 
   get theme(): Theme {
     return this._theme$.getValue();
@@ -20,12 +20,8 @@ export class ThemeService {
   }
 
   constructor(private readonly store: StoreService, @Inject(DOCUMENT) private document: Document) {
-    const localTheme = (this.store.getItem('theme') as Theme) || 'dark';
-    this._theme$ = new BehaviorSubject<Theme>(localTheme);
-
-    if (localTheme !== 'dark') {
-      this.document.documentElement.classList.toggle('dark');
-      this.document.documentElement.classList.toggle('light');
+    if (this._theme$.value !== 'dark') {
+      this.switchDomClass();
     } else {
       document.getElementsByTagName('html')[0].classList.toggle('dark_colored');
     }
@@ -54,7 +50,10 @@ export class ThemeService {
     const nextTheme = isCurrentThemeDark ? 'light' : 'dark';
     this._theme$.next(nextTheme);
     this.store.setItem('theme', nextTheme);
+    this.switchDomClass();
+  }
 
+  private switchDomClass(): void {
     this.document.documentElement.classList.toggle('dark');
     this.document.documentElement.classList.toggle('light');
   }

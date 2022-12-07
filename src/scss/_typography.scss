@@ -42,7 +42,7 @@
 
 .cl {
   &-green {
-    color: var(--main-green);
+    color: var(--primary-color);
   }
 }
 
@@ -106,7 +106,7 @@
 }
 
 .container {
-  max-width: var(--container-max-width);
+  max-width: $desktop-plus;
   margin: 0 auto;
   padding: 10px 50px;
 

@@ -6,7 +6,7 @@
 
     padding: 26px 12px;
 
-    background: var(--rubic-base-22);
+    background: var(--form-background);
     border-radius: $border-radius-2;
   }
 
@@ -57,11 +57,11 @@
     }
 
     &-text {
-      @include font(18px, 22px, 500, var(--rubic-base-02));
+      @include font(18px, 22px, 500, var(--primary-text));
       white-space: nowrap;
 
       @include b(480) {
-        @include font(16px, 19px, 500, var(--rubic-base-02));
+        @include font(16px, 19px, 500, var(--primary-text));
       }
     }
   }
@@ -81,7 +81,7 @@
 
     white-space: nowrap;
 
-    background: var(--main-green);
+    background: var(--primary-color);
     border-radius: $border-radius-3;
 
     @include b(480) {

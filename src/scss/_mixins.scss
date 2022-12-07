@@ -85,12 +85,12 @@
     font-size: 12px;
     line-height: 17px;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
     border-radius: 10px;
   }
 
   :host-context(html.iframe:not(.dark)) & {
-    background-color: var(--rubic-base-14);
+    background-color: var(--iframe-primary-background);
   }
 }
 

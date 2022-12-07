@@ -1,9 +1,17 @@
 @use 'src/scss/mixins' as *;
 
-@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Thin', 100);
-@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Extralight', 200);
-@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Light', 300);
-@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Regular', 400);
-@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Medium', 500);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Thin', 100);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Extralight', 200);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Light', 300);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Regular', 400);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Medium', 500);
+//
+//@include font-face('Roboto', '/assets/fonts/Roboto/Roboto-Regular', 400);
 
-@include font-face('Roboto', '/assets/fonts/Roboto/Roboto-Regular', 400);
+
+
+//@include font-face('Red Hat Display', '/assets/fonts/SFPro/SFPro-Thin', 100);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Extralight', 200);
+@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-Light', 300);
+@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-Regular', 400);
+//@include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Medium', 500);

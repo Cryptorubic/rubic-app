@@ -3,9 +3,9 @@
 .grey-background {
   @include light-iframe {
     ::ng-deep tui-wrapper {
-      color: var(--rubic-base-02);
+      color: var(--primary-text);
 
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
     }
   }
 }

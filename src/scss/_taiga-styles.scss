@@ -4,7 +4,10 @@ tui-dropdown-box {
   --tui-elevation-01: rgba(255, 255, 255, 0.03);
   --tui-radius-3: 19px;
   --tui-base-03: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--transparent-line) !important;
+  box-shadow: none !important;
   backdrop-filter: blur(50px);
+
 }
 
 tui-dialog {
@@ -18,8 +21,8 @@ tui-dialog {
   }
 
   > .content {
-    background: rgba(white, 0.05) !important;
-    backdrop-filter: blur(50px);
+    background-color: var(--form-background-transparent) !important;
+    border: 1px solid var(--transparent-line);
   }
 
   &::after {
@@ -205,4 +208,40 @@ html.iframe-vertical tui-dialog > div.content > h2 {
 
 tui-wrapper[data-appearance='textfield'] {
   background: transparent !important;
+}
+
+tui-wrapper[data-appearance='secondary'] {
+  &:hover,
+  &:active {
+    background-color: var(--tui-secondary-hover);
+  }
+}
+
+//tui-wrapper[data-appearance='primary'] {
+//  span {
+//    text-shadow: 0 0 3px rgba(0, 0, 0, 0.45);
+//  }
+//}
+
+:not(app-swap-button-container) {
+  app-rubic-button tui-wrapper[data-appearance='secondary'] {
+    border: 1px solid var(--transparent-line);
+  }
+}
+
+.light tui-toggle {
+  tui-wrapper[data-appearance='secondary'] {
+    &::after,
+    .circle {
+      border: 1px solid var(--transparent-line);
+    }
+
+    .circle {
+      background: var(--transparent-line);
+    }
+  }
+}
+
+.light tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+  border: 1px solid var(--transparent-line);
 }

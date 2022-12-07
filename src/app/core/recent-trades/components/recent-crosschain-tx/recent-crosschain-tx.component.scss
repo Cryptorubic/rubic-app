@@ -16,7 +16,7 @@
 }
 
 .title {
-  @include font(26px, 31px, 700, var(--rubic-base-02));
+  @include font(26px, 31px, 700, var(--primary-text));
   display: flex;
   align-items: center;
   margin-bottom: 8px;

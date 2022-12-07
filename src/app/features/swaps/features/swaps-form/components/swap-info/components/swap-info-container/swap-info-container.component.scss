@@ -14,7 +14,7 @@
     justify-content: center;
     width: 100%;
 
-    color: $rubic-primary;
+    color: var(--primary-color);
     font-size: 16px;
     line-height: 22px;
 
@@ -45,7 +45,7 @@
 
   ::ng-deep {
     .header {
-      background: transparent;
+      background: transparent !important;
       border-bottom: 0;
       border-radius: $border-radius-2;
     }
@@ -64,21 +64,21 @@
   &__opened {
     ::ng-deep {
       > .wrapper {
-        background: var(--main-form-background) !important;
+        background: var(--form-background) !important;
+        border: 1px solid var(--transparent-line);
       }
     }
   }
 }
 
 .swaps-info {
-  color: var(--form-bright-text-color);
+  color: var(--primary-text);
 
   &__title {
     margin: 0;
 
     font-weight: bold;
     font-size: 21px;
-    font-family: $sf-pro-font;
     line-height: 125%;
   }
 }

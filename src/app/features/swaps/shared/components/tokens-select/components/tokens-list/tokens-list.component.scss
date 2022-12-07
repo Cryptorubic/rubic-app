@@ -31,7 +31,7 @@ $token-card-height: 55px;
     }
 
     &:hover {
-      background-color: rgba($rubic-primary, 0.15);
+      background-color: rgba(var(--primary-color), 0.15);
     }
 
     &_disabled {
@@ -81,7 +81,7 @@ $token-card-height: 55px;
     }
 
     &:hover {
-      background-color: var(--main-background);
+      background-color: var(--primary-background);
     }
 
     /* stylelint-disable */
@@ -89,7 +89,7 @@ $token-card-height: 55px;
       border: 1px solid #e9e9e9;
 
       &:hover {
-        background-color: var(--rubic-base-14);
+        background-color: var(--iframe-primary-background);
       }
     }
 
@@ -104,8 +104,8 @@ $token-card-height: 55px;
 
     &_active,
     &:active {
-      background-color: var(--main-background);
-      border-color: $rubic-primary !important;
+      background-color: var(--primary-background);
+      border-color: var(--primary-color) !important;
     }
 
     &_active {
@@ -127,7 +127,7 @@ $token-card-height: 55px;
   }
 
   &__item-link {
-    border-color: $rubic-primary;
+    border-color: var(--primary-color);
 
     a {
       display: block;
@@ -216,7 +216,7 @@ $token-card-height: 55px;
 }
 
 .vertical-frame-link {
-  border: 2px solid $rubic-primary;
+  border: 2px solid var(--primary-color);
 
   a {
     display: block;

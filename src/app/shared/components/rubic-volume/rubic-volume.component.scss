@@ -8,8 +8,6 @@
 
   font-size: 16px;
 
-  font-family: $sf-pro-font;
-
   &__icon {
     width: 18px;
     margin-right: 10px;
@@ -20,11 +18,11 @@
     align-items: center;
     margin-right: 10px;
 
-    color: var(--rubic-base-02);
+    color: var(--primary-text);
   }
 
   &__value {
-    color: var(--main-green);
+    color: var(--primary-color);
   }
 }
 

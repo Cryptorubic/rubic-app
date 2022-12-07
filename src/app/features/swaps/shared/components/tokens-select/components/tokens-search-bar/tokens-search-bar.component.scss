@@ -3,7 +3,7 @@
 }
 
 .placeholder {
-  color: var(--form-dim-text-color);
+  color: var(--secondary-text);
 
   font-size: 16px;
 }
@@ -11,7 +11,7 @@
 tui-input {
   ::ng-deep {
     .placeholder {
-      color: var(--form-dim-text-color);
+      color: var(--secondary-text);
 
       font-size: 16px;
     }

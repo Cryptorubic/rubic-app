@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
 
-  color: var(--form-bright-text-color);
+  color: var(--primary-text);
 
   @include iframe-horizontal {
     height: 100%;
@@ -79,7 +79,7 @@
         height: 17px;
 
         path {
-          fill: var(--rubic-base-02);
+          fill: var(--primary-text);
         }
       }
     }
@@ -102,7 +102,7 @@
         margin-bottom: 0 !important;
 
         path {
-          fill: var(--rubic-base-02);
+          fill: var(--primary-text);
         }
       }
     }
@@ -144,7 +144,7 @@
       path {
         transition: 0.2s ease-in-out;
 
-        stroke: var(--form-dim-text-color);
+        stroke: var(--secondary-text);
       }
     }
 
@@ -154,7 +154,7 @@
     }
 
     &:hover:not(&_active)  svg path {
-      stroke: var(--main-green);
+      stroke: var(--primary-color);
     }
   }
 

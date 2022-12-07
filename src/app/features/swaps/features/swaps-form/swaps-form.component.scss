@@ -27,9 +27,8 @@
   margin-bottom: 20px;
   padding: 24px;
 
-  //background: linear-gradient(180deg, rgb(61 54 65 / 50%) 16.79%, rgb(58 56 63 / 50%) 100%);
-  background: #26282a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
   border-radius: 19px;
 
   @include iframe-horizontal {
@@ -71,7 +70,7 @@
   &__title {
     margin: 0 10px 0 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 300;
     font-size: 24px;
     letter-spacing: 1.5px;
@@ -98,7 +97,7 @@
   &__delimiter {
     position: relative;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
 
     @include iframe-horizontal {
       display: flex;
@@ -156,7 +155,7 @@
       width: calc(50% - 17px);
       height: 1px;
 
-      background-color: var(--rubic-delimiter);
+      background-color: var(--transparent-line);
 
       opacity: 0.5;
 

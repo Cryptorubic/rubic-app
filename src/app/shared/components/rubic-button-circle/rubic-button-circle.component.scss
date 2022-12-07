@@ -5,10 +5,10 @@
   --tui-height-s: 35px;
   --tui-disabled-opacity: 1;
   --tui-focus: transparent;
-  --tui-secondary-hover: rgba(255, 255, 255, 0.1);
+  //--tui-secondary-hover: rgba(255, 255, 255, 0.1);
 
   [tuiIconButton] {
-    --tui-primary: transparent;
+    //--tui-primary: transparent;
 
     transition: 0.3s;
 
@@ -16,7 +16,6 @@
       border: 1px solid white;
     }
 
-    s
     ::ng-deep img {
       width: 100px;
       max-width: 18px;

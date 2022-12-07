@@ -12,12 +12,12 @@
   height: 100%;
   padding: 20px 66px 20px 20px;
 
-  color: $rubic-primary;
+  color: var(--primary-color);
   font-weight: 500;
   font-size: 20px;
   line-height: 120%;
 
-  background-color: rgba($rubic-primary, 0.2);
+  background-color: rgba(var(--primary-color), 0.2);
   border-radius: 12px;
 
   transition: transform 0.1s ease-in-out;

@@ -47,13 +47,17 @@
       box-shadow: none;
 
       @include iframe {
-        --tui-base-01: var(--main-background);
+        --tui-base-01: var(--primary-background);
         border-radius: 10px;
         box-shadow: none;
 
         &::after {
           border: none;
         }
+      }
+
+      &::after {
+        border: 1px solid var(--transparent-line);
       }
 
       input {
@@ -91,9 +95,15 @@
 
       cursor: pointer;
 
-      svg {
-        width: 21px;
-        height: 21px;
+      ::ng-deep {
+        svg {
+          width: 15px;
+          height: 15px;
+
+          path {
+            fill: var(--secondary-text);
+          }
+        }
       }
     }
   }

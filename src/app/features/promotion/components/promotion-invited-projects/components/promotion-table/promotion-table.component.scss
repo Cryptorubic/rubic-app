@@ -20,11 +20,11 @@
 
   th,
   td {
-    color: var(--rubic-base-12);
+    color: var(--primary-text);
     font-weight: inherit;
     font-family: inherit;
 
-    border-color: var(--main-background);
+    border-color: var(--primary-background);
     border-style: solid;
     border-width: 0;
     border-right-width: 1px;
@@ -41,7 +41,7 @@
     font-size: 18px;
     line-height: 21px;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
     cursor: pointer;
 
     &:first-child {
@@ -83,7 +83,7 @@
     font-size: 16px;
     line-height: 19px;
 
-    background: var(--main-form-background);
+    background: var(--solid-background);
     border-bottom-width: 1px;
   }
 
@@ -145,17 +145,16 @@
 
 tui-table-pagination {
   ::ng-deep {
-    color: var(--form-dim-text-color);
+    color: var(--secondary-text);
 
     span {
       font-weight: 400;
       font-size: 14px;
-      font-family: $sf-pro-font;
       word-spacing: 0.1em;
     }
 
     button {
-      color: var(--main-green);
+      color: var(--primary-color);
     }
   }
 }

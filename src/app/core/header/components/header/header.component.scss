@@ -4,68 +4,54 @@
   display: inline-block;
   padding: 14px 20px;
 
-  color: white;
+  color: var(--primary-text);
 
   font-size: $rubic-font-size-01;
   text-decoration: none;
+
+  background-color: var(--tui-secondary);
 
   border-radius: 100px;
 
   cursor: pointer;
 
-  &:hover,
-  &_active {
+  &:hover {
     text-decoration: none;
 
-    background-color: rgba(white, 0.05);
+    background-color: var(--tui-secondary-hover);
   }
 
   &:hover {
-    box-shadow: var(--rubic-shadow-button-hover-dim);
-
     transition: 0.3s ease-in-out;
+  }
+
+  &:not(&_active) {
+    background-color: transparent;
+
+    &:hover {
+      background-color: var(--tui-secondary-hover);
+    }
   }
 
   &:active,
   &_active:active {
-    color: var(--rubic-base-01) !important;
-
-    background-color: $rubic-primary;
-    box-shadow: var(--rubic-shadow-button-active);
+    background-color: var(--primary-color);
 
     :host-context(html.dark) & {
-      color: var(--rubic-base-02) !important;
+      color: var(--primary-text) !important;
     }
   }
 
   &:focus {
     text-decoration: none;
 
-    border-color: $rubic-primary;
+    border-color: var(--primary-color);
   }
 
   &_disabled {
     color: $rubic-text-disable !important;
 
     pointer-events: none;
-  }
-
-  &_error {
-    color: var(--rubic-base-01);
-
-    background-color: #dc3545;
-
-    &:hover {
-      background-color: #bb2d3b;
-    }
-
-    &:active {
-      background-color: #bb2d3b;
-    }
-
-    &:focus {
-      border-color: #bb2d3b;
-    }
   }
 }
 
@@ -159,7 +145,7 @@
   &[data-tui-host-status='default'] {
     color: white;
 
-    background-color: var(--main-green);
+    background-color: var(--primary-color);
   }
 
   &[data-tui-host-padding='m'][data-tui-host-size='s'] {

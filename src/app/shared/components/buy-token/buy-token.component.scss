@@ -1,10 +1,8 @@
 @use 'src/scss/core' as *;
 
-
-
 :host {
-  --tui-primary: rgba(255, 255, 255, 0.05);
-  --tui-primary-hover: rgba(255, 255, 255, 0.01) !important;
+  //--tui-primary: rgba(255, 255, 255, 0.05);
+  //--tui-primary-hover: rgba(255, 255, 255, 0.01) !important;
 
   .button_buy-token {
     &-icon {
