@@ -24,6 +24,9 @@ export class BlockchainsAsideComponent {
 
   public readonly selectorListType$ = this.tokensSelectorService.selectorListType$;
 
+  /**
+   * Returns amount of blockchains to show, depending on window width and height.
+   */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
       if (this.iframeService.isIframe) {

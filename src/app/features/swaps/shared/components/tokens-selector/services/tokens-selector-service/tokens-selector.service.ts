@@ -8,6 +8,7 @@ import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { TokensSelectComponentInput } from '@features/swaps/shared/components/tokens-selector/models/tokens-select-polymorpheus-data';
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class TokensSelectorService {
@@ -67,11 +68,7 @@ export class TokensSelectorService {
   }
 
   private subscribeOnBlockchainChange(): void {
-    this.blockchain$.subscribe(blockchain => {
-      if (!blockchain) {
-        return;
-      }
-
+    this.blockchain$.pipe(filter(Boolean)).subscribe(blockchain => {
       const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
       if (!this.form.value[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
@@ -93,11 +90,7 @@ export class TokensSelectorService {
   }
 
   public switchSelectorType(): void {
-    if (this.selectorListType === 'blockchains') {
-      this.selectorListType = 'tokens';
-    } else {
-      this.selectorListType = 'blockchains';
-    }
+    this.selectorListType = this.selectorListType === 'blockchains' ? 'tokens' : 'blockchains';
   }
 
   public onTokenSelect(token: AvailableTokenAmount): void {

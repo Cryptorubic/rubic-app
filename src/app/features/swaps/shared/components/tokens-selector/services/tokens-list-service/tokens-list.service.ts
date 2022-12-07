@@ -63,7 +63,7 @@ export class TokensListService {
   }
 
   public resetScrollToTop(): void {
-    if (this.listScrollSubject$?.value) {
+    if (this.listScrollSubject$.value) {
       this.listScrollSubject$.value.scrollToIndex(0);
     }
   }

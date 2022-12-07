@@ -32,9 +32,7 @@ export class TokensListComponent {
 
   public readonly rubicDomain = 'app.rubic.exchange';
 
-  public get noFrameLink(): string {
-    return `https://${this.rubicDomain}${this.queryParamsService.noFrameLink}`;
-  }
+  public readonly noFrameLink = `https://${this.rubicDomain}${this.queryParamsService.noFrameLink}`;
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 

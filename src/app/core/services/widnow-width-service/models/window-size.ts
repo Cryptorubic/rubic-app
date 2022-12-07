@@ -1,5 +1,5 @@
 export enum WindowSize {
-  MOBILE_SM_MIDDLE = 'mobile_ms_middle',
-  MOBILE_MD_MINUS = 'mobile_md_minus',
-  DESKTOP = 'desktop'
+  MOBILE_SM_MIDDLE,
+  MOBILE_MD_MINUS,
+  DESKTOP
 }
