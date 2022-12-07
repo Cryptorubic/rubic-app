@@ -47,8 +47,14 @@ export class TargetNetworkAddressComponent implements OnInit {
         filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareObjects(prev.fromToken, curr.fromToken) &&
-            compareObjects(prev.toToken, curr.toToken)
+            compareObjects(
+              { blockchain: prev.fromToken.blockchain, address: prev.fromToken.address },
+              { blockchain: curr.fromToken.blockchain, address: curr.fromToken.address }
+            ) &&
+            compareObjects(
+              { blockchain: prev.toToken.blockchain, address: prev.toToken.address },
+              { blockchain: curr.toToken.blockchain, address: curr.toToken.address }
+            )
           );
         })
       )
