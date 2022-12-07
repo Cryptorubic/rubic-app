@@ -93,6 +93,11 @@
       width: 77px !important;
       height: 68px !important;
 
+      @include iframe {
+        width: 70px !important;
+        height: 56px !important;
+      }
+
       .content {
         justify-content: unset;
 
@@ -179,6 +184,10 @@
 
             div {
               display: none;
+
+              @include iframe {
+                display: block;
+              }
             }
           }
         }

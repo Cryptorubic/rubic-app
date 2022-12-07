@@ -31,7 +31,7 @@
           </ng-container>
         </ng-container>
 
-        <li class="open-selector">
+        <li class="open-selector" *noFrame>
           <app-rubic-button (onClick)="onSelectorSwitch()">
             <ng-container *ngLet="selectorListType$ | async as selectorListType">
               <div *ngIf="selectorListType === 'tokens'">

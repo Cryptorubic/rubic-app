@@ -8,6 +8,7 @@ import { TokensSelectorService } from '@features/swaps/shared/components/tokens-
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -26,6 +27,10 @@ export class BlockchainsAsideComponent {
 
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
+      if (this.iframeService.isIframe) {
+        return this.blockchainsAmount;
+      }
+
       if (windowSize === WindowSize.DESKTOP) {
         return 9;
       }
@@ -55,6 +60,7 @@ export class BlockchainsAsideComponent {
     private readonly blockchainsListService: BlockchainsListService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly windowWidthService: WindowWidthService,
+    private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
