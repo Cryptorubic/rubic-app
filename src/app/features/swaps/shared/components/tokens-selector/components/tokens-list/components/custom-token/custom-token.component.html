@@ -1,0 +1,31 @@
+<div class="custom-token">
+  <div
+    class="custom-token__element"
+    [ngClass]="{ 'custom-token__element_disabled': !token.available }"
+  >
+    <app-tokens-list-element
+      [token]="token"
+      [tuiHint]="!token.available ? disabledTokenHint : null"
+      tuiHintMode="error"
+      tuiHintDirection="bottom-right"
+    >
+    </app-tokens-list-element>
+  </div>
+
+  <app-rubic-button
+    *ngIf="token.available"
+    class="custom-token__button"
+    appearance="secondary"
+    fullWidth
+    (onClick)="onImportClick()"
+    [disabled]="!token.available"
+  >
+    Import {{ token.symbol }}
+  </app-rubic-button>
+</div>
+
+<ng-template #disabledTokenHint>
+  <div>
+    {{ 'modals.tokensListModal.unsupportedPairsHint' | translate }}
+  </div>
+</ng-template>
