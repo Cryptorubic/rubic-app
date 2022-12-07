@@ -7,6 +7,7 @@ import { TokensSelectComponentInput } from '@features/swaps/shared/components/to
 import { SelectorListType } from '@features/swaps/shared/components/tokens-selector/models/selector-list-type';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class TokensSelectorService {
@@ -60,11 +61,7 @@ export class TokensSelectorService {
   }
 
   private subscribeOnBlockchainChange(): void {
-    this.blockchain$.subscribe(blockchain => {
-      if (!blockchain) {
-        return;
-      }
-
+    this.blockchain$.pipe(filter(Boolean)).subscribe(blockchain => {
       const tokenType = this.formType === 'from' ? 'fromAsset' : 'toToken';
       if (!this.swapFormService.inputValue[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
@@ -86,11 +83,7 @@ export class TokensSelectorService {
   }
 
   public switchSelectorType(): void {
-    if (this.selectorListType === 'blockchains') {
-      this.selectorListType = 'tokens';
-    } else {
-      this.selectorListType = 'blockchains';
-    }
+    this.selectorListType = this.selectorListType === 'blockchains' ? 'tokens' : 'blockchains';
   }
 
   public onTokenSelect(token: AvailableTokenAmount): void {

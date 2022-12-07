@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { TUI_IS_IOS, TUI_IS_MOBILE } from '@taiga-ui/cdk';
-import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
+import { WINDOW } from '@ng-web-apis/common';
 import { AvailableBlockchain } from '@features/swaps/shared/components/tokens-selector/services/blockchains-list-service/models/available-blockchain';
 import { BlockchainsListService } from '@features/swaps/shared/components/tokens-selector/services/blockchains-list-service/blockchains-list.service';
 import { TokensSelectorService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-service/tokens-selector.service';
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -24,8 +24,15 @@ export class BlockchainsAsideComponent {
 
   public readonly selectorListType$ = this.tokensSelectorService.selectorListType$;
 
+  /**
+   * Returns amount of blockchains to show, depending on window width and height.
+   */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
+      if (this.iframeService.isIframe) {
+        return this.blockchainsAmount;
+      }
+
       if (windowSize === WindowSize.DESKTOP) {
         return 9;
       }
@@ -38,23 +45,11 @@ export class BlockchainsAsideComponent {
     })
   );
 
-  public get showClearFix(): boolean {
-    const safariDetector: RegExp = /iPhone/i;
-    const chromeDetector: RegExp = /Chrome/i;
-    return (
-      this.isIos &&
-      this.isMobile &&
-      (safariDetector.test(this.userAgent) || chromeDetector.test(this.userAgent))
-    );
-  }
-
   constructor(
-    @Inject(TUI_IS_IOS) private readonly isIos: boolean,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
-    @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly blockchainsListService: BlockchainsListService,
     private readonly tokensSelectorService: TokensSelectorService,
     private readonly windowWidthService: WindowWidthService,
+    private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 

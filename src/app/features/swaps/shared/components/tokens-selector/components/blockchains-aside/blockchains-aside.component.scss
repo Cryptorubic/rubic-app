@@ -61,19 +61,6 @@
       flex-wrap: nowrap;
     }
 
-    &_clearfix {
-      &::after {
-        @media (orientation: portrait) {
-          width: 62px;
-          height: 86px;
-
-          visibility: hidden;
-
-          content: '';
-        }
-      }
-    }
-
     li {
       margin: 0 5px;
 
@@ -92,6 +79,11 @@
     button {
       width: 77px !important;
       height: 68px !important;
+
+      @include iframe {
+        width: 70px !important;
+        height: 56px !important;
+      }
 
       .content {
         justify-content: unset;
@@ -179,6 +171,10 @@
 
             div {
               display: none;
+
+              @include iframe {
+                display: block;
+              }
             }
           }
         }

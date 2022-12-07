@@ -31,9 +31,9 @@ export class TokensListElementComponent {
 
   public readonly isHorizontalFrame: boolean;
 
-  public hintShown: boolean = true;
+  public hintShown = true;
 
-  public loadingFavoriteToken: boolean = false;
+  public loadingFavoriteToken = false;
 
   constructor(
     iframeService: IframeService,

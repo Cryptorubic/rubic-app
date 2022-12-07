@@ -119,12 +119,11 @@ export class TokensListStoreService {
   }
 
   private subscribeOnBlockchainChange(): void {
-    this.tokensSelectorService.blockchain$.pipe(distinctUntilChanged()).subscribe(blockchain => {
-      if (!blockchain) {
-        return;
-      }
-      this.updateTokens();
-    });
+    this.tokensSelectorService.blockchain$
+      .pipe(filter(Boolean), distinctUntilChanged())
+      .subscribe(() => {
+        this.updateTokens();
+      });
   }
 
   private subscribeOnListType(): void {
@@ -160,6 +159,7 @@ export class TokensListStoreService {
           this.tokensToShow = tokensList.tokensToShow;
           this.customToken = null;
         } else {
+          this.tokensToShow = [];
           this.customToken = tokensList.customToken;
         }
         this.searchLoading = false;

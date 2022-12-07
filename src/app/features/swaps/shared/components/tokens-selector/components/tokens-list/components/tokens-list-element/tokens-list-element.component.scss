@@ -8,6 +8,10 @@
 
   color: var(--form-bright-text-color);
 
+  @include iframe {
+    height: unset;
+  }
+
   @include iframe-horizontal {
     height: 100%;
   }
@@ -21,6 +25,11 @@
     @include b($mobile-sm-middle) {
       flex-direction: column;
       align-items: unset;
+
+      @include iframe {
+        flex-direction: row;
+        align-items: center;
+      }
     }
   }
 
@@ -65,6 +74,8 @@
       line-height: 18px;
 
       @include iframe {
+        display: block !important;
+
         font-size: 12px;
         line-height: 14px;
       }
@@ -143,6 +154,11 @@
       display: flex;
       align-items: center;
       width: fit-content;
+
+      @include iframe {
+        font-size: 14px;
+        line-height: 16px;
+      }
     }
   }
 
@@ -188,16 +204,13 @@
     margin-right: 20px;
 
     @include iframe-horizontal {
+      min-width: 30px;
+      height: 30px;
       margin-right: 10px;
     }
 
-    @include iframe-horizontal {
-      width: 30px;
-      height: 30px;
-    }
-
     @include iframe-vertical {
-      width: 24px;
+      min-width: 24px;
       height: 24px;
     }
 

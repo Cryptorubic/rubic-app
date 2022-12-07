@@ -2,7 +2,6 @@
   <tui-scrollbar class="blockchain-aside__scroll">
     <ul
       class="blockchain-aside__blockchains-list"
-      [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
       *ngLet="selectedBlockchain$ | async as selectedBlockchain"
     >
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
@@ -31,7 +30,7 @@
           </ng-container>
         </ng-container>
 
-        <li class="open-selector">
+        <li class="open-selector" *noFrame>
           <app-rubic-button (onClick)="onSelectorSwitch()">
             <ng-container *ngLet="selectorListType$ | async as selectorListType">
               <div *ngIf="selectorListType === 'tokens'">
