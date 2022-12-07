@@ -2,7 +2,6 @@
   <tui-scrollbar class="blockchain-aside__scroll">
     <ul
       class="blockchain-aside__blockchains-list"
-      [ngClass]="{ 'blockchain-aside__blockchains-list_clearfix': showClearFix }"
       *ngLet="selectedBlockchain$ | async as selectedBlockchain"
     >
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">

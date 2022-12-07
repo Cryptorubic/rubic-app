@@ -61,19 +61,6 @@
       flex-wrap: nowrap;
     }
 
-    &_clearfix {
-      &::after {
-        @media (orientation: portrait) {
-          width: 62px;
-          height: 86px;
-
-          visibility: hidden;
-
-          content: '';
-        }
-      }
-    }
-
     li {
       margin: 0 5px;
 
