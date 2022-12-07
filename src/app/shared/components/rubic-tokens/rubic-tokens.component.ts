@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensSelectService } from 'src/app/features/swaps/shared/components/tokens-select/services/tokens-select.service';
+import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -77,7 +77,7 @@ export class RubicTokensComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly tokensSelectService: TokensSelectService,
+    private readonly tokensSelectorModalService: TokensSelectorModalService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
@@ -110,20 +110,12 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromBlockchain, toBlockchain, fromToken } = this.formService.inputValue;
-    const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
+    const { fromToken } = this.formService.inputValue;
 
     this.gtmService.reloadGtmSession();
 
-    this.tokensSelectService
-      .showDialog(
-        this._tokens$.asObservable(),
-        this._favoriteTokens$.asObservable(),
-        this.formType,
-        currentBlockchain,
-        this.formService.input,
-        idPrefix
-      )
+    this.tokensSelectorModalService
+      .showDialog(this.formType, this.formService.input, idPrefix)
       .subscribe((selectedToken: TokenAmount) => {
         if (selectedToken) {
           const token = {
