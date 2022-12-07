@@ -23,7 +23,7 @@ import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.
 import { UserInterface } from '@core/services/auth/models/user.interface';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
-import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
+import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { LIST_ANIMATION } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/components/tokens-list/animations/list-animation';
 
 @Component({

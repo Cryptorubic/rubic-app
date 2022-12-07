@@ -1,7 +1,7 @@
 import { FiatAsset } from '@features/swaps/core/services/fiats-selector-service/models/fiat-asset';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { BlockchainName } from 'rubic-sdk';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 
-export type FromAsset = FiatAsset | TokenAmount;
+export type FromAsset = FiatAsset | AvailableTokenAmount;
 
 export type FromAssetType = 'fiat' | BlockchainName;

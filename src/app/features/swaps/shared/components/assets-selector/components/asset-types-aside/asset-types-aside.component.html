@@ -1,0 +1,63 @@
+<aside class="blockchain-aside">
+  <tui-scrollbar class="blockchain-aside__scroll">
+    <ul
+      class="blockchain-aside__blockchains-list"
+      *ngLet="selectedAssetType$ | async as selectedAssetType"
+    >
+      <li *noFrame>
+        <app-icon-button
+          icon="assets/images/icons/fiats/usd.svg"
+          [disabled]="selectedAssetType === 'fiat'"
+          [border]="selectedAssetType === 'fiat'"
+          [borderRadiusPercent]="50"
+          label="Fiats"
+        >
+        </app-icon-button>
+      </li>
+
+      <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
+        <ng-container
+          *ngLet="shownBlockchainsAmount | functionCall: getBlockchainsList:this as blockchainsList"
+        >
+          <ng-container *ngFor="let blockchainItem of blockchainsList">
+            <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
+              <li
+                [id]="idPrefix + 'Network_' + blockchainItem.name"
+                [ngClass]="{ disabled: disabled }"
+                tuiHintMode="error"
+                [tuiHint]="blockchainItem | functionCall: getHintText:this"
+              >
+                <app-icon-button
+                  [icon]="blockchainItem.icon"
+                  [disabled]="selectedAssetType === blockchainItem.name || disabled"
+                  [border]="selectedAssetType === blockchainItem.name"
+                  [borderRadiusPercent]="50"
+                  [label]="blockchainItem.label"
+                  (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
+                >
+                </app-icon-button>
+              </li>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <li class="open-selector" *noFrame>
+          <app-rubic-button (onClick)="onSelectorSwitch()">
+            <ng-container *ngLet="selectorListType$ | async as selectorListType">
+              <div *ngIf="selectorListType !== 'blockchains'">
+                +{{ blockchainsAmount - shownBlockchainsAmount }}
+              </div>
+
+              <div *ngIf="selectorListType === 'blockchains'">
+                <div
+                  class="arrow-back"
+                  inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"
+                ></div>
+              </div>
+            </ng-container>
+          </app-rubic-button>
+        </li>
+      </ng-container>
+    </ul>
+  </tui-scrollbar>
+</aside>

@@ -7,7 +7,7 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
+import { AssetsSelectorModalService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-modal.service';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -49,7 +49,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly tokensSelectorModalService: TokensSelectorModalService,
+    private readonly assetsSelectorModalService: AssetsSelectorModalService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
@@ -86,7 +86,7 @@ export class SelectAssetButtonComponent implements OnInit {
   public openTokensSelect(idPrefix: string): void {
     this.gtmService.reloadGtmSession();
 
-    this.tokensSelectorModalService
+    this.assetsSelectorModalService
       .showDialog(this.formType, idPrefix)
       .subscribe((asset: FromAsset) => {
         if (asset) {

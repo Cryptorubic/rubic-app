@@ -25,12 +25,12 @@ export class SelectTokenButtonComponent {
 
   constructor(
     private readonly exchangerFormService: ExchangerFormService,
-    private readonly tokensSelectorService: TokensSelectorService,
+    private readonly assetsSelectorService: TokensSelectorService,
     private readonly tokensService: TokensService
   ) {}
 
   public openTokensSelector(): void {
-    this.tokensSelectorService.showDialog().subscribe((selectedToken: TokenAmount) => {
+    this.assetsSelectorService.showDialog().subscribe((selectedToken: TokenAmount) => {
       if (selectedToken) {
         this.exchangerFormService.input.patchValue({
           toToken: selectedToken

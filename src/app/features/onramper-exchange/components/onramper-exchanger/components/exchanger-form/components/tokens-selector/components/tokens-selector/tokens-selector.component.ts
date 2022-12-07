@@ -33,7 +33,7 @@ import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-imag
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { ExchangerFormService } from '@features/onramper-exchange/services/exchanger-form-service/exchanger-form.service';
-import { TokensListType } from '@features/swaps/shared/components/tokens-selector/models/tokens-list-type';
+import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { TokensListComponent } from '@features/onramper-exchange/components/onramper-exchanger/components/exchanger-form/components/tokens-selector/components/tokens-list/tokens-list.component';
 
 type ComponentContext = TuiDialogContext<TokenAmount, {}>;
