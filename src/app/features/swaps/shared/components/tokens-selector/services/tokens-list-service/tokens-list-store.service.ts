@@ -155,6 +155,7 @@ export class TokensListStoreService {
           this.tokensToShow = tokensList.tokensToShow;
           this.customToken = null;
         } else {
+          this.tokensToShow = [];
           this.customToken = tokensList.customToken;
         }
         this.searchLoading = false;

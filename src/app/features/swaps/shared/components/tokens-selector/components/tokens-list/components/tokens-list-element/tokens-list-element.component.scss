@@ -8,6 +8,10 @@
 
   color: var(--form-bright-text-color);
 
+  @include iframe {
+    height: unset;
+  }
+
   @include iframe-horizontal {
     height: 100%;
   }
@@ -150,6 +154,11 @@
       display: flex;
       align-items: center;
       width: fit-content;
+
+      @include iframe {
+        font-size: 14px;
+        line-height: 16px;
+      }
     }
   }
 
@@ -195,16 +204,13 @@
     margin-right: 20px;
 
     @include iframe-horizontal {
+      min-width: 30px;
+      height: 30px;
       margin-right: 10px;
     }
 
-    @include iframe-horizontal {
-      width: 30px;
-      height: 30px;
-    }
-
     @include iframe-vertical {
-      width: 24px;
+      min-width: 24px;
       height: 24px;
     }
 
