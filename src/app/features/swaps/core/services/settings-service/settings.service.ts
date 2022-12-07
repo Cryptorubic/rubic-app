@@ -11,7 +11,7 @@ import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
-import { SettingsWarningModalComponent } from '@app/features/swaps/shared/settings-warning-modal/settings-warning-modal.component';
+import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
