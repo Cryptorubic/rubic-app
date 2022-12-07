@@ -6,7 +6,7 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/components/t
 import { WINDOW } from '@ng-web-apis/common';
 import { correctAddressValidator } from './services/utils/correct-address-validator';
 import { FormControl } from '@angular/forms';
-import { compareObjects, isNil } from '@app/shared/utils/utils';
+import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 
@@ -47,14 +47,8 @@ export class TargetNetworkAddressComponent implements OnInit {
         filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareObjects(
-              { blockchain: prev.fromToken.blockchain, address: prev.fromToken.address },
-              { blockchain: curr.fromToken.blockchain, address: curr.fromToken.address }
-            ) &&
-            compareObjects(
-              { blockchain: prev.toToken.blockchain, address: prev.toToken.address },
-              { blockchain: curr.toToken.blockchain, address: curr.toToken.address }
-            )
+            compareTokens(prev.fromToken, curr.fromToken) &&
+            compareTokens(prev.toToken, curr.toToken)
           );
         })
       )
