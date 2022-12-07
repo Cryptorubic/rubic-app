@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { map, startWith } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
@@ -14,12 +13,6 @@ import { CrossChainFormService } from '@features/swaps/features/cross-chain/serv
   providers: [TuiDestroyService]
 })
 export class CrossChainBottomFormComponent {
-  @Input() loading: boolean;
-
-  @Input() tokens: AvailableTokenAmount[];
-
-  @Input() favoriteTokens: AvailableTokenAmount[];
-
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;

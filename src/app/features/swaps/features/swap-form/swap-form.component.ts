@@ -3,19 +3,16 @@ import {
   ChangeDetectorRef,
   Component,
   OnDestroy,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { combineLatest, Observable } from 'rxjs';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { BlockchainName, BLOCKCHAIN_NAME, BlockchainsInfo } from 'rubic-sdk';
-import { debounceTime, distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
-import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import BigNumber from 'bignumber.js';
@@ -32,12 +29,6 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
 
-type TokenType = 'from' | 'to';
-
-type AvailableTokens = {
-  [tokenType in TokenType]: AvailableTokenAmount[];
-};
-
 @Component({
   selector: 'app-swap-form',
   templateUrl: './swap-form.component.html',
@@ -46,33 +37,25 @@ type AvailableTokens = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapFormComponent implements OnInit, OnDestroy {
-  public isLoading = true;
-
   public tradeStatus: TRADE_STATUS;
 
   public allowRefresh: boolean = true;
 
-  private _supportedTokens: List<TokenAmount>;
-
-  private _supportedFavoriteTokens: List<TokenAmount>;
-
-  public availableTokens: AvailableTokens;
-
-  public availableFavoriteTokens: AvailableTokens;
-
-  public fromAssetType: FromAssetType;
+  private fromAssetType: FromAssetType;
 
   public toBlockchain: BlockchainName;
 
   public swapType: SWAP_PROVIDER_TYPE;
 
-  public isMobile$: Observable<boolean>;
-
   public currentInstantTradeInfo: InstantTradeInfo;
 
-  public readonly backgroundColor = this.queryParams.backgroundColor;
+  public readonly backgroundColor = this.queryParamsService.backgroundColor;
+
+  public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
 
   public readonly isFormFilled$ = this.swapFormService.isFilled$;
+
+  public readonly getCurrentUser$ = this.authService.currentUser$;
 
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -82,35 +65,21 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
   }
 
-  public readonly getCurrentUser$ = this.authService.currentUser$;
-
   constructor(
     private readonly swapsService: SwapsService,
-    public readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
-    private readonly destroy$: TuiDestroyService,
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly authService: AuthService,
-    public readonly queryParams: QueryParamsService
-  ) {
-    this.availableTokens = {
-      from: [],
-      to: []
-    };
-    this.availableFavoriteTokens = {
-      from: [],
-      to: []
-    };
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
-  }
+    private readonly queryParamsService: QueryParamsService,
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {}
 
   ngOnInit(): void {
-    this.subscribeOnTokens();
-
     this.swapsService.swapMode$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(swapMode => {
@@ -118,102 +87,27 @@ export class SwapFormComponent implements OnInit, OnDestroy {
       });
 
     this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      if (
-        (this.fromAssetType !== BLOCKCHAIN_NAME.SOLANA &&
-          form.fromAssetType === BLOCKCHAIN_NAME.SOLANA) ||
-        (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
-          form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
-      ) {
-        this.notifyBeta();
-      }
       this.setFormValues(form);
     });
 
     this.watchGtmEvents();
   }
 
-  private subscribeOnTokens(): void {
-    combineLatest([this.swapsService.availableTokens$, this.swapsService.availableFavoriteTokens$])
-      .pipe(debounceTime(0), takeUntil(this.destroy$))
-      .subscribe(tokensChangesTuple => this.handleTokensChange(tokensChangesTuple));
-  }
-
-  /**
-   * Handle changes in tokens and bridge pairs lists.
-   * @param supportedTokens List of supported tokens.
-   */
-  private handleTokensChange([supportedTokens, supportedFavoriteTokens]: [
-    List<TokenAmount>,
-    List<TokenAmount>
-  ]): void {
-    this.isLoading = true;
-    if (!supportedTokens) {
-      return;
-    }
-
-    this._supportedTokens = supportedTokens;
-    this._supportedFavoriteTokens = supportedFavoriteTokens;
-
-    this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
-    this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
-
-    this.isLoading = false;
-    this.cdr.detectChanges();
+  ngOnDestroy(): void {
+    this.settingsService.saveSettingsToLocalStorage();
   }
 
   private setFormValues(form: SwapFormInput): void {
+    if (
+      (this.fromAssetType !== BLOCKCHAIN_NAME.SOLANA &&
+        form.fromAssetType === BLOCKCHAIN_NAME.SOLANA) ||
+      (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA && form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+    ) {
+      this.notifyBeta();
+    }
+
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
-
-    if (this._supportedTokens) {
-      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
-      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
-    }
-  }
-
-  private callFunctionWithTokenTypes(
-    functionToCall: (tokenType: TokenType, tokenListType: 'default' | 'favorite') => void,
-    tokenListType: 'default' | 'favorite'
-  ): void {
-    functionToCall('from', tokenListType);
-    functionToCall('to', tokenListType);
-  }
-
-  private setAvailableTokens(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
-    const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromAsset';
-    const oppositeAsset = this.swapFormService.inputValue[oppositeTokenKey];
-    const oppositeToken = isMinimalToken(oppositeAsset) ? oppositeAsset : null;
-
-    const availableTokens =
-      tokenListType === 'default' ? this.availableTokens : this.availableFavoriteTokens;
-    const supportedTokens =
-      tokenListType === 'default' ? this._supportedTokens : this._supportedFavoriteTokens;
-
-    if (!oppositeToken) {
-      availableTokens[tokenType] = supportedTokens
-        .map(supportedToken => ({
-          ...supportedToken,
-          available: true
-        }))
-        .toArray();
-    } else {
-      const tokens: AvailableTokenAmount[] = [];
-
-      const checkIsEqualTokenAndPush = (supportedToken: TokenAmount): void => {
-        tokens.push({
-          ...supportedToken,
-          available:
-            supportedToken.blockchain !== oppositeToken.blockchain ||
-            supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-        });
-      };
-
-      supportedTokens.forEach(supportedToken => {
-        checkIsEqualTokenAndPush(supportedToken);
-      });
-
-      availableTokens[tokenType] = tokens;
-    }
   }
 
   public async revert(): Promise<void> {
@@ -279,10 +173,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
           this.gtmService.needTrackFormEventsNow = true;
         }
       });
-  }
-
-  ngOnDestroy(): void {
-    this.settingsService.saveSettingsToLocalStorage();
   }
 
   public getFromBlockchain(): BlockchainName {

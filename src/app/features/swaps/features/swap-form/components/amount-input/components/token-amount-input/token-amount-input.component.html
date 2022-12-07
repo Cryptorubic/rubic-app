@@ -3,9 +3,8 @@
     <app-select-asset-button-tokens
       class="token-amount-input-container__token-button"
       [ngClass]="{
-        'token-amount-input-container__token-button_attractive': !(selectedToken || loading)
+        'token-amount-input-container__token-button_attractive': !selectedToken
       }"
-      [loading]="loading"
       formType="from"
     ></app-select-asset-button-tokens>
 

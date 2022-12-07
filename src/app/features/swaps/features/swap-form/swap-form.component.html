@@ -13,7 +13,7 @@
         <app-settings-container class="swaps-form__settings"></app-settings-container>
 
         <app-iframe-logout-button
-          *ngIf="queryParams.hideUnusedUI && getCurrentUser$ | async"
+          *ngIf="hideUnusedUI && getCurrentUser$ | async"
         ></app-iframe-logout-button>
       </div>
     </header>
@@ -26,17 +26,10 @@
         >
         </app-iframe-blockchain-indicator>
 
-        <app-token-amount-input
-          *noFrame="'vertical'"
-          [loading]="isLoading"
-          [tokens]="availableTokens['from']"
-          [favoriteTokens]="availableFavoriteTokens['from']"
-        ></app-token-amount-input>
+        <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
 
         <app-vertical-iframe-token-amount-input
           *onlyFrame="'vertical'"
-          [loading]="isLoading"
-          [tokens]="availableTokens['from']"
         ></app-vertical-iframe-token-amount-input>
       </div>
 
@@ -50,9 +43,6 @@
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"
-          [loading]="isLoading"
-          [tokens]="availableTokens['to']"
-          [favoriteTokens]="availableFavoriteTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
           (instantTradeInfoChange)="currentInstantTradeInfo = $event"
           (tradeStatusChange)="tradeStatus = $event"
@@ -61,10 +51,7 @@
 
         <app-cross-chain-bottom-form
           *ngIf="isCrossChainRouting"
-          [loading]="isLoading"
-          [tokens]="availableTokens['to']"
           (tradeStatusChange)="tradeStatus = $event"
-          [favoriteTokens]="availableFavoriteTokens['to']"
         >
         </app-cross-chain-bottom-form>
       </div>

@@ -4,7 +4,7 @@
       class="tokens__btn"
       [id]="formType === 'from' ? idPrefix + 'token1' : idPrefix + 'token2'"
       [size]="'s'"
-      [loading]="loading"
+      [loading]="loading$ | async"
       [disabled]="disabled || iframeForceDisabled"
       (onClick)="openTokensSelect(idPrefix)"
       [appearance]="selectedAsset ? 'primary' : 'secondary'"

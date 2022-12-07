@@ -1,14 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -21,10 +14,6 @@ import { FormControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VerticalIframeTokenAmountInputComponent implements OnInit {
-  @Input() loading: boolean;
-
-  @Input() tokens: AvailableTokenAmount[];
-
   public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');
 
   private get formattedAmount(): string {

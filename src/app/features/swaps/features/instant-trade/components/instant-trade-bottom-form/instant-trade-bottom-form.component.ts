@@ -6,7 +6,6 @@ import {
   Inject,
   Injector,
   INJECTOR,
-  Input,
   OnInit,
   Output,
   Self
@@ -32,7 +31,6 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -85,12 +83,6 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  @Input() loading: boolean;
-
-  @Input() tokens: AvailableTokenAmount[];
-
-  @Input() favoriteTokens: AvailableTokenAmount[];
-
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
   /**

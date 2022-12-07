@@ -1,59 +1,19 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { List } from 'immutable';
-import {
-  BlockchainsInfo,
-  CHAIN_TYPE,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  EvmWeb3Pure,
-  Web3Pure
-} from 'rubic-sdk';
-import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
-import { first, map, mergeMap } from 'rxjs/operators';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { BehaviorSubject, skip } from 'rxjs';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import BigNumber from 'bignumber.js';
-import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
-import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
-
-const DEFAULT_PARAMETERS = {
-  swap: {
-    fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-    toChain: BLOCKCHAIN_NAME.ETHEREUM,
-    from: {
-      [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
-      [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
-      [BLOCKCHAIN_NAME.HARMONY]: 'ONE',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR',
-      [BLOCKCHAIN_NAME.ARBITRUM]: 'AETH',
-      [BLOCKCHAIN_NAME.AURORA]: 'aETH',
-      [BLOCKCHAIN_NAME.TELOS]: 'TLOS'
-    },
-    to: {
-      [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
-    },
-    amount: '1'
-  }
-};
-
-type DefaultParametersFrom = keyof typeof DEFAULT_PARAMETERS.swap.from;
-type DefaultParametersTo = keyof typeof DEFAULT_PARAMETERS.swap.to;
 
 @Injectable({
   providedIn: 'root'
@@ -84,9 +44,11 @@ export class QueryParamsService {
 
   public enabledBlockchains: BlockchainName[];
 
-  public screenWidth: number;
-
   public backgroundColor: string;
+
+  private readonly _queryParams$ = new BehaviorSubject<QueryParams>(undefined);
+
+  public readonly queryParams$ = this._queryParams$.asObservable();
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -94,11 +56,9 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
-    private readonly gtmService: GoogleTagManagerService,
     private readonly settingsService: SettingsService,
     @Inject(WINDOW) private readonly window: Window
   ) {
@@ -127,11 +87,7 @@ export class QueryParamsService {
         this.enabledBlockchains = queryParams.enabledBlockchains;
       }
 
-      const route = this.router.url.split('?')[0].substr(1);
-      const hasParams = Object.keys(queryParams).length !== 0;
-      if (hasParams && route === '') {
-        this.initiateTradesParams(queryParams);
-      }
+      this._queryParams$.next(queryParams);
     }
   }
 
@@ -141,107 +97,6 @@ export class QueryParamsService {
       ...params
     };
     this.navigate();
-  }
-
-  private initiateTradesParams(params: QueryParams): void {
-    this.swapsService.availableTokens$
-      .pipe(
-        first(tokens => tokens?.size > 0),
-        mergeMap(tokens =>
-          this.getProtectedSwapParams(params).pipe(
-            map(protectedParams => ({ tokens, protectedParams }))
-          )
-        ),
-        mergeMap(({ tokens, protectedParams }) => {
-          const fromAssetType = protectedParams.fromChain;
-          const toBlockchain = protectedParams.toChain;
-
-          const findFromToken$ = BlockchainsInfo.isBlockchainName(fromAssetType)
-            ? this.getTokenBySymbolOrAddress(tokens, protectedParams?.from, fromAssetType)
-            : of(null);
-          const findToToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
-            protectedParams?.to,
-            toBlockchain
-          );
-
-          return forkJoin([findFromToken$, findToToken$]).pipe(
-            map(([fromToken, toToken]) => ({
-              fromAsset: fromToken,
-              toToken,
-              fromAssetType,
-              toBlockchain,
-              protectedParams
-            }))
-          );
-        })
-      )
-      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, protectedParams }) => {
-        this.gtmService.needTrackFormEventsNow = false;
-        this.swapFormService.inputControl.patchValue({
-          fromAssetType,
-          toBlockchain,
-          ...(fromAsset && { fromAsset }),
-          ...(toToken && { toToken }),
-          ...(protectedParams.amount !== undefined && {
-            fromAmount: new BigNumber(protectedParams.amount)
-          })
-        });
-      });
-  }
-
-  private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    const fromChain =
-      BlockchainsInfo.isBlockchainName(queryParams?.fromChain) || queryParams?.fromChain === 'fiat'
-        ? queryParams.fromChain
-        : this.swapFormService.inputValue.fromAssetType || DEFAULT_PARAMETERS.swap.fromChain;
-
-    const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
-      ? queryParams.toChain
-      : DEFAULT_PARAMETERS.swap.toChain;
-
-    const newParams = {
-      ...queryParams,
-      fromChain,
-      toChain,
-      ...(queryParams.from && { from: queryParams.from }),
-      ...(queryParams.to && { to: queryParams.to }),
-      ...(queryParams.amount && { amount: queryParams.amount })
-    };
-
-    if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-      if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
-        newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
-      } else {
-        newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
-      }
-    }
-
-    return of(newParams);
-  }
-
-  /**
-   * Gets tokens by symbol or address.
-   * @param tokens Tokens list to search.
-   * @param token Tokens symbol or address.
-   * @param chain Tokens chain.
-   * @return Observable<TokenAmount> Founded token.
-   */
-  private getTokenBySymbolOrAddress(
-    tokens: List<TokenAmount>,
-    token: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount> {
-    if (!token) {
-      return of(null);
-    }
-
-    const chainType = BlockchainsInfo.getChainType(chain);
-    if (Web3Pure[chainType].isAddressCorrect(token)) {
-      const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
-      return this.searchTokenByAddress(tokens, address, chain);
-    }
-    return this.searchTokenBySymbol(tokens, token, chain);
   }
 
   private setDisabledProviders(enabledProviders: string[]): void {
@@ -254,78 +109,6 @@ export class QueryParamsService {
     this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
       enabledProviders.includes(provider.toLowerCase())
     );
-  }
-
-  /**
-   * Searches token by symbol.
-   * @param tokens List of local tokens.
-   * @param symbol Symbol to search.
-   * @param chain Chain to search.
-   * @return Observable<TokenAmount> Searched token.
-   */
-  private searchTokenBySymbol(
-    tokens: List<TokenAmount>,
-    symbol: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount> {
-    const similarTokens = tokens.filter(
-      token =>
-        token.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase() &&
-        token.blockchain === chain
-    );
-
-    if (!similarTokens.size) {
-      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
-        map(foundTokens => {
-          if (foundTokens?.size) {
-            const token =
-              foundTokens?.size > 1
-                ? foundTokens.find(
-                    el => el.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
-                  )
-                : foundTokens.first();
-            const newToken = { ...token, amount: new BigNumber(NaN) } as TokenAmount;
-            this.tokensService.addToken(newToken);
-            return newToken;
-          }
-          return null;
-        })
-      );
-    }
-
-    return of(similarTokens.first());
-  }
-
-  /**
-   * Searches token by address.
-   * @param tokens List of local tokens.
-   * @param address Address to search.
-   * @param chain Chain to search.
-   * @return Observable<TokenAmount> Searched token.
-   */
-  private searchTokenByAddress(
-    tokens: List<TokenAmount>,
-    address: string,
-    chain: BlockchainName
-  ): Observable<TokenAmount> {
-    const searchingToken = tokens.find(
-      token => compareAddresses(token.address, address) && token.blockchain === chain
-    );
-
-    return searchingToken
-      ? of(searchingToken)
-      : this.tokensService.fetchQueryTokens(address, chain).pipe(
-          switchIif(
-            backendTokens => Boolean(backendTokens?.size),
-            backendTokens => of(backendTokens.first()),
-            () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
-          ),
-          map(fetchedToken => {
-            const newToken = { ...fetchedToken, amount: new BigNumber(NaN) } as TokenAmount;
-            this.tokensService.addToken(newToken);
-            return newToken;
-          })
-        );
   }
 
   private navigate(): void {
@@ -488,7 +271,6 @@ export class QueryParamsService {
       all_keys: null,
       public_key: null
     });
-    this.navigate();
   }
 
   public getUrlSearchParam(key: string): string {
