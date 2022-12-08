@@ -32,7 +32,7 @@ export class AssetsSelectorService {
 
   public readonly assetSelected$ = this._assetSelected$.asObservable();
 
-  private readonly _selectorListType$ = new BehaviorSubject<SelectorListType>('tokens');
+  private readonly _selectorListType$ = new BehaviorSubject<SelectorListType>(undefined);
 
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
@@ -43,8 +43,6 @@ export class AssetsSelectorService {
   public set selectorListType(value: SelectorListType) {
     this._selectorListType$.next(value);
   }
-
-  private prevSelectorListType: SelectorListType = 'tokens';
 
   constructor(
     private readonly tokensService: TokensService,
@@ -57,7 +55,9 @@ export class AssetsSelectorService {
     this._formType = context.formType;
 
     const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
-    this.assetType = this.swapFormService.inputValue[assetTypeKey];
+    const assetType = this.swapFormService.inputValue[assetTypeKey];
+    this.assetType = assetType;
+    this.selectorListType = assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
   private subscribeOnAssetChange(): void {
@@ -82,8 +82,8 @@ export class AssetsSelectorService {
     }
   }
 
-  public setPreviousSelectorListType(): void {
-    this.selectorListType = this.prevSelectorListType;
+  public setSelectorListTypeByAssetType(): void {
+    this.selectorListType = this.assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
   public onAssetSelect(asset: FromAsset): void {

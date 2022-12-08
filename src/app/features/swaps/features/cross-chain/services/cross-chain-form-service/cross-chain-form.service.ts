@@ -201,6 +201,10 @@ export class CrossChainFormService {
    */
   private refreshServiceCallsCounter = 0;
 
+  /**
+   * Returns form input value.
+   * Must be used only if form contains blockchains asset types.
+   */
   public get inputValue(): SwapFormInputTokens {
     const inputForm = this.swapFormService.inputValue;
     if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
@@ -213,7 +217,7 @@ export class CrossChainFormService {
     return this.swapFormService.inputValue$.pipe(
       filter(
         inputForm =>
-          inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
+          !inputForm.fromAssetType || BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
       ),
       map(inputForm => inputForm as SwapFormInputTokens),
       shareReplay(shareReplayConfig)

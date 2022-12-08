@@ -15,6 +15,7 @@ import { SwapFormService } from '@features/swaps/core/services/swap-form-service
 import { TranslateService } from '@ngx-translate/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { FormControl } from '@angular/forms';
+import { isMinimalToken } from '@shared/utils/is-token';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -56,7 +57,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
         this.amount.setValue(fromAmount.toFixed());
       }
 
-      this.selectedToken = fromAsset as TokenAmount; // @todo update
+      this.selectedToken = isMinimalToken(fromAsset) ? fromAsset : null;
       this.cdr.markForCheck();
     });
   }

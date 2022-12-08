@@ -95,6 +95,7 @@ export class AssetTypesAsideComponent {
   }
 
   public openFiatsList(): void {
+    this.assetsSelectorService.assetType = 'fiat';
     this.assetsSelectorService.selectorListType = 'fiats';
   }
 }

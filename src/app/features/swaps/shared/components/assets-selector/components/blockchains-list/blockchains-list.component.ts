@@ -27,7 +27,7 @@ export class BlockchainsListComponent {
   }
 
   public closeBlockchainsList(): void {
-    this.assetsSelectorService.setPreviousSelectorListType();
+    this.assetsSelectorService.setSelectorListTypeByAssetType();
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
