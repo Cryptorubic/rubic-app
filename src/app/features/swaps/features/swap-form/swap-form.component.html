@@ -62,7 +62,7 @@
 
   <ng-container *noFrame>
     <app-swap-info-container
-      *ngIf="isFormFilled"
+      *ngIf="isFormFilled && !isOnramper"
       [swapType]="swapType"
       [currentInstantTradeInfo]="currentInstantTradeInfo"
       [tradeStatus]="tradeStatus"

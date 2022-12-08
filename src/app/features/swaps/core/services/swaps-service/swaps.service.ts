@@ -20,6 +20,7 @@ import {
 } from '@features/swaps/core/services/swaps-service/constants/default-form-parameters';
 import { compareAddresses, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { fiats } from '@features/swaps/shared/components/assets-selector/constants/fiats';
 
 @Injectable()
 export class SwapsService {
@@ -68,11 +69,11 @@ export class SwapsService {
           const toBlockchain = protectedParams.toChain;
 
           const findFromToken$ = BlockchainsInfo.isBlockchainName(fromAssetType)
-            ? this.getTokenBySymbolOrAddress(tokens, protectedParams?.from, fromAssetType)
-            : of(null);
+            ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromAssetType)
+            : of(fiats.find(fiat => fiat.symbol === protectedParams.from));
           const findToToken$ = this.getTokenBySymbolOrAddress(
             tokens,
-            protectedParams?.to,
+            protectedParams.to,
             toBlockchain
           );
 
