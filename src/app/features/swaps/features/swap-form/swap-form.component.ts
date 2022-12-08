@@ -26,7 +26,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
 
@@ -42,7 +42,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public allowRefresh: boolean = true;
 
-  private fromAssetType: FromAssetType;
+  private fromAssetType: AssetType;
 
   public toBlockchain: BlockchainName;
 

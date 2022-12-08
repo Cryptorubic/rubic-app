@@ -27,7 +27,7 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class TokensListStoreService {
@@ -76,7 +76,7 @@ export class TokensListStoreService {
     return this.searchQueryService.query;
   }
 
-  private get blockchain(): FromAssetType {
+  private get blockchain(): AssetType {
     return this.assetsSelectorService.assetType;
   }
 

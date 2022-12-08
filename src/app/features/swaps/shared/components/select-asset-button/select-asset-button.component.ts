@@ -18,7 +18,7 @@ import { DOCUMENT } from '@angular/common';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { SwapFormInput } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
-import { FromAsset } from '@features/swaps/shared/models/form/asset';
+import { Asset } from '@features/swaps/shared/models/form/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
@@ -39,7 +39,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public selectedAsset: FromAsset;
+  public selectedAsset: Asset;
 
   public buttonHovered: boolean = null;
 
@@ -88,7 +88,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
     this.assetsSelectorModalService
       .showDialog(this.formType, idPrefix)
-      .subscribe((asset: FromAsset) => {
+      .subscribe((asset: Asset) => {
         if (asset) {
           this.selectedAsset = asset;
           const inputElement = this.document.getElementById('token-amount-input-element');

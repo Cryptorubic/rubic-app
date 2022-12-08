@@ -5,7 +5,7 @@ import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/assets-selector/models/assets-selector-component-context';
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { FromAsset, FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 import { filter } from 'rxjs/operators';
 
 @Injectable()
@@ -16,19 +16,19 @@ export class AssetsSelectorService {
     return this._formType;
   }
 
-  private readonly _assetType$ = new BehaviorSubject<FromAssetType>(undefined);
+  private readonly _assetType$ = new BehaviorSubject<AssetType>(undefined);
 
   public readonly assetType$ = this._assetType$.asObservable();
 
-  public get assetType(): FromAssetType {
+  public get assetType(): AssetType {
     return this._assetType$.value;
   }
 
-  public set assetType(value: FromAssetType) {
+  public set assetType(value: AssetType) {
     this._assetType$.next(value);
   }
 
-  private readonly _assetSelected$ = new Subject<FromAsset>();
+  private readonly _assetSelected$ = new Subject<Asset>();
 
   public readonly assetSelected$ = this._assetSelected$.asObservable();
 
@@ -86,11 +86,11 @@ export class AssetsSelectorService {
     this.selectorListType = this.assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
-  public onAssetSelect(asset: FromAsset): void {
+  public onAssetSelect(asset: Asset): void {
     this._assetSelected$.next(asset);
   }
 
-  public getAssetType(formType: FormType): FromAssetType {
+  public getAssetType(formType: FormType): AssetType {
     const assetTypeKey = formType === 'from' ? 'fromAssetType' : 'toBlockchain';
     return this.swapFormService.inputValue[assetTypeKey];
   }

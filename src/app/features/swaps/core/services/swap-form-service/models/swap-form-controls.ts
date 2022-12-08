@@ -2,11 +2,11 @@ import { BlockchainName } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FromAsset, FromAssetType } from '@features/swaps/shared/models/form/asset';
+import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 
 export interface SwapFormInput {
-  fromAssetType: FromAssetType | null;
-  fromAsset: FromAsset | null;
+  fromAssetType: AssetType | null;
+  fromAsset: Asset | null;
 
   toBlockchain: BlockchainName | null;
   toToken: TokenAmount | null;
@@ -16,8 +16,8 @@ export interface SwapFormInput {
 
 // repeats previous interface, wrapping in FormControl
 export interface SwapFormInputControl {
-  fromAssetType: FormControl<FromAssetType | null>;
-  fromAsset: FormControl<FromAsset | null>;
+  fromAssetType: FormControl<AssetType | null>;
+  fromAsset: FormControl<Asset | null>;
 
   toBlockchain: FormControl<BlockchainName | null>;
   toToken: FormControl<TokenAmount | null>;
