@@ -95,7 +95,7 @@
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil.",
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
-    "noSelectedToken": "Token seç",
+    "noSelectedToken": "Token Seç",
     "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
   "navigation": { 

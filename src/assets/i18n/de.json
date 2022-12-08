@@ -95,7 +95,7 @@
     "wrongPromoterWallet": "Dein Wallet ist leider nicht mit Ethereum kompatibel. Bitte verbinde ein unterstütztes Wallet, z.B. MetaMask.",
     "walletNotInstalled": "Kein Wallet installiert.",
     "crossChainSwapUnavailable": "Leider ist dieser Swap mit dem berechneten Anbieter derzeit nicht verfügbar. Rubic berechnet die Route für Ihren Tausch neu.",
-    "noSelectedToken": "Token auswählen",
+    "noSelectedToken": "Token Auswählen",
     "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt."
   },
   "navigation": { 

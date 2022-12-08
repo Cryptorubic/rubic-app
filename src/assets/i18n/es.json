@@ -95,7 +95,7 @@
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada.",
     "crossChainSwapUnavailable": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
-    "noSelectedToken": "Seleccionar token",
+    "noSelectedToken": "Seleccionar Token",
     "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
   },
   "navigation": { 

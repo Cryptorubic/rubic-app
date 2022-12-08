@@ -95,7 +95,7 @@
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
     "crossChainSwapUnavailable": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
-    "noSelectedToken": "Sélectionnez le token",
+    "noSelectedToken": "Sélectionnez le Token",
     "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
   "navigation": { 
