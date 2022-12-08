@@ -355,7 +355,7 @@ export class QueryParamsService {
     this.iframeService.setIframeInfo({
       iframeAppearance: queryParams.iframe,
       device: queryParams.device,
-      providerAddress: queryParams.providerAddress,
+      providerAddress: queryParams.feeTarget || queryParams.providerAddress,
       tokenSearch: queryParams.tokenSearch === 'true',
       rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
     });

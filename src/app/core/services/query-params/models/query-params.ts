@@ -29,6 +29,7 @@ interface AllQueryParams {
   theme: string;
   language: SupportedLanguages;
   providerAddress: string;
+  feeTarget: string;
   hideUnusedUI: string;
   isDesktop: string;
   enabledProviders: string[];
