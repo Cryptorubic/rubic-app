@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { FiatAsset } from '@features/swaps/core/services/fiats-selector-service/models/fiat-asset';
+import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
 import { fiats } from '@features/swaps/shared/components/assets-selector/constants/fiats';
 
 @Component({

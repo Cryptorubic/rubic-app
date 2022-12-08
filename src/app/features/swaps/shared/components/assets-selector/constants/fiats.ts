@@ -1,4 +1,4 @@
-import { FiatAsset } from '@features/swaps/core/services/fiats-selector-service/models/fiat-asset';
+import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
 
 export const fiats: FiatAsset[] = [
   {
