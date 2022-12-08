@@ -65,6 +65,10 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
   }
 
+  public get isOnramper(): boolean {
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+  }
+
   constructor(
     private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,

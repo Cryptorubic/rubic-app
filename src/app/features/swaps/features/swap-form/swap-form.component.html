@@ -54,6 +54,8 @@
           (tradeStatusChange)="tradeStatus = $event"
         >
         </app-cross-chain-bottom-form>
+
+        <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
       </div>
     </main>
   </div>

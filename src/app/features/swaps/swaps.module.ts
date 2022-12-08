@@ -47,6 +47,7 @@ import { RefreshButtonComponent } from '@features/swaps/features/swap-form/compo
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
     SwapsRoutingModule,
     InstantTradeModule,
     CrossChainModule,
+    OnramperExchangerModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,

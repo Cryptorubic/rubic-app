@@ -1,0 +1,8 @@
+<div class="onramper-exchanger">
+  <app-swap-bottom-form
+    *ngIf="!isWidgetOpened"
+    (onSwapClick)="onSwapClick()"
+  ></app-swap-bottom-form>
+
+  <app-onramper-widget *ngIf="isWidgetOpened"></app-onramper-widget>
+</div>

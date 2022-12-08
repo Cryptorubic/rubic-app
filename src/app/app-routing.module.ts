@@ -10,13 +10,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
-    path: 'onramper',
-    loadChildren: () =>
-      import('./features/onramper-exchange/onramper-exchanger.module').then(
-        m => m.OnramperExchangerModule
-      )
-  },
-  {
     path: ROUTE_PATH.BYT_CRYPTO,
     loadChildren: () =>
       import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)

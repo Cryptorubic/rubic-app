@@ -1,0 +1,18 @@
+.bottom-form {
+  display: flex;
+  flex-direction: column;
+
+  &__output {
+    z-index: 9999;
+
+    display: flex;
+    justify-content: space-between;
+
+    min-height: 65px;
+    margin: 30px 0 15px;
+  }
+
+  &__buttons {
+    margin-top: 16px;
+  }
+}
