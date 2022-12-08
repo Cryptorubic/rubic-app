@@ -3,7 +3,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, EvmWeb3Pure } from 'rubic-sdk';
+import { EvmWeb3Pure } from 'rubic-sdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { ExchangerWebsocketService } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/exchanger-websocket.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -51,10 +52,7 @@ export class OnramperBottomFormComponent {
         this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
           status: TuiNotification.Success,
           autoClose: 15000,
-          data: {
-            type: 'instant-trade',
-            ccrProviderType: CROSS_CHAIN_TRADE_TYPE.CELER
-          }
+          data: { type: 'instant-trade' }
         });
 
         const toToken = this.swapFormService.inputValue.toToken;
@@ -62,17 +60,17 @@ export class OnramperBottomFormComponent {
           this.isWidgetOpened = false;
           this.cdr.detectChanges();
         } else {
-          // const blockchain = toToken.blockchain;
-          // const nativeToken = this.tokensService.tokens.find(
-          //   token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
-          // );
-          // this.swapFormService.inputControl.patchValue({
-          //   fromBlockchain: blockchain,
-          //   toBlockchain: blockchain,
-          //   fromToken: nativeToken,
-          //   toToken,
-          //   fromAmount: new BigNumber(info.out_amount).minus(0.01)
-          // });
+          const blockchain = toToken.blockchain;
+          const nativeToken = this.tokensService.tokens.find(
+            token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
+          );
+          this.swapFormService.inputControl.patchValue({
+            fromAssetType: blockchain,
+            fromAsset: nativeToken,
+            toBlockchain: blockchain,
+            toToken,
+            fromAmount: new BigNumber(info.out_amount).minus(0.01)
+          });
 
           this.router.navigate(['/']);
         }
