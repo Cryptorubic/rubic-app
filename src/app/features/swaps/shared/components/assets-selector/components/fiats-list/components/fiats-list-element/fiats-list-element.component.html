@@ -1,0 +1,9 @@
+<div class="fiat-card">
+  <div class="fiat-card__image-container">
+    <img [src]="fiat.image || DEFAULT_TOKEN_IMAGE" [alt]="fiat.symbol" />
+  </div>
+
+  <div class="fiat-card__name-container">
+    <span class="token-card__name-container-symbol">{{ fiat.symbol }}</span>
+  </div>
+</div>

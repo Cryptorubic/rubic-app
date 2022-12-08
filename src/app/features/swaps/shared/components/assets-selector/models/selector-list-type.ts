@@ -1,1 +1,1 @@
-export type SelectorListType = 'blockchains' | 'tokens';
+export type SelectorListType = 'blockchains' | 'tokens' | 'fiats';

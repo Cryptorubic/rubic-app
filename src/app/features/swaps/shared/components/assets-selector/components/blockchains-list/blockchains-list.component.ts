@@ -26,12 +26,12 @@ export class BlockchainsListComponent {
     return this.blockchainsListService.getHintText(blockchain);
   }
 
-  public onSelectorSwitch(): void {
-    this.assetsSelectorService.switchSelectorType();
+  public closeBlockchainsList(): void {
+    this.assetsSelectorService.setPreviousSelectorListType();
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.assetsSelectorService.assetType = blockchainName;
-    this.assetsSelectorService.switchSelectorType();
+    this.assetsSelectorService.selectorListType = 'tokens';
   }
 }

@@ -40,9 +40,11 @@ export class AssetsSelectorService {
     return this._selectorListType$.value;
   }
 
-  private set selectorListType(value: SelectorListType) {
+  public set selectorListType(value: SelectorListType) {
     this._selectorListType$.next(value);
   }
+
+  private prevSelectorListType: SelectorListType = 'tokens';
 
   constructor(
     private readonly tokensService: TokensService,
@@ -80,8 +82,8 @@ export class AssetsSelectorService {
     }
   }
 
-  public switchSelectorType(): void {
-    this.selectorListType = this.selectorListType === 'blockchains' ? 'tokens' : 'blockchains';
+  public setPreviousSelectorListType(): void {
+    this.selectorListType = this.prevSelectorListType;
   }
 
   public onAssetSelect(asset: FromAsset): void {

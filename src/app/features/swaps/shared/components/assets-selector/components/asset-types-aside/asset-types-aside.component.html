@@ -11,6 +11,7 @@
           [border]="selectedAssetType === 'fiat'"
           [borderRadiusPercent]="50"
           label="Fiats"
+          (iconButtonClick)="openFiatsList()"
         >
         </app-icon-button>
       </li>
@@ -20,12 +21,14 @@
           *ngLet="shownBlockchainsAmount | functionCall: getBlockchainsList:this as blockchainsList"
         >
           <ng-container *ngFor="let blockchainItem of blockchainsList">
-            <ng-container *ngLet="blockchainItem | functionCall: isDisabled:this as disabled">
+            <ng-container
+              *ngLet="blockchainItem | functionCall: isBlockchainDisabled:this as disabled"
+            >
               <li
                 [id]="idPrefix + 'Network_' + blockchainItem.name"
                 [ngClass]="{ disabled: disabled }"
                 tuiHintMode="error"
-                [tuiHint]="blockchainItem | functionCall: getHintText:this"
+                [tuiHint]="blockchainItem | functionCall: getBlockchainHintText:this"
               >
                 <app-icon-button
                   [icon]="blockchainItem.icon"
@@ -42,7 +45,7 @@
         </ng-container>
 
         <li class="open-selector" *noFrame>
-          <app-rubic-button (onClick)="onSelectorSwitch()">
+          <app-rubic-button (onClick)="openBlockchainsList()">
             <ng-container *ngLet="selectorListType$ | async as selectorListType">
               <div *ngIf="selectorListType !== 'blockchains'">
                 +{{ blockchainsAmount - shownBlockchainsAmount }}

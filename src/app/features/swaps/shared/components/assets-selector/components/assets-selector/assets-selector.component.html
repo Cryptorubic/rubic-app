@@ -17,11 +17,11 @@
     <div class="tokens-selector__content">
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
-          <app-blockchains-list *ngIf="selectorListType === 'blockchains'"></app-blockchains-list>
+          <app-blockchains-list></app-blockchains-list>
         </div>
       </ng-container>
 
-      <ng-container *ngIf="selectorListType === 'tokens'">
+      <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="idPrefix"></app-asset-types-aside>
 
         <ng-container *onlyFrame="'vertical'">
@@ -31,7 +31,11 @@
           ></app-search-bar>
         </ng-container>
 
-        <div class="token-list-container">
+        <div class="fiats-list-container" *ngIf="selectorListType === 'fiats'">
+          <app-fiats-list></app-fiats-list>
+        </div>
+
+        <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
           <ng-container *onlyFrame="'horizontal'">
             <app-search-bar
               *ngIf="iframeTokenSearch"

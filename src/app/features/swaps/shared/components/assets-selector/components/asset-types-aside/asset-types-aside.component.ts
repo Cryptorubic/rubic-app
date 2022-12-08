@@ -77,19 +77,24 @@ export class AssetTypesAsideComponent {
     return slicedBlockchains;
   }
 
-  public isDisabled(blockchain: AvailableBlockchain): boolean {
+  public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {
     return this.blockchainsListService.isDisabled(blockchain);
   }
 
-  public getHintText(blockchain: AvailableBlockchain): string | null {
+  public getBlockchainHintText(blockchain: AvailableBlockchain): string | null {
     return this.blockchainsListService.getHintText(blockchain);
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.assetsSelectorService.assetType = blockchainName;
+    this.assetsSelectorService.selectorListType = 'tokens';
   }
 
-  public onSelectorSwitch(): void {
-    this.assetsSelectorService.switchSelectorType();
+  public openBlockchainsList(): void {
+    this.assetsSelectorService.selectorListType = 'blockchains';
+  }
+
+  public openFiatsList(): void {
+    this.assetsSelectorService.selectorListType = 'fiats';
   }
 }
