@@ -10,7 +10,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/crypto-code';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
-import { onramperApiKey } from '@features/swaps/features/onramper-exchange/constants/onramper-api-key';
+import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
 import { SwapFormInputFiats } from '@features/swaps/core/services/swap-form-service/models/swap-form-fiats';
 
 @Injectable({

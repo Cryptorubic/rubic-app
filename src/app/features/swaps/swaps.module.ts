@@ -48,6 +48,7 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
+import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-service';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,13 @@ import { OnramperExchangerModule } from '@features/swaps/features/onramper-excha
     TuiAccordionModule,
     SwapsSharedModule
   ],
-  providers: [SwapsService, SuccessTxModalService, RubicSdkService, RefreshService, TradeService]
+  providers: [
+    SwapsService,
+    SuccessTxModalService,
+    RubicSdkService,
+    RefreshService,
+    TradeService,
+    FiatsService
+  ]
 })
 export class SwapsModule {}

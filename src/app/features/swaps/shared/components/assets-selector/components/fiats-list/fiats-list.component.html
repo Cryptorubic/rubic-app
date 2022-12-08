@@ -1,5 +1,5 @@
 <ng-container>
-  <tui-scrollbar class="fiats-container">
+  <tui-scrollbar class="fiats-container" *ngLet="fiats$ | async as fiats">
     <div class="nothing-to-show-message" *ngIf="!fiats?.length; else fiatsList">
       {{ 'modals.tokensListModal.noSearchData' | translate }}
     </div>

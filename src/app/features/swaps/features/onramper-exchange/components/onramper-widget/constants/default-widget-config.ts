@@ -1,4 +1,4 @@
-import { onramperApiKey } from '@features/swaps/features/onramper-exchange/constants/onramper-api-key';
+import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
 
 export const defaultWidgetConfig = {
   apiKey: onramperApiKey,

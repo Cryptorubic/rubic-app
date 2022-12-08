@@ -20,7 +20,7 @@ import {
 } from '@features/swaps/core/services/swaps-service/constants/default-form-parameters';
 import { compareAddresses, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { fiats } from '@features/swaps/shared/components/assets-selector/constants/fiats';
+import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-service';
 
 @Injectable()
 export class SwapsService {
@@ -46,6 +46,7 @@ export class SwapsService {
     private readonly swapFormService: SwapFormService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
+    private readonly fiatsService: FiatsService,
     private readonly gtmService: GoogleTagManagerService
   ) {
     this.subscribeOnQueryParams();
@@ -57,12 +58,12 @@ export class SwapsService {
       .pipe(
         first(Boolean),
         switchMap(queryParams =>
-          this.tokensService.tokens$.pipe(
-            first(Boolean),
-            map(tokens => ({ queryParams, tokens }))
-          )
+          forkJoin([
+            this.tokensService.tokens$.pipe(first(Boolean)),
+            this.fiatsService.fiats$.pipe(first(Boolean))
+          ]).pipe(map(([tokens, fiats]) => ({ queryParams, tokens, fiats })))
         ),
-        switchMap(({ queryParams, tokens }) => {
+        switchMap(({ queryParams, tokens, fiats }) => {
           const protectedParams = this.getProtectedSwapParams(queryParams);
 
           const fromAssetType = protectedParams.fromChain;
@@ -97,6 +98,7 @@ export class SwapsService {
           ...(toToken && { toToken }),
           ...(protectedParams.amount && { fromAmount: new BigNumber(protectedParams.amount) })
         });
+
         this._initialLoading$.next(false);
       });
   }
