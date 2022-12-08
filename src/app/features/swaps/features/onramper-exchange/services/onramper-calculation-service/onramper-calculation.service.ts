@@ -52,6 +52,10 @@ export class OnramperCalculationService {
         debounceTime(200),
         switchMap(input => {
           if (input.fromAssetType === 'fiat' && this.swapFormService.isFilled) {
+            this.swapFormService.outputControl.patchValue({
+              toAmount: null
+            });
+
             this._loading$.next(true);
             this._error$.next(false);
             return this.getOutputTokenAmount(input as SwapFormInputFiats).catch(() => {

@@ -1,3 +1,19 @@
-<div class="onramper-bottom-form">
-  <app-swap-bottom-form (onSwapClick)="onSwapClick()"></app-swap-bottom-form>
+<div class="bottom-form">
+  <div class="bottom-form__output">
+    <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
+
+    <app-to-amount-estimated></app-to-amount-estimated>
+  </div>
+
+  <div class="bottom-form__buttons">
+    <div class="bottom-form__button" *ngLet="user$ | async as user">
+      <app-rubic-button *ngIf="!user" appearance="secondary" (onClick)="onConnectWallet()">
+        Connect wallet
+      </app-rubic-button>
+
+      <app-rubic-button *ngIf="user" appearance="secondary" (onClick)="onSwapClickHandler()">
+        Swap
+      </app-rubic-button>
+    </div>
+  </div>
 </div>

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { Router } from '@angular/router';
 import { EvmWeb3Pure } from 'rubic-sdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
@@ -16,6 +15,8 @@ import { ExchangerWebsocketService } from '@features/swaps/features/onramper-exc
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
 import BigNumber from 'bignumber.js';
 import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
+import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -24,6 +25,8 @@ import { OnramperBottomFormService } from '@features/swaps/features/onramper-exc
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperBottomFormComponent {
+  public readonly user$ = this.authService.currentUser$;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
@@ -33,7 +36,9 @@ export class OnramperBottomFormComponent {
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     private readonly tokensService: TokensService,
-    private readonly onramperBottomFormService: OnramperBottomFormService
+    private readonly onramperBottomFormService: OnramperBottomFormService,
+    private readonly walletsModalService: WalletsModalService,
+    private readonly onramperCalculationService: OnramperCalculationService
   ) {
     let subscription$: Subscription;
     this.exchangerWebsocketService.info$.subscribe(info => {
@@ -78,11 +83,11 @@ export class OnramperBottomFormComponent {
     });
   }
 
-  public onSwapClick(): void {
-    if (!this.authService.userAddress) {
-      this.errorsService.catch(new RubicError('Connect wallet!'));
-    } else {
-      this.onramperBottomFormService.widgetOpened = true;
-    }
+  public onConnectWallet(): void {
+    this.walletsModalService.open().subscribe();
+  }
+
+  public onSwapClickHandler(): void {
+    this.onramperBottomFormService.widgetOpened = true;
   }
 }

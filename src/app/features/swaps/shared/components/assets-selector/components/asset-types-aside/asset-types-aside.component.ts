@@ -33,11 +33,12 @@ export class AssetTypesAsideComponent {
         return this.blockchainsAmount;
       }
 
+      const isFrom = this.formType === 'from' ? 1 : 0;
+
       if (windowSize === WindowSize.DESKTOP) {
-        return 8;
+        return 9 - isFrom;
       }
 
-      const isFrom = this.formType === 'from' ? 1 : 0;
       const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
         return Math.floor(asideHeight / 82) - 1 - isFrom;
