@@ -2,21 +2,33 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom, of, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
+import { BlockchainName, EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { debounceTime } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { cryptoCode } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/crypto-code';
+import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
 import { SwapFormInputFiats } from '@features/swaps/core/services/swap-form-service/models/swap-form-fiats';
+import {
+  OnramperSupportedBlockchain,
+  onramperSupportedBlockchains
+} from '@features/swaps/features/onramper-exchange/models/onramper-supported-blockchain';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OnramperCalculationService {
+  public static isSupportedBlockchain(
+    blockchain: BlockchainName
+  ): blockchain is OnramperSupportedBlockchain {
+    return onramperSupportedBlockchains.some(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
+  }
+
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
@@ -86,7 +98,7 @@ export class OnramperCalculationService {
 
   private async getOutputNativeAmount(input: SwapFormInputFiats): Promise<BigNumber> {
     const fromFiat = input.fromAsset.symbol;
-    const toCrypto = cryptoCode[input.toToken.blockchain as keyof typeof cryptoCode];
+    const toCrypto = cryptoCode[input.toToken.blockchain as OnramperSupportedBlockchain];
     const fromAmount = input.fromAmount.toFixed();
 
     const trades = await firstValueFrom(

@@ -10,6 +10,7 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { filter, map } from 'rxjs/operators';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -80,16 +81,33 @@ export class BlockchainsListService {
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
-    return blockchain.disabledConfiguration || this.isDisabledFrom(blockchain);
+    return (
+      blockchain.disabledConfiguration ||
+      this.isDisabledFrom(blockchain) ||
+      this.isDisabledTo(blockchain)
+    );
   }
 
   public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
     return this.assetsSelectorService.formType === 'from' && blockchain.disabledFrom;
   }
 
+  public isDisabledTo(blockchain: AvailableBlockchain): boolean {
+    if (this.assetsSelectorService.formType !== 'to') {
+      return false;
+    }
+    const fromAssetType = this.assetsSelectorService.getAssetType('from');
+    return (
+      fromAssetType === 'fiat' && !OnramperCalculationService.isSupportedBlockchain(blockchain.name)
+    );
+  }
+
   public getHintText(blockchain: AvailableBlockchain): string | null {
     if (this.isDisabledFrom(blockchain)) {
       return 'Select as target network';
+    }
+    if (this.isDisabledTo(blockchain)) {
+      return 'Cannot trade with fiats';
     }
     if (blockchain.disabledConfiguration) {
       return 'Temporary disabled';

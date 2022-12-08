@@ -22,7 +22,7 @@ export class AssetTypesAsideComponent {
 
   public readonly selectedAssetType$ = this.assetsSelectorService.assetType$;
 
-  public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
+  public readonly formType = this.assetsSelectorService.formType;
 
   /**
    * Returns amount of blockchains to show, depending on window width and height.
@@ -37,11 +37,12 @@ export class AssetTypesAsideComponent {
         return 8;
       }
 
+      const isFrom = this.formType === 'from' ? 1 : 0;
       const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return Math.floor(asideHeight / 82) - 2;
+        return Math.floor(asideHeight / 82) - 1 - isFrom;
       }
-      return Math.floor(asideHeight / 66) - 2;
+      return Math.floor(asideHeight / 66) - 1 - isFrom;
     })
   );
 

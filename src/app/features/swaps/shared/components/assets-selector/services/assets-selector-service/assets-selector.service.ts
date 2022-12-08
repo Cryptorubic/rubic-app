@@ -89,4 +89,9 @@ export class AssetsSelectorService {
   public onAssetSelect(asset: FromAsset): void {
     this._assetSelected$.next(asset);
   }
+
+  public getAssetType(formType: FormType): FromAssetType {
+    const assetTypeKey = formType === 'from' ? 'fromAssetType' : 'toBlockchain';
+    return this.swapFormService.inputValue[assetTypeKey];
+  }
 }

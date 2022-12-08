@@ -1,17 +1,19 @@
 <aside class="asset-types-aside">
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
-      <li *noFrame>
-        <app-icon-button
-          icon="assets/images/icons/fiat-selector.png"
-          [disabled]="selectedAssetType === 'fiat'"
-          [border]="selectedAssetType === 'fiat'"
-          [borderRadiusPercent]="50"
-          label="Fiats"
-          (iconButtonClick)="openFiatsList()"
-        >
-        </app-icon-button>
-      </li>
+      <ng-container *noFrame>
+        <li *ngIf="formType === 'from'">
+          <app-icon-button
+            icon="assets/images/icons/fiat-selector.png"
+            [disabled]="selectedAssetType === 'fiat'"
+            [border]="selectedAssetType === 'fiat'"
+            [borderRadiusPercent]="50"
+            label="Fiats"
+            (iconButtonClick)="openFiatsList()"
+          >
+          </app-icon-button>
+        </li>
+      </ng-container>
 
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
         <ng-container
