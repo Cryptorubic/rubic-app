@@ -1,4 +1,6 @@
 .widget-container {
+  position: relative;
+
   height: 660px;
 
   background: var(--main-form-background);
@@ -6,5 +8,17 @@
 
   iframe {
     border-radius: 19px;
+  }
+
+  &__back-button {
+    position: absolute;
+    top: 18px;
+    left: -55px;
+
+    ::ng-deep app-rubic-button {
+      tui-wrapper {
+        background: var(--main-form-background);
+      }
+    }
   }
 }

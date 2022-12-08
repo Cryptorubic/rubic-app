@@ -67,6 +67,7 @@ import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-bu
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
+import { BackButtonComponent } from './components/back-button/back-button.component';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    BackButtonComponent
   ],
   imports: [
     CommonModule,
@@ -183,7 +185,8 @@ import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
     StatusBadgeComponent,
     ChipsComponent,
     IframeLogoutButtonComponent,
-    SafeSanitizerPipe
+    SafeSanitizerPipe,
+    BackButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

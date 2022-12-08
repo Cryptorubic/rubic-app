@@ -1,9 +1,6 @@
-<aside class="blockchain-aside">
-  <tui-scrollbar class="blockchain-aside__scroll">
-    <ul
-      class="blockchain-aside__blockchains-list"
-      *ngLet="selectedAssetType$ | async as selectedAssetType"
-    >
+<aside class="asset-types-aside">
+  <tui-scrollbar class="asset-types-aside__scroll">
+    <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
       <li *noFrame>
         <app-icon-button
           icon="assets/images/icons/fiat-selector.png"
@@ -46,18 +43,7 @@
 
         <li class="open-selector" *noFrame>
           <app-rubic-button (onClick)="openBlockchainsList()">
-            <ng-container *ngLet="selectorListType$ | async as selectorListType">
-              <div *ngIf="selectorListType !== 'blockchains'">
-                +{{ blockchainsAmount - shownBlockchainsAmount }}
-              </div>
-
-              <div *ngIf="selectorListType === 'blockchains'">
-                <div
-                  class="arrow-back"
-                  inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"
-                ></div>
-              </div>
-            </ng-container>
+            +{{ blockchainsAmount - shownBlockchainsAmount }}
           </app-rubic-button>
         </li>
       </ng-container>
