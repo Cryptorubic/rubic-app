@@ -6,10 +6,11 @@ import { TargetNetworkAddressService } from '@features/swaps/shared/components/t
 import { WINDOW } from '@ng-web-apis/common';
 import { correctAddressValidator } from './services/utils/correct-address-validator';
 import { FormControl } from '@angular/forms';
-import { compareObjects, isNil } from '@app/shared/utils/utils';
+import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { BlockchainName } from 'rubic-sdk';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Component({
   selector: 'app-target-network-address',
@@ -46,8 +47,8 @@ export class TargetNetworkAddressComponent implements OnInit {
         filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareObjects(prev.fromAsset, curr.fromAsset) &&
-            compareObjects(prev.toToken, curr.toToken)
+            compareAssets(prev.fromAsset, curr.fromAsset) &&
+            compareTokens(prev.toToken, curr.toToken)
           );
         })
       )
