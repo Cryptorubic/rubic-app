@@ -5,11 +5,11 @@
 }
 
 .custom-token {
-  position: relative;
-  left: -12px;
-
-  padding-top: 15px;
   padding-left: 24px;
+
+  @include iframe {
+    padding-left: 0;
+  }
 
   @include iframe-horizontal {
     display: flex;
