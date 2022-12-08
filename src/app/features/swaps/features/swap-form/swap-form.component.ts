@@ -28,6 +28,7 @@ import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/m
 import { isMinimalToken } from '@shared/utils/is-token';
 import { FromAssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
 
 @Component({
   selector: 'app-swap-form',
@@ -57,6 +58,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly getCurrentUser$ = this.authService.currentUser$;
 
+  public readonly onramperWidgetOpened$ = this.onramperBottomFormService.widgetOpened$;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -80,6 +83,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly onramperBottomFormService: OnramperBottomFormService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 

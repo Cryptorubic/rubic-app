@@ -15,6 +15,7 @@ import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { ExchangerWebsocketService } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/exchanger-websocket.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
 import BigNumber from 'bignumber.js';
+import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -23,8 +24,6 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperBottomFormComponent {
-  public isWidgetOpened = false;
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
@@ -33,7 +32,8 @@ export class OnramperBottomFormComponent {
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly onramperBottomFormService: OnramperBottomFormService
   ) {
     let subscription$: Subscription;
     this.exchangerWebsocketService.info$.subscribe(info => {
@@ -57,7 +57,7 @@ export class OnramperBottomFormComponent {
 
         const toToken = this.swapFormService.inputValue.toToken;
         if (EvmWeb3Pure.isNativeAddress(toToken.address)) {
-          this.isWidgetOpened = false;
+          this.onramperBottomFormService.widgetOpened = false;
           this.cdr.detectChanges();
         } else {
           const blockchain = toToken.blockchain;
@@ -82,7 +82,7 @@ export class OnramperBottomFormComponent {
     if (!this.authService.userAddress) {
       this.errorsService.catch(new RubicError('Connect wallet!'));
     } else {
-      this.isWidgetOpened = true;
+      this.onramperBottomFormService.widgetOpened = true;
     }
   }
 }

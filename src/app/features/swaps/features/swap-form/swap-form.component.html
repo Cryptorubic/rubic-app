@@ -1,16 +1,20 @@
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
-  <div class="swaps-form" [ngStyle]="{ 'background-color': backgroundColor }">
-    <header *noFrame class="swaps-form__header">
-      <app-form-header class="swaps-form__blockchains" *noFrame></app-form-header>
+  <div
+    class="swap-form"
+    [ngStyle]="{ 'background-color': backgroundColor }"
+    [ngClass]="{ 'swap-form_extended': onramperWidgetOpened$ | async }"
+  >
+    <header *noFrame class="swap-form__header">
+      <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
 
-      <div class="swaps-form__settings-wrapper">
+      <div class="swap-form__settings-wrapper">
         <app-refresh-button
-          class="swaps-form__refresh"
+          class="swap-form__refresh"
           *ngIf="(isInstantTrade || isCrossChainRouting) && isFormFilled && allowRefresh"
         >
         </app-refresh-button>
 
-        <app-settings-container class="swaps-form__settings"></app-settings-container>
+        <app-settings-container class="swap-form__settings"></app-settings-container>
 
         <app-iframe-logout-button
           *ngIf="hideUnusedUI && getCurrentUser$ | async"
@@ -18,8 +22,8 @@
       </div>
     </header>
 
-    <main class="swaps-form__content">
-      <div class="swaps-form__block">
+    <main class="swap-form__content">
+      <div class="swap-form__block">
         <app-iframe-blockchain-indicator
           [blockchain]="getFromBlockchain()"
           *onlyFrame="'horizontal'"
@@ -33,11 +37,11 @@
         ></app-vertical-iframe-token-amount-input>
       </div>
 
-      <div class="swaps-form__delimiter">
+      <div class="swap-form__delimiter">
         <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
       </div>
 
-      <div class="swaps-form__block">
+      <div class="swap-form__block">
         <app-iframe-blockchain-indicator *onlyFrame="'horizontal'" [blockchain]="toBlockchain">
         </app-iframe-blockchain-indicator>
 
@@ -58,6 +62,8 @@
         <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
       </div>
     </main>
+
+    <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
   </div>
 
   <ng-container *noFrame>

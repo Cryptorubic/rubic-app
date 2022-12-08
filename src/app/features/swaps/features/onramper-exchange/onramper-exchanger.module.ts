@@ -4,11 +4,11 @@ import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { CommonModule } from '@angular/common';
 import { OnramperBottomFormComponent } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/onramper-bottom-form.component';
 import { SwapBottomFormComponent } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/components/swap-bottom-form/swap-bottom-form.component';
-import { OnramperWidgetComponent } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/components/onramper-widget/onramper-widget.component';
+import { OnramperWidgetComponent } from '@features/swaps/features/onramper-exchange/components/onramper-widget/onramper-widget.component';
 
 @NgModule({
   declarations: [OnramperBottomFormComponent, SwapBottomFormComponent, OnramperWidgetComponent],
-  exports: [OnramperBottomFormComponent],
+  exports: [OnramperBottomFormComponent, OnramperWidgetComponent],
   imports: [CommonModule, SharedModule, SwapsSharedModule]
 })
 export class OnramperExchangerModule {}

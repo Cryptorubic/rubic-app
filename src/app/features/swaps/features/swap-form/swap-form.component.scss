@@ -18,7 +18,9 @@
   }
 }
 
-.swaps-form {
+.swap-form {
+  position: relative;
+
   min-height: 200px;
   margin-bottom: 20px;
   padding: 24px;
@@ -49,6 +51,10 @@
 
   @include hide-unused-ui {
     margin: 0;
+  }
+
+  &_extended {
+    height: 660px;
   }
 
   ~ *:not(:last-child) {
@@ -205,10 +211,21 @@
       }
     }
   }
+
+  app-onramper-widget {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    display: block;
+
+    height: 2000px;
+  }
 }
 
 @include b($mobile-md) {
-  .swaps-form {
+  .swap-form {
     position: relative;
 
     padding: 0 0 20px;

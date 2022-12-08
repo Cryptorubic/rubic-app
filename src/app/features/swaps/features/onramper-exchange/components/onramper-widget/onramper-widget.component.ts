@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/components/onramper-widget/models/widget-config';
-import { cryptoCode } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/components/onramper-widget/constants/crypto-code';
-import { defaultWidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-bottom-form/components/onramper-widget/constants/default-widget-config';
+import { WidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/models/widget-config';
+import { cryptoCode } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/crypto-code';
+import { defaultWidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/default-widget-config';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { FiatAsset } from '@features/swaps/core/services/fiats-selector-service/models/fiat-asset';
 
