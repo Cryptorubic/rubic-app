@@ -19,6 +19,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -71,6 +72,14 @@ export class OnramperFormCalculationService {
 
   public get inputValue$(): Observable<SwapFormInputFiats> {
     return this.swapFormService.inputValue$.pipe(
+      distinctUntilChanged(
+        (prev, next) =>
+          prev.toBlockchain === next.toBlockchain &&
+          prev.fromAssetType === next.fromAssetType &&
+          compareAssets(prev.fromAsset, next.fromAsset) &&
+          prev.toToken?.address === next.toToken?.address &&
+          prev.fromAmount === next.fromAmount
+      ),
       filter(inputForm => inputForm.fromAssetType === 'fiat'),
       map(inputForm => inputForm as SwapFormInputFiats),
       shareReplay(shareReplayConfig)
@@ -148,21 +157,10 @@ export class OnramperFormCalculationService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.inputValue$
-      .pipe(
-        distinctUntilChanged(
-          (prev, next) =>
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromAssetType === next.fromAssetType &&
-            prev.fromAsset?.symbol === next.fromAsset?.symbol &&
-            prev.toToken?.address === next.toToken?.address &&
-            prev.fromAmount === next.fromAmount
-        )
-      )
-      .subscribe(() => {
-        this.unsetTradeData();
-        this.startRecalculation();
-      });
+    this.inputValue$.subscribe(() => {
+      this.unsetTradeData();
+      this.startRecalculation();
+    });
   }
 
   /**

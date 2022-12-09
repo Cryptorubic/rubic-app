@@ -10,6 +10,7 @@ export interface ItSettingsForm {
   showReceiverAddress: boolean;
 }
 
+// repeats previous interface, wrapping in FormControl
 export interface ItSettingsFormControls {
   autoSlippageTolerance: FormControl<boolean>;
   slippageTolerance: FormControl<number>;
@@ -25,6 +26,7 @@ export interface CcrSettingsForm {
   showReceiverAddress: boolean;
 }
 
+// repeats previous interface, wrapping in FormControl
 export interface CcrSettingsFormControls {
   autoSlippageTolerance: FormControl<boolean>;
   slippageTolerance: FormControl<number>;
@@ -36,6 +38,7 @@ export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: CcrSettingsForm;
 }
 
+// repeats previous interface, wrapping in FormGroup
 export interface SettingsFormControls {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormGroup<ItSettingsFormControls>;
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsFormControls>;

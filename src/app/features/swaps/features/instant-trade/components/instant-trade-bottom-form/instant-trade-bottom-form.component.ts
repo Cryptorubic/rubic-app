@@ -225,22 +225,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.instantTradeService.inputValue$
-      .pipe(
-        distinctUntilChanged((prev, next) => {
-          return (
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromAssetType === next.fromAssetType &&
-            prev.fromAsset?.address === next.fromAsset?.address &&
-            prev.toToken?.address === next.toToken?.address &&
-            prev.fromAmount === next.fromAmount
-          );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(form => {
-        this.setupSwapForm(form);
-      });
+    this.instantTradeService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      this.setupSwapForm(form);
+    });
 
     this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
       if (

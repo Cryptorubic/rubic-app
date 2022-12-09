@@ -50,10 +50,10 @@ export class SwapTokensUpdaterService {
     }
 
     const update = () => {
-      if (isMinimalToken(form?.fromAsset)) {
+      if (isMinimalToken(form.fromAsset)) {
         this.tokensService.getAndUpdateTokenPrice(form.fromAsset);
       }
-      if (form?.toToken) {
+      if (form.toToken) {
         this.tokensService.getAndUpdateTokenPrice(form.toToken);
       }
     };
@@ -66,7 +66,7 @@ export class SwapTokensUpdaterService {
    * Calls functions to update balance, if needed.
    */
   private updateTokenBalance(fromToken: TokenAmount): void {
-    if (!fromToken.amount?.isFinite()) {
+    if (!fromToken.amount.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }
   }

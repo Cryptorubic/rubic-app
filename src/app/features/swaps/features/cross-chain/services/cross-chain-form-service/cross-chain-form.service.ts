@@ -58,6 +58,7 @@ import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Injectable()
 export class CrossChainFormService {
@@ -215,6 +216,14 @@ export class CrossChainFormService {
 
   public get inputValue$(): Observable<SwapFormInputTokens> {
     return this.swapFormService.inputValue$.pipe(
+      distinctUntilChanged(
+        (prev, next) =>
+          prev.toBlockchain === next.toBlockchain &&
+          prev.fromAssetType === next.fromAssetType &&
+          compareAssets(prev.fromAsset, next.fromAsset) &&
+          prev.toToken?.address === next.toToken?.address &&
+          prev.fromAmount === next.fromAmount
+      ),
       filter(
         inputForm =>
           !inputForm.fromAssetType || BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
@@ -553,22 +562,11 @@ export class CrossChainFormService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.inputValue$
-      .pipe(
-        distinctUntilChanged(
-          (prev, next) =>
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromAssetType === next.fromAssetType &&
-            prev.fromAsset?.address === next.fromAsset?.address &&
-            prev.toToken?.address === next.toToken?.address &&
-            prev.fromAmount === next.fromAmount
-        )
-      )
-      .subscribe(() => {
-        this.unsetCalculatedTrades();
+    this.inputValue$.subscribe(() => {
+      this.unsetCalculatedTrades();
 
-        this.startRecalculation();
-      });
+      this.startRecalculation();
+    });
   }
 
   /**

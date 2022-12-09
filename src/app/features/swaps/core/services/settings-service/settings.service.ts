@@ -6,7 +6,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { copyObject } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, first, startWith, switchMap, tap } from 'rxjs/operators';
+import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -161,11 +161,9 @@ export class SettingsService {
             this.settingsForm.patchValue({ ...JSON.parse(localData) });
           }
         }),
-        switchMap(() => {
-          return this.settingsForm.valueChanges.pipe(startWith(this.settingsForm.value));
-        })
+        switchMap(() => this.settingsForm.valueChanges)
       )
-      .subscribe(form => this.saveSettingsToLocalStorage(form as SettingsForm));
+      .subscribe(() => this.saveSettingsToLocalStorage());
 
     this.targetNetworkAddressService.isAddressRequired$.subscribe(isAddressRequired => {
       if (isAddressRequired) {
@@ -231,9 +229,7 @@ export class SettingsService {
     return true;
   }
 
-  public saveSettingsToLocalStorage(
-    form: SettingsForm = this.settingsForm.value as SettingsForm
-  ): void {
+  public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {
     this.storeService.setItem('settings', this.serializeForm(form));
   }
 }

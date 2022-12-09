@@ -52,7 +52,7 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
-import { filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
@@ -60,6 +60,7 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -94,6 +95,14 @@ export class InstantTradeService extends TradeCalculationService {
 
   public get inputValue$(): Observable<SwapFormInputTokens> {
     return this.swapFormService.inputValue$.pipe(
+      distinctUntilChanged(
+        (prev, next) =>
+          prev.toBlockchain === next.toBlockchain &&
+          prev.fromAssetType === next.fromAssetType &&
+          compareAssets(prev.fromAsset, next.fromAsset) &&
+          prev.toToken?.address === next.toToken?.address &&
+          prev.fromAmount === next.fromAmount
+      ),
       filter(
         inputForm =>
           !inputForm.fromAssetType || BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)

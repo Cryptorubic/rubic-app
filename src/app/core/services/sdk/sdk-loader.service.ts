@@ -7,9 +7,7 @@ import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SdkLoaderService {
   constructor(
     private readonly sdkService: SdkService,
