@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -47,8 +48,11 @@ export class AssetTypesAsideComponent {
     })
   );
 
+  public readonly fiatsDisabled = this.fiatsListService.isDisabled();
+
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
+    private readonly fiatsListService: FiatsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
