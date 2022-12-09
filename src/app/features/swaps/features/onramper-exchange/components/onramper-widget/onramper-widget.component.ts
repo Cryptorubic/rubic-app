@@ -1,19 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { ThemeService } from '@core/services/theme/theme.service';
-import { AuthService } from '@core/services/auth/auth.service';
-import { WidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/models/widget-config';
-import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
-import { defaultWidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/default-widget-config';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { FiatAsset } from '@shared/models/fiats/fiat-asset';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
+import { OnramperWidgetService } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/onramper-widget.service';
 
 @Component({
   selector: 'app-onramper-widget',
@@ -21,63 +8,13 @@ import { OnramperFormService } from '@features/swaps/features/onramper-exchange/
   styleUrls: ['./onramper-widget.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OnramperWidgetComponent implements OnInit {
-  @ViewChild('onramperWidget') public onramperWidget: ElementRef;
-
-  private widgetConfig: WidgetConfig;
-
-  public get widgetUrl(): string {
-    const queryParams = Object.entries(this.widgetConfig).reduce((acc, [key, value]) => {
-      const encodedValue =
-        key !== 'partnerContext' ? value : encodeURIComponent(JSON.stringify(value));
-      return `${acc}${acc ? '&' : ''}${key}=${encodedValue}`;
-    }, '');
-    return `https://widget.onramper.com${queryParams ? '/?' : ''}${queryParams}`;
-  }
+export class OnramperWidgetComponent {
+  public readonly widgetUrl$ = this.onramperWidgetService.getWidgetUrl();
 
   constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly themeService: ThemeService,
-    private readonly swapFormService: SwapFormService,
-    private readonly authService: AuthService,
-    private readonly onramperFormService: OnramperFormService
+    private readonly onramperFormService: OnramperFormService,
+    private readonly onramperWidgetService: OnramperWidgetService
   ) {}
-
-  ngOnInit() {
-    this.setWidgetConfig();
-
-    this.themeService.theme$.subscribe(() => {
-      this.setWidgetConfig();
-    });
-  }
-
-  private setWidgetConfig(): void {
-    const darkMode = this.themeService.theme === 'dark';
-
-    const defaultFiat = (this.swapFormService.inputValue.fromAsset as FiatAsset).symbol;
-    const defaultCrypto =
-      cryptoCode[this.swapFormService.inputValue.toBlockchain as keyof typeof cryptoCode];
-    const onlyCryptos = defaultCrypto;
-    const defaultAmount = this.swapFormService.inputValue.fromAmount.toFixed();
-
-    const walletAddress = this.authService.userAddress;
-    const wallets = `${defaultCrypto}:${walletAddress}`;
-
-    this.widgetConfig = {
-      ...defaultWidgetConfig,
-      darkMode,
-      defaultFiat,
-      defaultCrypto,
-      onlyCryptos,
-      defaultAmount,
-      wallets,
-      partnerContext: {
-        walletAddress
-      }
-    };
-
-    this.cdr.detectChanges();
-  }
 
   public closeWidget(): void {
     this.onramperFormService.widgetOpened = false;

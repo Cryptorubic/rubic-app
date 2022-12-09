@@ -7,6 +7,7 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
+import { OnramperWidgetService } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/onramper-widget.service';
 
 @NgModule({
   declarations: [OnramperBottomFormComponent, OnramperWidgetComponent],
@@ -16,7 +17,8 @@ import { OnramperCalculationService } from '@features/swaps/features/onramper-ex
     OnramperWebsocketService,
     OnramperFormCalculationService,
     OnramperFormService,
-    OnramperCalculationService
+    OnramperCalculationService,
+    OnramperWidgetService
   ]
 })
 export class OnramperExchangerModule {

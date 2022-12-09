@@ -1,4 +1,4 @@
-export interface WidgetConfig {
+export interface OnramperWidgetConfig {
   apiKey: string;
 
   color: string;
