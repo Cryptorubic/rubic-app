@@ -9,7 +9,7 @@ import {
   timer
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -27,7 +27,6 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class TokensListStoreService {
@@ -76,8 +75,12 @@ export class TokensListStoreService {
     return this.searchQueryService.query;
   }
 
-  private get blockchain(): AssetType {
-    return this.assetsSelectorService.assetType;
+  private get blockchain(): BlockchainName | null {
+    const assetType = this.assetsSelectorService.assetType;
+    if (!BlockchainsInfo.isBlockchainName(assetType)) {
+      return null;
+    }
+    return assetType;
   }
 
   private get listType(): TokensListType {
@@ -120,7 +123,10 @@ export class TokensListStoreService {
 
   private subscribeOnBlockchainChange(): void {
     this.assetsSelectorService.assetType$
-      .pipe(filter(Boolean), distinctUntilChanged())
+      .pipe(
+        distinctUntilChanged(),
+        filter(assetType => BlockchainsInfo.isBlockchainName(assetType))
+      )
       .subscribe(() => {
         this.updateTokens();
       });
@@ -192,7 +198,7 @@ export class TokensListStoreService {
    * Fetches tokens form backend by search query.
    */
   private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
-    if (!this.searchQuery || !BlockchainsInfo.isBlockchainName(this.blockchain)) {
+    if (!this.searchQuery || !this.blockchain) {
       return of([]);
     }
 
@@ -219,7 +225,7 @@ export class TokensListStoreService {
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     try {
-      if (this.searchQuery && BlockchainsInfo.isBlockchainName(this.blockchain)) {
+      if (this.searchQuery && this.blockchain) {
         const token = await SdkToken.createToken({
           blockchain: this.blockchain,
           address: this.searchQuery.toLowerCase()

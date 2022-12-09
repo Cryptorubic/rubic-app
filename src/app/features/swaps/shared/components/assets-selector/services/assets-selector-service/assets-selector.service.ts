@@ -6,7 +6,8 @@ import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
-import { filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { BlockchainName } from 'rubic-sdk';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -24,7 +25,7 @@ export class AssetsSelectorService {
     return this._assetType$.value;
   }
 
-  public set assetType(value: AssetType) {
+  private set assetType(value: AssetType) {
     this._assetType$.next(value);
   }
 
@@ -40,7 +41,7 @@ export class AssetsSelectorService {
     return this._selectorListType$.value;
   }
 
-  public set selectorListType(value: SelectorListType) {
+  private set selectorListType(value: SelectorListType) {
     this._selectorListType$.next(value);
   }
 
@@ -61,7 +62,7 @@ export class AssetsSelectorService {
   }
 
   private subscribeOnAssetChange(): void {
-    this.assetType$.pipe(filter(Boolean)).subscribe(assetType => {
+    this.assetType$.pipe(filter(Boolean), distinctUntilChanged()).subscribe(assetType => {
       const assetKey = this.formType === 'from' ? 'fromAsset' : 'toToken';
       if (!this.swapFormService.inputValue[assetKey]) {
         const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
@@ -84,6 +85,20 @@ export class AssetsSelectorService {
 
   public setSelectorListTypeByAssetType(): void {
     this.selectorListType = this.assetType === 'fiat' ? 'fiats' : 'tokens';
+  }
+
+  public openFiatsList(): void {
+    this.assetType = 'fiat';
+    this.selectorListType = 'fiats';
+  }
+
+  public openBlockchainsList(): void {
+    this.selectorListType = 'blockchains';
+  }
+
+  public onBlockchainSelect(blockchainName: BlockchainName): void {
+    this.assetType = blockchainName;
+    this.selectorListType = 'tokens';
   }
 
   public onAssetSelect(asset: Asset): void {

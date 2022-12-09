@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SwapsRoutingModule } from 'src/app/features/swaps/swaps-routing.module';
 import { InstantTradeModule } from 'src/app/features/swaps/features/instant-trade/instant-trade.module';
-import { SharedModule } from 'src/app/shared/shared.module';
 import {
   TuiDataListModule,
   TuiDropdownControllerModule,
@@ -43,6 +41,7 @@ import { FormHeaderComponent } from '@features/swaps/features/swap-form/componen
 import { RefreshButtonComponent } from '@features/swaps/features/swap-form/components/refresh-button/refresh-button.component';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -66,9 +65,9 @@ import { OnramperExchangerModule } from '@features/swaps/features/onramper-excha
   ],
   exports: [TokenAmountInputComponent, VerticalIframeTokenAmountInputComponent],
   imports: [
-    CommonModule,
-    SharedModule,
     SwapsRoutingModule,
+    SwapsSharedModule,
+    SwapsCoreModule,
     InstantTradeModule,
     CrossChainModule,
     OnramperExchangerModule,
@@ -88,8 +87,7 @@ import { OnramperExchangerModule } from '@features/swaps/features/onramper-excha
     FormsModule,
     TuiLoaderModule,
     ClipboardModule,
-    TuiAccordionModule,
-    SwapsSharedModule
+    TuiAccordionModule
   ],
   providers: []
 })

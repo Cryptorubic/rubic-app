@@ -8,6 +8,7 @@ export interface IframeSettingsForm {
   showReceiverAddress: boolean;
 }
 
+// repeats previous interface, wrapping in FormControl
 export interface IframeSettingsFormControls {
   autoSlippageTolerance: FormControl<boolean>;
   slippageTolerance: FormControl<number>;

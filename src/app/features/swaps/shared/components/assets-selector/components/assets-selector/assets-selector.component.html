@@ -1,12 +1,12 @@
-<section class="tokens-selector">
-  <header class="tokens-selector__header" *noFrame>
+<section class="assets-selector">
+  <header class="assets-selector__header" *noFrame>
     <h2>
       {{ headerText$ | async | translate }}
     </h2>
   </header>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <div class="tokens-selector__row" *noFrame>
+    <div class="assets-selector__row" *noFrame>
       <app-search-bar></app-search-bar>
 
       <app-switch-list-type-button
@@ -14,7 +14,7 @@
       ></app-switch-list-type-button>
     </div>
 
-    <div class="tokens-selector__content">
+    <div class="assets-selector__content">
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
           <app-blockchains-list></app-blockchains-list>

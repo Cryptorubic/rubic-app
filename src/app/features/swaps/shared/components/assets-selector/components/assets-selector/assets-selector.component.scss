@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-.tokens-selector {
+.assets-selector {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -137,7 +137,7 @@ tui-loader {
 }
 
 @include b($mobile-md-minus) {
-  .tokens-selector {
+  .assets-selector {
     height: 100%;
 
     &__content {
@@ -148,7 +148,7 @@ tui-loader {
 }
 
 @include b($mobile-sm-middle) {
-  .tokens-selector {
+  .assets-selector {
     padding: 1.5em 0 0 10px;
 
     &__row {

@@ -88,16 +88,14 @@ export class AssetTypesAsideComponent {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    this.assetsSelectorService.assetType = blockchainName;
-    this.assetsSelectorService.selectorListType = 'tokens';
+    this.assetsSelectorService.onBlockchainSelect(blockchainName);
   }
 
   public openBlockchainsList(): void {
-    this.assetsSelectorService.selectorListType = 'blockchains';
+    this.assetsSelectorService.openBlockchainsList();
   }
 
   public openFiatsList(): void {
-    this.assetsSelectorService.assetType = 'fiat';
-    this.assetsSelectorService.selectorListType = 'fiats';
+    this.assetsSelectorService.openFiatsList();
   }
 }

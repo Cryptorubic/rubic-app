@@ -31,7 +31,6 @@ export class BlockchainsListComponent {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    this.assetsSelectorService.assetType = blockchainName;
-    this.assetsSelectorService.selectorListType = 'tokens';
+    this.assetsSelectorService.onBlockchainSelect(blockchainName);
   }
 }

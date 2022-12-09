@@ -1,5 +1,5 @@
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
-import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 export interface SwapFormInputFiats extends SwapFormInput {
   fromAssetType: 'fiat' | null;

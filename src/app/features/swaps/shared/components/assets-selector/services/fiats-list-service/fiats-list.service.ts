@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 
 @Injectable()

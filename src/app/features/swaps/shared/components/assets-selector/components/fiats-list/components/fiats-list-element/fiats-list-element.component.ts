@@ -10,7 +10,7 @@ import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-imag
 import { AuthService } from '@core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
-import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 @Component({
   selector: 'app-fiats-list-element',

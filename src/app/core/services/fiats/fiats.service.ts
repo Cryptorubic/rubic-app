@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { HttpClient } from '@angular/common/http';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
 import { OnramperGatewaysResponse } from '@core/services/fiats/models/onramper-gateways-response';
