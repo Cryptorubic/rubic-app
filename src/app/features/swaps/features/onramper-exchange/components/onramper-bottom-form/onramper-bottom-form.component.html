@@ -1,19 +1,25 @@
 <div class="bottom-form">
-  <div class="bottom-form__output">
-    <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
+  <ng-container *ngLet="tradeError$ | async as tradeError">
+    <div class="bottom-form__output">
+      <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
 
-    <app-to-amount-estimated></app-to-amount-estimated>
-  </div>
-
-  <div class="bottom-form__buttons">
-    <div class="bottom-form__button" *ngLet="user$ | async as user">
-      <app-rubic-button *ngIf="!user" appearance="secondary" (onClick)="onConnectWallet()">
-        Connect wallet
-      </app-rubic-button>
-
-      <app-rubic-button *ngIf="user" appearance="secondary" (onClick)="onSwapClickHandler()">
-        Swap
-      </app-rubic-button>
+      <app-to-amount-estimated
+        [errorText]="tradeError?.translateKey || tradeError?.message"
+      ></app-to-amount-estimated>
     </div>
-  </div>
+
+    <div class="bottom-form__buttons">
+      <div class="bottom-form__button">
+        <app-swap-button-container
+          [needApprove]="false"
+          [withApproveButton]="false"
+          [status]="tradeStatus$ | async"
+          [error]="tradeError"
+          buttonText="Swap"
+          (onUpdateRateClick)="onUpdateRate()"
+          (onSwapClick)="onBuyNative()"
+        ></app-swap-button-container>
+      </div>
+    </div>
+  </ng-container>
 </div>

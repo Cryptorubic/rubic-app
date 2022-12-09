@@ -68,9 +68,7 @@ export class QueryParamsService {
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
         ...(value.fromAssetType && { fromChain: value.fromAssetType }),
         ...(value.toBlockchain && { toChain: value.toBlockchain }),
-        ...(value.fromAmount &&
-          !value.fromAmount?.eq(0) &&
-          value.fromAmount?.isFinite() && { amount: value.fromAmount.toFixed() })
+        ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() })
       });
     });
   }

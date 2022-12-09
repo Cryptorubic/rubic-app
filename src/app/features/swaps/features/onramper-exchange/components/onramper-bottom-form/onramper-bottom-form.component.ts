@@ -14,9 +14,9 @@ import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { ExchangerWebsocketService } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/exchanger-websocket.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
 import BigNumber from 'bignumber.js';
-import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -25,7 +25,9 @@ import { OnramperCalculationService } from '@features/swaps/features/onramper-ex
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperBottomFormComponent {
-  public readonly user$ = this.authService.currentUser$;
+  public readonly tradeStatus$ = this.onramperFormCalculationService.tradeStatus$;
+
+  public readonly tradeError$ = this.onramperFormCalculationService.tradeError$;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -36,9 +38,9 @@ export class OnramperBottomFormComponent {
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
     private readonly tokensService: TokensService,
-    private readonly onramperBottomFormService: OnramperBottomFormService,
+    private readonly onramperFormService: OnramperFormService,
     private readonly walletsModalService: WalletsModalService,
-    private readonly onramperCalculationService: OnramperCalculationService
+    private readonly onramperFormCalculationService: OnramperFormCalculationService
   ) {
     let subscription$: Subscription;
     this.exchangerWebsocketService.info$.subscribe(info => {
@@ -62,7 +64,7 @@ export class OnramperBottomFormComponent {
 
         const toToken = this.swapFormService.inputValue.toToken;
         if (EvmWeb3Pure.isNativeAddress(toToken.address)) {
-          this.onramperBottomFormService.widgetOpened = false;
+          this.onramperFormService.widgetOpened = false;
           this.cdr.detectChanges();
         } else {
           const blockchain = toToken.blockchain;
@@ -83,11 +85,11 @@ export class OnramperBottomFormComponent {
     });
   }
 
-  public onConnectWallet(): void {
-    this.walletsModalService.open().subscribe();
+  public onUpdateRate(): void {
+    this.onramperFormCalculationService.updateRate();
   }
 
-  public onSwapClickHandler(): void {
-    this.onramperBottomFormService.widgetOpened = true;
+  public onBuyNative(): void {
+    this.onramperFormService.widgetOpened = true;
   }
 }

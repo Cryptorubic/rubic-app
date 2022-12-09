@@ -11,6 +11,7 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
 import { SelectAssetButtonComponent } from '@features/swaps/shared/components/select-asset-button/select-asset-button.component';
+import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SelectAssetButtonComponent } from '@features/swaps/shared/components/se
     TokensRateComponent,
     TargetNetworkAddressComponent,
     SettingsWarningModalComponent,
-    SelectAssetButtonComponent
+    SelectAssetButtonComponent,
+    SwapButtonContainerModule
   ],
   imports: [
     CommonModule,

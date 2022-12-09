@@ -1,13 +1,10 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom, of, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BlockchainName, EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
-import { debounceTime } from 'rxjs/operators';
-import { WINDOW } from '@ng-web-apis/common';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
@@ -29,53 +26,12 @@ export class OnramperCalculationService {
     );
   }
 
-  private readonly _loading$ = new BehaviorSubject<boolean>(false);
-
-  public readonly loading$ = this._loading$.asObservable();
-
-  private readonly _error$ = new BehaviorSubject<boolean>(false);
-
-  public readonly error$ = this._error$.asObservable();
-
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly swapFormService: SwapFormService,
-    private readonly sdkService: RubicSdkService,
-    @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.subscribeOnInputFormChange();
-  }
+    private readonly sdkService: RubicSdkService
+  ) {}
 
-  private subscribeOnInputFormChange(): void {
-    this.swapFormService.inputValue$
-      .pipe(
-        debounceTime(200),
-        switchMap(input => {
-          if (input.fromAssetType === 'fiat' && this.swapFormService.isFilled) {
-            this.swapFormService.outputControl.patchValue({
-              toAmount: null
-            });
-
-            this._loading$.next(true);
-            this._error$.next(false);
-            return this.getOutputTokenAmount(input as SwapFormInputFiats).catch(() => {
-              this._error$.next(true);
-              return null;
-            });
-          } else {
-            return of(null);
-          }
-        })
-      )
-      .subscribe(toAmount => {
-        this.swapFormService.outputControl.patchValue({
-          toAmount
-        });
-        this._loading$.next(false);
-      });
-  }
-
-  private async getOutputTokenAmount(input: SwapFormInputFiats): Promise<BigNumber | null> {
+  public async getOutputTokenAmount(input: SwapFormInputFiats): Promise<BigNumber | null> {
     const receivedNativeAmount = await this.getOutputNativeAmount(input);
     if (EvmWeb3Pure.isNativeAddress(input.toToken.address)) {
       return receivedNativeAmount;
@@ -96,7 +52,7 @@ export class OnramperCalculationService {
     if (bestTrade instanceof OnChainTrade) {
       return bestTrade.to.tokenAmount;
     } else {
-      throw new RubicError('No on-chain trade');
+      throw bestTrade.error;
     }
   }
 

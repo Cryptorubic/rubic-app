@@ -13,7 +13,7 @@ import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants
 import { defaultWidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/default-widget-config';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
-import { OnramperBottomFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-bottom-form-service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
 
 @Component({
   selector: 'app-onramper-widget',
@@ -40,7 +40,7 @@ export class OnramperWidgetComponent implements OnInit {
     private readonly themeService: ThemeService,
     private readonly swapFormService: SwapFormService,
     private readonly authService: AuthService,
-    private readonly onramperBottomFormService: OnramperBottomFormService
+    private readonly onramperFormService: OnramperFormService
   ) {}
 
   ngOnInit() {
@@ -80,6 +80,6 @@ export class OnramperWidgetComponent implements OnInit {
   }
 
   public closeWidget(): void {
-    this.onramperBottomFormService.widgetOpened = false;
+    this.onramperFormService.widgetOpened = false;
   }
 }

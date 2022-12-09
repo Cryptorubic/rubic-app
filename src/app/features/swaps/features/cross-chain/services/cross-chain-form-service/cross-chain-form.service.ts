@@ -208,7 +208,7 @@ export class CrossChainFormService {
   public get inputValue(): SwapFormInputTokens {
     const inputForm = this.swapFormService.inputValue;
     if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
-      throw new RubicError('Cannot use instant trades');
+      throw new RubicError('Cannot use cross chain');
     }
     return inputForm as SwapFormInputTokens;
   }
