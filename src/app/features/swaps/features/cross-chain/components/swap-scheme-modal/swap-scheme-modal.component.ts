@@ -32,7 +32,7 @@ import {
   Web3Public,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
@@ -104,7 +104,7 @@ export class SwapSchemeModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    private readonly sdk: RubicSdkService
+    private readonly sdkService: SdkService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -122,7 +122,7 @@ export class SwapSchemeModalComponent implements OnInit {
         startWith(-1),
         switchMap(() => {
           return from(
-            this.sdk.crossChainStatusManager.getCrossChainStatus(
+            this.sdkService.crossChainStatusManager.getCrossChainStatus(
               {
                 fromBlockchain: this.fromToken.blockchain as Web3PublicSupportedBlockchain,
                 toBlockchain: this.toToken.blockchain,
@@ -200,7 +200,7 @@ export class SwapSchemeModalComponent implements OnInit {
             startWith(-1),
             switchMap(() =>
               from(
-                this.sdk.crossChainStatusManager.getCrossChainStatus(
+                this.sdkService.crossChainStatusManager.getCrossChainStatus(
                   {
                     fromBlockchain: this.fromToken.blockchain as Web3PublicSupportedBlockchain,
                     toBlockchain: this.toToken.blockchain,
@@ -242,7 +242,7 @@ export class SwapSchemeModalComponent implements OnInit {
     this._revertBtnLoading$.next(true);
 
     try {
-      await this.sdk.symbiosis.revertTrade(this.srcTxHash, { onConfirm: onTransactionHash });
+      await this.sdkService.symbiosis.revertTrade(this.srcTxHash, { onConfirm: onTransactionHash });
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {

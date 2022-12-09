@@ -9,20 +9,18 @@ import {
   map,
   switchMap
 } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { SwapFormInputFiats } from '@features/swaps/core/services/swap-form-service/models/swap-form-fiats';
+import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 import { AuthService } from '@core/services/auth/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OnramperFormCalculationService {
   /**
    * Controls trade calculation flow.

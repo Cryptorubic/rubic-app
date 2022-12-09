@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';

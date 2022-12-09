@@ -11,14 +11,12 @@ import {
   SwapFormInputControl,
   SwapFormOutput,
   SwapFormOutputControl
-} from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+} from '@core/services/swaps/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SwapFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({

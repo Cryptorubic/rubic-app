@@ -10,7 +10,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -55,7 +55,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -63,8 +63,8 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import { SwapFormInputTokens } from '@features/swaps/core/services/swap-form-service/models/swap-form-tokens';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;

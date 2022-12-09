@@ -1,17 +1,17 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -23,8 +23,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
+import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {

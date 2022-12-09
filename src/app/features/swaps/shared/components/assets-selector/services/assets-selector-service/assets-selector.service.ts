@@ -4,7 +4,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/assets-selector/models/assets-selector-component-context';
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 import { filter } from 'rxjs/operators';
 

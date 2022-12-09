@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { first, map, pairwise, startWith, switchMap } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapFormInput } from '../swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from 'src/app/core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -17,10 +17,10 @@ import {
   defaultFormParameters,
   DefaultParametersFrom,
   DefaultParametersTo
-} from '@features/swaps/core/services/swaps-service/constants/default-form-parameters';
+} from '@core/services/swaps/constants/default-form-parameters';
 import { compareAddresses, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-service';
+import { FiatsService } from '@core/services/fiats/fiats.service';
 
 @Injectable()
 export class SwapsService {

@@ -5,10 +5,9 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { copyObject } from '@shared/utils/utils';
-import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, startWith, switchMap, tap } from 'rxjs/operators';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { filter, first, startWith, switchMap, tap } from 'rxjs/operators';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
@@ -23,10 +22,9 @@ import {
   SettingsFormControls
 } from '@features/swaps/core/services/settings-service/models/settings-form-controls';
 import { FormControl, FormGroup } from '@angular/forms';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
     instantTrades: 2,
@@ -70,6 +68,7 @@ export class SettingsService {
     private readonly iframeService: IframeService,
     private readonly authService: AuthService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly queryParamsService: QueryParamsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
     this.defaultItSettings = this.getDefaultITSettings();
@@ -77,15 +76,28 @@ export class SettingsService {
 
     this.createForm();
     this.initSubscriptions();
+
+    this.subscribeOnQueryParams();
   }
 
-  public changeDefaultSlippage(slippage: QuerySlippage): void {
-    this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
-    this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
+  public subscribeOnQueryParams(): void {
+    this.queryParamsService.queryParams$.pipe(first(Boolean)).subscribe(queryParams => {
+      if (queryParams.iframe) {
+        const slippage = {
+          slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
+          slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
+        };
 
-    this.instantTrade.patchValue({ slippageTolerance: this.defaultItSettings.slippageTolerance });
-    this.crossChainRouting.patchValue({
-      slippageTolerance: this.defaultCcrSettings.slippageTolerance
+        this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
+        this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
+
+        this.instantTrade.patchValue({
+          slippageTolerance: this.defaultItSettings.slippageTolerance
+        });
+        this.crossChainRouting.patchValue({
+          slippageTolerance: this.defaultCcrSettings.slippageTolerance
+        });
+      }
     });
   }
 

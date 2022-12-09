@@ -24,11 +24,9 @@ import {
 } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-selector/assets-selector.module';
-import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { CrossChainModule } from 'src/app/features/swaps/features/cross-chain/cross-chain.module';
 import { TokenAmountInputComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/token-amount-input/token-amount-input.component';
 import { UserBalanceContainerComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/user-balance-container/user-balance-container.component';
-import { SuccessTxModalService } from 'src/app/features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { CrossChainSwapInfoComponent } from '@features/swaps/features/swap-form/components/swap-info/components/cross-chain-bridge-swap-info/components/cross-chain-swap-info/cross-chain-swap-info.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -42,13 +40,9 @@ import { InstantTradeSwapInfoComponent } from './features/swap-form/components/s
 import { FormSwitcherComponent } from '@features/swaps/features/swap-form/components/form-switcher/form-switcher.component';
 import { PlatformTokensAmountComponent } from './features/swap-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { FormHeaderComponent } from '@features/swaps/features/swap-form/components/form-header/form-header.component';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { RefreshButtonComponent } from '@features/swaps/features/swap-form/components/refresh-button/refresh-button.component';
-import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
-import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
-import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-service';
 
 @NgModule({
   declarations: [
@@ -97,13 +91,6 @@ import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-
     TuiAccordionModule,
     SwapsSharedModule
   ],
-  providers: [
-    SwapsService,
-    SuccessTxModalService,
-    RubicSdkService,
-    RefreshService,
-    TradeService,
-    FiatsService
-  ]
+  providers: []
 })
 export class SwapsModule {}

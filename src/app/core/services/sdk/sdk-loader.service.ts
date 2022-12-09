@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { RubicSdkService } from '@app/features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, tap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { WINDOW } from '@ng-web-apis/common';
 })
 export class SdkLoaderService {
   constructor(
-    private readonly sdkService: RubicSdkService,
+    private readonly sdkService: SdkService,
     private readonly iframeService: IframeService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,

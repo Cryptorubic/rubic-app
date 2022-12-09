@@ -3,9 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OnramperFormService {
   private readonly _widgetOpened$ = new BehaviorSubject<boolean>(false);
 

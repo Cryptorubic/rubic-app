@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { blockchainRequiresAddress } from '@features/swaps/core/services/target-network-address-service/constants/blockchain-requires-address';
 
 @Injectable()
 export class TargetNetworkAddressService {

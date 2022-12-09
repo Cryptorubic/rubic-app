@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import {
   firstValueFrom,
   interval,
@@ -15,7 +15,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
+import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
@@ -35,7 +35,7 @@ import {
   BlockchainsInfo,
   NotWhitelistedProviderError
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import {
@@ -49,7 +49,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { TransactionConfig } from 'web3-core';
 import { filter, map } from 'rxjs/operators';
@@ -57,7 +57,7 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@app/core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
-import { SwapFormInputTokens } from '@features/swaps/core/services/swap-form-service/models/swap-form-tokens';
+import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
@@ -110,7 +110,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly sdk: RubicSdkService,
+    private readonly sdkService: SdkService,
     private readonly authService: AuthService,
     private readonly gasService: GasService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -232,7 +232,7 @@ export class InstantTradeService extends TradeCalculationService {
 
     const useProxy = this.platformConfigurationService.useOnChainProxy;
 
-    return this.sdk.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
+    return this.sdkService.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
       gasCalculation: calculateGas ? 'calculate' : 'disabled',
       zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
@@ -308,7 +308,9 @@ export class InstantTradeService extends TradeCalculationService {
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(
           interval(7_000).pipe(
-            switchMap(() => this.sdk.onChainStatusManager.getBridgersSwapStatus(transactionHash)),
+            switchMap(() =>
+              this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
+            ),
             filter(
               statusData =>
                 statusData.status === TxStatus.SUCCESS || statusData.status === TxStatus.FAIL

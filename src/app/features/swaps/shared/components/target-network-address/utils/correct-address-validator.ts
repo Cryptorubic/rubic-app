@@ -1,5 +1,5 @@
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
-import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
+import { blockchainRequiresAddress } from '@features/swaps/core/services/target-network-address-service/constants/blockchain-requires-address';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 

@@ -15,13 +15,13 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
-import { SwapFormInput } from '@app/features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@app/core/services/swaps/models/swap-form-controls';
 import { Asset } from '@features/swaps/shared/models/form/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 
 @Component({
   selector: 'app-select-asset-button-tokens',

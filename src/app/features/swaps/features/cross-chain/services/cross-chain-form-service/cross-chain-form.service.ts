@@ -25,7 +25,7 @@ import {
   UnsupportedReceiverAddressError
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
@@ -35,9 +35,9 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -56,7 +56,7 @@ import { SWAP_PROCESS } from '@features/swaps/features/cross-chain/services/cros
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
-import { SwapFormInputTokens } from '@features/swaps/core/services/swap-form-service/models/swap-form-tokens';
+import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()

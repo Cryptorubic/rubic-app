@@ -3,8 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
 import { HttpClient } from '@angular/common/http';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
-import { OnramperGatewaysResponse } from '@features/swaps/core/services/fiats-service/models/onramper-gateways-response';
-import { fiatsDictionary } from '@features/swaps/core/services/fiats-service/models/fiats-dictionary';
+import { OnramperGatewaysResponse } from '@core/services/fiats/models/onramper-gateways-response';
+import { fiatsDictionary } from '@core/services/fiats/constants/fiats-dictionary';
 
 @Injectable()
 export class FiatsService {

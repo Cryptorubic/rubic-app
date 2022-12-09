@@ -54,7 +54,7 @@ export class RubicMenuComponent implements AfterViewInit {
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
-    private authService: AuthService,
+    private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly gtmService: GoogleTagManagerService,
@@ -74,10 +74,6 @@ export class RubicMenuComponent implements AfterViewInit {
       });
   }
 
-  public getDropdownStatus(opened: boolean): void {
-    this.isOpened = opened;
-  }
-
   public closeMenu(): void {
     this.isOpened = false;
   }
@@ -90,10 +86,6 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public logout(): void {
     this.authService.disconnectWallet();
-  }
-
-  public isLinkActive(url: string): boolean {
-    return this.window.location.pathname === url;
   }
 
   public handleButtonClick(item?: NavigationItem): void {

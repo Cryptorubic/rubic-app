@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';

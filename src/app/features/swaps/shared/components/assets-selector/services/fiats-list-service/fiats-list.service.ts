@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
-import { FiatsService } from '@features/swaps/core/services/fiats-service/fiats-service';
+import { FiatsService } from '@core/services/fiats/fiats.service';
 
 @Injectable()
 export class FiatsListService {
@@ -9,6 +9,7 @@ export class FiatsListService {
 
   public readonly fiatsToShow$ = this._fiatsToShow$.asObservable();
 
+  // todo add search query
   private set fiatsToShow(value: FiatAsset[]) {
     this._fiatsToShow$.next(value);
   }

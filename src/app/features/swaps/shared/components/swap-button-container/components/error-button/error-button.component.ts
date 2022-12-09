@@ -5,11 +5,11 @@ import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { first } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom } from 'rxjs';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 
 @Component({
   selector: 'app-error-button',
@@ -33,7 +33,7 @@ export class ErrorButtonComponent {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly swapFormService: SwapFormService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: SdkService
   ) {}
 
   public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {

@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core'
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IframeSettingsFormControls } from '@features/swaps/features/swap-form/components/swap-settings/iframe-settings/models/iframe-settings-form-controls';
 import {

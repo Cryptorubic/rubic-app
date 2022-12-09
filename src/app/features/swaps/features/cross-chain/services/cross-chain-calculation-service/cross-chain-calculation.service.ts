@@ -1,4 +1,4 @@
-import { TradeCalculationService } from '@features/swaps/core/services/trade-calculation-service/trade-calculation.service';
+import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
@@ -14,7 +14,7 @@ import {
   Web3Pure,
   WrappedCrossChainTrade
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Inject, Injectable } from '@angular/core';
@@ -41,7 +41,7 @@ import {
   CrossChainCalculatedTradeData
 } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -62,7 +62,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   constructor(
-    private readonly sdk: RubicSdkService,
+    private readonly sdkService: SdkService,
     private readonly settingsService: SettingsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
@@ -82,8 +82,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
-    return Object.values(this.sdk.crossChain.tradeProviders).some((provider: CrossChainProvider) =>
-      provider.isSupportedBlockchain(blockchain)
+    return Object.values(this.sdkService.crossChain.tradeProviders).some(
+      (provider: CrossChainProvider) => provider.isSupportedBlockchain(blockchain)
     );
   }
 
@@ -91,8 +91,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromBlockchain: BlockchainName,
     toBlockchain: BlockchainName
   ): boolean {
-    return Object.values(this.sdk.crossChain.tradeProviders).some((provider: CrossChainProvider) =>
-      provider.areSupportedBlockchains(fromBlockchain, toBlockchain)
+    return Object.values(this.sdkService.crossChain.tradeProviders).some(
+      (provider: CrossChainProvider) =>
+        provider.areSupportedBlockchains(fromBlockchain, toBlockchain)
     );
   }
 
@@ -128,7 +129,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ...(receiverAddress && { receiverAddress })
     };
 
-    return this.sdk.crossChain
+    return this.sdkService.crossChain
       .calculateTradesReactively(fromToken, fromAmount, toToken, options)
       .pipe(
         switchMap(reactivelyCalculatedTradeData => {

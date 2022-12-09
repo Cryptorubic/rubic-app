@@ -56,7 +56,12 @@
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
 
-        <a routerLink="/staking" routerLinkActive="data-list__link_active" class="data-list__link">
+        <a
+          routerLink="/staking"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+          (click)="closeMenu()"
+        >
           <button tuiOption class="data-list__option">
             {{ 'navigation.stakingLp' | translate }}
           </button>
@@ -93,7 +98,7 @@
           routerLink="promotion"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler()"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.promotion' | translate }}

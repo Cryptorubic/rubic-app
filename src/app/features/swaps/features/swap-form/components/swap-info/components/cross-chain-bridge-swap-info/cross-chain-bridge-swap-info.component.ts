@@ -9,13 +9,13 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({

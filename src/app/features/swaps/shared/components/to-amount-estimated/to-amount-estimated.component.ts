@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 
 @Component({
   selector: 'app-to-amount-estimated',

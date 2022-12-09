@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Self } from '@angular/core';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup } from '@angular/forms';

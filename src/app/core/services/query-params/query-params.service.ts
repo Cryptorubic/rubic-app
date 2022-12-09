@@ -4,12 +4,11 @@ import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
 import { BehaviorSubject, skip } from 'rxjs';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { AdditionalTokens, QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -38,8 +37,6 @@ export class QueryParamsService {
 
   public tokensSelectionDisabled$ = this._tokensSelectionDisabled$.asObservable();
 
-  public slippage: QuerySlippage;
-
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
     delete urlTree.queryParams.iframe;
@@ -65,7 +62,6 @@ export class QueryParamsService {
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
-    private readonly settingsService: SettingsService,
     @Inject(WINDOW) private readonly window: Window
   ) {
     this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
@@ -146,7 +142,6 @@ export class QueryParamsService {
 
     this.setBackgroundStatus(queryParams);
     this.setHideSelectionStatus(queryParams);
-    this.setSlippage(queryParams);
     this.setAdditionalIframeTokens(queryParams);
     this.setThemeStatus(queryParams);
     this.setLanguage(queryParams);
@@ -178,19 +173,6 @@ export class QueryParamsService {
     if (tokensSelectionDisabled.includes(true)) {
       this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
     }
-  }
-
-  private setSlippage(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    this.slippage = {
-      slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
-      slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
-    };
-
-    this.settingsService.changeDefaultSlippage(this.slippage);
   }
 
   private setAdditionalIframeTokens(queryParams: QueryParams): void {

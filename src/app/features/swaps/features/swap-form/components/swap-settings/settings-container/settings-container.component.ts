@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Injector, OnInit, Type } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsItComponent } from '@features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/swaps/features/swap-form/components/swap-settings/settings-ccr/settings-ccr.component';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';

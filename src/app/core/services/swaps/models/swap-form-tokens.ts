@@ -1,6 +1,6 @@
 import { BlockchainName } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
+import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 
 export interface SwapFormInputTokens extends SwapFormInput {
   fromAssetType: BlockchainName | null;

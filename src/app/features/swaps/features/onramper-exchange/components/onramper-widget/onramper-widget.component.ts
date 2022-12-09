@@ -11,7 +11,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/models/widget-config';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { defaultWidgetConfig } from '@features/swaps/features/onramper-exchange/components/onramper-widget/constants/default-widget-config';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { FiatAsset } from '@features/swaps/shared/models/fiats/fiat-asset';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
 

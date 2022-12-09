@@ -19,7 +19,7 @@ import {
   TxStatus,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 
 @Injectable()
 export class RecentTradesService {
@@ -43,7 +43,7 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly sdk: RubicSdkService
+    private readonly sdkService: SdkService
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
@@ -86,7 +86,7 @@ export class RecentTradesService {
     }
 
     const { srcTxStatus, dstTxStatus, dstTxHash } =
-      await this.sdk.crossChainStatusManager.getCrossChainStatus(
+      await this.sdkService.crossChainStatusManager.getCrossChainStatus(
         {
           fromBlockchain: trade.fromToken.blockchain as Web3PublicSupportedBlockchain,
           toBlockchain: trade.toToken.blockchain,
@@ -128,7 +128,7 @@ export class RecentTradesService {
     };
 
     try {
-      transactionReceipt = await this.sdk.symbiosis.revertTrade(srcTxHash, {
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, {
         onConfirm: onTransactionHash
       });
 

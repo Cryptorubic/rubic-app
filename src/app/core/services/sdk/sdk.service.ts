@@ -11,13 +11,13 @@ import {
   CHAIN_TYPE,
   CrossChainSymbiosisManager
 } from 'rubic-sdk';
-import { rubicSdkDefaultConfig } from '@features/swaps/core/services/rubic-sdk-service/constants/rubic-sdk-default-config';
+import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
-import { SdkHttpClient } from '@features/swaps/core/services/rubic-sdk-service/utils/sdk-http-client';
+import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class RubicSdkService {
+export class SdkService {
   private readonly _sdkLoading$ = new BehaviorSubject<boolean>(false);
 
   public readonly sdkLoading$ = this._sdkLoading$.asObservable();

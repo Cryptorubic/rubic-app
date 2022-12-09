@@ -3,20 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BlockchainName, EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
-import { SwapFormInputFiats } from '@features/swaps/core/services/swap-form-service/models/swap-form-fiats';
+import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import {
   OnramperSupportedBlockchain,
   onramperSupportedBlockchains
 } from '@features/swaps/features/onramper-exchange/models/onramper-supported-blockchain';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OnramperCalculationService {
   public static isSupportedBlockchain(
     blockchain: BlockchainName
@@ -26,10 +24,7 @@ export class OnramperCalculationService {
     );
   }
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly sdkService: RubicSdkService
-  ) {}
+  constructor(private readonly httpClient: HttpClient, private readonly sdkService: SdkService) {}
 
   public async getOutputTokenAmount(input: SwapFormInputFiats): Promise<BigNumber | null> {
     const receivedNativeAmount = await this.getOutputNativeAmount(input);

@@ -6,12 +6,12 @@ import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from '@features/swaps/shared/components/target-network-address/target-network-address.component';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
 import { SelectAssetButtonComponent } from '@features/swaps/shared/components/select-asset-button/select-asset-button.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
+import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -27,17 +27,19 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/components/swa
     TargetNetworkAddressComponent,
     SettingsWarningModalComponent,
     SelectAssetButtonComponent,
-    SwapButtonContainerModule
+    SwapButtonContainerModule,
+    CommonModule,
+    SharedModule
   ],
   imports: [
     CommonModule,
     SharedModule,
+    SwapsCoreModule,
     TuiHintModule,
     InlineSVGModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
     ReactiveFormsModule
-  ],
-  providers: [TargetNetworkAddressService]
+  ]
 })
 export class SwapsSharedModule {}

@@ -25,7 +25,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 

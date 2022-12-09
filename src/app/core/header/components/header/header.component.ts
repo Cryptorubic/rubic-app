@@ -17,21 +17,20 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { SwapFormInput } from '@features/swaps/core/services/swap-form-service/models/swap-form-controls';
 
 @Component({
   selector: 'app-header',
@@ -59,8 +58,6 @@ export class HeaderComponent implements AfterViewInit {
   public currentUser$: Observable<UserInterface>;
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
-
-  public isSettingsOpened = false;
 
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
@@ -132,27 +129,15 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    const params = {
+    this.swapFormService.inputControl.patchValue({
       fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
       fromAsset: null,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       toToken: null,
       fromAmount: null
-    } as SwapFormInput;
-
-    const queryParams: Params = {
-      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      amount: undefined,
-      from: undefined,
-      to: undefined
-    };
-
-    this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-
-    this.swapFormService.inputControl.patchValue(params);
+    });
     this.gtmService.reloadGtmSession();
-    await this.router.navigate(['/'], { queryParams, queryParamsHandling: 'merge' });
+    await this.router.navigate(['/']);
   }
 
   public handleMenuButtonClick(): void {

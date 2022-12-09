@@ -5,7 +5,6 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
-import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { WalletsModalModule } from '@core/wallets-modal/wallets-modal.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
@@ -14,21 +13,21 @@ import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-intercep
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
-import { httpLoaderFactory, sdkLoader } from './app.loaders';
+import { httpLoaderFactory } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
-import { SdkLoaderService } from '@core/services/sdk-loader/sdk-loader.service';
 import * as Sentry from '@sentry/angular';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
+import { SwapsService } from '@core/services/swaps/swaps.service';
+import { FiatsService } from '@core/services/fiats/fiats.service';
+import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
+import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
   providers: [
     CookieService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: sdkLoader,
-      deps: [SdkLoaderService],
-      multi: true
-    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WalletsInfoInterceptor,
@@ -55,7 +54,18 @@ import * as Sentry from '@sentry/angular';
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true
-    }
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: sdkLoader,
+      deps: [SdkLoaderService],
+      multi: true
+    },
+    SdkService,
+    SwapsService,
+    SwapFormService,
+    SwapFormQueryService,
+    FiatsService
   ],
   imports: [
     CommonModule,
@@ -69,8 +79,7 @@ import * as Sentry from '@sentry/angular';
         useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
-    }),
-    SwapsModule
+    })
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })

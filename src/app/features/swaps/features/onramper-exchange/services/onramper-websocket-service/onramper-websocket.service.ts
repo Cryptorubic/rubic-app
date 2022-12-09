@@ -12,13 +12,11 @@ import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-
 import { EvmWeb3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OnramperWebsocketService {
   private readonly _info$ = new BehaviorSubject<OnramperTransactionInfo>(null);
 
