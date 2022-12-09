@@ -129,15 +129,12 @@ export class OnramperFormCalculationService {
               this.tradeStatus = outputTokenAmount?.isFinite()
                 ? TRADE_STATUS.READY_TO_BUY_NATIVE
                 : TRADE_STATUS.DISABLED;
-              this.tradeError = null;
 
               this.swapFormService.outputControl.patchValue({ toAmount: outputTokenAmount });
             }),
             catchError(err => {
               this.tradeStatus = TRADE_STATUS.DISABLED;
               this.tradeError = err as RubicError<ERROR_TYPE>;
-
-              this.swapFormService.outputControl.patchValue({ toAmount: null });
               return of(null);
             }),
             finalize(() => {
@@ -196,6 +193,8 @@ export class OnramperFormCalculationService {
   private unsetTradeData(): void {
     this.tradeError = null;
     this.refreshServiceCallsCounter = 0;
+
+    this.swapFormService.outputControl.patchValue({ toAmount: null });
   }
 
   /**

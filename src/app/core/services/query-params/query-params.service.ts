@@ -69,7 +69,7 @@ export class QueryParamsService {
     @Inject(WINDOW) private readonly window: Window
   ) {
     this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
-      this.setQueryParams({
+      this.patchQueryParams({
         ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
         ...(value.fromAssetType && { fromChain: value.fromAssetType }),
@@ -92,11 +92,11 @@ export class QueryParamsService {
         this.enabledBlockchains = queryParams.enabledBlockchains;
       }
 
-      this._queryParams$.next(queryParams);
+      this.queryParams = queryParams;
     }
   }
 
-  public setQueryParams(params: Partial<QueryParams>): void {
+  public patchQueryParams(params: Partial<QueryParams>): void {
     this.queryParams = {
       ...this.queryParams,
       ...params
@@ -260,7 +260,7 @@ export class QueryParamsService {
    * Clears all near query params.
    */
   private clearNearParams(): void {
-    this.setQueryParams({
+    this.patchQueryParams({
       errorCode: null,
       errorMessage: null,
       toAmount: null,

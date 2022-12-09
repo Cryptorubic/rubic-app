@@ -10,6 +10,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
+import { skip } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -99,8 +100,9 @@ export class AppComponent implements AfterViewInit {
    * Inits site query params subscription.
    */
   private initQueryParamsSubscription(): void {
-    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
-      (queryParams: QueryParams) => {
+    const queryParamsSubscription$ = this.activatedRoute.queryParams
+      .pipe(skip(1))
+      .subscribe((queryParams: QueryParams) => {
         try {
           this.queryParamsService
             .setupQueryParams({
@@ -116,8 +118,7 @@ export class AppComponent implements AfterViewInit {
         } catch (err) {
           this.errorService.catch(err);
         }
-      }
-    );
+      });
     setTimeout(() => {
       queryParamsSubscription$.unsubscribe();
     });

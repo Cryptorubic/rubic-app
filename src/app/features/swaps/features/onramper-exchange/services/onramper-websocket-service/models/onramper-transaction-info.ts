@@ -1,4 +1,4 @@
-import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/exchanger-websocket-service/models/onramper-transaction-status';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 
 export interface OnramperTransactionInfo {
   status: OnramperTransactionStatus;

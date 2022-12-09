@@ -142,6 +142,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public toBlockchain: BlockchainName;
 
+  public readonly isOnramper$ = this.queryParamsService.queryParams$.pipe(
+    map(queryParams => queryParams.afterOnramper)
+  );
+
   public get selectedProvider(): InstantTradeProviderData {
     return this._selectedProvider;
   }
