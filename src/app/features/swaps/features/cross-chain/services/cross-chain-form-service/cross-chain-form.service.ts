@@ -347,7 +347,7 @@ export class CrossChainFormService {
       const parsedError = this.parseCalculationError(lastCalculatedTrade.error);
       if (this.isExecutionCriticalError(parsedError)) {
         isExecutionCriticalError = true;
-        this.disableUnavailableTrade(lastCalculatedTrade.tradeType);
+        this.disableUnavailableTrade(lastCalculatedTrade.tradeType, false);
       }
     }
 
@@ -820,7 +820,7 @@ export class CrossChainFormService {
 
       this.errorsService.catch(new CrossChainSwapUnavailableWarning());
 
-      this.disableUnavailableTrade(tradeType);
+      this.disableUnavailableTrade(tradeType, true);
     } else {
       if (
         parsedError instanceof UserRejectError &&
@@ -855,7 +855,10 @@ export class CrossChainFormService {
   /**
    * Disables trade, which thrown execution critical error.
    */
-  private disableUnavailableTrade(unavailableTradeType: CrossChainTradeType): void {
+  private disableUnavailableTrade(
+    unavailableTradeType: CrossChainTradeType,
+    updateBestTrade: boolean
+  ): void {
     this.taggedTrades = this.taggedTrades.filter(
       taggedTrade => taggedTrade.tradeType !== unavailableTradeType
     );
@@ -864,7 +867,8 @@ export class CrossChainFormService {
     });
     this.disabledTradesTypes.push(unavailableTradeType);
 
-    const bestTaggedTrade = this.taggedTrades[0];
-    this.updateSelectedTrade(bestTaggedTrade);
+    if (updateBestTrade) {
+      this.updateSelectedTrade(this.taggedTrades[0]);
+    }
   }
 }
