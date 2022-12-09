@@ -1,14 +1,21 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  startWith,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { correctAddressValidator } from './services/utils/correct-address-validator';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
+import { getCorrectAddressValidator } from '@features/swaps/shared/components/target-network-address/utils/get-correct-address-validator';
 
 @Component({
   selector: 'app-target-network-address',
@@ -19,10 +26,7 @@ import { TuiNotification } from '@taiga-ui/core';
 })
 export class TargetNetworkAddressComponent implements OnInit {
   public readonly address = new FormControl<string>(undefined, [
-    correctAddressValidator(
-      this.swapFormService.inputValue.fromBlockchain,
-      this.swapFormService.inputValue.toBlockchain
-    )
+    getCorrectAddressValidator(this.swapFormService.inputValue)
   ]);
 
   public toBlockchain$ = this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
@@ -33,7 +37,8 @@ export class TargetNetworkAddressComponent implements OnInit {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly swapFormService: SwapFormService,
     private readonly notificationsService: NotificationsService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
@@ -44,13 +49,17 @@ export class TargetNetworkAddressComponent implements OnInit {
   private subsctibeOnFormValues(): void {
     this.swapFormService.inputValueChanges
       .pipe(
+        tap(inputForm => {
+          this.address.setValidators(getCorrectAddressValidator(inputForm));
+        }),
         filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
             compareTokens(prev.fromToken, curr.fromToken) &&
             compareTokens(prev.toToken, curr.toToken)
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.address.patchValue(null);
