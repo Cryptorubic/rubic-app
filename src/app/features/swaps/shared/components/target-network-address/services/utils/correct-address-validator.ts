@@ -1,9 +1,10 @@
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { blockchainRequiresAddress } from '@features/swaps/shared/components/target-network-address/services/constants/blockchain-requires-address';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 export function correctAddressValidator(
-  fromBlockchain: BlockchainName,
+  fromAssetType: AssetType,
   toBlockchain: BlockchainName
 ): ValidatorFn {
   const toChainType = BlockchainsInfo.getChainType(toBlockchain);
@@ -14,8 +15,8 @@ export function correctAddressValidator(
     if (!Web3Pure[toChainType].isAddressCorrect(address)) {
       if (
         address ||
-        (fromBlockchain !== toBlockchain &&
-          blockchainRequiresAddress.some(el => el === fromBlockchain || el === toBlockchain))
+        (fromAssetType !== toBlockchain &&
+          blockchainRequiresAddress.some(el => el === fromAssetType || el === toBlockchain))
       ) {
         return { wrongAddress: address };
       }
