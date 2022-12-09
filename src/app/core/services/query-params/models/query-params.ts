@@ -56,5 +56,5 @@ interface AllQueryParams {
 }
 
 export type QueryParams = {
-  [P in AdditionalTokens]: string[];
-} & AllQueryParams;
+  [P in AdditionalTokens]?: string[];
+} & Partial<AllQueryParams>;

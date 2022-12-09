@@ -212,7 +212,7 @@ export class SwapButtonContainerErrorsService {
   private checkSelectedToken(): void {
     this.errorType[BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN] =
       isNil(this.swapFormService.inputValue?.fromAsset) &&
-      isNil(this.queryParamsService.queryParams?.from);
+      isNil(this.queryParamsService.queryParams.from);
   }
 
   /**

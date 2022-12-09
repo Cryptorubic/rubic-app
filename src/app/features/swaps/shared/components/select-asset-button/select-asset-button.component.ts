@@ -21,7 +21,7 @@ import { SwapFormInput } from '@app/core/services/swaps/models/swap-form-control
 import { Asset } from '@features/swaps/shared/models/form/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -45,7 +45,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   public iframeForceDisabled = false;
 
-  public readonly loading$ = this.swapsService.initialLoading$;
+  public readonly loading$ = this.swapFormQueryService.initialLoading$;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -54,7 +54,7 @@ export class SelectAssetButtonComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapFormQueryService: SwapFormQueryService,
     @Self() private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {}

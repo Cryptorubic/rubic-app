@@ -2,9 +2,8 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
-import { BehaviorSubject, skip } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,7 +17,7 @@ import { WINDOW } from '@ng-web-apis/common';
   providedIn: 'root'
 })
 export class QueryParamsService {
-  private readonly _queryParams$ = new BehaviorSubject<QueryParams>(undefined);
+  private readonly _queryParams$ = new BehaviorSubject<QueryParams>({});
 
   public readonly queryParams$ = this._queryParams$.asObservable();
 
@@ -58,38 +57,28 @@ export class QueryParamsService {
     private readonly tokensService: TokensService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
     @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
-      this.patchQueryParams({
-        ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
-        ...(value.toToken?.symbol && { to: value.toToken.symbol }),
-        ...(value.fromAssetType && { fromChain: value.fromAssetType }),
-        ...(value.toBlockchain && { toChain: value.toBlockchain }),
-        ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
-        afterOnramper: null
-      });
-    });
-  }
+  ) {}
 
-  public async setupQueryParams(queryParams: QueryParams): Promise<void> {
-    if (queryParams && Object.keys(queryParams).length !== 0) {
-      this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
-      this.headerStore.forceDesktopResolution = queryParams.isDesktop;
-      this.setIframeInfo(queryParams);
-
-      if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
-        this.setEnabledProviders(queryParams.enabledProviders);
-        this.setDisabledProviders(queryParams.enabledProviders);
-        this.enabledBlockchains = queryParams.enabledBlockchains;
-      }
-
-      this.queryParams = queryParams;
+  public setupQueryParams(queryParams: QueryParams): void {
+    if (Object.keys(this.queryParams).length) {
+      return;
     }
+
+    this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+    this.headerStore.forceDesktopResolution = queryParams.isDesktop;
+    this.setIframeInfo(queryParams);
+
+    if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
+      this.setEnabledProviders(queryParams.enabledProviders);
+      this.setDisabledProviders(queryParams.enabledProviders);
+      this.enabledBlockchains = queryParams.enabledBlockchains;
+    }
+
+    this.queryParams = queryParams;
   }
 
   public patchQueryParams(params: Partial<QueryParams>): void {

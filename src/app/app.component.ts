@@ -2,7 +2,6 @@ import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
@@ -10,6 +9,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
+import { first, map } from 'rxjs/operators';
 import { skip } from 'rxjs';
 
 @Component({
@@ -28,8 +28,7 @@ export class AppComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly errorService: ErrorsService
+    private readonly activatedRoute: ActivatedRoute
   ) {
     this.printTimestamp();
     this.initQueryParamsSubscription();
@@ -100,28 +99,22 @@ export class AppComponent implements AfterViewInit {
    * Inits site query params subscription.
    */
   private initQueryParamsSubscription(): void {
-    const queryParamsSubscription$ = this.activatedRoute.queryParams
-      .pipe(skip(1))
-      .subscribe((queryParams: QueryParams) => {
-        try {
-          this.queryParamsService
-            .setupQueryParams({
-              ...queryParams,
-              from: queryParams?.from,
-              to: queryParams?.to
-            })
-            .then(() => {
-              if (queryParams?.hideUnusedUI) {
-                this.setupUISettings(queryParams);
-              }
-            });
-        } catch (err) {
-          this.errorService.catch(err);
-        }
-      });
-    setTimeout(() => {
-      queryParamsSubscription$.unsubscribe();
-    });
+    this.activatedRoute.queryParams
+      .pipe(
+        skip(1),
+        map((queryParams: QueryParams) => {
+          this.queryParamsService.setupQueryParams({
+            ...queryParams,
+            ...(queryParams?.from && { from: queryParams.from }),
+            ...(queryParams?.to && { to: queryParams.to })
+          });
+          if (queryParams.hideUnusedUI) {
+            this.setupUISettings(queryParams);
+          }
+        }),
+        first()
+      )
+      .subscribe();
   }
 
   /**
