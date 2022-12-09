@@ -3,5 +3,5 @@ import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 export interface SwapFormInputFiats extends SwapFormInput {
   fromAssetType: 'fiat' | null;
-  fromAsset: FiatAsset | null;
+  fromFiat: FiatAsset | null;
 }

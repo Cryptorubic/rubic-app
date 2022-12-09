@@ -20,6 +20,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -67,7 +68,10 @@ export class OnramperFormCalculationService {
     if (inputForm.fromAssetType !== 'fiat') {
       throw new RubicError('Cannot use onramper');
     }
-    return inputForm as SwapFormInputFiats;
+    return {
+      ...inputForm,
+      fromFiat: inputForm.fromAsset as FiatAsset
+    } as SwapFormInputFiats;
   }
 
   public get inputValue$(): Observable<SwapFormInputFiats> {
@@ -81,7 +85,13 @@ export class OnramperFormCalculationService {
           prev.fromAmount === next.fromAmount
       ),
       filter(inputForm => inputForm.fromAssetType === 'fiat'),
-      map(inputForm => inputForm as SwapFormInputFiats),
+      map(
+        inputForm =>
+          ({
+            ...inputForm,
+            fromFiat: inputForm.fromAsset as FiatAsset
+          } as SwapFormInputFiats)
+      ),
       shareReplay(shareReplayConfig)
     );
   }

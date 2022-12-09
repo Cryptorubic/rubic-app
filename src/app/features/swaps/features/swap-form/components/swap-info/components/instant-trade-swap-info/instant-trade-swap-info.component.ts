@@ -50,7 +50,7 @@ export class InstantTradeSwapInfoComponent {
   public platformFee: OnChainPlatformFee;
 
   public get rate(): string {
-    const { fromAmount, fromAsset, toToken } = this.instantTradeService.inputValue;
+    const { fromAmount, fromToken, toToken } = this.instantTradeService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
     if (!fromAmount?.isFinite() || !toAmount?.isFinite()) {
       return '';
@@ -62,15 +62,15 @@ export class InstantTradeSwapInfoComponent {
         'toClosestValue',
         { decimals: toToken.decimals }
       );
-      return `1 ${fromAsset.symbol} = ${rateFormatted} ${toToken.symbol}`;
+      return `1 ${fromToken.symbol} = ${rateFormatted} ${toToken.symbol}`;
     }
 
     const rateFormatted = this.withRoundPipe.transform(
       this.bigNumberFormatPipe.transform(fromAmount.dividedBy(toAmount)),
       'toClosestValue',
-      { decimals: fromAsset.decimals }
+      { decimals: fromToken.decimals }
     );
-    return `${rateFormatted} ${fromAsset.symbol} = 1 ${toToken.symbol}`;
+    return `${rateFormatted} ${fromToken.symbol} = 1 ${toToken.symbol}`;
   }
 
   constructor(
@@ -118,13 +118,13 @@ export class InstantTradeSwapInfoComponent {
   }
 
   public setPriceImpact(): void {
-    const { fromAsset, toToken, fromAmount, fromAssetType } = this.instantTradeService.inputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain } = this.instantTradeService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
-    if (fromAssetType === BLOCKCHAIN_NAME.ETHEREUM_POW) {
+    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM_POW) {
       this.priceImpact = null;
     } else {
       this.priceImpact = PriceImpactService.calculatePriceImpact(
-        fromAsset?.price,
+        fromToken?.price,
         toToken?.price,
         fromAmount,
         toAmount

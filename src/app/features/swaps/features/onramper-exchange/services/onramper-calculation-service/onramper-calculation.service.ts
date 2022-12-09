@@ -52,7 +52,7 @@ export class OnramperCalculationService {
   }
 
   private async getOutputNativeAmount(input: SwapFormInputFiats): Promise<BigNumber> {
-    const fromFiat = input.fromAsset.symbol;
+    const fromFiat = input.fromFiat.symbol;
     const toCrypto = cryptoCode[input.toToken.blockchain as OnramperSupportedBlockchain];
     const fromAmount = input.fromAmount.toFixed();
 
