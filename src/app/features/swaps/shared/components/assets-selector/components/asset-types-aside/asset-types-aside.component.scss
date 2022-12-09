@@ -75,6 +75,16 @@
     }
   }
 
+  &__fiats {
+    ::ng-deep app-icon-button {
+      svg {
+        path {
+          fill: var(--main-form-background);
+        }
+      }
+    }
+  }
+
   ::ng-deep app-icon-button {
     button {
       width: 77px !important;
@@ -88,7 +98,7 @@
       .content {
         justify-content: unset;
 
-        img {
+        .image {
           margin: 5px 0 2px;
         }
       }

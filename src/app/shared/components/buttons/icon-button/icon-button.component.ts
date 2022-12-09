@@ -26,6 +26,8 @@ export class IconButtonComponent {
 
   @Input() borderRadiusPercent = 0;
 
+  @Input() inlineSvg = false;
+
   @Output() iconButtonClick = new EventEmitter<void>();
 
   public _disabled = false;

@@ -4,12 +4,14 @@
       <ng-container *noFrame>
         <li
           *ngIf="formType === 'from'"
+          class="asset-types-aside__fiats"
           [ngClass]="{ disabled: fiatsDisabled }"
           tuiHintMode="error"
           [tuiHint]="fiatsDisabled ? 'Cannot trade with selected blockchain' : null"
         >
           <app-icon-button
-            icon="assets/images/icons/fiat-selector.png"
+            icon="assets/images/icons/fiat-selector.svg"
+            [inlineSvg]="true"
             [disabled]="selectedAssetType === 'fiat' || fiatsDisabled"
             [border]="selectedAssetType === 'fiat'"
             [borderRadiusPercent]="50"
