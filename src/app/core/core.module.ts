@@ -18,11 +18,12 @@ import { ErrorsModule } from './errors/errors.module';
 import * as Sentry from '@sentry/angular';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
+import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -62,9 +63,10 @@ import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
       multi: true
     },
     SdkService,
-    SwapsService,
+    SwapTypeService,
     SwapFormService,
     SwapFormQueryService,
+    SwapTokensUpdaterService,
     FiatsService
   ],
   imports: [

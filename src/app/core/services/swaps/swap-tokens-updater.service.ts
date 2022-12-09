@@ -1,34 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { pairwise, startWith } from 'rxjs/operators';
-import { TokensService } from '@core/services/tokens/tokens.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapFormInput } from 'src/app/core/services/swaps/models/swap-form-controls';
+import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { pairwise, startWith } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable()
-export class SwapsService {
+export class SwapTokensUpdaterService {
   private intervalId: NodeJS.Timeout;
-
-  private readonly _swapProviderType$ = new BehaviorSubject<SWAP_PROVIDER_TYPE>(undefined);
-
-  public readonly swapMode$ = this._swapProviderType$.asObservable();
-
-  get swapMode(): SWAP_PROVIDER_TYPE | null {
-    return this._swapProviderType$.getValue();
-  }
-
-  set swapMode(swapType: SWAP_PROVIDER_TYPE) {
-    this._swapProviderType$.next(swapType);
-  }
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService
   ) {
     this.subscribeOnForm();
@@ -38,8 +22,6 @@ export class SwapsService {
     this.swapFormService.inputValue$
       .pipe(startWith(null), pairwise())
       .subscribe(([prevForm, curForm]) => {
-        this.setSwapProviderType(curForm);
-
         if (
           (!compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
             isMinimalToken(curForm.fromAsset)) ||
@@ -55,18 +37,6 @@ export class SwapsService {
           this.updateTokenBalance(curForm.fromAsset);
         }
       });
-  }
-
-  private setSwapProviderType(form: SwapFormInput): void {
-    const { fromAssetType, toBlockchain } = form;
-
-    if (fromAssetType === 'fiat') {
-      this.swapMode = SWAP_PROVIDER_TYPE.ONRAMPER;
-    } else if (!fromAssetType || !toBlockchain || fromAssetType === toBlockchain) {
-      this.swapMode = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
-    } else {
-      this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-    }
   }
 
   /**

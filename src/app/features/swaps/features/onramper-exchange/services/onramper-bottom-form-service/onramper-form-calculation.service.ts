@@ -17,7 +17,7 @@ import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats'
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { AuthService } from '@core/services/auth/auth.service';
 
 @Injectable()
@@ -81,7 +81,7 @@ export class OnramperFormCalculationService {
     private readonly swapFormService: SwapFormService,
     private readonly refreshService: RefreshService,
     private readonly onramperCalculationService: OnramperCalculationService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly authService: AuthService
   ) {
     this.subscribeOnCalculation();
@@ -199,7 +199,7 @@ export class OnramperFormCalculationService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.ONRAMPER) {
+    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.ONRAMPER) {
       return;
     }
     this._calculateTrade$.next({ isForced });

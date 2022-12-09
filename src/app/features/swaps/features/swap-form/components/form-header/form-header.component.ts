@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { map } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
@@ -25,7 +25,7 @@ export class FormHeaderComponent {
     map(getBlockchainItem)
   );
 
-  public readonly swapType$ = this.swapsService.swapMode$.pipe(
+  public readonly swapType$ = this.swapTypeService.swapMode$.pipe(
     map(mode => {
       if (mode) {
         const swapTypeLabel = {
@@ -39,7 +39,7 @@ export class FormHeaderComponent {
   );
 
   constructor(
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService
   ) {}
 }

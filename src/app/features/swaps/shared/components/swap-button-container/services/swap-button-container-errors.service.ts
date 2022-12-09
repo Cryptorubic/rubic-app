@@ -11,7 +11,7 @@ import { map, startWith } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -74,7 +74,7 @@ export class SwapButtonContainerErrorsService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
@@ -107,7 +107,7 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapMode(): void {
-    this.swapsService.swapMode$.subscribe(swapMode => {
+    this.swapTypeService.swapMode$.subscribe(swapMode => {
       if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
         this.setMinAmountError(false);
         this.setMaxAmountError(false);
@@ -135,7 +135,7 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnTargetNetworkAddress(): void {
     combineLatest([
       this.targetNetworkAddressService.isAddressValid$,
-      this.swapsService.swapMode$,
+      this.swapTypeService.swapMode$,
       this.settingsService.instantTradeValueChanges.pipe(
         startWith(this.settingsService.instantTradeValue)
       ),

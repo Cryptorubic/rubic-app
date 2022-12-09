@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
-import { SwapsService } from '@core/services/swaps/swaps.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
@@ -54,7 +53,6 @@ export class BuyTokenComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly themeService: ThemeService,

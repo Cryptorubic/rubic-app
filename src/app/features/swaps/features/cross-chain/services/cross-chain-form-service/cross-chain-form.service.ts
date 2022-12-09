@@ -35,7 +35,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -226,7 +226,7 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -678,7 +678,7 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
       return;
     }
 

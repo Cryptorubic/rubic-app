@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core'
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -28,7 +28,7 @@ export class IframeSettingsComponent implements OnInit {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly swapService: SwapsService,
+    private readonly swapService: SwapTypeService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}

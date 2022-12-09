@@ -6,7 +6,7 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -61,19 +61,19 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   public readonly onramperWidgetOpened$ = this.onramperFormService.widgetOpened$;
 
   public get isInstantTrade(): boolean {
-    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
   public get isCrossChainRouting(): boolean {
-    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
   }
 
   public get isOnramper(): boolean {
-    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
   constructor(
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
@@ -88,7 +88,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.swapsService.swapMode$
+    this.swapTypeService.swapMode$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(swapMode => {
         this.swapType = swapMode;
@@ -154,7 +154,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
       .pipe(
         map(form => [form?.fromAsset?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),
-        withLatestFrom(this.swapsService.swapMode$),
+        withLatestFrom(this.swapTypeService.swapMode$),
         takeUntil(this.destroy$)
       )
       .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {

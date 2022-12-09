@@ -24,7 +24,7 @@ import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
@@ -78,7 +78,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -99,7 +99,7 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-    this.swapType$ = this.swapsService.swapMode$;
+    this.swapType$ = this.swapTypeService.swapMode$;
   }
 
   public ngAfterViewInit(): void {

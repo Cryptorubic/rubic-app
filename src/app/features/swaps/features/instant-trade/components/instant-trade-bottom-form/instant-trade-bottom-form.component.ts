@@ -64,7 +64,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
-import { SwapsService } from '@core/services/swaps/swaps.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -212,7 +212,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: TuiDialogService,
     private readonly refreshService: RefreshService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
@@ -336,7 +336,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
-    if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
       return;
     }
 
