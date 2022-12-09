@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -9,7 +10,9 @@ import { OnramperFormCalculationService } from '@features/swaps/features/onrampe
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperBottomFormComponent {
-  public readonly tradeStatus$ = this.onramperFormCalculationService.tradeStatus$;
+  public readonly tradeStatus$ = this.onramperFormCalculationService.tradeStatus$.pipe(
+    debounceTime(200)
+  );
 
   public readonly tradeError$ = this.onramperFormCalculationService.tradeError$;
 

@@ -86,12 +86,10 @@
     }
   }
 
-  &__refresh {
-    margin-right: 10px;
-  }
-
   &__settings {
     display: flex;
+
+    margin-left: 10px;
 
     cursor: pointer;
   }
@@ -170,6 +168,16 @@
 
     &::after {
       right: 0;
+    }
+
+    &_full {
+      &::before {
+        width: 100%;
+      }
+
+      &::after {
+        display: none;
+      }
     }
   }
 

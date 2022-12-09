@@ -10,11 +10,16 @@
       <div class="swap-form__settings-wrapper">
         <app-refresh-button
           class="swap-form__refresh"
-          *ngIf="(isInstantTrade || isCrossChainRouting) && isFormFilled && allowRefresh"
+          *ngIf="
+            (isInstantTrade || isCrossChainRouting || isOnramper) && isFormFilled && allowRefresh
+          "
         >
         </app-refresh-button>
 
-        <app-settings-container class="swap-form__settings"></app-settings-container>
+        <app-settings-container
+          class="swap-form__settings"
+          *ngIf="!isOnramper"
+        ></app-settings-container>
 
         <app-iframe-logout-button
           *ngIf="hideUnusedUI && getCurrentUser$ | async"
@@ -37,8 +42,8 @@
         ></app-vertical-iframe-token-amount-input>
       </div>
 
-      <div class="swap-form__delimiter">
-        <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+      <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
+        <app-form-switcher *ngIf="!isOnramper" (switcherClick)="revert()"></app-form-switcher>
       </div>
 
       <div class="swap-form__block">
