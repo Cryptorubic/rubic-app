@@ -185,6 +185,9 @@ export class SwapsService {
                     el => el.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
                   )
                 : foundTokens.first();
+            if (!token) {
+              return null;
+            }
             const newToken = { ...token, amount: new BigNumber(NaN) };
             this.tokensService.addToken(newToken);
             return newToken;

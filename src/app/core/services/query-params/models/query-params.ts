@@ -18,6 +18,7 @@ interface AllQueryParams {
   fromChain: AssetType;
   toChain: BlockchainName;
   amount: string;
+  afterOnramper: boolean | null;
 
   // iframe
   iframe: IframeAppearance;
@@ -38,6 +39,7 @@ interface AllQueryParams {
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
+
   // Near specific query params.
   // Transaction.
   nearLogin: string;

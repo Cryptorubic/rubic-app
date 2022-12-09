@@ -15,6 +15,7 @@
           [withApproveButton]="false"
           [status]="tradeStatus$ | async"
           [error]="tradeError"
+          [isOnramper]="true"
           buttonText="Swap"
           (onUpdateRateClick)="onUpdateRate()"
           (onSwapClick)="onBuyNative()"

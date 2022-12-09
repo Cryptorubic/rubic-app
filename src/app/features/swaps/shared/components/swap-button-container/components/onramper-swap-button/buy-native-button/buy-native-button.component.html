@@ -1,0 +1,9 @@
+<app-rubic-button
+  appearance="secondary"
+  [loading]="loading$ | async"
+  [disabled]="disabled$ | async"
+  (onClick)="onClick.emit()"
+  (onHoveredChange)="onHoveredChange($event)"
+>
+  Buy Native
+</app-rubic-button>

@@ -19,7 +19,17 @@ import { WINDOW } from '@ng-web-apis/common';
   providedIn: 'root'
 })
 export class QueryParamsService {
-  public currentQueryParams: QueryParams;
+  private readonly _queryParams$ = new BehaviorSubject<QueryParams>(undefined);
+
+  public readonly queryParams$ = this._queryParams$.asObservable();
+
+  public get queryParams(): QueryParams | undefined {
+    return this._queryParams$.value;
+  }
+
+  private set queryParams(value: QueryParams) {
+    this._queryParams$.next(value);
+  }
 
   private readonly _tokensSelectionDisabled$ = new BehaviorSubject<[boolean, boolean]>([
     false,
@@ -46,10 +56,6 @@ export class QueryParamsService {
 
   public backgroundColor: string;
 
-  private readonly _queryParams$ = new BehaviorSubject<QueryParams>(undefined);
-
-  public readonly queryParams$ = this._queryParams$.asObservable();
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensService: TokensService,
@@ -68,7 +74,8 @@ export class QueryParamsService {
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
         ...(value.fromAssetType && { fromChain: value.fromAssetType }),
         ...(value.toBlockchain && { toChain: value.toBlockchain }),
-        ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() })
+        ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
+        afterOnramper: null
       });
     });
   }
@@ -90,11 +97,14 @@ export class QueryParamsService {
   }
 
   public setQueryParams(params: Partial<QueryParams>): void {
-    this.currentQueryParams = {
-      ...this.currentQueryParams,
+    this.queryParams = {
+      ...this.queryParams,
       ...params
     };
-    this.navigate();
+    this.router.navigate([], {
+      queryParams: this.queryParams,
+      queryParamsHandling: 'merge'
+    });
   }
 
   private setDisabledProviders(enabledProviders: string[]): void {
@@ -107,13 +117,6 @@ export class QueryParamsService {
     this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
       enabledProviders.includes(provider.toLowerCase())
     );
-  }
-
-  private navigate(): void {
-    this.router.navigate([], {
-      queryParams: this.currentQueryParams,
-      queryParamsHandling: 'merge'
-    });
   }
 
   private setIframeInfo(queryParams: QueryParams): void {
