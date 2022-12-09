@@ -9,7 +9,7 @@ import { TargetNetworkAddressComponent } from '@features/swaps/shared/components
 import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SettingsWarningModalComponent } from './settings-warning-modal/settings-warning-modal.component';
+import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
 
 @NgModule({
   declarations: [

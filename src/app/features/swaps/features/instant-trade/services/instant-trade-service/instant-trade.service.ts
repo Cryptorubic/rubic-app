@@ -24,7 +24,8 @@ import {
   OnChainTradeError,
   TxStatus,
   EncodeTransactionOptions,
-  BlockchainsInfo
+  BlockchainsInfo,
+  NotWhitelistedProviderError
 } from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -305,6 +306,10 @@ export class InstantTradeService extends TradeCalculationService {
     } catch (err) {
       subscription$?.unsubscribe();
 
+      if (err instanceof NotWhitelistedProviderError) {
+        this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
+      }
+
       if (transactionHash && !this.isNotMinedError(err)) {
         this.updateTrade(transactionHash, false);
       }
@@ -446,5 +451,15 @@ export class InstantTradeService extends TradeCalculationService {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.showOpenMobileWallet();
     }
+  }
+
+  public saveNotWhitelistedProvider(
+    error: NotWhitelistedProviderError,
+    blockchain: BlockchainName,
+    tradeType: OnChainTradeType
+  ): void {
+    this.instantTradesApiService
+      .saveNotWhitelistedProvider(error, blockchain, tradeType)
+      .subscribe();
   }
 }
