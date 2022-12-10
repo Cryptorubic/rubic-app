@@ -15,6 +15,7 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   EvmBlockchainName,
+  EvmWeb3Pure,
   Injector,
   TxStatus,
   Web3PublicSupportedBlockchain
@@ -165,12 +166,14 @@ export class RecentTradesService {
         ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
         : null;
 
-      this.recentTradesStoreService.updateTrade({
-        ...trade,
-        calculatedStatusFrom: statusFrom,
-        srcTxHash,
-        fromAmount: tradeApiData.out_amount
-      });
+      if (statusFrom !== TxStatus.PENDING) {
+        this.recentTradesStoreService.updateTrade({
+          ...trade,
+          calculatedStatusFrom: statusFrom,
+          srcTxHash,
+          fromAmount: tradeApiData.out_amount
+        });
+      }
     }
 
     if (uiTrade.statusFrom === TxStatus.FAIL) {
@@ -181,7 +184,17 @@ export class RecentTradesService {
       uiTrade.statusTo = TxStatus.FAIL;
       return uiTrade;
     }
-    if (uiTrade.statusFrom !== TxStatus.SUCCESS || !trade.dstTxHash) {
+    if (EvmWeb3Pure.isNativeAddress(uiTrade.toToken.address)) {
+      uiTrade.statusTo = uiTrade.statusFrom;
+      if (uiTrade.statusTo === TxStatus.SUCCESS) {
+        this.recentTradesStoreService.updateTrade({
+          ...trade,
+          calculatedStatusTo: uiTrade.statusTo
+        });
+      }
+      return uiTrade;
+    }
+    if (!trade.dstTxHash) {
       return uiTrade;
     }
 
