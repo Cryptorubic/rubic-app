@@ -17,6 +17,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -29,7 +31,8 @@ export class SwapFormQueryService {
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly fiatsService: FiatsService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnSwapForm();
 
@@ -97,10 +100,17 @@ export class SwapFormQueryService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
-    const fromChain =
-      BlockchainsInfo.isBlockchainName(queryParams.fromChain) || queryParams.fromChain === 'fiat'
-        ? queryParams.fromChain
-        : defaultFormParameters.swap.fromChain;
+    let fromChain: AssetType;
+    if (
+      BlockchainsInfo.isBlockchainName(queryParams.fromChain) ||
+      queryParams.fromChain === 'fiat'
+    ) {
+      fromChain = queryParams.fromChain;
+    } else if (this.walletConnectorService.network) {
+      fromChain = this.walletConnectorService.network;
+    } else {
+      fromChain = defaultFormParameters.swap.fromChain;
+    }
 
     const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
       ? queryParams.toChain

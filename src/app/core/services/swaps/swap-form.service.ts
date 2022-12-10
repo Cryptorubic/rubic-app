@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { distinctUntilChanged, first, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -13,7 +13,6 @@ import {
   SwapFormOutputControl
 } from '@core/services/swaps/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()
@@ -22,7 +21,7 @@ export class SwapFormService {
     input: new FormGroup<SwapFormInputControl>({
       fromAssetType: new FormControl(null),
       fromAsset: new FormControl(null),
-      toBlockchain: new FormControl(BLOCKCHAIN_NAME.ETHEREUM),
+      toBlockchain: new FormControl(null),
       toToken: new FormControl(null),
       fromAmount: new FormControl(null)
     }),
@@ -99,18 +98,8 @@ export class SwapFormService {
     return this._isFilled$.getValue();
   }
 
-  constructor(private readonly walletConnectorService: WalletConnectorService) {
-    this.setupFromBlockchain();
-
+  constructor() {
     this.subscribeOnFormValueChange();
-  }
-
-  private setupFromBlockchain(): void {
-    this.walletConnectorService.networkChange$.pipe(first(Boolean)).subscribe(network => {
-      if (!this.inputValue.fromAssetType) {
-        this.inputControl.patchValue({ fromAssetType: network });
-      }
-    });
   }
 
   private subscribeOnFormValueChange(): void {
