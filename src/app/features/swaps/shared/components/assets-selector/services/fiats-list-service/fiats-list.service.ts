@@ -33,8 +33,10 @@ export class FiatsListService {
         map(([query]) => query)
       )
       .subscribe(query => {
-        this.fiatsToShow = this.fiatsService.fiats.filter(fiat =>
-          fiat.symbol.toLowerCase().includes(query.toLowerCase())
+        this.fiatsToShow = this.fiatsService.fiats.filter(
+          fiat =>
+            fiat.symbol.toLowerCase().includes(query.toLowerCase()) ||
+            fiat.name.toLowerCase().includes(query.toLowerCase())
         );
       });
   }

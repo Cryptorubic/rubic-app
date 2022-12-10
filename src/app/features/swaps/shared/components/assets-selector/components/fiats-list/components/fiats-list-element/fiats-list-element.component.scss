@@ -19,17 +19,6 @@
     @include b($mobile-sm) {
       max-width: 93px;
     }
-
-    span {
-      font-size: 16px;
-      line-height: 20px;
-    }
-
-    &-symbol {
-      display: flex;
-      align-items: center;
-      width: fit-content;
-    }
   }
 
   &__image-container {
@@ -47,5 +36,20 @@
 
       border-radius: 25%;
     }
+  }
+}
+
+.name-container {
+  &__symbol {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+    line-height: 24px;
+  }
+
+  &__name {
+    font-size: 14px;
+    line-height: 18px;
   }
 }

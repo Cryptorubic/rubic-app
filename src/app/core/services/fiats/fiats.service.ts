@@ -30,12 +30,19 @@ export class FiatsService {
       .get<OnramperGatewaysResponse>('https://onramper.tech/gateways', {
         headers: {
           Authorization: `Basic ${onramperApiKey}`
+        },
+        params: {
+          includeIcons: true
         }
       })
       .pipe(
         timeout(3000),
         catchError(() =>
-          of({ gateways: [], localization: { currency: null } } as OnramperGatewaysResponse)
+          of({
+            gateways: [],
+            localization: { currency: null },
+            icons: {}
+          } as OnramperGatewaysResponse)
         )
       )
       .subscribe(response => {
@@ -63,7 +70,8 @@ export class FiatsService {
 
           return {
             symbol: code,
-            image
+            image,
+            name: response.icons[code].name
           };
         });
       });

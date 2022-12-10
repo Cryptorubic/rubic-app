@@ -3,7 +3,8 @@
     <img [src]="fiat.image" [alt]="fiat.symbol" />
   </div>
 
-  <div class="fiat-card__name-container">
-    <span class="token-card__name-container-symbol">{{ fiat.symbol }}</span>
+  <div class="fiat-card__name-container name-container">
+    <div class="name-container__symbol">{{ fiat.symbol }}</div>
+    <div class="name-container__name">{{ fiat.name }}</div>
   </div>
 </div>
