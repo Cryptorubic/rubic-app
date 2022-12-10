@@ -285,12 +285,12 @@ export class CrossChainFormService {
               toAmount: new BigNumber(NaN)
             });
 
-            return { ...calculateData, isFormFilled: false };
+            return { ...calculateData, stop: true };
           }
-          return { ...calculateData, isFormFilled: true };
+          return { ...calculateData, stop: false };
         }),
         switchMap(calculateData => {
-          if (!calculateData.isFormFilled) {
+          if (calculateData.stop) {
             return of(null);
           }
 
@@ -686,6 +686,7 @@ export class CrossChainFormService {
   private startRecalculation(isForced = true): void {
     const { fromBlockchain, toBlockchain } = this.inputValue;
     if (fromBlockchain === toBlockchain) {
+      this._calculateTrade$.next({ stop: true });
       return;
     }
 

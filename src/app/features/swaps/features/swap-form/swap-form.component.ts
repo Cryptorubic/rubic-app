@@ -28,7 +28,7 @@ import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 
 @Component({
   selector: 'app-swap-form',

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
-import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({

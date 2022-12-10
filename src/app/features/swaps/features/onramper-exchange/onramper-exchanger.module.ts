@@ -4,8 +4,8 @@ import { OnramperBottomFormComponent } from '@features/swaps/features/onramper-e
 import { OnramperWidgetComponent } from '@features/swaps/features/onramper-exchange/components/onramper-widget/onramper-widget.component';
 import { OnramperWebsocketService } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/onramper-websocket.service';
 import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
-import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form-calculation.service';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-bottom-form-service/onramper-form.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { OnramperWidgetService } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/onramper-widget.service';
 

@@ -123,12 +123,12 @@ export class OnramperFormCalculationService {
             this.refreshService.setStopped();
             this.swapFormService.outputControl.patchValue({ toAmount: null });
 
-            return { ...calculateData, isFormFilled: false };
+            return { ...calculateData, stop: true };
           }
-          return { ...calculateData, isFormFilled: true };
+          return { ...calculateData, stop: false };
         }),
         switchMap(calculateData => {
-          if (!calculateData.isFormFilled) {
+          if (calculateData.stop) {
             return of(null);
           }
 
@@ -208,6 +208,7 @@ export class OnramperFormCalculationService {
    */
   private startRecalculation(isForced = true): void {
     if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.ONRAMPER) {
+      this._calculateTrade$.next({ stop: true });
       return;
     }
     this._calculateTrade$.next({ isForced });
