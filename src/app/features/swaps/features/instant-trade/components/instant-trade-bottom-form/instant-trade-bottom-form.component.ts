@@ -631,7 +631,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         trade => trade.providerName === this.selectedProvider.name
       );
       const providerAmount =
-        providerData.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
+        providerData?.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
 
       if (!this.selectedProvider.trade.to.tokenAmount.eq(providerAmount)) {
         this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
