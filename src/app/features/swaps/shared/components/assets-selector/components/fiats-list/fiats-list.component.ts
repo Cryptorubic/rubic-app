@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
+import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selector/animations/list-animation';
 
 @Component({
   selector: 'app-fiats-list',
   templateUrl: './fiats-list.component.html',
   styleUrls: ['./fiats-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  animations: [LIST_ANIMATION]
 })
 export class FiatsListComponent {
   public readonly fiats$ = this.fiatsListService.fiatsToShow$;

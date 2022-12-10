@@ -4,7 +4,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selector/components/tokens-list/animations/list-animation';
+import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selector/animations/list-animation';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
