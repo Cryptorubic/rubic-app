@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BlockchainName, EvmWeb3Pure, OnChainTrade } from 'rubic-sdk';
+import {
+  BlockchainName,
+  EvmWeb3Pure,
+  MaxAmountError,
+  MinAmountError,
+  OnChainTrade
+} from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
@@ -81,8 +87,27 @@ export class OnramperCalculationService {
         return a.receivedCrypto > b.receivedCrypto ? -1 : 1;
       })[0];
     if (!bestTrade?.receivedCrypto) {
+      this.checkMinMaxError(trades, input);
       throw new RubicError('Trade is not available');
     }
     return new BigNumber(bestTrade.receivedCrypto);
+  }
+
+  private checkMinMaxError(trades: OnramperRateResponse, input: SwapFormInputFiats): void | never {
+    const minAmount = trades
+      .filter(
+        trade => trade.error?.type === 'MIN' && trade.error.message?.includes(input.fromFiat.symbol)
+      )
+      .sort((a, b) => new BigNumber(a.error.limit).comparedTo(b.error.limit))[0]?.error?.limit;
+    if (minAmount) {
+      throw new MinAmountError(new BigNumber(minAmount), input.fromFiat.symbol);
+    }
+
+    const maxAmount = trades
+      .filter(trade => trade.error?.type === 'MAX')
+      .sort((a, b) => new BigNumber(b.error.limit).comparedTo(a.error.limit))[0]?.error?.limit;
+    if (maxAmount) {
+      throw new MaxAmountError(new BigNumber(maxAmount), input.fromFiat.symbol);
+    }
   }
 }

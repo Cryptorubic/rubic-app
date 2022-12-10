@@ -21,6 +21,7 @@ import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -151,7 +152,7 @@ export class OnramperFormCalculationService {
             }),
             catchError(err => {
               this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.tradeError = err as RubicError<ERROR_TYPE>;
+              this.tradeError = RubicSdkErrorParser.parseError(err);
               return of(null);
             }),
             finalize(() => {
