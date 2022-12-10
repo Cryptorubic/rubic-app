@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -17,7 +17,6 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -25,6 +24,7 @@ import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -167,13 +167,19 @@ export class SwapButtonContainerErrorsService {
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const fromToken = this.swapFormService.inputValue.fromAsset;
-    if (!isMinimalToken(fromToken)) {
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
+    const fromAsset = this.swapFormService.inputValue.fromAsset;
+    if (!isMinimalToken(fromAsset)) {
+      if (!fromAsset) {
+        this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
+        return;
+      }
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
+        Boolean(this.authService.userAddress) &&
+        !EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
       return;
     }
 
-    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
@@ -241,7 +247,9 @@ export class SwapButtonContainerErrorsService {
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
     const { fromAssetType } = this.swapFormService.inputValue;
-    const fromBlockchain = fromAssetType as BlockchainName;
+    const fromBlockchainLabel = BlockchainsInfo.isBlockchainName(fromAssetType)
+      ? blockchainLabel[fromAssetType]
+      : 'EVM';
 
     switch (true) {
       case err[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
@@ -249,7 +257,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
-            network: blockchainLabel[fromBlockchain]
+            network: fromBlockchainLabel
           }
         };
         break;
@@ -273,7 +281,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: blockchainLabel[fromBlockchain]
+            network: fromBlockchainLabel
           }
         };
         break;
@@ -292,7 +300,7 @@ export class SwapButtonContainerErrorsService {
         type = BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: fromBlockchain }
+          interpolateParams: { blockchain: fromAssetType }
         };
         break;
       }
