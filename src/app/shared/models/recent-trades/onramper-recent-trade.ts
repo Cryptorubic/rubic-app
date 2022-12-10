@@ -3,4 +3,6 @@ import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 export interface OnramperRecentTrade extends CommonRecentTrade {
   fromFiat: FiatAsset;
+
+  txId: string;
 }

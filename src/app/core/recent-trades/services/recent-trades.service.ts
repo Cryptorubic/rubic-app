@@ -14,6 +14,8 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
+  EvmBlockchainName,
+  Injector,
   TxStatus,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -21,6 +23,9 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
+import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
+import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 
 @Injectable()
 export class RecentTradesService {
@@ -44,7 +49,8 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly onramperApiService: OnramperApiService
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
@@ -56,11 +62,9 @@ export class RecentTradesService {
     const srcBlockchain = isCrossChainRecentTrade(trade)
       ? trade.fromToken.blockchain
       : toBlockchain;
-    const srcTxLink = this.scannerLinkPipe.transform(
-      srcTxHash,
-      srcBlockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
+    const srcTxLink = srcTxHash
+      ? this.scannerLinkPipe.transform(srcTxHash, srcBlockchain, ADDRESS_TYPE.TRANSACTION)
+      : null;
 
     const uiTrade: UiRecentTrade = {
       fromAssetType,
@@ -91,8 +95,7 @@ export class RecentTradesService {
     if (isCrossChainRecentTrade(trade)) {
       return this.getCrossChainStatuses(trade, uiTrade);
     }
-    // todo add statuses for onramper
-    return uiTrade;
+    return this.getOnramperStatuses(trade, uiTrade);
   }
 
   private async getCrossChainStatuses(
@@ -120,6 +123,49 @@ export class RecentTradesService {
 
     uiTrade.statusFrom = srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = dstTxHash
+      ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+      : null;
+
+    return uiTrade;
+  }
+
+  private async getOnramperStatuses(
+    trade: OnramperRecentTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
+    const tradeApiData = await this.onramperApiService.getTradeData(
+      this.authService.userAddress,
+      trade.txId
+    );
+
+    let statusFrom: TxStatus;
+    if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
+      statusFrom = TxStatus.SUCCESS;
+    } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
+      statusFrom = TxStatus.FAIL;
+    } else {
+      statusFrom = TxStatus.PENDING;
+    }
+    uiTrade.statusFrom = statusFrom;
+
+    const srcTxHash = tradeApiData.tx_hash;
+    uiTrade.srcTxHash = srcTxHash;
+    uiTrade.srcTxLink = srcTxHash
+      ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+      : null;
+
+    if (statusFrom !== TxStatus.SUCCESS || !trade.dstTxHash) {
+      return uiTrade;
+    }
+
+    const dstTxHash = trade.dstTxHash;
+
+    uiTrade.statusTo = await Injector.web3PublicService
+      .getWeb3Public(uiTrade.toBlockchain as EvmBlockchainName)
+      .getTransactionStatus(dstTxHash);
+
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
       ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)

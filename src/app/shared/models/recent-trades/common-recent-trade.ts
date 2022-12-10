@@ -1,11 +1,11 @@
 import { TxStatus } from 'rubic-sdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { Token } from '@shared/models/tokens/token';
 
 export interface CommonRecentTrade {
-  srcTxHash: string;
+  srcTxHash?: string;
   dstTxHash?: string;
 
-  toToken: TokenAmount;
+  toToken: Token;
 
   timestamp: number;
 

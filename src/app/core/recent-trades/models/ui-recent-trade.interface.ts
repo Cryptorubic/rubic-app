@@ -9,8 +9,8 @@ export interface UiRecentTrade {
   fromAsset: Token | FiatAsset;
   toToken: Token;
   timestamp: number;
-  srcTxLink: string;
-  srcTxHash: string;
+  srcTxLink?: string | null;
+  srcTxHash?: string | null;
   dstTxHash?: string | null;
   dstTxLink?: string | null;
   statusFrom?: TxStatus;
