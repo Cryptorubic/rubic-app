@@ -26,13 +26,15 @@
 
   <!-- Status of src transaction -->
   <td class="status-from">
-    <a [href]="uiTrade?.srcTxLink" target="_blank" [class.tui-skeleton]="initialLoading">
-      <app-status-badge
-        [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
-        [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
-        cursor="pointer"
-      ></app-status-badge>
-    </a>
+    <div [class.tui-skeleton]="initialLoading">
+      <a [href]="uiTrade?.srcTxLink" [class.hide-arrow]="!uiTrade?.srcTxLink" target="_blank">
+        <app-status-badge
+          [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
+          [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
+          cursor="pointer"
+        ></app-status-badge>
+      </a>
+    </div>
   </td>
 
   <!-- Dst crypto-asset -->
@@ -80,6 +82,7 @@
         }}
       </div>
     </div>
+
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
@@ -93,10 +96,16 @@
         <div class="tx__token-blockchain">{{ fromAssetTypeName }}</div>
       </div>
     </div>
+
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.statusFrom' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <a class="tx__status-from" [href]="uiTrade?.srcTxLink" target="_blank">
+        <a
+          class="tx__status-from"
+          [href]="uiTrade?.srcTxLink"
+          target="_blank"
+          [class.hide-arrow]="!uiTrade?.srcTxLink"
+        >
           <app-status-badge
             [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
             [text]="getStatusBadgeText(uiTrade?.statusFrom) | translate"
@@ -105,6 +114,7 @@
         </a>
       </div>
     </div>
+
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
@@ -122,6 +132,7 @@
         </div>
       </div>
     </div>
+
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
