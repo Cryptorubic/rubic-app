@@ -18,7 +18,7 @@ interface AllQueryParams {
   fromChain: AssetType;
   toChain: BlockchainName;
   amount: string;
-  afterOnramper: boolean | null;
+  onramperTxId: string;
 
   // iframe
   iframe: IframeAppearance;

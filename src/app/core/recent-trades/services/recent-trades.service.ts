@@ -135,7 +135,7 @@ export class RecentTradesService {
     trade: OnramperRecentTrade,
     uiTrade: UiRecentTrade
   ): Promise<UiRecentTrade> {
-    if (trade.calculatedStatusFrom === TxStatus.SUCCESS) {
+    if (trade.fromAmount) {
       uiTrade.statusFrom = trade.calculatedStatusFrom;
 
       const srcTxHash = trade.srcTxHash;
@@ -165,14 +165,12 @@ export class RecentTradesService {
         ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
         : null;
 
-      if (statusFrom !== trade.calculatedStatusFrom) {
-        this.recentTradesStoreService.updateTrade({
-          ...trade,
-          calculatedStatusFrom: statusFrom,
-          srcTxHash,
-          fromAmount: tradeApiData.out_amount
-        });
-      }
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusFrom: statusFrom,
+        srcTxHash,
+        fromAmount: tradeApiData.out_amount
+      });
     }
 
     if (uiTrade.statusFrom === TxStatus.FAIL) {

@@ -10,11 +10,9 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { EvmWeb3Pure } from 'rubic-sdk';
-import BigNumber from 'bignumber.js';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { OnramperService } from '@core/services/onramper/onramper.service';
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -26,8 +24,7 @@ export class OnramperWebsocketService {
     private readonly authService: AuthService,
     private readonly notificationsService: NotificationsService,
     private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly onramperService: OnramperService
   ) {
     this.subscribeOnUserChange();
 
@@ -79,18 +76,7 @@ export class OnramperWebsocketService {
 
         const toToken = this.swapFormService.inputValue.toToken;
         if (!EvmWeb3Pure.isNativeAddress(toToken.address)) {
-          const blockchain = toToken.blockchain;
-          const nativeToken = this.tokensService.tokens.find(
-            token => token.blockchain === blockchain && EvmWeb3Pure.isNativeAddress(token.address)
-          );
-          this.swapFormService.inputControl.patchValue({
-            fromAssetType: blockchain,
-            fromAsset: nativeToken,
-            toBlockchain: blockchain,
-            toToken,
-            fromAmount: new BigNumber(info.out_amount).minus(0.01)
-          });
-          this.queryParamsService.patchQueryParams({ afterOnramper: true });
+          this.onramperService.updateSwapFormByRecentTrade(info.transaction_id);
         }
       }
     });

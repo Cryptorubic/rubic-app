@@ -8,6 +8,7 @@ import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recen
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { EvmWeb3Pure } from 'rubic-sdk';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class OnramperService {
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly gasService: GasService,
     private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public async updateSwapFormByRecentTrade(txId: string): Promise<void> {
@@ -44,5 +46,7 @@ export class OnramperService {
       toToken,
       fromAmount
     });
+
+    this.queryParamsService.patchQueryParams({ onramperTxId: txId });
   }
 }

@@ -47,7 +47,7 @@ export class SwapFormQueryService {
         ...(value.fromAssetType && { fromChain: value.fromAssetType }),
         ...(value.toBlockchain && { toChain: value.toBlockchain }),
         ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
-        afterOnramper: null
+        onramperTxId: null
       });
     });
   }
