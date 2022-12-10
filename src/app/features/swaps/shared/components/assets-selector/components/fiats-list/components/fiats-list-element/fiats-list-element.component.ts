@@ -6,7 +6,6 @@ import {
   Input
 } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
@@ -20,8 +19,6 @@ import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 })
 export class FiatsListElementComponent {
   @Input() fiat: FiatAsset;
-
-  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   constructor(
     private readonly tokensService: TokensService,

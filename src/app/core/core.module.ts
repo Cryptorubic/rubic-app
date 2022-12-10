@@ -50,13 +50,13 @@ import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updat
       provide: Sentry.TraceService,
       deps: [Router]
     },
-    SdkLoaderService,
     {
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true
     },
+    SdkLoaderService,
     {
       provide: APP_INITIALIZER,
       useFactory: sdkLoader,
