@@ -5,6 +5,9 @@ import { StoreService } from '../store/store.service';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
+import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
+import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 
 const MAX_LATEST_TRADES = 5;
 
@@ -90,13 +93,27 @@ export class RecentTradesStoreService {
   public getSpecificCrossChainTrade(
     srcTxHash: string,
     fromBlockchain: BlockchainName
-  ): RecentTrade {
+  ): CrossChainRecentTrade {
     return this.currentUserRecentTrades.find(
       trade =>
         isCrossChainRecentTrade(trade) &&
         trade.srcTxHash === srcTxHash &&
         trade.fromToken.blockchain === fromBlockchain
-    );
+    ) as CrossChainRecentTrade;
+  }
+
+  public getSpecificOnramperTrade(txId: string): OnramperRecentTrade {
+    return this.currentUserRecentTrades.find(
+      trade => isOnramperRecentTrade(trade) && trade.txId === txId
+    ) as OnramperRecentTrade;
+  }
+
+  public updateOnramperTargetTrade(txId: string, dstTxHash: string): void {
+    const trade = this.getSpecificOnramperTrade(txId);
+    this.updateTrade({
+      ...trade,
+      dstTxHash
+    });
   }
 
   public updateUnreadTrades(readAll = false): void {

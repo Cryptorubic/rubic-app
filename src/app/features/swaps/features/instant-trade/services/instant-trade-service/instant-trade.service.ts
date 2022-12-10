@@ -62,6 +62,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -132,7 +134,9 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly authService: AuthService,
     private readonly gasService: GasService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     super('instant-trade');
   }
@@ -296,6 +300,12 @@ export class InstantTradeService extends TradeCalculationService {
       onConfirm: (hash: string) => {
         transactionHash = hash;
         confirmCallback?.();
+
+        const onramperTxId = this.queryParamsService.queryParams.onramperTxId;
+        if (onramperTxId) {
+          this.recentTradesStoreService.updateOnramperTargetTrade(onramperTxId, hash);
+          this.queryParamsService.patchQueryParams({ onramperTxId: null });
+        }
 
         this.notifyGtmAfterSignTx(
           transactionHash,

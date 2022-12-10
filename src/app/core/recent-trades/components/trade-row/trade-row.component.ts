@@ -132,6 +132,9 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       if (this.uiTrade?.statusFrom === TxStatus.FAIL) {
         return STATUS_BADGE_TEXT[TxStatus.FAIL];
       }
+      if (this.uiTrade) {
+        return getStatusBadgeText(status);
+      }
       return '';
     }
     return getStatusBadgeText(status);

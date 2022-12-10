@@ -40,7 +40,7 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(value => {
+    this.swapFormService.inputValue$.pipe(skip(2)).subscribe(value => {
       this.queryParamsService.patchQueryParams({
         ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
