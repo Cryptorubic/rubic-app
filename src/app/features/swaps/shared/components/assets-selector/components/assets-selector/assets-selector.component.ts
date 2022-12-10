@@ -34,6 +34,9 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
       if (selectorListType === 'blockchains') {
         return 'Blockchains List';
       }
+      if (selectorListType === 'fiats') {
+        return 'Fiats List';
+      }
       if (tokensListType === 'default') {
         return 'modals.tokensListModal.defaultTitle';
       }
