@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   BlockchainName,
+  EvmBlockchainName,
   EvmWeb3Pure,
   MaxAmountError,
   MinAmountError,
@@ -20,7 +21,7 @@ import {
   onramperSupportedBlockchains
 } from '@features/swaps/features/onramper-exchange/models/onramper-supported-blockchain';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { onChainProxyMaxGasLimit } from '@core/services/onramper/constants/on-chain-proxy-max-gas-limit';
+import { OnramperService } from '@core/services/onramper/onramper.service';
 
 @Injectable()
 export class OnramperCalculationService {
@@ -35,7 +36,8 @@ export class OnramperCalculationService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly sdkService: SdkService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly onramperService: OnramperService
   ) {}
 
   public async getOutputTokenAmount(input: SwapFormInputFiats): Promise<BigNumber | null> {
@@ -44,14 +46,13 @@ export class OnramperCalculationService {
       return receivedNativeAmount;
     }
 
-    const gasPrice = await this.gasService.getGasPriceInEthUnits(input.toBlockchain);
-    const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
+    const fromFee = await this.onramperService.getFromFees(input.toBlockchain as EvmBlockchainName);
     const onChainTrades = await this.sdkService.instantTrade.calculateTrade(
       {
         address: EvmWeb3Pure.nativeTokenAddress,
         blockchain: input.toToken.blockchain
       },
-      receivedNativeAmount.minus(gasFee).toFixed(),
+      receivedNativeAmount.minus(fromFee).toFixed(),
       input.toToken.address,
       {
         gasCalculation: 'disabled'

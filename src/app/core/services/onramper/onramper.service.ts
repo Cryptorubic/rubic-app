@@ -7,7 +7,13 @@ import { onChainProxyMaxGasLimit } from '@core/services/onramper/constants/on-ch
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { EvmWeb3Pure } from 'rubic-sdk';
+import {
+  EvmBlockchainName,
+  EvmWeb3Pure,
+  nativeTokensList,
+  OnChainProxyService,
+  PriceTokenAmount
+} from 'rubic-sdk';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable({
@@ -27,15 +33,14 @@ export class OnramperService {
       currentTrade => isOnramperRecentTrade(currentTrade) && currentTrade.txId === txId
     ) as OnramperRecentTrade;
 
-    const blockchain = trade.toToken.blockchain;
+    const blockchain = trade.toToken.blockchain as EvmBlockchainName;
     const nativeToken = await this.tokensService.findToken({
       address: EvmWeb3Pure.nativeTokenAddress,
       blockchain
     });
 
-    const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
-    const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
-    const fromAmount = new BigNumber(trade.fromAmount).minus(gasFee);
+    const fromFee = await this.getFromFees(blockchain);
+    const fromAmount = new BigNumber(trade.fromAmount).minus(fromFee);
 
     const toToken = await this.tokensService.findToken(trade.toToken);
 
@@ -48,5 +53,19 @@ export class OnramperService {
     });
 
     this.queryParamsService.patchQueryParams({ onramperTxId: txId });
+  }
+
+  public async getFromFees(blockchain: EvmBlockchainName): Promise<BigNumber> {
+    const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
+    const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
+
+    const nativeToken = nativeTokensList[blockchain] as PriceTokenAmount<EvmBlockchainName>;
+    const onChainProxyFee = await new OnChainProxyService().getFeeInfo(
+      new PriceTokenAmount<EvmBlockchainName>(nativeToken),
+      EvmWeb3Pure.EMPTY_ADDRESS
+    );
+    const fixedFee = onChainProxyFee.fixedFeeToken.tokenAmount;
+
+    return gasFee.plus(fixedFee);
   }
 }
