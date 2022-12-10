@@ -20,6 +20,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
+import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-text.map';
 
 @Component({
   selector: '[trade-row]',
@@ -40,7 +42,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public readonly getStatusBadgeType: (status: TxStatus) => string = getStatusBadgeType;
 
-  public readonly getStatusBadgeText: (status: TxStatus) => string = getStatusBadgeText;
+  public readonly getFromStatusBadgeText: (status: TxStatus) => string = getStatusBadgeText;
 
   public readonly defaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
 
@@ -61,6 +63,14 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       return blockchainLabel[this.uiTrade.fromAssetType];
     }
     return 'Fiats';
+  }
+
+  public get showToContinue(): boolean {
+    return (
+      isOnramperRecentTrade(this.trade) &&
+      !this.uiTrade?.statusTo &&
+      this.uiTrade?.statusFrom === TxStatus.SUCCESS
+    );
   }
 
   constructor(
@@ -101,6 +111,19 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     if (this.initialLoading) {
       this.initialLoading = false;
     }
+  }
+
+  public getToStatusBadgeText(status: TxStatus): string {
+    if (isOnramperRecentTrade(this.trade)) {
+      if (this.uiTrade?.statusFrom === TxStatus.PENDING) {
+        return 'Waiting';
+      }
+      if (this.uiTrade?.statusFrom === TxStatus.FAIL) {
+        return STATUS_BADGE_TEXT[TxStatus.FAIL];
+      }
+      return '';
+    }
+    return getStatusBadgeText(status);
   }
 
   private saveTrades(): void {
