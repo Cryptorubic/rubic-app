@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { HttpClient } from '@angular/common/http';
 import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
 import { OnramperGatewaysResponse } from '@core/services/fiats/models/onramper-gateways-response';
 import { fiatsDictionary } from '@core/services/fiats/constants/fiats-dictionary';
+import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()
 export class FiatsService {
@@ -31,12 +32,20 @@ export class FiatsService {
           Authorization: `Basic ${onramperApiKey}`
         }
       })
+      .pipe(
+        timeout(3000),
+        catchError(() =>
+          of({ gateways: [], localization: { currency: null } } as OnramperGatewaysResponse)
+        )
+      )
       .subscribe(response => {
         const responseFiatsCodes = response.gateways
           .map(gateway => gateway.fiatCurrencies.map(fiatCurrency => fiatCurrency.code))
           .flat();
         const localFiat = response.localization.currency;
-        const fiatsCodes = [...new Set([localFiat, 'USD', 'EUR', ...responseFiatsCodes])];
+        const fiatsCodes = [
+          ...new Set([...(localFiat ? [localFiat] : []), 'USD', 'EUR', ...responseFiatsCodes])
+        ];
 
         this.fiats = fiatsCodes.map(code => {
           const dictionaryImageName = fiatsDictionary[code];
