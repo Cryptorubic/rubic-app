@@ -6,7 +6,6 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiHintModule } from '@taiga-ui/core';
-import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +15,6 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
   ],
   providers: [InstantTradeService],
   exports: [InstantTradeBottomFormComponent],
-  imports: [SwapsSharedModule, SwapsCoreModule, InlineSVGModule, TuiHintModule]
+  imports: [SwapsSharedModule, InlineSVGModule, TuiHintModule]
 })
 export class InstantTradeModule {}

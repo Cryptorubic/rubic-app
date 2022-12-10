@@ -23,7 +23,7 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cro
 import { from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
@@ -247,7 +247,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       const rangoRequestId =
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
 
-      const tradeData: RecentTrade = {
+      const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
         fromToken,
         toToken,

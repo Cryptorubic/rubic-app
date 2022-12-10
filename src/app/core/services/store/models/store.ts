@@ -2,7 +2,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
-import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
+import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 
 export interface Store {
   /**

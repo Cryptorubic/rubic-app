@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { Subscription } from 'rxjs';
-import { RecentTrade } from '@shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
+import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,6 +19,7 @@ import {
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
+import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 
 @Injectable()
 export class RecentTradesService {
@@ -48,8 +48,8 @@ export class RecentTradesService {
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const { srcTxHash, fromToken, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromToken.blockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toToken.blockchain);
+    const fromBlockchainInfo = BLOCKCHAINS[trade.fromToken.blockchain];
+    const toBlockchainInfo = BLOCKCHAINS[trade.toToken.blockchain];
     const srcTxLink = this.scannerLinkPipe.transform(
       srcTxHash,
       trade.fromToken.blockchain,
@@ -152,10 +152,6 @@ export class RecentTradesService {
     }
 
     return transactionReceipt;
-  }
-
-  private getFullBlockchainInfo(blockchain: BlockchainName): Blockchain {
-    return BLOCKCHAINS[blockchain];
   }
 
   public readAllTrades(): void {

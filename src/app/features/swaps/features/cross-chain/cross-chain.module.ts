@@ -22,7 +22,6 @@ import { TradesListComponent } from 'src/app/features/swaps/features/cross-chain
 import { BestTradePanelComponent } from 'src/app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/best-trade-panel.component';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
-import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +34,6 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
   ],
   imports: [
     SwapsSharedModule,
-    SwapsCoreModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiInputModule,

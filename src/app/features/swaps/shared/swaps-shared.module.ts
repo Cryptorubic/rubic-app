@@ -11,7 +11,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
 import { SelectAssetButtonComponent } from '@features/swaps/shared/components/select-asset-button/select-asset-button.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
-import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +33,6 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
   imports: [
     CommonModule,
     SharedModule,
-    SwapsCoreModule,
     TuiHintModule,
     InlineSVGModule,
     TuiInputModule,

@@ -9,7 +9,6 @@ import {
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 import { CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
 import { interval } from 'rxjs';
 import { startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
@@ -18,6 +17,7 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 
 @Component({
   selector: '[trade-row]',
@@ -49,9 +49,9 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public revertBtnLoading = false;
 
   constructor(
-    protected readonly recentTradesStoreService: RecentTradesStoreService,
-    protected readonly cdr: ChangeDetectorRef,
-    protected readonly destroy$: TuiDestroyService,
+    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService,
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService
   ) {}

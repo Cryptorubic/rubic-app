@@ -1,7 +1,7 @@
 import { BridgeType, CrossChainTradeType, TxStatus } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 
-export interface RecentTrade {
+export interface CrossChainRecentTrade {
   srcTxHash: string;
   dstTxHash?: string;
 

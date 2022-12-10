@@ -24,6 +24,7 @@ import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
+import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -82,7 +83,8 @@ import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updat
         useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    RecentTradesModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
