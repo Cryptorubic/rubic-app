@@ -9,7 +9,7 @@ import {
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
+import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
 import { interval } from 'rxjs';
 import { startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
@@ -18,6 +18,8 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: '[trade-row]',
@@ -42,11 +44,24 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public readonly defaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
 
+  public revertBtnLoading = false;
+
   public get isSymbiosisTrade(): boolean {
-    return this.trade?.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS;
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
+    );
   }
 
-  public revertBtnLoading = false;
+  public get fromAssetTypeName(): string {
+    if (!this.uiTrade) {
+      return '';
+    }
+    if (BlockchainsInfo.isBlockchainName(this.uiTrade.fromAssetType)) {
+      return blockchainLabel[this.uiTrade.fromAssetType];
+    }
+    return 'Fiats';
+  }
 
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
@@ -101,6 +116,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public async revertSymbiosis(): Promise<void> {
+    if (!isCrossChainRecentTrade(this.trade)) {
+      return;
+    }
+
     this.revertBtnLoading = true;
 
     const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
@@ -114,7 +133,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
       this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
         revertTxReceipt.transactionHash,
-        this.uiTrade.fromBlockchain.key,
+        this.trade.fromToken.blockchain,
         ADDRESS_TYPE.TRANSACTION
       );
       this.cdr.detectChanges();

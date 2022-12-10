@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { StoreService } from '../store/store.service';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 
 const MAX_LATEST_TRADES = 5;
 
@@ -16,7 +17,18 @@ export class RecentTradesStoreService {
   }
 
   public get currentUserRecentTrades(): RecentTrade[] {
-    return this.storeService.fetchData().recentTrades?.[this.userAddress] || [];
+    return (
+      this.storeService.fetchData().recentTrades?.[this.userAddress]?.map(recentTrade => {
+        if ('crossChainProviderType' in recentTrade) {
+          return {
+            ...recentTrade,
+            crossChainTradeType:
+              recentTrade.crossChainProviderType.toLowerCase() as CrossChainTradeType
+          };
+        }
+        return recentTrade;
+      }) || []
+    );
   }
 
   private get userAddress(): string {
@@ -56,11 +68,18 @@ export class RecentTradesStoreService {
 
   public updateTrade(trade: RecentTrade): void {
     const updatedUserTrades = this.currentUserRecentTrades.map(localStorageTrade => {
-      if (
-        trade.srcTxHash === localStorageTrade.srcTxHash &&
-        trade.fromToken.blockchain === localStorageTrade.fromToken.blockchain
-      ) {
-        return trade;
+      if (trade.srcTxHash === localStorageTrade.srcTxHash) {
+        if (isCrossChainRecentTrade(trade)) {
+          if (isCrossChainRecentTrade(localStorageTrade)) {
+            if (trade.fromToken.blockchain === localStorageTrade.fromToken.blockchain) {
+              return trade;
+            }
+          }
+          return localStorageTrade;
+        } else if (!isCrossChainRecentTrade(localStorageTrade)) {
+          return trade;
+        }
+        return localStorageTrade;
       } else {
         return localStorageTrade;
       }
@@ -72,9 +91,15 @@ export class RecentTradesStoreService {
     });
   }
 
-  public getSpecificTrade(srcTxHash: string, fromBlockchain: BlockchainName): RecentTrade {
+  public getSpecificCrossChainTrade(
+    srcTxHash: string,
+    fromBlockchain: BlockchainName
+  ): RecentTrade {
     return this.currentUserRecentTrades.find(
-      trade => trade.srcTxHash === srcTxHash && trade.fromToken.blockchain === fromBlockchain
+      trade =>
+        isCrossChainRecentTrade(trade) &&
+        trade.srcTxHash === srcTxHash &&
+        trade.fromToken.blockchain === fromBlockchain
     );
   }
 

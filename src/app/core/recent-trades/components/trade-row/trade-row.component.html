@@ -13,13 +13,13 @@
     <div class="asset" [class.tui-skeleton]="initialLoading">
       <img
         class="asset__token-image"
-        [src]="uiTrade?.fromToken?.image || defaultTokenImage"
-        [alt]="uiTrade?.fromToken?.symbol"
+        [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
+        [alt]="uiTrade?.fromAsset?.symbol"
         (error)="onTokenImageError($event)"
       />
       <div class="asset__data">
-        <div class="asset__token">{{ uiTrade?.fromToken?.symbol }}</div>
-        <div class="asset__blockchain">{{ uiTrade?.fromBlockchain?.name }}</div>
+        <div class="asset__token">{{ uiTrade?.fromAsset?.symbol }}</div>
+        <div class="asset__blockchain">{{ fromAssetTypeName }}</div>
       </div>
     </div>
   </td>
@@ -46,7 +46,7 @@
       />
       <div class="asset__data">
         <div class="asset__token">{{ uiTrade?.toToken?.symbol }}</div>
-        <div class="asset__blockchain">{{ uiTrade?.toBlockchain?.name }}</div>
+        <div class="asset__blockchain">{{ uiTrade?.toBlockchain }}</div>
       </div>
     </div>
   </td>
@@ -85,16 +85,12 @@
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <img
           class="tx__token-image"
-          [src]="uiTrade?.fromToken?.image || defaultTokenImage"
-          [alt]="uiTrade?.fromToken?.symbol"
+          [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
+          [alt]="uiTrade?.fromAsset?.symbol"
           (error)="onTokenImageError($event)"
         />
-        <div class="tx__token-symbol">
-          {{ uiTrade?.fromToken.symbol }}
-        </div>
-        <div class="tx__token-blockchain">
-          {{ uiTrade?.fromBlockchain?.name }}
-        </div>
+        <div class="tx__token-symbol">{{ uiTrade?.fromAsset.symbol }}</div>
+        <div class="tx__token-blockchain">{{ fromAssetTypeName }}</div>
       </div>
     </div>
     <div class="tx__row">
@@ -122,7 +118,7 @@
           {{ uiTrade?.toToken.symbol }}
         </div>
         <div class="tx__token-blockchain">
-          {{ uiTrade?.toBlockchain?.name }}
+          {{ uiTrade?.toBlockchain }}
         </div>
       </div>
     </div>
@@ -137,8 +133,7 @@
         >
           <app-status-badge
             *ngIf="
-              !isSymbiosisTrade ||
-                (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
+              !isSymbiosisTrade || uiTrade?.statusTo !== CrossChainTxStatus.REVERT;
               else revert
             "
             [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"

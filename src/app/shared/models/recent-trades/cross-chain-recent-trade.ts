@@ -1,20 +1,16 @@
-import { BridgeType, CrossChainTradeType, TxStatus } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { CommonRecentTrade } from '@shared/models/recent-trades/common-recent-trade';
 
-export interface CrossChainRecentTrade {
-  srcTxHash: string;
-  dstTxHash?: string;
-
+export interface CrossChainRecentTrade extends CommonRecentTrade {
   fromToken: TokenAmount;
-  toToken: TokenAmount;
 
   crossChainTradeType: CrossChainTradeType;
+  /**
+   * @deprecated
+   */
+  crossChainProviderType?: string;
   bridgeType?: BridgeType;
-
-  timestamp: number;
-
-  calculatedStatusTo?: TxStatus;
-  calculatedStatusFrom?: TxStatus;
 
   viaUuid?: string;
   rangoRequestId?: string;

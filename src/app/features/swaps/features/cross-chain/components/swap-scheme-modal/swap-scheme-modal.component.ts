@@ -252,7 +252,7 @@ export class SwapSchemeModalComponent implements OnInit {
       });
 
       this.recentTradesStoreService.updateTrade({
-        ...this.recentTradesStoreService.getSpecificTrade(
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(
           this.srcTxHash,
           this.fromToken.blockchain
         ),

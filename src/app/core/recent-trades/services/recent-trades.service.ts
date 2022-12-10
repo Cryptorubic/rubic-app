@@ -7,7 +7,6 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,6 +19,8 @@ import {
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 
 @Injectable()
 export class RecentTradesService {
@@ -47,18 +48,24 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, fromToken, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
-    const fromBlockchainInfo = BLOCKCHAINS[trade.fromToken.blockchain];
-    const toBlockchainInfo = BLOCKCHAINS[trade.toToken.blockchain];
+    const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
+    const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
+    const toBlockchain = trade.toToken.blockchain;
+
+    const srcBlockchain = isCrossChainRecentTrade(trade)
+      ? trade.fromToken.blockchain
+      : toBlockchain;
     const srcTxLink = this.scannerLinkPipe.transform(
       srcTxHash,
-      trade.fromToken.blockchain,
+      srcBlockchain,
       ADDRESS_TYPE.TRANSACTION
     );
+
     const uiTrade: UiRecentTrade = {
-      fromBlockchain: fromBlockchainInfo,
-      toBlockchain: toBlockchainInfo,
-      fromToken,
+      fromAssetType,
+      toBlockchain,
+      fromAsset,
       toToken,
       timestamp,
       srcTxLink,
@@ -69,7 +76,7 @@ export class RecentTradesService {
       uiTrade.dstTxHash = calculatedDstTxHash;
       uiTrade.dstTxLink = this.scannerLinkPipe.transform(
         calculatedDstTxHash,
-        toBlockchainInfo.key,
+        toBlockchain,
         ADDRESS_TYPE.TRANSACTION
       );
     }
@@ -81,6 +88,17 @@ export class RecentTradesService {
       return uiTrade;
     }
 
+    if (isCrossChainRecentTrade(trade)) {
+      return this.getCrossChainStatuses(trade, uiTrade);
+    }
+    // todo add statuses for onramper
+    return uiTrade;
+  }
+
+  private async getCrossChainStatuses(
+    trade: CrossChainRecentTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
     if (trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.BRIDGERS && !trade.amountOutMin) {
       console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
     }
@@ -90,7 +108,7 @@ export class RecentTradesService {
         {
           fromBlockchain: trade.fromToken.blockchain as Web3PublicSupportedBlockchain,
           toBlockchain: trade.toToken.blockchain,
-          srcTxHash: srcTxHash,
+          srcTxHash: uiTrade.srcTxHash,
           txTimestamp: trade.timestamp,
           lifiBridgeType: trade.bridgeType,
           viaUuid: trade.viaUuid,
@@ -104,7 +122,7 @@ export class RecentTradesService {
     uiTrade.statusTo = dstTxStatus;
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
-      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
       : null;
 
     return uiTrade;
@@ -140,7 +158,7 @@ export class RecentTradesService {
       });
 
       this.recentTradesStoreService.updateTrade({
-        ...this.recentTradesStoreService.getSpecificTrade(srcTxHash, fromBlockchain),
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(srcTxHash, fromBlockchain),
         calculatedStatusFrom: TxStatus.SUCCESS,
         calculatedStatusTo: TxStatus.FALLBACK
       });
