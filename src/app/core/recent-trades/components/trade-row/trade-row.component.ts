@@ -13,7 +13,7 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
 import { interval } from 'rxjs';
-import { startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -25,6 +25,7 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-text.map';
 import { OnramperService } from '@core/services/onramper/onramper.service';
+import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 
 @Component({
   selector: '[trade-row]',
@@ -84,7 +85,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     private readonly destroy$: TuiDestroyService,
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService,
-    private readonly onramperService: OnramperService
+    private readonly onramperService: OnramperService,
+    private readonly swapFormQueryService: SwapFormQueryService
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +117,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   protected setUiTrade(uiTrade: UiRecentTrade): void {
     this.uiTrade = uiTrade;
     if (this.initialLoading) {
-      this.initialLoading = false;
+      this.swapFormQueryService.initialLoading$.pipe(first(loading => !loading)).subscribe(() => {
+        this.initialLoading = false;
+        this.cdr.markForCheck();
+      });
     }
   }
 
