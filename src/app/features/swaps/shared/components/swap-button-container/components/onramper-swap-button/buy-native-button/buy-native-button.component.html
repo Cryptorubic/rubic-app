@@ -5,5 +5,5 @@
   (onClick)="onClick.emit()"
   (onHoveredChange)="onHoveredChange($event)"
 >
-  Buy Native
+  Buy {{ nativeSymbol$ | async }}
 </app-rubic-button>
