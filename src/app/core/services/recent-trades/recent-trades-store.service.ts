@@ -23,7 +23,7 @@ export class RecentTradesStoreService {
           return {
             ...recentTrade,
             crossChainTradeType:
-              recentTrade.crossChainProviderType.toLowerCase() as CrossChainTradeType
+              recentTrade.crossChainProviderType.toLowerCase() as CrossChainTradeType // update deprecated field
           };
         }
         return recentTrade;
@@ -68,21 +68,17 @@ export class RecentTradesStoreService {
 
   public updateTrade(trade: RecentTrade): void {
     const updatedUserTrades = this.currentUserRecentTrades.map(localStorageTrade => {
-      if (trade.srcTxHash === localStorageTrade.srcTxHash) {
-        if (isCrossChainRecentTrade(trade)) {
-          if (isCrossChainRecentTrade(localStorageTrade)) {
-            if (trade.fromToken.blockchain === localStorageTrade.fromToken.blockchain) {
-              return trade;
-            }
-          }
+      if (isCrossChainRecentTrade(trade)) {
+        if (!isCrossChainRecentTrade(localStorageTrade)) {
           return localStorageTrade;
-        } else if (!isCrossChainRecentTrade(localStorageTrade)) {
-          return trade;
         }
-        return localStorageTrade;
-      } else {
+        return trade.srcTxHash === localStorageTrade.srcTxHash ? trade : localStorageTrade;
+      }
+
+      if (isCrossChainRecentTrade(localStorageTrade)) {
         return localStorageTrade;
       }
+      return trade.txId === localStorageTrade.txId ? trade : localStorageTrade;
     });
 
     this.storeService.setItem('recentTrades', {

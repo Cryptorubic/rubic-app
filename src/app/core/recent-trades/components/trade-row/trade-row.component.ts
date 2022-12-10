@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -22,6 +24,7 @@ import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-ch
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-text.map';
+import { OnramperService } from '@core/services/onramper/onramper.service';
 
 @Component({
   selector: '[trade-row]',
@@ -33,6 +36,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   @Input() trade: RecentTrade;
 
   @Input() mode: 'mobile' | 'table-row';
+
+  @Output() onClose = new EventEmitter<void>();
 
   public uiTrade: UiRecentTrade;
 
@@ -78,7 +83,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService,
     private readonly recentTradesService: RecentTradesService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly onramperService: OnramperService
   ) {}
 
   ngOnInit(): void {
@@ -161,6 +167,15 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       );
       this.cdr.detectChanges();
     }
+  }
+
+  public async continueOnramperTrade(): Promise<void> {
+    if (!isOnramperRecentTrade(this.trade)) {
+      return;
+    }
+
+    await this.onramperService.updateSwapFormByRecentTrade(this.trade.txId);
+    this.onClose.emit();
   }
 
   public onTokenImageError($event: Event): void {

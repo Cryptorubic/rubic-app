@@ -25,7 +25,11 @@ export class RecentCrosschainTxComponent implements OnInit {
     this.recentTradesService.readAllTrades();
   }
 
+  public onClose(): void {
+    this.context.completeWith(null);
+  }
+
   public navigateToCrossChainSwaps(): void {
-    this.router.navigate(['/swaps']).then(() => this.context.completeWith(null));
+    this.router.navigate(['/']).then(() => this.context.completeWith(null));
   }
 }

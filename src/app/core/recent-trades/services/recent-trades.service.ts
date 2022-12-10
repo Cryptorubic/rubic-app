@@ -135,41 +135,76 @@ export class RecentTradesService {
     trade: OnramperRecentTrade,
     uiTrade: UiRecentTrade
   ): Promise<UiRecentTrade> {
-    const tradeApiData = await this.onramperApiService.getTradeData(
-      this.authService.userAddress,
-      trade.txId
-    );
+    if (trade.calculatedStatusFrom === TxStatus.SUCCESS) {
+      uiTrade.statusFrom = trade.calculatedStatusFrom;
 
-    let statusFrom: TxStatus;
-    if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
-      statusFrom = TxStatus.SUCCESS;
-    } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
-      statusFrom = TxStatus.FAIL;
+      const srcTxHash = trade.srcTxHash;
+      uiTrade.srcTxHash = srcTxHash;
+      uiTrade.srcTxLink = srcTxHash
+        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+        : null;
     } else {
-      statusFrom = TxStatus.PENDING;
+      const tradeApiData = await this.onramperApiService.getTradeData(
+        this.authService.userAddress,
+        trade.txId
+      );
+
+      let statusFrom: TxStatus;
+      if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
+        statusFrom = TxStatus.SUCCESS;
+      } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
+        statusFrom = TxStatus.FAIL;
+      } else {
+        statusFrom = TxStatus.PENDING;
+      }
+      uiTrade.statusFrom = statusFrom;
+
+      const srcTxHash = tradeApiData.tx_hash;
+      uiTrade.srcTxHash = srcTxHash;
+      uiTrade.srcTxLink = srcTxHash
+        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+        : null;
+
+      if (statusFrom !== trade.calculatedStatusFrom) {
+        this.recentTradesStoreService.updateTrade({
+          ...trade,
+          calculatedStatusFrom: statusFrom,
+          srcTxHash,
+          fromAmount: tradeApiData.out_amount
+        });
+      }
     }
-    uiTrade.statusFrom = statusFrom;
 
-    const srcTxHash = tradeApiData.tx_hash;
-    uiTrade.srcTxHash = srcTxHash;
-    uiTrade.srcTxLink = srcTxHash
-      ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
-      : null;
-
-    if (statusFrom !== TxStatus.SUCCESS || !trade.dstTxHash) {
+    if (uiTrade.statusFrom === TxStatus.FAIL) {
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusTo: TxStatus.FAIL
+      });
+      uiTrade.statusTo = TxStatus.FAIL;
+      return uiTrade;
+    }
+    if (uiTrade.statusFrom !== TxStatus.SUCCESS || !trade.dstTxHash) {
       return uiTrade;
     }
 
     const dstTxHash = trade.dstTxHash;
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = this.scannerLinkPipe.transform(
+      dstTxHash,
+      uiTrade.toBlockchain,
+      ADDRESS_TYPE.TRANSACTION
+    );
 
     uiTrade.statusTo = await Injector.web3PublicService
       .getWeb3Public(uiTrade.toBlockchain as EvmBlockchainName)
       .getTransactionStatus(dstTxHash);
 
-    uiTrade.dstTxHash = dstTxHash;
-    uiTrade.dstTxLink = dstTxHash
-      ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
-      : null;
+    if (uiTrade.statusTo !== trade.calculatedStatusTo) {
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusTo: uiTrade.statusTo
+      });
+    }
 
     return uiTrade;
   }
