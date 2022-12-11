@@ -5,6 +5,6 @@ export type ProgressTrxNotificationContextInput = {
 };
 
 export type ProgressTrxNotificationContext = TuiDialogContext<
-  null,
+  void,
   ProgressTrxNotificationContextInput
 >;

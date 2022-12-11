@@ -599,7 +599,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "交易成功發送！",
     "successfulCCRSwapTitle": "源網絡交換成功！",
-    "successfulTradeParagraph": "Check transaction in ",
+    "checkIn": "Check in ",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

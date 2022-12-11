@@ -280,7 +280,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     try {
       await calculatedTrade.trade.swap(swapOptions);
-      this.showSuccessTrxNotification(calculatedTrade.tradeType);
+      this.showSuccessTrxNotification();
     } catch (err) {
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(

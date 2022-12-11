@@ -138,7 +138,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly queryParamsService: QueryParamsService
   ) {
-    super('instant-trade');
+    super('on-chain');
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {

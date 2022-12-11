@@ -703,7 +703,7 @@
     "successfulCCRTradeTitle": "Transaction sur le réseau d'origine réussie",
     "successfullySentTransaction": "La transaction a été envoyée avec succès !",
     "successfulCCRSwapTitle": "Échange sur le réseau d'origine réussi !",
-    "successfulTradeParagraph": "Vérifier la transaction sur <a target=\"_blank\" href=\"/my-trades\">Mes Échanges</a>",
+    "checkIn": "Check in ",
     "approveInProgress": "Approbation en cours",
     "successApprove": "Approbation réussie",
     "minerFee": "1inch fixe des coûts accrus sur les frais de gaz. Pour la transaction, entrez un montant moindre de {{ nativeToken }} ou recharger en {{ nativeToken }}.",

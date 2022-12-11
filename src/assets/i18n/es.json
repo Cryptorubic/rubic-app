@@ -598,7 +598,7 @@
     "successfulCCRTradeTitle": "Comercio exitoso en la red de origen",
     "successfullySentTransaction": "¡La transacción se envió con éxito!",
     "successfulCCRSwapTitle": "¡Intercambio exitoso en la red de origen!",
-    "successfulTradeParagraph": "Verificar transacción en <a target=\"_blank\" href=\"/my-trades\">Mis transacciones</a>",
+    "checkIn": "Check in ",
     "approveInProgress": "Aprobación en curso",
     "successApprove": "Aprobación exitosa",
     "minerFee": "1inch establece un aumento de los costos de tarifas de red. Para la transacción, ingrese menos {{ nativeToken }} o recargue su saldo {{ nativeToken }}.",

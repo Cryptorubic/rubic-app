@@ -79,7 +79,7 @@ export class OnramperWebsocketService {
         }
       );
 
-      this.relocateToOnChain = true;
+      this.onramperFormService.widgetOpened = false;
 
       const recentTrade: OnramperRecentTrade = {
         fromFiat: this.inputForm.fromFiat,
@@ -96,12 +96,13 @@ export class OnramperWebsocketService {
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
         autoClose: 15000,
-        data: { type: 'instant-trade' }
+        data: { type: 'on-chain', withRecentTrades: true }
       });
 
-      const toToken = this.swapFormService.inputValue.toToken;
-      if (!EvmWeb3Pure.isNativeAddress(toToken.address) && this.relocateToOnChain) {
-        this.onramperService.updateSwapFormByRecentTrade(txInfo.transaction_id);
+      if (this.relocateToOnChain) {
+        if (!EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)) {
+          this.onramperService.updateSwapFormByRecentTrade(txInfo.transaction_id);
+        }
       }
     }
   }
@@ -115,6 +116,7 @@ export class OnramperWebsocketService {
   private subscribeOnWidgetOpened(): void {
     this.onramperFormService.widgetOpened$.subscribe(opened => {
       if (opened) {
+        this.relocateToOnChain = true;
         this.inputForm = this.swapFormService.inputValue as SwapFormInputFiats;
       }
     });

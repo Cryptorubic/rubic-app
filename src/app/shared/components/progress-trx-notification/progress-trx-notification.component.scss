@@ -1,3 +1,5 @@
-button {
-  color: var(--main-green);
+.notification {
+  &__link {
+    cursor: pointer;
+  }
 }

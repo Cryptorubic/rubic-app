@@ -775,7 +775,7 @@
     "successfulCCRTradeTitle": "Kaynak ağda başarılı ticaret",
     "successfullySentTransaction": "İşlem başarıyla gönderildi!",
     "successfulCCRSwapTitle": "Kaynak ağda başarılı takas!",
-    "successfulTradeParagraph": "<a target=\"_blank\"href=\"/my-trades\">İşlemlerim</a> içindeki işlemi kontrol edin",
+    "checkIn": "Check in ",
     "approveInProgress": "Onaylama işlemi devam ediyor",
     "successApprove": "Başarılı onay",
     "minerFee": "1 inç, gaz ücretinde artan maliyetleri ayarlar. İşlem için daha az {{ nativeToken }} tutarı girin veya {{ nativeToken }} bakiyenizi doldurun.",

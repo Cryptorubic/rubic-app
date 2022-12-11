@@ -598,7 +598,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "The transaction was successfully sent!",
     "successfulCCRSwapTitle": "Successful swap in source network!",
-    "successfulTradeParagraph": "Check transaction in ",
+    "checkIn": "Check in ",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
     "successApproveToken": "Successful {{token}} approve",

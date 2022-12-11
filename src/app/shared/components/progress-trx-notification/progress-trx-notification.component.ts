@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { ProgressTrxNotificationContext } from '@shared/components/progress-trx-notification/models/ProgressTrxNotificationContext';
+import { ProgressTrxNotificationContext } from '@shared/components/progress-trx-notification/models/progress-trx-notification-context';
 import { CommonModalService } from '@core/services/modal/common-modal.service';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';

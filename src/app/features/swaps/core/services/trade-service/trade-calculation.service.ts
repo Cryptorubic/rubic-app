@@ -11,15 +11,13 @@ import { BlockchainName, CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rub
 
 @Injectable()
 export abstract class TradeCalculationService {
-  protected showSuccessTrxNotification = (
-    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
-  ): void => {
+  protected showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000,
       data: {
         type: this.successTxModalType,
-        ccrProviderType
+        withRecentTrades: this.successTxModalType !== 'on-chain'
       }
     });
   };

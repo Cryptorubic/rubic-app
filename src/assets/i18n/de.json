@@ -597,7 +597,7 @@
     "successfulCCRTradeTitle": "Transaktion wurde erfolgreich im Ursprungsnetzwerk durchgeführt",
     "successfullySentTransaction": "Transaktion wurde gestartet!",
     "successfulCCRSwapTitle": "Swap wurde erfolgreich im Ursprungsnetzwerk durchgeführt!",
-    "successfulTradeParagraph": "Du findest die Transaktion unter <a target=\"_blank\" href=\"/my-trades\">Meine Transaktionen</a>",
+    "checkIn": "Check in ",
     "approveInProgress": "Freigabe läuft",
     "successApprove": "Erfolgreich freigegeben",
     "minerFee": "1inch verlangt zusätzliche Gas-Gebühren. Führe Deine Transaktion erneut mit weniger {{ nativeToken }} durch oder erhöhe dein {{ nativeToken }}-Guthaben.",
