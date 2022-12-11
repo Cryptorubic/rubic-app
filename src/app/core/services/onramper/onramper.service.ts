@@ -40,7 +40,7 @@ export class OnramperService {
     });
 
     const fromFee = await this.getFromFees(blockchain);
-    const fromAmount = new BigNumber(trade.fromAmount).minus(fromFee);
+    const fromAmount = new BigNumber(trade.nativeAmount).minus(fromFee);
 
     const toToken = await this.tokensService.findToken(trade.toToken);
 

@@ -3,7 +3,7 @@ import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 
 export interface OnramperRecentTrade extends CommonRecentTrade {
   fromFiat: FiatAsset;
-  fromAmount?: string;
+  nativeAmount?: string;
 
   txId: string;
 }

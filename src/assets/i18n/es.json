@@ -99,7 +99,7 @@
     "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "Sobre",
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
@@ -261,7 +261,7 @@
     "notAvailableAfter": " no está disponible."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",

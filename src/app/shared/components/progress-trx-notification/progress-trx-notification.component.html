@@ -1,5 +1,6 @@
 <div class="notification">
   <div>
     {{ 'notifications.tradeInProgress' | translate }}
+    <button *ngIf="withRecentTrades" (click)="openRecentTrades()">Check in Recent Trades</button>
   </div>
 </div>

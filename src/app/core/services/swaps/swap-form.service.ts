@@ -14,6 +14,8 @@ import {
 } from '@core/services/swaps/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
+import { compareTokens } from '@shared/utils/utils';
 
 @Injectable()
 export class SwapFormService {
@@ -42,6 +44,18 @@ export class SwapFormService {
   private readonly _inputValue$ = new BehaviorSubject<SwapFormInput>(this.inputValue);
 
   public readonly inputValue$ = this._inputValue$.asObservable();
+
+  public readonly inputValueDistinct$ = this.inputValue$.pipe(
+    distinctUntilChanged(
+      (prev, next) =>
+        prev.toBlockchain === next.toBlockchain &&
+        prev.fromAssetType === next.fromAssetType &&
+        compareAssets(prev.fromAsset, next.fromAsset) &&
+        compareTokens(prev.toToken, next.toToken) &&
+        prev.fromAmount === next.fromAmount
+    ),
+    shareReplay(shareReplayConfig)
+  );
 
   public readonly fromBlockchain$: Observable<BlockchainName | null> = this.inputValue$.pipe(
     map(inputValue => {

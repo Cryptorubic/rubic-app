@@ -247,7 +247,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 .notification-counter {
   position: absolute;
 
-  top: 0px;
+  top: 0;
   right: -5px;
 
   &_menu {
@@ -260,7 +260,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   .notification-counter {
     position: absolute;
 
-    top: 0px;
+    top: 0;
     right: -5px;
 
     display: none;
@@ -272,7 +272,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 }
 
-@include b($desktop) {
+@include b($laptop) {
   .rubic-menu {
     &__mobile {
       display: block;

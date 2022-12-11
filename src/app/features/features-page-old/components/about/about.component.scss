@@ -175,7 +175,7 @@
       background-position:
         0 140px,
         right 20px top 600px,
-        0px 935px,
+        0 935px,
         right 20px top 1350px,
         right 0 top 2150px,
         left 0 bottom 0;
@@ -312,7 +312,7 @@
   }
 }
 
-@include  b($desktop) {
+@include  b($laptop) {
   .rubic-roadmap {
     &::before {
       opacity: 0.1;

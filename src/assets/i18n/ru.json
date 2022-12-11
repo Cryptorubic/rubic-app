@@ -100,7 +100,7 @@
     "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются."
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
@@ -262,7 +262,7 @@
     "notAvailableAfter": " недоступно."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",
