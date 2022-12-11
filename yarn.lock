@@ -14899,10 +14899,10 @@ rpc-websockets@^7.4.2, rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.12.0-alpha-vk-1:
-  version "3.12.0-alpha-vk-1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.12.0-alpha-vk-1.tgz#c2418373b3633aa8336a6ea3bdfe15b26a479e74"
-  integrity sha512-tC5Oo7K1UKp/Pu5657wQ7m9i/KLsBnprqirZhzZqkkMvOwKWpjLpm4bUY/Q8N0xpZZKpV85sZVV/Hqn1apfa9Q==
+rubic-sdk@3.12.0-alpha-vk-3:
+  version "3.12.0-alpha-vk-3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.12.0-alpha-vk-3.tgz#7894579a0b75bf4b04110facfe8134ded22b14d2"
+  integrity sha512-XqEkn9KxnE2gz+v5t9rkV5kSECjOln5Uvh1xBLScsQMpkST6I1nFEYobgvkLQipeEUUiHHS8FXsYZpRCAre12Q==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@openocean.finance/api" "^0.0.3"
