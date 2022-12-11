@@ -63,7 +63,6 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -223,8 +222,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.instantTradeService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      this.setupSwapForm(form);
+    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.setupSwapForm();
     });
 
     this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
@@ -278,7 +277,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Updates values, taken from form, and starts recalculation.
    */
-  private setupSwapForm(form: SwapFormInputTokens): void {
+  private setupSwapForm(): void {
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    if (!BlockchainsInfo.isBlockchainName(fromAssetType) || fromAssetType !== toBlockchain) {
+      return;
+    }
+
+    const form = this.instantTradeService.inputValue;
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;

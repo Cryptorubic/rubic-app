@@ -74,8 +74,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.crossChainFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      this.fromToken = form.fromToken;
+    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      this.fromToken = form.fromAsset as TokenAmount;
       this.toToken = form.toToken;
 
       this.cdr.markForCheck();

@@ -3,13 +3,12 @@ import {
   catchError,
   debounceTime,
   distinctUntilChanged,
-  filter,
   map,
   startWith,
   switchMap
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, combineLatest, from, Observable, of, shareReplay, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
   BlockchainName,
   BlockchainsInfo,
@@ -57,8 +56,6 @@ import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cr
 import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
-import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Injectable()
@@ -217,29 +214,6 @@ export class CrossChainFormService {
       fromBlockchain: inputForm.fromAssetType as BlockchainName,
       fromToken: inputForm.fromAsset as TokenAmount
     };
-  }
-
-  public get inputValue$(): Observable<SwapFormInputTokens> {
-    return this.swapFormService.inputValue$.pipe(
-      distinctUntilChanged(
-        (prev, next) =>
-          prev.toBlockchain === next.toBlockchain &&
-          prev.fromAssetType === next.fromAssetType &&
-          compareAssets(prev.fromAsset, next.fromAsset) &&
-          prev.toToken?.address === next.toToken?.address &&
-          prev.fromAmount === next.fromAmount
-      ),
-      filter(
-        inputForm =>
-          !inputForm.fromAssetType || BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)
-      ),
-      map(inputForm => ({
-        ...inputForm,
-        fromBlockchain: inputForm.fromAssetType as BlockchainName,
-        fromToken: inputForm.fromAsset as TokenAmount
-      })),
-      shareReplay(shareReplayConfig)
-    );
   }
 
   constructor(
@@ -570,7 +544,7 @@ export class CrossChainFormService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.inputValue$.subscribe(() => {
+    this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.unsetCalculatedTrades();
 
       this.startRecalculation();
@@ -684,16 +658,16 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    const { fromBlockchain, toBlockchain } = this.inputValue;
-    if (fromBlockchain === toBlockchain) {
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    if (!BlockchainsInfo.isBlockchainName(fromAssetType) || fromAssetType === toBlockchain) {
       this._calculateTrade$.next({ stop: true });
       return;
     }
 
-    if (!this.crossChainCalculationService.areSupportedBlockchains(fromBlockchain, toBlockchain)) {
+    if (!this.crossChainCalculationService.areSupportedBlockchains(fromAssetType, toBlockchain)) {
       let unsupportedBlockchain = undefined;
-      if (!this.crossChainCalculationService.isSupportedBlockchain(fromBlockchain)) {
-        unsupportedBlockchain = fromBlockchain;
+      if (!this.crossChainCalculationService.isSupportedBlockchain(fromAssetType)) {
+        unsupportedBlockchain = fromAssetType;
       } else if (!this.crossChainCalculationService.isSupportedBlockchain(toBlockchain)) {
         unsupportedBlockchain = toBlockchain;
       }

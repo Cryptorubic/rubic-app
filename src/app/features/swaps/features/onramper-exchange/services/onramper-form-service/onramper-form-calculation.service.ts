@@ -1,27 +1,19 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, finalize, from, Observable, of, shareReplay, Subject, tap } from 'rxjs';
+import { BehaviorSubject, of, Subject, tap } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  switchMap
-} from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -75,28 +67,6 @@ export class OnramperFormCalculationService {
     } as SwapFormInputFiats;
   }
 
-  public get inputValue$(): Observable<SwapFormInputFiats> {
-    return this.swapFormService.inputValue$.pipe(
-      distinctUntilChanged(
-        (prev, next) =>
-          prev.toBlockchain === next.toBlockchain &&
-          prev.fromAssetType === next.fromAssetType &&
-          compareAssets(prev.fromAsset, next.fromAsset) &&
-          prev.toToken?.address === next.toToken?.address &&
-          prev.fromAmount === next.fromAmount
-      ),
-      filter(inputForm => inputForm.fromAssetType === 'fiat'),
-      map(
-        inputForm =>
-          ({
-            ...inputForm,
-            fromFiat: inputForm.fromAsset as FiatAsset
-          } as SwapFormInputFiats)
-      ),
-      shareReplay(shareReplayConfig)
-    );
-  }
-
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly refreshService: RefreshService,
@@ -142,23 +112,26 @@ export class OnramperFormCalculationService {
           }
           this.refreshService.setRefreshing();
 
-          return from(this.onramperCalculationService.getOutputTokenAmount(this.inputValue)).pipe(
-            tap(outputTokenAmount => {
-              this.tradeStatus = outputTokenAmount?.isFinite()
-                ? TRADE_STATUS.READY_TO_BUY_NATIVE
-                : TRADE_STATUS.DISABLED;
+          return this.onramperCalculationService.getOutputTokenAmount(this.inputValue);
+        }),
+        tap(outputTokenAmount => {
+          this.tradeStatus = outputTokenAmount?.isFinite()
+            ? TRADE_STATUS.READY_TO_BUY_NATIVE
+            : TRADE_STATUS.DISABLED;
+          this.refreshService.setStopped();
 
-              this.swapFormService.outputControl.patchValue({ toAmount: outputTokenAmount });
-            }),
-            catchError(err => {
-              this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.tradeError = RubicSdkErrorParser.parseError(err);
-              return of(null);
-            }),
-            finalize(() => {
-              this.refreshService.setStopped();
-            })
-          );
+          this.swapFormService.outputControl.patchValue({ toAmount: outputTokenAmount });
+        }),
+        catchError((err, caught$) => {
+          this.tradeStatus = TRADE_STATUS.DISABLED;
+          this.refreshService.setStopped();
+
+          const parsedError = RubicSdkErrorParser.parseError(err);
+          this.tradeError =
+            parsedError instanceof ExecutionRevertedError
+              ? new RubicError<ERROR_TYPE>('Trade is unavailable, please try later')
+              : parsedError;
+          return caught$;
         })
       )
       .subscribe();
@@ -168,7 +141,7 @@ export class OnramperFormCalculationService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.inputValue$.subscribe(() => {
+    this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.unsetTradeData();
       this.startRecalculation();
     });

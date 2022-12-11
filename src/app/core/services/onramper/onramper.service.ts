@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
-import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import BigNumber from 'bignumber.js';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { onChainProxyMaxGasLimit } from '@core/services/onramper/constants/on-chain-proxy-max-gas-limit';
-import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import {
@@ -29,9 +27,10 @@ export class OnramperService {
   ) {}
 
   public async updateSwapFormByRecentTrade(txId: string): Promise<void> {
-    const trade = this.recentTradesStoreService.currentUserRecentTrades.find(
-      currentTrade => isOnramperRecentTrade(currentTrade) && currentTrade.txId === txId
-    ) as OnramperRecentTrade;
+    const trade = this.recentTradesStoreService.getSpecificOnramperTrade(txId);
+    if (!trade) {
+      return;
+    }
 
     const blockchain = trade.toToken.blockchain as EvmBlockchainName;
     const nativeToken = await this.tokensService.findToken({

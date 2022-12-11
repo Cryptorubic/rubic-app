@@ -3,8 +3,6 @@ import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exc
 export interface OnramperTransactionInfo {
   status: OnramperTransactionStatus;
   transaction_id: string;
-  additional_info: {
-    wallet_address: string;
-  };
+  user: string;
   out_amount: string;
 }
