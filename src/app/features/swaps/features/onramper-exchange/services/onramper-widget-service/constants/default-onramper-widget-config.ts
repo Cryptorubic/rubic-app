@@ -5,5 +5,5 @@ export const defaultOnramperWidgetConfig = {
   color: '4AA956',
   supportSell: false,
   supportSwap: false,
-  isAddressEditable: true
+  isAddressEditable: false
 };
