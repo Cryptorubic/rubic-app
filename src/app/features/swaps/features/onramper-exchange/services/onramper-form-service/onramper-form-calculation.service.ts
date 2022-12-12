@@ -14,6 +14,9 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
+import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
+import { TxStatus } from 'rubic-sdk';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -32,7 +35,9 @@ export class OnramperFormCalculationService {
   }
 
   public set tradeStatus(value: TRADE_STATUS) {
-    this._tradeStatus$.next(value);
+    if (this.tradeStatus !== TRADE_STATUS.BUY_NATIVE_IN_PROGRESS) {
+      this._tradeStatus$.next(value);
+    }
   }
 
   private readonly _tradeError$ = new BehaviorSubject<RubicError<ERROR_TYPE> | null>(null);
@@ -72,12 +77,24 @@ export class OnramperFormCalculationService {
     private readonly refreshService: RefreshService,
     private readonly onramperCalculationService: OnramperCalculationService,
     private readonly swapTypeService: SwapTypeService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly recentTradesStoreService: RecentTradesStoreService
   ) {
+    this.checkTradeStatus();
+
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
     this.subscribeOnRefreshServiceCalls();
+  }
+
+  private checkTradeStatus(): void {
+    const onramperPendingTrade = this.recentTradesStoreService.currentUserRecentTrades.find(
+      trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
+    );
+    if (onramperPendingTrade) {
+      this.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
+    }
   }
 
   /**

@@ -26,6 +26,7 @@ import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats'
 import BigNumber from 'bignumber.js';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -96,6 +97,7 @@ export class OnramperWebsocketService {
         );
 
         this.onramperFormService.widgetOpened = false;
+        this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
 
         const recentTrade: OnramperRecentTrade = {
           fromFiat: this.inputForm.fromFiat,
@@ -167,6 +169,9 @@ export class OnramperWebsocketService {
       autoClose: 15000,
       data: { type: 'on-chain', withRecentTrades: true }
     });
+
+    this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.READY_TO_BUY_NATIVE;
+    this.onramperFormCalculationService.updateRate();
 
     if (this.relocateToOnChain) {
       if (!EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)) {
