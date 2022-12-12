@@ -27,6 +27,7 @@ import BigNumber from 'bignumber.js';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -54,9 +55,27 @@ export class OnramperWebsocketService {
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly swapFormService: SwapFormService
   ) {
+    this.checkTradeStatus();
+
     this.subscribeOnUserChange();
     this.subscribeOnForm();
     this.subscribeOnWidgetOpened();
+  }
+
+  private async checkTradeStatus(): Promise<void> {
+    const onramperPendingTrade = this.recentTradesStoreService.currentUserRecentTrades.find(
+      trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
+    ) as OnramperRecentTrade;
+    if (onramperPendingTrade) {
+      this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
+      this.notifyProgress();
+
+      await this.setupBalanceCheckTimer(
+        onramperPendingTrade.txId,
+        onramperPendingTrade.toToken.blockchain,
+        onramperPendingTrade.nativeAmount
+      );
+    }
   }
 
   private subscribeOnUserChange(): void {
@@ -87,14 +106,7 @@ export class OnramperWebsocketService {
   private async parseTransactionInfo(txInfo: OnramperTransactionInfo): Promise<void> {
     if (txInfo?.status === OnramperTransactionStatus.PENDING) {
       if (this.inputForm) {
-        this.progressNotificationSubscription$ = this.notificationsService.show(
-          new PolymorpheusComponent(ProgressTrxNotificationComponent),
-          {
-            status: TuiNotification.Info,
-            autoClose: false,
-            data: { withRecentTrades: true }
-          }
-        );
+        this.notifyProgress();
 
         this.onramperFormService.widgetOpened = false;
         this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
@@ -103,10 +115,11 @@ export class OnramperWebsocketService {
           fromFiat: this.inputForm.fromFiat,
           toToken: this.inputForm.toToken,
 
+          nativeAmount: txInfo.out_amount,
           txId: txInfo.transaction_id,
 
           timestamp: Date.now(),
-          calculatedStatusTo: TxStatus.PENDING
+          calculatedStatusFrom: TxStatus.PENDING
         };
         this.recentTradesStoreService.saveTrade(this.authService.userAddress, recentTrade);
 
@@ -178,6 +191,17 @@ export class OnramperWebsocketService {
         await this.onramperService.updateSwapFormByRecentTrade(txId);
       }
     }
+  }
+
+  private notifyProgress(): void {
+    this.progressNotificationSubscription$ = this.notificationsService.show(
+      new PolymorpheusComponent(ProgressTrxNotificationComponent),
+      {
+        status: TuiNotification.Info,
+        autoClose: false,
+        data: { withRecentTrades: true }
+      }
+    );
   }
 
   private subscribeOnForm(): void {

@@ -136,7 +136,7 @@ export class RecentTradesService {
     trade: OnramperRecentTrade,
     uiTrade: UiRecentTrade
   ): Promise<UiRecentTrade> {
-    if (trade.nativeAmount) {
+    if (trade.srcTxHash) {
       uiTrade.statusFrom = trade.calculatedStatusFrom;
 
       const srcTxHash = trade.srcTxHash;
