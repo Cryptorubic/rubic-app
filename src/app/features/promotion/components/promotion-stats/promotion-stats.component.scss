@@ -16,7 +16,7 @@
   height: 220px;
   margin-right: 33px;
 
-  border: 2px solid $rubic-primary;
+  border: 2px solid var(--primary-color);
   border-radius: 20px;
 
   @include mixins.b(1150) {
@@ -71,7 +71,7 @@
   &__label {
     margin-bottom: 8px;
 
-    color: var(--rubic-base-02);
+    color: var(--primary-text);
     font-weight: normal;
     font-size: 20px;
     font-style: normal;
@@ -84,7 +84,7 @@
     width: 100%;
     height: 48px;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 300;
     font-size: 40px;
     font-style: normal;
@@ -101,7 +101,7 @@
     margin: 0 0 12px;
     padding: 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: normal;
     font-size: 30px;
     line-height: 120%;
@@ -115,7 +115,7 @@
     margin: 0 0 34px;
     padding: 0;
 
-    color: var(--rubic-base-02);
+    color: var(--primary-text);
     font-size: 24px;
     line-height: 120%;
 

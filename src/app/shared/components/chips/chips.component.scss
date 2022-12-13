@@ -16,6 +16,6 @@
   cursor: pointer;
 
   &_selected {
-    border: 1px solid #4aa956;
+    border: 1px solid var(--primary-color);
   }
 }

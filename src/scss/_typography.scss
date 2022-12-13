@@ -5,7 +5,7 @@
   &-roadmap-quarter {
     margin-bottom: 5px;
 
-    color: #4aa956;
+    color: var(--primary-color);
     font-weight: bold;
     font-size: 20px;
     line-height: 27px;
@@ -42,7 +42,7 @@
 
 .cl {
   &-green {
-    color: var(--main-green);
+    color: var(--primary-color);
   }
 }
 
@@ -86,7 +86,7 @@
         height: 24px;
         margin-right: 10px;
 
-        color: #4aa956;
+        color: var(--primary-color);
         font-weight: bold;
         text-align: center;
 
@@ -106,7 +106,7 @@
 }
 
 .container {
-  max-width: var(--container-max-width);
+  max-width: $desktop;
   margin: 0 auto;
   padding: 10px 50px;
 

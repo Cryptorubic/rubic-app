@@ -4,7 +4,6 @@ import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
-import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { from, Observable } from 'rxjs';
@@ -33,7 +32,7 @@ interface TokenPair {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuyTokenComponent {
-  @Input() appearance: TuiAppearance = TuiAppearance.Outline;
+  // @Input() appearance: TuiAppearance = TuiAppearance.Outline;
 
   /**
    * Banner type. Component Renders different texts based on type.

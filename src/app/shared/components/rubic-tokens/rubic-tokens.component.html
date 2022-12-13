@@ -7,7 +7,7 @@
       [loading]="loading"
       [disabled]="disabled || iframeForceDisabled"
       (onClick)="openTokensSelect(idPrefix)"
-      [appearance]="selectedToken ? 'primary' : 'secondary'"
+      [appearance]="selectedToken ? 'secondary' : 'primary'"
       [pseudoHovered]="buttonHovered"
       (mouseleave)="buttonHovered = null"
     >
@@ -25,9 +25,14 @@
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
           </div>
-          <img *noFrame="'vertical'" src="assets/images/icons/arrow-down.svg" alt="Choose token" />
+          <div
+            *noFrame="'vertical'"
+            inlineSVG="assets/images/icons/arrow-down.svg"
+            class="arrow"
+          ></div>
         </div>
       </ng-container>
+
       <span class="tokens__inner-text" *ngIf="!selectedToken">{{
         'common.chooseToken' | translate
       }}</span>
