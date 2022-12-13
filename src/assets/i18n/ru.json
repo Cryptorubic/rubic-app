@@ -583,8 +583,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "Узнать больше"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "Накопленный Объем Операций",

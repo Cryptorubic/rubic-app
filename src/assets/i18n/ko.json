@@ -583,8 +583,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "더 알아보기"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "누적 거래량",

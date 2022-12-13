@@ -41,12 +41,12 @@
     height: 50px;
     padding-left: 16px;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
 
     border-radius: 10px;
 
     @include light-iframe {
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
     }
   }
 
@@ -55,7 +55,7 @@
     height: 100%;
     padding: 0 60px 0 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 400;
     font-size: 20px;
     letter-spacing: 0.1em;

@@ -7,11 +7,11 @@
 .instruction-image {
   ::ng-deep svg {
     rect {
-      fill: var(--main-form-background);
+      fill: var(--solid-background);
     }
 
     path[fill='black'] {
-      fill: var(--form-bright-text-color);
+      fill: var(--primary-text);
     }
   }
 }
@@ -19,7 +19,7 @@
 .about-page {
   font-weight: normal;
 
-  background-color: var(--main-background);
+  background-color: var(--primary-background);
   border-radius: 10px;
 
   @include b(1100) {
@@ -81,7 +81,7 @@
         min-height: 155px;
         padding: 40px 60px 25px 25px;
 
-        background-color: var(--main-background);
+        background-color: var(--primary-background);
 
         @include b(850) {
           padding: 20px;
@@ -119,7 +119,7 @@
         min-height: 50px;
         padding: 25px 35px;
 
-        background-color: var(--main-background);
+        background-color: var(--primary-background);
 
         @include b(850) {
           padding: 20px;
@@ -209,7 +209,7 @@
         width: 2px;
         height: 100%;
 
-        background-color: var(--main-green);
+        background-color: var(--primary-color);
 
         content: '';
       }
@@ -238,7 +238,7 @@
         }
 
         li {
-          color: var(--form-bright-text-color);
+          color: var(--primary-text);
         }
 
         &:last-child {
@@ -283,7 +283,7 @@
                 height: 24px;
                 margin-left: 10px;
 
-                color: var(--main-green);
+                color: var(--primary-color);
                 font-weight: bold;
                 text-align: center;
 
@@ -303,7 +303,7 @@
           width: 24px;
           height: 24px;
 
-          background-color: var(--main-green);
+          background-color: var(--primary-color);
 
           content: '';
         }

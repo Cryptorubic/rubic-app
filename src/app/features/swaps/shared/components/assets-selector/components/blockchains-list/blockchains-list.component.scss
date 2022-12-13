@@ -59,7 +59,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: rgba($rubic-primary, 0.15);
+    background-color: var(--transparent-line);
   }
 
   &_disabled {

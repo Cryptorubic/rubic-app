@@ -6,16 +6,22 @@
   justify-content: end;
 
   &__amounts {
-    color: var(--form-dim-text-color);
+    color: var(--secondary-text);
     font-size: 14px;
     line-height: 120%;
     letter-spacing: 0.08em;
   }
 
   &__direction-button {
+    display: flex;
+    align-items: center;
     width: 15px;
 
     cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: var(--secondary-text);
+    }
   }
 }
 

@@ -36,13 +36,13 @@
       margin: 0;
       padding: 0 7px 0 16px;
 
-      background: var(--main-background);
+      background: var(--primary-background);
 
       border-radius: 10px;
     }
 
     @include iframe-horizontal-light {
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
     }
 
     @include iframe-vertical {

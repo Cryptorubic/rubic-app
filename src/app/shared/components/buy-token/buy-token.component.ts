@@ -3,7 +3,6 @@ import { first, map, switchMap } from 'rxjs/operators';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { from, Observable } from 'rxjs';
@@ -33,8 +32,6 @@ interface TokenPair {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuyTokenComponent {
-  @Input() appearance: TuiAppearance = TuiAppearance.Outline;
-
   /**
    * Banner type. Component Renders different texts based on type.
    */
@@ -81,7 +78,7 @@ export class BuyTokenComponent {
       },
       to: {
         blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+        address: '0x3330BFb7332cA23cd071631837dC289B09C33333',
         symbol: 'RBC'
       }
     };

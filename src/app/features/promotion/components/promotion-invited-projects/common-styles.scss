@@ -14,7 +14,7 @@
       svg path {
         opacity: 1;
 
-        fill: $rubic-primary;
+        fill: var(--primary-color);
       }
     }
   }

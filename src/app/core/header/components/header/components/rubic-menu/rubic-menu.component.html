@@ -55,17 +55,6 @@
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
-
-        <a
-          routerLink="/staking"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-          (click)="closeMenu()"
-        >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.stakingLp' | translate }}
-          </button>
-        </a>
       </tui-opt-group>
 
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">

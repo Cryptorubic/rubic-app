@@ -14,19 +14,18 @@
 
   font-size: 14px;
 
-  background: transparentize($color: $rubic-primary, $amount: 0.85);
   border-radius: $border-radius-3;
 
   &__chip {
     padding: 6px 20px;
 
-    color: var(--rubic-base-02);
+    color: var(--primary-text);
     line-height: 22px;
 
     border-radius: $border-radius-3;
 
     &_colored {
-      background: transparentize($color: $rubic-primary, $amount: 0.85);
+      background: transparentize($color: $primary-color, $amount: 0.85);
       border-radius: $border-radius-3;
     }
     
@@ -108,13 +107,15 @@
       img {
         width: 32px;
         height: 32px;
+
+        border-radius: 4px;
       }
     }
 
     &__name {
       width: 100px;
 
-      color: var(--form-bright-text-color);
+      color: var(--primary-text);
       font-weight: 400;
       font-size: 15px;
       line-height: 18px;
@@ -126,7 +127,7 @@
     }
 
     &__cap {
-      color: var(--secondary-color);
+      color: var(--secondary-text);
       font-weight: 500;
       font-size: 16px;
       line-height: 19px;

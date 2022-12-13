@@ -15,6 +15,7 @@
 
     img {
       cursor: pointer;
+      filter: grayscale(1);
     }
   }
 
@@ -43,29 +44,7 @@
     img {
       cursor: pointer;
 
-      filter: var(--rubic-filter-invert);
-    }
-
-    &_inside {
-      padding-bottom: 10px;
-
-      border-bottom: 1px solid var(--border-color-secondary);
-
-      .header-settings__back {
-        display: flex;
-      }
-
-      .header-settings__title {
-        align-self: center;
-        margin-right: 50%;
-        margin-bottom: 0;
-
-        transform: translateX(50%);
-      }
-
-      .header-settings__close {
-        display: none;
-      }
+      filter: var(--filter-inversion);
     }
   }
 

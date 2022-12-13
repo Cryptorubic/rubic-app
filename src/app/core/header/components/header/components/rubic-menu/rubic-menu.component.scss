@@ -11,17 +11,12 @@
     width: 100%;
     height: 2px;
 
-    background-color: #4b604fff;
+    background-color: var(--primary-text);
     border-radius: 5px;
 
     transition: 0.3s ease-in-out;
 
     transition-property: opacity, transform;
-
-
-    :host-context(html.dark) & {
-      background-color: $rubic-primary;
-    }
   }
 
   &_opened {
@@ -45,8 +40,6 @@
   min-width: 230px;
   padding: 16px 0;
 
-  background: var(--menu-background);
-
   &__option {
     justify-content: flex-start;
     height: 45px;
@@ -54,7 +47,7 @@
     margin: 0;
     padding: 17px 28px;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 400;
 
     font-size: 18px;
@@ -63,15 +56,15 @@
     border-radius: 156px;
 
     &:hover {
-      color: var(--main-green);
+      color: var(--primary-color);
 
       ::ng-deep svg {
         path[fill='black'] {
-          fill: var(--main-green);
+          fill: var(--primary-color);
         }
 
         rect[fill='black'] {
-          fill: var(--main-green);
+          fill: var(--primary-color);
         }
       }
     }
@@ -79,17 +72,10 @@
     &:active {
       color: white;
 
-      background-color: $rubic-primary;
+      background-color: var(--primary-color);
 
       a {
         color: white;
-      }
-
-      ::ng-deep {
-        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-          color: var(--rubic-base-01);
-          text-decoration: none;
-        }
       }
     }
 
@@ -115,7 +101,7 @@
 
     ::ng-deep {
       a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-        color: var(--rubic-base-02);
+        color: var(--primary-text);
         text-decoration: none;
 
         transition: 0.35s color ease;
@@ -135,31 +121,21 @@
       height: 100%;
 
       path[fill='black'] {
-        fill: var(--rubic-base-02);
+        fill: var(--primary-text);
       }
 
       rect[fill='black'] {
-        fill: var(--rubic-base-02);
+        fill: var(--primary-text);
       }
 
       path[fill='white'] {
-        fill: var(--rubic-base-02);
+        fill: var(--primary-text);
       }
     }
   }
 
   &__link {
     text-decoration: none !important;
-
-    &_active {
-      .data-list__option {
-        color: $rubic-primary;
-
-        &:active {
-          color: var(--rubic-base-01);
-        }
-      }
-    }
     
     &_my-trades {
       position: relative;

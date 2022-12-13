@@ -23,7 +23,7 @@
       [value]="unreadTrades$ | async"
     ></app-notification-badge>
 
-    <img src="assets/images/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow" />
+    <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
   </div>
 </ng-template>
 
@@ -34,11 +34,7 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <button
-    *noFrame
-    class="user-profile__dropdown-item button-link"
-    (click)="openRecentTradesModal()"
-  >
+  <div *noFrame class="user-profile__dropdown-item button-link" (click)="openRecentTradesModal()">
     {{ 'navigation.recentTrades' | translate }}
     <app-notification-badge
       class="notification-counter notification-counter_menu"
@@ -47,7 +43,7 @@
       color="red"
       [value]="unreadTrades$ | async"
     ></app-notification-badge>
-  </button>
+  </div>
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>

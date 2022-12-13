@@ -111,7 +111,7 @@
     padding: 8px 15px;
 
     background: none;
-    border: 1px solid var(--rubic-base-02);
+    border: 1px solid var(--primary-text);
     border-radius: $border-radius-2;
 
     cursor: pointer;
@@ -119,8 +119,8 @@
     &_active {
       color: white;
 
-      background: $rubic-primary;
-      border-color: $rubic-primary;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
     }
   }
 
@@ -129,7 +129,7 @@
 
       padding-right: 5px;
 
-      color: var(--form-bright-text-color);
+      color: var(--primary-text);
 
       border-radius: 100px;
       box-shadow: none;
@@ -195,7 +195,7 @@
       width: 256px;
       padding: 10px;
 
-      color: var(--form-bright-text-color);
+      color: var(--primary-text);
       font-size: 14px;
 
       border-radius: 100px;
