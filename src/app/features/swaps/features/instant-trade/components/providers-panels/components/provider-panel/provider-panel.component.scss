@@ -74,7 +74,7 @@ $white: white;
     }
 
     &_selected {
-      color: $white;
+      color: var(--primary-text-invert);
 
       background-color: var(--primary-color);
       border-color: var(--primary-color);
@@ -100,8 +100,15 @@ $white: white;
     }
 
     &_best-rate {
+
+      color: var(--primary-text);
+
       border-left-color: var(--primary-color);
       border-left-width: 5px;
+
+      &_selected {
+        color: var(--primary-text-invert);
+      }
     }
 
     &_small {
