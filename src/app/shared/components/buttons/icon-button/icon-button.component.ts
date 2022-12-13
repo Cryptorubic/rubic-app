@@ -9,9 +9,9 @@ import { TuiAppearance } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconButtonComponent {
-  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
+  @Input() buttonSize: TuiSizeXS | TuiSizeXL = 'l';
 
-  @Input() public appearance: TuiAppearance = TuiAppearance.Primary;
+  @Input() appearance: string = TuiAppearance.Primary;
 
   @Input() icon: string;
 

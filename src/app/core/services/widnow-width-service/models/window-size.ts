@@ -1,5 +1,6 @@
 /**
  * Sorted width breakpoints.
+ * Check out width-breakpoints.ts file.
  */
 export enum WindowSize {
   MOBILE_SM_MIDDLE,

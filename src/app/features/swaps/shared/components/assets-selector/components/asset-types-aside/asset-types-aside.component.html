@@ -10,6 +10,7 @@
           [tuiHint]="fiatsDisabled ? 'Cannot trade with selected blockchain' : null"
         >
           <app-icon-button
+            appearance="secondary"
             icon="assets/images/icons/fiat-selector.svg"
             [inlineSvg]="true"
             [disabled]="selectedAssetType === 'fiat' || fiatsDisabled"
@@ -37,6 +38,7 @@
                 [tuiHint]="blockchainItem | functionCall: getBlockchainHintText:this"
               >
                 <app-icon-button
+                  appearance="secondary"
                   [icon]="blockchainItem.icon"
                   [disabled]="selectedAssetType === blockchainItem.name || disabled"
                   [border]="selectedAssetType === blockchainItem.name"
@@ -51,7 +53,7 @@
         </ng-container>
 
         <li class="open-selector" *noFrame>
-          <app-rubic-button (onClick)="openBlockchainsList()">
+          <app-rubic-button appearance="secondary" (onClick)="openBlockchainsList()">
             +{{ blockchainsAmount - shownBlockchainsAmount }}
           </app-rubic-button>
         </li>

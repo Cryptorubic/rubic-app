@@ -36,7 +36,7 @@ export class AssetTypesAsideComponent {
 
       const isFrom = this.formType === 'from' ? 1 : 0;
 
-      if (windowSize === WindowSize.DESKTOP) {
+      if (windowSize >= WindowSize.MOBILE_MD) {
         return 9 - isFrom;
       }
 
