@@ -582,8 +582,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "Aprende más"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "Volumen de transacción acumulado",
