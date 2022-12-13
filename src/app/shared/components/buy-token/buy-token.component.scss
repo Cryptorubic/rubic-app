@@ -1,8 +1,13 @@
 @use 'src/scss/core' as *;
 
 :host {
-  //--tui-primary: rgba(255, 255, 255, 0.05);
-  //--tui-primary-hover: rgba(255, 255, 255, 0.01) !important;
+  @include b($mobile-sm-plus) {
+    color: red;
+
+    ::ng-deep app-rubic-button .wrapper {
+      padding: 5px 10px !important;
+    }
+  }
 
   .button_buy-token {
     &-icon {

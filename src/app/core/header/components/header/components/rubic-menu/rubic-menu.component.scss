@@ -40,8 +40,6 @@
   min-width: 230px;
   padding: 16px 0;
 
-  //background: var(--menu-background);
-
   &__option {
     justify-content: flex-start;
     height: 45px;
@@ -138,16 +136,6 @@
 
   &__link {
     text-decoration: none !important;
-
-    //&_active {
-    //  .data-list__option {
-    //    color: var(--primary-color);
-    //
-    //    &:active {
-    //      color: var(--rubic-base-01);
-    //    }
-    //  }
-    //}
     
     &_my-trades {
       position: relative;

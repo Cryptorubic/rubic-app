@@ -5,11 +5,8 @@
   --tui-height-s: 35px;
   --tui-disabled-opacity: 1;
   --tui-focus: transparent;
-  //--tui-secondary-hover: rgba(255, 255, 255, 0.1);
 
   [tuiIconButton] {
-    //--tui-primary: transparent;
-
     transition: 0.3s;
 
     &[data-appearance='primary'] {

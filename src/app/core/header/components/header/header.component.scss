@@ -63,6 +63,14 @@
   justify-content: space-between;
   padding: 30px 30px 24px;
 
+  @include b($mobile-sm) {
+    padding: 5px 10px !important;
+
+    > * {
+      transform: scale(0.75);
+    }
+  }
+
   @include iframe {
     padding: 0;
 

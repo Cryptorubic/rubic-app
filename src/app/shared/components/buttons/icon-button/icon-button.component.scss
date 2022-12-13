@@ -1,8 +1,6 @@
 @use 'src/scss/core' as *;
 
 :host {
-  //--tui-primary-text: #{var(--primary-color)};
-  //--tui-primary: rgba(255, 255, 255, 0.05);
   --tui-disabled-opacity: 1;
 
   button {

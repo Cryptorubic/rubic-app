@@ -100,9 +100,6 @@
 
 }
 
-
-
-// breakpoints
 @mixin bh($point) {
   @media (max-height: $point + 'px') {
     @content;
@@ -135,7 +132,6 @@
   }
 }
 
-// breakpoints
 @mixin bb($pointMax, $pointMin) {
   @media (max-width: $pointMax + 'px') and (min-width: $pointMin + 'px') {
     @content;

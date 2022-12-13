@@ -1,8 +1,6 @@
 @use 'src/scss/core' as *;
 
 :host {
-
-  //--tui-primary: rgba(255, 255, 255, 0.1);
   @include iframe-vertical {
     width: 100%;
   }
@@ -15,7 +13,6 @@
     ::ng-deep app-rubic-button {
       button,
       tui-wrapper {
-        //--tui-primary: rgba(white, 0.05);
         box-shadow: none !important;
       }
     }

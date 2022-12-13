@@ -3,14 +3,7 @@
 :host ::ng-deep {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  //--tui-primary: var(white, 0.05);
   --tui-focus: transparent;
-  //--tui-secondary: var(--primary-color);
-  //--tui-secondary-hover: rgba(255, 255, 255, 0.2);
-  //--tui-secondary-link;
-  //--tui-link: black;
-
-  //--tui-secondary-active: red;
 
   [tuiButton] {
     font-weight: 500;
