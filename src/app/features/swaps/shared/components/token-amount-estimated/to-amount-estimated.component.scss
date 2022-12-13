@@ -89,17 +89,17 @@
       height: 50px;
       padding: 0 16px;
 
-      color: var(--form-bright-text-color);
+      color: var(--primary-text);
       font-size: 20px;
       line-height: 50px;
       text-align: start;
 
-      background-color: var(--main-background);
+      background-color: var(--primary-background);
       border-radius: 10px;
     }
 
     @include iframe-vertical-light {
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
     }
 
     &::-webkit-scrollbar {

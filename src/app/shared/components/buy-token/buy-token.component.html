@@ -2,8 +2,8 @@
   *noFrame
   class="button_buy-token"
   [ngClass]="{ 'button_buy-token__custom': tokensType === 'custom' }"
-  [appearance]="appearance"
   (click)="buyToken()"
+  appearance="secondary"
 >
   <div class="button_buy-token-icon">
     <img [src]="rubicIcon[theme$ | async]" alt="rubic" />

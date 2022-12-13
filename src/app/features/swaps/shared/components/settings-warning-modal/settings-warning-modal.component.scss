@@ -20,7 +20,7 @@
     margin-top: 20px;
 
     &-text {
-      @include font(24px, 32px, 500, var(--rubic-base-02));
+      @include font(24px, 32px, 500, var(--primary-text));
       display: flex;
       align-items: center;
       justify-content: center;

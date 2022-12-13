@@ -28,7 +28,7 @@
   }
 
   &__desc {
-    color: var(--secondary-color);
+    color: var(--secondary-text);
     font-size: 14px;
     line-height: 17px;
   }
@@ -36,7 +36,7 @@
   &__arrow-right {
     margin-bottom: 3px;
 
-    filter: var(--rubic-filter-invert);
+    filter: var(--filter-inversion);
   }
   
   &_pointer {

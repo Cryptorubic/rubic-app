@@ -19,7 +19,7 @@
     @include iframe-card;
     margin-right: 10px;
 
-    color: var(--form-dim-text-color);
+    color: var(--secondary-text);
     font-size: 14px;
     line-height: 17px;
   }
@@ -27,7 +27,7 @@
   &__max-button {
     padding: 0;
 
-    color: var(--form-rubic-text-color);
+    color: var(--primary-color);
     font-size: 14px;
     line-height: 17px;
     letter-spacing: 0.1em;
@@ -40,7 +40,7 @@
     }
 
     &_disabled {
-      color: var(--form-dim-text-color);
+      color: var(--secondary-text);
 
       cursor: default;
     }

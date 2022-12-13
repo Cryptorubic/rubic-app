@@ -1,53 +1,22 @@
 @use 'src/scss/core' as *;
 
-/* 357 is the width when burger menu stop to open correctly */
-$badMobileWidth: 357;
+:host {
+  @include b($mobile-sm-plus) {
+    color: red;
 
-:host .button_buy-token {
-  ::ng-deep button[tuiButton][data-appearance='outline'] {
-    @include b($mobile-sm) {
-      border: none !important;
-    }
-
-    @include b($badMobileWidth) {
-      display: none;
+    ::ng-deep app-rubic-button .wrapper {
+      padding: 5px 10px !important;
     }
   }
 
-  &__custom ::ng-deep {
-    [tuiButton][data-appearance='outline'] {
-      border: 1px solid $buy-custom-token;
+  .button_buy-token {
+    &-icon {
+      display: flex;
+      margin-right: 10px;
 
-      &._pressed,
-      &._hovered,
-      &._focused:not(&._pressed) {
-        background: rgba($buy-custom-token, 0.3);
-
-        border: 1px solid $buy-custom-token;
+      img {
+        height: 24px;
       }
-
-      &._pressed {
-        ::ng-deep tui-wrapper[data-appearance='outline'] {
-          color: white;
-        }
-      }
-    }
-  }
-
-  ::ng-deep tui-wrapper {
-    padding: 0 20px !important;
-
-    @include b($mobile-sm) {
-      padding: 0 !important;
-    }
-  }
-
-  &-icon {
-    display: flex;
-    margin-right: 10px;
-
-    img {
-      height: 24px;
     }
   }
 }

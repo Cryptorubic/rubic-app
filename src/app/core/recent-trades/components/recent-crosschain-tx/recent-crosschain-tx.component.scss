@@ -16,7 +16,7 @@
 }
 
 .title {
-  @include font(26px, 31px, 700, var(--rubic-base-02));
+  @include font(26px, 31px, 700, var(--primary-text));
   display: flex;
   align-items: center;
   margin-bottom: 8px;
@@ -47,23 +47,17 @@
   th { font-weight: normal; }
 
   &__tr_head {
-    background: #e5e5e8;
-    border: none;
-  
-    @include dark {
-      background: #161d1e;
-    }
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .table__th {
-
     @include font(14px, 17px, 400, #A2A1A5);
     padding: 16px;
 
     text-align: left;
 
     @include dark {
-      color: #7a797d;
+      color: white;
     }
 
     &:first-child {

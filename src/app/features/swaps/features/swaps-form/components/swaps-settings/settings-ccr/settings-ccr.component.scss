@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 :host {
-  color: var(--form-bright-text-color);
+  color: var(--primary-text);
 }
 
 .settings {
@@ -20,6 +20,10 @@
     margin-left: 6px;
 
     cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: var(--secondary-text);
+    }
   }
 
   &__button-auto {
@@ -28,6 +32,8 @@
     margin-right: 10px;
     padding: 8px 15px;
 
+    color: var(--primary-text);
+
     background: none;
     border: 1px solid transparent;
     border-radius: $border-radius-2;
@@ -35,9 +41,9 @@
     cursor: pointer;
 
     &_active {
-      color: white;
+      color: var(--primary-text-invert);
 
-      background: $rubic-primary;
+      background: var(--primary-color);
     }
   }
 
@@ -82,7 +88,7 @@
 
   ::ng-deep {
     tui-wrapper[data-appearance='textfield'] {
-      color: var(--form-bright-text-color);
+      color: var(--primary-text);
 
       border-radius: 100px;
       box-shadow: none;

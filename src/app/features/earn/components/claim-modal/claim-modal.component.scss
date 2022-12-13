@@ -27,14 +27,14 @@
 }
 
 .title {
-  @include font(24px, 29px, 600, var(--rubic-base-02));
+  @include font(24px, 29px, 600, var(--primary-text));
   margin-bottom: 26px;
 
   text-align: center;
 }
 
 .text {
-  @include font(24px, 29px, 600,var(--rubic-base-25));
+  @include font(24px, 29px, 600,var(--secondary-text));
   margin: 0 auto 48px;
 
   text-align: center;

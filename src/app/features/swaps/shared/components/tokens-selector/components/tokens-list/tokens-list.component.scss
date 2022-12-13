@@ -69,7 +69,7 @@ tui-loader {
     }
 
     &:hover {
-      background-color: rgba($rubic-primary, 0.15);
+      background-color: var(--transparent-line);
     }
 
     &_disabled {
@@ -129,7 +129,7 @@ tui-loader {
     }
 
     &:hover {
-      background-color: var(--main-background);
+      background-color: var(--primary-background);
     }
 
     &_disabled {
@@ -158,7 +158,7 @@ tui-loader {
   }
 
   &__item-link {
-    border-color: $rubic-primary;
+    border-color: var(--primary-color);
 
     a {
       display: block;
@@ -196,7 +196,7 @@ tui-loader {
 }
 
 .vertical-frame-link {
-  border: 2px solid $rubic-primary;
+  border: 2px solid var(--primary-color);
 
   a {
     display: block;

@@ -2,7 +2,7 @@
 
 .settings-list {
   display: grid;
-  grid-auto-rows: 154px;
+  grid-auto-rows: 130px;
   grid-auto-columns: 154px;
   grid-column-gap: 10px;
   padding: 0 20px 18px;
@@ -11,7 +11,7 @@
     display: block;
     grid-row: 1;
 
-    background: var(--plate-invert);
+    background: var(--secondary-background);
 
     border-radius: $border-radius-2;
     

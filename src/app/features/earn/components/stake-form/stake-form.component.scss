@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 :host {
-  --tui-text-font: var(--main-font);
   display: block;
 
   @include b($tablet) {
@@ -15,7 +14,7 @@
   margin: 9px auto 20px;
   padding: 26px;
 
-  background: var(--rubic-base-22);
+  background: var(--form-background);
   border-radius: 24px;
 
   @include b($tablet) {
@@ -58,7 +57,7 @@
   }
 
   &__text {
-    @include font(18px, 22px, 500, var(--rubic-base-02));
+    @include font(18px, 22px, 500, var(--primary-text));
     text-align: center;
 
     @include b($tablet) {
@@ -91,7 +90,7 @@
   }
 
   &__balance-and-price {
-    @include font(15px, 18px, 500, var(--rubic-base-25));
+    @include font(15px, 18px, 500, var(--secondary-text));
 
     @include b($tablet) {
       font-size: 12px;
@@ -108,14 +107,14 @@
   }
 
   &__data {
-    @include font(20px, 24px, 500, var(--form-bright-text-color));
+    @include font(20px, 24px, 500, var(--primary-text));
     display: flex;
     align-items: center;
     width: fit-content;
     margin-right: 12px;
     padding: 8px 12px;
 
-    background: var(--rubic-base-23);
+    background: var(--form-background);
     border-radius: 100px;
 
     @include b($tablet) {
@@ -139,7 +138,7 @@
   }
 
   &__amount {
-    @include font(26px, 31px, 400, var(--form-bright-text-color));
+    @include font(26px, 31px, 400, var(--primary-text));
     flex-grow: 1;
     width: 100%;
     height: 31px;
@@ -159,7 +158,7 @@
   &__max {
     margin-left: 12px;
 
-    color: $rubic-primary;
+    color: var(--primary-color);
 
     cursor: pointer;
 
@@ -186,7 +185,7 @@
   margin-bottom: 36px;
 
   &__title {
-    @include font(18px, 22px, 500, var(--form-bright-text-color));
+    @include font(18px, 22px, 500, var(--primary-text));
     margin-right: 12px;
 
     @include b($tablet) {
@@ -198,11 +197,11 @@
   }
 
   &__current-value {
-    @include font(20px, 24px, 500, var(--form-bright-text-color));
+    @include font(20px, 24px, 500, var(--primary-text));
     margin-right: 21px;
     padding: 8px 12px;
 
-    background: var(--rubic-base-23);
+    background: var(--form-background);
     border-radius: 100px;
     cursor: default;
 
@@ -223,7 +222,7 @@
 
     &-chip {
       @include clearbtn();
-      @include font(16px, 19px, 500, var(--form-bright-text-color));
+      @include font(16px, 19px, 500, var(--primary-text));
       padding: 8px 12px;
 
       border: 1px solid transparent;
@@ -238,7 +237,7 @@
       }
 
       &_selected {
-        border: 1px solid $rubic-primary;
+        border: 1px solid var(--primary-color);
       }
 
       &[disabled] {
@@ -258,8 +257,6 @@
   }
 
   ::ng-deep {
-    --tui-primary-active: #4aa956;
-
     .wrapper {
       height: 6px;
     }
@@ -297,7 +294,7 @@
 
 .rules {
   &__link {
-    @include font(16px, 19px, 400, var(--main-green));
+    @include font(16px, 19px, 400, var(--primary-color));
     display: flex;
     gap: 5px;
     align-items: center;
@@ -313,11 +310,11 @@
 
     ::ng-deep svg {
       path[fill='black'] {
-        fill: var(--main-green);
+        fill: var(--primary-color);
       }
 
       rect[fill='black'] {
-        fill: var(--main-green);
+        fill: var(--primary-color);
       }
     }
   }
