@@ -69,7 +69,7 @@ tui-loader {
     }
 
     &:hover {
-      background-color: rgba(var(--primary-color), 0.15);
+      background-color: var(--transparent-line);
     }
 
     &_disabled {

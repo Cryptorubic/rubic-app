@@ -11,7 +11,7 @@ import { TuiAppearance } from '@taiga-ui/core';
 export class IconButtonComponent {
   @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
 
-  @Input() appearance: TuiAppearance = TuiAppearance.Primary;
+  @Input() public appearance: TuiAppearance = TuiAppearance.Primary;
 
   @Input() icon: string;
 

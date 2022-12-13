@@ -113,13 +113,7 @@
     }
 
     tui-wrapper {
-      --tui-primary: var(--main-background);
-
       padding: 0 !important;
-
-      &:hover {
-        background: var(--rubic-secondary);
-      }
     }
   }
 }

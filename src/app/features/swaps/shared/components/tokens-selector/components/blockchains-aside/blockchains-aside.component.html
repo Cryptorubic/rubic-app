@@ -23,6 +23,7 @@
                   [borderRadiusPercent]="50"
                   [label]="blockchainItem.label"
                   (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
+                  appearance="secondary"
                 >
                 </app-icon-button>
               </li>
@@ -31,7 +32,7 @@
         </ng-container>
 
         <li class="open-selector" *noFrame>
-          <app-rubic-button (onClick)="onSelectorSwitch()">
+          <app-rubic-button appearance="secondary" (onClick)="onSelectorSwitch()">
             <ng-container *ngLet="selectorListType$ | async as selectorListType">
               <div *ngIf="selectorListType === 'tokens'">
                 +{{ blockchainsAmount - shownBlockchainsAmount }}
