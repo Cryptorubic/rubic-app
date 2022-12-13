@@ -49,17 +49,11 @@
 
       <tui-opt-group class="rubic-menu__mobile">
         <a
-          (click)="menuClickHandler('cross-chain')"
+          (click)="menuClickHandler()"
           [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Swaps</button>
-        </a>
-
-        <a routerLink="/staking" routerLinkActive="data-list__link_active" class="data-list__link">
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.stakingLp' | translate }}
-          </button>
         </a>
       </tui-opt-group>
 
@@ -93,7 +87,7 @@
           routerLink="promotion"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler('promotion')"
+          (click)="menuClickHandler()"
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.promotion' | translate }}
