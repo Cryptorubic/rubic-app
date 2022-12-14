@@ -1,15 +1,10 @@
 import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
-import { Cacheable } from 'ts-cacheable';
-import { catchError } from 'rxjs/operators';
-import { RubicError } from '@core/errors/models/rubic-error';
-import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
 import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
-import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -39,18 +34,8 @@ export class IframeService implements OnDestroy {
     return this.iframeParameters?.device;
   }
 
-  public get feeData(): {
-    fee: number;
-    feeTarget: string;
-  } {
-    return {
-      fee: this.iframeParameters.fee,
-      feeTarget: this.iframeParameters.feeTarget
-    };
-  }
-
-  public get promoCode(): string {
-    return this.iframeParameters.promoCode;
+  public get providerAddress(): string {
+    return this.iframeParameters?.providerAddress;
   }
 
   public get tokenSearch(): boolean {
@@ -88,11 +73,6 @@ export class IframeService implements OnDestroy {
       console.error(`Wrong device value: ${device}`);
     }
 
-    const { fee, feeTarget } = iframeParameters;
-    if (Boolean(fee) !== Boolean(feeTarget)) {
-      throw new RubicError(null, null, '`fee` or `feeTarget` parameter is missing.');
-    }
-
     this.setIframeStatus();
     this.setupViewportListener();
   }
@@ -114,34 +94,5 @@ export class IframeService implements OnDestroy {
         this._widgetIntoViewport$.next($event.data?.widgetIntoViewport);
       }
     });
-  }
-
-  @Cacheable()
-  public getPromoterAddress(): Observable<string | null> {
-    const { promoCode } = this.iframeParameters;
-    if (!promoCode) {
-      return of(null);
-    }
-
-    return this.promotionPromoterAddressApiService.getPromoterWalletAddress(promoCode).pipe(
-      catchError((err: unknown) => {
-        console.error('Cannot retrieve promoter address:', err);
-        return of(null);
-      })
-    );
-  }
-
-  public isIframeWithFee(blockchain: BlockchainName, providerType: OnChainTradeType): boolean {
-    if (!this.isIframe || !this.iframeParameters.fee) {
-      return false;
-    }
-
-    if (!(blockchain in WHITELIST_PROVIDERS)) {
-      return false;
-    }
-
-    return WHITELIST_PROVIDERS[blockchain as keyof typeof WHITELIST_PROVIDERS].some(
-      whitelistProvider => providerType === whitelistProvider
-    );
   }
 }

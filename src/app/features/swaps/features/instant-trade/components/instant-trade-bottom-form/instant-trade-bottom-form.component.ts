@@ -52,7 +52,6 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { IT_PROXY_FEE } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -182,11 +181,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return null;
     }
 
-    if (!this.iframeService.isIframeWithFee(this.currentBlockchain, this.selectedProvider.name)) {
-      return this.selectedProvider.trade.to.tokenAmount;
-    }
-
-    return this.selectedProvider.trade.to.tokenAmount.multipliedBy(1 - IT_PROXY_FEE);
+    return this.selectedProvider.trade.to.tokenAmount;
   }
 
   public get isFromNative(): boolean {

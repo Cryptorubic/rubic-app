@@ -122,9 +122,7 @@ export class QueryParamsService {
     this.iframeService.setIframeInfo({
       iframeAppearance: queryParams.iframe,
       device: queryParams.device,
-      fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
-      feeTarget: queryParams.feeTarget,
-      promoCode: queryParams.promoCode,
+      providerAddress: queryParams.feeTarget || queryParams.providerAddress,
       tokenSearch: queryParams.tokenSearch === 'true',
       rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
     });

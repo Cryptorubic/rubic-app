@@ -20,7 +20,8 @@ export class SdkLoaderService {
   public async initSdk(): Promise<void> {
     this.subscribeOnAddressChange();
     await this.sdkService.initSDK(
-      new URLSearchParams(this.window.location.search).get('feeTarget')
+      new URLSearchParams(this.window.location.search).get('feeTarget') ||
+        new URLSearchParams(this.window.location.search).get('providerAddress')
     );
     this.loadUser();
   }

@@ -11,8 +11,6 @@ import { TradeCalculationService } from '@features/swaps/core/services/trade-ser
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  CHAIN_TYPE,
-  EvmBlockchainName,
   Injector,
   SwapTransactionOptions,
   Token,
@@ -23,27 +21,19 @@ import {
   OnChainTrade,
   OnChainTradeError,
   TxStatus,
-  EncodeTransactionOptions,
   BlockchainsInfo,
   NotWhitelistedProviderError
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
-import {
-  IT_PROXY_FEE_CONTRACT_ABI,
-  IT_PROXY_FEE_CONTRACT_ADDRESS,
-  IT_PROXY_FEE_CONTRACT_METHOD
-} from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/iframe-proxy-fee-contract';
-import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
+
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { TransactionConfig } from 'web3-core';
 import { filter } from 'rxjs/operators';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
@@ -109,21 +99,6 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
-    if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-      const chainType = BlockchainsInfo.getChainType(trade.from.blockchain);
-      if (Web3Pure[chainType].isNativeAddress(trade.from.address)) {
-        return false;
-      }
-
-      const allowance = await Injector.web3PublicService
-        .getWeb3Public(trade.from.blockchain as EvmBlockchainName)
-        .getAllowance(
-          trade.from.address,
-          this.authService.userAddress,
-          IT_PROXY_FEE_CONTRACT_ADDRESS
-        );
-      return new BigNumber(allowance).lt(trade.from.weiAmount);
-    }
     return trade.needApprove();
   }
 
@@ -149,18 +124,7 @@ export class InstantTradeService extends TradeCalculationService {
     };
 
     try {
-      if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-        await Injector.web3PrivateService
-          .getWeb3Private(CHAIN_TYPE.EVM)
-          .approveTokens(
-            trade.from.address,
-            IT_PROXY_FEE_CONTRACT_ADDRESS,
-            'infinity',
-            transactionOptions
-          );
-      } else {
-        await trade.approve(transactionOptions);
-      }
+      await trade.approve(transactionOptions);
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
@@ -295,7 +259,7 @@ export class InstantTradeService extends TradeCalculationService {
     try {
       const userAddress = this.authService.userAddress;
       if (trade instanceof OnChainTrade) {
-        await this.checkFeeAndCreateTrade(providerName, trade, options);
+        await trade.swap(options);
       } else {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
@@ -349,65 +313,6 @@ export class InstantTradeService extends TradeCalculationService {
     }
   }
 
-  private async checkFeeAndCreateTrade(
-    providerName: OnChainTradeType,
-    trade: OnChainTrade,
-    options: SwapTransactionOptions
-  ): Promise<string> {
-    if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
-      return this.createTradeWithFee(trade, options);
-    }
-
-    return trade.swap(options);
-  }
-
-  private async createTradeWithFee(trade: OnChainTrade, options: ItOptions): Promise<string> {
-    await Injector.web3PrivateService
-      .getWeb3Private(CHAIN_TYPE.EVM)
-      .checkBlockchainCorrect(trade.from.blockchain);
-
-    const fullOptions: EncodeTransactionOptions = {
-      ...options,
-      fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,
-      supportFee: false
-    };
-    const transactionOptions = (await trade.encode(fullOptions)) as TransactionConfig;
-    const { feeData } = this.iframeService;
-    const fee = feeData.fee * 1000;
-
-    const promoterAddress = await firstValueFrom(this.iframeService.getPromoterAddress());
-
-    const methodName = promoterAddress
-      ? IT_PROXY_FEE_CONTRACT_METHOD.SWAP_WITH_PROMOTER
-      : IT_PROXY_FEE_CONTRACT_METHOD.SWAP;
-
-    const methodArguments = [
-      trade.from.address,
-      trade.to.address,
-      Web3Pure.toWei(trade.from.tokenAmount, trade.from.decimals),
-      transactionOptions.to,
-      transactionOptions.data,
-      [fee, feeData.feeTarget]
-    ];
-    if (promoterAddress) {
-      methodArguments.push(promoterAddress);
-    }
-    const receipt = await Injector.web3PrivateService
-      .getWeb3Private(CHAIN_TYPE.EVM)
-      .tryExecuteContractMethod(
-        IT_PROXY_FEE_CONTRACT_ADDRESS,
-        IT_PROXY_FEE_CONTRACT_ABI,
-        methodName,
-        methodArguments,
-        {
-          ...transactionOptions,
-          onTransactionHash: options?.onConfirm,
-          gas: undefined
-        } as TransactionOptions
-      );
-    return receipt.transactionHash;
-  }
-
   private async postTrade(
     transactionHash: string,
     providerName: OnChainTradeType,
@@ -416,10 +321,6 @@ export class InstantTradeService extends TradeCalculationService {
     let fee: number;
     let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);
-    if (this.iframeService.isIframeWithFee(blockchain, providerName)) {
-      fee = this.iframeService.feeData.fee;
-      promoCode = this.iframeService.promoCode;
-    }
 
     // Boba is too fast, status does not have time to get into the database.
     const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
