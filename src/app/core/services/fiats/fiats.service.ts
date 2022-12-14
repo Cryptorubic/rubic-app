@@ -71,7 +71,7 @@ export class FiatsService {
           return {
             symbol: code,
             image,
-            name: response.icons[code].name
+            name: response.icons[code]?.name
           };
         });
       });
