@@ -186,11 +186,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return null;
     }
 
-    // if (!this.iframeService.isIframeWithFee(this.currentBlockchain, this.selectedProvider.name)) {
-    //   return this.selectedProvider.trade.to.tokenAmount;
-    // }
-
-    // return this.selectedProvider.trade.to.tokenAmount.multipliedBy(1 - IT_PROXY_FEE);
     return this.selectedProvider.trade.to.tokenAmount;
   }
 

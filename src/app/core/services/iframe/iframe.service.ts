@@ -73,11 +73,6 @@ export class IframeService implements OnDestroy {
       console.error(`Wrong device value: ${device}`);
     }
 
-    // const { fee, feeTarget } = iframeParameters;
-    // if (Boolean(fee) !== Boolean(feeTarget)) {
-    //   throw new RubicError(null, null, '`fee` or `feeTarget` parameter is missing.');
-    // }
-
     this.setIframeStatus();
     this.setupViewportListener();
   }
@@ -100,33 +95,4 @@ export class IframeService implements OnDestroy {
       }
     });
   }
-
-  // @Cacheable()
-  // public getPromoterAddress(): Observable<string | null> {
-  //   const { promoCode } = this.iframeParameters;
-  //   if (!promoCode) {
-  //     return of(null);
-  //   }
-
-  //   return this.promotionPromoterAddressApiService.getPromoterWalletAddress(promoCode).pipe(
-  //     catchError((err: unknown) => {
-  //       console.error('Cannot retrieve promoter address:', err);
-  //       return of(null);
-  //     })
-  //   );
-  // }
-
-  // public isIframeWithFee(blockchain: BlockchainName, providerType: OnChainTradeType): boolean {
-  //   if (!this.isIframe || !this.iframeParameters.fee) {
-  //     return false;
-  //   }
-
-  //   if (!(blockchain in WHITELIST_PROVIDERS)) {
-  //     return false;
-  //   }
-
-  //   return WHITELIST_PROVIDERS[blockchain as keyof typeof WHITELIST_PROVIDERS].some(
-  //     whitelistProvider => providerType === whitelistProvider
-  //   );
-  // }
 }

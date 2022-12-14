@@ -77,22 +77,6 @@ export class InstantTradeService extends TradeCalculationService {
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
     return trade.needApprove();
-    // if (this.iframeService.isIframeWithFee(trade.from.blockchain, trade.type)) {
-    //   const chainType = BlockchainsInfo.getChainType(trade.from.blockchain);
-    //   if (Web3Pure[chainType].isNativeAddress(trade.from.address)) {
-    //     return false;
-    //   }
-
-    //   const allowance = await Injector.web3PublicService
-    //     .getWeb3Public(trade.from.blockchain as EvmBlockchainName)
-    //     .getAllowance(
-    //       trade.from.address,
-    //       this.authService.userAddress,
-    //       IT_PROXY_FEE_CONTRACT_ADDRESS
-    //     );
-    //   return new BigNumber(allowance).lt(trade.from.weiAmount);
-    // }
-    // return trade.needApprove();
   }
 
   public async approve(trade: OnChainTrade): Promise<void> {
@@ -246,7 +230,7 @@ export class InstantTradeService extends TradeCalculationService {
     try {
       const userAddress = this.authService.userAddress;
       if (trade instanceof OnChainTrade) {
-        await this.checkFeeAndCreateTrade(trade, options);
+        await trade.swap(options);
       } else {
         await this.ethWethSwapProvider.createTrade(trade, options);
       }
@@ -298,64 +282,6 @@ export class InstantTradeService extends TradeCalculationService {
     }
   }
 
-  private async checkFeeAndCreateTrade(
-    trade: OnChainTrade,
-    options: SwapTransactionOptions
-  ): Promise<string> {
-    // if (this.iframeService.isIframeWithFee(trade.from.blockchain, providerName)) {
-    //   return this.createTradeWithFee(trade, options);
-    // }
-
-    return trade.swap(options);
-  }
-
-  // private async createTradeWithFee(trade: OnChainTrade, options: ItOptions): Promise<string> {
-  //   await Injector.web3PrivateService
-  //     .getWeb3Private(CHAIN_TYPE.EVM)
-  //     .checkBlockchainCorrect(trade.from.blockchain);
-
-  //   const fullOptions: EncodeTransactionOptions = {
-  //     ...options,
-  //     fromAddress: IT_PROXY_FEE_CONTRACT_ADDRESS,
-  //     supportFee: false
-  //   };
-  //   const transactionOptions = (await trade.encode(fullOptions)) as TransactionConfig;
-  //   const { feeData } = this.iframeService;
-  //   const fee = feeData.fee * 1000;
-
-  //   const promoterAddress = await firstValueFrom(this.iframeService.getPromoterAddress());
-
-  //   const methodName = promoterAddress
-  //     ? IT_PROXY_FEE_CONTRACT_METHOD.SWAP_WITH_PROMOTER
-  //     : IT_PROXY_FEE_CONTRACT_METHOD.SWAP;
-
-  //   const methodArguments = [
-  //     trade.from.address,
-  //     trade.to.address,
-  //     Web3Pure.toWei(trade.from.tokenAmount, trade.from.decimals),
-  //     transactionOptions.to,
-  //     transactionOptions.data,
-  //     [fee, feeData.feeTarget]
-  //   ];
-  //   if (promoterAddress) {
-  //     methodArguments.push(promoterAddress);
-  //   }
-  //   const receipt = await Injector.web3PrivateService
-  //     .getWeb3Private(CHAIN_TYPE.EVM)
-  //     .tryExecuteContractMethod(
-  //       IT_PROXY_FEE_CONTRACT_ADDRESS,
-  //       IT_PROXY_FEE_CONTRACT_ABI,
-  //       methodName,
-  //       methodArguments,
-  //       {
-  //         ...transactionOptions,
-  //         onTransactionHash: options?.onConfirm,
-  //         gas: undefined
-  //       } as TransactionOptions
-  //     );
-  //   return receipt.transactionHash;
-  // }
-
   private async postTrade(
     transactionHash: string,
     providerName: OnChainTradeType,
@@ -364,10 +290,6 @@ export class InstantTradeService extends TradeCalculationService {
     let fee: number;
     let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);
-    // if (this.iframeService.isIframeWithFee(blockchain, providerName)) {
-    //   fee = this.iframeService.feeData.fee;
-    //   promoCode = this.iframeService.promoCode;
-    // }
 
     // Boba is too fast, status does not have time to get into the database.
     const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
