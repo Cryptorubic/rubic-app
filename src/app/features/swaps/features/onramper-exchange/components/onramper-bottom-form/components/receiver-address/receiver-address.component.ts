@@ -5,6 +5,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { nativeTokensList } from 'rubic-sdk';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-receiver-address',
@@ -17,9 +18,12 @@ export class ReceiverAddressComponent {
     map(toToken => (toToken ? nativeTokensList[toToken.blockchain].symbol : null))
   );
 
-  public readonly walletAddressText$ = this.windowWidthService.windowSize$.pipe(
-    map(windowSize => {
-      const walletAddress = this.authService.userAddress;
+  public readonly walletAddressText$ = combineLatest([
+    this.windowWidthService.windowSize$,
+    this.authService.currentUser$
+  ]).pipe(
+    map(([windowSize, user]) => {
+      const walletAddress = user?.address;
       if (!walletAddress) {
         return null;
       }
