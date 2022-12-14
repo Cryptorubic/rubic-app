@@ -3,7 +3,7 @@
 
   height: 660px;
 
-  background: var(--main-form-background);
+  background: var(--form-background);
   border-radius: 19px;
 
   iframe {
@@ -17,7 +17,7 @@
 
     ::ng-deep app-rubic-button {
       tui-wrapper {
-        background: var(--main-form-background);
+        background: var(--form-background);
       }
     }
   }

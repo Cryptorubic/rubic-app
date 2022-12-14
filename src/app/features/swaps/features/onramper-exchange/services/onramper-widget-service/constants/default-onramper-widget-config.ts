@@ -2,7 +2,7 @@ import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramp
 
 export const defaultOnramperWidgetConfig = {
   apiKey: onramperApiKey,
-  color: '4AA956',
+  color: '00e28e',
   supportSell: false,
   supportSwap: false,
   isAddressEditable: false
