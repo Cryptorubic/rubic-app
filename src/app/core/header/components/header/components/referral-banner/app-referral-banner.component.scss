@@ -10,10 +10,6 @@
     background: linear-gradient(90deg, rgba(40, 92, 83, 1) 0%, rgba(0, 202, 226, 1) 50%, rgba(51, 48, 81, 1) 100%);
   }
 
-  @include b($mobile-sm-plus) {
-    justify-content: flex-start;
-  }
-
   @include hide-unused-ui {
     display: none;
   }

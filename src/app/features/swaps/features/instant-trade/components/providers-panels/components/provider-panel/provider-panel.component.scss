@@ -79,12 +79,6 @@ $white: white;
       background-color: var(--primary-color);
       border-color: var(--primary-color);
 
-      .provider-panel__token-usd-price,
-      .provider-panel__token-gas-fee,
-      .provider-panel__right {
-        color: $white;
-      }
-
       .provider-panel__provider-name {
         color: var(--primary-text-invert);
 
@@ -94,20 +88,19 @@ $white: white;
 
       .provider-panel__hint {
         ::ng-deep svg path {
-          fill: white;
+          fill: var(--primary-text-invert);
         }
       }
     }
 
     &_best-rate {
-
       color: var(--primary-text);
 
       border-left-color: var(--primary-color);
       border-left-width: 5px;
 
-      &_selected {
-        color: var(--primary-text-invert);
+      &.provider-panel__content_selected {
+        color: var(--primary-text-invert) !important;
       }
     }
 
@@ -241,15 +234,12 @@ $white: white;
   &__token-usd-price {
     margin-bottom: 10px;
 
-    color: var(--secondary-text);
     letter-spacing: 0.1em;
   }
 
   &__token-gas-fee {
     display: flex;
     align-items: center;
-
-    color: var(--secondary-text);
   }
 
   &__hint {
