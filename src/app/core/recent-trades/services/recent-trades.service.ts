@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { Subscription } from 'rxjs';
-import { RecentTrade } from '../../../shared/models/my-trades/recent-trades.interface';
+import { RecentTrade } from '@shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { ScannerLinkPipe } from '../../../shared/pipes/scanner-link.pipe';
+import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -13,7 +13,12 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { BlockchainName, TxStatus, Web3PublicSupportedBlockchain } from 'rubic-sdk';
+import {
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  TxStatus,
+  Web3PublicSupportedBlockchain
+} from 'rubic-sdk';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 
 @Injectable()
@@ -42,19 +47,12 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const {
-      srcTxHash,
-      crossChainProviderType,
-      fromToken,
-      toToken,
-      timestamp,
-      dstTxHash: calculatedDstTxHash
-    } = trade;
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromBlockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toBlockchain);
+    const { srcTxHash, fromToken, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromToken.blockchain);
+    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toToken.blockchain);
     const srcTxLink = this.scannerLinkPipe.transform(
       srcTxHash,
-      trade.fromBlockchain,
+      trade.fromToken.blockchain,
       ADDRESS_TYPE.TRANSACTION
     );
     const uiTrade: UiRecentTrade = {
@@ -64,8 +62,7 @@ export class RecentTradesService {
       toToken,
       timestamp,
       srcTxLink,
-      srcTxHash,
-      crossChainProviderType
+      srcTxHash
     };
 
     if (calculatedDstTxHash) {
@@ -84,18 +81,23 @@ export class RecentTradesService {
       return uiTrade;
     }
 
+    if (trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.BRIDGERS && !trade.amountOutMin) {
+      console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
+    }
+
     const { srcTxStatus, dstTxStatus, dstTxHash } =
       await this.sdk.crossChainStatusManager.getCrossChainStatus(
         {
-          fromBlockchain: trade.fromBlockchain as Web3PublicSupportedBlockchain,
-          toBlockchain: trade.toBlockchain,
+          fromBlockchain: trade.fromToken.blockchain as Web3PublicSupportedBlockchain,
+          toBlockchain: trade.toToken.blockchain,
           srcTxHash: srcTxHash,
           txTimestamp: trade.timestamp,
           lifiBridgeType: trade.bridgeType,
           viaUuid: trade.viaUuid,
-          rangoRequestId: trade.rangoRequestId
+          rangoRequestId: trade.rangoRequestId,
+          amountOutMin: trade.amountOutMin
         },
-        trade.crossChainProviderType
+        trade.crossChainTradeType
       );
 
     uiTrade.statusFrom = srcTxStatus;

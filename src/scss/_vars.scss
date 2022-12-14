@@ -1,94 +1,67 @@
+// ***** breakpoints *****
+$desktop: 1240;
+$laptop-plus: 1024;
+$laptop: 960;
+$tablet: 768;
+$mobile-md: 651;
+$mobile-md-minus: 599;
+$mobile-sm-plus: 560;
+$mobile-sm-middle: 500;
+$mobile-sm: 420;
+
+// ***** colors *****
+$primary-color: rgb(0, 226, 142);
+$secondary-color: #271e34;
+$transparent-black: rgba(0, 0, 0, 0.1);
+$transparent-white: rgba(255, 255, 255, 0.1);
+
+
 // ***** vars *****
 :root {
   --scroll-size: 0px;
-  --main-font: 'SF-Pro', Roboto, Arial, sans-serif;
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --filter-inversion: invert(1);
 
-  --container-max-width: 1440px;
-  --main-green: #4aa956;
+  --transparent-line: #{$transparent-black};
 
-  --green-btn-border-hover-bg: #e5f5e7;
+  --primary-background: rgb(246, 246, 246);
+  --form-background: rgb(255, 255, 255);
+  --form-background-transparent: rgba(255, 255, 255, 0.9);
+  --solid-background: rgb(255, 255, 255);
+  --secondary-background: rgba(0, 0, 0, 0.035);
+  --iframe-primary-background: rgb(244, 244, 244);
 
-  --primary-color: rgb(74, 169, 86);
-  --secondary-color: rgba(0, 0, 0, 0.5);
+  --primary-text: rgb(0, 0, 0);
+  --primary-text-invert: rgb(255, 255, 255);
+  --secondary-text: rgba(0, 0, 0, 0.5);
 
-  --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
+  --tui-primary: #{$primary-color};
+  --tui-primary-hover: #{darken($primary-color, 10%)};
+  --tui-primary-active: #{darken($primary-color, 10%)};
+  --tui-primary-text: var(--primary-text-invert);
 
-  --main-form-background: rgba(255, 255, 255, 1);
-  --main-background: #ececec;
-  --menu-background: #fff;
-  --secondary-background: rgba(250, 250, 250, 1);
-
-  --rubic-base-03: rgba(250, 250, 250, 0.9);
-  --rubic-secondary: rgb(244, 245, 244);
-  --rubic-delimiter: #ddd;
-  --rubic-secondary-opacity: #f4f5f4;
-  --rubic-token-clear: #ddd;
-  --rubic-token-clear-icon: #70796d;
-  --border-color-secondary: rgba(255, 255, 255, 0.5);
-
-  --form-header-color-1: rgb(235, 243, 236);
-  --form-header-color-2: rgb(245, 249, 246);
-
-  --form-bright-text-color: rgb(0, 0, 0);
-  --form-bright-reversed-text-color: rgb(255, 255, 255);
-  --form-dim-text-color: rgba(64 64 64 / 60%);
-  --form-rubic-text-color: rgb(74, 169, 86);
-
-  --rubic-base-01: rgb(255, 255, 255);
-  --rubic-base-02: rgb(0, 0, 0);
-
-  --rubic-base-10: rgb(250, 250, 250);
-  --rubic-base-11: rgb(243, 249, 243);
-  --rubic-base-12: rgb(128, 128, 128);
-  --rubic-base-13: rgba(255, 255, 255, 0.3);
-  --rubic-base-14: #f4f4f4;
-  --rubic-base-15: #868686;
-  --rubic-base-16: rgb(99, 157, 106);
-  --rubic-base-17: rgb(0, 0, 0, 0.7);
-  --rubic-base-18: #eff3ec;
-  --rubic-base-19: #fff;
-  --rubic-base-20: rgba(255, 255, 255, 0.6);
-  --rubic-base-21: #e4f2e6;
-  --rubic-base-22: #fff;
-  --rubic-base-23: #f5f7fb;
-  --rubic-base-24: var(--main-green);
-  --rubic-base-25: rgb(114, 131, 116);
-  --rubic-base-26: #f4f4f4;
-  --rubic-base-27: #e5e5e5;
-  --plate-invert: rgb(250, 250, 250);
-  --bg-banner: rgba(255, 255, 255, 0.8);
+  --tui-secondary: rgba(255, 255, 255, 1);
+  --tui-secondary-hover: rgba(255, 255, 255, 0.5);
+  --tui-secondary-active: rgba(255, 255, 255, 0.5);
+  --tui-secondary-text: var(--primary-text);
+  --tui-link: var(--primary-text);
+  --tui-link-hover: var(--primary-text);
 
   --tui-text-02: #3b3a3a;
+  --tui-text-03: var(--tui-text-02);
 
   --selection-color: rgb(243 249 243);
-  --rubic-filter-invert: invert(1);
-
-  --rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
-  --rubic-shadow-button-hover-dim: -5px -5px 15px rgba(255, 255, 255, 0.1), 5px 5px 15px rgba(59, 130, 67, 0.2);
-  --rubic-shadow-button-active: -5px -5px 30px rgba(172, 219, 178, 0.5), 5px 5px 30px rgba(59, 130, 67, 0.5);
-  --rubic-shadow-button-disabled: -15px -15px 80px #fff, 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);
-
-  --hr-color: rgba(0, 0, 0, 0.1);
-
-  --referral-banner-bg: rgb(255, 255, 255);
 }
 
 // ***** typography *****
 $sf-pro-font: SF-Pro, sans-serif;
 $roboto-font: Roboto, sans-serif;
 $montserrat-font: Montserrat, sans-serif;
+$red-hat-display: Red-Hat-Display, sans-serif;
 
 // ***** colors *****
-$rubic-base-03: #464646;
-$rubic-base-04: #4b604f;
-$rubic-base-05: #639d6a;
-$rubic-base-06: #5c7d60;
-$rubic-base-07: #e0e2e0;
-$rubic-base-08: #fcfcfd;
-$rubic-base-09: #9db8a1;
-$rubic-base-10: #bdbebd;
 $rubic-base-11: #808080;
-
 $rubic-primary: #4aa956;
 $rubic-disable: #e1e1e1;
 $rubic-warning: #dfcb5f;
@@ -105,16 +78,6 @@ $border-radius-3: 100px;
 
 // ***** filters *****
 $backdrop-blur-1: blur(5px);
-
-// ***** breakpoints *****
-$desktop: 1240;
-$laptop-plus: 1024;
-$laptop: 960;
-$tablet: 768;
-$mobile-md: 651;
-$mobile-md-minus: 599;
-$mobile-sm-plus: 560;
-$mobile-sm: 420;
 
 // ***** shadows *****
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
@@ -140,5 +103,5 @@ $iframe-horizontal-input-width: 363px;
 $iframe-vertical-width: 350px;
 $iframe-vertical-height: 500px;
 
-// themes
+// ***** themes *****
 $dark: 'dark';

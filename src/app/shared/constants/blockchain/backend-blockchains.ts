@@ -1,6 +1,6 @@
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 
-export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
+const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -24,10 +24,22 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
-  [BLOCKCHAIN_NAME.TRON]: 'tron'
+  [BLOCKCHAIN_NAME.TRON]: 'tron',
+  [BLOCKCHAIN_NAME.KAVA]: 'kava',
+  [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
+  [BLOCKCHAIN_NAME.OASIS]: 'oasis',
+  [BLOCKCHAIN_NAME.METIS]: 'metis',
+  [BLOCKCHAIN_NAME.DFK]: 'defikingdoms',
+  [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+  [BLOCKCHAIN_NAME.VELAS]: 'velas',
+  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+} as const;
+
+export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
+  ...BLOCKCHAINS_MAPPING
 };
 
-export type BackendBlockchain = typeof TO_BACKEND_BLOCKCHAINS[keyof typeof TO_BACKEND_BLOCKCHAINS];
+export type BackendBlockchain = typeof BLOCKCHAINS_MAPPING[keyof typeof BLOCKCHAINS_MAPPING];
 
 export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName> = {
   ethereum: BLOCKCHAIN_NAME.ETHEREUM,
@@ -52,5 +64,14 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   boba: BLOCKCHAIN_NAME.BOBA,
   bitcoin: BLOCKCHAIN_NAME.BITCOIN,
   'ethereum-pow': BLOCKCHAIN_NAME.ETHEREUM_POW,
-  tron: BLOCKCHAIN_NAME.TRON
+  tron: BLOCKCHAIN_NAME.TRON,
+  kava: BLOCKCHAIN_NAME.KAVA,
+  bitgert: BLOCKCHAIN_NAME.BITGERT,
+  astar: BLOCKCHAIN_NAME.ASTAR,
+  oasis: BLOCKCHAIN_NAME.OASIS,
+  metis: BLOCKCHAIN_NAME.METIS,
+  defikingdoms: BLOCKCHAIN_NAME.DFK,
+  klaytn: BLOCKCHAIN_NAME.KLAYTN,
+  velas: BLOCKCHAIN_NAME.VELAS,
+  syscoin: BLOCKCHAIN_NAME.SYSCOIN
 };

@@ -1,5 +1,5 @@
 <div class="content">
-  {{ 'errors.unknown' | translate }}
+  Oops, something went wrong
   <span
     class="content__icon"
     [inlineSVG]="'assets/images/icons/copy.svg'"
@@ -7,6 +7,8 @@
     [tuiManualHint]="template"
     [tuiManualHintShow]="hintShown"
   ></span>
+  <br />
+  Please, try another provider.
 </div>
 
 <ng-template #template>Error copied on clipboard. Please, send it to our support!</ng-template>

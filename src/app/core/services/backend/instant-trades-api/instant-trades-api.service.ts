@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, delay, map } from 'rxjs/operators';
-import {
-  FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
-} from '@shared/constants/blockchain/backend-blockchains';
-import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
@@ -13,7 +9,14 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';
-import { BlockchainName, OnChainTrade, OnChainTradeType, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  LifiTrade,
+  NotWhitelistedProviderError,
+  OnChainTrade,
+  OnChainTradeType,
+  Web3Pure
+} from 'rubic-sdk';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
@@ -80,9 +83,13 @@ export class InstantTradesApiService {
       toAddress: toAddress,
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
+    let backendProvider = BACKEND_PROVIDERS[provider];
+    if (trade instanceof LifiTrade) {
+      backendProvider = 'lifi';
+    }
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
-      provider: BACKEND_PROVIDERS[provider],
+      provider: backendProvider,
       from_token: options.fromAddress,
       to_token: options.toAddress,
       from_amount: options.fromAmount,
@@ -113,63 +120,16 @@ export class InstantTradesApiService {
     return this.httpService.patch(url, body);
   }
 
-  /**
-   * Sends request to get list of user's instant trades.
-   * @param walletAddress Wallet address of user.
-   * @param errorCallback Callback on error.
-   * @return list List of trades.
-   */
-  public getUserTrades(
-    walletAddress: string,
-    errorCallback?: (error: unknown) => void
-  ): Observable<TableTrade[]> {
-    const url = instantTradesApiRoutes.getData(toBackendWallet);
-    return this.httpService.get(url, { user: walletAddress }).pipe(
-      map((swaps: InstantTradesResponseApi[]) =>
-        swaps.map(swap => this.parseTradeApiToTableTrade(swap))
-      ),
-      catchError((err: unknown) => {
-        errorCallback?.(err);
-        return of([]);
-      })
-    );
-  }
-
-  private parseTradeApiToTableTrade(tradeApi: InstantTradesResponseApi): TableTrade {
-    function getTableToken(type: 'from' | 'to'): TableToken {
-      const token = tradeApi[`${type}_token` as const];
-      const amount = tradeApi[`${type}_amount` as const];
-      return {
-        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-        symbol: token.symbol,
-        amount: Web3Pure.fromWei(amount, token.decimals).toFixed(),
-        image: token.image
-      };
-    }
-
-    let provider;
-    if ('contract' in tradeApi) {
-      provider = tradeApi.contract.name;
-    }
-    if ('program' in tradeApi) {
-      provider = tradeApi.program.name;
-    }
-
-    let fromTransactionHash;
-    if ('hash' in tradeApi) {
-      fromTransactionHash = tradeApi.hash;
-    }
-    if ('signature' in tradeApi) {
-      fromTransactionHash = tradeApi.signature;
-    }
-
-    return {
-      fromTransactionHash,
-      status: tradeApi.status,
-      provider,
-      fromToken: getTableToken('from'),
-      toToken: getTableToken('to'),
-      date: new Date(tradeApi.status_updated_at)
-    };
+  public saveNotWhitelistedProvider(
+    error: NotWhitelistedProviderError,
+    blockchain: BlockchainName,
+    tradeType: OnChainTradeType
+  ): Observable<void> {
+    return this.httpService.post(`info/new_provider`, {
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
+      title: tradeType,
+      address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
+      cause: error.cause
+    });
   }
 }

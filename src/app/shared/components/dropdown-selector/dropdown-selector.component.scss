@@ -8,7 +8,7 @@
     min-height: initial !important;
     margin: 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
 
     border: none;
     border-radius: 156px;
@@ -22,16 +22,11 @@
     &:active {
       color: white;
 
-      background: $rubic-primary;
+      background: var(--primary-color);
 
       ::ng-deep {
         .template-blockchains__icon {
           filter: brightness(10);
-        }
-
-        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):not(.user-profile__dropdown-item) {
-          color: var(--rubic-base-01);
-          text-decoration: none;
         }
       }
     }
@@ -43,7 +38,7 @@
       }
 
       a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-        color: var(--rubic-base-02);
+        color: var(--primary-text);
         text-decoration: none;
 
         transition: 0.35s color ease;

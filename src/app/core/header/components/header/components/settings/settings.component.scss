@@ -3,9 +3,6 @@
 .header-settings {
   width: 686px;
 
-  border-radius: $border-radius-2;
-  backdrop-filter: $backdrop-blur-1;
-
   transition: 300ms;
 
   &__icon-wrapper {
@@ -28,7 +25,7 @@
     width: 30px;
     height: 30px;
 
-    background: var(--main-background);
+    background: var(--primary-background);
 
     border-radius: 8px;
 
@@ -46,29 +43,7 @@
     img {
       cursor: pointer;
 
-      filter: var(--rubic-filter-invert);
-    }
-
-    &_inside {
-      padding-bottom: 10px;
-
-      border-bottom: 1px solid var(--border-color-secondary);
-
-      .header-settings__back {
-        display: flex;
-      }
-
-      .header-settings__title {
-        align-self: center;
-        margin-right: 50%;
-        margin-bottom: 0;
-
-        transform: translateX(50%);
-      }
-
-      .header-settings__close {
-        display: none;
-      }
+      filter: var(--filter-inversion);
     }
   }
 
@@ -97,6 +72,17 @@
 
     &__icon {
       width: 20px;
+    }
+  }
+}
+
+.settings-icon ::ng-deep {
+  svg {
+    width: 24px;
+    height: 24px;
+
+    path {
+      fill: var(--secondary-text);
     }
   }
 }

@@ -21,19 +21,18 @@ import { Params, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormInput } from '@features/swaps/features/main-form/models/swap-form';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import BigNumber from 'bignumber.js';
-import { takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -72,6 +71,11 @@ export class HeaderComponent implements AfterViewInit {
     return this.window.location.pathname === '/';
   }
 
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(
+    startWith('dark'),
+    map(theme => theme === 'dark')
+  );
+
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
@@ -89,7 +93,8 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly zone: NgZone
+    private readonly zone: NgZone,
+    private readonly themeService: ThemeService
   ) {
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.currentUser$;
@@ -133,36 +138,7 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  public async navigateToSwaps(
-    fromToken?: TokenAmount,
-    toToken?: TokenAmount,
-    amount?: BigNumber
-  ): Promise<void> {
-    const form = this.swapFormService.commonTrade.controls.input;
-    const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      fromToken: fromToken || null,
-      toToken: toToken || null,
-      fromAmount: amount || null
-    } as SwapFormInput;
-    form.patchValue(params);
-
-    this.gtmService.reloadGtmSession();
-
-    await this.router.navigate(['/'], {
-      queryParams: {
-        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-        toChain: BLOCKCHAIN_NAME.ETHEREUM,
-        amount: fromToken || undefined,
-        from: toToken || undefined,
-        to: amount || undefined
-      },
-      queryParamsHandling: 'merge'
-    });
-  }
-
-  public async navigateToBridgeOrCrossChain(type: 'bridge' | 'cross-chain'): Promise<void> {
+  public async navigateToSwaps(): Promise<void> {
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -179,18 +155,7 @@ export class HeaderComponent implements AfterViewInit {
       to: undefined
     };
 
-    if (type === 'bridge') {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
-      queryParams.amount = 1000;
-      queryParams.from = 'RBC';
-      queryParams.to = 'BRBC';
-
-      params.fromToken = this.tokensService.tokens.find(token => token.symbol === 'RBC');
-      params.toToken = this.tokensService.tokens.find(token => token.symbol === 'BRBC');
-      params.fromAmount = new BigNumber(1000);
-    } else {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-    }
+    this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
     this.swapFormService.input.patchValue(params);
     this.gtmService.reloadGtmSession();

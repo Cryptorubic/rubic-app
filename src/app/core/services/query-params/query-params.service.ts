@@ -13,7 +13,7 @@ import {
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { SwapFormService } from 'src/app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { SettingsService } from '@features/swaps/features/main-form/services/settings-service/settings.service';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -78,9 +78,9 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
-  public disabledProviders: CrossChainTradeType[];
+  public disabledProviders: CrossChainTradeType[] | undefined;
 
-  public enabledProviders: CrossChainTradeType[];
+  public enabledProviders: CrossChainTradeType[] | undefined;
 
   public enabledBlockchains: BlockchainName[];
 
@@ -193,38 +193,33 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
-      first(pairsArray => !!pairsArray?.size),
-      map(() => {
-        const blockchainNames = Object.values(BLOCKCHAIN_NAME);
-        const fromChain = blockchainNames.includes(queryParams?.fromChain)
-          ? queryParams.fromChain
-          : DEFAULT_PARAMETERS.swap.fromChain;
+    const blockchainNames = Object.values(BLOCKCHAIN_NAME);
+    const fromChain = blockchainNames.includes(queryParams?.fromChain)
+      ? queryParams.fromChain
+      : this.swapFormService.inputValue.fromBlockchain || DEFAULT_PARAMETERS.swap.fromChain;
 
-        const toChain = blockchainNames.includes(queryParams?.toChain)
-          ? queryParams.toChain
-          : DEFAULT_PARAMETERS.swap.toChain;
+    const toChain = blockchainNames.includes(queryParams?.toChain)
+      ? queryParams.toChain
+      : DEFAULT_PARAMETERS.swap.toChain;
 
-        const newParams = {
-          ...queryParams,
-          fromChain,
-          toChain,
-          ...(queryParams.from && { from: queryParams.from }),
-          ...(queryParams.to && { to: queryParams.to }),
-          ...(queryParams.amount && { amount: queryParams.amount })
-        };
+    const newParams = {
+      ...queryParams,
+      fromChain,
+      toChain,
+      ...(queryParams.from && { from: queryParams.from }),
+      ...(queryParams.to && { to: queryParams.to }),
+      ...(queryParams.amount && { amount: queryParams.amount })
+    };
 
-        if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-          if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
-            newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
-          } else {
-            newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
-          }
-        }
+    if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
+      if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
+        newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
+      } else {
+        newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
+      }
+    }
 
-        return newParams;
-      })
-    );
+    return of(newParams);
   }
 
   /**
@@ -360,9 +355,7 @@ export class QueryParamsService {
     this.iframeService.setIframeInfo({
       iframeAppearance: queryParams.iframe,
       device: queryParams.device,
-      fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
-      feeTarget: queryParams.feeTarget,
-      promoCode: queryParams.promoCode,
+      providerAddress: queryParams.feeTarget || queryParams.providerAddress,
       tokenSearch: queryParams.tokenSearch === 'true',
       rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
     });

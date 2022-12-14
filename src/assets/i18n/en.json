@@ -42,7 +42,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "Refresh trade"
+    "refreshTrade": "Refresh trade",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -94,7 +95,7 @@
     "buttonLink": "Learn more",
     "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed.",
-    "notWhitelistedProvider": "Unfortunately, this swap using the calculated provider is currently unavailable. Rubic will recalculate the route for your swap.",
+    "crossChainSwapUnavailable": "Unfortunately, this swap using the calculated provider is currently unavailable. Rubic will recalculate the route for your swap.",
     "noSelectedToken": "Select token",
     "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported."
   },
@@ -347,7 +348,7 @@
     "discountRBC": "discount with RBC",
     "blockchainsHint": "More blockchains",
     "tradingNotAvailable": "Trading is not available",
-    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
+    "rateIsUpdated": "Rate is updated"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
@@ -491,7 +492,11 @@
       "swapMyself": "I swap myself"
     },
     "warningModal": {
-      "autoSlippage": "Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto Slippage tolerance setting in the settings."
+      "autoSlippage": "Unfortunately, custom slippage is not allowed for this swap. Please turn-on the Auto Slippage tolerance setting in the settings.",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {
@@ -577,8 +582,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "Learn more"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "Accumulated Transaction Volume",

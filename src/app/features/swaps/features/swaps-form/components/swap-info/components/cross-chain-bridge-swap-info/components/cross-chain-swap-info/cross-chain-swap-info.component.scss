@@ -1,0 +1,6 @@
+@use '../../../../styles/styles';
+@use 'src/scss/vars';
+
+.info-line_green {
+  color: var(--primary-color);
+}

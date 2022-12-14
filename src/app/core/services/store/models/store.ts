@@ -1,6 +1,6 @@
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/main-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
 
@@ -34,11 +34,6 @@ export interface Store {
    * Wallet target address.
    */
   targetAddress: string;
-
-  /**
-   * Passed form steps for bridge swap.
-   */
-  [SWAP_PROVIDER_TYPE.BRIDGE]: FormSteps;
 
   /**
    * Passed form steps for instant-trade swap.

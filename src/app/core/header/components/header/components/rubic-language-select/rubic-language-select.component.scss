@@ -6,7 +6,7 @@
   &__list {
     display: grid;
     grid-template-columns: repeat(3, 150px);
-    gap: 28px 60px;
+    gap: 10px 60px;
     padding: 3px 30px 28px;
   }
 
@@ -14,9 +14,9 @@
     display: flex;
     align-items: center;
     width: min-content;
-    padding: 10px 20px;
+    padding: 10px 25px 10px 20px;
 
-    color: var(--secondary-color);
+    color: var(--secondary-text);
 
     font-size: 16px;
     line-height: 19px;

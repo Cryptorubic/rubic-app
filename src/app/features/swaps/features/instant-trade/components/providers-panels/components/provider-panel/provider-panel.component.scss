@@ -40,7 +40,7 @@ $white: white;
     box-sizing: border-box;
     padding: 25px 20px 20px;
 
-    background: var(--main-background);
+    background: var(--primary-background);
     border: 1px solid transparent;
     border-left-width: 5px;
     border-radius: $border-radius-1;
@@ -60,12 +60,12 @@ $white: white;
     }
 
     &:not(&_loading):not(&_selected):not(&_error):hover {
-      border: 1px solid var(--main-green);
+      border: 1px solid var(--primary-color);
       border-left-width: 5px;
 
       .provider-panel__best-rate {
-        border-top-color: var(--main-green);
-        border-right-color: var(--main-green);
+        border-top-color: var(--primary-color);
+        border-right-color: var(--primary-color);
       }
     }
 
@@ -74,34 +74,34 @@ $white: white;
     }
 
     &_selected {
-      color: $white;
+      color: var(--primary-text-invert);
 
-      background-color: var(--main-green);
-      border-color: var(--main-green);
-
-      .provider-panel__token-usd-price,
-      .provider-panel__token-gas-fee,
-      .provider-panel__right {
-        color: $white;
-      }
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
 
       .provider-panel__provider-name {
-        color: $white;
+        color: var(--primary-text-invert);
 
-        background-color: var(--main-green);
+        background-color: var(--primary-color);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
       }
 
       .provider-panel__hint {
         ::ng-deep svg path {
-          fill: white;
+          fill: var(--primary-text-invert);
         }
       }
     }
 
     &_best-rate {
-      border-left-color: var(--main-green);
+      color: var(--primary-text);
+
+      border-left-color: var(--primary-color);
       border-left-width: 5px;
+
+      &.provider-panel__content_selected {
+        color: var(--primary-text-invert) !important;
+      }
     }
 
     &_small {
@@ -147,12 +147,14 @@ $white: white;
     width: 28px;
     height: 28px;
 
-    background: var(--main-background);
+    color: black;
+
+    background: var(--primary-background);
     border-radius: 100%;
     box-shadow: 0 3px 6px rgba(black, 0.16);
 
     &_selected {
-      background-color: var(--main-green);
+      background-color: var(--primary-color);
 
       ::ng-deep svg path {
         fill: $white;
@@ -167,13 +169,14 @@ $white: white;
 
     padding: 2px 6px;
 
-    color: var(--rubic-base-12);
+    color: var(--primary-text);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
 
-    background: var(--rubic-base-11);
-    border-radius: 3px;
+    background: var(--solid-background);
+    border: 1px solid var(--transparent-line);
+    border-radius: 4px;
   }
 
   &__body {
@@ -220,6 +223,7 @@ $white: white;
       width: 100%;
 
       font-size: 20px;
+      letter-spacing: 1px;
 
       @include b($mobile-sm) {
         font-size: 16px;
@@ -230,15 +234,12 @@ $white: white;
   &__token-usd-price {
     margin-bottom: 10px;
 
-    color: var(--form-dim-text-color);
     letter-spacing: 0.1em;
   }
 
   &__token-gas-fee {
     display: flex;
     align-items: center;
-
-    color: var(--form-dim-text-color);
   }
 
   &__hint {

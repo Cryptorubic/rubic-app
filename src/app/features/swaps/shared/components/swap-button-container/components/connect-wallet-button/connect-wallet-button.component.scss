@@ -1,0 +1,11 @@
+@use 'src/scss/core' as *;
+
+.grey-background {
+  @include light-iframe {
+    ::ng-deep tui-wrapper {
+      color: var(--primary-text);
+
+      background-color: var(--iframe-primary-background);
+    }
+  }
+}

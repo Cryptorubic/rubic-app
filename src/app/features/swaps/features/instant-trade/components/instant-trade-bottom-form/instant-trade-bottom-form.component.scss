@@ -18,13 +18,13 @@ $green: rgb(74, 169, 86);
     height: 50px;
     padding: 0 7px 0 16px;
 
-    background: var(--main-background);
+    background: var(--primary-background);
 
     border-radius: 10px;
   }
 
   @include iframe-horizontal-light {
-    background-color: var(--rubic-base-14);
+    background-color: var(--iframe-primary-background);
   }
 
   @include iframe-vertical {
@@ -32,6 +32,22 @@ $green: rgb(74, 169, 86);
     padding: 0 !important;
 
     background-color: transparent;
+  }
+
+  &__hint_error {
+    display: flex;
+    align-items: center;
+
+    width: 15px;
+    margin-left: 10px;
+
+    cursor: help;
+
+    ::ng-deep {
+      svg path {
+        fill: $rubic-warning;
+      }
+    }
   }
 
   &__left-part {
@@ -54,7 +70,7 @@ $green: rgb(74, 169, 86);
   &__provider-badge {
     padding: 2px 6px;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
@@ -130,18 +146,30 @@ $green: rgb(74, 169, 86);
         height: 50px;
         padding-left: 16px;
 
-        background-color: var(--main-background);
+        background-color: var(--primary-background);
         border-radius: 10px;
       }
 
       @include iframe-vertical-light {
-        background-color: var(--rubic-base-14);
+        background-color: var(--iframe-primary-background);
       }
     }
 
     &_skeleton {
       width: 200px;
       height: 40px;
+    }
+
+    &__output_error {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      height: 35px;
+
+      font-weight: 300;
+      font-size: 16px;
+      letter-spacing: 2px;
     }
   }
 
@@ -150,7 +178,7 @@ $green: rgb(74, 169, 86);
 
     overflow: auto;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 400;
     font-size: 22px;
     line-height: 35px;
@@ -178,13 +206,13 @@ $green: rgb(74, 169, 86);
       line-height: 50px;
       text-align: left;
 
-      background-color: var(--main-background);
+      background-color: var(--primary-background);
 
       border-radius: 10px;
     }
 
     @include iframe-vertical-light {
-      background-color: var(--rubic-base-14);
+      background-color: var(--iframe-primary-background);
     }
 
     &_loading {

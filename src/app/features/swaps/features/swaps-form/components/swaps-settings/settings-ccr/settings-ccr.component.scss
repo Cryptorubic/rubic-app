@@ -1,0 +1,118 @@
+@use 'src/scss/core' as *;
+
+:host {
+  color: var(--primary-text);
+}
+
+.settings {
+  min-width: 265px;
+  max-width: 320px;
+  padding: 20px;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__hint {
+    height: 15px;
+    margin-right: auto;
+    margin-left: 6px;
+
+    cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: var(--secondary-text);
+    }
+  }
+
+  &__button-auto {
+    box-sizing: border-box;
+    height: 35px;
+    margin-right: 10px;
+    padding: 8px 15px;
+
+    color: var(--primary-text);
+
+    background: none;
+    border: 1px solid transparent;
+    border-radius: $border-radius-2;
+
+    cursor: pointer;
+
+    &_active {
+      color: var(--primary-text-invert);
+
+      background: var(--primary-color);
+    }
+  }
+
+  &__toggle {
+    margin-left: 15px;
+
+    @include b($mobile-sm) {
+      transform: scale(1.25);
+    }
+  }
+
+  &__form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      font-weight: 300;
+      font-size: 16px;
+    }
+
+    &_united {
+      flex-wrap: nowrap;
+
+      tui-input-number {
+        width: 100%;
+      }
+    }
+
+    &_small-input {
+      ::ng-deep tui-wrapper[data-appearance='textfield'] {
+        width: 80px;
+      }
+    }
+  }
+
+  ::ng-deep {
+    tui-wrapper[data-appearance='textfield'] {
+      color: var(--primary-text);
+
+      border-radius: 100px;
+      box-shadow: none;
+
+      input {
+        padding-right: 22px !important;
+      }
+
+      input,
+      input::placeholder {
+        text-align: right;
+      }
+    }
+
+    input + .content .placeholder {
+      text-align: right;
+    }
+
+    .wrapper {
+      display: flex;
+    }
+
+    .value-decoration {
+      margin-left: auto;
+    }
+  }
+}

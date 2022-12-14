@@ -7,13 +7,12 @@ import {
   OnInit
 } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensSelectService } from 'src/app/features/swaps/shared/tokens-select/services/tokens-select.service';
+import { TokensSelectorModalService } from '@features/swaps/shared/components/tokens-selector/services/tokens-selector-modal.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
-import { BlockchainName } from 'rubic-sdk';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -23,7 +22,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { DOCUMENT } from '@angular/common';
-import { SwapFormService } from '@app/features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@app/features/swaps/core/services/swap-form-service/swap-form.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -55,8 +55,6 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formService: FormService;
 
-  @Input() allowedBlockchains: BlockchainName[] | undefined;
-
   @Input() disabled = false;
 
   @Input() idPrefix: string = '';
@@ -79,7 +77,7 @@ export class RubicTokensComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly tokensSelectService: TokensSelectService,
+    private readonly tokensSelectorModalService: TokensSelectorModalService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
@@ -112,23 +110,20 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public openTokensSelect(idPrefix: string): void {
-    const { fromBlockchain, toBlockchain } = this.formService.inputValue;
-    const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
+    const { fromToken } = this.formService.inputValue;
 
     this.gtmService.reloadGtmSession();
 
-    this.tokensSelectService
-      .showDialog(
-        this._tokens$.asObservable(),
-        this._favoriteTokens$.asObservable(),
-        this.formType,
-        currentBlockchain,
-        this.formService.input,
-        this.allowedBlockchains,
-        idPrefix
-      )
-      .subscribe((token: TokenAmount) => {
-        if (token) {
+    this.tokensSelectorModalService
+      .showDialog(this.formType, this.formService.input, idPrefix)
+      .subscribe((selectedToken: TokenAmount) => {
+        if (selectedToken) {
+          const token = {
+            ...selectedToken,
+            amount: selectedToken?.amount?.isFinite()
+              ? selectedToken.amount
+              : fromToken?.amount || new BigNumber(NaN)
+          };
           this.selectedToken = token;
           const inputElement = this.document.getElementById('token-amount-input-element');
           const isSwapsForm = this.formService instanceof SwapFormService;
@@ -155,12 +150,6 @@ export class RubicTokensComponent implements OnInit {
           }
         }
       });
-  }
-
-  public clearToken(): void {
-    this.selectedToken = null;
-    const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
-    this.formService.input.patchValue({ [formKey]: null });
   }
 
   public onImageError($event: Event): void {

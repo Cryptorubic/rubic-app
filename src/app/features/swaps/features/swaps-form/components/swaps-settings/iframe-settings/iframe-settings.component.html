@@ -1,0 +1,83 @@
+<section class="iframe-settings">
+  <form [formGroup]="iframeSettingsForm" class="iframe-settings__container">
+    <div class="iframe-settings__column">
+      <div class="iframe-settings__row slippage">
+        <div class="slippage__head">
+          <label>{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
+          <div
+            class="iframe-settings__hint"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="'settings.instantTrades.slippage' | translate"
+          ></div>
+        </div>
+        <div class="slippage__body">
+          <button
+            (click)="toggleAutoSlippageTolerance()"
+            class="slippage__button-auto"
+            [ngClass]="{
+              'slippage__button-auto_active': iframeSettingsForm.value.autoSlippageTolerance
+            }"
+          >
+            Auto
+          </button>
+          <tui-input-number
+            id="slippageTolerance"
+            [ngModel]="slippageTolerance"
+            (ngModelChange)="onSlippageToleranceChange($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [tuiTextfieldLabelOutside]="true"
+            [tuiTextfieldSize]="'s'"
+            [max]="50"
+            [min]="0.1"
+            [postfix]="'%'"
+            >0.15%
+          </tui-input-number>
+        </div>
+      </div>
+    </div>
+
+    <div class="iframe-settings__column">
+      <div class="iframe-settings__row">
+        <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
+        <div
+          class="iframe-settings__hint"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="'settings.instantTrades.multihops' | translate"
+        ></div>
+        <tui-toggle
+          class="iframe-settings__toggle"
+          id="disableMultihops"
+          formControlName="disableMultihops"
+        ></tui-toggle>
+      </div>
+
+      <div class="iframe-settings__row">
+        <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
+        <div
+          class="iframe-settings__hint"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
+        ></div>
+        <tui-toggle
+          class="iframe-settings__toggle"
+          id="autoRefresh"
+          formControlName="autoRefresh"
+        ></tui-toggle>
+      </div>
+
+      <div class="iframe-settings__row">
+        <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
+        <div
+          class="iframe-settings__hint"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
+        ></div>
+        <tui-toggle
+          class="iframe-settings__toggle"
+          id="showReceiverAddress"
+          formControlName="showReceiverAddress"
+        ></tui-toggle>
+      </div>
+    </div>
+  </form>
+</section>

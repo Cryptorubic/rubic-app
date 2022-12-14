@@ -5,7 +5,7 @@
 
   padding: 26px;
 
-  background: var(--rubic-base-22);
+  background: var(--form-background);
   border-radius: 24px;
 
   @include b($mobile-sm-plus) {
@@ -23,10 +23,10 @@
   }
 
   &__title {
-    @include font(18px, 22px, 500, var(--rubic-base-02));
+    @include font(18px, 22px, 500, var(--primary-text));
 
     @include b($mobile-sm-plus) {
-      @include font(16px, 22px, 500, var(--rubic-base-02));
+      @include font(16px, 22px, 500, var(--primary-text));
     }
   }
 
@@ -83,7 +83,7 @@
     }
 
     &-label {
-      @include font(16px, 19px, 500, var(--rubic-base-24));
+      @include font(16px, 19px, 500, var(--secondary-text));
       display: flex;
       align-items: center;
       margin-bottom: 7px;
@@ -108,7 +108,7 @@
     }
 
     &-value {
-      @include font(22px, 26px, 500, var(--rubic-base-02));
+      @include font(22px, 26px, 500, var(--primary-text));
       transition: 0.4s opacity ease-in-out;
 
       @include b($tablet) {

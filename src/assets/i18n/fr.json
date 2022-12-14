@@ -41,7 +41,8 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "Actualiser le commerce"
+    "refreshTrade": "Actualiser le commerce",
+    "complete": "Complete"
   },
   "errors": {
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
@@ -93,7 +94,7 @@
     "buttonLink": "En savoir plus",
     "wrongPromoterWallet": "Vous avez connecté un portefeuille qui n'est pas compatible avec Ethereum. Veuillez vous déconnecter de votre compte et connecter un portefeuille compatible Ethereum (par exemple, MetaMask).",
     "walletNotInstalled": "Le portefeuille n'est pas installé.",
-    "notWhitelistedProvider": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
+    "crossChainSwapUnavailable": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
     "noSelectedToken": "Sélectionnez le token",
     "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge."
   },
@@ -451,7 +452,7 @@
     "discountRBC": "discount en RBC",
     "blockchainsHint": "Plus de blockchains",
     "tradingNotAvailable": "Échanges non disponibles",
-    "rateIsUpdated": "Le prix est à jour, cliquez pour rafraîchir le prix"
+    "rateIsUpdated": "Le prix est à jour"
   },
   "lp": {
     "connectWalletToView": "Connect Wallet to View",
@@ -595,7 +596,11 @@
       "swapMyself": "J'échange les jetons moi même"
     },
     "warningModal": {
-      "autoSlippage": "Malheureusement, le glissement personnalisé n'est pas autorisé pour cet échange. Veuillez activer le paramètre de tolérance de glissement automatique dans les paramètres."
+      "autoSlippage": "Malheureusement, le glissement personnalisé n'est pas autorisé pour cet échange. Veuillez activer le paramètre de tolérance de glissement automatique dans les paramètres.",
+      "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
+      "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
+      "slippageAmount": "The slippage for this trade is {{ slippage }}%",
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
     }
   },
   "settings": {
@@ -682,8 +687,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "En apprendre plus"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "Volume de transaction cumulé",

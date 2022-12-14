@@ -1,0 +1,87 @@
+@use 'src/scss/core' as *;
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 0 21px;
+}
+
+.trade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 10px 0;
+
+  border: 1px solid var(--transparent-line);
+  border-radius: 14px;
+
+  transition: 0.2s ease-in-out;
+
+  @include b($mobile-sm-plus) {
+    height: auto;
+  }
+
+  &__container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    width: 85%;
+
+    @include b($mobile-sm-plus) {
+      flex-direction: column;
+
+      app-cross-chain-route {
+        width: 100%;
+      }
+    }
+  }
+
+  &__statuses {
+    display: flex;
+    gap: 5px;
+  }
+
+  &_selected {
+    border: 1px solid var(--primary-color);
+  }
+
+  > div {
+    display: flex;
+  }
+
+  &:hover {
+    background: var(--transparent-line);
+    cursor: pointer;
+  }
+}
+
+app-cross-chain-route {
+  display: block;
+  width: 55%;
+}
+
+:host ::ng-deep {
+  .route {
+    padding: 0 !important;
+
+    &__line {
+      &::after {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .dex {
+    &__name {
+      display: none;
+    }
+
+    &__icon {
+      margin-bottom: 0 !important;
+    }
+  }
+}

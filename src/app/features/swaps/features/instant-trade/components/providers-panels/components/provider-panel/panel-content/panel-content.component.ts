@@ -8,10 +8,8 @@ import {
 } from '@angular/core';
 import { TradePanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/trade-panel-data';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
-import BigNumber from 'bignumber.js';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapFormService } from '@features/swaps/features/main-form/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
@@ -33,20 +31,6 @@ export class PanelContentComponent implements OnInit {
   public displayGas: boolean;
 
   private toToken: TokenAmount;
-
-  public get usdPrice(): BigNumber {
-    if (!this.toToken?.price || !this.tradePanelData?.amount) {
-      return null;
-    }
-
-    const { fromToken, fromAmount } = this.swapFormService.inputValue;
-    const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
-    const toTokenCost = this.tradePanelData.amount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
-      return null;
-    }
-    return toTokenCost;
-  }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,

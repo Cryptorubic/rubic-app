@@ -4,12 +4,6 @@
 @use '../../common-styles';
 
 :host {
-  --tui-secondary-hover: var(--rubic-base-01);
-  --tui-secondary-active: var(--rubic-base-01);
-  --tui-link: #{$rubic-primary};
-  --tui-link-hover: #{$rubic-primary};
-  --tui-link-active: var(--rubic-secondary);
-
   --text-color: rgba(0, 0, 0, 0.7);
   --divider-color: #fff;
   --content-background: #ecf3ec;
@@ -38,7 +32,7 @@
       .arrow-right {
         ::ng-deep {
           svg path {
-            fill: #{$rubic-primary};
+            fill: #{var(--primary-color)};
           }
         }
       }
@@ -46,7 +40,7 @@
 
     ::ng-deep {
       > .wrapper > button {
-        background: var(--main-background);
+        background: var(--primary-background);
       }
     }
   }
@@ -103,7 +97,7 @@ tui-data-list {
       &._hovered,
       &._focused {
         .header[automation-id='tui-accordion__item-header'] {
-          background: var(--main-background);
+          background: var(--primary-background);
         }
       }
     }
@@ -122,7 +116,7 @@ tui-data-list {
       .header[automation-id='tui-accordion__item-header'] {
         min-height: 88px;
 
-        background: var(--main-background);
+        background: var(--primary-background);
         border: none;
 
         .title[automation-id='tui-accordion__item-title'] {

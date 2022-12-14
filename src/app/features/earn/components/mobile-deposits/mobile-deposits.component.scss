@@ -10,7 +10,7 @@
     padding: 0 14px;
 
     >.mobile-table__cell {
-      @include font(12px, 15px, 500, var(--rubic-base-24));
+      @include font(12px, 15px, 500, var(--secondary-text));
     }
   }
 
@@ -20,17 +20,17 @@
     padding: 14px;
 
     &:not(:last-child) {
-      background: var(--rubic-base-23);
+      background: var(--form-background);
       border-radius: 10px;
     }
 
     &:last-child .mobile-table__cell {
-      color: $rubic-primary;
+      color: var(--primary-color);
     }
   }
 
   &__cell {
-    @include font(12px, 14px, 400, var(--rubic-base-02));
+    @include font(12px, 14px, 400, var(--primary-text));
     display: flex;
     align-items: center;
     width: calc(100% / 5);

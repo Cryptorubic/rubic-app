@@ -10,7 +10,11 @@ import {
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
   NotWhitelistedProviderError as SdkNotWhitelistedProviderError,
   WalletNotConnectedError as SdkWalletNotConnectedError,
-  WrongNetworkError as SdkWrongNetworkError
+  WrongNetworkError as SdkWrongNetworkError,
+  DeflationTokenError as SdkDeflationTokenError,
+  MinAmountError as SdkMinAmountError,
+  MaxAmountError as SdkMaxAmountError,
+  UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -21,10 +25,14 @@ import InsufficientFundsError from '@core/errors/models/instant-trade/insufficie
 import { LowGasError } from '@core/errors/models/provider/low-gas-error';
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
-import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider.warning';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { NetworkError } from '@core/errors/models/provider/network-error';
-import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted.error';
+import UnsupportedDeflationTokenWarning from './common/unsupported-deflation-token.warning';
+import MinAmountError from '@core/errors/models/common/min-amount-error';
+import MaxAmountError from '@core/errors/models/common/max-amount-error';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -56,17 +64,25 @@ export class RubicSdkErrorParser {
       return new InsufficientFundsOneinchError(nativeTokensList[err.blockchain].symbol);
     }
     if (err instanceof SdkNotWhitelistedProviderError) {
-      console.error('Provider router: ', err.providerRouter);
-      if (err.providerGateway) {
-        console.error('Provider gateway: ', err.providerGateway);
-      }
-      return new NotWhitelistedProviderWarning();
+      return new NotWhitelistedProviderWarning(err.providerRouter);
+    }
+    if (err instanceof SdkDeflationTokenError) {
+      return new UnsupportedDeflationTokenWarning();
     }
     if (err instanceof SdkWalletNotConnectedError) {
       return new WalletError();
     }
     if (err instanceof SdkWrongNetworkError) {
       return new NetworkError(err.requiredBlockchain);
+    }
+    if (err instanceof SdkMinAmountError) {
+      return new MinAmountError(err);
+    }
+    if (err instanceof SdkMaxAmountError) {
+      return new MaxAmountError(err);
+    }
+    if (err instanceof SdkUnsupportedReceiverAddressError) {
+      return new UnsupportedReceiverAddressError();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
@@ -107,14 +123,16 @@ export class RubicSdkErrorParser {
     return new ExecutionRevertedError(err.message);
   }
 
-  public static parseError(err: RubicError<ERROR_TYPE> | RubicSdkError): RubicError<ERROR_TYPE> {
+  public static parseError(
+    err: RubicError<ERROR_TYPE> | RubicSdkError | Error
+  ): RubicError<ERROR_TYPE> {
+    if (err instanceof RubicError<ERROR_TYPE>) {
+      return err;
+    }
+
     if (err instanceof RubicSdkError) {
       return RubicSdkErrorParser.parseErrorByType(err);
     }
-    if (err?.message) {
-      return RubicSdkErrorParser.parseErrorByMessage(err);
-    }
-
-    return err;
+    return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 }

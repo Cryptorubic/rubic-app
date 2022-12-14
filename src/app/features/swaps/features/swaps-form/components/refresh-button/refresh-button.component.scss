@@ -1,0 +1,58 @@
+@use 'src/scss/core' as *;
+
+:host {
+  @include hide-unused-ui {
+    display: flex;
+    align-items: center;
+
+    @include b($mobile-md) {
+      position: initial !important;
+    }
+  }
+}
+
+.refresh-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  cursor: pointer;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+
+    ::ng-deep {
+      svg path {
+        fill: var(--secondary-text);
+      }
+    }
+
+    &_refreshing {
+      animation: 0.9s linear 0.1s infinite refreshAnimation;
+    }
+  }
+}
+
+.refresh-icon-tooltip {
+  font-size: 15px;
+}
+
+@keyframes refreshAnimation {
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes timerAnimation {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

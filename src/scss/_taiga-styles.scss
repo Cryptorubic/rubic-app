@@ -1,5 +1,15 @@
 @use 'src/scss/core' as *;
 
+tui-dropdown-box {
+  --tui-elevation-01: rgba(255, 255, 255, 0.03);
+  --tui-radius-3: 19px;
+  --tui-base-03: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--transparent-line) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(50px);
+
+}
+
 tui-dialog {
   overflow: hidden;
 
@@ -8,6 +18,11 @@ tui-dialog {
       flex: auto !important;
       overflow: auto !important;
     }
+  }
+
+  > .content {
+    background-color: var(--form-background-transparent) !important;
+    border: 1px solid var(--transparent-line);
   }
 
   &::after {
@@ -28,7 +43,16 @@ tui-dialog {
     border: 7px solid transparent !important;
 
     > .content {
+      height: 100%;
       padding: 1.5em 1.5em 0 !important;
+
+      @include b($mobile-sm-middle) {
+        padding: 0 !important;
+      }
+
+      > section {
+        height: 100%;
+      }
     }
   }
 
@@ -104,6 +128,8 @@ tui-dialog-host {
 
   .overlay {
     overflow: inherit !important;
+
+    background: rgb(0 0 0 / 0%) !important;
   }
 
   .dialog {
@@ -187,4 +213,38 @@ html.iframe-vertical tui-dialog > div.content {
 
 html.iframe-vertical tui-dialog > div.content > h2 {
   padding: 2rem 0.5rem 0 1rem;
+}
+
+tui-wrapper[data-appearance='textfield'] {
+  background: transparent !important;
+}
+
+tui-wrapper[data-appearance='secondary'] {
+  &:hover,
+  &:active {
+    background-color: var(--tui-secondary-hover);
+  }
+}
+
+:not(app-swap-button-container) {
+  app-rubic-button tui-wrapper[data-appearance='secondary'] {
+    border: 1px solid var(--transparent-line);
+  }
+}
+
+.light tui-toggle {
+  tui-wrapper[data-appearance='secondary'] {
+    &::after,
+    .circle {
+      border: 1px solid var(--transparent-line);
+    }
+
+    .circle {
+      background: var(--transparent-line);
+    }
+  }
+}
+
+.light tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+  border: 1px solid var(--transparent-line);
 }

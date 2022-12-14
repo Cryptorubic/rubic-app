@@ -24,5 +24,13 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.BOBA]: false,
   [BLOCKCHAIN_NAME.BITCOIN]: false,
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: true,
-  [BLOCKCHAIN_NAME.TRON]: false
+  [BLOCKCHAIN_NAME.KAVA]: false,
+  [BLOCKCHAIN_NAME.TRON]: false,
+  [BLOCKCHAIN_NAME.BITGERT]: false,
+  [BLOCKCHAIN_NAME.OASIS]: false,
+  [BLOCKCHAIN_NAME.METIS]: false,
+  [BLOCKCHAIN_NAME.DFK]: false,
+  [BLOCKCHAIN_NAME.KLAYTN]: false,
+  [BLOCKCHAIN_NAME.VELAS]: false,
+  [BLOCKCHAIN_NAME.SYSCOIN]: false
 };

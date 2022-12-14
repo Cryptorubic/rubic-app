@@ -69,5 +69,37 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.CELO]: {
     name: 'Celo Mainnet',
     rpc: 'https://forno.celo.org'
+  },
+  [BLOCKCHAIN_NAME.KAVA]: {
+    name: 'Kava EVM',
+    rpc: 'https://evm.kava.io'
+  },
+  [BLOCKCHAIN_NAME.BITGERT]: {
+    name: 'Bitgert',
+    rpc: 'https://serverrpc.com'
+  },
+  [BLOCKCHAIN_NAME.OASIS]: {
+    name: 'Oasis',
+    rpc: 'https://emerald.oasis.dev'
+  },
+  [BLOCKCHAIN_NAME.METIS]: {
+    name: 'Metis',
+    rpc: 'https://andromeda.metis.io/?owner=1088'
+  },
+  [BLOCKCHAIN_NAME.DFK]: {
+    name: 'DeFi Kingdoms',
+    rpc: 'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
+  },
+  [BLOCKCHAIN_NAME.KLAYTN]: {
+    name: 'Klaytn',
+    rpc: 'https://rpc.ankr.com/klaytn/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+  },
+  [BLOCKCHAIN_NAME.VELAS]: {
+    name: 'Velas',
+    rpc: 'https://evmexplorer.velas.com/rpc'
+  },
+  [BLOCKCHAIN_NAME.SYSCOIN]: {
+    name: 'Syscoin',
+    rpc: 'https://rpc.syscoin.org'
   }
 };

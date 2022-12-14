@@ -6,12 +6,11 @@
   width: 100%;
   min-height: 30px;
 
-  color: var(--form-bright-text-color);
+  color: var(--primary-text);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
 
-  background: var(--bg-banner);
   backdrop-filter: blur(10px);
 
   @include mixins.b(vars.$mobile-md) {

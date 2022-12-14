@@ -3,16 +3,10 @@
 :host {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary-hover: var(--rubic-base-01);
-  --tui-secondary-hover: var(--rubic-base-01);
-  --tui-primary-active: $rubic-primary;
-  --tui-secondary-active: $rubic-primary;
   --tui-disabled-opacity: 1;
   --tui-focus: transparent;
 
   [tuiIconButton] {
-    --tui-primary: transparent;
-
     transition: 0.3s;
 
     &[data-appearance='primary'] {
@@ -24,52 +18,6 @@
       max-width: 18px;
       height: auto;
       max-height: 15px;
-    }
-
-    &._hovered {
-      background-color: var(--rubic-base-01);
-      box-shadow: var(--rubic-shadow-button-hover-dim);
-    }
-
-    &._focused {
-      background-color: var(--rubic-base-01);
-      border-color: $rubic-primary;
-    }
-
-    &._pressed {
-      background-color: $rubic-primary;
-      border-color: $rubic-primary;
-      box-shadow: var(--rubic-shadow-button-active);
-
-      ::ng-deep .burger-menu__line {
-        background-color: white;
-      }
-    }
-
-    &._disabled {
-      background-color: rgba($rubic-disable, 0.4);
-      border-color: rgba($rubic-disable, 0.4);
-      filter: saturate(0);
-
-      ::ng-deep img {
-        filter: brightness(2);
-      }
-    }
-  }
-}
-
-:host(.unfocused) {
-  [tuiIconButton] {
-    &._focused {
-      background-color: transparent;
-
-      &._hovered {
-        background-color: var(--rubic-base-01);
-      }
-
-      &._pressed {
-        background-color: $rubic-primary;
-      }
     }
   }
 }

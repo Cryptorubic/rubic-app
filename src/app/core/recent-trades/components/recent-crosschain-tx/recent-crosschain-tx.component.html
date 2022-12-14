@@ -12,100 +12,14 @@
           <th class="table__th">{{ 'recentTrades.to' | translate }}</th>
           <th class="table__th">{{ 'recentTrades.statusTo' | translate }}</th>
         </tr>
-        <ng-container *ngFor="let trade of recentTrades">
-          <tr
-            celer-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
-          ></tr>
-          <tr
-            symbiosis-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
-          ></tr>
-          <tr
-            li-fi-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
-          ></tr>
-          <tr
-            de-bridge-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
-          ></tr>
-          <tr
-            via-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
-          ></tr>
-          <tr
-            rango-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
-          ></tr>
-          <tr
-            bridgers-trade
-            [trade]="trade"
-            mode="table-row"
-            *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
-          ></tr>
-        </ng-container>
+        <tr *ngFor="let trade of recentTrades" trade-row [trade]="trade" mode="table-row"></tr>
       </tbody>
     </table>
   </ng-container>
 
   <ng-template #mobileRecentTrades>
     <div class="list">
-      <ng-container *ngFor="let trade of recentTrades">
-        <div
-          celer-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.CELER"
-        ></div>
-        <div
-          symbiosis-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.SYMBIOSIS"
-        ></div>
-        <div
-          li-fi-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.LIFI"
-        ></div>
-        <div
-          de-bridge-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.DEBRIDGE"
-        ></div>
-        <div
-          via-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.VIA"
-        ></div>
-        <div
-          rango-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.RANGO"
-        ></div>
-        <div
-          bridgers-trade
-          [trade]="trade"
-          mode="mobile"
-          *ngIf="trade.crossChainProviderType === CROSS_CHAIN_PROVIDER.BRIDGERS"
-        ></div>
-      </ng-container>
+      <div *ngFor="let trade of recentTrades" trade-row [trade]="trade" mode="mobile"></div>
     </div>
   </ng-template>
 </ng-container>

@@ -1,7 +1,16 @@
-<app-referral-banner *noFrame href="https://rubic.exchange/staking"></app-referral-banner>
+<app-referral-banner href="https://claim.rubic.exchange/" *noFrame></app-referral-banner>
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
-    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+    <img
+      [src]="
+        (isDarkTheme$ | async)
+          ? 'assets/images/rubic-logo.svg'
+          : 'assets/images/rubic-logo-dark.svg'
+      "
+      alt="Rubic logotype"
+      width="122"
+      height="39"
+    />
   </a>
   <a
     *onlyFrame
@@ -10,38 +19,26 @@
     target="_blank"
     [href]="noFrameLink"
   >
-    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
+    <img src="assets/images/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
   <app-rubic-menu
     *noFrame
     class="rubic-header__menu"
     [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-    [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
     [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
     (swapClick)="navigateToSwaps()"
-    (bridgeClick)="navigateToBridgeOrCrossChain('bridge')"
-    (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
   ></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
     <a
       class="button-link"
-      (click)="navigateToBridgeOrCrossChain('cross-chain')"
+      (click)="navigateToSwaps()"
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       "
       >Swaps</a
     >
-    <a
-      *noFrame
-      class="button-link"
-      routerLink="staking"
-      routerLinkActive="button-link_active"
-      (click)="handleMenuButtonClick()"
-    >
-      {{ 'navigation.stakingLp' | translate }}
-    </a>
   </nav>
 
   <app-buy-token
