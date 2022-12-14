@@ -201,7 +201,7 @@ export class InstantTradeService extends TradeCalculationService {
     trade: OnChainTrade | WrapTrade,
     confirmCallback?: () => void
   ): Promise<void> {
-    const { fromBlockchain, toBlockchain } = this.inputValue;
+    const { fromBlockchain } = this.inputValue;
     this.checkDeviceAndShowNotification();
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
@@ -209,9 +209,6 @@ export class InstantTradeService extends TradeCalculationService {
 
     if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
-    }
-    if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
-      throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
     }
 
     const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);

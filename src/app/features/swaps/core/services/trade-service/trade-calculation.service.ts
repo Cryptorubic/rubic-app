@@ -27,7 +27,7 @@ export abstract class TradeCalculationService {
       new PolymorpheusComponent(ProgressTrxNotificationComponent),
       {
         status: TuiNotification.Info,
-        autoClose: 150000
+        autoClose: false
       }
     );
   };

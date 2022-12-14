@@ -19,7 +19,7 @@ export class ProgressTrxNotificationComponent {
     private readonly modalService: CommonModalService,
     private readonly windowWidthService: WindowWidthService
   ) {
-    this.withRecentTrades = this.context.data.withRecentTrades || false;
+    this.withRecentTrades = this.context.data?.withRecentTrades || false;
   }
 
   public openRecentTrades(): void {
