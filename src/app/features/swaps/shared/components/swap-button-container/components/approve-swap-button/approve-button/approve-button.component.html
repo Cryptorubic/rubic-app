@@ -1,6 +1,6 @@
 <app-rubic-button
   [id]="idPrefix + 'approve'"
-  appearance="secondary"
+  appearance="primary"
   [loading]="approveButtonLoading$ | async"
   [disabled]="approveButtonDisabled$ | async"
   (onClick)="onClick.emit()"

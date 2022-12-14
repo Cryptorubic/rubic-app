@@ -4,10 +4,10 @@
   display: flex;
   justify-content: center;
 
-  background: linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
+  background: linear-gradient(90deg, rgb(79, 182, 163) 0%, rgb(52, 199, 215) 50%, rgb(115, 102, 196) 100%);
 
-  @include b($mobile-sm-plus) {
-    justify-content: flex-start;
+  @include dark {
+    background: linear-gradient(90deg, rgba(40, 92, 83, 1) 0%, rgba(0, 202, 226, 1) 50%, rgba(51, 48, 81, 1) 100%);
   }
 
   @include hide-unused-ui {
@@ -53,7 +53,7 @@
     white-space: nowrap;
 
     &_text {
-      @include font(19px, 1, 300, #96EAFF);
+      @include font(19px, 1, 400, var(--primary-text-invert));
 
       @include b($mobile-sm-plus) {
         @include font(16px, 1, 300, white);

@@ -10,7 +10,6 @@
 
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;
-  box-shadow: inset -2px 2px 3px 2px rgba(0, 0, 0, 0.1);
 
   @include iframe {
     left: unset;
@@ -114,13 +113,7 @@
     }
 
     tui-wrapper {
-      --tui-primary: var(--main-background);
-
       padding: 0 !important;
-
-      &:hover {
-        background: var(--rubic-secondary);
-      }
     }
   }
 }

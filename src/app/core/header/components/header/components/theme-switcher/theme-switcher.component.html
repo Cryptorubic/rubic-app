@@ -1,18 +1,8 @@
 <ng-container *ngLet="isDark$ | async as isDark">
-  <img
-    *ngIf="isDark"
-    src="/assets/images/icons/night.svg"
-    width="25"
-    height="25"
-    alt="Switch to light"
-  />
-  <img
-    *ngIf="!isDark"
-    src="/assets/images/icons/day.svg"
-    width="25"
-    height="25"
-    alt="Switch to dark"
-  />
+  <div
+    class="image"
+    [inlineSVG]="isDark ? '/assets/images/icons/night.svg' : '/assets/images/icons/day.svg'"
+  ></div>
 
   <tui-toggle
     class="theme-toggle__switch"

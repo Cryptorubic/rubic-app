@@ -6,7 +6,7 @@
   justify-content: space-between;
   padding: 18px;
 
-  background: var(--rubic-base-23);
+  background: var(--form-background);
   border-radius: 16px;
 
   @include b($tablet) {
@@ -33,7 +33,7 @@
 }
 
 .title {
-  @include font(15px, 18px, 500, var(--rubic-base-02));
+  @include font(15px, 18px, 500, var(--primary-text));
   position: relative;
 
   display: flex;

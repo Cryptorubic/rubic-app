@@ -1,12 +1,11 @@
 @use 'src/scss/core' as *;
 
 :host {
-  --tui-primary: #4aa956;
   --tui-font-text-s: normal 16px/20px var(--tui-font-text);
 }
 
 .placeholder {
-  color: var(--form-dim-text-color);
+  color: var(--secondary-text);
 
   font-size: 16px;
 }
@@ -20,7 +19,7 @@ tui-input {
     }
 
     .placeholder {
-      color: var(--form-dim-text-color);
+      color: var(--secondary-text);
 
       font-size: 16px;
 

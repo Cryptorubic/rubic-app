@@ -45,5 +45,11 @@ export const NAVIGATION_LIST = [
     type: 'internal',
     link: 'faq',
     imagePath: `${defaultSrc}faq.svg`
+  },
+  {
+    translateKey: 'Token Claim',
+    type: 'external',
+    link: EXTERNAL_LINKS.AIRDROP,
+    imagePath: `assets/images/rbc.svg`
   }
 ] as NavigationItem[];

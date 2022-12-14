@@ -1,4 +1,4 @@
-<div class="provider-panel__body">
+<div class="provider-panel__body" [ngClass]="{ 'provider-panel__body_best': isBestProvider }">
   <div
     *ngIf="isBestProvider && tradePanelData"
     class="provider-panel__best-rate"

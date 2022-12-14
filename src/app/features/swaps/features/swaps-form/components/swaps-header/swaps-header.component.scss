@@ -22,7 +22,7 @@
     width: 35px;
     height: 35px;
 
-    background: var(--main-form-background);
+    background: var(--form-background);
     border-radius: 50%;
 
     img {
@@ -37,13 +37,13 @@
   &__title {
     margin-left: 12px;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 500;
     font-size: 16px;
   }
 
   &__name {
-    color: var(--secondary-color);
+    color: var(--secondary-text);
     font-size: 14px;
   }
 }

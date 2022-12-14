@@ -583,8 +583,8 @@
     }
   },
   "referralBanner": {
-    "text": "Stake BRBC for up to 58% APR",
-    "link": "學到更多"
+    "text": "",
+    "link": "Claim New RBC Token!"
   },
   "volume": {
     "title": "累計交易量",

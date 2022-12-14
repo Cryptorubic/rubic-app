@@ -299,7 +299,7 @@
     }
 
     &_success hr {
-      background: $rubic-primary;
+      background: var(--primary-color);
     }
 
     &_src {
@@ -360,7 +360,7 @@ app-rubic-button {
 
 .highlight {
   &_green {
-    color: $rubic-primary;
+    color: var(--primary-color);
   }
 
   &_black-white {
