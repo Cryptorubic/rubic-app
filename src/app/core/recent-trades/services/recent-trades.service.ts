@@ -150,15 +150,17 @@ export class RecentTradesService {
         trade.txId
       );
 
-      let statusFrom: TxStatus;
-      if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
-        statusFrom = TxStatus.SUCCESS;
-      } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
-        statusFrom = TxStatus.FAIL;
+      if (trade.calculatedStatusFrom !== TxStatus.PENDING) {
+        uiTrade.statusFrom = trade.calculatedStatusFrom;
       } else {
-        statusFrom = TxStatus.PENDING;
+        if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
+          uiTrade.statusFrom = TxStatus.SUCCESS;
+        } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
+          uiTrade.statusFrom = TxStatus.FAIL;
+        } else {
+          uiTrade.statusFrom = TxStatus.PENDING;
+        }
       }
-      uiTrade.statusFrom = statusFrom;
 
       const srcTxHash = tradeApiData.tx_hash;
       uiTrade.srcTxHash = srcTxHash;
@@ -166,10 +168,10 @@ export class RecentTradesService {
         ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
         : null;
 
-      if (statusFrom !== TxStatus.PENDING) {
+      if (srcTxHash) {
         this.recentTradesStoreService.updateTrade({
           ...trade,
-          calculatedStatusFrom: statusFrom,
+          calculatedStatusFrom: uiTrade.statusFrom,
           srcTxHash,
           nativeAmount: tradeApiData.out_amount
         });
