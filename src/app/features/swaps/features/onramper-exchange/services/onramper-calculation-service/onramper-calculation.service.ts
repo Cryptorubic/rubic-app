@@ -101,7 +101,7 @@ export class OnramperCalculationService {
       )
       .sort((a, b) => new BigNumber(a.error.limit).comparedTo(b.error.limit))[0]?.error?.limit;
     if (minAmount) {
-      throw new MinAmountError(new BigNumber(minAmount), input.fromFiat.symbol);
+      throw new MinAmountError(new BigNumber(minAmount + 0.01), input.fromFiat.symbol);
     }
 
     const maxAmount = trades
