@@ -69,7 +69,9 @@
 
   &__estimate-container {
     display: flex;
+    grid-gap: 10px;
     justify-content: space-between;
+
     min-height: 65px;
 
     @include iframe-vertical {

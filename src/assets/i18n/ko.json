@@ -37,7 +37,7 @@
     "transactionDetails": "상세 거래 내역",
     "approveToken": "Approve {{symbol}}",
     "tagline": {
-      "firstText": "Cross-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },

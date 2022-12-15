@@ -242,14 +242,6 @@
 
     padding: 20px 0;
 
-    &__settings-wrapper {
-      @include hide-unused-ui {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-      }
-    }
-
     &__content {
       margin-top: 0;
     }
@@ -260,13 +252,6 @@
 
     &__title {
       display: none;
-    }
-
-    &__refresh {
-      position: absolute;
-      top: 20px;
-      right: 50px;
-      z-index: 10;
     }
 
     &__delimiter {
