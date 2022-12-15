@@ -14439,10 +14439,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.12.0-alpha-sd.1:
-  version "3.12.0-alpha-sd.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.12.0-alpha-sd.1.tgz#99de9dcf80f00b83872eddee6d27798f4dceb25b"
-  integrity sha512-cmNiam2fbxcynM79EiiO92ibQ+G13IVQzzERrDmOyo9GvZtneyJ7IrLek2tHItVb3pUhwhk9xflhrjlaI0CMHw==
+rubic-sdk@3.12.0-alpha-sd.2:
+  version "3.12.0-alpha-sd.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.12.0-alpha-sd.2.tgz#5fae5c791e61274410d257f7ae7cf5b072284b88"
+  integrity sha512-p/IzmlTosPFsch4OtngXrznpdDCr/x8JZfwR8+6Xv/ZaDRZ2XCev49Om2ZQ1keYNhTt4kYST2FUoJZHnj0rwHQ==
   dependencies:
     "@curvefi/api" "^2.22.0"
     "@lifi/sdk" "^1.6.3"
