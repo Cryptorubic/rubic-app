@@ -14439,25 +14439,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-"rubic-sdk@file:../rubic-sdk":
-  version "3.11.0-qq"
-  dependencies:
-    "@curvefi/api" "^2.22.0"
-    "@lifi/sdk" "^1.6.3"
-    "@viaprotocol/router-sdk" "^1.0.7"
-    assert "^2.0.0"
-    axios "^0.26.1"
-    bignumber.js "9.1.0"
-    bitcoin-address-validation "2.2.1"
-    ethers "^5.6.8"
-    rango-sdk-basic "^0.0.7"
-    rxjs "^7.5.7"
-    symbiosis-js-sdk "2.8.22"
-    tronweb "^4.3.0"
-    web3 "^1.8.0"
-
-"rubic-sdk@file:../rubic-sdk/":
-  version "3.11.0-qq"
+rubic-sdk@3.12.0-alpha-sd.1:
+  version "3.12.0-alpha-sd.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.12.0-alpha-sd.1.tgz#99de9dcf80f00b83872eddee6d27798f4dceb25b"
+  integrity sha512-cmNiam2fbxcynM79EiiO92ibQ+G13IVQzzERrDmOyo9GvZtneyJ7IrLek2tHItVb3pUhwhk9xflhrjlaI0CMHw==
   dependencies:
     "@curvefi/api" "^2.22.0"
     "@lifi/sdk" "^1.6.3"
