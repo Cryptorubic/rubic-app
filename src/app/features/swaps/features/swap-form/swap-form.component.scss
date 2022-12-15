@@ -66,9 +66,11 @@
 
   &__header {
     display: flex;
+    grid-gap: 20px;
     align-items: center;
     justify-content: space-between;
-    height: 30px;
+
+    min-height: 30px;
   }
 
   &__title {
@@ -238,7 +240,7 @@
   .swap-form {
     position: relative;
 
-    padding: 0 0 20px;
+    padding: 20px 0;
 
     &__settings-wrapper {
       @include hide-unused-ui {
@@ -253,26 +255,11 @@
     }
 
     &__header {
-      height: 0;
-      margin-bottom: 0;
-    }
-
-    &__blockchains {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
+      padding: 0 20px;
     }
 
     &__title {
       display: none;
-    }
-
-    &__settings {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
     }
 
     &__refresh {

@@ -65,6 +65,10 @@
     margin-right: 11px;
 
     font-size: $rubic-font-size-01;
+
+    @include iframe {
+      font-size: 14px;
+    }
   }
 
   &__dropdown-item {

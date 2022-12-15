@@ -7,8 +7,10 @@
       ) | translate
     }}
   </div>
-  <ng-container *ngIf="withRecentTrades">
-    <span>{{ 'notifications.checkIn' | translate }}</span>
-    <a class="notification__link" (click)="openRecentTrades()">Recent Trades</a>
+  <ng-container *noFrame>
+    <ng-container *ngIf="withRecentTrades">
+      <span>{{ 'notifications.checkIn' | translate }}</span>
+      <a class="notification__link" (click)="openRecentTrades()">Recent Trades</a>
+    </ng-container>
   </ng-container>
 </div>
