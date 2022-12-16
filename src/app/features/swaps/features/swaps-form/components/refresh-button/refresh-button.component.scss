@@ -24,8 +24,16 @@
   cursor: pointer;
 
   &__icon {
+    display: flex;
+    align-items: center;
     width: 16px;
     height: 16px;
+
+    ::ng-deep {
+      svg path {
+        fill: var(--secondary-text);
+      }
+    }
 
     &_refreshing {
       animation: 0.9s linear 0.1s infinite refreshAnimation;

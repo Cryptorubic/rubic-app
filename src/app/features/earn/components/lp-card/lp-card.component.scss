@@ -7,7 +7,7 @@
   margin-bottom: 12px;
   padding: 18px;
 
-  background: var(--rubic-base-23);
+  background: var(--form-background);
   border-radius: 16px;
 
   @include b($tablet) {
@@ -34,7 +34,7 @@
 }
 
 .title {
-  @include font(15px, 18px, 500, var(--rubic-base-02));
+  @include font(15px, 18px, 500, var(--primary-text));
   position: relative;
 
   display: flex;
@@ -69,7 +69,7 @@
     position: absolute;
     left: 16px;
 
-    border: 2px solid var(--rubic-base-23);
+    border: 2px solid var(--form-background);
     border-radius: 100px;
 
     @include b($tablet) {

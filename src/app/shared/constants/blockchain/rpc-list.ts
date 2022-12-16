@@ -29,8 +29,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
-    'https://late-white-sky.arbitrum-mainnet.quiknode.pro/84da6c33a092bf64d9d72bc52c5db62aac00c81c/',
-    'https://arb1.arbitrum.io/rpc'
+    'https://arb1.arbitrum.io/rpc',
+    'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   [BLOCKCHAIN_NAME.TELOS]: ['https://rpc1.eu.telos.net/evm', 'https://mainnet.telos.net/evm'],
@@ -49,7 +49,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.CELO]: [
     'https://rpc.ankr.com/celo/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
   ],
-  [BLOCKCHAIN_NAME.BOBA]: ['https://mainnet.boba.network'],
+  [BLOCKCHAIN_NAME.BOBA]: [
+    'https://mainnet.boba.network',
+    'https://lightning-replica.boba.network'
+  ],
   [BLOCKCHAIN_NAME.ASTAR]: ['https://rpc.astar.network:8545'],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
@@ -61,7 +64,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   /*
   [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://green-hidden-shape.solana-mainnet.quiknode.pro/',
     'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']

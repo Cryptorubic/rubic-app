@@ -1,6 +1,6 @@
-@use '../../../../styles/styles' as *;
-@use 'src/scss/vars' as vars;
+@use '../../../../styles/styles';
+@use 'src/scss/vars';
 
 .info-line_green {
-  color: vars.$rubic-primary;
+  color: var(--primary-color);
 }

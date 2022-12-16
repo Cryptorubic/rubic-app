@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 :host {
+  position: relative;
+
   display: block;
   max-width: 565px;
   margin: 0 auto;
@@ -19,13 +21,15 @@
 }
 
 .swaps-form {
+  position: relative;
+
   min-height: 200px;
   margin-bottom: 20px;
   padding: 24px;
 
-  background-color: var(--main-form-background);
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
   border-radius: 19px;
-  backdrop-filter: blur(50px);
 
   @include iframe-horizontal {
     display: flex;
@@ -58,15 +62,17 @@
 
   &__header {
     display: flex;
+    grid-gap: 20px;
     align-items: center;
     justify-content: space-between;
-    height: 30px;
+
+    min-height: 30px;
   }
 
   &__title {
     margin: 0 10px 0 0;
 
-    color: var(--form-bright-text-color);
+    color: var(--primary-text);
     font-weight: 300;
     font-size: 24px;
     letter-spacing: 1.5px;
@@ -93,7 +99,7 @@
   &__delimiter {
     position: relative;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
 
     @include iframe-horizontal {
       display: flex;
@@ -151,7 +157,7 @@
       width: calc(50% - 17px);
       height: 1px;
 
-      background-color: var(--rubic-delimiter);
+      background-color: var(--transparent-line);
 
       opacity: 0.5;
 
@@ -211,7 +217,7 @@
   .swaps-form {
     position: relative;
 
-    padding: 0 0 20px;
+    padding: 20px 0;
 
     &__settings-wrapper {
       @include hide-unused-ui {
@@ -226,26 +232,11 @@
     }
 
     &__header {
-      height: 0;
-      margin-bottom: 0;
-    }
-
-    &__blockchains {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
+      padding: 0 20px;
     }
 
     &__title {
       display: none;
-    }
-
-    &__settings {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
     }
 
     &__refresh {

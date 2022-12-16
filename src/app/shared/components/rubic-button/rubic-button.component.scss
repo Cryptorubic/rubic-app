@@ -1,15 +1,11 @@
 @use 'src/scss/core' as *;
 
-:host {
+:host ::ng-deep {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary: var(--rubic-base-26);
-  --tui-primary-hover: var(--rubic-base-01);
   --tui-focus: transparent;
-  --tui-primary-text: #{$rubic-text-color-main};
 
   [tuiButton] {
-    --tui-link: var(--primary-color);
     font-weight: 500;
     font-size: $rubic-font-size-01;
 
@@ -19,30 +15,6 @@
 
     &.full-width {
       width: 100%;
-    }
-
-    &._hovered {
-      --tui-secondary-hover: var(--rubic-base-01);
-      --tui-primary-text: var(--primary-color);
-      --tui-link-hover: var(--primary-color);
-
-      background-color: var(--rubic-base-01);
-      box-shadow: var(--rubic-shadow-button-hover-dim);
-    }
-
-    &._pressed {
-      --tui-secondary-active: var(--primary-color);
-      --tui-primary-active: var(--primary-color);
-      --tui-primary-text: var(--rubic-base-01);
-      --tui-text-01: white;
-      --tui-link: var(--rubic-base-01);
-
-      background-color: var(--primary-color);
-      box-shadow: var(--rubic-shadow-button-active);
-
-      ::ng-deep img:not(.tokens__clear-icon) {
-        filter: brightness(10);
-      }
     }
 
     &._focused:not(&._pressed) {
@@ -63,11 +35,11 @@
       ::ng-deep tui-wrapper {
         color: rgba($rubic-text-disable, 0.7);
 
-        background-color: var(--main-background);
+        background-color: var(--primary-background);
         opacity: 1 !important;
 
         @include light-iframe {
-          background-color: var(--rubic-base-14);
+          background-color: var(--iframe-primary-background);
         }
       }
     }
@@ -100,45 +72,6 @@
 
     &[data-appearance='secondary'] {
       border: 0;
-    }
-  }
-
-  [tuiButton][bordered=true] {
-    box-shadow: var(--rubic-shadow-button-hover);
-  }
-
-
-  ::ng-deep {
-    tui-wrapper[data-appearance='secondary'] {
-      color: white;
-
-      background-color: var(--primary-color);
-
-      &[data-state='hovered'] {
-        box-shadow: var(--rubic-shadow-button-hover-dim);
-      }
-
-      &[data-state='pressed'] {
-        color: var(--primary-color);
-
-        background-color: var(--rubic-base-01) !important;
-        box-shadow: var(--rubic-shadow-button-hover-dim);
-
-        :host-context(html.dark) & {
-          color: var(--rubic-base-02);
-        }
-      }
-
-      &[data-state='disabled'] {
-        color: rgba(white, 0.4);
-
-        background-color: rgba(var(--primary-color) / 0.4);
-        border: 0;
-      }
-    }
-
-    tui-wrapper[data-appearance='outline']::after {
-      display: none;
     }
   }
 }

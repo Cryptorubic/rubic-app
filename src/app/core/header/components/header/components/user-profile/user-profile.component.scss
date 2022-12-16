@@ -8,18 +8,25 @@
   height: 50px;
   padding: 13px 21px;
 
-  background-color: var(--tui-base-01);
+  background-color: var(--tui-secondary);
+
+  border: 1px solid var(--transparent-line);
   border-radius: 50px;
+
+  @include dark {
+    border-color: transparent;
+  }
+
 
   @include iframe {
     height: 40px;
     padding: 0 20px;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
   }
 
   @include light-iframe {
-    background-color: var(--rubic-base-14);
+    background-color: var(--iframe-primary-background);
   }
 
   @include iframe-vertical {
@@ -27,12 +34,13 @@
   }
 
   &:hover {
+
+    background: var(--tui-secondary-hover);
+
     transition: 0.3s ease-in-out;
   }
 
   &:hover {
-    box-shadow: var(--rubic-shadow-button-hover-dim);
-
     cursor: pointer;
 
     @include iframe {
@@ -57,6 +65,10 @@
     margin-right: 11px;
 
     font-size: $rubic-font-size-01;
+
+    @include iframe {
+      font-size: 14px;
+    }
   }
 
   &__dropdown-item {
@@ -85,5 +97,11 @@
   &_menu {
     top: 0;
     right: 0;
+  }
+}
+
+.arrow {
+  ::ng-deep svg path {
+    fill: var(--secondary-text);
   }
 }

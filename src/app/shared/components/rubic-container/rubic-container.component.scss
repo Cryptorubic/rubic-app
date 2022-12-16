@@ -6,9 +6,7 @@
   margin: 0 auto;
   padding: 30px 35px 40px;
 
-  font-family: $sf-pro-font,sans-serif;
-
-  background: var(--main-form-background);
+  background: var(--solid-background);
   border-radius: 14px;
   backdrop-filter: blur(24px);
 
@@ -24,7 +22,7 @@
 .header {
   margin-bottom: 26px;
 
-  color: var(--form-bright-text-color);
+  color: var(--primary-text);
   font-weight: 300;
   font-size: 24px;
   line-height: 29px;

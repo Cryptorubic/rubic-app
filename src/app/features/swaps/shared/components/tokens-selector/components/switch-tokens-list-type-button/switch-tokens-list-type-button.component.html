@@ -1,0 +1,11 @@
+<app-icon-button
+  *ngLet="buttonData$ | async as buttonData"
+  [icon]="'assets/images/icons/' + buttonData.icon"
+  [tuiHint]="buttonData.hintText"
+  [tuiHintShowDelay]="1100"
+  [border]="false"
+  (iconButtonClick)="switchMode()"
+  buttonSize="s"
+  appearance="secondary"
+>
+</app-icon-button>

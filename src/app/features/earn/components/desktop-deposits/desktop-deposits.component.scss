@@ -12,12 +12,12 @@
       height: auto;
       padding: 0 1rem;
 
-      color: $rubic-primary;
+      color: var(--primary-color);
     }
   }
 
   .tui-table__tr.data-row {
-    background: var(--rubic-base-23);
+    background: var(--form-background);
     border-bottom: none;
 
     .tui-table__td:first-child {

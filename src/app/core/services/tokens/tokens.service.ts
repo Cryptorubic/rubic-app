@@ -62,7 +62,9 @@ export class TokensService {
     TOKENS_PAGINATION
   );
 
-  public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
+  public get tokensNetworkState(): TokensNetworkState {
+    return this._tokensNetworkState$.value;
+  }
 
   /**
    * Current user address.
@@ -325,22 +327,12 @@ export class TokensService {
 
   /**
    * Sets default image to token, in case original image has thrown error.
-   * Patches tokens list, if {@param token} is passed.
    * @param $event Img error event.
-   * @param token If passed, then tokens list will be patched.
    */
-  public onTokenImageError($event: Event, token: TokenAmount = null): void {
+  public onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
     if (target.src !== DEFAULT_TOKEN_IMAGE) {
       target.src = DEFAULT_TOKEN_IMAGE;
-
-      if (token) {
-        const newToken = {
-          ...token,
-          image: DEFAULT_TOKEN_IMAGE
-        };
-        this.patchToken(newToken);
-      }
     }
   }
 
@@ -638,7 +630,7 @@ export class TokensService {
         return from(
           Injector.web3PublicService
             .getWeb3Public(favoriteToken.blockchain as Web3PublicSupportedBlockchain)
-            .getTokenBalance(this.walletConnectorService.address, favoriteToken.address)
+            .getBalance(this.walletConnectorService.address, favoriteToken.address)
         );
       }),
       tap((favoriteTokenBalance: BigNumber) => {

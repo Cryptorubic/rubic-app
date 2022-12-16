@@ -109,14 +109,14 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ZRX]),
     [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       ON_CHAIN_TRADE_TYPE.CRONA_SWAP,
       ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.OKE_X_CHAIN]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.J_SWAP,
-      ON_CHAIN_TRADE_TYPE.DODO
+      ON_CHAIN_TRADE_TYPE.DODO,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
     ]),
     [BLOCKCHAIN_NAME.GNOSIS]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
@@ -136,7 +136,10 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.UBE_SWAP,
       ON_CHAIN_TRADE_TYPE.CURVE
     ]),
-    [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]),
+    [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.OOLONG_SWAP,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
+    ]),
     [BLOCKCHAIN_NAME.ETHEREUM_POW]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,

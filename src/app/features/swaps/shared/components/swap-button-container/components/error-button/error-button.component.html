@@ -8,7 +8,7 @@
     <ng-container *ngIf="allowChange && !button.isMobile; else errorInfo">
       <app-rubic-button
         [attr.error]="true"
-        appearance="secondary"
+        appearance="primary"
         [loading]="loading"
         [disabled]="loading"
         (onClick)="changeNetwork()"

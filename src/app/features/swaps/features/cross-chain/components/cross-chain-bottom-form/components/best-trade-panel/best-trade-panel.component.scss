@@ -32,7 +32,7 @@
   &__expand-button {
     margin-left: auto;
 
-    color: var(--form-rubic-text-color);
+    color: var(--primary-color);
   }
 
   &__expand-arrow {
@@ -57,7 +57,7 @@
     height: 0;
     padding: 0 24px;
 
-    background: var(--main-form-background);
+    background: var(--form-background);
 
     border-bottom-right-radius: 19px;
     border-bottom-left-radius: 19px;

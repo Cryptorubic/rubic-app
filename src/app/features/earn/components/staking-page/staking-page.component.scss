@@ -33,7 +33,7 @@ app-deposits {
   margin-bottom: 12px;
   padding: 12px;
 
-  background: var(--rubic-base-22);
+  background: var(--form-background);
   border-radius: 24px;
 
   ::ng-deep {
@@ -51,7 +51,7 @@ app-deposits {
 
 .rules {
   &__link {
-    @include font(16px, 19px, 400, var(--main-green));
+    @include font(16px, 19px, 400, var(--primary-color));
     display: flex;
     gap: 5px;
     align-items: center;
@@ -67,11 +67,11 @@ app-deposits {
 
     ::ng-deep svg {
       path[fill='black'] {
-        fill: var(--main-green);
+        fill: var(--primary-color);
       }
 
       rect[fill='black'] {
-        fill: var(--main-green);
+        fill: var(--primary-color);
       }
     }
   }
@@ -89,7 +89,7 @@ app-deposits {
     }
 
     .header .title {
-      @include font(18px, 22px, 500, var(--rubic-base-02));
+      @include font(18px, 22px, 500, var(--primary-text));
     }
   }
 

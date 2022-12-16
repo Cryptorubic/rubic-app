@@ -85,12 +85,12 @@
     font-size: 12px;
     line-height: 17px;
 
-    background-color: var(--main-background);
+    background-color: var(--primary-background);
     border-radius: 10px;
   }
 
   :host-context(html.iframe:not(.dark)) & {
-    background-color: var(--rubic-base-14);
+    background-color: var(--iframe-primary-background);
   }
 }
 
@@ -100,9 +100,6 @@
 
 }
 
-
-
-// breakpoints
 @mixin bh($point) {
   @media (max-height: $point + 'px') {
     @content;
@@ -135,7 +132,6 @@
   }
 }
 
-// breakpoints
 @mixin bb($pointMax, $pointMin) {
   @media (max-width: $pointMax + 'px') and (min-width: $pointMin + 'px') {
     @content;

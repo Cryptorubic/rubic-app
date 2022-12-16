@@ -5,7 +5,7 @@ ul {
   flex-direction: column;
   gap: 10px;
 
-  padding-right: 21px;
+  padding: 0 21px;
 }
 
 .trade {
@@ -15,7 +15,7 @@ ul {
   height: 52px;
   padding: 10px 0;
 
-  border: 1px solid var(--panel-border);
+  border: 1px solid var(--transparent-line);
   border-radius: 14px;
 
   transition: 0.2s ease-in-out;
@@ -46,7 +46,7 @@ ul {
   }
 
   &_selected {
-    border: 1px solid var(--form-rubic-text-color);
+    border: 1px solid var(--primary-color);
   }
 
   > div {
@@ -54,7 +54,7 @@ ul {
   }
 
   &:hover {
-    background: rgba(130, 130, 130, 0.15);
+    background: var(--transparent-line);
     cursor: pointer;
   }
 }

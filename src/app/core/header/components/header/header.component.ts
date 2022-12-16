@@ -26,12 +26,13 @@ import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
 import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -70,6 +71,11 @@ export class HeaderComponent implements AfterViewInit {
     return this.window.location.pathname === '/';
   }
 
+  public readonly isDarkTheme$ = this.themeService.theme$.pipe(
+    startWith('dark'),
+    map(theme => theme === 'dark')
+  );
+
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
@@ -87,7 +93,8 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly zone: NgZone
+    private readonly zone: NgZone,
+    private readonly themeService: ThemeService
   ) {
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.currentUser$;
