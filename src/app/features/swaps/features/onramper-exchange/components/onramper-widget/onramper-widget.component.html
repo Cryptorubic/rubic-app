@@ -6,7 +6,7 @@
   <iframe
     [src]="widgetUrl$ | async | safeSanitizer: 'resourceUrl'"
     height="660px"
-    width="565px"
+    [width]="widgetWidth$ | async"
     title="Onramper widget"
     allow="accelerometer; autoplay; camera; gyroscope; payment"
   >

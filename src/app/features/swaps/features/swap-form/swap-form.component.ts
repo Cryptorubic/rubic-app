@@ -189,4 +189,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     }
     return this.fromAssetType;
   }
+
+  public closeWidget(): void {
+    this.onramperFormService.widgetOpened = false;
+  }
 }

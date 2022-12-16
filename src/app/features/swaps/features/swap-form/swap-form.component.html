@@ -1,75 +1,81 @@
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
-  <div
-    class="swap-form"
-    [ngStyle]="{ 'background-color': backgroundColor }"
-    [ngClass]="{ 'swap-form_extended': onramperWidgetOpened$ | async }"
-  >
-    <header *noFrame class="swap-form__header">
-      <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
+  <ng-container *ngLet="onramperWidgetOpened$ | async as onramperWidgetOpened">
+    <div class="close-widget-button" *ngIf="onramperWidgetOpened">
+      <app-back-button (onClick)="closeWidget()"></app-back-button>
+    </div>
 
-      <div class="swap-form__settings-wrapper">
-        <app-refresh-button
-          class="swap-form__refresh"
-          *ngIf="
-            (isInstantTrade || isCrossChainRouting || isOnramper) && isFormFilled && allowRefresh
-          "
-        >
-        </app-refresh-button>
+    <div
+      class="swap-form"
+      [ngStyle]="{ 'background-color': backgroundColor }"
+      [ngClass]="{ 'swap-form_extended': onramperWidgetOpened }"
+    >
+      <header *noFrame class="swap-form__header">
+        <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
 
-        <app-settings-container
-          class="swap-form__settings"
-          *ngIf="!isOnramper"
-        ></app-settings-container>
+        <div class="swap-form__settings-wrapper">
+          <app-refresh-button
+            class="swap-form__refresh"
+            *ngIf="
+              (isInstantTrade || isCrossChainRouting || isOnramper) && isFormFilled && allowRefresh
+            "
+          >
+          </app-refresh-button>
 
-        <app-iframe-logout-button
-          *ngIf="hideUnusedUI && getCurrentUser$ | async"
-        ></app-iframe-logout-button>
-      </div>
-    </header>
+          <app-settings-container
+            class="swap-form__settings"
+            *ngIf="!isOnramper"
+          ></app-settings-container>
 
-    <main class="swap-form__content">
-      <div class="swap-form__block">
-        <app-iframe-blockchain-indicator
-          [blockchain]="getFromBlockchain()"
-          *onlyFrame="'horizontal'"
-        >
-        </app-iframe-blockchain-indicator>
+          <app-iframe-logout-button
+            *ngIf="hideUnusedUI && getCurrentUser$ | async"
+          ></app-iframe-logout-button>
+        </div>
+      </header>
 
-        <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
+      <main class="swap-form__content">
+        <div class="swap-form__block">
+          <app-iframe-blockchain-indicator
+            [blockchain]="getFromBlockchain()"
+            *onlyFrame="'horizontal'"
+          >
+          </app-iframe-blockchain-indicator>
 
-        <app-vertical-iframe-token-amount-input
-          *onlyFrame="'vertical'"
-        ></app-vertical-iframe-token-amount-input>
-      </div>
+          <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
 
-      <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
-        <app-form-switcher *ngIf="!isOnramper" (switcherClick)="revert()"></app-form-switcher>
-      </div>
+          <app-vertical-iframe-token-amount-input
+            *onlyFrame="'vertical'"
+          ></app-vertical-iframe-token-amount-input>
+        </div>
 
-      <div class="swap-form__block">
-        <app-iframe-blockchain-indicator *onlyFrame="'horizontal'" [blockchain]="toBlockchain">
-        </app-iframe-blockchain-indicator>
+        <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
+          <app-form-switcher *ngIf="!isOnramper" (switcherClick)="revert()"></app-form-switcher>
+        </div>
 
-        <app-instant-trade-bottom-form
-          *ngIf="isInstantTrade"
-          (allowRefreshChange)="allowRefresh = $event"
-          (instantTradeInfoChange)="currentInstantTradeInfo = $event"
-          (tradeStatusChange)="tradeStatus = $event"
-        >
-        </app-instant-trade-bottom-form>
+        <div class="swap-form__block">
+          <app-iframe-blockchain-indicator *onlyFrame="'horizontal'" [blockchain]="toBlockchain">
+          </app-iframe-blockchain-indicator>
 
-        <app-cross-chain-bottom-form
-          *ngIf="isCrossChainRouting"
-          (tradeStatusChange)="tradeStatus = $event"
-        >
-        </app-cross-chain-bottom-form>
+          <app-instant-trade-bottom-form
+            *ngIf="isInstantTrade"
+            (allowRefreshChange)="allowRefresh = $event"
+            (instantTradeInfoChange)="currentInstantTradeInfo = $event"
+            (tradeStatusChange)="tradeStatus = $event"
+          >
+          </app-instant-trade-bottom-form>
 
-        <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
-      </div>
-    </main>
+          <app-cross-chain-bottom-form
+            *ngIf="isCrossChainRouting"
+            (tradeStatusChange)="tradeStatus = $event"
+          >
+          </app-cross-chain-bottom-form>
 
-    <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
-  </div>
+          <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
+        </div>
+      </main>
+
+      <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
+    </div>
+  </ng-container>
 
   <ng-container *noFrame>
     <app-swap-info-container

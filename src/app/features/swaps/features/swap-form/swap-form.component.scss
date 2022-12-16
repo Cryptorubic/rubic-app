@@ -236,6 +236,33 @@
   }
 }
 
+app-swap-info-container,
+app-analytics-link {
+  display: block;
+
+  margin-bottom: 20px !important;
+}
+
+
+.close-widget-button {
+  display: none;
+
+  width: 42px;
+  margin-bottom: 13px;
+
+  ::ng-deep app-rubic-button {
+    tui-wrapper {
+      background: var(--form-background);
+    }
+  }
+}
+
+@include b($tablet) {
+  .close-widget-button {
+    display: block;
+  }
+}
+
 @include b($mobile-md) {
   .swap-form {
     position: relative;
@@ -275,11 +302,4 @@
       }
     }
   }
-}
-
-app-swap-info-container,
-app-analytics-link {
-  display: block;
-
-  margin-bottom: 20px !important;
 }

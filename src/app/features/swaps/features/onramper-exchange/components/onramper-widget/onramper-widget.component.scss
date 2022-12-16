@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .widget-container {
   position: relative;
 
@@ -19,6 +21,14 @@
       tui-wrapper {
         background: var(--form-background);
       }
+    }
+  }
+}
+
+@include b($tablet) {
+  .widget-container {
+    &__back-button {
+      display: none;
     }
   }
 }
