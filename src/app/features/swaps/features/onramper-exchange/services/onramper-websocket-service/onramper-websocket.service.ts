@@ -28,6 +28,7 @@ import { OnramperFormCalculationService } from '@features/swaps/features/onrampe
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
+import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -53,10 +54,9 @@ export class OnramperWebsocketService {
     private readonly onramperFormCalculationService: OnramperFormCalculationService,
     private readonly onramperService: OnramperService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly onramperApiService: OnramperApiService
   ) {
-    this.checkTradeStatus();
-
     this.subscribeOnUserChange();
     this.subscribeOnForm();
     this.subscribeOnWidgetOpened();
@@ -67,14 +67,33 @@ export class OnramperWebsocketService {
       trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
     ) as OnramperRecentTrade;
     if (onramperPendingTrade) {
-      this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
-      this.notifyProgress();
-
-      await this.setupBalanceCheckTimer(
-        onramperPendingTrade.txId,
-        onramperPendingTrade.toToken.blockchain,
-        onramperPendingTrade.nativeAmount
+      const tradeApiData = await this.onramperApiService.getTradeData(
+        this.authService.userAddress,
+        onramperPendingTrade.txId
       );
+
+      if (
+        tradeApiData.status === OnramperTransactionStatus.COMPLETED ||
+        tradeApiData.status === OnramperTransactionStatus.FAILED
+      ) {
+        this.recentTradesStoreService.updateTrade({
+          ...onramperPendingTrade,
+          calculatedStatusFrom:
+            tradeApiData.status === OnramperTransactionStatus.COMPLETED
+              ? TxStatus.SUCCESS
+              : TxStatus.FAIL,
+          nativeAmount: tradeApiData.out_amount
+        });
+      } else {
+        this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
+        this.notifyProgress();
+
+        await this.setupBalanceCheckTimer(
+          onramperPendingTrade.txId,
+          onramperPendingTrade.toToken.blockchain,
+          onramperPendingTrade.nativeAmount
+        );
+      }
     }
   }
 
@@ -87,6 +106,8 @@ export class OnramperWebsocketService {
           if (!user?.address) {
             return of(null);
           }
+
+          this.checkTradeStatus();
           return webSocket<{ message: string }>(
             `wss://dev-api.rubic.exchange/ws/onramp/transactions_receiver/${user.address}`
           );
@@ -131,6 +152,19 @@ export class OnramperWebsocketService {
       }
     } else if (txInfo?.status === OnramperTransactionStatus.COMPLETED) {
       await this.handleSuccessfulTrade(txInfo.transaction_id, txInfo.out_amount);
+    } else if (txInfo?.status === OnramperTransactionStatus.FAILED) {
+      const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(
+        txInfo.transaction_id
+      );
+      this.recentTradesStoreService.updateTrade({
+        ...recentTrade,
+        calculatedStatusFrom: TxStatus.FAIL
+      });
+
+      this.progressNotificationSubscription$?.unsubscribe();
+
+      this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.READY_TO_BUY_NATIVE;
+      this.onramperFormCalculationService.updateRate();
     }
   }
 
