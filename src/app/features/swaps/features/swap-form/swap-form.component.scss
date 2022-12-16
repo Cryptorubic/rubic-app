@@ -114,6 +114,8 @@
     @include iframe-vertical {
       display: flex;
       justify-content: center;
+
+      min-height: 60px;
       padding: 15px 0;
 
       background: transparent;
@@ -218,7 +220,8 @@
     @include iframe-vertical {
       app-instant-trade-bottom-form,
       app-bridge-bottom-form,
-      app-cross-chain-bottom-form {
+      app-cross-chain-bottom-form,
+      app-onramper-bottom-form {
         width: 100%;
       }
     }

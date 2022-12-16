@@ -8,6 +8,10 @@
   background: var(--form-background);
   border-radius: 19px;
 
+  @include iframe-vertical {
+    height: 500px;
+  }
+
   iframe {
     border-radius: 19px;
   }

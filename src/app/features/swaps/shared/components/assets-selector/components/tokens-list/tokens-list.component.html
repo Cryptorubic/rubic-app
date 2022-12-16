@@ -12,7 +12,7 @@
             <ul class="tokens-list" [@listAnimation]="listAnimationState$ | async">
               <cdk-virtual-scroll-viewport
                 tuiScrollable
-                itemSize="63"
+                itemSize="67"
                 class="tokens-scrollbar tui-zero-scrollbar"
                 [ngClass]="{ 'tokens-scrollbar__empty': !tokensToShow?.length }"
                 [style.overflow]="loading ? 'hidden' : 'auto'"

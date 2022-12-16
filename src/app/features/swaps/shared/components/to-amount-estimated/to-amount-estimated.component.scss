@@ -24,6 +24,8 @@
 
   @include iframe-vertical {
     align-items: flex-start;
+    justify-content: unset;
+
     max-width: unset;
   }
 

@@ -4,6 +4,7 @@ import { OnramperWidgetService } from '@features/swaps/features/onramper-exchang
 import { WINDOW } from '@ng-web-apis/common';
 import { fromEvent } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-onramper-widget',
@@ -19,9 +20,17 @@ export class OnramperWidgetComponent {
     map(() => Math.min(565, this.window.innerWidth - 40) + 'px')
   );
 
+  public readonly isIframe = this.iframeService.isIframe;
+
+  public readonly iframeSize = {
+    width: '350px',
+    height: '500px'
+  };
+
   constructor(
     private readonly onramperFormService: OnramperFormService,
     private readonly onramperWidgetService: OnramperWidgetService,
+    private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 

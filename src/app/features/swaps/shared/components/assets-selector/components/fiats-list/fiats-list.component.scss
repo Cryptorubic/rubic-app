@@ -15,6 +15,16 @@ $token-card-height: 55px;
     margin-top: 15px;
   }
 
+  @include iframe-vertical {
+    position: static;
+    left: unset;
+
+    width: 100%;
+    height: 350px;
+    margin-top: 15px;
+    padding-top: 0;
+  }
+
   ::ng-deep .content {
     height: 100%;
   }
@@ -33,6 +43,10 @@ $token-card-height: 55px;
 
     &:not(:last-child) {
       margin-bottom: 15px;
+
+      @include iframe-vertical {
+        margin-bottom: 2px;
+      }
     }
 
     &:hover {
@@ -92,6 +106,10 @@ $token-card-height: 55px;
 
       @include b($mobile-sm-middle) {
         padding-left: 10px;
+      }
+
+      @include iframe-vertical {
+        padding: 0;
       }
     }
   }

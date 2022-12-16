@@ -10,19 +10,17 @@
 
     <app-receiver-address></app-receiver-address>
 
-    <div class="bottom-form__buttons">
-      <div class="bottom-form__button">
-        <app-swap-button-container
-          [needApprove]="false"
-          [withApproveButton]="false"
-          [status]="tradeStatus$ | async"
-          [error]="tradeError"
-          [isOnramper]="true"
-          buttonText="Swap"
-          (onUpdateRateClick)="onUpdateRate()"
-          (onBuyNativeClick)="onBuyNative()"
-        ></app-swap-button-container>
-      </div>
+    <div class="bottom-form__button">
+      <app-swap-button-container
+        [needApprove]="false"
+        [withApproveButton]="false"
+        [status]="tradeStatus$ | async"
+        [error]="tradeError"
+        [isOnramper]="true"
+        buttonText="Swap"
+        (onUpdateRateClick)="onUpdateRate()"
+        (onBuyNativeClick)="onBuyNative()"
+      ></app-swap-button-container>
     </div>
   </ng-container>
 </div>

@@ -50,7 +50,7 @@
       margin-bottom: 20px;
 
       ::ng-deep app-icon-button {
-        img {
+        .image {
           max-height: 20px;
         }
       }
@@ -174,7 +174,7 @@
           .content {
             justify-content: center;
 
-            img {
+            .image {
               margin: 0;
             }
 

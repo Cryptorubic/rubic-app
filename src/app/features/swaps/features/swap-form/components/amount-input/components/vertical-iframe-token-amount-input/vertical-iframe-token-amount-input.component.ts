@@ -6,6 +6,8 @@ import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
+import { Asset } from '@features/swaps/shared/models/form/asset';
+import { isMinimalToken } from '@shared/utils/is-token';
 
 @Component({
   selector: 'app-vertical-iframe-token-amount-input',
@@ -20,13 +22,11 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
     return this.amount.value.split(',').join('');
   }
 
-  get usdPrice(): BigNumber {
-    return new BigNumber(this.formattedAmount || 0).multipliedBy(this.selectedToken?.price ?? 0);
-  }
-
   public readonly DEFAULT_DECIMALS = 18;
 
   public amount = new FormControl<string>('');
+
+  public selectedAsset: Asset;
 
   public selectedToken: TokenAmount;
 
@@ -47,7 +47,8 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
         this.amount.setValue(fromAmount.toFixed());
       }
 
-      this.selectedToken = fromAsset as TokenAmount;
+      this.selectedAsset = fromAsset;
+      this.selectedToken = isMinimalToken(fromAsset) ? fromAsset : null;
     });
   }
 
