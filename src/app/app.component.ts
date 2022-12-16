@@ -109,6 +109,7 @@ export class AppComponent implements AfterViewInit {
               to: queryParams?.to
             })
             .then(() => {
+              this.setAccentColor(queryParams);
               if (queryParams?.hideUnusedUI) {
                 this.setupUISettings(queryParams);
               }
@@ -141,5 +142,30 @@ export class AppComponent implements AfterViewInit {
       this.document.body.classList.add('hide-unused-ui');
       this.removeLiveChatInIframe();
     }
+  }
+
+  private setAccentColor(queryParams: QueryParams): void {
+    const color = `#${queryParams.accentColor}`;
+    if (this.iframeService.isIframe && queryParams.accentColor) {
+      this.document.body.setAttribute(
+        'style',
+        '--tui-primary: ' +
+          color +
+          ';' +
+          ' --primary-color: ' +
+          color +
+          ';' +
+          ' --tui-primary-hover: ' +
+          this.hexToRgba(color, '0.6')
+      );
+    }
+  }
+
+  private hexToRgba(hex: string, alpha: string): string {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+
+    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
   }
 }

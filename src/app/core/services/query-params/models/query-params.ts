@@ -26,6 +26,7 @@ interface AllQueryParams {
   slippageIt: string;
   slippageCcr: string;
   background: string;
+  accentColor: string;
   theme: string;
   language: SupportedLanguages;
   providerAddress: string;
