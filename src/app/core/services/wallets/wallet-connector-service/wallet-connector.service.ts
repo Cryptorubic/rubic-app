@@ -24,7 +24,6 @@ import {
   EvmBlockchainName,
   nativeTokensList
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
@@ -67,7 +66,6 @@ export class WalletConnectorService {
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
-    private readonly sdk: RubicSdkService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone

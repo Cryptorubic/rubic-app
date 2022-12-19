@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { Subscription } from 'rxjs';
-import { RecentTrade } from '@shared/models/my-trades/recent-trades.interface';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,10 +14,19 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
+  EvmBlockchainName,
+  EvmWeb3Pure,
+  Injector,
   TxStatus,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
+import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
+import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
+import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 
 @Injectable()
 export class RecentTradesService {
@@ -43,22 +50,27 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly sdk: RubicSdkService
+    private readonly sdkService: SdkService,
+    private readonly onramperApiService: OnramperApiService
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, fromToken, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
-    const fromBlockchainInfo = this.getFullBlockchainInfo(trade.fromToken.blockchain);
-    const toBlockchainInfo = this.getFullBlockchainInfo(trade.toToken.blockchain);
-    const srcTxLink = this.scannerLinkPipe.transform(
-      srcTxHash,
-      trade.fromToken.blockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
+    const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
+    const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
+    const toBlockchain = trade.toToken.blockchain;
+
+    const srcBlockchain = isCrossChainRecentTrade(trade)
+      ? trade.fromToken.blockchain
+      : toBlockchain;
+    const srcTxLink = srcTxHash
+      ? this.scannerLinkPipe.transform(srcTxHash, srcBlockchain, ADDRESS_TYPE.TRANSACTION)
+      : null;
+
     const uiTrade: UiRecentTrade = {
-      fromBlockchain: fromBlockchainInfo,
-      toBlockchain: toBlockchainInfo,
-      fromToken,
+      fromAssetType,
+      toBlockchain,
+      fromAsset,
       toToken,
       timestamp,
       srcTxLink,
@@ -69,7 +81,7 @@ export class RecentTradesService {
       uiTrade.dstTxHash = calculatedDstTxHash;
       uiTrade.dstTxLink = this.scannerLinkPipe.transform(
         calculatedDstTxHash,
-        toBlockchainInfo.key,
+        toBlockchain,
         ADDRESS_TYPE.TRANSACTION
       );
     }
@@ -81,16 +93,26 @@ export class RecentTradesService {
       return uiTrade;
     }
 
+    if (isCrossChainRecentTrade(trade)) {
+      return this.getCrossChainStatuses(trade, uiTrade);
+    }
+    return this.getOnramperStatuses(trade, uiTrade);
+  }
+
+  private async getCrossChainStatuses(
+    trade: CrossChainRecentTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
     if (trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.BRIDGERS && !trade.amountOutMin) {
       console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
     }
 
     const { srcTxStatus, dstTxStatus, dstTxHash } =
-      await this.sdk.crossChainStatusManager.getCrossChainStatus(
+      await this.sdkService.crossChainStatusManager.getCrossChainStatus(
         {
           fromBlockchain: trade.fromToken.blockchain as Web3PublicSupportedBlockchain,
           toBlockchain: trade.toToken.blockchain,
-          srcTxHash: srcTxHash,
+          srcTxHash: uiTrade.srcTxHash,
           txTimestamp: trade.timestamp,
           lifiBridgeType: trade.bridgeType,
           viaUuid: trade.viaUuid,
@@ -104,8 +126,98 @@ export class RecentTradesService {
     uiTrade.statusTo = dstTxStatus;
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
-      ? new ScannerLinkPipe().transform(dstTxHash, toBlockchainInfo.key, ADDRESS_TYPE.TRANSACTION)
+      ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
       : null;
+
+    return uiTrade;
+  }
+
+  private async getOnramperStatuses(
+    trade: OnramperRecentTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
+    if (trade.srcTxHash) {
+      uiTrade.statusFrom = trade.calculatedStatusFrom;
+
+      const srcTxHash = trade.srcTxHash;
+      uiTrade.srcTxHash = srcTxHash;
+      uiTrade.srcTxLink = srcTxHash
+        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+        : null;
+    } else {
+      const tradeApiData = await this.onramperApiService.getTradeData(
+        this.authService.userAddress,
+        trade.txId
+      );
+
+      if (trade.calculatedStatusFrom !== TxStatus.PENDING) {
+        uiTrade.statusFrom = trade.calculatedStatusFrom;
+      } else {
+        if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
+          uiTrade.statusFrom = TxStatus.SUCCESS;
+        } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
+          uiTrade.statusFrom = TxStatus.FAIL;
+        } else {
+          uiTrade.statusFrom = TxStatus.PENDING;
+        }
+      }
+
+      const srcTxHash = tradeApiData.tx_hash;
+      uiTrade.srcTxHash = srcTxHash;
+      uiTrade.srcTxLink = srcTxHash
+        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
+        : null;
+
+      if (srcTxHash) {
+        this.recentTradesStoreService.updateTrade({
+          ...trade,
+          calculatedStatusFrom: uiTrade.statusFrom,
+          srcTxHash,
+          nativeAmount: tradeApiData.out_amount
+        });
+      }
+    }
+
+    if (uiTrade.statusFrom === TxStatus.FAIL) {
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusTo: TxStatus.FAIL
+      });
+      uiTrade.statusTo = TxStatus.FAIL;
+      return uiTrade;
+    }
+    if (EvmWeb3Pure.isNativeAddress(uiTrade.toToken.address)) {
+      uiTrade.statusTo = uiTrade.statusFrom;
+      if (uiTrade.statusTo === TxStatus.SUCCESS) {
+        this.recentTradesStoreService.updateTrade({
+          ...trade,
+          calculatedStatusTo: uiTrade.statusTo
+        });
+      }
+      return uiTrade;
+    }
+    if (!trade.dstTxHash) {
+      return uiTrade;
+    }
+
+    const dstTxHash = trade.dstTxHash;
+    uiTrade.dstTxHash = dstTxHash;
+    uiTrade.dstTxLink = this.scannerLinkPipe.transform(
+      dstTxHash,
+      uiTrade.toBlockchain,
+      ADDRESS_TYPE.TRANSACTION
+    );
+
+    uiTrade.statusTo = await Injector.web3PublicService
+      .getWeb3Public(uiTrade.toBlockchain as EvmBlockchainName)
+      .getTransactionStatus(dstTxHash);
+
+    if (uiTrade.statusTo !== trade.calculatedStatusTo) {
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusTo: uiTrade.statusTo
+      });
+    }
 
     return uiTrade;
   }
@@ -128,7 +240,7 @@ export class RecentTradesService {
     };
 
     try {
-      transactionReceipt = await this.sdk.symbiosis.revertTrade(srcTxHash, {
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, {
         onConfirm: onTransactionHash
       });
 
@@ -140,7 +252,7 @@ export class RecentTradesService {
       });
 
       this.recentTradesStoreService.updateTrade({
-        ...this.recentTradesStoreService.getSpecificTrade(srcTxHash, fromBlockchain),
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(srcTxHash, fromBlockchain),
         calculatedStatusFrom: TxStatus.SUCCESS,
         calculatedStatusTo: TxStatus.FALLBACK
       });
@@ -152,10 +264,6 @@ export class RecentTradesService {
     }
 
     return transactionReceipt;
-  }
-
-  private getFullBlockchainInfo(blockchain: BlockchainName): Blockchain {
-    return BLOCKCHAINS[blockchain];
   }
 
   public readAllTrades(): void {

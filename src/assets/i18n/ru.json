@@ -37,7 +37,7 @@
     "transactionDetails": "Детали транзакции",
     "approveToken": "Утвердить {{symbol}}",
     "tagline": {
-      "firstText": "Cross-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
@@ -96,11 +96,11 @@
     "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен.",
     "crossChainSwapUnavailable": "К сожалению, данный обмен с использованием подобранного провайдера в настоящее время недоступен. Rubic пересчитает маршрут вашего обмена.",
-    "noSelectedToken": "Выберите токен",
+    "noSelectedToken": "Выберите Токен",
     "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются."
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
@@ -262,7 +262,7 @@
     "notAvailableAfter": " недоступно."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",
@@ -599,7 +599,7 @@
     "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
     "successfullySentTransaction": "Транзакция была успешно отправлена!",
     "successfulCCRSwapTitle": "Успешный обмен в исходной сети!",
-    "successfulTradeParagraph": "Check transaction in ",
+    "checkIn": "Check in ",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

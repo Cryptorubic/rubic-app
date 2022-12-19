@@ -5,7 +5,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
   selector: '[noFrame]'
 })
 export class NoFrameDirective<T> implements OnInit {
-  @Input() noFrame: 'horizontal' | 'vertical' | 'any' = 'any';
+  @Input() noFrame: 'horizontal' | 'vertical' | '' = '';
 
   @Input() noFrameAnd = true;
 
@@ -22,7 +22,7 @@ export class NoFrameDirective<T> implements OnInit {
     }
 
     const iframeAppearance = this.iframeService.iframeAppearance;
-    if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
+    if (!iframeAppearance || (this.noFrame && iframeAppearance !== this.noFrame)) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     } else {
       this.viewContainer.clear();

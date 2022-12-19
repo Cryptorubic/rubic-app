@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FunctionCallPipe implements PipeTransform {
   public transform<T = unknown>(
     value: unknown,
-    handler: (value: unknown) => unknown,
+    handler: (value: unknown) => T,
     context?: unknown
   ): T {
     if (context) {

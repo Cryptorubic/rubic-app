@@ -35,7 +35,6 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
-import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 
 @NgModule({
   declarations: [
@@ -75,8 +74,7 @@ import { RecentTradesModule } from '../recent-trades/recent-trades.module';
     TuiDropdownControllerModule,
     TuiToggleModule,
     FormsModule,
-    TuiLoaderModule,
-    RecentTradesModule
+    TuiLoaderModule
   ],
   exports: [HeaderComponent, LoginButtonComponent]
 })
