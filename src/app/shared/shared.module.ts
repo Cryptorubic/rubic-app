@@ -47,7 +47,7 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
+import { IframeAssetTypeIndicatorComponent } from 'src/app/shared/components/iframe-asset-type-indicator/iframe-asset-type-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
@@ -88,13 +88,13 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    IframeBlockchainIndicatorComponent,
+    IframeAssetTypeIndicatorComponent,
     RubicContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
-    IframeBlockchainIndicatorComponent,
+    IframeAssetTypeIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
     ProgressTrxNotificationComponent,
@@ -172,7 +172,7 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
+    IframeAssetTypeIndicatorComponent,
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,

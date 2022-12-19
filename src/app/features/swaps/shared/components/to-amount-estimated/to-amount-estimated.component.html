@@ -1,9 +1,9 @@
 <div class="bottom-amount" *ngLet="isFormFilled$ | async as isFormFilled">
   <div class="bottom-amount__blockchain-and-value" *ngLet="formData$ | async as formData">
-    <app-iframe-blockchain-indicator
+    <app-iframe-asset-type-indicator
       *onlyFrame="'vertical'"
-      [blockchain]="formData.toBlockchain"
-    ></app-iframe-blockchain-indicator>
+      [assetType]="formData.toBlockchain"
+    ></app-iframe-asset-type-indicator>
 
     <div
       class="bottom-amount__output"

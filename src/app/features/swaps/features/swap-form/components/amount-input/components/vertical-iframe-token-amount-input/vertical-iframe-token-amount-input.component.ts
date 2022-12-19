@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
-import { Asset } from '@features/swaps/shared/models/form/asset';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 
 @Component({
@@ -26,7 +26,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
 
   public amount = new FormControl<string>('');
 
-  public selectedAsset: Asset;
+  public selectedAssetType: AssetType;
 
   public selectedToken: TokenAmount;
 
@@ -47,7 +47,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
         this.amount.setValue(fromAmount.toFixed());
       }
 
-      this.selectedAsset = fromAsset;
+      this.selectedAssetType = isMinimalToken(fromAsset) ? fromAsset.blockchain : 'fiat';
       this.selectedToken = isMinimalToken(fromAsset) ? fromAsset : null;
     });
   }

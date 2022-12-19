@@ -5,11 +5,9 @@
   ></app-select-asset-button-tokens>
 
   <div class="vertical-iframe-input__row blockchain-and-amount-input">
-    <app-iframe-blockchain-indicator
-      *ngIf="selectedToken?.blockchain as blockchain"
-      [blockchain]="blockchain"
-    >
-    </app-iframe-blockchain-indicator>
+    <app-iframe-asset-type-indicator
+      [assetType]="selectedAssetType"
+    ></app-iframe-asset-type-indicator>
 
     <label class="blockchain-and-amount-input__label">
       <input

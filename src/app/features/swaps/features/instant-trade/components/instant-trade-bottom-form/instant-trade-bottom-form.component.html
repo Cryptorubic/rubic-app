@@ -30,10 +30,10 @@
         </ng-container>
 
         <ng-container *onlyFrame="'vertical'">
-          <app-iframe-blockchain-indicator
+          <app-iframe-asset-type-indicator
             *ngIf="toToken?.blockchain as blockchain"
-            [blockchain]="blockchain"
-          ></app-iframe-blockchain-indicator>
+            [assetType]="blockchain"
+          ></app-iframe-asset-type-indicator>
         </ng-container>
 
         <div

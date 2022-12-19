@@ -34,11 +34,11 @@
 
       <main class="swap-form__content">
         <div class="swap-form__block">
-          <app-iframe-blockchain-indicator
-            [blockchain]="getFromBlockchain()"
+          <app-iframe-asset-type-indicator
+            [assetType]="getFromBlockchain()"
             *onlyFrame="'horizontal'"
           >
-          </app-iframe-blockchain-indicator>
+          </app-iframe-asset-type-indicator>
 
           <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
 
@@ -52,8 +52,8 @@
         </div>
 
         <div class="swap-form__block">
-          <app-iframe-blockchain-indicator *onlyFrame="'horizontal'" [blockchain]="toBlockchain">
-          </app-iframe-blockchain-indicator>
+          <app-iframe-asset-type-indicator *onlyFrame="'horizontal'" [assetType]="toBlockchain">
+          </app-iframe-asset-type-indicator>
 
           <app-instant-trade-bottom-form
             *ngIf="isInstantTrade"
