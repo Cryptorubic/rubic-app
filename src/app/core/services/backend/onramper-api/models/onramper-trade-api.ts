@@ -1,14 +1,14 @@
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 
-export interface OnrampTradeApi {
+export interface OnramperTradeApi {
   user: string;
   status: OnramperTransactionStatus;
   transaction_id: string;
   tx_hash: string;
-  out_currency: 'BNB';
-  out_amount: '0.095961760066900000';
+  out_currency: string;
+  out_amount: string;
 }
 
-export interface OnrampTradeApiResponse {
-  results: OnrampTradeApi[];
+export interface OnramperTradeApiResponse {
+  results: OnramperTradeApi[];
 }

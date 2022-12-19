@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import {
-  OnrampTradeApi,
-  OnrampTradeApiResponse
-} from '@core/services/backend/onramper-api/models/onramp-api';
+  OnramperTradeApi,
+  OnramperTradeApiResponse
+} from '@core/services/backend/onramper-api/models/onramper-trade-api';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -13,10 +13,10 @@ import { map } from 'rxjs/operators';
 export class OnramperApiService {
   constructor(private readonly httpService: HttpService) {}
 
-  public getTradeData(walletAddress: string, txId: string): Promise<OnrampTradeApi> {
+  public getTradeData(walletAddress: string, txId: string): Promise<OnramperTradeApi> {
     return firstValueFrom(
       this.httpService
-        .get<OnrampTradeApiResponse>('onramp/transactions', {
+        .get<OnramperTradeApiResponse>('onramp/transactions', {
           walletAddress,
           txId
         })
