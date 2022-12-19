@@ -7,9 +7,10 @@ import { SwapButtonContainerService } from '@features/swaps/shared/components/sw
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
 import { first, map, startWith } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom, Observable } from 'rxjs';
 import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-error-button',
@@ -24,10 +25,10 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
-  public get fromBlockchain$(): Observable<BlockchainName> {
+  public get fromBlockchainLabel$(): Observable<string> {
     return this.swapFormService.inputValueChanges.pipe(
       startWith(this.swapFormService.inputValue),
-      map(form => form.fromBlockchain)
+      map(form => blockchainLabel[form.fromBlockchain])
     );
   }
 

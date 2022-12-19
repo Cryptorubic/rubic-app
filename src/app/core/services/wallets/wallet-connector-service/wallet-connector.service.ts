@@ -31,6 +31,7 @@ import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Injectable({
   providedIn: 'root'
@@ -188,7 +189,7 @@ export class WalletConnectorService {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
     } else {
-      chainName = evmBlockchainName;
+      chainName = blockchainLabel[evmBlockchainName];
       rpcUrl = rpcList[evmBlockchainName][0];
     }
 
