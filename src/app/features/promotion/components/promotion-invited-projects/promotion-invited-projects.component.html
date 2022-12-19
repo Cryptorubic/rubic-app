@@ -31,7 +31,11 @@
     </div>
 
     <ng-template #table>
-      <tui-loader overlay="true" [showLoader]="isLoading" *ngLet="tableData$ | async as tableData">
+      <tui-loader
+        [overlay]="true"
+        [showLoader]="isLoading"
+        *ngLet="tableData$ | async as tableData"
+      >
         <div *ngIf="!tableData?.length; else tableContent" class="no-invited-projects">
           {{ 'promotionPage.invitations.noProjects' | translate }}
         </div>

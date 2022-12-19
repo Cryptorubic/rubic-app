@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
 import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Router } from '@angular/router';
-import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
-import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { from, Observable } from 'rxjs';
@@ -12,6 +11,7 @@ import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-
 import { compareTokens } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 export interface TokenInfo {
   blockchain: BlockchainName;
@@ -32,8 +32,6 @@ interface TokenPair {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuyTokenComponent {
-  // @Input() appearance: TuiAppearance = TuiAppearance.Outline;
-
   /**
    * Banner type. Component Renders different texts based on type.
    */
@@ -52,10 +50,10 @@ export class BuyTokenComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly tokensService: TokensService
   ) {
     this.tokensType = 'default';
     this.customTokens = {
@@ -103,7 +101,7 @@ export class BuyTokenComponent {
         ? this.defaultTokens.to
         : this.customTokens.to;
 
-    return this.swapsService.availableTokens$.pipe(
+    return this.tokensService.tokens$.pipe(
       first(tokens => tokens?.size > 0),
       map((tokens: List<TokenAmount>) => ({
         fromToken: tokens.find(token => compareTokens(token, fromToken)),
@@ -121,10 +119,10 @@ export class BuyTokenComponent {
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
-        this.swapFormService.input.patchValue({
-          fromToken,
+        this.swapFormService.inputControl.patchValue({
+          fromAsset: fromToken,
           toToken,
-          fromBlockchain: fromToken.blockchain,
+          fromAssetType: fromToken.blockchain,
           toBlockchain: toToken.blockchain,
           fromAmount:
             this.tokensType === 'default'

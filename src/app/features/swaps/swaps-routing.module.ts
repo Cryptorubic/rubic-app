@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SwapsFormComponent } from '@features/swaps/features/swaps-form/swaps-form.component';
+import { SwapFormComponent } from '@features/swaps/features/swap-form/swap-form.component';
 
-const routes: Routes = [{ path: '', component: SwapsFormComponent }];
+const routes: Routes = [{ path: '', component: SwapFormComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

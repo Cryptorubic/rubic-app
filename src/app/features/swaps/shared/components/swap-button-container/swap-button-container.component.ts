@@ -51,9 +51,13 @@ export class SwapButtonContainerComponent {
 
   @Input() buttonText: string;
 
+  @Input() isOnramper = false;
+
   @Output() readonly onApproveClick = new EventEmitter<void>();
 
   @Output() readonly onSwapClick = new EventEmitter<void>();
+
+  @Output() readonly onBuyNativeClick = new EventEmitter<void>();
 
   @Output() readonly onUpdateRateClick = new EventEmitter<void>();
 

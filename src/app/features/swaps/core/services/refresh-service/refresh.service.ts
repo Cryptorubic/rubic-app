@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { OnRefreshData } from '@features/swaps/core/services/refresh-service/models/on-refresh-data';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()

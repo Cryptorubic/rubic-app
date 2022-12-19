@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-@mixin tokenImage {
+@mixin assetImage {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -57,14 +57,14 @@
     }
   }
 
-  &__token-image {
-    @include tokenImage();
+  &__asset-image {
+    @include assetImage();
     width: 26px;
     height: 26px;
     margin-right: 8px;
   }
 
-  &__token-symbol {
+  &__asset-symbol {
     @include font(14px, 17px, 500, #37373D);
     margin-right: 8px;
 
@@ -73,12 +73,13 @@
     }
   }
 
-  &__token-blockchain {
+  &__asset-type {
     @include font(12px, 17px, 400, #8E8D91);
   }
 
   &__status-from,
-  &__status-to {
+  &__status-to,
+  &__to-continue {
     display: flex;
 
     text-decoration: none;
@@ -90,7 +91,11 @@
     }
   }
 
-  &__status-to.hide-arrow {
+  &__to-continue {
+    color: var(--main-green);
+  }
+
+  a.hide-arrow {
     cursor: default;
 
     pointer-events: none;
