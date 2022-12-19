@@ -9,8 +9,8 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { first, map } from 'rxjs/operators';
-import { forkJoin, Observable, skip } from 'rxjs';
+import { catchError, first, map, timeout } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -113,7 +113,8 @@ export class AppComponent implements AfterViewInit {
    */
   private initQueryParamsSubscription(): Observable<void> {
     return this.activatedRoute.queryParams.pipe(
-      skip(1),
+      first(queryParams => Boolean(Object.keys(queryParams).length)),
+      timeout(500),
       map((queryParams: QueryParams) => {
         this.queryParamsService.setupQueryParams({
           ...queryParams,
@@ -124,7 +125,7 @@ export class AppComponent implements AfterViewInit {
           this.setupUISettings(queryParams);
         }
       }),
-      first()
+      catchError(() => of(null))
     );
   }
 

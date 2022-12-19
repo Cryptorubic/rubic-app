@@ -6,6 +6,7 @@
 
   <div class="vertical-iframe-input__row blockchain-and-amount-input">
     <app-iframe-asset-type-indicator
+      *ngIf="selectedAssetType"
       [assetType]="selectedAssetType"
     ></app-iframe-asset-type-indicator>
 

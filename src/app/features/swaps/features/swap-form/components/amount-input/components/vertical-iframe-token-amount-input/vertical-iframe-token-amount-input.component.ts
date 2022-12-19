@@ -47,7 +47,11 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
         this.amount.setValue(fromAmount.toFixed());
       }
 
-      this.selectedAssetType = isMinimalToken(fromAsset) ? fromAsset.blockchain : 'fiat';
+      if (fromAsset) {
+        this.selectedAssetType = isMinimalToken(fromAsset) ? fromAsset.blockchain : 'fiat';
+      } else {
+        this.selectedAssetType = null;
+      }
       this.selectedToken = isMinimalToken(fromAsset) ? fromAsset : null;
     });
   }

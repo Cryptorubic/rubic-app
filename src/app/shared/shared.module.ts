@@ -94,7 +94,6 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
     InfoHintComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
-    IframeAssetTypeIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
     ProgressTrxNotificationComponent,
