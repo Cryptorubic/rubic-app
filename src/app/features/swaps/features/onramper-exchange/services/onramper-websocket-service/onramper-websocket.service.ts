@@ -30,6 +30,9 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { ENVIRONMENT } from 'src/environments/environment';
+
+const websocketBaseUrl = ENVIRONMENT.websocketBaseUrl;
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -117,7 +120,7 @@ export class OnramperWebsocketService {
 
           this.checkTradeStatus();
           return webSocket<{ message: string }>(
-            `wss://dev-api.rubic.exchange/ws/onramp/transactions_receiver/${user.address}`
+            `${websocketBaseUrl}/onramp/transactions_receiver/${user.address}`
           );
         }),
         switchMap(async event => {

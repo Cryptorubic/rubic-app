@@ -9,6 +9,7 @@ export const ENVIRONMENT = {
 
   apiBaseUrl: '//dev-api.rubic.exchange/api',
   apiTokenUrl: 'https://dev-tokens.rubic.exchange/api',
+  websocketBaseUrl: 'wss://dev-api.rubic.exchange/ws',
 
   staking: STAKING_CONFIG_DEVELOP,
 
