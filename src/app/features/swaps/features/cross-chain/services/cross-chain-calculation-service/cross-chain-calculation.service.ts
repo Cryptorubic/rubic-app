@@ -123,7 +123,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders,
+      disabledProviders: [
+        ...disabledProviders,
+        CROSS_CHAIN_TRADE_TYPE.BRIDGERS,
+        CROSS_CHAIN_TRADE_TYPE.CELER,
+        CROSS_CHAIN_TRADE_TYPE.DEBRIDGE,
+        CROSS_CHAIN_TRADE_TYPE.LIFI,
+        CROSS_CHAIN_TRADE_TYPE.CELER,
+        CROSS_CHAIN_TRADE_TYPE.MULTICHAIN,
+        CROSS_CHAIN_TRADE_TYPE.RANGO,
+        CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS,
+        CROSS_CHAIN_TRADE_TYPE.VIA,
+        CROSS_CHAIN_TRADE_TYPE.XY
+      ],
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress })

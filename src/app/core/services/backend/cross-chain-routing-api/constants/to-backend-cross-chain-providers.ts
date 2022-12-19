@@ -9,5 +9,6 @@ export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, strin
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
   [CROSS_CHAIN_TRADE_TYPE.DEBRIDGE]: 'debridge',
   [CROSS_CHAIN_TRADE_TYPE.MULTICHAIN]: 'multichain',
-  [CROSS_CHAIN_TRADE_TYPE.XY]: 'xy'
+  [CROSS_CHAIN_TRADE_TYPE.XY]: 'xy',
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: 'stargate'
 };
