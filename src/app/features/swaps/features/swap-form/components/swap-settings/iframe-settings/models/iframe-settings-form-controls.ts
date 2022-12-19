@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms';
+import { FormControlType } from '@shared/models/utils/angular-forms-types';
 
 export interface IframeSettingsForm {
   autoSlippageTolerance: boolean;
@@ -8,11 +8,4 @@ export interface IframeSettingsForm {
   showReceiverAddress: boolean;
 }
 
-// repeats previous interface, wrapping in FormControl
-export interface IframeSettingsFormControls {
-  autoSlippageTolerance: FormControl<boolean>;
-  slippageTolerance: FormControl<number>;
-  disableMultihops: FormControl<boolean>;
-  autoRefresh: FormControl<boolean>;
-  showReceiverAddress: FormControl<boolean>;
-}
+export type IframeSettingsFormControls = FormControlType<IframeSettingsForm>;

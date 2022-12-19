@@ -1,5 +1,5 @@
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControlType, FormGroupType } from '@shared/models/utils/angular-forms-types';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -10,15 +10,7 @@ export interface ItSettingsForm {
   showReceiverAddress: boolean;
 }
 
-// repeats previous interface, wrapping in FormControl
-export interface ItSettingsFormControls {
-  autoSlippageTolerance: FormControl<boolean>;
-  slippageTolerance: FormControl<number>;
-  deadline: FormControl<number>;
-  disableMultihops: FormControl<boolean>;
-  autoRefresh: FormControl<boolean>;
-  showReceiverAddress: FormControl<boolean>;
-}
+export type ItSettingsFormControls = FormControlType<ItSettingsForm>;
 
 export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
@@ -26,20 +18,11 @@ export interface CcrSettingsForm {
   showReceiverAddress: boolean;
 }
 
-// repeats previous interface, wrapping in FormControl
-export interface CcrSettingsFormControls {
-  autoSlippageTolerance: FormControl<boolean>;
-  slippageTolerance: FormControl<number>;
-  showReceiverAddress: FormControl<boolean>;
-}
+export type CcrSettingsFormControls = FormControlType<CcrSettingsForm>;
 
 export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: ItSettingsForm;
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: CcrSettingsForm;
 }
 
-// repeats previous interface, wrapping in FormGroup
-export interface SettingsFormControls {
-  [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormGroup<ItSettingsFormControls>;
-  [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsFormControls>;
-}
+export type SettingsFormControls = FormGroupType<SettingsForm>;
