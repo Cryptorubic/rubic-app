@@ -146,6 +146,7 @@ export class AppComponent implements AfterViewInit {
 
   private setAccentColor(queryParams: QueryParams): void {
     const color = `#${queryParams.accentColor}`;
+    const alphaColor = this.hexToRgba(color, '0.6');
     if (this.iframeService.isIframe && queryParams.accentColor) {
       this.document.body.setAttribute(
         'style',
@@ -156,7 +157,10 @@ export class AppComponent implements AfterViewInit {
           color +
           ';' +
           ' --tui-primary-hover: ' +
-          this.hexToRgba(color, '0.6')
+          alphaColor +
+          ';' +
+          '--tui-primary-active: ' +
+          alphaColor
       );
     }
   }
