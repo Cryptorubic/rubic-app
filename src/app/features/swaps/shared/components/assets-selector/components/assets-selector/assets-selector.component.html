@@ -26,7 +26,7 @@
 
         <ng-container *onlyFrame="'vertical'">
           <app-search-bar
-            *ngIf="iframeTokenSearch"
+            *ngIf="iframeTokenSearch || selectorListType === 'fiats'"
             class="vertical-iframe-token-search"
           ></app-search-bar>
         </ng-container>
