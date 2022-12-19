@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { HttpClient } from '@angular/common/http';
-import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
+import { onramperApiKey } from '@app/shared/constants/onramper/onramper-api-key';
 import { OnramperGatewaysResponse } from '@core/services/fiats/models/onramper-gateways-response';
 import { fiatsDictionary } from '@core/services/fiats/constants/fiats-dictionary';
 import { catchError, timeout } from 'rxjs/operators';

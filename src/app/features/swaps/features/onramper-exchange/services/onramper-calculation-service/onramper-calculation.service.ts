@@ -14,7 +14,7 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/models/onramper-rate-response';
-import { onramperApiKey } from '@features/swaps/shared/constants/onramper/onramper-api-key';
+import { onramperApiKey } from '@app/shared/constants/onramper/onramper-api-key';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import {
   OnramperSupportedBlockchain,
