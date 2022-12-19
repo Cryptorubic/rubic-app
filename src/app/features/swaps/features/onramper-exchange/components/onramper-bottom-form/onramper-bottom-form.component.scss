@@ -7,6 +7,8 @@
   @include iframe-vertical {
     justify-content: space-between;
     height: 212px;
+
+    padding: 0 !important;
   }
 
   &__output {

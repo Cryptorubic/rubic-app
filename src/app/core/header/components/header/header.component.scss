@@ -68,11 +68,15 @@
 
     > * {
       transform: scale(0.75);
+
+      @include iframe {
+        transform: unset;
+      }
     }
   }
 
   @include iframe {
-    padding: 0;
+    padding: 0 !important;
 
     app-iframe-logout-button {
       margin-left: 6px;

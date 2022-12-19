@@ -10,7 +10,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { first, map } from 'rxjs/operators';
-import { skip } from 'rxjs';
+import { forkJoin, Observable, skip } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -31,9 +31,9 @@ export class AppComponent implements AfterViewInit {
     private readonly activatedRoute: ActivatedRoute
   ) {
     this.printTimestamp();
-    this.initQueryParamsSubscription();
     this.setupLanguage();
-    this.loadPlatformConfig();
+
+    this.initApp();
   }
 
   ngAfterViewInit() {
@@ -96,36 +96,36 @@ export class AppComponent implements AfterViewInit {
   }
 
   /**
-   * Inits site query params subscription.
+   * Waits for all initializing observables to complete.
    */
-  private initQueryParamsSubscription(): void {
-    this.activatedRoute.queryParams
-      .pipe(
-        skip(1),
-        map((queryParams: QueryParams) => {
-          this.queryParamsService.setupQueryParams({
-            ...queryParams,
-            ...(queryParams?.from && { from: queryParams.from }),
-            ...(queryParams?.to && { to: queryParams.to })
-          });
-          if (queryParams.hideUnusedUI) {
-            this.setupUISettings(queryParams);
-          }
-        }),
-        first()
-      )
-      .subscribe();
+  private initApp(): void {
+    forkJoin([this.loadPlatformConfig(), this.initQueryParamsSubscription()]).subscribe(
+      ([isBackendAvailable]) => {
+        this.isBackendAvailable = isBackendAvailable;
+        document.getElementById('loader')?.classList.add('disabled');
+        setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
+      }
+    );
   }
 
   /**
-   * Loads platform config and checks is server active.
+   * Inits site query params subscription.
    */
-  private loadPlatformConfig(): void {
-    this.platformConfigurationService.loadPlatformConfig().subscribe(isAvailable => {
-      this.isBackendAvailable = isAvailable;
-      document.getElementById('loader')?.classList.add('disabled');
-      setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-    });
+  private initQueryParamsSubscription(): Observable<void> {
+    return this.activatedRoute.queryParams.pipe(
+      skip(1),
+      map((queryParams: QueryParams) => {
+        this.queryParamsService.setupQueryParams({
+          ...queryParams,
+          ...(queryParams?.from && { from: queryParams.from }),
+          ...(queryParams?.to && { to: queryParams.to })
+        });
+        if (queryParams.hideUnusedUI) {
+          this.setupUISettings(queryParams);
+        }
+      }),
+      first()
+    );
   }
 
   private setupUISettings(queryParams: QueryParams): void {
@@ -135,5 +135,12 @@ export class AppComponent implements AfterViewInit {
       this.document.body.classList.add('hide-unused-ui');
       this.removeLiveChatInIframe();
     }
+  }
+
+  /**
+   * Loads platform config and checks is server active.
+   */
+  private loadPlatformConfig(): Observable<boolean> {
+    return this.platformConfigurationService.loadPlatformConfig();
   }
 }
