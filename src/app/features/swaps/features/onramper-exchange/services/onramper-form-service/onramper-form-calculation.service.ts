@@ -194,4 +194,9 @@ export class OnramperFormCalculationService {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.startRecalculation();
   }
+
+  public stopBuyNativeInProgress(): void {
+    this._tradeStatus$.next(TRADE_STATUS.LOADING);
+    this.startRecalculation();
+  }
 }

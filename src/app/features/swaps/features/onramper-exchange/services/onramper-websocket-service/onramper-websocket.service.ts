@@ -29,6 +29,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable()
 export class OnramperWebsocketService {
@@ -45,6 +46,8 @@ export class OnramperWebsocketService {
    */
   private inputForm: SwapFormInputFiats;
 
+  private currentRecentTrade: OnramperRecentTrade;
+
   private intervalSubscription$: Subscription;
 
   constructor(
@@ -55,7 +58,8 @@ export class OnramperWebsocketService {
     private readonly onramperService: OnramperService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly swapFormService: SwapFormService,
-    private readonly onramperApiService: OnramperApiService
+    private readonly onramperApiService: OnramperApiService,
+    private readonly iframeService: IframeService
   ) {
     this.subscribeOnUserChange();
     this.subscribeOnForm();
@@ -63,6 +67,10 @@ export class OnramperWebsocketService {
   }
 
   private async checkTradeStatus(): Promise<void> {
+    if (this.iframeService.isIframe) {
+      return;
+    }
+
     const onramperPendingTrade = this.recentTradesStoreService.currentUserRecentTrades.find(
       trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
     ) as OnramperRecentTrade;
@@ -132,7 +140,7 @@ export class OnramperWebsocketService {
         this.onramperFormService.widgetOpened = false;
         this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
 
-        const recentTrade: OnramperRecentTrade = {
+        this.currentRecentTrade = {
           fromFiat: this.inputForm.fromFiat,
           toToken: this.inputForm.toToken,
 
@@ -142,7 +150,12 @@ export class OnramperWebsocketService {
           timestamp: Date.now(),
           calculatedStatusFrom: TxStatus.PENDING
         };
-        this.recentTradesStoreService.saveTrade(this.authService.userAddress, recentTrade);
+        if (!this.iframeService.isIframe) {
+          this.recentTradesStoreService.saveTrade(
+            this.authService.userAddress,
+            this.currentRecentTrade
+          );
+        }
 
         await this.setupBalanceCheckTimer(
           txInfo.transaction_id,
@@ -156,14 +169,16 @@ export class OnramperWebsocketService {
       const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(
         txInfo.transaction_id
       );
-      this.recentTradesStoreService.updateTrade({
-        ...recentTrade,
-        calculatedStatusFrom: TxStatus.FAIL
-      });
+      if (!this.iframeService.isIframe) {
+        this.recentTradesStoreService.updateTrade({
+          ...recentTrade,
+          calculatedStatusFrom: TxStatus.FAIL
+        });
+      }
 
       this.progressNotificationSubscription$?.unsubscribe();
 
-      this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.READY_TO_BUY_NATIVE;
+      this.onramperFormCalculationService.stopBuyNativeInProgress();
       this.onramperFormCalculationService.updateRate();
     }
   }
@@ -200,15 +215,27 @@ export class OnramperWebsocketService {
   }
 
   private async handleSuccessfulTrade(txId: string, nativeAmount: string): Promise<void> {
-    const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(txId);
-    if (!recentTrade || recentTrade.calculatedStatusFrom === TxStatus.SUCCESS) {
+    const recentTrade = !this.iframeService.isIframe
+      ? this.recentTradesStoreService.getSpecificOnramperTrade(txId)
+      : this.currentRecentTrade;
+    if (
+      !recentTrade ||
+      recentTrade.txId !== txId ||
+      recentTrade.calculatedStatusFrom === TxStatus.SUCCESS
+    ) {
       return;
     }
-    this.recentTradesStoreService.updateTrade({
+
+    const updatedRecentTrade = {
       ...recentTrade,
       calculatedStatusFrom: TxStatus.SUCCESS,
       nativeAmount: nativeAmount
-    });
+    };
+    if (!this.iframeService.isIframe) {
+      this.recentTradesStoreService.updateTrade(updatedRecentTrade);
+    } else {
+      this.currentRecentTrade = updatedRecentTrade;
+    }
 
     this.progressNotificationSubscription$?.unsubscribe();
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -217,13 +244,14 @@ export class OnramperWebsocketService {
       data: { type: 'on-chain', withRecentTrades: true }
     });
 
-    this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.READY_TO_BUY_NATIVE;
+    this.onramperFormCalculationService.stopBuyNativeInProgress();
     this.onramperFormCalculationService.updateRate();
 
-    if (this.relocateToOnChain) {
-      if (!EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)) {
-        await this.onramperService.updateSwapFormByRecentTrade(txId);
-      }
+    if (
+      (this.iframeService.isIframe || this.relocateToOnChain) &&
+      !EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)
+    ) {
+      await this.onramperService.updateSwapFormByRecentTrade(txId);
     }
   }
 
