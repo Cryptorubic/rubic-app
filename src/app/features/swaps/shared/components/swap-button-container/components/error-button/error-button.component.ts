@@ -5,11 +5,11 @@ import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { first, map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo } from 'rubic-sdk';
-import { lastValueFrom, Observable } from 'rxjs';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { first, map } from 'rxjs/operators';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { lastValueFrom } from 'rxjs';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Component({
@@ -25,12 +25,9 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
-  public get fromBlockchainLabel$(): Observable<string> {
-    return this.swapFormService.inputValueChanges.pipe(
-      startWith(this.swapFormService.inputValue),
-      map(form => blockchainLabel[form.fromBlockchain])
-    );
-  }
+  public readonly fromBlockchainLabel$ = this.swapFormService.fromBlockchain$.pipe(
+    map(fromBlockchain => blockchainLabel[fromBlockchain])
+  );
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -39,11 +36,12 @@ export class ErrorButtonComponent {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly swapFormService: SwapFormService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: SdkService
   ) {}
 
   public allowChangeNetwork(err: BUTTON_ERROR_TYPE): boolean {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromAssetType } = this.swapFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
     if (
       err !== BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN ||
       !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
@@ -58,7 +56,8 @@ export class ErrorButtonComponent {
   }
 
   public async changeNetwork(): Promise<void> {
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromAssetType } = this.swapFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
     if (!BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
       return;
     }

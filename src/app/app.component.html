@@ -1,5 +1,5 @@
 <tui-root>
-  <ng-template [ngIf]="isBackendAvailable">
+  <ng-container *ngIf="isBackendAvailable">
     <div class="wrapper" *noFrame>
       <app-header></app-header>
       <main class="main-content">
@@ -7,6 +7,7 @@
       </main>
       <app-rubic-footer class="footer"></app-rubic-footer>
     </div>
+
     <div class="iframe-wrapper" *onlyFrame>
       <div class="iframe-content">
         <app-header></app-header>
@@ -15,7 +16,7 @@
         </main>
       </div>
     </div>
-  </ng-template>
+  </ng-container>
 
   <ng-container ngProjectAs="tuiOverDialogs">
     <app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>

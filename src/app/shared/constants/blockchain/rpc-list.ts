@@ -33,7 +33,13 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
-  [BLOCKCHAIN_NAME.TELOS]: ['https://rpc1.eu.telos.net/evm', 'https://mainnet.telos.net/evm'],
+  [BLOCKCHAIN_NAME.TELOS]: [
+    'https://mainnet.telos.net/evm',
+    'https://rpc1.eu.telos.net/evm',
+    'https://rpc2.eu.telos.net/evm',
+    'https://rpc1.us.telos.net/evm',
+    'https://rpc1.us.telos.net/evm'
+  ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
     'https://rpc.ankr.com/optimism/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
   ],

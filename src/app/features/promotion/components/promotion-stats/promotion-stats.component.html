@@ -9,7 +9,7 @@
     <tui-loader
       *ngLet="isStatisticsLoading$ | async as isStatisticsLoading"
       [showLoader]="isStatisticsLoading"
-      overlay="true"
+      [overlay]="true"
     >
       <div class="statistics">
         <app-rotating-icon

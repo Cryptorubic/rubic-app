@@ -1,6 +1,7 @@
 import { BlockchainName } from 'rubic-sdk';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 export type AdditionalTokens =
   | 'eth_tokens'
@@ -14,9 +15,10 @@ export type AdditionalTokens =
 interface AllQueryParams {
   from: string;
   to: string;
-  fromChain: BlockchainName;
+  fromChain: AssetType;
   toChain: BlockchainName;
   amount: string;
+  onramperTxId: string;
 
   // iframe
   iframe: IframeAppearance;
@@ -36,6 +38,7 @@ interface AllQueryParams {
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
+
   // Near specific query params.
   // Transaction.
   nearLogin: string;
@@ -51,11 +54,6 @@ interface AllQueryParams {
   all_keys: string;
 }
 
-export interface QuerySlippage {
-  slippageIt: number | null;
-  slippageCcr: number | null;
-}
-
 export type QueryParams = {
-  [P in AdditionalTokens]: string[];
-} & AllQueryParams;
+  [P in AdditionalTokens]?: string[];
+} & Partial<AllQueryParams>;

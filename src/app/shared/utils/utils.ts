@@ -37,8 +37,8 @@ export function compareAddresses(address0: string, address1: string): boolean {
  */
 export function compareTokens(token0: MinimalToken, token1: MinimalToken): boolean {
   return (
-    token0.address.toLowerCase() === token1.address.toLowerCase() &&
-    token0.blockchain === token1.blockchain
+    token0?.address.toLowerCase() === token1?.address.toLowerCase() &&
+    token0?.blockchain === token1?.blockchain
   );
 }
 

@@ -103,7 +103,8 @@ module.exports = {
           }
         ],
         'rxjs/no-implicit-any-catch': 'off',
-        'rxjs/no-ignored-takewhile-value': 'off'
+        'rxjs/no-ignored-takewhile-value': 'off',
+        'rxjs/no-sharereplay': 'off'
       }
     },
     {

@@ -1,0 +1,23 @@
+@use 'src/scss/core' as *;
+
+.back-button {
+  app-rubic-button {
+    ::ng-deep button {
+      border-radius: 15px;
+    }
+  }
+
+  &__arrow {
+    width: 16px;
+    height: 15px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+
+      path {
+        fill: var(--primary-text);
+      }
+    }
+  }
+}

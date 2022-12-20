@@ -1,21 +1,15 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  startWith,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { getCorrectAddressValidator } from '@features/swaps/shared/components/target-network-address/utils/get-correct-address-validator';
+import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
 @Component({
   selector: 'app-target-network-address',
@@ -29,9 +23,7 @@ export class TargetNetworkAddressComponent implements OnInit {
     getCorrectAddressValidator(this.swapFormService.inputValue)
   ]);
 
-  public toBlockchain$ = this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
-    startWith(this.swapFormService.inputValue.toBlockchain)
-  );
+  public toBlockchain$ = this.swapFormService.toBlockchain$;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -43,19 +35,19 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscribeOnTargetAddress();
-    this.subsctibeOnFormValues();
+    this.subscribeOnFormValues();
   }
 
-  private subsctibeOnFormValues(): void {
-    this.swapFormService.inputValueChanges
+  private subscribeOnFormValues(): void {
+    this.swapFormService.inputValue$
       .pipe(
         tap(inputForm => {
           this.address.setValidators(getCorrectAddressValidator(inputForm));
         }),
-        filter(form => !isNil(form.fromToken) && !isNil(form.toToken)),
+        filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareTokens(prev.fromToken, curr.fromToken) &&
+            compareAssets(prev.fromAsset, curr.fromAsset) &&
             compareTokens(prev.toToken, curr.toToken)
           );
         }),

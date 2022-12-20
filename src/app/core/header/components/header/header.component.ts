@@ -17,15 +17,14 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
-import { SwapFormService } from 'src/app/features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
-import { SwapsService } from 'src/app/features/swaps/core/services/swaps-service/swaps.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
@@ -61,8 +60,6 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
-  public isSettingsOpened = false;
-
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
@@ -87,7 +84,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -109,7 +106,7 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-    this.swapType$ = this.swapsService.swapMode$;
+    this.swapType$ = this.swapTypeService.swapMode$;
   }
 
   public ngAfterViewInit(): void {
@@ -139,27 +136,15 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    this.swapFormService.inputControl.patchValue({
+      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAsset: null,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      fromToken: null,
       toToken: null,
       fromAmount: null
-    } as SwapFormInput;
-
-    const queryParams: Params = {
-      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      amount: undefined,
-      from: undefined,
-      to: undefined
-    };
-
-    this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-
-    this.swapFormService.input.patchValue(params);
+    });
     this.gtmService.reloadGtmSession();
-    await this.router.navigate(['/'], { queryParams, queryParamsHandling: 'merge' });
+    await this.router.navigate(['/']);
   }
 
   public handleMenuButtonClick(): void {

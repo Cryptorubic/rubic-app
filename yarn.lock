@@ -2222,13 +2222,6 @@
   dependencies:
     tslib "^1.9.0"
 
-"@ngneat/reactive-forms@^1.7.3":
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/@ngneat/reactive-forms/-/reactive-forms-1.7.5.tgz#df30ac7f7fe5ef8a7d0a2beac36aa009c1c26336"
-  integrity sha512-7hTWW7SDopCZW+sWDf7UK5lsLzeKK66iuAzxx+LntqVoU5d3lGCeR503sXCbo8TDKApSH1za9f/KKLFqUYGV/w==
-  dependencies:
-    tslib "^2.0.0"
-
 "@ngtools/webpack@14.2.10":
   version "14.2.10"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-14.2.10.tgz#d33ff1147d01bd1f5d936a3d1744c81a28e2ca6a"

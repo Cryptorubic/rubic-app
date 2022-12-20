@@ -1,0 +1,13 @@
+.receiver-address {
+  display: flex;
+  grid-gap: 8px;
+
+  &__text {
+    font-size: 13px;
+    letter-spacing: 0.4px;
+  }
+}
+
+.medium {
+  font-weight: 500;
+}
