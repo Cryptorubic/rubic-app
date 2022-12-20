@@ -14,6 +14,10 @@ app-icon-button ::ng-deep button {
     }
   }
 
+  tui-wrapper {
+    background: var(--primary-background);
+  }
+
   svg {
     width: 19.8px;
     height: 19.8px;
