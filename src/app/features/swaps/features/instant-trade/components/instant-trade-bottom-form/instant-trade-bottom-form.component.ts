@@ -6,12 +6,11 @@ import {
   Inject,
   Injector,
   INJECTOR,
-  Input,
   OnInit,
   Output,
   Self
 } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
   BlockchainName,
@@ -24,7 +23,6 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
@@ -33,7 +31,6 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -49,15 +46,15 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { SwapInfoService } from '@features/swaps/features/swaps-form/components/swap-info/services/swap-info.service';
+import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -84,12 +81,6 @@ interface SettledProviderTrade {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit {
-  @Input() loading: boolean;
-
-  @Input() tokens: AvailableTokenAmount[];
-
-  @Input() favoriteTokens: AvailableTokenAmount[];
-
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
   /**
@@ -148,6 +139,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public toBlockchain: BlockchainName;
 
+  public readonly isOnramper$ = this.queryParamsService.queryParams$.pipe(
+    map(queryParams => Boolean(queryParams.onramperTxId))
+  );
+
   public get selectedProvider(): InstantTradeProviderData {
     return this._selectedProvider;
   }
@@ -170,7 +165,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public get allowTrade(): boolean {
-    const form = this.swapFormService.inputValue;
+    const form = this.instantTradeService.inputValue;
 
     return Boolean(
       form.fromBlockchain &&
@@ -198,7 +193,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    public readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
@@ -222,35 +217,19 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.swapFormService.inputValueChanges
-      .pipe(
-        startWith(this.swapFormService.inputValue),
-        distinctUntilChanged((prev, next) => {
-          return (
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromBlockchain === next.fromBlockchain &&
-            prev.fromToken?.address === next.fromToken?.address &&
-            prev.toToken?.address === next.toToken?.address &&
-            prev.fromAmount === next.fromAmount
-          );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(form => {
-        this.setupSwapForm(form);
-      });
+    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.setupSwapForm();
+    });
 
-    this.swapFormService.input.controls.toToken.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(toToken => {
-        if (
-          TokensService.areTokensEqual(this.toToken, toToken) &&
-          this.toToken?.price !== toToken?.price$
-        ) {
-          this.toToken = toToken;
-          this.cdr.markForCheck();
-        }
-      });
+    this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
+      if (
+        TokensService.areTokensEqual(this.toToken, toToken) &&
+        this.toToken?.price !== toToken?.price
+      ) {
+        this.toToken = toToken;
+        this.cdr.markForCheck();
+      }
+    });
 
     this.settingsService.instantTradeValueChanges
       .pipe(
@@ -293,7 +272,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
   /**
    * Updates values, taken from form, and starts recalculation.
    */
-  private setupSwapForm(form: SwapFormInput): void {
+  private setupSwapForm(): void {
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    if (!BlockchainsInfo.isBlockchainName(fromAssetType) || fromAssetType !== toBlockchain) {
+      return;
+    }
+
+    const form = this.instantTradeService.inputValue;
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
@@ -339,7 +324,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
    * Makes additional checks and starts `normal` or `hidden` calculation.
    */
   private conditionalCalculate(type: 'normal' | 'hidden'): void {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const { fromBlockchain, toBlockchain } = this.instantTradeService.inputValue;
+    if (fromBlockchain !== toBlockchain) {
+      return;
+    }
+
     if (
       fromBlockchain !== toBlockchain ||
       !this.isSupportedOnChainNetwork(this.currentBlockchain as SupportedOnChainNetworks) ||
@@ -361,7 +350,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         filter(type => type === 'normal'),
         debounceTime(200),
         switchMap(() => {
-          if (!this.allowTrade) {
+          if (!this.swapFormService.isFilled) {
             this.setTradeStateIsNotAllowed();
             return of(null);
           }
@@ -407,7 +396,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.selectedProvider = null;
     this.isTradeSelectedByUser = false;
 
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: new BigNumber(NaN)
     });
   }
@@ -419,7 +408,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.needApprove = false;
     this.withApproveButton = this.needApprove;
 
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.fromAmount
     });
   }
@@ -499,7 +488,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
 
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: this.selectedProvider.trade.to.tokenAmount
       });
       this.cdr.detectChanges();
@@ -574,7 +563,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       .pipe(
         filter(type => type === 'hidden' && Boolean(this.authService.userAddress)),
         switchMap(() => {
-          if (!this.allowTrade) {
+          if (!this.swapFormService.isFilled) {
             return of(null);
           }
 
@@ -629,7 +618,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.needApprove = this.selectedProvider.needApprove;
       this.withApproveButton = this.needApprove;
     }
-    this.swapFormService.output.patchValue({
+    this.swapFormService.outputControl.patchValue({
       toAmount: this.selectedProvider.trade.to.tokenAmount
     });
 
@@ -642,7 +631,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         trade => trade.providerName === this.selectedProvider.name
       );
       const providerAmount =
-        providerData.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
+        providerData?.status === 'fulfilled' ? providerData.value.to.tokenAmount : null;
 
       if (!this.selectedProvider.trade.to.tokenAmount.eq(providerAmount)) {
         this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;

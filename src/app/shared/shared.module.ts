@@ -27,7 +27,6 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
@@ -48,7 +47,7 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
+import { IframeAssetTypeIndicatorComponent } from 'src/app/shared/components/iframe-asset-type-indicator/iframe-asset-type-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
@@ -67,6 +66,8 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
 import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
+import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
+import { BackButtonComponent } from './components/back-button/back-button.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,6 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     IconButtonComponent,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
-    RubicTokensComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -88,13 +88,12 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    IframeBlockchainIndicatorComponent,
+    IframeAssetTypeIndicatorComponent,
     RubicContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
     NotificationBadgeComponent,
     CopyContainerComponent,
-    IframeBlockchainIndicatorComponent,
     StatusBadgeComponent,
     ChipsComponent,
     ProgressTrxNotificationComponent,
@@ -110,12 +109,14 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     ThemedIconPipe,
     FalsyPipe,
     FunctionCallPipe,
+    SafeSanitizerPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    BackButtonComponent
   ],
   imports: [
     CommonModule,
@@ -163,7 +164,6 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     FalsyPipe,
     WithRoundPipe,
     SafetyLinkDirective,
-    RubicTokensComponent,
     TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,
@@ -171,7 +171,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
+    IframeAssetTypeIndicatorComponent,
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
@@ -183,8 +183,10 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
     FunctionCallPipe,
     StatusBadgeComponent,
     ChipsComponent,
-    IframeLogoutButtonComponent
+    IframeLogoutButtonComponent,
+    SafeSanitizerPipe,
+    BackButtonComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
 export class SharedModule {}

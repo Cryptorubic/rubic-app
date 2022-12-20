@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
-import { map, startWith } from 'rxjs/operators';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
@@ -28,18 +28,17 @@ export class TokensRateComponent implements OnInit {
   constructor(private readonly swapFormService: SwapFormService) {}
 
   ngOnInit() {
-    this.tokensRate$ = this.swapFormService.outputValueChanges.pipe(
-      startWith(this.swapFormService.outputValue),
+    this.tokensRate$ = this.swapFormService.outputValue$.pipe(
       map(outputForm => {
         const { toAmount } = outputForm;
 
         if (toAmount?.isFinite()) {
-          const { fromAmount, fromToken, toToken } = this.swapFormService.inputValue;
+          const { fromAmount, fromAsset, toToken } = this.swapFormService.inputValue;
 
           return {
             from: {
               amount: fromAmount.dividedBy(toAmount),
-              symbol: fromToken.symbol
+              symbol: fromAsset.symbol
             },
             to: {
               amount: toAmount.dividedBy(fromAmount),

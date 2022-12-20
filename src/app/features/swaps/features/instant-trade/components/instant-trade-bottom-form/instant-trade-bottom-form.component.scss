@@ -93,10 +93,15 @@ $green: rgb(74, 169, 86);
 
   &__body-top {
     display: flex;
+    grid-gap: 10px;
     justify-content: space-between;
 
     min-height: 60px;
     overflow: hidden;
+
+    @include iframe {
+      grid-gap: 0;
+    }
 
     @include iframe-horizontal {
       align-items: center;
@@ -133,7 +138,7 @@ $green: rgb(74, 169, 86);
       width: 100%;
       margin-bottom: 19px;
 
-      app-iframe-blockchain-indicator {
+      app-iframe-asset-type-indicator {
         margin-right: 15px;
       }
     }

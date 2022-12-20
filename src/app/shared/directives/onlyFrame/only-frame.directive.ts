@@ -5,7 +5,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
   selector: '[onlyFrame]'
 })
 export class OnlyFrameDirective<T> implements OnInit {
-  @Input() onlyFrame: 'horizontal' | 'vertical' | 'any' = 'any';
+  @Input() onlyFrame: 'horizontal' | 'vertical' | '' = '';
 
   @Input() onlyFrameAnd = true;
 
@@ -22,7 +22,7 @@ export class OnlyFrameDirective<T> implements OnInit {
     }
 
     const iframeAppearance = this.iframeService.iframeAppearance;
-    if (iframeAppearance && (this.onlyFrame === 'any' || iframeAppearance === this.onlyFrame)) {
+    if (iframeAppearance && (!this.onlyFrame || iframeAppearance === this.onlyFrame)) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     } else {
       this.viewContainer.clear();

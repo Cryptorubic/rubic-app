@@ -68,11 +68,15 @@
 
     > * {
       transform: scale(0.75);
+
+      @include iframe {
+        transform: unset;
+      }
     }
   }
 
   @include iframe {
-    padding: 0;
+    padding: 0 !important;
 
     app-iframe-logout-button {
       margin-left: 6px;
@@ -161,7 +165,7 @@
   }
 }
 
-@include b($laptop-plus) {
+@include b($laptop) {
   .rubic-header {
     padding: 21px 20px 19px;
 

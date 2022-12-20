@@ -1,44 +1,44 @@
-import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
 import { CommonModalService } from '@core/services/modal/common-modal.service';
-import { HeaderStore } from '@core/header/services/header.store';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
+import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 
 @Component({
-  selector: 'app-success-trx-notification',
+  selector: 'polymorpheus-success-trx-notification',
   templateUrl: './success-trx-notification.component.html',
   styleUrls: ['./success-trx-notification.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuccessTrxNotificationComponent {
-  public type: SuccessTxModalType;
+  public readonly type: SuccessTxModalType;
 
-  public ccrProviderType?: CrossChainTradeType;
-
-  public CROSS_CHAIN_PROVIDER = CROSS_CHAIN_TRADE_TYPE;
+  public readonly withRecentTrades: boolean;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       void,
-      { type: SuccessTxModalType; ccrProviderType: CrossChainTradeType }
+      { type: SuccessTxModalType; withRecentTrades: boolean }
     >,
     private readonly modalService: CommonModalService,
-    private readonly headerStore: HeaderStore
+    private readonly windowWidthService: WindowWidthService
   ) {
     this.type = context.data.type;
-    this.ccrProviderType = context.data.ccrProviderType;
+    this.withRecentTrades = context.data.withRecentTrades;
   }
 
-  public handleLinkClick(): void {
+  public openRecentTrades(): void {
     // CompleteWith doesn't work.
     (this.context as RubicAny).closeHook();
+
+    const isDesktop = this.windowWidthService.windowSize === WindowSize.DESKTOP;
     this.modalService
       .openRecentTradesModal({
-        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
+        size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
   }

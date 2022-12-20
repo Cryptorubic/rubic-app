@@ -4,7 +4,6 @@ import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
-import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -57,8 +56,7 @@ export class IframeService implements OnDestroy {
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
-    @Inject(WINDOW) private readonly window: Window,
-    private readonly promotionPromoterAddressApiService: PromotionPromoterAddressApiService
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   ngOnDestroy() {

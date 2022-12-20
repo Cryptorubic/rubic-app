@@ -3,7 +3,7 @@ import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angul
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
@@ -11,6 +11,10 @@ import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-m
 import { WINDOW } from '@ng-web-apis/common';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
+
+type SupportedSwapProviderType =
+  | SWAP_PROVIDER_TYPE.INSTANT_TRADE
+  | SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -33,8 +37,6 @@ interface GaObject {
 })
 export class GoogleTagManagerService {
   private readonly _instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
-
-  private readonly _bridgeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
   private readonly _multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
@@ -123,7 +125,7 @@ export class GoogleTagManagerService {
    * @param eventCategory Form type.
    * @param value User's selected token or approve action.
    */
-  public fireFormInteractionEvent(eventCategory: SWAP_PROVIDER_TYPE, value: string): void {
+  public fireFormInteractionEvent(eventCategory: SupportedSwapProviderType, value: string): void {
     this.angularGtmService.pushTag({
       event: 'GAevent',
       ecategory: formEventCategoryMap[eventCategory],
@@ -137,7 +139,7 @@ export class GoogleTagManagerService {
    * @param swapMode Form type.
    * @param step Which token selected.
    */
-  public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps): void {
+  public updateFormStep(swapMode: SupportedSwapProviderType, step: keyof FormSteps): void {
     const formStep$ = this.forms[swapMode];
     if (!formStep$.getValue()[step]) {
       formStep$.next({ ...formStep$.getValue(), [step]: true });
@@ -155,7 +157,7 @@ export class GoogleTagManagerService {
    * @param price The actual cost of the sent volume of tokens.
    */
   public fireTxSignedEvent(
-    eventCategory: SWAP_PROVIDER_TYPE,
+    eventCategory: SupportedSwapProviderType,
     txId: string,
     fromToken: string,
     toToken: string,
@@ -221,7 +223,7 @@ export class GoogleTagManagerService {
   public fetchPassedFormSteps(): void {
     if (!this._localStorageDataFetched$.value && this.isGtmSessionActive) {
       const data = this.storeService.fetchData();
-      Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+      Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
         if (data[key]) {
           this.forms[key].next(data[key]);
         }
@@ -234,7 +236,7 @@ export class GoogleTagManagerService {
    * Puts passed form steps in local storage.
    */
   public savePassedFormSteps(): void {
-    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+    Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
       const formSteps = this.forms[key].getValue();
       this.storeService.setItem(key, formSteps);
     });
@@ -244,7 +246,7 @@ export class GoogleTagManagerService {
    * Clears passed form steps in local storage and within current session.
    */
   public clearPassedFormSteps(): void {
-    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+    Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
       this.forms[key].next(formStepsInitial);
       this.storeService.deleteItem(key);
     });

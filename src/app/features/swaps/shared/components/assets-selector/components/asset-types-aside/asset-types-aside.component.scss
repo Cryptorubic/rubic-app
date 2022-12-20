@@ -1,0 +1,203 @@
+@use 'src/scss/core' as *;
+
+.asset-types-aside {
+  display: flex;
+  align-items: center;
+
+  width: 194px;
+  height: 100%;
+  padding: 14px 10px;
+
+  background: rgba(170, 170, 170, 0.13);
+  border-radius: 0 10px 0 15px;
+
+  @include iframe {
+    left: unset;
+
+    width: 100%;
+    height: unset;
+    padding: 0 0 14px;
+
+    background: unset;
+    border-radius: unset;
+    box-shadow: unset;
+  }
+
+  @include iframe-vertical {
+    padding-bottom: 0;
+  }
+
+  &__scroll {
+    max-height: 100%;
+
+    @include iframe {
+      height: 76px;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    grid-row-gap: 14px;
+
+    @include iframe {
+      flex-direction: row;
+    }
+
+    @include iframe-vertical {
+      flex-wrap: nowrap;
+
+      margin-bottom: 20px;
+
+      ::ng-deep app-icon-button {
+        .image {
+          max-height: 20px;
+        }
+      }
+    }
+
+    @include iframe-horizontal {
+      flex-wrap: nowrap;
+    }
+
+    li {
+      margin: 0 5px;
+
+      @include iframe {
+        margin: 0 15px 0 0;
+      }
+
+      &.disabled {
+        cursor: not-allowed !important;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &__fiats {
+    ::ng-deep app-icon-button {
+      svg {
+        path {
+          fill: var(--form-background-transparent);
+        }
+      }
+    }
+  }
+
+  ::ng-deep app-icon-button {
+    button {
+      width: 77px !important;
+      height: 68px !important;
+
+      @include iframe {
+        width: 70px !important;
+        height: 56px !important;
+      }
+
+      .content {
+        justify-content: unset;
+
+        .image {
+          margin: 5px 0 2px;
+        }
+      }
+    }
+  }
+}
+
+.open-selector {
+  width: 77px;
+
+  ::ng-deep app-rubic-button {
+    [tuiButton] {
+      height: 68px;
+
+      border-radius: var(--tui-radius-m);
+
+      &._pressed,
+      &:focus,
+      &:hover {
+        background: transparent;
+        box-shadow: none;
+      }
+    }
+
+    tui-wrapper {
+      padding: 0 !important;
+    }
+  }
+}
+
+@include b($tablet) {
+  .asset-types-aside {
+    border-radius: 0 10px 0 0;
+  }
+}
+
+@include b($mobile-md-minus) {
+  .asset-types-aside {
+    display: flex;
+    align-items: unset;
+    justify-content: center;
+
+    width: 95px;
+    height: 100%;
+    padding: 14px 0 0;
+
+    border-radius: unset;
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      li:not(:last-child) {
+        @include iframe {
+          margin-right: 15px;
+          margin-bottom: unset;
+        }
+      }
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .asset-types-aside {
+    width: 76px;
+
+    li {
+      ::ng-deep app-icon-button {
+        button {
+          width: 57px !important;
+          height: 52px !important;
+
+          .content {
+            justify-content: center;
+
+            .image {
+              margin: 0;
+            }
+
+            .label-container {
+              display: none;
+
+              @include iframe {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .open-selector {
+    width: 57px;
+
+    ::ng-deep app-rubic-button {
+      [tuiButton] {
+        height: 52px;
+      }
+    }
+  }
+}

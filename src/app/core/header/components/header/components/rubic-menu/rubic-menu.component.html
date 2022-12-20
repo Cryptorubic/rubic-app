@@ -67,7 +67,7 @@
             width="25"
             height="25"
           />
-          {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
+          {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
         </button>
 
         <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
@@ -87,7 +87,7 @@
           routerLink="promotion"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler()"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.promotion' | translate }}

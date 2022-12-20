@@ -37,7 +37,7 @@
     "transactionDetails": "상세 거래 내역",
     "approveToken": "Approve {{symbol}}",
     "tagline": {
-      "firstText": "Cross-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
@@ -100,7 +100,7 @@
     "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다."
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "소개",
     "features": "기능",
     "faq": "FAQ",
@@ -262,7 +262,7 @@
     "notAvailableAfter": " 사용할 수 없습니다."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",
@@ -599,7 +599,7 @@
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "거래가 성공적으로 전송되었습니다!",
     "successfulCCRSwapTitle": "소스 네트워크에서 성공적인 스왑!",
-    "successfulTradeParagraph": "Check transaction in ",
+    "checkIn": "Check in ",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",

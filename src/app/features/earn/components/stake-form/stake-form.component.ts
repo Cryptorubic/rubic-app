@@ -11,7 +11,6 @@ import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
 import { MILLISECONDS_IN_MONTH, MILLISECONDS_IN_WEEK } from '@app/shared/constants/time/time';
-import { FormControl } from '@ngneat/reactive-forms';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
@@ -31,6 +30,7 @@ import { StakeButtonError } from '../../models/stake-button-error.enum';
 import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { StakingService } from '../../services/staking.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-stake-form',

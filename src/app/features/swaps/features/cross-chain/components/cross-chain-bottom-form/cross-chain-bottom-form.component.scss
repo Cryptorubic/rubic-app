@@ -52,7 +52,7 @@
 
       background-color: transparent;
 
-      app-rubic-tokens {
+      app-select-asset-button-tokens {
         margin-bottom: 10px;
       }
     }
@@ -69,7 +69,9 @@
 
   &__estimate-container {
     display: flex;
+    grid-gap: 10px;
     justify-content: space-between;
+
     min-height: 65px;
 
     @include iframe-vertical {
