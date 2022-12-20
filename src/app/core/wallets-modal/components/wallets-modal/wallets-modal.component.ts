@@ -45,11 +45,12 @@ export class WalletsModalComponent implements OnInit {
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
-    const deviceFiltered = this.isMobile
-      ? browserSupportedProviders.filter(
-          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-        )
-      : browserSupportedProviders.filter(provider => !provider.mobileOnly);
+    const deviceFiltered =
+      this.isMobile && !this.iframeService.isIframe
+        ? browserSupportedProviders.filter(
+            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+          )
+        : browserSupportedProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
