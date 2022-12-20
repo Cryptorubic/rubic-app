@@ -71,6 +71,12 @@
     }
   }
 
+  &__body {
+    @include iframe-vertical {
+      margin-bottom: 11px;
+    }
+  }
+
   &__footer {
     text-align: center;
   }
