@@ -28,6 +28,7 @@ interface AllQueryParams {
   slippageIt: string;
   slippageCcr: string;
   background: string;
+  accentColor: string; // correct format is ...&accentColor=00FFFF
   theme: string;
   language: SupportedLanguages;
   providerAddress: string;
