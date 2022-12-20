@@ -46,7 +46,7 @@
         </td>
         <td class="tui-table__td">
           {{
-            deposit.tokenApr && deposit.tokenApr >= 0
+            deposit.tokenApr && deposit.tokenApr.gte(0)
               ? (deposit.tokenApr | bigNumberFormat: 2)
               : '-'
           }}%

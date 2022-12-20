@@ -2,8 +2,11 @@ import { Inject, Injectable } from '@angular/core';
 import { WINDOW } from '@ng-web-apis/common';
 import { BehaviorSubject, fromEvent } from 'rxjs';
 import {
+  laptop,
+  mobileMd,
   mobileMdMinus,
-  mobileSmMiddle
+  mobileSmMiddle,
+  tablet
 } from '@core/services/widnow-width-service/constants/width-breakpoints';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 
@@ -14,6 +17,10 @@ export class WindowWidthService {
   private readonly _windowSize$ = new BehaviorSubject<WindowSize>(this.getWindowSize());
 
   public readonly windowSize$ = this._windowSize$.asObservable();
+
+  public get windowSize(): WindowSize {
+    return this._windowSize$.value;
+  }
 
   constructor(@Inject(WINDOW) private readonly window: Window) {
     this.subscribeOnWindowWidthChange();
@@ -32,6 +39,15 @@ export class WindowWidthService {
     }
     if (width <= mobileMdMinus) {
       return WindowSize.MOBILE_MD_MINUS;
+    }
+    if (width <= mobileMd) {
+      return WindowSize.MOBILE_MD;
+    }
+    if (width <= tablet) {
+      return WindowSize.TABLET;
+    }
+    if (width <= laptop) {
+      return WindowSize.LAPTOP;
     }
     return WindowSize.DESKTOP;
   }

@@ -4,7 +4,7 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapButtonContainerErrorsService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container-errors.service';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 
 @Injectable()
 export class SwapButtonService {
@@ -30,6 +30,6 @@ export class SwapButtonService {
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
     private readonly swapButtonContainerErrorsService: SwapButtonContainerErrorsService,
-    private readonly sdkService: RubicSdkService
+    private readonly sdkService: SdkService
   ) {}
 }

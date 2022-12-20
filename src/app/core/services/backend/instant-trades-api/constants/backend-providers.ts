@@ -15,7 +15,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.CROPPER_FINANCE]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.CROW_FI]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.CRO_DEX]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.CURVE]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.CURVE]: 'Curve',
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.DEFI_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.DFYN]: 'unknown',

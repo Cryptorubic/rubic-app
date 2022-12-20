@@ -1,29 +1,30 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button-container/models/button-error-type';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { SwapFormInput } from '@features/swaps/features/swaps-form/models/swap-form';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
-import { disabledFromBlockchains } from '@features/swaps/shared/components/tokens-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
+import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
+import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -73,7 +74,7 @@ export class SwapButtonContainerErrorsService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
@@ -92,23 +93,21 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe((form: SwapFormInput) => {
-        const { fromAmount } = form;
-        this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
+    this.swapFormService.inputValue$.subscribe((form: SwapFormInput) => {
+      const { fromAmount } = form;
+      this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
 
-        this.checkWalletSupportsFromBlockchain();
-        this.checkSelectedToken();
-        this.checkUserBlockchain();
-        this.checkUserBalance();
+      this.checkWalletSupportsFromBlockchain();
+      this.checkSelectedToken();
+      this.checkUserBlockchain();
+      this.checkUserBalance();
 
-        this.updateError();
-      });
+      this.updateError();
+    });
   }
 
   private subscribeOnSwapMode(): void {
-    this.swapsService.swapMode$.subscribe(swapMode => {
+    this.swapTypeService.swapMode$.subscribe(swapMode => {
       if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
         this.setMinAmountError(false);
         this.setMaxAmountError(false);
@@ -136,7 +135,7 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnTargetNetworkAddress(): void {
     combineLatest([
       this.targetNetworkAddressService.isAddressValid$,
-      this.swapsService.swapMode$,
+      this.swapTypeService.swapMode$,
       this.settingsService.instantTradeValueChanges.pipe(
         startWith(this.settingsService.instantTradeValue)
       ),
@@ -168,13 +167,19 @@ export class SwapButtonContainerErrorsService {
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
-    const fromToken = this.swapFormService.inputValue.fromToken;
-    if (!fromToken) {
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
+    const fromAsset = this.swapFormService.inputValue.fromAsset;
+    if (!isMinimalToken(fromAsset)) {
+      if (!fromAsset) {
+        this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
+        return;
+      }
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
+        Boolean(this.authService.userAddress) &&
+        !EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
       return;
     }
 
-    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
@@ -185,12 +190,16 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
-    const { fromToken, fromAmount } = this.swapFormService.inputValue;
+    const { fromAsset, fromAmount } = this.swapFormService.inputValue;
+    if (!isTokenAmount(fromAsset)) {
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+      return;
+    }
 
     const fromChainType =
-      fromToken?.blockchain && BlockchainsInfo.getChainType(fromToken.blockchain);
+      fromAsset?.blockchain && BlockchainsInfo.getChainType(fromAsset.blockchain);
     if (
-      !fromToken ||
+      !fromAsset ||
       !this.authService.userAddress ||
       fromChainType !== this.authService.userChainType
     ) {
@@ -198,9 +207,9 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    if (fromToken.amount?.isFinite()) {
+    if (fromAsset.amount?.isFinite()) {
       this._errorLoading$.next(false);
-      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = fromToken.amount.lt(fromAmount);
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = fromAsset.amount.lt(fromAmount);
     } else {
       this._errorLoading$.next(true);
     }
@@ -208,20 +217,20 @@ export class SwapButtonContainerErrorsService {
 
   private checkSelectedToken(): void {
     this.errorType[BUTTON_ERROR_TYPE.NO_SELECTED_TOKEN] =
-      isNil(this.swapFormService.inputValue?.fromToken) &&
-      isNil(this.queryParamsService.currentQueryParams?.from);
+      isNil(this.swapFormService.inputValue?.fromAsset) &&
+      isNil(this.queryParamsService.queryParams.from);
   }
 
   /**
    * Checks that user's selected blockchain is equal to from blockchain.
    */
   private checkUserBlockchain(): void {
-    const { fromToken } = this.swapFormService.inputValue;
+    const { fromAsset } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
-    if (userBlockchain && fromToken) {
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromToken.blockchain !== userBlockchain;
+    if (userBlockchain && isMinimalToken(fromAsset)) {
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromAsset.blockchain !== userBlockchain;
       this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = disabledFromBlockchains.includes(
-        fromToken.blockchain
+        fromAsset.blockchain
       );
     } else {
       this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
@@ -237,7 +246,10 @@ export class SwapButtonContainerErrorsService {
     let type: BUTTON_ERROR_TYPE | null = null;
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
-    const { fromBlockchain } = this.swapFormService.inputValue;
+    const { fromAssetType } = this.swapFormService.inputValue;
+    const fromBlockchainLabel = BlockchainsInfo.isBlockchainName(fromAssetType)
+      ? blockchainLabel[fromAssetType]
+      : 'EVM';
 
     switch (true) {
       case err[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
@@ -245,7 +257,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongSourceNetwork',
           interpolateParams: {
-            network: blockchainLabel[fromBlockchain]
+            network: fromBlockchainLabel
           }
         };
         break;
@@ -269,7 +281,7 @@ export class SwapButtonContainerErrorsService {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: blockchainLabel[fromBlockchain]
+            network: fromBlockchainLabel
           }
         };
         break;
@@ -288,7 +300,7 @@ export class SwapButtonContainerErrorsService {
         type = BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: fromBlockchain }
+          interpolateParams: { blockchain: fromAssetType }
         };
         break;
       }
@@ -373,7 +385,7 @@ export class SwapButtonContainerErrorsService {
       this.minAmountTokenSymbol =
         typeof value === 'object' && 'symbol' in value
           ? value.symbol
-          : this.swapFormService.inputValue.fromToken.symbol;
+          : this.swapFormService.inputValue.fromAsset.symbol;
 
       this.errorType[BUTTON_ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
@@ -400,7 +412,7 @@ export class SwapButtonContainerErrorsService {
       this.maxAmountTokenSymbol =
         typeof value === 'object' && 'symbol' in value
           ? value.symbol
-          : this.swapFormService.inputValue.fromToken.symbol;
+          : this.swapFormService.inputValue.fromAsset.symbol;
 
       this.errorType[BUTTON_ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {

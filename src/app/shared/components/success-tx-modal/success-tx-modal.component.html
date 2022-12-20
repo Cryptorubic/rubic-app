@@ -13,7 +13,7 @@
       />
       <h3 *noFrame="'horizontal'" class="modal__title">
         {{
-          (type === 'instant-trade'
+          (type === 'on-chain'
             ? 'notifications.successfullySentTransaction'
             : 'notifications.successfulCCRSwapTitle'
           ) | translate
@@ -35,7 +35,7 @@
                   : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
             "
           ></div>
-          <ng-container *ngIf="type === 'instant-trade' && blockchain === BLOCKCHAIN_NAME.TRON">
+          <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
             <div *noFrame class="modal__footer-text && modal__footer-text_warning">
               Transaction can take up to 5 minutes.
             </div>
@@ -60,10 +60,8 @@
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{
-          (type === 'instant-trade'
-            ? 'modals.successTxModal.title'
-            : 'modals.successTxModal.ccrTitle'
-          ) | translate
+          (type === 'on-chain' ? 'modals.successTxModal.title' : 'modals.successTxModal.ccrTitle')
+            | translate
         }}
       </h3>
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">

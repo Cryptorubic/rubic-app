@@ -1,1 +1,1 @@
-export type SuccessTxModalType = 'instant-trade' | 'cross-chain-routing' | 'bridge';
+export type SuccessTxModalType = 'on-chain' | 'cross-chain-routing';
