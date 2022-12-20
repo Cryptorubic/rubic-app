@@ -19,7 +19,7 @@ import {
   templateUrl: './iframe-settings.component.html',
   styleUrls: ['./iframe-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService, SettingsService, TargetNetworkAddressService, SwapTypeService]
 })
 export class IframeSettingsComponent implements OnInit {
   public iframeSettingsForm: FormGroup<IframeSettingsFormControls>;
