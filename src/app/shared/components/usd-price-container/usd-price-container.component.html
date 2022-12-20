@@ -5,7 +5,7 @@
     [tuiHint]="usdPriceTooltip"
     tuiHintMode="onDark"
   >
-    ${{ usdPrice | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 2 } }}
+    ${{ usdPrice | bigNumberFormat | withRound : 'toClosestValue' : { minRound: 2, maxRound: 2 } }}
   </div>
   <ng-template #usdPriceTooltip>${{ usdPrice | bigNumberFormat }}</ng-template>
 

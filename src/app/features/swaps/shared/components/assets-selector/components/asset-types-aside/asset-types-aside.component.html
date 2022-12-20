@@ -25,17 +25,19 @@
 
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
         <ng-container
-          *ngLet="shownBlockchainsAmount | functionCall: getBlockchainsList:this as blockchainsList"
+          *ngLet="
+            shownBlockchainsAmount | functionCall : getBlockchainsList : this as blockchainsList
+          "
         >
           <ng-container *ngFor="let blockchainItem of blockchainsList">
             <ng-container
-              *ngLet="blockchainItem | functionCall: isBlockchainDisabled:this as disabled"
+              *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
             >
               <li
                 [id]="idPrefix + 'Network_' + blockchainItem.name"
                 [ngClass]="{ disabled: disabled }"
                 tuiHintMode="error"
-                [tuiHint]="blockchainItem | functionCall: getBlockchainHintText:this"
+                [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
               >
                 <app-icon-button
                   appearance="secondary"

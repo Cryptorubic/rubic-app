@@ -3,7 +3,7 @@
   <td class="date">
     <span [class.tui-skeleton]="initialLoading">
       {{
-        (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
+        (uiTrade?.timestamp | date : 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date : 'h:mm')
       }}
     </span>
   </td>
@@ -29,7 +29,7 @@
     <div [class.tui-skeleton]="initialLoading">
       <a [href]="uiTrade?.srcTxLink" [class.hide-arrow]="!uiTrade?.srcTxLink" target="_blank">
         <app-status-badge
-          [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
+          [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
           [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
           cursor="pointer"
         ></app-status-badge>
@@ -68,7 +68,7 @@
               (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
             else revert
           "
-          [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+          [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
           [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
         >
         </app-status-badge>
@@ -87,7 +87,9 @@
       <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         {{
-          (uiTrade?.timestamp | date: 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date: 'h:mm')
+          (uiTrade?.timestamp | date : 'MMM dd, yyyy') +
+            ' at ' +
+            (uiTrade?.timestamp | date : 'h:mm')
         }}
       </div>
     </div>
@@ -116,7 +118,7 @@
           [class.hide-arrow]="!uiTrade?.srcTxLink"
         >
           <app-status-badge
-            [type]="uiTrade?.statusFrom | functionCall: getStatusBadgeType:this"
+            [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
             [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
           >
           </app-status-badge>
@@ -157,7 +159,7 @@
               !isSymbiosisTrade || uiTrade?.statusTo !== CrossChainTxStatus.REVERT;
               else revert
             "
-            [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
+            [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
             [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
           >
           </app-status-badge>

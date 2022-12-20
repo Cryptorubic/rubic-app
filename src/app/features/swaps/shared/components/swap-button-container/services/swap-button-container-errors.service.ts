@@ -300,7 +300,7 @@ export class SwapButtonContainerErrorsService {
         type = BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN;
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: fromAssetType }
+          interpolateParams: { blockchain: fromBlockchainLabel }
         };
         break;
       }

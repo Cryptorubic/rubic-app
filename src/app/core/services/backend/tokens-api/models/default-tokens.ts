@@ -617,6 +617,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
+  [BLOCKCHAIN_NAME.BOBA_BSC]: [],
+  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: [],
   [BLOCKCHAIN_NAME.ASTAR]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ASTAR], ...defaultTokenParams } as Token,
     { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ASTAR], ...defaultTokenParams } as Token,

@@ -6,13 +6,13 @@
   <tui-scrollbar class="scrollbar">
     <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
       <ng-container *ngFor="let blockchain of blockchainsList">
-        <ng-container *ngLet="blockchain | functionCall: isDisabled:this as disabled">
+        <ng-container *ngLet="blockchain | functionCall : isDisabled : this as disabled">
           <div
             class="list__item item"
             [ngClass]="{ item_disabled: disabled }"
             tuiHintMode="error"
             tuiHintDirection="right"
-            [tuiHint]="blockchain | functionCall: getHintText:this"
+            [tuiHint]="blockchain | functionCall : getHintText : this"
             (click)="!disabled && onBlockchainSelect(blockchain.name)"
           >
             <div class="item__image-container">
