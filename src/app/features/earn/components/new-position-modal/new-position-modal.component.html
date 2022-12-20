@@ -5,9 +5,9 @@
 ></div>
 <div class="title">NEW POSITION</div>
 <div class="text">
-  {{ amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} BRBC locked expires in
+  {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} BRBC locked expires in
   {{ duration }} months <br />Locked until
-  {{ unlockDate | date: 'mediumDate' }}
+  {{ unlockDate | date : 'mediumDate' }}
 </div>
 <app-rubic-button appearance="secondary" class="agree" (onClick)="context.completeWith(true)"
   >Ok, I agree</app-rubic-button

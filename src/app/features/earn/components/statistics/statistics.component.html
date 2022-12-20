@@ -12,7 +12,7 @@
       <div class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.lockedRBC' | translate }}</div>
         <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
-          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat: 0:true) : '--.--' }}
+          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
@@ -27,7 +27,9 @@
           [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
         >
           $
-          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
+          {{
+            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 0) : '--.--'
+          }}
         </div>
       </div>
     </div>
@@ -40,13 +42,15 @@
           [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
         >
           $
-          {{ lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat: 0) : '--.--' }}
+          {{
+            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 0) : '--.--'
+          }}
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
@@ -60,7 +64,7 @@
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
           %
         </div>
       </div>
@@ -73,14 +77,14 @@
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat: 2:true) : '--.--' }}
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
           %
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat: 0) : '--.--' }}
+          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">

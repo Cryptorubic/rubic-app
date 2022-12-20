@@ -32,7 +32,7 @@
                 : 'modals.successTxModal.seeDetailsItBridge'
               )
                 | translate
-                  : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
+                  : { explorerLink: txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION }
             "
           ></div>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
@@ -51,7 +51,7 @@
             See transaction
             <a
               class="modal__footer-link"
-              [href]="txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
+              [href]="txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION"
               target="_blank"
               >details</a
             >.

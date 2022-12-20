@@ -12,7 +12,7 @@
     </div>
 
     <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
-      {{ userAddress.length > 20 ? (userAddress | shortAddress: 5:3) : userAddress }}
+      {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}
     </div>
 
     <app-notification-badge
@@ -58,7 +58,7 @@
       <img [src]="currentBlockchainIcon" alt="Current blockchain" width="25" height="25" />
     </div>
     <div class="user-profile__address">
-      {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
+      {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
     </div>
   </div>
 </ng-container>
