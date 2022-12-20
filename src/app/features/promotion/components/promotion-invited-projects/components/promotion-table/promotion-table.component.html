@@ -25,18 +25,18 @@
       </td>
       <td *tuiCell="'invitationDate'" tuiTd>
         <div class="table__date">
-          <span>{{ item.invitationDate | date: 'mediumDate' }}</span>
+          <span>{{ item.invitationDate | date : 'mediumDate' }}</span>
         </div>
       </td>
       <td *tuiCell="'tradingVolume'" tuiTd>
-        ${{ item.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
+        ${{ item.tradingVolume | bigNumberFormat | withRound : 'toClosestValue' }}
       </td>
       <td *tuiCell="'received'" tuiTd>
-        ${{ item.received | bigNumberFormat | withRound: 'toClosestValue' }}
+        ${{ item.received | bigNumberFormat | withRound : 'toClosestValue' }}
       </td>
       <td *tuiCell="'receivedTokens'" tuiTd>
         <div class="table__token-container">
-          <span>{{ item.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+          <span>{{ item.receivedTokens | bigNumberFormat | withRound : 'toClosestValue' }}</span>
           <div class="table__token">
             <div class="table__token-img">
               <img

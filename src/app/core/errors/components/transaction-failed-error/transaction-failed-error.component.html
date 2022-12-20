@@ -1,7 +1,9 @@
 <ng-container>
   <span
     >Transaction failed.
-    <a *ngIf="txHash" [safetyLink]="txHash | scannerLink: blockchainName:ADDRESS_TYPE.TRANSACTION"
+    <a
+      *ngIf="txHash"
+      [safetyLink]="txHash | scannerLink : blockchainName : ADDRESS_TYPE.TRANSACTION"
       >See details.</a
     ></span
   >

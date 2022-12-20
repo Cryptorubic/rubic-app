@@ -21,6 +21,8 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
+  [BLOCKCHAIN_NAME.BOBA_BSC]: null,
+  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: null,
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',

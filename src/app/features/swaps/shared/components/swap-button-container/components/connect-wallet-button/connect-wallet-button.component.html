@@ -1,13 +1,10 @@
 <ng-container *ngLet="!isIframe && (user$ | async) === undefined as loading">
-  <ng-container *ngLet="tokensFilled$ | async as tokensFilled">
-    <app-rubic-button
-      [id]="idPrefix + 'connect-wallet'"
-      [ngClass]="{ 'grey-background': !tokensFilled }"
-      [loading]="loading"
-      [appearance]="tokensFilled ? 'secondary' : 'primary'"
-      (onClick)="onLogin()"
-    >
-      {{ 'navigation.login' | translate }}
-    </app-rubic-button>
-  </ng-container>
+  <app-rubic-button
+    [id]="idPrefix + 'connect-wallet'"
+    [loading]="loading"
+    appearance="primary"
+    (onClick)="onLogin()"
+  >
+    {{ 'navigation.login' | translate }}
+  </app-rubic-button>
 </ng-container>

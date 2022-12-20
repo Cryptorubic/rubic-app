@@ -93,6 +93,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private amountOutMin: string;
 
+  private symbiosisVersion: 'v1' | 'v2';
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -131,7 +133,8 @@ export class SwapSchemeModalComponent implements OnInit {
                 lifiBridgeType: this.bridgeType.name,
                 viaUuid: this.viaUuid,
                 rangoRequestId: this.rangoRequestId,
-                amountOutMin: this.amountOutMin
+                amountOutMin: this.amountOutMin,
+                symbiosisVersion: this.symbiosisVersion
               },
               this.crossChainProvider
             )
@@ -209,7 +212,8 @@ export class SwapSchemeModalComponent implements OnInit {
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
                     viaUuid: this.viaUuid,
                     rangoRequestId: this.rangoRequestId,
-                    amountOutMin: this.amountOutMin
+                    amountOutMin: this.amountOutMin,
+                    symbiosisVersion: this.symbiosisVersion
                   },
                   this.crossChainProvider
                 )
@@ -303,5 +307,6 @@ export class SwapSchemeModalComponent implements OnInit {
     this.timestamp = data.timestamp;
 
     this.amountOutMin = data.amountOutMin;
+    this.symbiosisVersion = data.symbiosisVersion;
   }
 }

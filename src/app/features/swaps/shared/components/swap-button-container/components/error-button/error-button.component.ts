@@ -6,10 +6,11 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { lastValueFrom } from 'rxjs';
 import { SdkService } from '@core/services/sdk/sdk.service';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: 'app-error-button',
@@ -24,7 +25,9 @@ export class ErrorButtonComponent {
 
   public loading = false;
 
-  public readonly fromBlockchain$ = this.swapFormService.fromBlockchain$;
+  public readonly fromBlockchainLabel$ = this.swapFormService.fromBlockchain$.pipe(
+    map(fromBlockchain => blockchainLabel[fromBlockchain])
+  );
 
   constructor(
     private readonly cdr: ChangeDetectorRef,

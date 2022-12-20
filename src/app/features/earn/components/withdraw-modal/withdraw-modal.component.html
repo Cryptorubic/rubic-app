@@ -6,7 +6,7 @@
 <div class="title">WITHDRAWAL</div>
 <div class="text">
   Please proceed to close your position and receive
-  {{ amount | bigNumberFormat | withRound: 'fixedValue':{ decimals: 2 } }} BRBC
+  {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} BRBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else withdraw">
   <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"

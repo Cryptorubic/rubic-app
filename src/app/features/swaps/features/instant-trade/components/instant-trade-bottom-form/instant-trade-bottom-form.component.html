@@ -53,7 +53,7 @@
                 ? (fromAmount | bigNumberFormat)
                 : (toAmount
                   | bigNumberFormat
-                  | withRound: 'toClosestValue':{ decimals: toToken?.decimals })
+                  | withRound : 'toClosestValue' : { decimals: toToken?.decimals })
             }}
             <app-tokens-rate *noFrame></app-tokens-rate>
           </ng-container>

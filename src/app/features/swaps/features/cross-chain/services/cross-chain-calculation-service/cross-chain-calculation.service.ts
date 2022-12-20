@@ -9,6 +9,7 @@ import {
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
+  SymbiosisCrossChainTrade,
   UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
@@ -246,6 +247,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
       const rangoRequestId =
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
+      const symbiosisVersion =
+        calculatedTrade.trade instanceof SymbiosisCrossChainTrade && calculatedTrade.trade.version;
 
       const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
@@ -257,7 +260,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
 
         ...(viaUuid && { viaUuid }),
-        ...(rangoRequestId && { rangoRequestId })
+        ...(rangoRequestId && { rangoRequestId }),
+        ...(symbiosisVersion && { symbiosisVersion })
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
@@ -360,8 +364,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
       calculatedTrade.trade instanceof RangoCrossChainTrade
         ? calculatedTrade.trade.requestId
         : undefined;
-
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
+    const symbiosisVersion =
+      calculatedTrade.trade instanceof SymbiosisCrossChainTrade
+        ? calculatedTrade.trade.version
+        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -377,7 +384,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
           viaUuid,
           rangoRequestId,
           timestamp,
-          amountOutMin
+          amountOutMin,
+          symbiosisVersion
         }
       })
       .subscribe();
