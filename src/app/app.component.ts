@@ -128,6 +128,7 @@ export class AppComponent implements AfterViewInit {
           ...(queryParams?.from && { from: queryParams.from }),
           ...(queryParams?.to && { to: queryParams.to })
         });
+        this.setAccentColor(queryParams);
         if (queryParams.hideUnusedUI) {
           this.setupUISettings(queryParams);
         }
@@ -143,6 +144,35 @@ export class AppComponent implements AfterViewInit {
       this.document.body.classList.add('hide-unused-ui');
       this.removeLiveChatInIframe();
     }
+  }
+
+  private setAccentColor(queryParams: QueryParams): void {
+    const color = `#${queryParams.accentColor}`;
+    const alphaColor = this.hexToRgba(color, '0.6');
+    if (this.iframeService.isIframe && queryParams.accentColor) {
+      this.document.body.setAttribute(
+        'style',
+        '--tui-primary: ' +
+          color +
+          ';' +
+          ' --primary-color: ' +
+          color +
+          ';' +
+          ' --tui-primary-hover: ' +
+          alphaColor +
+          ';' +
+          '--tui-primary-active: ' +
+          alphaColor
+      );
+    }
+  }
+
+  private hexToRgba(hex: string, alpha: string): string {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
   }
 
   /**

@@ -68,6 +68,12 @@
       justify-content: start;
       margin-left: 3px;
     }
+
+    @include iframe {
+      ::ng-deep svg path {
+        fill: var(--primary-color);
+      }
+    }
   }
 
   &__toggle {
