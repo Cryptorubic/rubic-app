@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: block;
 }
@@ -5,4 +7,15 @@
 app-icon-button ::ng-deep button {
   width: 40px !important;
   height: 40px !important;
+
+  @include light-iframe {
+    svg path {
+      fill: var(--primary-color);
+    }
+  }
+
+  svg {
+    width: 19.8px;
+    height: 19.8px;
+  }
 }

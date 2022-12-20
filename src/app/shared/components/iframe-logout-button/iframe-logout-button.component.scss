@@ -13,4 +13,15 @@
 app-icon-button ::ng-deep button {
   width: 40px !important;
   height: 40px !important;
+  
+  @include light-iframe {
+    svg path {
+      fill: var(--primary-color);
+    }
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 }

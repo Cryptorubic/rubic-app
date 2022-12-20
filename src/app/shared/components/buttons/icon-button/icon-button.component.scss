@@ -6,6 +6,10 @@
   button {
     width: 70px;
     overflow: hidden;
+
+    .inline-icon {
+      display: flex;
+    }
   }
 
   &:hover {

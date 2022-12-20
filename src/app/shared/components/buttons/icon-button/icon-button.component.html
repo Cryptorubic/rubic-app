@@ -7,7 +7,12 @@
   [size]="buttonSize"
   [appearance]="appearance"
 >
-  <img [src]="icon" [style.border-radius]="borderRadiusPercent + '%'" alt="" />
+  <div
+    class="inline-icon"
+    [inlineSVG]="icon"
+    [style.border-radius]="borderRadiusPercent + '%'"
+  ></div>
+  <!-- <img [src]="icon" [style.border-radius]="borderRadiusPercent + '%'" alt="" /> -->
   <div class="label-container" *ngIf="label">
     <span class="label">{{ label }}</span>
   </div>

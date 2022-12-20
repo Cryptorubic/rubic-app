@@ -1,7 +1,6 @@
 <ng-container *ngLet="!isIframe && (user$ | async) === undefined as loading">
   <app-rubic-button
     [id]="idPrefix + 'connect-wallet'"
-    [ngClass]="{ 'grey-background': !tokensFilled }"
     [loading]="loading"
     appearance="primary"
     (onClick)="onLogin()"
