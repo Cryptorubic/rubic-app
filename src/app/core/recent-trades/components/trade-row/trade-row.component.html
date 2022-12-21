@@ -56,27 +56,29 @@
   <!-- Status of dst transaction -->
   <td class="status-to">
     <div [class.tui-skeleton]="initialLoading">
-      <a
-        *ngIf="!showToContinue; else toContinue"
-        [href]="uiTrade?.dstTxLink"
-        [class.hide-arrow]="!uiTrade?.dstTxLink"
-        target="_blank"
+      <ng-container
+        *ngIf="
+          !isSymbiosisTrade ||
+            (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
+          else revert
+        "
       >
-        <app-status-badge
-          *ngIf="
-            !isSymbiosisTrade ||
-              (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
-            else revert
-          "
-          [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
-          [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+        <a
+          *ngIf="!showToContinue; else toContinue"
+          [href]="uiTrade?.dstTxLink"
+          [class.hide-arrow]="!uiTrade?.dstTxLink"
+          target="_blank"
         >
-        </app-status-badge>
-      </a>
+          <app-status-badge
+            [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
+            [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+          ></app-status-badge>
+        </a>
 
-      <ng-template #toContinue>
-        <button class="status-to__continue" (click)="continueOnramperTrade()">Continue</button>
-      </ng-template>
+        <ng-template #toContinue>
+          <button class="status-to__continue" (click)="continueOnramperTrade()">Continue</button>
+        </ng-template>
+      </ng-container>
     </div>
   </td>
 </ng-container>
@@ -147,27 +149,26 @@
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <a
-          *ngIf="!showToContinue; else toContinue"
-          class="tx__status-to"
-          [href]="uiTrade?.dstTxLink"
-          target="_blank"
-          [class.hide-arrow]="!uiTrade?.dstTxHash"
+        <ng-container
+          *ngIf="!isSymbiosisTrade || uiTrade?.statusTo !== CrossChainTxStatus.REVERT; else revert"
         >
-          <app-status-badge
-            *ngIf="
-              !isSymbiosisTrade || uiTrade?.statusTo !== CrossChainTxStatus.REVERT;
-              else revert
-            "
-            [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
-            [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+          <a
+            *ngIf="!showToContinue; else toContinue"
+            class="tx__status-to"
+            [href]="uiTrade?.dstTxLink"
+            target="_blank"
+            [class.hide-arrow]="!uiTrade?.dstTxHash"
           >
-          </app-status-badge>
-        </a>
+            <app-status-badge
+              [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
+              [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+            ></app-status-badge>
+          </a>
 
-        <ng-template #toContinue>
-          <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
-        </ng-template>
+          <ng-template #toContinue>
+            <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
+          </ng-template>
+        </ng-container>
       </div>
     </div>
     <hr class="tx__divider" />
