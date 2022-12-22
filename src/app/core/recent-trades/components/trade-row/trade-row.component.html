@@ -150,21 +150,12 @@
 
 <ng-template #revert>
   <app-rubic-button
-    *ngIf="isSymbiosisTrade"
     appearance="primary"
     class="revert"
-    (onClick)="revertSymbiosis()"
+    (onClick)="revertTrade()"
     size="s"
+    [loading]="revertBtnLoading"
   >
     {{ 'common.revert' | translate }}
-  </app-rubic-button>
-  <app-rubic-button
-    *ngIf="isCbridgeTrade"
-    appearance="primary"
-    class="revert"
-    (onClick)="revertCbridge()"
-    size="s"
-  >
-    {{ 'common.revert' | translate }} cb
   </app-rubic-button>
 </ng-template>

@@ -18,6 +18,7 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { TransactionReceipt } from 'web3-eth';
 
 @Component({
   selector: '[trade-row]',
@@ -111,34 +112,24 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async revertSymbiosis(): Promise<void> {
+  public async revertTrade(): Promise<void> {
     this.revertBtnLoading = true;
 
-    const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
-      this.trade.srcTxHash,
-      this.trade.fromToken.blockchain
-    );
+    let revertTxReceipt: TransactionReceipt;
 
-    if (revertTxReceipt.status) {
-      this.uiTrade.statusTo = TxStatus.FALLBACK;
-      this.revertBtnLoading = false;
-      this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
-      this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
-        revertTxReceipt.transactionHash,
-        this.uiTrade.fromBlockchain.key,
-        ADDRESS_TYPE.TRANSACTION
+    if (this.isSymbiosisTrade) {
+      revertTxReceipt = await this.recentTradesService.revertSymbiosis(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain
       );
-      this.cdr.detectChanges();
     }
-  }
 
-  public async revertCbridge(): Promise<void> {
-    this.revertBtnLoading = true;
-
-    const revertTxReceipt = await this.recentTradesService.revertCbridge(
-      this.trade.srcTxHash,
-      this.trade.fromToken.blockchain as CbridgeCrossChainSupportedBlockchain
-    );
+    if (this.isCbridgeTrade) {
+      revertTxReceipt = await this.recentTradesService.revertCbridge(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain as CbridgeCrossChainSupportedBlockchain
+      );
+    }
 
     if (revertTxReceipt.status) {
       this.uiTrade.statusTo = TxStatus.FALLBACK;
