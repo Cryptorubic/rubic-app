@@ -287,6 +287,7 @@ export class TokensApiService {
   }
 
   private fetchStaticTokens(): Observable<Token[]> {
+    // todo add icp
     return from(Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)).pipe(
       switchMap(price =>
         of([
@@ -301,6 +302,19 @@ export class TokensApiService {
             address: EMPTY_ADDRESS,
             name: 'Bitcoin',
             symbol: 'BTC',
+            decimals: 8
+          },
+          {
+            image: '/assets/images/icons/coins/icp.svg',
+            rank: 1,
+            price: price.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+
+            blockchain: BLOCKCHAIN_NAME.ICP,
+            address: EMPTY_ADDRESS,
+            name: 'Internet Computer',
+            symbol: 'ICP',
             decimals: 8
           }
         ])

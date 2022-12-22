@@ -37,5 +37,5 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KLAYTN]: `${basePath}klaytn.png`,
   [BLOCKCHAIN_NAME.VELAS]: `${basePath}velas.png`,
   [BLOCKCHAIN_NAME.SYSCOIN]: `${basePath}syscoin.svg`,
-  [BLOCKCHAIN_NAME.ICP]: `${basePath}syscoin.svg` // todo update
+  [BLOCKCHAIN_NAME.ICP]: `${basePath}icp.svg`
 };
