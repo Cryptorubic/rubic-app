@@ -5,13 +5,7 @@ const defaultSrc = 'assets/images/icons/navigation/';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.referral',
-    type: 'external',
-    link: EXTERNAL_LINKS.LANDING_REFERRAL,
-    imagePath: `${defaultSrc}referral.svg`
-  },
-  {
-    translateKey: 'navigation.setupWidget',
+    translateKey: 'navigation.widget',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
     imagePath: `${defaultSrc}widget.svg`
@@ -19,14 +13,8 @@ export const NAVIGATION_LIST = [
   {
     translateKey: 'navigation.sdk',
     type: 'external',
-    link: EXTERNAL_LINKS.SDK,
+    link: EXTERNAL_LINKS.LANDING_SDK,
     imagePath: `${defaultSrc}sdk.svg`
-  },
-  {
-    translateKey: 'Fiat on-ramp',
-    type: 'internal',
-    link: 'buy-crypto',
-    imagePath: `${defaultSrc}fiat.svg`
   },
   {
     translateKey: 'navigation.about',
