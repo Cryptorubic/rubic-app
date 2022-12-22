@@ -54,9 +54,13 @@
   <!-- Status of dst transaction -->
   <td class="status-to">
     <div [class.tui-skeleton]="initialLoading">
-      <a [href]="uiTrade?.dstTxLink" [class.hide-arrow]="!uiTrade?.dstTxLink" target="_blank">
+      <a
+        *ngIf="!showRevert; else revert"
+        [href]="uiTrade?.dstTxLink"
+        [class.hide-arrow]="!uiTrade?.dstTxLink"
+        target="_blank"
+      >
         <app-status-badge
-          *ngIf="!showRevert; else revert"
           [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
           [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
         >
@@ -126,13 +130,13 @@
       <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <a
+          *ngIf="!showRevert; else revert"
           class="tx__status-to"
           [href]="uiTrade?.dstTxLink"
           target="_blank"
           [class.hide-arrow]="!uiTrade?.dstTxHash"
         >
           <app-status-badge
-            *ngIf="!showRevert; else revert"
             [type]="uiTrade?.statusTo | functionCall: getStatusBadgeType:this"
             [text]="getStatusBadgeText(uiTrade?.statusTo) | translate"
           >
@@ -150,6 +154,7 @@
     appearance="primary"
     class="revert"
     (onClick)="revertSymbiosis()"
+    size="s"
   >
     {{ 'common.revert' | translate }}
   </app-rubic-button>
@@ -158,7 +163,8 @@
     appearance="primary"
     class="revert"
     (onClick)="revertCbridge()"
+    size="s"
   >
-    {{ 'common.revert' | translate }}
+    {{ 'common.revert' | translate }} cb
   </app-rubic-button>
 </ng-template>
