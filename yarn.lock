@@ -5737,6 +5737,11 @@ crc-32@^1.2.0:
   resolved "https://registry.yarnpkg.com/crc-32/-/crc-32-1.2.2.tgz#3cad35a934b8bf71f25ca524b6da51fb7eace2ff"
   integrity sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==
 
+crc32@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/crc32/-/crc32-0.2.2.tgz#7ad220d6ffdcd119f9fc127a7772cacea390a4ba"
+  integrity sha512-PFZEGbDUeoNbL2GHIEpJRQGheXReDody/9axKTxhXtQqIL443wnNigtVZO9iuCIMPApKZRv7k2xr8euXHqNxQQ==
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
@@ -13522,10 +13527,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.14.4:
-  version "3.14.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.14.4.tgz#17b70ab98d107e602abb43959776dd7d80c4b55f"
-  integrity sha512-x2nhLNYVcjlLSsBuPWm4G3IXg5Ye0kUZZYo41jcjinbKFHCbfHzfA4XUAX5gGy4EAsAWCVCYBPQeb1YVtmDPpA==
+rubic-sdk@3.15.0-alpha-0:
+  version "3.15.0-alpha-0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.15.0-alpha-0.tgz#2a62f809e3dc386337325e1a7794771c111118fb"
+  integrity sha512-psnqNUDbxmsMmwAQ9Ewn4RrBhgF5Wa7zTCQfhtEBU/FJj0Lof8ZCFe9rTAyE6r6GGmoEoBxh5oP3DdcuYE5Qkg==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -13533,6 +13538,7 @@ rubic-sdk@3.14.4:
     axios "^0.26.1"
     bignumber.js "9.1.0"
     bitcoin-address-validation "2.2.1"
+    crc32 "^0.2.2"
     ethers "^5.6.8"
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
