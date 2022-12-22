@@ -13,7 +13,8 @@ import {
   UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  ChangenowCrossChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -249,6 +250,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
       const symbiosisVersion =
         calculatedTrade.trade instanceof SymbiosisCrossChainTrade && calculatedTrade.trade.version;
+      const changenowId =
+        calculatedTrade.trade instanceof ChangenowCrossChainTrade && calculatedTrade.trade.id;
 
       const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
@@ -261,7 +264,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId }),
-        ...(symbiosisVersion && { symbiosisVersion })
+        ...(symbiosisVersion && { symbiosisVersion }),
+        ...(changenowId && { changenowId })
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
@@ -369,6 +373,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       calculatedTrade.trade instanceof SymbiosisCrossChainTrade
         ? calculatedTrade.trade.version
         : undefined;
+    const changenowId =
+      calculatedTrade.trade instanceof ChangenowCrossChainTrade
+        ? calculatedTrade.trade.id
+        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -385,7 +393,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
           rangoRequestId,
           timestamp,
           amountOutMin,
-          symbiosisVersion
+          symbiosisVersion,
+          changenowId
         }
       })
       .subscribe();
