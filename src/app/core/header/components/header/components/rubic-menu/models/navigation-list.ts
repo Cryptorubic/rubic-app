@@ -5,7 +5,7 @@ const defaultSrc = 'assets/images/icons/navigation/';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.widget',
+    translateKey: 'navigation.setupWidget',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
     imagePath: `${defaultSrc}widget.svg`
@@ -15,12 +15,6 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: EXTERNAL_LINKS.LANDING_SDK,
     imagePath: `${defaultSrc}sdk.svg`
-  },
-  {
-    translateKey: 'navigation.about',
-    type: 'external',
-    link: EXTERNAL_LINKS.LANDING,
-    imagePath: `${defaultSrc}about.svg`
   },
   {
     translateKey: 'navigation.team',
