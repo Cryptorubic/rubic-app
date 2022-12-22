@@ -15,7 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import {
   BlockchainName,
+  CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
+  CrossChainCbridgeManager,
   TxStatus,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -146,6 +148,55 @@ export class RecentTradesService {
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
+  }
+
+  public async revertCbridge(
+    srcTxHash: string,
+    fromBlockchain: CbridgeCrossChainSupportedBlockchain
+  ): Promise<TransactionReceipt> {
+    let tradeInProgressSubscription$: Subscription;
+    let transactionReceipt: TransactionReceipt;
+
+    const trade = this.recentTradesStoreService.getSpecificTrade(srcTxHash, fromBlockchain);
+
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      transactionReceipt = await CrossChainCbridgeManager.makeRefund(
+        fromBlockchain,
+        srcTxHash,
+        trade.amountOutMin,
+        onTransactionHash
+      );
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
+      });
+    } catch (error) {
+      console.debug('[Cbridge] Transaction revert error: ', error);
       this.errorService.catch(error);
     } finally {
       tradeInProgressSubscription$?.unsubscribe();

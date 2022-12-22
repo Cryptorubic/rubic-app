@@ -10,7 +10,7 @@ import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { RecentTrade } from '@app/shared/models/my-trades/recent-trades.interface';
-import { CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
+import { CbridgeCrossChainSupportedBlockchain, CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
 import { interval } from 'rxjs';
 import { startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
@@ -46,7 +46,18 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     return this.trade?.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS;
   }
 
+  public get isCbridgeTrade(): boolean {
+    return this.trade?.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE;
+  }
+
   public revertBtnLoading = false;
+
+  public get showRevert(): boolean {
+    return (
+      (this.isSymbiosisTrade || this.isCbridgeTrade) &&
+      this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT
+    );
+  }
 
   constructor(
     protected readonly recentTradesStoreService: RecentTradesStoreService,
@@ -106,6 +117,27 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
       this.trade.srcTxHash,
       this.trade.fromToken.blockchain
+    );
+
+    if (revertTxReceipt.status) {
+      this.uiTrade.statusTo = TxStatus.FALLBACK;
+      this.revertBtnLoading = false;
+      this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
+      this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+        revertTxReceipt.transactionHash,
+        this.uiTrade.fromBlockchain.key,
+        ADDRESS_TYPE.TRANSACTION
+      );
+      this.cdr.detectChanges();
+    }
+  }
+
+  public async revertCbridge(): Promise<void> {
+    this.revertBtnLoading = true;
+
+    const revertTxReceipt = await this.recentTradesService.revertCbridge(
+      this.trade.srcTxHash,
+      this.trade.fromToken.blockchain as CbridgeCrossChainSupportedBlockchain
     );
 
     if (revertTxReceipt.status) {
