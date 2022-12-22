@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -23,8 +23,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { BLOCKCHAIN_NAME, BlockchainName, Injector, BitcoinWeb3Pure, IcpWeb3Pure } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 
@@ -287,19 +286,21 @@ export class TokensApiService {
   }
 
   private fetchStaticTokens(): Observable<Token[]> {
-    // todo add icp
-    return from(Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)).pipe(
-      switchMap(price =>
+    return forkJoin([
+      Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN),
+      Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.ICP)
+    ]).pipe(
+      switchMap(([bitcoinPrice, icpPrice]) =>
         of([
           {
             image: '/assets/images/icons/coins/bitcoin.svg',
             rank: 1,
-            price: price.toNumber(),
+            price: bitcoinPrice.toNumber(),
             usedInIframe: true,
             hasDirectPair: null,
 
             blockchain: BLOCKCHAIN_NAME.BITCOIN,
-            address: EMPTY_ADDRESS,
+            address: BitcoinWeb3Pure.nativeTokenAddress,
             name: 'Bitcoin',
             symbol: 'BTC',
             decimals: 8
@@ -307,12 +308,12 @@ export class TokensApiService {
           {
             image: '/assets/images/icons/coins/icp.svg',
             rank: 1,
-            price: price.toNumber(),
+            price: icpPrice.toNumber(),
             usedInIframe: true,
             hasDirectPair: null,
 
             blockchain: BLOCKCHAIN_NAME.ICP,
-            address: EMPTY_ADDRESS,
+            address: IcpWeb3Pure.nativeTokenAddress,
             name: 'Internet Computer',
             symbol: 'ICP',
             decimals: 8
