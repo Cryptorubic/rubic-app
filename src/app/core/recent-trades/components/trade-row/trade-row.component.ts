@@ -6,7 +6,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -31,7 +32,8 @@ import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.servi
   selector: '[trade-row]',
   templateUrl: './trade-row.component.html',
   styleUrls: ['./trade-row.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class TradeRowComponent implements OnInit, OnDestroy {
   @Input() trade: RecentTrade;
@@ -82,7 +84,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService,
     private readonly onramperService: OnramperService,

@@ -281,5 +281,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.ICP]: {
+    baseUrl: 'https://www.icpexplorer.org/#/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'acct/',
+    [ADDRESS_TYPE.TOKEN]: '',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: ''
   }
 };

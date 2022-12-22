@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -40,7 +40,8 @@ import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockch
   selector: 'polymorpheus-swap-scheme-modal',
   templateUrl: './swap-scheme-modal.component.html',
   styleUrls: ['./swap-scheme-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class SwapSchemeModalComponent implements OnInit {
   public trade: SwapSchemeModalData;
@@ -105,7 +106,7 @@ export class SwapSchemeModalComponent implements OnInit {
     private readonly commonModalService: CommonModalService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly sdkService: SdkService
   ) {
     this.setTradeData(this.context.data);

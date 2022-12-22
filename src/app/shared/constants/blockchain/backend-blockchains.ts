@@ -34,7 +34,8 @@ const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.DFK]: 'defikingdoms',
   [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
   [BLOCKCHAIN_NAME.VELAS]: 'velas',
-  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+  [BLOCKCHAIN_NAME.ICP]: 'icp'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
@@ -77,5 +78,6 @@ export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName>
   defikingdoms: BLOCKCHAIN_NAME.DFK,
   klaytn: BLOCKCHAIN_NAME.KLAYTN,
   velas: BLOCKCHAIN_NAME.VELAS,
-  syscoin: BLOCKCHAIN_NAME.SYSCOIN
+  syscoin: BLOCKCHAIN_NAME.SYSCOIN,
+  icp: BLOCKCHAIN_NAME.ICP
 };

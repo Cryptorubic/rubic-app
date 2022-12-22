@@ -766,12 +766,10 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
     }
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
   ],
   [BLOCKCHAIN_NAME.NEAR]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SOLANA], ...defaultTokenParams } as Token
   ],
   [BLOCKCHAIN_NAME.DFK]: [
     {
@@ -930,5 +928,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       rank: 0.001,
       price: null
     }
+  ],
+  [BLOCKCHAIN_NAME.ICP]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ICP], ...defaultTokenParams } as Token
   ]
 };

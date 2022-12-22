@@ -59,6 +59,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#353392'
   },
 
+  [BRIDGE_TYPE.CHANGENOW]: {
+    name: 'ChangeNow',
+    image: `${imageBasePath}lifi.svg`, // todo update
+    color: '#bf38ee'
+  },
+
   [BRIDGE_TYPE.LIFI]: {
     name: 'Lifi',
     image: `${imageBasePath}lifi.svg`,

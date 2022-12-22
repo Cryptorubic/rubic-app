@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { watch } from '@taiga-ui/cdk';
+import { map, switchMap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
@@ -18,15 +18,13 @@ import {
   FeeInfo,
   nativeTokensList
 } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
   templateUrl: './cross-chain-swap-info.component.html',
   styleUrls: ['./cross-chain-swap-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainSwapInfoComponent implements OnInit {
   public fromToken: TokenAmount;
@@ -63,9 +61,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapFormService: SwapFormService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly tokensService: TokensService,
-    private readonly priceImpactService: PriceImpactService,
-    private readonly swapButtonService: SwapButtonService,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly priceImpactService: PriceImpactService
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +70,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+    this.swapFormService.inputValueDistinct$.subscribe(form => {
       this.fromToken = form.fromAsset as TokenAmount;
       this.toToken = form.toToken;
 
@@ -116,8 +112,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
             })
           );
         }),
-        watch(this.cdr),
-        takeUntil(this.destroy$)
+        watch(this.cdr)
       )
       .subscribe();
   }

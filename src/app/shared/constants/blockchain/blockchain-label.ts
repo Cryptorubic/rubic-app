@@ -34,5 +34,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.DFK]: 'DFK',
   [BLOCKCHAIN_NAME.KLAYTN]: 'Klaytn',
   [BLOCKCHAIN_NAME.VELAS]: 'Velas',
-  [BLOCKCHAIN_NAME.SYSCOIN]: 'Syscoin'
+  [BLOCKCHAIN_NAME.SYSCOIN]: 'Syscoin',
+  [BLOCKCHAIN_NAME.ICP]: 'ICP'
 };

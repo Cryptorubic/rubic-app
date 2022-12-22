@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   OnInit,
+  Self,
   ViewChild
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
@@ -47,7 +48,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {

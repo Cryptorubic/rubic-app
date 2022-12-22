@@ -2,15 +2,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { map, startWith } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-cross-chain-bottom-form',
   templateUrl: './cross-chain-bottom-form.component.html',
   styleUrls: ['./cross-chain-bottom-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainBottomFormComponent {
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
