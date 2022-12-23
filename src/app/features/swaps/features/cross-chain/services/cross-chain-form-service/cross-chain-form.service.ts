@@ -437,7 +437,9 @@ export class CrossChainFormService {
       ) {
         updatedSelectedTrade = this.taggedTrades[0];
       } else {
-        updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+        updatedSelectedTrade = this.taggedTrades.find(
+          taggedTrade => !taggedTrade.needApprove && !taggedTrade.error
+        );
       }
     }
     if (!updatedSelectedTrade) {
