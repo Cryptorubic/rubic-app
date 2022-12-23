@@ -88,4 +88,7 @@ import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
-export class CoreModule {}
+export class CoreModule {
+  // Initialized services, which are not used directly in components
+  constructor(private readonly _swapTokensUpdaterService: SwapTokensUpdaterService) {}
+}
