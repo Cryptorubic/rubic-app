@@ -93,8 +93,11 @@ export class OnramperFormCalculationService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
-            this.refreshService.setStopped();
-            this.swapFormService.outputControl.patchValue({ toAmount: null });
+
+            if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.ONRAMPER) {
+              this.refreshService.setStopped();
+              this.swapFormService.outputControl.patchValue({ toAmount: null });
+            }
 
             return { ...calculateData, stop: true };
           }
@@ -144,7 +147,6 @@ export class OnramperFormCalculationService {
    */
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
-      this.unsetTradeData();
       this.startRecalculation();
     });
   }
@@ -155,7 +157,6 @@ export class OnramperFormCalculationService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.unsetTradeData();
         this.startRecalculation();
       } else {
         if (!this.authService.userAddress || this.tradeError) {
@@ -183,9 +184,13 @@ export class OnramperFormCalculationService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.ONRAMPER) {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.ONRAMPER) {
       this._calculateTrade$.next({ stop: true });
       return;
+    }
+
+    if (isForced) {
+      this.unsetTradeData();
     }
     this._calculateTrade$.next({ isForced });
   }
