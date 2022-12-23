@@ -60,7 +60,7 @@ export class OnramperFormCalculationService {
    */
   public get inputValue(): SwapFormInputFiats {
     const inputForm = this.swapFormService.inputValue;
-    if (inputForm.fromAssetType !== 'fiat') {
+    if (inputForm.fromAssetType && inputForm.fromAssetType !== 'fiat') {
       throw new RubicError('Cannot use onramper');
     }
     return {
@@ -94,7 +94,7 @@ export class OnramperFormCalculationService {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
 
-            if (this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER) {
+            if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.ONRAMPER) {
               this.refreshService.setStopped();
               this.swapFormService.outputControl.patchValue({ toAmount: null });
             }
@@ -108,6 +108,9 @@ export class OnramperFormCalculationService {
             return null;
           }
 
+          if (calculateData.isForced) {
+            this.unsetTradeData();
+          }
           if (
             this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
             this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -185,14 +188,11 @@ export class OnramperFormCalculationService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.ONRAMPER) {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.ONRAMPER) {
       this._calculateTrade$.next({ stop: true });
       return;
     }
 
-    if (isForced) {
-      this.unsetTradeData();
-    }
     this._calculateTrade$.next({ isForced });
   }
 

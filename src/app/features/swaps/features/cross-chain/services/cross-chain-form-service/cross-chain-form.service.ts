@@ -219,6 +219,7 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -230,7 +231,6 @@ export class CrossChainFormService {
     private readonly iframeService: IframeService,
     private readonly dialogService: TuiDialogService,
     private readonly tradeService: TradeService,
-    private readonly swapTypeService: SwapTypeService,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.subscribeOnCalculation();
@@ -257,7 +257,9 @@ export class CrossChainFormService {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
 
-            if (this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+            if (
+              this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+            ) {
               this.refreshService.setStopped();
               this.swapFormService.outputControl.patchValue({
                 toAmount: new BigNumber(NaN)
@@ -287,6 +289,9 @@ export class CrossChainFormService {
                 return of(null);
               }
 
+              if (calculateData.isForced) {
+                this.unsetCalculatedTrades();
+              }
               if (
                 this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
                 this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -432,7 +437,9 @@ export class CrossChainFormService {
       ) {
         updatedSelectedTrade = this.taggedTrades[0];
       } else {
-        updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+        updatedSelectedTrade = this.taggedTrades.find(
+          taggedTrade => !taggedTrade.needApprove && !taggedTrade.error
+        );
       }
     }
     if (!updatedSelectedTrade) {
@@ -625,7 +632,6 @@ export class CrossChainFormService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.criticalError = null;
         this.unsetTradeSelectedByUser();
         this.isSwapStarted = SWAP_PROCESS.NONE;
         this.refreshServiceCallsCounter = 0;
@@ -655,7 +661,7 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
       this._calculateTrade$.next({ stop: true });
       return;
     }
