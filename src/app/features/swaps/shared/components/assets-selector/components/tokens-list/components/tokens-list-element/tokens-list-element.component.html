@@ -13,29 +13,31 @@
       <div class="token-card__name-container-symbol">
         {{ token.symbol }}
 
-        <span
-          class="token-card__name-container-copy-icon"
-          *ngIf="hintShown"
-          [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-          (click)="copyToClipboard($event)"
-          [tuiHint]="tokenAddressHint"
-          tuiHintMode="onDark"
-          [tuiHintShowDelay]="50"
-          tuiHintDirection="top-right"
-          [tuiHintHideDelay]="100"
-        ></span>
-
-        <ng-template #tokenAddressHint>
-          <span class="token-card__name-container-address-hint">{{ token.address }}</span>
-        </ng-template>
-
-        <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
+        <ng-container *ngIf="allowCopy">
           <span
-            class="token-card__name-container-copied-icon"
-            [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+            class="token-card__name-container-copy-icon"
+            *ngIf="hintShown"
+            [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+            (click)="copyToClipboard($event)"
+            [tuiHint]="tokenAddressHint"
+            tuiHintMode="onDark"
+            [tuiHintShowDelay]="50"
+            tuiHintDirection="top-right"
+            [tuiHintHideDelay]="100"
           ></span>
-          <span class="token-card__name-container-copied-text"> Copied </span>
-        </span>
+
+          <ng-template #tokenAddressHint>
+            <span class="token-card__name-container-address-hint">{{ token.address }}</span>
+          </ng-template>
+
+          <span *ngIf="!hintShown" class="token-card__name-container-copied-container">
+            <span
+              class="token-card__name-container-copied-icon"
+              [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+            ></span>
+            <span class="token-card__name-container-copied-text"> Copied </span>
+          </span>
+        </ng-container>
       </div>
       <small>{{ token.name }}</small>
     </div>

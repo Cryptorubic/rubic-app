@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnInit,
   Output
 } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -15,6 +16,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -22,28 +24,33 @@ import { NAVIGATOR } from '@ng-web-apis/common';
   styleUrls: ['./tokens-list-element.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensListElementComponent {
+export class TokensListElementComponent implements OnInit {
   @Input() token: TokenAmount;
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public readonly isHorizontalFrame: boolean;
+  public readonly isHorizontalFrame = this.iframeService.iframeAppearance === 'horizontal';
 
   public hintShown = true;
 
   public loadingFavoriteToken = false;
 
+  public allowCopy: boolean;
+
   constructor(
-    iframeService: IframeService,
+    private readonly iframeService: IframeService,
     private readonly tokensService: TokensService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator
-  ) {
-    this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
+  ) {}
+
+  ngOnInit() {
+    const chainType = BlockchainsInfo.getChainType(this.token.blockchain);
+    this.allowCopy = !Web3Pure[chainType].isNativeAddress(this.token.address);
   }
 
   public onImageError($event: Event): void {

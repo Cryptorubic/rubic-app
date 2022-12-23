@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, pairwise, switchMap } from 'rxjs/operators';
+import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
@@ -12,6 +12,7 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class TokensListService {
@@ -50,7 +51,8 @@ export class TokensListService {
     private readonly tokensService: TokensService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnScroll();
 
@@ -99,7 +101,8 @@ export class TokensListService {
               );
             })
           )
-        )
+        ),
+        takeUntil(this.destroy$)
       )
       .subscribe(shouldUpdate => {
         if (shouldUpdate) {
@@ -119,7 +122,7 @@ export class TokensListService {
     let prevListType = this.listType;
 
     this.tokensListStoreService.tokensToShow$
-      .pipe(pairwise())
+      .pipe(pairwise(), takeUntil(this.destroy$))
       .subscribe(([prevTokensToShow, tokensToShow]) => {
         if (prevTokensToShow?.length && tokensToShow?.length) {
           const prevToken = prevTokensToShow[0];

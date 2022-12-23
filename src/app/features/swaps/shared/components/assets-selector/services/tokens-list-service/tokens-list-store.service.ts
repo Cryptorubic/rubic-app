@@ -14,7 +14,15 @@ import { SearchQueryService } from '@features/swaps/shared/components/assets-sel
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { TokensList } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
@@ -27,6 +35,7 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class TokensListStoreService {
@@ -93,7 +102,8 @@ export class TokensListStoreService {
     private readonly tokensService: TokensService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -104,18 +114,21 @@ export class TokensListStoreService {
   }
 
   private subscribeOnTokensChange(): void {
-    combineLatest([this.tokensService.tokens$, this.tokensService.favoriteTokens$]).subscribe(
-      () => {
+    combineLatest([this.tokensService.tokens$, this.tokensService.favoriteTokens$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
         if (!this.searchQuery) {
           this.updateTokens();
         }
-      }
-    );
+      });
   }
 
   private subscribeOnSearchQueryChange(): void {
     combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
-      .pipe(filter(([_, selectorListType]) => selectorListType === 'tokens'))
+      .pipe(
+        filter(([_, selectorListType]) => selectorListType === 'tokens'),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.updateTokens();
       });
@@ -125,7 +138,8 @@ export class TokensListStoreService {
     this.assetsSelectorService.assetType$
       .pipe(
         distinctUntilChanged(),
-        filter(assetType => BlockchainsInfo.isBlockchainName(assetType))
+        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.updateTokens();
@@ -133,7 +147,7 @@ export class TokensListStoreService {
   }
 
   private subscribeOnListType(): void {
-    this.tokensListTypeService.listType$.subscribe(() => {
+    this.tokensListTypeService.listType$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.updateTokens();
     });
   }
@@ -158,7 +172,8 @@ export class TokensListStoreService {
             }
           }
           return of({ tokensToShow: this.getSortedTokens() });
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((tokensList: TokensList) => {
         if ('tokensToShow' in tokensList) {

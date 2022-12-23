@@ -6,8 +6,9 @@ import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { BlockchainName } from 'rubic-sdk';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -47,7 +48,8 @@ export class AssetsSelectorService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -62,19 +64,21 @@ export class AssetsSelectorService {
   }
 
   private subscribeOnAssetChange(): void {
-    this.assetType$.pipe(filter(Boolean), distinctUntilChanged()).subscribe(assetType => {
-      const assetKey = this.formType === 'from' ? 'fromAsset' : 'toToken';
-      if (!this.swapFormService.inputValue[assetKey]) {
-        const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
-        if (this.swapFormService.inputValue[assetTypeKey] !== assetType) {
-          this.swapFormService.inputControl.patchValue({
-            [assetTypeKey]: this.assetType
-          });
+    this.assetType$
+      .pipe(filter(Boolean), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(assetType => {
+        const assetKey = this.formType === 'from' ? 'fromAsset' : 'toToken';
+        if (!this.swapFormService.inputValue[assetKey]) {
+          const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
+          if (this.swapFormService.inputValue[assetTypeKey] !== assetType) {
+            this.swapFormService.inputControl.patchValue({
+              [assetTypeKey]: this.assetType
+            });
+          }
         }
-      }
 
-      this.checkAndRefetchTokenList();
-    });
+        this.checkAndRefetchTokenList();
+      });
   }
 
   private checkAndRefetchTokenList(): void {
