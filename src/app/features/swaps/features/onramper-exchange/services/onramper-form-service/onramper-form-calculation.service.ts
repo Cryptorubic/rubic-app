@@ -60,7 +60,7 @@ export class OnramperFormCalculationService {
    */
   public get inputValue(): SwapFormInputFiats {
     const inputForm = this.swapFormService.inputValue;
-    if (inputForm.fromAssetType !== 'fiat') {
+    if (inputForm.fromAssetType && inputForm.fromAssetType !== 'fiat') {
       throw new RubicError('Cannot use onramper');
     }
     return {
@@ -108,6 +108,9 @@ export class OnramperFormCalculationService {
             return of(null);
           }
 
+          if (calculateData.isForced) {
+            this.unsetTradeData();
+          }
           if (
             this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
             this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -190,9 +193,6 @@ export class OnramperFormCalculationService {
       return;
     }
 
-    if (isForced) {
-      this.unsetTradeData();
-    }
     this._calculateTrade$.next({ isForced });
   }
 

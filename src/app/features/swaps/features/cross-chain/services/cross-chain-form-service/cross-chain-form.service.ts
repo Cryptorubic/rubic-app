@@ -289,6 +289,9 @@ export class CrossChainFormService {
                 return of(null);
               }
 
+              if (calculateData.isForced) {
+                this.unsetCalculatedTrades();
+              }
               if (
                 this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
                 this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -676,9 +679,6 @@ export class CrossChainFormService {
       return;
     }
 
-    if (isForced) {
-      this.unsetCalculatedTrades();
-    }
     this._calculateTrade$.next({ isForced });
   }
 
