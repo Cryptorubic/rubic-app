@@ -5,7 +5,6 @@ import {
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
   CrossChainTradeType,
-  LifiCrossChainTrade,
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
@@ -51,6 +50,7 @@ import { CrossChainApiService } from '@core/services/backend/cross-chain-routing
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
+import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -183,17 +183,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       return smartRouting;
     }
 
-    if (
-      wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade ||
-      wrappedTrade.trade instanceof RangoCrossChainTrade
-    ) {
-      return {
-        ...smartRouting,
-        bridgeProvider: wrappedTrade.trade.bridgeType
-      };
-    }
-    return smartRouting;
+    return {
+      ...smartRouting,
+      bridgeProvider: wrappedTrade.trade.bridgeType
+    };
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
@@ -347,7 +340,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const { trade, route } = calculatedTrade;
 
     const bridgeType = trade.bridgeType;
-    const bridgeProvider = TRADES_PROVIDERS[bridgeType];
+    let bridgeProvider = TRADES_PROVIDERS[bridgeType];
 
     const fromTradeProvider = route.fromProvider
       ? TRADES_PROVIDERS[route.fromProvider]
@@ -361,6 +354,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           ...bridgeProvider,
           name: bridgeProvider.name + ' Pool'
         };
+    if (centralizedBridges.some(centralizedBridge => centralizedBridge === bridgeType)) {
+      bridgeProvider = {
+        ...bridgeProvider,
+        name: bridgeProvider.name + ' (Centralized)'
+      };
+    }
 
     const viaUuid =
       calculatedTrade.trade instanceof ViaCrossChainTrade ? calculatedTrade.trade.uuid : undefined;
