@@ -13540,28 +13540,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.14.4:
-  version "3.14.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.14.4.tgz#17b70ab98d107e602abb43959776dd7d80c4b55f"
-  integrity sha512-x2nhLNYVcjlLSsBuPWm4G3IXg5Ye0kUZZYo41jcjinbKFHCbfHzfA4XUAX5gGy4EAsAWCVCYBPQeb1YVtmDPpA==
-  dependencies:
-    "@lifi/sdk" "^1.6.3"
-    "@viaprotocol/router-sdk" "^1.0.7"
-    assert "^2.0.0"
-    axios "^0.26.1"
-    bignumber.js "9.1.0"
-    bitcoin-address-validation "2.2.1"
-    ethers "^5.6.8"
-    lodash.clonedeep "^4.5.0"
-    rango-sdk-basic "^0.0.7"
-    rxjs "^7.8.0"
-    symbiosis-js-sdk "^2.9.6"
-    symbiosis-js-sdk-v1 "npm:symbiosis-js-sdk@2.8.22"
-    tronweb "^4.3.0"
-    web3 "^1.8.1"
-
-"rubic-sdk@file:../rubic-sdk/":
-  version "3.15.0"
+rubic-sdk@3.15.0-alpha.sd.0:
+  version "3.15.0-alpha.sd.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.15.0-alpha.sd.0.tgz#2511b807d5ef4b98060e69f7d5af7e1d2aebd161"
+  integrity sha512-eiKImXZg+RINwcPNVFjf+boCsHZSKu7r2ineh42vrMZfwB1WYKtIsuSQqfR2jRsBlPWJG8q6vWd4bSZa4qU6hw==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
