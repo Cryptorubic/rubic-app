@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of, Subject, tap } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -103,7 +103,7 @@ export class OnramperFormCalculationService {
           }
           return { ...calculateData, stop: false };
         }),
-        switchMap(calculateData => {
+        switchMap(async calculateData => {
           if (calculateData.stop) {
             return of(null);
           }
@@ -117,9 +117,10 @@ export class OnramperFormCalculationService {
           }
           this.refreshService.setRefreshing();
 
-          return this.onramperCalculationService.getOutputTokenAmount(this.inputValue);
-        }),
-        tap(outputTokenAmount => {
+          const outputTokenAmount = await this.onramperCalculationService.getOutputTokenAmount(
+            this.inputValue
+          );
+
           this.tradeStatus = outputTokenAmount?.isFinite()
             ? TRADE_STATUS.READY_TO_BUY_NATIVE
             : TRADE_STATUS.DISABLED;
