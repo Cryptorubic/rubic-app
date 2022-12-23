@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-@mixin tokenImage {
+@mixin assetImage {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -20,14 +20,14 @@ td {
   .asset {
     display: flex;
 		
-    &__token-image {
-      @include tokenImage();
+    &__image {
+      @include assetImage();
       width: 32px;
       height: 32px;
       margin-right: 12px;
     }
 	
-    &__token {
+    &__symbol {
       @include font(14px, 17px, 500, #37373D, 0.03em);
 	
       @include dark {
@@ -35,7 +35,7 @@ td {
       }
     }
 	
-    &__blockchain {
+    &__asset-type {
       @include font(13px, 16px, 500, #8E8D91, 0.03em);
     }
   }
@@ -43,7 +43,8 @@ td {
 
 .status-from,
 .status-to {
-  a {
+  a,
+  button {
     display: flex;
     align-items: center;
 
@@ -51,19 +52,19 @@ td {
 
     cursor: pointer;
 
-    &.tui-skeleton::after {
-      content: '';
-    }
-    
     &::after {
       margin-left: 7px;
-      
+
       content: url('/assets/images/icons/arrow/link-arrow.svg');
     }
   }
+
+  &__continue {
+    color: var(--main-green);
+  }
 }
 
-.status-to a.hide-arrow { 
+a.hide-arrow {
   cursor: default;
 
   pointer-events: none;

@@ -14,6 +14,7 @@
     "accept": "Kabul",
     "copyright": "Telif Hakkı",
     "privacyPolicy": "Gizlilik Politikası",
+    "termsOfService": "Terms of Service",
     "close": "Kapat",
     "send": "Gönder",
     "left": "Ayrıldı",
@@ -36,7 +37,7 @@
     "bridge": "Köprü",
     "transactionDetails": "Ödeme Detayları",
     "tagline": {
-      "firstText": "Cross-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
@@ -95,11 +96,11 @@
     "wrongPromoterWallet": "Ethereum ile uyumlu olmayan bir cüzdan bağladınız. Lütfen hesabınızdan çıkış yapın ve Ethereum uyumlu bir cüzdan bağlayın (örn. MetaMask).",
     "walletNotInstalled": "Cüzdan yüklü değil.",
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
-    "noSelectedToken": "Token seç",
+    "noSelectedToken": "Token Seç",
     "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "Hakkında",
     "faq": "FAQ",
     "features": "Özellikler",
@@ -434,7 +435,7 @@
     "notAvailableAfter": "mevcut değil."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",
@@ -775,7 +776,7 @@
     "successfulCCRTradeTitle": "Kaynak ağda başarılı ticaret",
     "successfullySentTransaction": "İşlem başarıyla gönderildi!",
     "successfulCCRSwapTitle": "Kaynak ağda başarılı takas!",
-    "successfulTradeParagraph": "<a target=\"_blank\"href=\"/my-trades\">İşlemlerim</a> içindeki işlemi kontrol edin",
+    "checkIn": "Check in ",
     "approveInProgress": "Onaylama işlemi devam ediyor",
     "successApprove": "Başarılı onay",
     "minerFee": "1 inç, gaz ücretinde artan maliyetleri ayarlar. İşlem için daha az {{ nativeToken }} tutarı girin veya {{ nativeToken }} bakiyenizi doldurun.",

@@ -8,11 +8,9 @@
     }}
   </div>
   <ng-container *noFrame>
-    <ng-container
-      *ngIf="type !== 'instant-trade' && ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER"
-    >
-      <span>{{ 'notifications.successfulTradeParagraph' | translate }}</span>
-      <a class="notification__link" (click)="handleLinkClick()">Recent trades</a>
+    <ng-container *ngIf="withRecentTrades">
+      <span>{{ 'notifications.checkIn' | translate }}</span>
+      <a class="notification__link" (click)="openRecentTrades()">Recent Trades</a>
     </ng-container>
   </ng-container>
 </div>

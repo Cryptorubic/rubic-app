@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
-import { Blockchain, BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import {
@@ -35,9 +34,10 @@ import {
   Web3Public,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
+import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -96,6 +96,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private amountOutMin: string;
 
+  private symbiosisVersion: 'v1' | 'v2';
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -107,7 +109,7 @@ export class SwapSchemeModalComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService,
-    private readonly sdk: RubicSdkService
+    private readonly sdkService: SdkService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -125,16 +127,17 @@ export class SwapSchemeModalComponent implements OnInit {
         startWith(-1),
         switchMap(() => {
           return from(
-            this.sdk.crossChainStatusManager.getCrossChainStatus(
+            this.sdkService.crossChainStatusManager.getCrossChainStatus(
               {
-                fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain,
-                toBlockchain: this.toBlockchain.key,
+                fromBlockchain: this.fromToken.blockchain as Web3PublicSupportedBlockchain,
+                toBlockchain: this.toToken.blockchain,
                 srcTxHash: this.srcTxHash,
                 txTimestamp: this.timestamp,
                 lifiBridgeType: this.bridgeType.name,
                 viaUuid: this.viaUuid,
                 rangoRequestId: this.rangoRequestId,
-                amountOutMin: this.amountOutMin
+                amountOutMin: this.amountOutMin,
+                symbiosisVersion: this.symbiosisVersion
               },
               this.crossChainProvider
             )
@@ -168,9 +171,9 @@ export class SwapSchemeModalComponent implements OnInit {
               ]).pipe(
                 map(([currentBlockNumber, srcTxReceipt]) => {
                   const diff =
-                    this.fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
+                    this.fromToken.blockchain === BLOCKCHAIN_NAME.ETHEREUM
                       ? 5
-                      : this.fromBlockchain.key === BLOCKCHAIN_NAME.TRON
+                      : this.fromToken.blockchain === BLOCKCHAIN_NAME.TRON
                       ? 20
                       : 10;
 
@@ -203,16 +206,17 @@ export class SwapSchemeModalComponent implements OnInit {
             startWith(-1),
             switchMap(() =>
               from(
-                this.sdk.crossChainStatusManager.getCrossChainStatus(
+                this.sdkService.crossChainStatusManager.getCrossChainStatus(
                   {
-                    fromBlockchain: this.fromBlockchain.key as Web3PublicSupportedBlockchain,
-                    toBlockchain: this.toBlockchain.key,
+                    fromBlockchain: this.fromToken.blockchain as Web3PublicSupportedBlockchain,
+                    toBlockchain: this.toToken.blockchain,
                     srcTxHash: this.srcTxHash,
                     txTimestamp: this.timestamp,
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
                     viaUuid: this.viaUuid,
                     rangoRequestId: this.rangoRequestId,
-                    amountOutMin: this.amountOutMin
+                    amountOutMin: this.amountOutMin,
+                    symbiosisVersion: this.symbiosisVersion
                   },
                   this.crossChainProvider
                 )
@@ -254,7 +258,9 @@ export class SwapSchemeModalComponent implements OnInit {
         );
       }
       if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
-        await this.sdk.symbiosis.revertTrade(this.srcTxHash, { onConfirm: onTransactionHash });
+        await this.sdkService.symbiosis.revertTrade(this.srcTxHash, {
+          onConfirm: onTransactionHash
+        });
       }
 
       tradeInProgressSubscription$.unsubscribe();
@@ -265,7 +271,10 @@ export class SwapSchemeModalComponent implements OnInit {
       });
 
       this.recentTradesStoreService.updateTrade({
-        ...this.recentTradesStoreService.getSpecificTrade(this.srcTxHash, this.fromBlockchain.key),
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(
+          this.srcTxHash,
+          this.fromToken.blockchain
+        ),
         calculatedStatusFrom: TxStatus.SUCCESS,
         calculatedStatusTo: TxStatus.FALLBACK
       });
@@ -293,17 +302,17 @@ export class SwapSchemeModalComponent implements OnInit {
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;
 
-    this.fromBlockchain = BLOCKCHAINS[data.fromBlockchain];
-    this.toBlockchain = BLOCKCHAINS[data.toBlockchain];
-
     this.fromToken = data.fromToken;
     this.toToken = data.toToken;
+
+    this.fromBlockchain = BLOCKCHAINS[this.fromToken.blockchain];
+    this.toBlockchain = BLOCKCHAINS[this.toToken.blockchain];
 
     this.srcTxHash = data.srcTxHash;
 
     this.crossChainProvider = data.crossChainProvider;
 
-    this.srcWeb3Public = Injector.web3PublicService.getWeb3Public(data.fromBlockchain);
+    this.srcWeb3Public = Injector.web3PublicService.getWeb3Public(data.fromToken.blockchain);
 
     this.bridgeType = data.bridgeType;
 
@@ -313,5 +322,6 @@ export class SwapSchemeModalComponent implements OnInit {
     this.timestamp = data.timestamp;
 
     this.amountOutMin = data.amountOutMin;
+    this.symbiosisVersion = data.symbiosisVersion;
   }
 }

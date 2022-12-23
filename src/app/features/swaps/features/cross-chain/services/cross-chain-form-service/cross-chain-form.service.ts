@@ -10,6 +10,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
+  BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
@@ -24,7 +25,7 @@ import {
   UnsupportedReceiverAddressError
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapFormService } from '@features/swaps/core/services/swap-form-service/swap-form.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
@@ -33,11 +34,9 @@ import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
-
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { SwapsService } from '@features/swaps/core/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swaps-form/models/swap-provider-type';
-import { TargetNetworkAddressService } from '@features/swaps/shared/components/target-network-address/services/target-network-address.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -56,6 +55,9 @@ import { SWAP_PROCESS } from '@features/swaps/features/cross-chain/services/cros
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/compare-trades-routes';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 
 @Injectable()
 export class CrossChainFormService {
@@ -199,9 +201,25 @@ export class CrossChainFormService {
    */
   private refreshServiceCallsCounter = 0;
 
+  /**
+   * Returns form input value.
+   * Must be used only if form contains blockchains asset types.
+   */
+  public get inputValue(): SwapFormInputTokens {
+    const inputForm = this.swapFormService.inputValue;
+    if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
+      throw new RubicError('Cannot use cross chain');
+    }
+    return {
+      ...inputForm,
+      fromBlockchain: inputForm.fromAssetType as BlockchainName,
+      fromToken: inputForm.fromAsset as TokenAmount
+    };
+  }
+
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -238,31 +256,32 @@ export class CrossChainFormService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
-            this.refreshService.setStopped();
-            this.swapFormService.output.patchValue({
-              toAmount: new BigNumber(NaN)
-            });
 
-            return { ...calculateData, isFormFilled: false };
+            if (
+              this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+            ) {
+              this.refreshService.setStopped();
+              this.swapFormService.outputControl.patchValue({
+                toAmount: new BigNumber(NaN)
+              });
+            }
+
+            return { ...calculateData, stop: true };
           }
-          return { ...calculateData, isFormFilled: true };
+          return { ...calculateData, stop: false };
         }),
         switchMap(calculateData => {
-          if (!calculateData.isFormFilled) {
+          if (calculateData.stop) {
             return of(null);
           }
 
-          const { fromBlockchain, fromAmount } = this.swapFormService.inputValue;
+          const { fromBlockchain, fromToken, toToken, fromAmount } = this.inputValue;
           const isUserAuthorized =
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
 
           const balance$ = isUserAuthorized
-            ? from(
-                this.tokensService.getAndUpdateTokenBalance(
-                  this.swapFormService.inputValue.fromToken
-                )
-              )
+            ? from(this.tokensService.getAndUpdateTokenBalance(fromToken))
             : of(null);
           return balance$.pipe(
             switchMap(balance => {
@@ -270,6 +289,9 @@ export class CrossChainFormService {
                 return of(null);
               }
 
+              if (calculateData.isForced) {
+                this.unsetCalculatedTrades();
+              }
               if (
                 this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
                 this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -282,7 +304,10 @@ export class CrossChainFormService {
 
               const crossChainTrade$ = this.crossChainCalculationService.calculateTrade(
                 isUserAuthorized,
-                this.disabledTradesTypes
+                this.disabledTradesTypes,
+                fromToken,
+                toToken,
+                fromAmount
               );
               return crossChainTrade$.pipe(
                 map(({ total, calculated, lastCalculatedTrade }) => {
@@ -412,7 +437,9 @@ export class CrossChainFormService {
       ) {
         updatedSelectedTrade = this.taggedTrades[0];
       } else {
-        updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+        updatedSelectedTrade = this.taggedTrades.find(
+          taggedTrade => !taggedTrade.needApprove && !taggedTrade.error
+        );
       }
     }
     if (!updatedSelectedTrade) {
@@ -460,7 +487,7 @@ export class CrossChainFormService {
     this.updatedSelectedTrade = null;
 
     if (taggedTrade?.trade?.to.tokenAmount.gt(0)) {
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: taggedTrade.trade.to.tokenAmount
       });
 
@@ -479,7 +506,7 @@ export class CrossChainFormService {
         }, 10_000_000);
       }
     } else {
-      this.swapFormService.output.patchValue({
+      this.swapFormService.outputControl.patchValue({
         toAmount: new BigNumber(NaN)
       });
 
@@ -529,23 +556,9 @@ export class CrossChainFormService {
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(
-        startWith(this.swapFormService.inputValue),
-        distinctUntilChanged(
-          (prev, next) =>
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromBlockchain === next.fromBlockchain &&
-            prev.fromToken?.address === next.fromToken?.address &&
-            prev.toToken?.address === next.toToken?.address &&
-            prev.fromAmount === next.fromAmount
-        )
-      )
-      .subscribe(() => {
-        this.unsetCalculatedTrades();
-
-        this.startRecalculation();
-      });
+    this.swapFormService.inputValueDistinct$.subscribe(() => {
+      this.startRecalculation();
+    });
   }
 
   /**
@@ -558,8 +571,6 @@ export class CrossChainFormService {
         distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance)
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -580,8 +591,6 @@ export class CrossChainFormService {
         distinctUntilChanged((prev, cur) => (!prev && !cur) || prev === cur)
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -596,8 +605,6 @@ export class CrossChainFormService {
         distinctUntilChanged()
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -625,7 +632,6 @@ export class CrossChainFormService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.criticalError = null;
         this.unsetTradeSelectedByUser();
         this.isSwapStarted = SWAP_PROCESS.NONE;
         this.refreshServiceCallsCounter = 0;
@@ -655,11 +661,13 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+      this._calculateTrade$.next({ stop: true });
       return;
     }
 
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
     if (!this.crossChainCalculationService.areSupportedBlockchains(fromBlockchain, toBlockchain)) {
       let unsupportedBlockchain = undefined;
       if (!this.crossChainCalculationService.isSupportedBlockchain(fromBlockchain)) {

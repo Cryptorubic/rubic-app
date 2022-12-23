@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SharedModule } from '@shared/shared.module';
 import { CrossChainBottomFormComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/cross-chain-bottom-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -17,7 +15,6 @@ import {
 import { TuiAccordionModule, TuiBadgeModule, TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { CrossChainRouteComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/cross-chain-route/cross-chain-route.component';
-import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { SwapSchemeModalComponent } from './components/swap-scheme-modal/swap-scheme-modal.component';
 import { TradesCounterComponent } from '@features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-counter/trades-counter.component';
@@ -36,15 +33,12 @@ import { CrossChainCalculationService } from '@features/swaps/features/cross-cha
     BestTradePanelComponent
   ],
   imports: [
-    CommonModule,
-    SharedModule,
+    SwapsSharedModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiInputModule,
     InlineSVGModule,
     TuiHintModule,
-    SwapButtonContainerModule,
-    SwapsSharedModule,
     TuiBadgeModule,
     TuiSvgModule,
     TuiDataListModule,

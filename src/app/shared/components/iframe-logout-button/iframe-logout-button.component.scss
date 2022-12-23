@@ -10,13 +10,22 @@
   }
 }
 
-app-icon-button ::ng-deep {
-  button {
-    width: 40px !important;
-    height: 40px !important;
+app-icon-button ::ng-deep button {
+  width: 40px !important;
+  height: 40px !important;
+
+  @include light-iframe {
+    svg path {
+      fill: var(--primary-color);
+    }
   }
 
   tui-wrapper {
     background: var(--primary-background);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
   }
 }

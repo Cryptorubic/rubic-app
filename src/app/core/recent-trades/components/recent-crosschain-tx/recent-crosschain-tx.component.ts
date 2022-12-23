@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { RecentTradesService } from '../../services/recent-trades.service';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
   selector: 'app-recent-crosschain-tx',
@@ -16,8 +15,6 @@ export class RecentCrosschainTxComponent implements OnInit {
 
   public readonly isMobile = this.recentTradesService.isMobile;
 
-  public readonly CROSS_CHAIN_PROVIDER = CROSS_CHAIN_TRADE_TYPE;
-
   constructor(
     private readonly recentTradesService: RecentTradesService,
     private readonly router: Router,
@@ -28,7 +25,11 @@ export class RecentCrosschainTxComponent implements OnInit {
     this.recentTradesService.readAllTrades();
   }
 
+  public onClose(): void {
+    this.context.completeWith(null);
+  }
+
   public navigateToCrossChainSwaps(): void {
-    this.router.navigate(['/swaps']).then(() => this.context.completeWith(null));
+    this.router.navigate(['/']).then(() => this.context.completeWith(null));
   }
 }

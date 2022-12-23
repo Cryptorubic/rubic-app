@@ -12,7 +12,13 @@
           <th class="table__th">{{ 'recentTrades.to' | translate }}</th>
           <th class="table__th">{{ 'recentTrades.statusTo' | translate }}</th>
         </tr>
-        <tr *ngFor="let trade of recentTrades" trade-row [trade]="trade" mode="table-row"></tr>
+        <tr
+          *ngFor="let trade of recentTrades"
+          trade-row
+          [trade]="trade"
+          mode="table-row"
+          (onClose)="onClose()"
+        ></tr>
       </tbody>
     </table>
   </ng-container>

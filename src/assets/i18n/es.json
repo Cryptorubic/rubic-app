@@ -14,6 +14,7 @@
     "accept": "Aceptar",
     "copyright": "Derechos de autor",
     "privacyPolicy": "Política de privacidad",
+    "termsOfService": "Terms of Service",
     "close": "Cerrar",
     "send": "Enviar",
     "left": "Izquierda",
@@ -36,7 +37,7 @@
     "bridge": "Puente",
     "transactionDetails": "Detalles de la transacción",
     "tagline": {
-      "firstText": "Cross-Chain Swaps for ",
+      "firstText": "Cross-Chain Swaps",
       "numbers": "15,000+ ",
       "secondText": "Assets"
     },
@@ -95,11 +96,11 @@
     "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con Ethereum. Cierre sesión en su cuenta y conecte una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada.",
     "crossChainSwapUnavailable": "Desafortunadamente, este intercambio que utiliza el proveedor calculado no está disponible actualmente. Rubic volverá a calcular la ruta para su intercambio.",
-    "noSelectedToken": "Seleccionar token",
+    "noSelectedToken": "Seleccionar Token",
     "wrongSourceNetwork": "Los intercambios de la red {{ network }} actualmente no son compatibles.\n"
   },
   "navigation": { 
-    "recentTrades": "Recent cross-chain tx",
+    "recentTrades": "Recent Trades",
     "about": "Sobre",
     "faq": "Preguntas frecuentes",
     "features": "Funciones",
@@ -261,7 +262,7 @@
     "notAvailableAfter": " no está disponible."
   },
   "recentTrades": {
-    "title": "Recent Cross-Chain Tx",
+    "title": "Recent Trades",
     "description": "History of your latest Crosschain Transactions:",
     "swapNow": "Swap Now",
     "noTransactions": "You don't have any Cross-Chain transactions yet",
@@ -598,7 +599,7 @@
     "successfulCCRTradeTitle": "Comercio exitoso en la red de origen",
     "successfullySentTransaction": "¡La transacción se envió con éxito!",
     "successfulCCRSwapTitle": "¡Intercambio exitoso en la red de origen!",
-    "successfulTradeParagraph": "Verificar transacción en <a target=\"_blank\" href=\"/my-trades\">Mis transacciones</a>",
+    "checkIn": "Check in ",
     "approveInProgress": "Aprobación en curso",
     "successApprove": "Aprobación exitosa",
     "minerFee": "1inch establece un aumento de los costos de tarifas de red. Para la transacción, ingrese menos {{ nativeToken }} o recargue su saldo {{ nativeToken }}.",

@@ -14,7 +14,6 @@ import {
 } from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
 import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
-import { SwapsModule } from '@features/swaps/swaps.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { StakingService } from './services/staking.service';
@@ -51,7 +50,6 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     InlineSVGModule,
     TuiLoaderModule,
     TuiAccordionModule,
-    SwapsModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiSliderModule,

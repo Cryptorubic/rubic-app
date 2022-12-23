@@ -24,13 +24,13 @@ import {
   EvmBlockchainName,
   nativeTokensList
 } from 'rubic-sdk';
-import { RubicSdkService } from '@features/swaps/core/services/rubic-sdk-service/rubic-sdk.service';
 import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
+import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +67,6 @@ export class WalletConnectorService {
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
-    private readonly sdk: RubicSdkService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone
@@ -188,7 +187,7 @@ export class WalletConnectorService {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
     } else {
-      chainName = evmBlockchainName;
+      chainName = blockchainLabel[evmBlockchainName];
       rpcUrl = rpcList[evmBlockchainName][0];
     }
 

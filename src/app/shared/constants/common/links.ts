@@ -17,6 +17,7 @@ export enum EXTERNAL_LINKS {
   LANDING_LP = 'https://rubic.exchange/lp',
   LANDING_SETUP_WIDGET = 'https://rubic.exchange/widget',
   LANDING_TEAM = 'https://rubic.exchange/team',
+  LANDING_SDK = 'https://tools.rubic.exchange/sdk',
   SDK = 'https://docs.rubic.finance/rubic-sdk/sdk-integrations?_ga=2.66724845.2127003169.1647858642-998064740.1646059970',
   AIRDROP = 'https://claim.rubic.exchange'
 }

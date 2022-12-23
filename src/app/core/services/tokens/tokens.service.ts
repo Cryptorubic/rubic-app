@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, finalize, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  finalize,
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -508,16 +517,18 @@ export class TokensService {
    * @param token Tokens's data to find it by.
    * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
    */
-  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {
+  public async findToken(token: MinimalToken, searchBackend = false): Promise<TokenAmount> {
     const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
     if (foundToken) {
       return foundToken;
     }
 
     if (searchBackend) {
-      return this.fetchQueryTokens(token.address, token.blockchain)
-        .pipe(map(backendTokens => backendTokens.get(0)))
-        .toPromise();
+      return firstValueFrom(
+        this.fetchQueryTokens(token.address, token.blockchain).pipe(
+          map(backendTokens => backendTokens.get(0))
+        )
+      );
     }
 
     return null;
