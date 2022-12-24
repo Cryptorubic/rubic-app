@@ -51,6 +51,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.MOJITO_SWAP]: 'MojitoSwap',
 
   [ON_CHAIN_TRADE_TYPE.NET_SWAP]: 'NetSwap',
+  [ON_CHAIN_TRADE_TYPE.NOVATION]: 'Novation',
 
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: 'Omnidex',
   [ON_CHAIN_TRADE_TYPE.ONE_INCH]: '1inch',
@@ -96,6 +97,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: 'Uniswap v2',
   [ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3]: 'Uniswap v3',
 
+  [ON_CHAIN_TRADE_TYPE.VERSE]: 'Verse',
   [ON_CHAIN_TRADE_TYPE.VIPER_SWAP]: 'ViperSwap',
   [ON_CHAIN_TRADE_TYPE.VOLTAGE_SWAP]: 'VoltageSwap',
   [ON_CHAIN_TRADE_TYPE.VVS_FINANCE]: 'VVSFinance',

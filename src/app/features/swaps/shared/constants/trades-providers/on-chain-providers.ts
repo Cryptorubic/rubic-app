@@ -214,6 +214,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}netswap.png`,
     color: '#257AF1'
   },
+  [ON_CHAIN_TRADE_TYPE.NOVATION]: {
+    name: 'Novation',
+    image: `${imageBasePath}novation.png`,
+    color: '#17DDFE'
+  },
 
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
     name: 'Omnidex',
@@ -406,6 +411,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#FD017A'
   },
 
+  [ON_CHAIN_TRADE_TYPE.VERSE]: {
+    name: 'Verse',
+    image: `${imageBasePath}verse.png`,
+    color: '#0085FF'
+  },
   [ON_CHAIN_TRADE_TYPE.VIPER_SWAP]: {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`,
