@@ -14,7 +14,8 @@ import {
   DeflationTokenError as SdkDeflationTokenError,
   MinAmountError as SdkMinAmountError,
   MaxAmountError as SdkMaxAmountError,
-  UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError
+  UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
+  InsufficientFundsGasPriceValueError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -91,7 +92,10 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
-    if (err.stack?.includes('InsufficientFundsGasPriceValueError')) {
+    if (
+      err.stack?.includes('InsufficientFundsGasPriceValueError') ||
+      err instanceof InsufficientFundsGasPriceValueError
+    ) {
       return new RubicError(
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
