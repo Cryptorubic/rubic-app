@@ -13,8 +13,12 @@
   </nav>
   <div class="rubic-footer__copyright">
     © Copyright Rubic {{ year }},
-    <a [href]="landingDomain + '/pdf/Rubic%20Privacy%20Policy.pdf'" class="rubic-footer__policy">{{
+    <a [href]="landingDomain + '/pdf/RubicPrivacyPolicy.pdf'" class="rubic-footer__policy">{{
       'common.privacyPolicy' | translate
+    }}</a>
+    {{ ' | ' }}
+    <a [href]="landingDomain + '/pdf/TermsOfService.pdf'" class="rubic-footer__policy">{{
+      'common.termsOfService' | translate
     }}</a>
   </div>
 </footer>

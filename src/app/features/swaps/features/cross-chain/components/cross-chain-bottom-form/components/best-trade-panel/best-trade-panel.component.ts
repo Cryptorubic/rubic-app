@@ -27,6 +27,10 @@ export class BestTradePanelComponent {
 
   public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
+  public readonly fromAmount$ = this.swapFormService.inputValue$.pipe(
+    map(input => input.fromAmount)
+  );
+
   public expanded = false;
 
   public showTradesList = false;
