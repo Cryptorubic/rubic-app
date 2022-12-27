@@ -106,7 +106,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromAmount: BigNumber
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
@@ -126,8 +126,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timeout: this.defaultTimeout,
       disabledProviders,
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
-      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
-      ...(receiverAddress && { receiverAddress })
+      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO]
+      // ...(receiverAddress && { receiverAddress })
     };
 
     return this.sdkService.crossChain
@@ -275,10 +275,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       : null;
 
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
-      ...(receiverAddress && { receiverAddress }),
+      // ...(receiverAddress && { receiverAddress }),
       ...(gasPrice && { gasPrice })
     };
 

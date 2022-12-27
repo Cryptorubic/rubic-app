@@ -27,7 +27,6 @@ import {
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
-
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -223,7 +222,7 @@ export class InstantTradeService extends TradeCalculationService {
 
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -249,8 +248,8 @@ export class InstantTradeService extends TradeCalculationService {
       },
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      }),
-      ...(receiverAddress && { receiverAddress })
+      })
+      // ...(receiverAddress && { receiverAddress })
     };
 
     try {

@@ -13,6 +13,7 @@ import {
   PriceTokenAmount
 } from 'rubic-sdk';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class OnramperService {
     private readonly gasService: GasService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public async updateSwapFormByRecentTrade(txId: string): Promise<void> {
@@ -57,6 +59,10 @@ export class OnramperService {
   public async getFromFees(blockchain: EvmBlockchainName): Promise<BigNumber> {
     const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
     const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
+
+    if (this.platformConfigurationService.useOnChainProxy === false) {
+      return gasFee;
+    }
 
     const nativeToken = nativeTokensList[blockchain] as PriceTokenAmount<EvmBlockchainName>;
     const onChainProxyFee = await new OnChainProxyService().getFeeInfo(
