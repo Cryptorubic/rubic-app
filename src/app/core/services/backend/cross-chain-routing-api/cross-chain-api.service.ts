@@ -9,9 +9,8 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from './constants/to-backend-cross-chain-providers';
-import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -44,7 +43,7 @@ export class CrossChainApiService {
    * Sends request to add trade.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public createTrade(hash: string, trade: CrossChainTrade): Observable<void> {
+  public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
     const {
       fromBlockchain,
       toBlockchain,
@@ -67,7 +66,9 @@ export class CrossChainApiService {
       tx_hash: hash
     };
 
-    return this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000));
+    await firstValueFrom(
+      this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000))
+    );
   }
 
   /**
@@ -76,12 +77,12 @@ export class CrossChainApiService {
    * @param success If true status is `completed`, otherwise `cancelled`.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
+  public async patchTrade(hash: string, success: boolean): Promise<void> {
     const body = {
       success,
       hash,
       user: this.authService.userAddress
     };
-    return this.httpService.patch(this.apiEndpoint, body);
+    await firstValueFrom(this.httpService.patch(this.apiEndpoint, body));
   }
 }

@@ -289,14 +289,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
     try {
       await calculatedTrade.trade.swap(swapOptions);
       this.showSuccessTrxNotification();
-      this.crossChainApiService.patchTrade(transactionHash, true);
+      await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
       if (
         transactionHash &&
         err instanceof Error &&
         err.message.includes('Transaction was not mined')
       ) {
-        this.crossChainApiService.patchTrade(transactionHash, false);
+        await this.crossChainApiService.patchTrade(transactionHash, false);
       }
 
       if (err instanceof NotWhitelistedProviderError) {
