@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
@@ -14,6 +14,8 @@ import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from './constants/to-backend-cross-c
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,9 @@ export class CrossChainApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
   ) {}
 
   public saveNotWhitelistedProvider(
@@ -63,7 +67,9 @@ export class CrossChainApiService {
       from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
       to_amount: Web3Pure.toWei(toAmount, toDecimals),
       user: this.authService.userAddress,
-      tx_hash: hash
+      tx_hash: hash,
+      wallet_name: this.walletConnectorService.provider.detailedWalletName,
+      device_type: this.isMobile ? 'mobile' : 'desktop'
     };
 
     await firstValueFrom(
