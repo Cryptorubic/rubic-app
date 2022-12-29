@@ -10,4 +10,5 @@ export interface WalletProvider {
   supportsInHorizontalIframe: boolean;
   supportsInVerticalIframe: boolean;
   supportsInVerticalMobileIframe: boolean;
+  disabled: boolean;
 }
