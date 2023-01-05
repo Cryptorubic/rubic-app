@@ -16,7 +16,10 @@
       Address: <span [class.tui-skeleton]="loading">{{ data?.spender }}</span>
     </p>
     <p>
-      Allowance: <span [class.tui-skeleton]="loading">{{ data?.allowance.toFixed() }}</span>
+      Allowance: <span [class.tui-skeleton]="loading">{{ data?.allowance }}</span>
     </p>
+    <button [disabled]="loading" tuiButton size="m" appearance="primary" (click)="handleRevoke()">
+      Revoke
+    </button>
   </div>
 </ng-container>

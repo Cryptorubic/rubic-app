@@ -90,9 +90,8 @@ export class ApproveScannerService {
       )
       .pipe(
         map(response => {
-          const approveTransactions = response.result.filter(tx =>
-            tx?.functionName.includes('approve')
-          );
+          const approveTransactions =
+            response?.result?.filter(tx => tx?.functionName.includes('approve')) || [];
           return approveTransactions.map(tx => {
             const decodedData = MethodDecoder.decodeMethod(
               ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
@@ -127,15 +126,5 @@ export class ApproveScannerService {
         }
       })
       .subscribe();
-    // const blockchain = this.form.controls.blockchain.value.key as EvmBlockchainName;
-    // const allowance = await Injector.web3PublicService
-    //   .getWeb3Public(blockchain)
-    //   .getAllowance(token, this.walletConnectorService.address, spender);
-    // if (allowance.eq(0)) {
-    //   throw new RubicSdkError('Approve already revoked, token has 0 allowance');
-    // }
-    // await Injector.web3PrivateService
-    //   .getWeb3PrivateByBlockchain(blockchain)
-    //   .approveTokens(token, spender, new BigNumber(0), {});
   }
 }
