@@ -4,6 +4,7 @@ export enum ROUTE_PATH {
   ABOUT = 'about',
   CONTRACTS = 'contracts',
   FAQ = 'faq',
+  APPROVE_SCANNER = 'approve-scanner',
   TRADES = 'my-trades',
   STAKING = 'staking',
   PROMOTION = 'promotion',

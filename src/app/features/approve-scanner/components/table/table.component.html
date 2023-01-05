@@ -1,0 +1,30 @@
+<table class="table">
+  <tbody>
+    <tr class="table__tr table__tr_head">
+      <th class="table__th">Tx hash</th>
+      <th class="table__th">Asset</th>
+      <th class="table__th">Spender</th>
+      <th class="table__th">Allowance</th>
+      <th class="table__th"></th>
+    </tr>
+    <tr *ngFor="let approve of approves$ | async">
+      <td>{{ approve.hash | shortAddress : 5 : 3 }}</td>
+      <td>{{ approve.tokenAddress | shortAddress : 5 : 3 }}</td>
+      <td>{{ approve.spender | shortAddress : 5 : 3 }}</td>
+      <td>{{ approve.value }}</td>
+      <td>
+        <button
+          tuiButton
+          type="button"
+          class="tui-space_right-3 tui-space_bottom-3"
+          (click)="handleRevoke(approve.tokenAddress, approve.spender)"
+          appearance="primary"
+          [showLoader]="loading"
+          size="s"
+        >
+          Revoke
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

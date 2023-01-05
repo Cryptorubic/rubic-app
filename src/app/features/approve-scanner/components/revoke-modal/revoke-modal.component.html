@@ -1,0 +1,22 @@
+<ng-container *ngLet="approveData$ | async as data">
+  <div>
+    <h4>Token information</h4>
+    <p>
+      Name:
+      <span [class.tui-skeleton]="loading"
+        ><img [src]="data?.image" [alt]="data?.symbol" /> {{ data?.symbol }}</span
+      >
+    </p>
+    <p>
+      Address: <span [class.tui-skeleton]="loading">{{ data?.address }}</span>
+    </p>
+
+    <h4>Contract information</h4>
+    <p>
+      Address: <span [class.tui-skeleton]="loading">{{ data?.spender }}</span>
+    </p>
+    <p>
+      Allowance: <span [class.tui-skeleton]="loading">{{ data?.allowance.toFixed() }}</span>
+    </p>
+  </div>
+</ng-container>
