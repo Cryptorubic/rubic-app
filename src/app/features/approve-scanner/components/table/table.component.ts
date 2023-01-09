@@ -32,7 +32,7 @@ export class TableComponent {
   public async handleRevoke(token: string, spender: string): Promise<void> {
     try {
       this.loading = true;
-      await this.approveScannerService.revokeApprove(token, spender);
+      await this.approveScannerService.showTokenModal(token, spender);
     } catch (err) {
       this.errorsService.catch(err);
     } finally {

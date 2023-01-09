@@ -18,8 +18,15 @@
     <p>
       Allowance: <span [class.tui-skeleton]="loading">{{ data?.allowance }}</span>
     </p>
-    <button [disabled]="loading" tuiButton size="m" appearance="primary" (click)="handleRevoke()">
-      Revoke
+    <button
+      tuiButton
+      [disabled]="loading || data?.allowance === '0'"
+      [showLoader]="loading"
+      size="m"
+      appearance="primary"
+      (click)="handleRevoke()"
+    >
+      {{ data?.allowance === '0' ? 'Approve already revoked' : 'Revoke approve' }}
     </button>
   </div>
 </ng-container>
