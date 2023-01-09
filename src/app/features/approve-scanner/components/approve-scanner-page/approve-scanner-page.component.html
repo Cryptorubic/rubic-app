@@ -1,4 +1,24 @@
-<div class="container">
+<div class="container" *ngLet="address$ | async as address">
   <app-form></app-form>
-  <app-table></app-table>
+
+  <ng-container *ngIf="address; else login">
+    <app-rubic-button
+      *ngIf="allowChangeBlockchain$ | async; else table"
+      [attr.error]="true"
+      appearance="primary"
+      [loading]="loading"
+      [disabled]="loading"
+      (onClick)="changeNetwork()"
+    >
+      {{ 'common.switchTo' | translate : { networkName: (fromBlockchainLabel$ | async) } }}
+    </app-rubic-button>
+
+    <ng-template #table>
+      <app-table></app-table>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #login>
+    <app-login-button></app-login-button>
+  </ng-template>
 </div>

@@ -18,7 +18,6 @@ import {
 import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
-import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -39,7 +38,6 @@ import { AppReferralBannerComponent } from './components/header/components/refer
 @NgModule({
   declarations: [
     HeaderComponent,
-    LoginButtonComponent,
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
@@ -76,6 +74,6 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     FormsModule,
     TuiLoaderModule
   ],
-  exports: [HeaderComponent, LoginButtonComponent]
+  exports: [HeaderComponent]
 })
 export class HeaderModule {}

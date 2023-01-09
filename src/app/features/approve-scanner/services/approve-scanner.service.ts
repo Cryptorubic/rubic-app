@@ -17,7 +17,7 @@ interface ApproveForm {
   searchQuery: string;
 }
 
-interface Test {
+interface ApproveTransaction {
   hash: string;
   tokenAddress: string;
   spender: string;
@@ -35,7 +35,8 @@ export class ApproveScannerService {
     .map(([_blockchain, meta]) => meta);
 
   private readonly defaultBlockchain = this.supportedBlockchains.find(
-    blockchain => blockchain.key === BLOCKCHAIN_NAME.ETHEREUM
+    blockchain =>
+      blockchain.key === (this.walletConnectorService.network ?? BLOCKCHAIN_NAME.ETHEREUM)
   );
 
   public readonly form = new FormGroup<ApproveFormControl>({
@@ -43,31 +44,20 @@ export class ApproveScannerService {
     searchQuery: new FormControl(null)
   });
 
-  public readonly allApproves$ = this.form.controls.blockchain.valueChanges.pipe(
+  public readonly selectedBlockchain$ = this.form.controls.blockchain.valueChanges.pipe(
+    startWith(this.form.controls.blockchain.value)
+  );
+
+  public readonly searchQuery$ = this.form.controls.searchQuery.valueChanges;
+
+  public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
     switchMap(blockchain => this.fetchTransactions(blockchain))
   );
 
   public readonly visibleApproves$ = this.allApproves$.pipe(
-    combineLatestWith(
-      this.form.controls.searchQuery.valueChanges.pipe(startWith(null), debounceTime(100))
-    ),
-    map(([approves, searchQuery]) =>
-      searchQuery
-        ? approves.filter(tx => {
-            const spender = tx.spender.toLowerCase();
-            const token = tx.tokenAddress.toLowerCase();
-            const txHash = tx.hash.toLowerCase();
-            const queryString = searchQuery.toLowerCase();
-
-            return (
-              spender.includes(queryString) ||
-              token.includes(queryString) ||
-              txHash.includes(queryString)
-            );
-          })
-        : approves
-    )
+    combineLatestWith(this.searchQuery$.pipe(startWith(null), debounceTime(100))),
+    map(([approves, query]) => this.searchStringInTable(approves, query))
   );
 
   constructor(
@@ -77,7 +67,7 @@ export class ApproveScannerService {
     private readonly dialogService: TuiDialogService
   ) {}
 
-  private fetchTransactions(blockchain: Blockchain): Observable<Test[]> {
+  private fetchTransactions(blockchain: Blockchain): Observable<ApproveTransaction[]> {
     const userAddress = this.walletConnectorService.address;
     const blockchainAddressMapper: Record<SupportedBlockchain, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: `https://api.etherscan.io/api?module=account&action=txlist&address=${userAddress}`,
@@ -126,5 +116,25 @@ export class ApproveScannerService {
         }
       })
       .subscribe();
+  }
+
+  private searchStringInTable(
+    approves: ApproveTransaction[],
+    searchQuery: string
+  ): ApproveTransaction[] {
+    return searchQuery
+      ? approves.filter(tx => {
+          const spender = tx.spender.toLowerCase();
+          const token = tx.tokenAddress.toLowerCase();
+          const txHash = tx.hash.toLowerCase();
+          const queryString = searchQuery.toLowerCase();
+
+          return (
+            spender.includes(queryString) ||
+            token.includes(queryString) ||
+            txHash.includes(queryString)
+          );
+        })
+      : approves;
   }
 }
