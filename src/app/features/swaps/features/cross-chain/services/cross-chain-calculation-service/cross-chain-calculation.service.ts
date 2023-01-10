@@ -239,8 +239,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ]);
 
     const fromAddress = this.authService.userAddress;
+    let transactionHash: string;
+
     const onTransactionHash = (txHash: string) => {
+      transactionHash = txHash;
       confirmCallback?.();
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade);
 
       const timestamp = Date.now();
       const viaUuid =
@@ -285,7 +289,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
     try {
       await calculatedTrade.trade.swap(swapOptions);
       this.showSuccessTrxNotification();
+      await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
+      if (
+        transactionHash &&
+        err instanceof Error &&
+        err.message.includes('Transaction was not mined')
+      ) {
+        await this.crossChainApiService.patchTrade(transactionHash, false);
+      }
+
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(
           err,
