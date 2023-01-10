@@ -48,7 +48,9 @@
       />
       <div class="asset__data">
         <div class="asset__symbol">{{ uiTrade?.toToken?.symbol }}</div>
-        <div class="asset__asset-type">{{ uiTrade?.toBlockchain }}</div>
+        <div class="asset__asset-type">
+          {{ BLOCKCHAIN_LABEL?.[uiTrade?.toBlockchain] || uiTrade?.toBlockchain }}
+        </div>
       </div>
     </div>
   </td>
