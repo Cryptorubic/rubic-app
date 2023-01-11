@@ -78,7 +78,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    if (!this.iframeService.isIframe) {
+    if (!this.iframeService.isIframe && this.formType === 'from') {
       this.tokenAmountInput.nativeElement.focus();
     }
   }

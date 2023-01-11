@@ -855,8 +855,4 @@ export class InstantTradeBottomFormComponent implements OnInit {
       ? trade.gasFeeInfo.gasFeeInUsd
       : new BigNumber(0);
   }
-
-  public async createLimitOrder(): Promise<void> {
-    await this.instantTradeService.createLimitOrder();
-  }
 }

@@ -22,9 +22,7 @@ import {
   OnChainTradeError,
   TxStatus,
   BlockchainsInfo,
-  NotWhitelistedProviderError,
-  EvmBlockchainName,
-  TokenAmount as SdkTokenAmount
+  NotWhitelistedProviderError
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -391,26 +389,5 @@ export class InstantTradeService extends TradeCalculationService {
     this.instantTradesApiService
       .saveNotWhitelistedProvider(error, blockchain, tradeType)
       .subscribe();
-  }
-
-  public async createLimitOrder(): Promise<void> {
-    await this.sdkService.limitOrderManager.createOrder(
-      new SdkTokenAmount<EvmBlockchainName>({
-        blockchain: BLOCKCHAIN_NAME.POLYGON,
-        address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-        name: 'WMATIC',
-        symbol: 'WMATIC',
-        decimals: 18,
-        tokenAmount: new BigNumber(0.01)
-      }),
-      new SdkTokenAmount<EvmBlockchainName>({
-        blockchain: BLOCKCHAIN_NAME.POLYGON,
-        address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        name: 'USDC',
-        symbol: 'USDC',
-        decimals: 6,
-        tokenAmount: new BigNumber(100)
-      })
-    );
   }
 }
