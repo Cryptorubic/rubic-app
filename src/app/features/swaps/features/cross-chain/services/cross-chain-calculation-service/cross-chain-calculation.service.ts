@@ -145,7 +145,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           }
 
           const trade = wrappedTrade?.trade;
-          return from(calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)).pipe(
+
+          const needApprove$ = from(
+            calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
+          );
+
+          return needApprove$.pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
                 total: total,

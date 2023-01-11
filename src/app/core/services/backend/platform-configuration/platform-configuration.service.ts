@@ -137,7 +137,7 @@ export class PlatformConfigurationService {
       .filter(([_, { active }]) => !active)
       .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
       .filter(provider => Boolean(provider))
-      .filter(provider => provider !== 'cbridge');
+      .filter(provider => provider !== 'lifi');
 
     const disabledBridgeTypes = crossChainProvidersEntries
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
