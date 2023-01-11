@@ -16,6 +16,8 @@ import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,8 @@ export class CrossChainApiService {
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   public saveNotWhitelistedProvider(
@@ -69,7 +72,8 @@ export class CrossChainApiService {
       user: this.authService.userAddress,
       tx_hash: hash,
       wallet_name: this.walletConnectorService.provider.detailedWalletName,
-      device_type: this.isMobile ? 'mobile' : 'desktop'
+      device_type: this.isMobile ? 'mobile' : 'desktop',
+      domain: this.window.location.hostname
     };
 
     await firstValueFrom(
