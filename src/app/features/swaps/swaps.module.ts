@@ -23,9 +23,6 @@ import {
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-selector/assets-selector.module';
 import { CrossChainModule } from 'src/app/features/swaps/features/cross-chain/cross-chain.module';
-import { TokenAmountInputComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/token-amount-input/token-amount-input.component';
-import { UserBalanceContainerComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/user-balance-container/user-balance-container.component';
-import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/features/swap-form/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { CrossChainSwapInfoComponent } from '@features/swaps/features/swap-form/components/swap-info/components/cross-chain-bridge-swap-info/components/cross-chain-swap-info/cross-chain-swap-info.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CrossChainBridgeSwapInfoComponent } from '@features/swaps/features/swap-form/components/swap-info/components/cross-chain-bridge-swap-info/cross-chain-bridge-swap-info.component';
@@ -42,6 +39,7 @@ import { RefreshButtonComponent } from '@features/swaps/features/swap-form/compo
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
 import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
+import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 
 @NgModule({
   declarations: [
@@ -49,11 +47,8 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsCcrComponent,
-    TokenAmountInputComponent,
-    UserBalanceContainerComponent,
     CrossChainSwapInfoComponent,
     IframeSettingsComponent,
-    VerticalIframeTokenAmountInputComponent,
     SwapInfoContainerComponent,
     InstantTradeSwapInfoComponent,
     CrossChainBridgeSwapInfoComponent,
@@ -63,7 +58,7 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     FormHeaderComponent,
     RefreshButtonComponent
   ],
-  exports: [TokenAmountInputComponent, VerticalIframeTokenAmountInputComponent],
+  exports: [],
   imports: [
     SwapsRoutingModule,
     SwapsSharedModule,
@@ -71,6 +66,7 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     InstantTradeModule,
     CrossChainModule,
     OnramperExchangerModule,
+    LimitOrderModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,

@@ -98,6 +98,7 @@
     [status]="tradeStatus"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     [isOnramper]="isOnramper$ | async"
+    (click)="createLimitOrder()"
     (onSwapClick)="createTrade()"
     (onApproveClick)="approveTrade()"
     (onUpdateRateClick)="onSetHiddenData()"

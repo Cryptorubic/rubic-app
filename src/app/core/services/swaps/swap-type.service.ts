@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable()
 export class SwapTypeService {
@@ -17,8 +18,12 @@ export class SwapTypeService {
     this._swapMode$.next(swapType);
   }
 
-  constructor(private readonly swapFormService: SwapFormService) {
+  constructor(private readonly swapFormService: SwapFormService, private readonly router: Router) {
     this.subscribeOnForm();
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      this.swapMode = this.getSwapProviderType();
+    });
   }
 
   private subscribeOnForm(): void {
@@ -28,6 +33,10 @@ export class SwapTypeService {
   }
 
   public getSwapProviderType(): SWAP_PROVIDER_TYPE {
+    if (this.router.url.includes('limit-order')) {
+      return SWAP_PROVIDER_TYPE.LIMIT_ORDER;
+    }
+
     const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
 
     if (fromAssetType === 'fiat') {

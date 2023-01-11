@@ -31,7 +31,8 @@ export class FormHeaderComponent {
         const swapTypeLabel = {
           [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'Instant Trade',
           [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'Cross-Chain',
-          [SWAP_PROVIDER_TYPE.ONRAMPER]: 'Onramper'
+          [SWAP_PROVIDER_TYPE.ONRAMPER]: 'Onramper',
+          [SWAP_PROVIDER_TYPE.LIMIT_ORDER]: 'Limit Order'
         };
         return swapTypeLabel[mode];
       }

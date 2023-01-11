@@ -72,6 +72,10 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
+  public get isLimitOrder(): boolean {
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
+  }
+
   constructor(
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,

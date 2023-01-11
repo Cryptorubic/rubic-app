@@ -190,6 +190,11 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
+    if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+      return;
+    }
+
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
     if (!isTokenAmount(fromAsset)) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;

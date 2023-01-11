@@ -70,6 +70,8 @@
           </app-cross-chain-bottom-form>
 
           <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
+
+          <app-limit-order-bottom-form *ngIf="isLimitOrder"></app-limit-order-bottom-form>
         </div>
       </main>
 
@@ -79,7 +81,7 @@
 
   <ng-container *noFrame>
     <app-swap-info-container
-      *ngIf="isFormFilled && !isOnramper"
+      *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
       [swapType]="swapType"
       [currentInstantTradeInfo]="currentInstantTradeInfo"
       [tradeStatus]="tradeStatus"

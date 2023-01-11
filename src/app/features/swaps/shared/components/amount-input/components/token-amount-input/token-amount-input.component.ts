@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Input,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -26,6 +27,8 @@ import { Asset } from '@features/swaps/shared/models/form/asset';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokenAmountInputComponent implements OnInit, AfterViewInit {
+  @Input() formType: 'from' | 'to' = 'from';
+
   @ViewChild('tokenAmount') public readonly tokenAmountInput: ElementRef<HTMLInputElement>;
 
   public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');
@@ -51,19 +54,27 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      const { fromAmount, fromAsset } = form;
+    if (this.formType === 'from') {
+      this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+        this.updateFormValues(form.fromAsset, form.fromAmount);
+      });
+    } else {
+      this.swapFormService.outputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
+        this.updateFormValues(this.swapFormService.inputValue.toToken, form.toAmount);
+      });
+    }
+  }
 
-      if (!fromAmount || fromAmount.isNaN()) {
-        this.amount.setValue('');
-      } else if (!fromAmount.eq(this.formattedAmount)) {
-        this.amount.setValue(fromAmount.toFixed());
-      }
+  private updateFormValues(asset: Asset, amount: BigNumber | null): void {
+    if (!amount || amount.isNaN()) {
+      this.amount.setValue('');
+    } else if (!amount.eq(this.formattedAmount)) {
+      this.amount.setValue(amount.toFixed());
+    }
 
-      this.selectedAsset = fromAsset;
-      this.selectedToken = isMinimalToken(fromAsset) ? fromAsset : null;
-      this.cdr.markForCheck();
-    });
+    this.selectedAsset = asset;
+    this.selectedToken = isMinimalToken(asset) ? asset : null;
+    this.cdr.markForCheck();
   }
 
   public ngAfterViewInit() {
@@ -82,13 +93,19 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   }
 
   private updateInputValue(): void {
-    const { fromAmount } = this.swapFormService.inputValue;
+    const amount =
+      this.formType === 'from'
+        ? this.swapFormService.inputValue.fromAmount
+        : this.swapFormService.outputValue.toAmount;
+    const amountKey = this.formType === 'from' ? 'fromAmount' : 'toAmount';
+    const controlKey = this.formType === 'from' ? 'inputControl' : 'outputControl';
+
     if (
-      ((fromAmount && !fromAmount.isNaN()) || this.formattedAmount) &&
-      !fromAmount?.eq(this.formattedAmount)
+      ((amount && !amount.isNaN()) || this.formattedAmount) &&
+      !amount?.eq(this.formattedAmount)
     ) {
-      this.swapFormService.inputControl.patchValue({
-        fromAmount: new BigNumber(this.formattedAmount)
+      this.swapFormService[controlKey].patchValue({
+        [amountKey]: new BigNumber(this.formattedAmount)
       });
     }
   }
