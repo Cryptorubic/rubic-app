@@ -143,11 +143,24 @@ export class HeaderComponent implements AfterViewInit {
       toToken: null,
       fromAmount: null
     });
+    this.swapFormService.outputControl.patchValue({
+      toAmount: null
+    });
     this.gtmService.reloadGtmSession();
     await this.router.navigate(['/']);
   }
 
   public async navigateToLimitOrder(): Promise<void> {
+    this.swapFormService.inputControl.patchValue({
+      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAsset: null,
+      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toToken: null,
+      fromAmount: null
+    });
+    this.swapFormService.outputControl.patchValue({
+      toAmount: null
+    });
     await this.router.navigate(['/limit-order']);
   }
 

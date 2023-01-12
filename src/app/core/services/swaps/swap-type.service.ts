@@ -3,6 +3,7 @@ import { BehaviorSubject, filter } from 'rxjs';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { NavigationEnd, Router } from '@angular/router';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()
 export class SwapTypeService {
@@ -21,9 +22,14 @@ export class SwapTypeService {
   constructor(private readonly swapFormService: SwapFormService, private readonly router: Router) {
     this.subscribeOnForm();
 
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      this.swapMode = this.getSwapProviderType();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        distinctUntilChanged((prev: NavigationEnd, cur: NavigationEnd) => prev?.url === cur?.url)
+      )
+      .subscribe(() => {
+        this.swapMode = this.getSwapProviderType();
+      });
   }
 
   private subscribeOnForm(): void {
