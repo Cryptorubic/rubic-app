@@ -1,17 +1,34 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, from, of, Subject } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { EvmBlockchainName, TokenAmount as SdkTokenAmount, TokenBaseStruct } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  EvmBlockchainName,
+  TokenAmount as SdkTokenAmount,
+  TokenBaseStruct
+} from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens } from '@shared/utils/utils';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { AuthService } from '@core/services/auth/auth.service';
+import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Injectable()
 export class LimitOrderFormService {
   private readonly _tradeStatus$ = new BehaviorSubject<TRADE_STATUS>(TRADE_STATUS.DISABLED);
 
-  public readonly tradeStatus$ = this._tradeStatus$.asObservable();
+  public readonly tradeStatus$ = this._tradeStatus$.pipe(debounceTime(200));
+
+  private set tradeStatus(value: TRADE_STATUS) {
+    this._tradeStatus$.next(value);
+  }
 
   /**
    * Contains true, in case `approve` button must be shown in form.
@@ -24,6 +41,12 @@ export class LimitOrderFormService {
 
   private needApprove = false;
 
+  /**
+   * Controls approve calculation flow.
+   * When `next` is called, recalculation is started.
+   */
+  private readonly _calculateTrade$ = new Subject<{ stop?: boolean }>();
+
   private get isFormFilled(): boolean {
     const form = this.swapFormService.form.value;
     return (
@@ -34,11 +57,90 @@ export class LimitOrderFormService {
     );
   }
 
+  /**
+   * Returns form input value.
+   * Must be used only if form contains blockchains asset types.
+   */
+  public get inputValue(): SwapFormInputTokens {
+    const inputForm = this.swapFormService.inputValue;
+    if (inputForm.fromAssetType && !BlockchainsInfo.isBlockchainName(inputForm.fromAssetType)) {
+      throw new RubicError('Cannot use cross chain');
+    }
+    return {
+      ...inputForm,
+      fromBlockchain: inputForm.fromAssetType as BlockchainName,
+      fromToken: inputForm.fromAsset as TokenAmount
+    };
+  }
+
   constructor(
     private readonly sdkService: SdkService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly swapTypeService: SwapTypeService,
+    private readonly authService: AuthService
   ) {
+    this.subscribeOnCalculation();
+
     this.subscribeOnFormChanges();
+  }
+
+  /**
+   * Subscribe on 'calculate' subject, which controls flow of calculation.
+   * Can be called only once in constructor.
+   */
+  private subscribeOnCalculation(): void {
+    this._calculateTrade$
+      .pipe(
+        debounceTime(200),
+        map(calculateData => {
+          if (calculateData.stop || !this.isFormFilled) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            return { ...calculateData, stop: true };
+          }
+          return { ...calculateData, stop: false };
+        }),
+        switchMap(calculateData => {
+          if (calculateData.stop) {
+            return of(null);
+          }
+
+          const { fromBlockchain, fromToken, fromAmount } = this.inputValue;
+          const isUserAuthorized =
+            Boolean(this.authService.userAddress) &&
+            this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
+          if (!isUserAuthorized) {
+            return of(null);
+          }
+
+          this.tradeStatus = TRADE_STATUS.LOADING;
+          return from(
+            SdkTokenAmount.createToken({
+              ...(fromToken as TokenBaseStruct<EvmBlockchainName>),
+              tokenAmount: fromAmount
+            })
+          ).pipe(
+            switchMap(async fromTokenAmount => {
+              if (
+                !this.prevFromTokenAmount ||
+                !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
+                !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
+              ) {
+                this.prevFromTokenAmount = fromTokenAmount;
+
+                this.needApprove = await this.sdkService.limitOrderManager.needApprove(
+                  fromTokenAmount,
+                  fromAmount
+                );
+              }
+              this.tradeStatus = this.needApprove
+                ? TRADE_STATUS.READY_TO_APPROVE
+                : TRADE_STATUS.READY_TO_SWAP;
+              this._displayApproveButton$.next(this.needApprove);
+            })
+          );
+        })
+      )
+      .subscribe();
   }
 
   private subscribeOnFormChanges(): void {
@@ -51,52 +153,25 @@ export class LimitOrderFormService {
   }
 
   private async updateStatus(): Promise<void> {
-    this._displayApproveButton$.next(false);
-    if (!this.isFormFilled) {
-      this._tradeStatus$.next(TRADE_STATUS.DISABLED);
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
       return;
     }
-
-    this._tradeStatus$.next(TRADE_STATUS.LOADING);
-
-    const { fromAsset, fromAmount } = this.swapFormService.inputValue;
-    const fromTokenAmount = await SdkTokenAmount.createToken({
-      ...(fromAsset as TokenBaseStruct<EvmBlockchainName>),
-      tokenAmount: fromAmount
-    });
-    if (
-      !this.prevFromTokenAmount ||
-      !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
-      !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
-    ) {
-      this.prevFromTokenAmount = fromTokenAmount;
-
-      this.needApprove = await this.sdkService.limitOrderManager.needApprove(
-        fromTokenAmount,
-        fromAmount
-      );
-    }
-    if (this.needApprove) {
-      this._tradeStatus$.next(TRADE_STATUS.READY_TO_APPROVE);
-      this._displayApproveButton$.next(true);
-    } else {
-      this._tradeStatus$.next(TRADE_STATUS.READY_TO_SWAP);
-    }
+    this._calculateTrade$.next({});
   }
 
   public async approve(): Promise<void> {
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
 
-    this._tradeStatus$.next(TRADE_STATUS.APPROVE_IN_PROGRESS);
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     try {
       await this.sdkService.limitOrderManager.approve(
         fromAsset as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
         {}
       );
-      this._tradeStatus$.next(TRADE_STATUS.READY_TO_SWAP);
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     } catch (err) {
-      this._tradeStatus$.next(TRADE_STATUS.READY_TO_APPROVE);
+      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
     }
   }
 
@@ -105,7 +180,7 @@ export class LimitOrderFormService {
     const fromToken = fromAsset as AvailableTokenAmount;
     const { toAmount } = this.swapFormService.outputValue;
 
-    this._tradeStatus$.next(TRADE_STATUS.SWAP_IN_PROGRESS);
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     try {
       await this.sdkService.limitOrderManager.createOrder(
         fromToken as TokenBaseStruct<EvmBlockchainName>,
@@ -114,6 +189,6 @@ export class LimitOrderFormService {
         toAmount
       );
     } catch {}
-    this._tradeStatus$.next(TRADE_STATUS.READY_TO_SWAP);
+    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
   }
 }
