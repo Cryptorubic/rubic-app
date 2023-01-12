@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, from, of, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  from,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -19,6 +27,13 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { ErrorsService } from '@core/errors/errors.service';
+import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { TuiNotification } from '@taiga-ui/core';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -77,7 +92,9 @@ export class LimitOrderFormService {
     private readonly sdkService: SdkService,
     private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly errorsService: ErrorsService,
+    private readonly notificationsService: NotificationsService
   ) {
     this.subscribeOnCalculation();
 
@@ -182,15 +199,29 @@ export class LimitOrderFormService {
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
 
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+
+    let approveInProgressSubscription$: Subscription;
+    const options: BasicTransactionOptions = {
+      onTransactionHash: () => {
+        approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+      }
+    };
     try {
       await this.sdkService.limitOrderManager.approve(
         fromAsset as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
-        {}
+        options
       );
+      this.notificationsService.showApproveSuccessful();
+
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-    } catch (err) {
+    } catch (error) {
+      const parsedError = RubicSdkErrorParser.parseError(error);
+      this.errorsService.catch(parsedError);
+
       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    } finally {
+      approveInProgressSubscription$?.unsubscribe();
     }
   }
 
@@ -207,7 +238,19 @@ export class LimitOrderFormService {
         fromAmount,
         toAmount
       );
-    } catch {}
+
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: {
+          type: 'limit-order',
+          withRecentTrades: true
+        }
+      });
+    } catch (error) {
+      const parsedError = RubicSdkErrorParser.parseError(error);
+      this.errorsService.catch(parsedError);
+    }
     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
   }
 }

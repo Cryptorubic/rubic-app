@@ -18,6 +18,16 @@ export class SuccessTrxNotificationComponent {
 
   public readonly withRecentTrades: boolean;
 
+  public get title(): string {
+    if (this.type === 'cross-chain-routing') {
+      return 'notifications.successfulCCRTradeTitle';
+    }
+    if (this.type === 'on-chain') {
+      return 'notifications.successfulTradeTitle';
+    }
+    return 'Successfully created limit order';
+  }
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<

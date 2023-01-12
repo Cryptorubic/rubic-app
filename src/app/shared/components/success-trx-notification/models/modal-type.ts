@@ -1,1 +1,1 @@
-export type SuccessTxModalType = 'on-chain' | 'cross-chain-routing';
+export type SuccessTxModalType = 'on-chain' | 'cross-chain-routing' | 'limit-order';
