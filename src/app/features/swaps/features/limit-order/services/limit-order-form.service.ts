@@ -149,6 +149,8 @@ export class LimitOrderFormService {
       this.swapFormService.outputValue$.pipe(distinctUntilChanged())
     ]).subscribe(() => {
       this.updateStatus();
+
+      this.updateBlockchains();
     });
   }
 
@@ -157,6 +159,23 @@ export class LimitOrderFormService {
       return;
     }
     this._calculateTrade$.next({});
+  }
+
+  private updateBlockchains(): void {
+    const { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
+    if (fromToken && !toToken) {
+      if (fromBlockchain !== toBlockchain) {
+        this.swapFormService.inputControl.patchValue({
+          toBlockchain: fromBlockchain
+        });
+      }
+    } else if (!fromToken && toToken) {
+      if (fromBlockchain !== toBlockchain) {
+        this.swapFormService.inputControl.patchValue({
+          fromAssetType: toBlockchain
+        });
+      }
+    }
   }
 
   public async approve(): Promise<void> {

@@ -10,7 +10,7 @@
           />
         </div>
 
-        <div class="swaps-header__icon-wrapper">
+        <div class="swaps-header__icon-wrapper" *ngIf="(isLimitOrder$ | async) === false">
           <img
             class="swaps-header__blockchain-to"
             [src]="toBlockchainItem.icon"

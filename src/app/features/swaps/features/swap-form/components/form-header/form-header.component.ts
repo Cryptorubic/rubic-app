@@ -39,6 +39,10 @@ export class FormHeaderComponent {
     })
   );
 
+  public readonly isLimitOrder$ = this.swapTypeService.swapMode$.pipe(
+    map(mode => mode === SWAP_PROVIDER_TYPE.LIMIT_ORDER)
+  );
+
   constructor(
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService
