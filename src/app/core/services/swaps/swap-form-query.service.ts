@@ -193,9 +193,7 @@ export class SwapFormQueryService {
     chain: BlockchainName
   ): Observable<TokenAmount | null> {
     const similarTokens = tokens.filter(
-      token =>
-        token.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase() &&
-        token.blockchain === chain
+      token => token.symbol.toLowerCase() === symbol.toLowerCase() && token.blockchain === chain
     );
 
     if (!similarTokens.size) {
@@ -204,9 +202,7 @@ export class SwapFormQueryService {
           if (foundTokens?.size) {
             const token =
               foundTokens?.size > 1
-                ? foundTokens.find(
-                    el => el.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase()
-                  )
+                ? foundTokens.find(el => el.symbol.toLowerCase() === symbol.toLowerCase())
                 : foundTokens.first();
             if (!token) {
               return null;

@@ -123,22 +123,25 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   public async revert(): Promise<void> {
-    const { fromAssetType, toBlockchain, fromAsset, toToken } = this.swapFormService.inputValue;
+    const { fromAssetType, toBlockchain, fromAsset, toToken, fromAmount } =
+      this.swapFormService.inputValue;
     if (!BlockchainsInfo.isBlockchainName(fromAssetType) || !isMinimalToken(fromAsset)) {
       return;
     }
     const { toAmount } = this.swapFormService.outputValue;
 
-    const revertData = {
+    this.swapFormService.inputControl.patchValue({
       fromAssetType: toBlockchain,
       fromAsset: toToken,
       toToken: fromAsset,
       toBlockchain: fromAssetType,
       ...(toAmount?.gt(0) && { fromAmount: toAmount })
-    };
-    this.swapFormService.form.patchValue({
-      input: revertData,
-      output: { toAmount: new BigNumber(NaN) }
+    });
+    this.swapFormService.outputControl.patchValue({
+      toAmount:
+        this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER
+          ? fromAmount
+          : new BigNumber(NaN)
     });
   }
 
