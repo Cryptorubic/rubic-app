@@ -24,16 +24,8 @@ const routes: Routes = [
     }
   },
   {
-    path: ROUTE_PATH.CONTRACTS,
-    redirectTo: '/trades-old/contracts'
-  },
-  {
     path: ROUTE_PATH.FAQ,
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
-  },
-  {
-    path: ROUTE_PATH.PROMOTION,
-    loadChildren: () => import('./features/promotion/promotion.module').then(m => m.PromotionModule)
   },
   {
     path: ROUTE_PATH.REST,
