@@ -39,6 +39,14 @@
       "
       >Swaps</a
     >
+    <a
+      class="button-link"
+      (click)="navigateToLimitOrder()"
+      [class.button-link_active]="
+        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER
+      "
+      >Limit Order</a
+    >
   </nav>
 
   <app-buy-token

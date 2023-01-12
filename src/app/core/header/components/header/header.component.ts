@@ -147,6 +147,10 @@ export class HeaderComponent implements AfterViewInit {
     await this.router.navigate(['/']);
   }
 
+  public async navigateToLimitOrder(): Promise<void> {
+    await this.router.navigate(['/limit-order']);
+  }
+
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }
