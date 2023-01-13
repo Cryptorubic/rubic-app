@@ -34,7 +34,6 @@ export class TradesListComponent {
     const error = taggedTrade.error;
     const isUsd =
       (error instanceof MinAmountError || error instanceof MinAmountError) &&
-      error.tokenSymbol !== taggedTrade.trade.from.symbol &&
       error.tokenSymbol.toLowerCase().includes('usd');
 
     if (error instanceof MaxAmountError) {
