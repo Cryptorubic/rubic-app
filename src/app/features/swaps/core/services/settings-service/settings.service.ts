@@ -90,13 +90,6 @@ export class SettingsService {
 
         this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
         this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
-
-        this.instantTrade.patchValue({
-          slippageTolerance: this.defaultItSettings.slippageTolerance
-        });
-        this.crossChainRouting.patchValue({
-          slippageTolerance: this.defaultCcrSettings.slippageTolerance
-        });
       }
     });
   }
