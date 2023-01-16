@@ -48,7 +48,6 @@
   ></app-buy-token>
 
   <div class="rubic-header__profile">
-    <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>
