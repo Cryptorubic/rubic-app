@@ -76,6 +76,8 @@
   }
 
   @include iframe {
+
+    margin-right: 50px;
     padding: 0 !important;
 
     app-iframe-logout-button {
