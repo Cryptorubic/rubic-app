@@ -183,14 +183,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
       bridgeProvider: wrappedTrade.tradeType
     };
 
-    if (this.queryParamsService.enabledProviders) {
-      return smartRouting;
-    }
-
     if (
-      wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade ||
-      wrappedTrade.trade instanceof RangoCrossChainTrade
+      (wrappedTrade.trade instanceof LifiCrossChainTrade ||
+        wrappedTrade.trade instanceof ViaCrossChainTrade ||
+        wrappedTrade.trade instanceof RangoCrossChainTrade) &&
+      wrappedTrade.trade.bridgeType
     ) {
       return {
         ...smartRouting,
