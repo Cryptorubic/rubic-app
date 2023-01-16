@@ -5120,7 +5120,7 @@ cashaddrjs@0.4.4:
   dependencies:
     big-integer "1.6.36"
 
-cbridge-revert-manager@1.1.0:
+cbridge-revert-manager@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/cbridge-revert-manager/-/cbridge-revert-manager-1.1.0.tgz#ad4790b6b446e25199f98cb9f31ff00404b1f44e"
   integrity sha512-MIj9ldDfm3d/i5emjf4ajxK6OSbjydu2ONouyLf2ZG4UdhXbHyC2Zqz0cAwcnoCLQDAu8ZTjEnRw97mtUtslUg==

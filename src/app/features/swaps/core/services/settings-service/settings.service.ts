@@ -31,11 +31,11 @@ export class SettingsService {
     crossChain: 4
   };
 
-  public defaultItSettings: ItSettingsForm;
+  public defaultItSettings = this.getDefaultITSettings();
 
-  public defaultCcrSettings: CcrSettingsForm;
+  public defaultCcrSettings = this.getDefaultCCRSettings();
 
-  public settingsForm: FormGroup<SettingsFormControls>;
+  public settingsForm = this.createForm();
 
   private ccrShowReceiverAddressUserValue: boolean;
 
@@ -44,7 +44,7 @@ export class SettingsService {
   }
 
   public get instantTradeValue(): ItSettingsForm {
-    return this.settingsForm.get(SWAP_PROVIDER_TYPE.INSTANT_TRADE).value;
+    return this.settingsForm.controls[SWAP_PROVIDER_TYPE.INSTANT_TRADE].getRawValue();
   }
 
   public get instantTradeValueChanges(): Observable<ItSettingsForm> {
@@ -56,7 +56,7 @@ export class SettingsService {
   }
 
   public get crossChainRoutingValue(): CcrSettingsForm {
-    return this.settingsForm.get(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING).value;
+    return this.settingsForm.controls[SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING].getRawValue();
   }
 
   public get crossChainRoutingValueChanges(): Observable<CcrSettingsForm> {
@@ -71,12 +71,7 @@ export class SettingsService {
     private readonly queryParamsService: QueryParamsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
-    this.defaultItSettings = this.getDefaultITSettings();
-    this.defaultCcrSettings = this.getDefaultCCRSettings();
-
-    this.createForm();
     this.initSubscriptions();
-
     this.subscribeOnQueryParams();
   }
 
@@ -89,7 +84,10 @@ export class SettingsService {
         };
 
         this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
+        this.instantTrade.patchValue(this.defaultItSettings);
+
         this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
+        this.crossChainRouting.patchValue(this.defaultCcrSettings);
       }
     });
   }
@@ -122,8 +120,8 @@ export class SettingsService {
     return Math.min(Math.max(slippage, 0.1), 50);
   }
 
-  private createForm(): void {
-    this.settingsForm = new FormGroup<SettingsFormControls>({
+  private createForm(): FormGroup<SettingsFormControls> {
+    return new FormGroup<SettingsFormControls>({
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup<ItSettingsFormControls>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
