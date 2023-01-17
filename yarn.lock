@@ -5120,7 +5120,7 @@ cashaddrjs@0.4.4:
   dependencies:
     big-integer "1.6.36"
 
-cbridge-revert-manager@^1.0.0:
+cbridge-revert-manager@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/cbridge-revert-manager/-/cbridge-revert-manager-1.1.0.tgz#ad4790b6b446e25199f98cb9f31ff00404b1f44e"
   integrity sha512-MIj9ldDfm3d/i5emjf4ajxK6OSbjydu2ONouyLf2ZG4UdhXbHyC2Zqz0cAwcnoCLQDAu8ZTjEnRw97mtUtslUg==
@@ -13160,10 +13160,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.16.4:
-  version "3.16.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.16.4.tgz#88b24741e92fa924a13749d8501572a09b9de7ec"
-  integrity sha512-ddK+VoCbjLk12Sm6Dx9+DKQkaVxCU+KFTZYieDPu9hFEDKLA/3oWde7Q9KRw9c0ufFa+34fqSTRrUCa9rKpSbw==
+rubic-sdk@3.16.6:
+  version "3.16.6"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.16.6.tgz#85b13876ae8c4b1369481a38b3985d260d0e10ca"
+  integrity sha512-9qS56KfHXAhXiVEok08CqQUWmu8SZ7N+C/lNf5Gc0DJkiuuAZp6m+WhdoUY3pln8Ax0bsZdaPVKuq2n+0kEV2g==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -13171,7 +13171,7 @@ rubic-sdk@3.16.4:
     axios "^0.26.1"
     bignumber.js "9.1.0"
     bitcoin-address-validation "2.2.1"
-    cbridge-revert-manager "^1.0.0"
+    cbridge-revert-manager "1.1.0"
     ethers "^5.6.8"
     grpc-web "^1.4.2"
     lodash.clonedeep "^4.5.0"

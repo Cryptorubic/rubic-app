@@ -145,7 +145,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           }
 
           const trade = wrappedTrade?.trade;
-          return from(calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)).pipe(
+
+          const needApprove$ = from(
+            calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
+          );
+
+          return needApprove$.pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
                 total: total,
@@ -178,14 +183,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
       bridgeProvider: wrappedTrade.tradeType
     };
 
-    if (this.queryParamsService.enabledProviders) {
-      return smartRouting;
-    }
-
     if (
-      wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade ||
-      wrappedTrade.trade instanceof RangoCrossChainTrade
+      (wrappedTrade.trade instanceof LifiCrossChainTrade ||
+        wrappedTrade.trade instanceof ViaCrossChainTrade ||
+        wrappedTrade.trade instanceof RangoCrossChainTrade) &&
+      wrappedTrade.trade.bridgeType
     ) {
       return {
         ...smartRouting,
@@ -269,7 +271,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
-      this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      try {
+        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      } catch {}
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
