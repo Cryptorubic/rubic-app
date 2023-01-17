@@ -1,6 +1,11 @@
 @use 'src/scss/core' as *;
 
 :host {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  z-index: 999;
+
   display: block;
 }
 

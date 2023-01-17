@@ -41,7 +41,12 @@ import { FormHeaderComponent } from '@features/swaps/features/swap-form/componen
 import { RefreshButtonComponent } from '@features/swaps/features/swap-form/components/refresh-button/refresh-button.component';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
-import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
+import { IframeSettingsButtonComponent } from '@core/header/components/header/components/iframe-settings-button/iframe-settings-button.component';
+import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
+import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +57,6 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     TokenAmountInputComponent,
     UserBalanceContainerComponent,
     CrossChainSwapInfoComponent,
-    IframeSettingsComponent,
     VerticalIframeTokenAmountInputComponent,
     SwapInfoContainerComponent,
     InstantTradeSwapInfoComponent,
@@ -61,13 +65,14 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     FormSwitcherComponent,
     PlatformTokensAmountComponent,
     FormHeaderComponent,
-    RefreshButtonComponent
+    RefreshButtonComponent,
+    IframeSettingsComponent,
+    IframeSettingsButtonComponent
   ],
   exports: [TokenAmountInputComponent, VerticalIframeTokenAmountInputComponent],
   imports: [
     SwapsRoutingModule,
     SwapsSharedModule,
-    SwapsCoreModule,
     InstantTradeModule,
     CrossChainModule,
     OnramperExchangerModule,
@@ -89,6 +94,12 @@ import { SwapsCoreModule } from '@features/swaps/core/swaps-core.module';
     ClipboardModule,
     TuiAccordionModule
   ],
-  providers: []
+  providers: [
+    SettingsService,
+    RefreshService,
+    TradeService,
+    TargetNetworkAddressService,
+    SuccessTxModalService
+  ]
 })
 export class SwapsModule {}
