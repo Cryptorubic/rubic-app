@@ -92,6 +92,9 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err?.message?.includes('Received amount of tokens are less then expected')) {
+      return new TokenWithFeeError();
+    }
     if (
       err.stack?.includes('InsufficientFundsGasPriceValueError') ||
       err instanceof InsufficientFundsGasPriceValueError
