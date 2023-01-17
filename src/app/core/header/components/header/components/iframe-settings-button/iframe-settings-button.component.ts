@@ -10,14 +10,10 @@ import { TuiDialogService } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IframeSettingsButtonComponent {
-  public settingsComponent: PolymorpheusComponent<IframeSettingsComponent, Injector>;
-
   constructor(
     private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
-  ) {
-    this.settingsComponent = new PolymorpheusComponent(IframeSettingsComponent, injector);
-  }
+  ) {}
 
   public openSettings(): void {
     this.dialogService
