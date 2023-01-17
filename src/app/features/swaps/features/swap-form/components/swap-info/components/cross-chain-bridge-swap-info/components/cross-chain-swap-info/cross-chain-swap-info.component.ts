@@ -142,10 +142,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.twoWaySwap = !(trade instanceof CelerCrossChainTrade);
     this.estimateGasInEth = tradeInfo.estimatedGas;
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
-    this.minimumReceived = trade.toTokenAmountMin.multipliedBy(1 - this.slippage / 100);
-    this.feeInfo = tradeInfo.feeInfo;
-    this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
-
     if (tradeInfo.slippage) {
       if ('total' in tradeInfo.slippage) {
         this.slippage = tradeInfo.slippage.total;
@@ -155,6 +151,10 @@ export class CrossChainSwapInfoComponent implements OnInit {
     } else {
       this.slippage = 0;
     }
+
+    this.minimumReceived = trade.toTokenAmountMin.multipliedBy(1 - this.slippage / 100);
+    this.feeInfo = tradeInfo.feeInfo;
+    this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
 
     if (tradeInfo.priceImpact) {
       if ('total' in tradeInfo.priceImpact) {
