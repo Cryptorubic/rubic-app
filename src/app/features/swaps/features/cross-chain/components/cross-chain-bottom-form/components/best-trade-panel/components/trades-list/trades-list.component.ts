@@ -37,10 +37,10 @@ export class TradesListComponent {
       error.tokenSymbol.toLowerCase().includes('usd');
 
     if (error instanceof MaxAmountError) {
-      return `Max: ${error.maxAmount.toFixed(2)}${isUsd ? '$' : taggedTrade.trade.from.symbol}`;
+      return `Max: ${error.maxAmount.toFixed(2)}${isUsd ? '$' : ''}`;
     }
     if (error instanceof MinAmountError) {
-      return `Min: ${error.minAmount.toFixed(2)}${isUsd ? '$' : taggedTrade.trade.from.symbol}`;
+      return `Min: ${error.minAmount.toFixed(2)}${isUsd ? '$' : ''}`;
     }
   }
 
