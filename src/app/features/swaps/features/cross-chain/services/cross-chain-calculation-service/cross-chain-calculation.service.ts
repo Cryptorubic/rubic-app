@@ -271,7 +271,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
-      this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      try {
+        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      } catch {}
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
