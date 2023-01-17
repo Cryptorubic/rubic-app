@@ -92,7 +92,10 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
-    if (err?.message?.includes('Received amount of tokens are less then expected')) {
+    if (
+      err.message.includes('Received amount of tokens are less then expected') ||
+      err.message.includes('DODORouteProxy: Return amount is not enough')
+    ) {
       return new TokenWithFeeError();
     }
     if (
