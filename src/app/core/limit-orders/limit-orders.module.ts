@@ -5,7 +5,6 @@ import { TuiLoaderModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { SharedModule } from '@app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderRowComponent } from 'src/app/core/limit-orders/components/order-row/order-row.component';
-import { LimitOrdersApiService } from '@core/services/limit-orders/limit-orders-api.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
@@ -19,6 +18,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ScrollingModule
   ],
   exports: [LimitOrdersComponent],
-  providers: [LimitOrdersApiService]
+  providers: []
 })
 export class LimitOrdersModule {}

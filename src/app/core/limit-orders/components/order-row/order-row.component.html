@@ -46,7 +46,13 @@
   <!-- Expiration -->
   <td class="date">
     <span>
-      {{ (order.creation | date : 'MMM dd, yyyy') + ' at ' + (order.creation | date : 'HH:mm') }}
+      {{
+        order.expiration
+          ? (order.expiration | date : 'MMM dd, yyyy') +
+            ' at ' +
+            (order.expiration | date : 'HH:mm')
+          : '-'
+      }}
     </span>
   </td>
 
@@ -102,7 +108,11 @@
       <div class="order__row-label">Expiration</div>
       <div class="order__row-value">
         {{
-          (order.expiration | date : 'MMM dd, yyyy') + ' at ' + (order.expiration | date : 'HH:mm')
+          order.expiration
+            ? (order.expiration | date : 'MMM dd, yyyy') +
+              ' at ' +
+              (order.expiration | date : 'HH:mm')
+            : '-'
         }}
       </div>
     </div>

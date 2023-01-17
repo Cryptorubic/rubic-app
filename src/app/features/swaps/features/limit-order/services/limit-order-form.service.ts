@@ -34,6 +34,7 @@ import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-priv
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
+import { LimitOrdersStoreService } from '@core/services/limit-orders/limit-orders-store.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -94,7 +95,8 @@ export class LimitOrderFormService {
     private readonly swapTypeService: SwapTypeService,
     private readonly authService: AuthService,
     private readonly errorsService: ErrorsService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly limitOrdersStoreService: LimitOrdersStoreService
   ) {
     this.subscribeOnCalculation();
 
@@ -238,6 +240,7 @@ export class LimitOrderFormService {
         fromAmount,
         toAmount
       );
+      this.limitOrdersStoreService.setDirty();
 
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,

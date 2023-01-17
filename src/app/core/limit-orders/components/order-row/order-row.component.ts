@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { LIMIT_ORDER_STATUS } from '@core/limit-orders/models/limit-order-status';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, LIMIT_ORDER_STATUS } from 'rubic-sdk';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
 @Component({

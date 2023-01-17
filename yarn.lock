@@ -13564,7 +13564,7 @@ rpc-websockets@^7.5.0:
     utf-8-validate "^5.0.2"
 
 "rubic-sdk@file:../rubic-sdk":
-  version "3.17.0-alpha-ao.10000"
+  version "3.17.0-alpha-ao.1004"
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@lifi/sdk" "^1.6.3"

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
-import { LimitOrdersApiService } from '@core/services/limit-orders/limit-orders-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { SdkService } from '@core/services/sdk/sdk.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { first } from 'rxjs/operators';
 
 @Injectable()
 export class LimitOrdersStoreService {
@@ -22,8 +24,9 @@ export class LimitOrdersStoreService {
   private dirtyState = true;
 
   constructor(
-    private readonly ordersApiService: LimitOrdersApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly sdkService: SdkService,
+    private readonly tokensService: TokensService
   ) {}
 
   public async shouldUpdateOrders(): Promise<void> {
@@ -39,8 +42,31 @@ export class LimitOrdersStoreService {
     }
 
     this._loading$.next(true);
-    this._orders$.next(await this.ordersApiService.getUserOrders(walletAddress));
+    this._orders$.next(await this.getUserTrades(walletAddress));
     this._loading$.next(false);
     this.dirtyState = false;
+  }
+
+  private async getUserTrades(walletAddress: string): Promise<LimitOrder[]> {
+    const orders = await this.sdkService.limitOrderManager.getUserTrades(walletAddress);
+    await firstValueFrom(this.tokensService.tokens$.pipe(first(v => Boolean(v))));
+    return Promise.all(
+      orders.map(async order => {
+        const [fromToken, toToken] = await Promise.all([
+          this.tokensService.findToken(order.fromToken, true),
+          this.tokensService.findToken(order.toToken, true)
+        ]);
+
+        return {
+          ...order,
+          fromToken,
+          toToken
+        };
+      })
+    );
+  }
+
+  public setDirty(): void {
+    this.dirtyState = true;
   }
 }
