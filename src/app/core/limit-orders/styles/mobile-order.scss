@@ -1,0 +1,79 @@
+@use 'src/scss/core' as *;
+
+@mixin assetImage {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 100%;
+}
+
+.order {
+  position: relative;
+
+  padding: 18px 0;
+
+  &:last-child {
+    &__divider {
+      display: none;
+    }
+  }
+
+  &__divider {
+    position: absolute;
+    bottom: 0;
+    left: -24px;
+
+    width: 100vw;
+
+    background: #e7e6ea;
+
+    @include dark {
+      background: #1f1f1f;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-label {
+      @include font(12px, 17px, 400, #7A797D);
+
+      @include dark {
+        color: #8e8d91;
+      }
+    }
+
+    &-value {
+      display: flex;
+      align-items: center;
+
+      color: #8e8d91;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__asset-image {
+    @include assetImage();
+    width: 26px;
+    height: 26px;
+    margin-right: 8px;
+  }
+
+  &__asset-symbol {
+    @include font(14px, 17px, 500, #37373D);
+    margin-right: 8px;
+
+    @include dark {
+      color: #e8e8ea;
+    }
+  }
+
+  &__asset-amount {
+    @include font(12px, 17px, 400, #8E8D91);
+  }
+}

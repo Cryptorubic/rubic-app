@@ -3,6 +3,7 @@ import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/
 import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Observable } from 'rxjs';
+import { LimitOrdersComponent } from '@core/limit-orders/components/limit-orders/limit-orders.component';
 
 interface ModalConfig<T = unknown> {
   size: TuiDialogSize;
@@ -17,6 +18,12 @@ export class CommonModalService {
 
   public openRecentTradesModal(config: ModalConfig): Observable<unknown> {
     return this.dialogService.open(new PolymorpheusComponent(RecentCrosschainTxComponent), {
+      size: config.size
+    });
+  }
+
+  public openLimitOrdersModal(config: ModalConfig): Observable<unknown> {
+    return this.dialogService.open(new PolymorpheusComponent(LimitOrdersComponent), {
       size: config.size
     });
   }
