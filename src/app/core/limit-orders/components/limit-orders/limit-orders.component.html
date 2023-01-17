@@ -13,13 +13,21 @@
             <th class="table__th">Expiration</th>
             <th class="table__th"></th>
           </tr>
-          <tr
-            *ngFor="let order of orders"
-            order-row
-            [order]="order"
-            mode="order-row"
-            (onClose)="onClose()"
-          ></tr>
+          <tui-scrollbar>
+            <cdk-virtual-scroll-viewport
+              class="table__scrollbar tui-zero-scrollbar"
+              tuiScrollable
+              itemSize="67"
+            >
+              <tr
+                *ngFor="let order of orders"
+                order-row
+                [order]="order"
+                mode="order-row"
+                (onClose)="onClose()"
+              ></tr>
+            </cdk-virtual-scroll-viewport>
+          </tui-scrollbar>
         </tbody>
       </table>
     </ng-container>

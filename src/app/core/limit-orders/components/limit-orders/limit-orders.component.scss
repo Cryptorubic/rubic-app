@@ -43,8 +43,29 @@
 
 .table {
   width: 100%;
+  max-height: 540px;
 
-  th { font-weight: normal; }
+  tbody {
+    display: block;
+  }
+
+  tr {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    border-radius: 10px;
+  }
+
+  ::ng-deep {
+    th,
+    td {
+      display: inline-flex;
+      width: 20%;
+
+      font-weight: normal;
+    }
+  }
 
   &__tr_head {
     background: rgba(255, 255, 255, 0.1);
@@ -73,6 +94,10 @@
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
     }
+  }
+
+  &__scrollbar {
+    height: 335px;
   }
 }
 

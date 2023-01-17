@@ -6,6 +6,7 @@ import { LIMIT_ORDER_STATUS } from '@core/limit-orders/models/limit-order-status
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { blockchainId, BlockchainName, limitOrderSupportedBlockchains, Web3Pure } from 'rubic-sdk';
 import { firstValueFrom } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Injectable()
 export class LimitOrdersApiService {
@@ -50,6 +51,7 @@ export class LimitOrdersApiService {
       orderInvalidReason
     }: LimitOrderApiResponse
   ): Promise<LimitOrder> {
+    await firstValueFrom(this.tokensService.tokens$.pipe(first(v => Boolean(v?.size))));
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken({ blockchain, address: makerAsset }, true),
       this.tokensService.findToken({ blockchain, address: takerAsset }, true)

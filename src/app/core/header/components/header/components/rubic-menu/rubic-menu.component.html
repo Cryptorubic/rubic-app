@@ -70,7 +70,7 @@
           {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
         </button>
 
-        <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
+        <a class="data-list__link data-list__link_modal" (click)="openRecentTradesModal()">
           <button tuiOption class="data-list__option">
             {{ 'navigation.recentTrades' | translate }}
           </button>
@@ -81,6 +81,10 @@
             color="red"
             [value]="unreadTrades$ | async"
           ></app-notification-badge>
+        </a>
+
+        <a class="data-list__link data-list__link_modal" (click)="openLimitOrdersModal()">
+          <button tuiOption class="data-list__option">Limit Orders</button>
         </a>
 
         <a

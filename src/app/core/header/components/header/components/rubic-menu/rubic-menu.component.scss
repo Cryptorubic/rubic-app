@@ -137,12 +137,12 @@
   &__link {
     text-decoration: none !important;
     
-    &_my-trades {
+    &_modal {
       position: relative;
       top: auto;
       right: auto;
 
-      display: inline-block;
+      display: block;
     }
   }
 
