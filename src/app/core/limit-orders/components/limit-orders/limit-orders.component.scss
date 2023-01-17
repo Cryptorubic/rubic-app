@@ -61,9 +61,17 @@
     th,
     td {
       display: inline-flex;
-      width: 20%;
 
       font-weight: normal;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        width: 28%;
+      };
+
+      &:nth-child(n + 3) {
+        width: 22%;
+      }
     }
   }
 

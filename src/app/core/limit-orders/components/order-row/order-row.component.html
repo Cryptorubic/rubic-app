@@ -1,11 +1,4 @@
 <ng-container *ngIf="mode === 'order-row'; else mobile">
-  <!-- Creation -->
-  <td class="date">
-    <span>
-      {{ (order.creation | date : 'MMM dd, yyyy') + ' at ' + (order.creation | date : 'h:mm') }}
-    </span>
-  </td>
-
   <!-- Src crypto-asset -->
   <td class="from">
     <div class="asset">
@@ -16,7 +9,13 @@
         (error)="onTokenImageError($event)"
       />
       <div class="asset__data">
-        <div class="asset__symbol">{{ order.fromToken?.symbol || 'Unknown' }}</div>
+        <div class="asset__symbol">
+          {{
+            order.fromToken?.symbol
+              ? order.fromToken.symbol + ' (' + blockchainLabel(order.fromToken.blockchain) + ')'
+              : 'Unknown'
+          }}
+        </div>
         <div class="asset__amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
     </div>
@@ -32,7 +31,13 @@
         (error)="onTokenImageError($event)"
       />
       <div class="asset__data">
-        <div class="asset__symbol">{{ order.toToken?.symbol || 'Unknown' }}</div>
+        <div class="asset__symbol">
+          {{
+            order.toToken?.symbol
+              ? order.toToken.symbol + ' (' + blockchainLabel(order.toToken.blockchain) + ')'
+              : 'Unknown'
+          }}
+        </div>
         <div class="asset__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
     </div>
@@ -54,23 +59,22 @@
 <ng-template #mobile>
   <div class="order">
     <div class="order__row">
-      <div class="order__row-label">Creation</div>
-      <div class="order__row-value">
-        {{ (order.creation | date : 'MMM dd, yyyy') + ' at ' + (order.creation | date : 'h:mm') }}
-      </div>
-    </div>
-
-    <div class="order__row">
       <div class="order__row-label">From</div>
       <div class="order__row-value">
         <img
           class="order__asset-image"
-          [src]="order.fromToken.image || defaultTokenImage"
-          [alt]="order.fromToken.symbol"
+          [src]="order.fromToken?.image || defaultTokenImage"
+          [alt]="order.fromToken?.symbol"
           (error)="onTokenImageError($event)"
         />
-        <div class="order__asset-symbol">{{ order.fromToken.symbol }}</div>
-        <div class="order__asset-amount">{{ order.fromAmount | bigNumberFormat }}</div>
+        <div class="order__asset-symbol">
+          {{
+            order.fromToken?.symbol
+              ? order.fromToken.symbol + ' (' + blockchainLabel(order.fromToken.blockchain) + ')'
+              : 'Unknown'
+          }}
+        </div>
+        <div class="order__asset-amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
     </div>
 
@@ -79,12 +83,18 @@
       <div class="order__row-value">
         <img
           class="order__asset-image"
-          [src]="order.toToken.image || defaultTokenImage"
-          [alt]="order.toToken.symbol"
+          [src]="order.toToken?.image || defaultTokenImage"
+          [alt]="order.toToken?.symbol"
           (error)="onTokenImageError($event)"
         />
-        <div class="order__asset-symbol">{{ order.toToken.symbol }}</div>
-        <div class="order__asset-amount">{{ order.toAmount | bigNumberFormat }}</div>
+        <div class="order__asset-symbol">
+          {{
+            order.toToken?.symbol
+              ? order.toToken.symbol + ' (' + blockchainLabel(order.toToken.blockchain) + ')'
+              : 'Unknown'
+          }}
+        </div>
+        <div class="order__asset-amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
     </div>
 

@@ -3,6 +3,8 @@ import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { LIMIT_ORDER_STATUS } from '@core/limit-orders/models/limit-order-status';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
 @Component({
   selector: '[order-row]',
@@ -28,6 +30,10 @@ export class OrderRowComponent {
   constructor(private readonly tokensService: TokensService) {}
 
   public cancelOrder(): void {}
+
+  public blockchainLabel(blockchain: BlockchainName): string {
+    return BLOCKCHAINS[blockchain].name;
+  }
 
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
