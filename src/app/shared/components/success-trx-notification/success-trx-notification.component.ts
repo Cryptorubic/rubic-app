@@ -41,15 +41,23 @@ export class SuccessTrxNotificationComponent {
     this.withRecentTrades = context.data.withRecentTrades;
   }
 
-  public openRecentTrades(): void {
+  public openModal(): void {
     // CompleteWith doesn't work.
     (this.context as RubicAny).closeHook();
 
     const isDesktop = this.windowWidthService.windowSize === WindowSize.DESKTOP;
-    this.modalService
-      .openRecentTradesModal({
-        size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
+    if (this.type === 'limit-order') {
+      this.modalService
+        .openLimitOrdersModal({
+          size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
+        })
+        .subscribe();
+    } else {
+      this.modalService
+        .openRecentTradesModal({
+          size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
+        })
+        .subscribe();
+    }
   }
 }
