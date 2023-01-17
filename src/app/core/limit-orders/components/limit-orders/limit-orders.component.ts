@@ -15,10 +15,12 @@ import { map } from 'rxjs/operators';
 })
 export class LimitOrdersComponent implements OnInit {
   public readonly isMobile$ = this.windowWidthService.windowSize$.pipe(
-    map(size => size <= WindowSize.TABLET)
+    map(size => size <= WindowSize.LAPTOP)
   );
 
   public readonly orders$ = this.limitOrdersStoreService.orders$;
+
+  public readonly loading$ = this.limitOrdersStoreService.loading$;
 
   constructor(
     private readonly router: Router,

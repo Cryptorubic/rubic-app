@@ -122,6 +122,8 @@ tui-dialog {
 }
 
 tui-dialog-host {
+  overflow-y: auto;
+
   > div {
     backdrop-filter: blur(12px);
   }

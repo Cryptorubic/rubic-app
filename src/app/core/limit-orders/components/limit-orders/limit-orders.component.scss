@@ -29,24 +29,21 @@
   }
 }
 
-.description {
-  @include font(16px, 19px, 500, #A2A1A5);
-  margin-bottom: 32px;
+.loader {
+  height: 380px;
 
-  @include b($tablet) {
-    margin-bottom: 14px;
-
-    font-size: 13px;
-    line-height: 16px;
+  @include b($laptop) {
+    height: unset;
   }
 }
 
 .table {
   width: 100%;
-  max-height: 540px;
+  height: 100%;
 
   tbody {
     display: block;
+    height: 100%;
   }
 
   tr {
@@ -104,8 +101,19 @@
     }
   }
 
+  &__tui-scrollbar {
+    height: calc(100% - 49px);
+    padding-top: 12px;
+
+    &::ng-deep {
+      .content {
+        height: 100%;
+      }
+    }
+  }
+
   &__scrollbar {
-    height: 335px;
+    height: 100%;
   }
 }
 
