@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
-import { LimitOrdersStoreService } from '@core/services/limit-orders/limit-orders-store.service';
+import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { map } from 'rxjs/operators';
 
@@ -18,19 +18,19 @@ export class LimitOrdersComponent implements OnInit {
     map(size => size <= WindowSize.LAPTOP)
   );
 
-  public readonly orders$ = this.limitOrdersStoreService.orders$;
+  public readonly orders$ = this.limitOrdersService.orders$;
 
-  public readonly loading$ = this.limitOrdersStoreService.loading$;
+  public readonly loading$ = this.limitOrdersService.loading$;
 
   constructor(
     private readonly router: Router,
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext,
     private readonly windowWidthService: WindowWidthService,
-    private readonly limitOrdersStoreService: LimitOrdersStoreService
+    private readonly limitOrdersService: LimitOrdersService
   ) {}
 
   public ngOnInit(): void {
-    this.limitOrdersStoreService.shouldUpdateOrders();
+    this.limitOrdersService.shouldUpdateOrders();
   }
 
   public onClose(): void {

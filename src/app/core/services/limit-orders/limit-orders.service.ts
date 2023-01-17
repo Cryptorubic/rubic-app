@@ -5,9 +5,10 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { first } from 'rxjs/operators';
+import { EvmBlockchainName } from 'rubic-sdk';
 
 @Injectable()
-export class LimitOrdersStoreService {
+export class LimitOrdersService {
   private readonly _orders$ = new BehaviorSubject<LimitOrder[]>([]);
 
   public readonly orders$ = this._orders$.asObservable();
@@ -68,5 +69,11 @@ export class LimitOrdersStoreService {
 
   public setDirty(): void {
     this.dirtyState = true;
+  }
+
+  public async cancelOrder(blockchain: EvmBlockchainName, orderHash: string): Promise<void> {
+    await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash);
+    const updatedOrders = this._orders$.value.filter(({ hash }) => hash === orderHash);
+    this._orders$.next(updatedOrders);
   }
 }

@@ -10,4 +10,5 @@ export interface LimitOrder {
   toAmount: BigNumber;
   expiration: Date | null;
   status: LIMIT_ORDER_STATUS;
+  hash: string;
 }

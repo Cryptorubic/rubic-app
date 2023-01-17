@@ -26,7 +26,7 @@ import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 import { LimitOrdersModule } from '@core/limit-orders/limit-orders.module';
-import { LimitOrdersStoreService } from '@core/services/limit-orders/limit-orders-store.service';
+import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -72,7 +72,7 @@ import { LimitOrdersStoreService } from '@core/services/limit-orders/limit-order
     SwapFormQueryService,
     SwapTokensUpdaterService,
     FiatsService,
-    LimitOrdersStoreService
+    LimitOrdersService
   ],
   imports: [
     CommonModule,
