@@ -238,7 +238,8 @@ export class LimitOrderFormService {
         fromToken as TokenBaseStruct<EvmBlockchainName>,
         toToken as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
-        toAmount
+        toAmount,
+        { deadline: 20 }
       );
       this.limitOrdersService.setDirty();
 
