@@ -10,8 +10,8 @@
 
     <div class="modal__footer">
       <div class="modal__footer-text">
-        You will get {{ amount | bigNumberFormat | withRound: 'toClosestValue' }}
-        <a [safetyLink]="tokenAddress | scannerLink: blockchain:ADDRESS_TYPE.TOKEN">{{
+        You will get {{ amount | bigNumberFormat | withRound : 'toClosestValue' }}
+        <a [safetyLink]="tokenAddress | scannerLink : blockchain : ADDRESS_TYPE.TOKEN">{{
           tokenSymbol
         }}</a>
         in {{ blockchain }} chain.

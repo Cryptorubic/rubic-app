@@ -2,7 +2,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'Ethereum',
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BSC',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
   [BLOCKCHAIN_NAME.POLYGON]: 'Polygon',
   [BLOCKCHAIN_NAME.HARMONY]: 'Harmony',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'Avalanche',
@@ -19,6 +19,8 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MOONBEAM]: 'Moonbeam',
   [BLOCKCHAIN_NAME.CELO]: 'Celo',
   [BLOCKCHAIN_NAME.BOBA]: 'Boba',
+  [BLOCKCHAIN_NAME.BOBA_BSC]: 'Boba BNB',
+  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'Boba Avalanche',
   [BLOCKCHAIN_NAME.ASTAR]: 'Astar',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'Eth PoW',
   [BLOCKCHAIN_NAME.KAVA]: 'Kava',

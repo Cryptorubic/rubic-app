@@ -10,9 +10,9 @@
       <span class="title__text">You will receive {{ blockchainLabel }} tokens at this address</span>
     </div>
     <div class="info-line__value">
-      {{ toWalletAddress | shortAddress: 5:5 }}
+      {{ toWalletAddress | shortAddress : 5 : 5 }}
 
-      <a [safetyLink]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
+      <a [safetyLink]="toWalletAddress | scannerLink : toBlockchain : ADDRESS_TYPE.WALLET"
         ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
       /></a>
 

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { USER_AGENT } from '@ng-web-apis/common';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -34,22 +33,23 @@ import { RubicWindow } from '@shared/utils/rubic-window';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletsModalComponent implements OnInit {
-  public readonly walletsLoading$: Observable<boolean>;
+  public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
 
-  private readonly allProviders: ReadonlyArray<WalletProvider>;
+  private readonly allProviders = PROVIDERS_LIST;
 
-  private readonly mobileDisplayStatus$: Observable<boolean>;
+  private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get providers(): ReadonlyArray<WalletProvider> {
     const browserSupportedProviders = Boolean(this.window.chrome)
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
-    const deviceFiltered = this.isMobile
-      ? browserSupportedProviders.filter(
-          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-        )
-      : browserSupportedProviders.filter(provider => !provider.mobileOnly);
+    const deviceFiltered =
+      this.isMobile && !this.iframeService.isIframe
+        ? browserSupportedProviders.filter(
+            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+          )
+        : browserSupportedProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
@@ -86,11 +86,7 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly iframeService: IframeService
-  ) {
-    this.walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
-    this.mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
-    this.allProviders = PROVIDERS_LIST;
-  }
+  ) {}
 
   ngOnInit() {
     if (this.browserService.currentBrowser === BROWSER.METAMASK) {

@@ -8,8 +8,8 @@
         <ng-container *ngFor="let provider of providers">
           <ng-container *ngIf="provider.display">
             <button
-              *ngIf="!(provider.value | functionCall: shouldRenderAsLink); else deepLink"
-              [disabled]="(walletsLoading$ | async) ? 'disabled' : false"
+              *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
+              [disabled]="(walletsLoading$ | async) || provider.disabled ? 'disabled' : false"
               class="modal__provider-button"
               (click)="connectProvider(provider.value)"
             >

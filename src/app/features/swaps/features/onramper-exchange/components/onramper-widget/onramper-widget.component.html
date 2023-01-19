@@ -4,7 +4,7 @@
   </div>
 
   <iframe
-    [src]="widgetUrl$ | async | safeSanitizer: 'resourceUrl'"
+    [src]="widgetUrl$ | async | safeSanitizer : 'resourceUrl'"
     [height]="!isIframe ? '660px' : iframeSize.height"
     [width]="!isIframe ? (widgetWidth$ | async) : iframeSize.width"
     title="Onramper widget"

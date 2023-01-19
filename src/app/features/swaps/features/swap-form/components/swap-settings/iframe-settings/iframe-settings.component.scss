@@ -34,7 +34,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
     height: 100%;
 
     &:not(:last-child) {
@@ -67,6 +66,12 @@
       flex-direction: column;
       justify-content: start;
       margin-left: 3px;
+    }
+
+    @include iframe {
+      ::ng-deep svg path {
+        fill: var(--primary-color);
+      }
     }
   }
 

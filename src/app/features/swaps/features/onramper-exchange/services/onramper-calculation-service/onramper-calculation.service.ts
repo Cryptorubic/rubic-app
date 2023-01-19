@@ -22,6 +22,7 @@ import {
 } from '@features/swaps/features/onramper-exchange/models/onramper-supported-blockchain';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { OnramperService } from '@core/services/onramper/onramper.service';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Injectable()
 export class OnramperCalculationService {
@@ -37,7 +38,8 @@ export class OnramperCalculationService {
     private readonly httpClient: HttpClient,
     private readonly sdkService: SdkService,
     private readonly gasService: GasService,
-    private readonly onramperService: OnramperService
+    private readonly onramperService: OnramperService,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public async getOutputTokenAmount(input: SwapFormInputFiats): Promise<BigNumber | null> {
@@ -47,6 +49,7 @@ export class OnramperCalculationService {
     }
 
     const fromFee = await this.onramperService.getFromFees(input.toBlockchain as EvmBlockchainName);
+    const useProxy = this.platformConfigurationService.useOnChainProxy;
     const onChainTrades = await this.sdkService.instantTrade.calculateTrade(
       {
         address: EvmWeb3Pure.nativeTokenAddress,
@@ -55,7 +58,8 @@ export class OnramperCalculationService {
       receivedNativeAmount.minus(fromFee).toFixed(),
       input.toToken.address,
       {
-        gasCalculation: 'disabled'
+        gasCalculation: 'disabled',
+        useProxy
       }
     );
     const bestTrade = onChainTrades[onChainTrades.length - 1];

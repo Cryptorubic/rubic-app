@@ -9,7 +9,7 @@
 
   <div class="provider-panel__left">
     <div class="provider-panel__amount" [class.tui-skeleton]="!tradePanelData">
-      {{ tradePanelData?.amount | bigNumberFormat | withRound: 'toClosestValue' }}
+      {{ tradePanelData?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
     </div>
   </div>
 
@@ -27,11 +27,11 @@
       <ng-container
         *ngIf="providerPanelData.appearance !== 'small' && tradePanelData.gasFeeInEth?.isFinite()"
       >
-        {{ tradePanelData.gasFeeInEth | bigNumberFormat: 5 }} ETH
+        {{ tradePanelData.gasFeeInEth | bigNumberFormat : 5 }} ETH
       </ng-container>
 
       <ng-container *ngIf="tradePanelData.gasFeeInUsd?.isFinite()">
-        ≈ ${{ tradePanelData.gasFeeInUsd | bigNumberFormat: 2:true }}
+        ≈ ${{ tradePanelData.gasFeeInUsd | bigNumberFormat : 2 : true }}
       </ng-container>
 
       <div

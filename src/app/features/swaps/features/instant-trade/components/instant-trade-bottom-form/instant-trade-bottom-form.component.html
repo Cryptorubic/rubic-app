@@ -53,7 +53,7 @@
                 ? (fromAmount | bigNumberFormat)
                 : (toAmount
                   | bigNumberFormat
-                  | withRound: 'toClosestValue':{ decimals: toToken?.decimals })
+                  | withRound : 'toClosestValue' : { decimals: toToken?.decimals })
             }}
             <app-tokens-rate *noFrame></app-tokens-rate>
           </ng-container>
@@ -85,9 +85,9 @@
       >
       </app-providers-panels-container>
     </ng-container>
-    <app-target-network-address
-      *ngIf="displayTargetAddressInput$ | async"
-    ></app-target-network-address>
+    <!--    <app-target-network-address-->
+    <!--      *ngIf="displayTargetAddressInput$ | async"-->
+    <!--    ></app-target-network-address>-->
   </main>
 </div>
 

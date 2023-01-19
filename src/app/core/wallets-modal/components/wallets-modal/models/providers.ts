@@ -11,7 +11,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: false
+    supportsInVerticalMobileIframe: false,
+    disabled: false
   },
   {
     name: 'TronLink',
@@ -20,9 +21,10 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: true,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: false,
-    supportsInVerticalMobileIframe: false
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: false,
+    disabled: false
   },
   {
     name: 'BitKeep',
@@ -33,7 +35,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: false
+    supportsInVerticalMobileIframe: false,
+    disabled: true
   },
   {
     name: 'Trust Wallet',
@@ -44,7 +47,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
-    supportsInVerticalMobileIframe: true
+    supportsInVerticalMobileIframe: true,
+    disabled: false
   },
   {
     name: 'Coinbase Wallet',
@@ -55,7 +59,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
-    supportsInVerticalMobileIframe: true
+    supportsInVerticalMobileIframe: true,
+    disabled: false
   },
   {
     name: 'WalletConnect',
@@ -66,6 +71,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: true
+    supportsInVerticalMobileIframe: true,
+    disabled: false
   }
 ];
