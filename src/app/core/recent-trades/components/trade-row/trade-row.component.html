@@ -48,7 +48,9 @@
       />
       <div class="asset__data">
         <div class="asset__symbol">{{ uiTrade?.toToken?.symbol }}</div>
-        <div class="asset__asset-type">{{ uiTrade?.toBlockchain }}</div>
+        <div class="asset__asset-type">
+          {{ BLOCKCHAIN_LABEL?.[uiTrade?.toBlockchain] || uiTrade?.toBlockchain }}
+        </div>
       </div>
     </div>
   </td>
@@ -56,13 +58,7 @@
   <!-- Status of dst transaction -->
   <td class="status-to">
     <div [class.tui-skeleton]="initialLoading">
-      <ng-container
-        *ngIf="
-          !isSymbiosisTrade ||
-            (isSymbiosisTrade && uiTrade?.statusTo !== CrossChainTxStatus.REVERT);
-          else revert
-        "
-      >
+      <ng-container *ngIf="!showRevert; else revert">
         <a
           *ngIf="!showToContinue; else toContinue"
           [href]="uiTrade?.dstTxLink"
@@ -149,9 +145,7 @@
     <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <ng-container
-          *ngIf="!isSymbiosisTrade || uiTrade?.statusTo !== CrossChainTxStatus.REVERT; else revert"
-        >
+        <ng-container *ngIf="!showRevert; else revert">
           <a
             *ngIf="!showToContinue; else toContinue"
             class="tx__status-to"
@@ -176,7 +170,13 @@
 </ng-template>
 
 <ng-template #revert>
-  <app-rubic-button appearance="secondary" class="revert" (onClick)="revertSymbiosis()">
+  <app-rubic-button
+    appearance="primary"
+    class="revert"
+    (onClick)="revertTrade()"
+    size="s"
+    [loading]="revertBtnLoading"
+  >
     {{ 'common.revert' | translate }}
   </app-rubic-button>
 </ng-template>

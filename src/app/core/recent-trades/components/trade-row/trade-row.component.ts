@@ -12,7 +12,6 @@ import {
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, TxStatus } from 'rubic-sdk';
 import { interval } from 'rxjs';
 import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
@@ -20,13 +19,20 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-text.map';
 import { OnramperService } from '@core/services/onramper/onramper.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
+import {
+  BlockchainsInfo,
+  CbridgeCrossChainSupportedBlockchain,
+  CROSS_CHAIN_TRADE_TYPE,
+  TxStatus
+} from 'rubic-sdk';
+import { TransactionReceipt } from 'web3-eth';
+import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 
 @Component({
   selector: '[trade-row]',
@@ -63,6 +69,20 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get showRevert(): boolean {
+    return (
+      (this.isSymbiosisTrade || this.isCbridgeTrade) &&
+      this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT
+    );
+  }
+
+  public get isCbridgeTrade(): boolean {
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
+    );
+  }
+
   public get fromAssetTypeName(): string {
     if (!this.uiTrade) {
       return '';
@@ -72,6 +92,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     }
     return 'Fiats';
   }
+
+  public readonly BLOCKCHAIN_LABEL = blockchainLabel;
 
   public get showToContinue(): boolean {
     return (
@@ -154,17 +176,28 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async revertSymbiosis(): Promise<void> {
+  public async revertTrade(): Promise<void> {
     if (!isCrossChainRecentTrade(this.trade)) {
       return;
     }
 
     this.revertBtnLoading = true;
 
-    const revertTxReceipt = await this.recentTradesService.revertSymbiosis(
-      this.trade.srcTxHash,
-      this.trade.fromToken.blockchain
-    );
+    let revertTxReceipt: TransactionReceipt;
+
+    if (this.isSymbiosisTrade) {
+      revertTxReceipt = await this.recentTradesService.revertSymbiosis(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain
+      );
+    }
+
+    if (this.isCbridgeTrade) {
+      revertTxReceipt = await this.recentTradesService.revertCbridge(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain as CbridgeCrossChainSupportedBlockchain
+      );
+    }
 
     if (revertTxReceipt.status) {
       this.uiTrade.statusTo = TxStatus.FALLBACK;

@@ -213,9 +213,10 @@
     </div>
     <app-rubic-button
       *ngIf="tradeData.dstStatus === CrossChainTxStatus.REVERT"
-      appearance="secondary"
-      (onClick)="revertSymbiosisTrade()"
+      appearance="primary"
+      (onClick)="revertTrade()"
       [loading]="revertBtnLoading$ | async"
+      size="s"
     >
       {{ 'common.revert' | translate }}
     </app-rubic-button>

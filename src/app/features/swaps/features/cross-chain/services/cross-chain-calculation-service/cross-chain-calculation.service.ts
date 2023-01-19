@@ -5,6 +5,7 @@ import {
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
   CrossChainTradeType,
+  LifiCrossChainTrade,
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
@@ -107,7 +108,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromAmount: BigNumber
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
@@ -127,8 +128,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timeout: this.defaultTimeout,
       disabledProviders,
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
-      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
-      ...(receiverAddress && { receiverAddress })
+      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO]
+      // ...(receiverAddress && { receiverAddress })
     };
 
     return this.sdkService.crossChain
@@ -146,7 +147,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           }
 
           const trade = wrappedTrade?.trade;
-          return from(calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)).pipe(
+
+          const needApprove$ = from(
+            calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
+          );
+
+          return needApprove$.pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
                 total: total,
@@ -183,10 +189,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
       return smartRouting;
     }
 
-    return {
-      ...smartRouting,
-      bridgeProvider: wrappedTrade.trade.bridgeType
-    };
+    if (
+      (wrappedTrade.trade instanceof LifiCrossChainTrade ||
+        wrappedTrade.trade instanceof ViaCrossChainTrade ||
+        wrappedTrade.trade instanceof RangoCrossChainTrade) &&
+      wrappedTrade.trade.bridgeType
+    ) {
+      return {
+        ...smartRouting,
+        bridgeProvider: wrappedTrade.trade.bridgeType
+      };
+    }
+    return smartRouting;
   }
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
@@ -233,8 +247,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ]);
 
     const fromAddress = this.authService.userAddress;
+    let transactionHash: string;
+
     const onTransactionHash = (txHash: string) => {
+      transactionHash = txHash;
       confirmCallback?.();
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade);
 
       const timestamp = Date.now();
       const viaUuid =
@@ -262,7 +280,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
-      this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      try {
+        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      } catch {}
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
@@ -272,17 +292,26 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       : null;
 
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
-      ...(receiverAddress && { receiverAddress }),
+      // ...(receiverAddress && { receiverAddress }),
       ...(gasPrice && { gasPrice })
     };
 
     try {
       await calculatedTrade.trade.swap(swapOptions);
       this.showSuccessTrxNotification();
+      await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
+      if (
+        transactionHash &&
+        err instanceof Error &&
+        err.message.includes('Transaction was not mined')
+      ) {
+        await this.crossChainApiService.patchTrade(transactionHash, false);
+      }
+
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(
           err,

@@ -12,7 +12,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2020",
+    "target": "ES2022",
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "typeRoots": [
@@ -24,7 +24,7 @@
       "esnext"
     ],
     "skipLibCheck": true,
-    "paths" : {
+    "paths": {
       "stream": ["./node_modules/stream-browserify"],
       "assert": ["./node_modules/assert"],
       "https": ["./node_modules/https-browserify"],
@@ -36,7 +36,8 @@
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"]
-    }
+    },
+    "useDefineForClassFields": false
   },
   "exclude": ["rubic-sdk/*"]
 }
