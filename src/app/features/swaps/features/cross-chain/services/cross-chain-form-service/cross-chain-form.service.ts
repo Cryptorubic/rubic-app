@@ -5,7 +5,8 @@ import {
   distinctUntilChanged,
   map,
   startWith,
-  switchMap
+  switchMap,
+  tap
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
@@ -310,7 +311,7 @@ export class CrossChainFormService {
                 fromAmount
               );
               return crossChainTrade$.pipe(
-                map(({ total, calculated, lastCalculatedTrade }) => {
+                tap(({ total, calculated, lastCalculatedTrade }) => {
                   const calculationEnded = calculated === total;
                   if (calculationEnded) {
                     this.isCalculating = false;
@@ -356,9 +357,10 @@ export class CrossChainFormService {
       this.updateTradesList(lastCalculatedTrade);
 
       if (
-        this.isTradeSelectedByUser ||
-        this.isButtonHovered ||
-        this.isSwapStarted !== SWAP_PROCESS.NONE
+        (this.isTradeSelectedByUser ||
+          this.isButtonHovered ||
+          this.isSwapStarted !== SWAP_PROCESS.NONE) &&
+        lastCalculatedTrade?.trade?.to.tokenAmount.gt(0)
       ) {
         this.compareSelectedTradeToBestTrade();
       } else {
@@ -506,6 +508,7 @@ export class CrossChainFormService {
         }, 10_000_000);
       }
     } else {
+      // this.startRecalculation();
       this.swapFormService.outputControl.patchValue({
         toAmount: new BigNumber(NaN)
       });
