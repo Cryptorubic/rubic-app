@@ -449,9 +449,10 @@ export class CrossChainFormService {
     }
 
     if (
-      this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
-      !this.selectedTrade.trade.to.tokenAmount.eq(updatedSelectedTrade.trade.to.tokenAmount) ||
-      (!this.selectedTrade.error && updatedSelectedTrade.error)
+      this.selectedTrade &&
+      (this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
+        !this.selectedTrade.trade.to.tokenAmount.eq(updatedSelectedTrade.trade.to.tokenAmount) ||
+        (!this.selectedTrade.error && updatedSelectedTrade.error))
     ) {
       this.updatedSelectedTrade = updatedSelectedTrade;
 
@@ -508,7 +509,6 @@ export class CrossChainFormService {
         }, 10_000_000);
       }
     } else {
-      // this.startRecalculation();
       this.swapFormService.outputControl.patchValue({
         toAmount: new BigNumber(NaN)
       });
