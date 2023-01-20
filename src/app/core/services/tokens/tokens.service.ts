@@ -242,7 +242,10 @@ export class TokensService {
   ): Promise<TokenAmount[]> {
     try {
       const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
-      if (!this.authService.user || (tokenBlockchain ?? !blockchains.includes(tokenBlockchain))) {
+      if (
+        !this.authService.user ||
+        (tokenBlockchain ? !blockchains.includes(tokenBlockchain) : false)
+      ) {
         return tokens.toArray();
       }
 
