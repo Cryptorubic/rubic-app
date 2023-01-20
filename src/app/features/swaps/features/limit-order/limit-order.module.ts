@@ -4,10 +4,11 @@ import { LimitOrderBottomFormComponent } from './components/limit-order-bottom-f
 import { LimitOrderFormService } from '@features/swaps/features/limit-order/services/limit-order-form.service';
 import { OrderRateComponent } from './components/order-rate/order-rate.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 
 @NgModule({
   declarations: [LimitOrderBottomFormComponent, OrderRateComponent],
-  providers: [LimitOrderFormService],
+  providers: [LimitOrderFormService, OrderRateService],
   exports: [LimitOrderBottomFormComponent],
   imports: [SwapsSharedModule, ReactiveFormsModule]
 })
