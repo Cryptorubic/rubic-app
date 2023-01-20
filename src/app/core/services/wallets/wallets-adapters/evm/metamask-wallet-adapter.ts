@@ -41,6 +41,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     this.checkErrors();
 
     try {
+      console.log('is Connected:', this.wallet.isConnected());
       const accounts = await this.wallet.request({
         method: 'eth_requestAccounts'
       });
