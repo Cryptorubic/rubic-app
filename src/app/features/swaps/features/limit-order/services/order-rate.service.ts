@@ -6,10 +6,11 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
-import { blockchainId } from 'rubic-sdk';
+import { blockchainId, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
 import { HttpClient } from '@angular/common/http';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
+import { RatePrices } from '@features/swaps/features/limit-order/services/models/rate-prices';
+import { spotPriceContractAbi } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-abi';
 
 @Injectable()
 export class OrderRateService {
@@ -19,8 +20,7 @@ export class OrderRateService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly httpClient: HttpClient,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly httpClient: HttpClient
   ) {
     this.subscribeOnFormChange();
   }
@@ -42,6 +42,27 @@ export class OrderRateService {
   }
 
   private async getRate(fromToken: Token, toToken: Token): Promise<BigNumber> {
+    let fromTokenPrice: number | string | BigNumber;
+    let toTokenPrice: number | string | BigNumber;
+
+    ({ fromTokenPrice, toTokenPrice } = await this.getInchPrices(fromToken, toToken));
+    if (!fromTokenPrice && !toTokenPrice) {
+      ({ fromTokenPrice, toTokenPrice } = await this.getSpotAggregatorPrices(fromToken, toToken));
+    } else if (!fromTokenPrice) {
+      fromTokenPrice = await this.getSpotAggregatorPrice(fromToken);
+    } else if (!toTokenPrice) {
+      toTokenPrice = await this.getSpotAggregatorPrice(toToken);
+    }
+
+    const fromPriceBn = new BigNumber(fromTokenPrice);
+    const toPriceBn = new BigNumber(toTokenPrice);
+    if (fromPriceBn?.isFinite() && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
+      return new BigNumber(fromTokenPrice).div(toTokenPrice).dp(6);
+    }
+    return new BigNumber(0);
+  }
+
+  private async getInchPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
     const chainId = blockchainId[fromToken.blockchain];
     const prices = await firstValueFrom(
       this.httpClient.get<{
@@ -54,20 +75,37 @@ export class OrderRateService {
     let toTokenPrice: number | string = Object.entries(prices).find(([address]) =>
       compareAddresses(address, toToken.address)
     )?.[1];
-    if (fromTokenPrice && toTokenPrice) {
-      return new BigNumber(fromTokenPrice).div(toTokenPrice).dp(6);
-    }
+    return { fromTokenPrice, toTokenPrice };
+  }
 
-    [fromTokenPrice, toTokenPrice] = await Promise.all([
-      firstValueFrom(
-        this.coingeckoApiService.getCommonTokenPrice(fromToken.blockchain, fromToken.address)
-      ),
-      firstValueFrom(
-        this.coingeckoApiService.getCommonTokenPrice(toToken.blockchain, toToken.address)
-      )
-    ]);
-    if (fromTokenPrice && toTokenPrice) {
-      return new BigNumber(fromTokenPrice).div(toTokenPrice).dp(6);
-    }
+  private async getSpotAggregatorPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
+    const res = await Injector.web3PublicService
+      .getWeb3Public(fromToken.blockchain as EvmBlockchainName)
+      .multicallContractMethod<string>(
+        '0x7F069df72b7A39bCE9806e3AfaF579E54D8CF2b9',
+        spotPriceContractAbi,
+        'getRateToEth',
+        [
+          [fromToken.address, true],
+          [toToken.address, true]
+        ]
+      );
+    return {
+      fromTokenPrice: Web3Pure.fromWei(res[0].output, 18 - fromToken.decimals),
+      toTokenPrice: Web3Pure.fromWei(res[1].output, 18 - toToken.decimals)
+    };
+  }
+
+  private async getSpotAggregatorPrice(token: Token): Promise<BigNumber> {
+    const res = await Injector.web3PublicService
+      .getWeb3Public(token.blockchain as EvmBlockchainName)
+      .callContractMethod<string>(
+        '0x7F069df72b7A39bCE9806e3AfaF579E54D8CF2b9',
+        spotPriceContractAbi,
+        'getRateToEth',
+
+        [token.address, true]
+      );
+    return Web3Pure.fromWei(res, 18 - token.decimals);
   }
 }
