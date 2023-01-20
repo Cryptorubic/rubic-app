@@ -1,0 +1,19 @@
+<div class="rate">
+  <div class="rate__header">
+    <div class="header__percent-container"></div>
+    <div class="header__market-locker"></div>
+  </div>
+  <label class="rate__label">
+    <input
+      autocomplete="off"
+      class="rate__input"
+      name="rate"
+      placeholder="0.0"
+      appTokenAmount
+      [formControl]="rate"
+      [decimals]="6"
+      (amountChange)="onRateChange($event)"
+      inputmode="decimal"
+    />
+  </label>
+</div>
