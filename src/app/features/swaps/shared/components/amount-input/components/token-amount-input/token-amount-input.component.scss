@@ -8,9 +8,9 @@
 .token-amount-input-container {
   display: flex;
   justify-content: space-between;
-  min-height: 65px;
+  min-height: 85px;
 
-  margin-bottom: 20px;
+  padding-bottom: 20px;
 
   @include iframe-horizontal {
     position: relative;

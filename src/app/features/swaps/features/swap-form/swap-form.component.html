@@ -9,7 +9,10 @@
     <div
       class="swap-form"
       [ngStyle]="{ 'background-color': backgroundColor }"
-      [ngClass]="{ 'swap-form_extended': onramperWidgetOpened }"
+      [ngClass]="{
+        'swap-form_extended': onramperWidgetOpened,
+        'swap-form_limit-order': isLimitOrder
+      }"
     >
       <header *noFrame class="swap-form__header">
         <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
@@ -72,13 +75,13 @@
           </app-cross-chain-bottom-form>
 
           <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
-
-          <app-limit-order-bottom-form *ngIf="isLimitOrder"></app-limit-order-bottom-form>
         </div>
       </main>
 
       <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
     </div>
+
+    <app-limit-order-bottom-form *ngIf="isLimitOrder"></app-limit-order-bottom-form>
   </ng-container>
 
   <ng-container *noFrame>
