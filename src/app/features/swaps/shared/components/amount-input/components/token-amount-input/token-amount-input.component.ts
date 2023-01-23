@@ -18,6 +18,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { FormControl } from '@angular/forms';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { Asset } from '@features/swaps/shared/models/form/asset';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -59,9 +60,11 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
         this.updateFormValues(form.fromAsset, form.fromAmount);
       });
     } else {
-      this.swapFormService.outputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
-        this.updateFormValues(this.swapFormService.inputValue.toToken, form.toAmount);
-      });
+      combineLatest([this.swapFormService.toToken$, this.swapFormService.outputValue$])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(([toToken, output]) => {
+          this.updateFormValues(toToken, output.toAmount);
+        });
     }
   }
 

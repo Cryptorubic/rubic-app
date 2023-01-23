@@ -35,6 +35,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
+import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -62,11 +63,6 @@ export class LimitOrderFormService {
    * When `next` is called, recalculation is started.
    */
   private readonly _calculateTrade$ = new Subject<{ stop?: boolean }>();
-
-  /**
-   * Stores expiration time in minutes.
-   */
-  private readonly _expirationTime$ = new BehaviorSubject(60);
 
   private get isFormFilled(): boolean {
     const form = this.swapFormService.form.value;
@@ -101,7 +97,8 @@ export class LimitOrderFormService {
     private readonly authService: AuthService,
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
-    private readonly limitOrdersService: LimitOrdersService
+    private readonly limitOrdersService: LimitOrdersService,
+    private readonly orderExpirationService: OrderExpirationService
   ) {
     this.subscribeOnCalculation();
 
@@ -239,7 +236,7 @@ export class LimitOrderFormService {
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     try {
-      const deadline = this._expirationTime$.getValue();
+      const deadline = this.orderExpirationService.expirationTime;
       await this.sdkService.limitOrderManager.createOrder(
         fromToken as TokenBaseStruct<EvmBlockchainName>,
         toToken as TokenBaseStruct<EvmBlockchainName>,
@@ -262,9 +259,5 @@ export class LimitOrderFormService {
       this.errorsService.catch(parsedError);
     }
     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-  }
-
-  public updateExpirationTime(minutes: number): void {
-    this._expirationTime$.next(minutes);
   }
 }

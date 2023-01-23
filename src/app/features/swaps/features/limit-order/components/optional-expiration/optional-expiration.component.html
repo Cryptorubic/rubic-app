@@ -1,0 +1,6 @@
+<div class="container">
+  <div class="container__option" *ngFor="let option of options" (click)="onOptionsClick(option)">
+    {{ option.label }}
+  </div>
+  <div class="container__option" (click)="onCustomClick()">Custom</div>
+</div>

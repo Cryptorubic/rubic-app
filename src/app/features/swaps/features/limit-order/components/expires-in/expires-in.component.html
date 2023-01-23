@@ -1,12 +1,12 @@
 <tui-hosted-dropdown
   class="dropdown"
   [(open)]="settingsOpen"
-  [content]="settingsComponent"
+  [content]="dropdown"
   [tuiDropdownSided]="true"
   tuiDropdownAlign="right"
 >
   <div class="dropdown__header">Expires in</div>
-  <div class="dropdown__value">7 days</div>
+  <div class="dropdown__value">{{ expirationValue$ | async }}</div>
   <img
     src="assets/images/icons/arrow-down.svg"
     alt="expand"
@@ -14,3 +14,17 @@
     [class.transaction-info__arrow_opened]="settingsOpen"
   />
 </tui-hosted-dropdown>
+
+<ng-template #dropdown>
+  <app-optional-expiration
+    *ngIf="dropdownState === 'optional'"
+    (onClose)="onClose()"
+    (onStateChange)="toggleState()"
+  ></app-optional-expiration>
+
+  <app-custom-expiration
+    *ngIf="dropdownState === 'custom'"
+    (onClose)="onClose()"
+    (onStateChange)="toggleState()"
+  ></app-custom-expiration>
+</ng-template>
