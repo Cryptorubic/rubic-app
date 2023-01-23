@@ -51,7 +51,6 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.MOJITO_SWAP]: 'MojitoSwap',
 
   [ON_CHAIN_TRADE_TYPE.NET_SWAP]: 'NetSwap',
-  [ON_CHAIN_TRADE_TYPE.NOVATION]: 'Novation',
 
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: 'Omnidex',
   [ON_CHAIN_TRADE_TYPE.ONE_INCH]: '1inch',

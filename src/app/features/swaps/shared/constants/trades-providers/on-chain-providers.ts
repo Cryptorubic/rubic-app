@@ -214,11 +214,6 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}netswap.png`,
     color: '#257AF1'
   },
-  [ON_CHAIN_TRADE_TYPE.NOVATION]: {
-    name: 'Novation',
-    image: `${imageBasePath}novation.png`,
-    color: '#17DDFE'
-  },
 
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
     name: 'Omnidex',
