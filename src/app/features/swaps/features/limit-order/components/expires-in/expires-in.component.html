@@ -5,8 +5,24 @@
   [tuiDropdownSided]="true"
   tuiDropdownAlign="right"
 >
-  <div class="dropdown__header">Expires in</div>
-  <div class="dropdown__value">{{ expirationValue$ | async }}</div>
+  <div class="dropdown__header header">
+    <span class="header__title">Expires in</span>
+    <img
+      src="assets/images/icons/exclamation-grey.svg"
+      alt="info"
+      tuiHint="Please, note: When a limit order expires, no cancellation fee is charged. In case of manually cancelling a limit order, a gas fee is charged at the time of signing the transaction."
+    />
+  </div>
+
+  <ng-container *ngLet="expirationValue$ | async as value">
+    <div
+      class="dropdown__value"
+      [tuiHint]="value.shortValue !== value.fullValue ? value.fullValue : null"
+    >
+      {{ value.shortValue }}
+    </div>
+  </ng-container>
+
   <img
     src="assets/images/icons/arrow-down.svg"
     alt="expand"

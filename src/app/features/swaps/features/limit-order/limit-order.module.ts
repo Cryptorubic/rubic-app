@@ -9,6 +9,7 @@ import { ExpiresInComponent } from './components/expires-in/expires-in.component
 import { TuiInputNumberModule } from '@taiga-ui/kit';
 import {
   TuiDropdownControllerModule,
+  TuiHintModule,
   TuiHostedDropdownModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -32,7 +33,8 @@ import { ExpirationOptionalComponent } from '@features/swaps/features/limit-orde
     TuiInputNumberModule,
     TuiTextfieldControllerModule,
     TuiHostedDropdownModule,
-    TuiDropdownControllerModule
+    TuiDropdownControllerModule,
+    TuiHintModule
   ]
 })
 export class LimitOrderModule {}
