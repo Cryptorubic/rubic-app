@@ -5,11 +5,19 @@ import { LimitOrderFormService } from '@features/swaps/features/limit-order/serv
 import { OrderRateComponent } from './components/order-rate/order-rate.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
+import { ExpiresInComponent } from './components/expires-in/expires-in.component';
+import { TuiInputNumberModule } from '@taiga-ui/kit';
+import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 
 @NgModule({
-  declarations: [LimitOrderBottomFormComponent, OrderRateComponent],
+  declarations: [LimitOrderBottomFormComponent, OrderRateComponent, ExpiresInComponent],
   providers: [LimitOrderFormService, OrderRateService],
   exports: [LimitOrderBottomFormComponent],
-  imports: [SwapsSharedModule, ReactiveFormsModule]
+  imports: [
+    SwapsSharedModule,
+    ReactiveFormsModule,
+    TuiInputNumberModule,
+    TuiTextfieldControllerModule
+  ]
 })
 export class LimitOrderModule {}
