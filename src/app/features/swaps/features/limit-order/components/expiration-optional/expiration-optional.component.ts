@@ -6,12 +6,12 @@ import {
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 
 @Component({
-  selector: 'app-optional-expiration',
-  templateUrl: './optional-expiration.component.html',
-  styleUrls: ['./optional-expiration.component.scss'],
+  selector: 'app-expiration-optional',
+  templateUrl: './expiration-optional.component.html',
+  styleUrls: ['./expiration-optional.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OptionalExpirationComponent {
+export class ExpirationOptionalComponent {
   @Output() onClose = new EventEmitter<void>();
 
   @Output() onStateChange = new EventEmitter<void>();

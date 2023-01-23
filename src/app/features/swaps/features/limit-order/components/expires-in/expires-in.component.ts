@@ -15,7 +15,6 @@ export class ExpiresInComponent {
 
   public readonly expirationValue$ = this.orderExpirationService.expirationTime$.pipe(
     map(minutes => {
-      // console.log(minutes);
       if (minutes === 1) {
         return `1 minute`;
       }

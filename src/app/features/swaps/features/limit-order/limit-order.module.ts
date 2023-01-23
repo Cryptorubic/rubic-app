@@ -12,17 +12,17 @@ import {
   TuiHostedDropdownModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { CustomExpirationComponent } from './components/custom-expiration/custom-expiration.component';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
-import { OptionalExpirationComponent } from './components/optional-expiration/optional-expiration.component';
+import { ExpirationCustomComponent } from '@features/swaps/features/limit-order/components/expiration-custom/expiration-custom.component';
+import { ExpirationOptionalComponent } from '@features/swaps/features/limit-order/components/expiration-optional/expiration-optional.component';
 
 @NgModule({
   declarations: [
     LimitOrderBottomFormComponent,
     OrderRateComponent,
     ExpiresInComponent,
-    CustomExpirationComponent,
-    OptionalExpirationComponent
+    ExpirationCustomComponent,
+    ExpirationOptionalComponent
   ],
   providers: [LimitOrderFormService, OrderRateService, OrderExpirationService],
   exports: [LimitOrderBottomFormComponent],

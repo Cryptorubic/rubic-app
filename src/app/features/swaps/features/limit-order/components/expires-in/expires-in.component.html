@@ -16,15 +16,15 @@
 </tui-hosted-dropdown>
 
 <ng-template #dropdown>
-  <app-optional-expiration
+  <app-expiration-optional
     *ngIf="dropdownState === 'optional'"
     (onClose)="onClose()"
     (onStateChange)="toggleState()"
-  ></app-optional-expiration>
+  ></app-expiration-optional>
 
-  <app-custom-expiration
+  <app-expiration-custom
     *ngIf="dropdownState === 'custom'"
     (onClose)="onClose()"
     (onStateChange)="toggleState()"
-  ></app-custom-expiration>
+  ></app-expiration-custom>
 </ng-template>

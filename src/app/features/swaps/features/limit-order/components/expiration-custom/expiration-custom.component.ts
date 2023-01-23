@@ -4,13 +4,12 @@ import { TimeFormControls } from '@features/swaps/features/limit-order/models/ti
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 
 @Component({
-  selector: 'app-custom-expiration',
-  templateUrl: './custom-expiration.component.html',
-  styleUrls: ['./custom-expiration.component.scss'],
+  selector: 'app-expiration-custom',
+  templateUrl: './expiration-custom.component.html',
+  styleUrls: ['./expiration-custom.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-// todo rename
-export class CustomExpirationComponent {
+export class ExpirationCustomComponent {
   @Output() onClose = new EventEmitter<void>();
 
   @Output() onStateChange = new EventEmitter<void>();
