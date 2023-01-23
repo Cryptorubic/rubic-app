@@ -65,6 +65,7 @@
 
     @include b($mobile-md) {
       height: auto;
+      margin-bottom: 8px;
       padding: 30px 20px;
     }
 
@@ -96,6 +97,13 @@
   &__settings {
     display: flex;
     grid-gap: 16px;
+
+    @include b($mobile-md) {
+      flex-direction: column-reverse;
+      grid-gap: 8px;
+
+      margin-bottom: 16px;
+    }
   }
 
   &__footer {
@@ -113,7 +121,6 @@
 
     @include b($mobile-md) {
       margin-top: 0;
-      padding: 0 20px;
     }
   }
 
@@ -141,6 +148,10 @@ app-order-rate {
   display: block;
   flex-shrink: 0;
   width: 325px;
+
+  @include b($mobile-md) {
+    width: 100%;
+  }
 }
 
 app-expires-in {
