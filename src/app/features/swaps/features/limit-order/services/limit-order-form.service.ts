@@ -63,6 +63,11 @@ export class LimitOrderFormService {
    */
   private readonly _calculateTrade$ = new Subject<{ stop?: boolean }>();
 
+  /**
+   * Stores expiration time in minutes.
+   */
+  private readonly _expirationTime$ = new BehaviorSubject(60);
+
   private get isFormFilled(): boolean {
     const form = this.swapFormService.form.value;
     return (
@@ -234,12 +239,13 @@ export class LimitOrderFormService {
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     try {
+      const deadline = this._expirationTime$.getValue();
       await this.sdkService.limitOrderManager.createOrder(
         fromToken as TokenBaseStruct<EvmBlockchainName>,
         toToken as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
         toAmount,
-        { deadline: 20 }
+        { deadline }
       );
       this.limitOrdersService.setDirty();
 
@@ -256,5 +262,9 @@ export class LimitOrderFormService {
       this.errorsService.catch(parsedError);
     }
     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+  }
+
+  public updateExpirationTime(minutes: number): void {
+    this._expirationTime$.next(minutes);
   }
 }
