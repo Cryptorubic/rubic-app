@@ -1,4 +1,4 @@
-<div class="container">
+<form class="container" [formGroup]="timeForm">
   <button class="container__close-button"></button>
 
   <div class="container__header">Set up custom period</div>
@@ -6,17 +6,22 @@
   <div class="inputs">
     <label class="inputs__title">Custom period</label>
     <div class="inputs__flex">
-      <div class="input hours-input">
-        <tui-input-number [tuiTextfieldLabelOutside]="true">1</tui-input-number>
+      <div class="input input_hours">
+        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'hours'">
+          1
+        </tui-input-number>
         <span class="input__title">Hours</span>
       </div>
-      <div class="input minutes-input">
-        <tui-input-number>0</tui-input-number>
+
+      <div class="input input_minutes">
+        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'minutes'">
+          0
+        </tui-input-number>
         <span class="input__title">Minutes</span>
       </div>
     </div>
   </div>
 
-  <app-rubic-button class="container__set-button">Set</app-rubic-button>
+  <app-rubic-button class="container__set-button" (onClick)="onSet()">Set</app-rubic-button>
   <app-rubic-button class="container__cancel-button" appearance="outline">Cancel</app-rubic-button>
-</div>
+</form>
