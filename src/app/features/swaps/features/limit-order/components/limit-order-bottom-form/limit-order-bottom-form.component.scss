@@ -93,6 +93,11 @@
     }
   }
 
+  &__settings {
+    display: flex;
+    grid-gap: 16px;
+  }
+
   &__footer {
     margin-top: 16px;
 
@@ -134,5 +139,10 @@ app-swap-button-container {
 
 app-order-rate {
   display: block;
-  max-width: 325px;
+  flex-shrink: 0;
+  width: 325px;
+}
+
+app-expires-in {
+  width: 100%;
 }

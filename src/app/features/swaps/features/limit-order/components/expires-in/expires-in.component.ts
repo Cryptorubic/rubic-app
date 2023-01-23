@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { TimeFormControls } from '@features/swaps/features/limit-order/models/time-form';
-import { LimitOrderFormService } from '@features/swaps/features/limit-order/services/limit-order-form.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { CustomExpirationComponent } from '@features/swaps/features/limit-order/components/custom-expiration/custom-expiration.component';
 
 @Component({
   selector: 'app-expires-in',
@@ -10,15 +9,7 @@ import { LimitOrderFormService } from '@features/swaps/features/limit-order/serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpiresInComponent {
-  public readonly timeForm = new FormGroup<TimeFormControls>({
-    hours: new FormControl<number>(1),
-    minutes: new FormControl<number>(0)
-  });
+  public settingsComponent = new PolymorpheusComponent(CustomExpirationComponent);
 
-  constructor(private readonly limitOrderFormService: LimitOrderFormService) {}
-
-  public onSet(): void {
-    const form = this.timeForm.value;
-    this.limitOrderFormService.updateExpirationTime(Math.min(form.hours * 60 + form.minutes, 1));
-  }
+  public settingsOpen = false;
 }

@@ -1,27 +1,16 @@
-<form class="container" [formGroup]="timeForm">
-  <button class="container__close-button"></button>
-
-  <div class="container__header">Set up custom period</div>
-
-  <div class="inputs">
-    <label class="inputs__title">Custom period</label>
-    <div class="inputs__flex">
-      <div class="input input_hours">
-        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'hours'">
-          0
-        </tui-input-number>
-        <span class="input__title">Hours</span>
-      </div>
-
-      <div class="input input_minutes">
-        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'minutes'">
-          1
-        </tui-input-number>
-        <span class="input__title">Minutes</span>
-      </div>
-    </div>
-  </div>
-
-  <app-rubic-button class="container__set-button" (onClick)="onSet()">Set</app-rubic-button>
-  <app-rubic-button class="container__cancel-button" appearance="outline">Cancel</app-rubic-button>
-</form>
+<tui-hosted-dropdown
+  class="dropdown"
+  [(open)]="settingsOpen"
+  [content]="settingsComponent"
+  [tuiDropdownSided]="true"
+  tuiDropdownAlign="right"
+>
+  <div class="dropdown__header">Expires in</div>
+  <div class="dropdown__value">7 days</div>
+  <img
+    src="assets/images/icons/arrow-down.svg"
+    alt="expand"
+    class="dropdown__arrow"
+    [class.transaction-info__arrow_opened]="settingsOpen"
+  />
+</tui-hosted-dropdown>

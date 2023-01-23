@@ -1,91 +1,43 @@
-@use 'src/scss/core' as *;
-
-.container {
+.dropdown {
   position: relative;
 
-  max-width: 360px;
-  margin: 15px 0 0;
-  padding: 22px 15px 47px;
+  display: block;
+  padding: 16px 16px 15px;
 
   background: var(--form-background);
   border: 1px solid var(--transparent-line);
-  border-radius: 16px;
+  border-radius: 19px;
 
-  &__close-button {
-    position: absolute;
-    top: 0;
-    right: 0; // todo
-  }
+  cursor: pointer;
 
   &__header {
-    margin-bottom: 23px;
+    margin-bottom: 7px;
 
-    font-weight: 600;
-    font-size: 18px;
+    color: var(--secondary-text);
+    line-height: 120%;
+    letter-spacing: 0.03em;
+  }
+
+  &__value {
+    color: var(--primary-text);
+    font-size: 23px;
     line-height: 120%;
     letter-spacing: 0.06em;
   }
 
-  &__set-button {
-    display: block;
-    margin: 16px 0 8px;
-  }
-
-  app-rubic-button {
-    &::ng-deep {
-      --tui-height-l: 45px;
-    }
-  }
-}
-
-.inputs {
-  &__title {
-    display: block;
-    margin-bottom: 10px;
-
-    color: var(--secondary-text);
-  }
-
-  &__flex {
-    display: flex;
-    grid-gap: 16px;
-  }
-}
-
-.input {
-  position: relative;
-
-  width: 100%;
-  height: 40px;
-
-  &__title {
+  &__arrow {
     position: absolute;
     top: 50%;
-    right: 16px;
+    right: 21px;
 
-    color: var(--secondary-text);
-    letter-spacing: 0.06em;
+    width: 13px;
 
     transform: translateY(-50%);
-  }
 
-  &::ng-deep {
-    tui-primitive-textfield {
-      --tui-height-l: 40px;
+    transition: 0.2s ease-in-out;
 
-      input {
-        padding: 0 63px 0 16px !important;
-      }
-    }
-  }
-
-  &_minutes {
-    &::ng-deep {
-      tui-primitive-textfield {
-        input {
-          padding: 0 76px 0 16px !important;
-        }
-      }
+    &_opened {
+      transform: translateY(-50%) rotate(180deg);
     }
   }
 }
