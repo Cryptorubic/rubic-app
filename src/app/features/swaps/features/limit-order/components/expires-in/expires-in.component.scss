@@ -19,10 +19,14 @@
   }
 
   &__value {
+    width: 155px;
+    overflow: hidden;
+
     color: var(--primary-text);
     font-size: 23px;
     line-height: 120%;
     letter-spacing: 0.06em;
+    white-space: nowrap;
   }
 
   &__arrow {

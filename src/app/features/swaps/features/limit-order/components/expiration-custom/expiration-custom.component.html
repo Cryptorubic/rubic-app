@@ -1,5 +1,7 @@
 <form class="container" [formGroup]="timeForm">
-  <button class="container__close-button"></button>
+  <button class="container__close-button" type="button" (click)="onClose.emit()">
+    <img src="assets/images/icons/cross.svg" alt="close" />
+  </button>
 
   <div class="container__header">Set up custom period</div>
 
@@ -7,22 +9,38 @@
     <label class="inputs__title">Custom period</label>
     <div class="inputs__flex">
       <div class="input input_hours">
-        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'hours'">
+        <tui-input-number
+          [tuiTextfieldLabelOutside]="true"
+          [formControlName]="'hours'"
+          [min]="0"
+          [max]="87600"
+          (ngModelChange)="onHoursChange($event)"
+        >
           0
         </tui-input-number>
         <span class="input__title">Hours</span>
       </div>
 
       <div class="input input_minutes">
-        <tui-input-number [tuiTextfieldLabelOutside]="true" [formControlName]="'minutes'">
-          1
+        <tui-input-number
+          [tuiTextfieldLabelOutside]="true"
+          [formControlName]="'minutes'"
+          [min]="timeForm.value.hours ? 0 : 1"
+          [max]="59"
+        >
+          {{ timeForm.value.hours ? 0 : 1 }}
         </tui-input-number>
         <span class="input__title">Minutes</span>
       </div>
     </div>
   </div>
 
-  <app-rubic-button class="container__set-button" (onClick)="onSet()">Set</app-rubic-button>
+  <app-rubic-button
+    class="container__set-button"
+    [disabled]="!timeForm.controls.hours.valid || !timeForm.controls.minutes.valid"
+    (onClick)="onSet()"
+    >Set</app-rubic-button
+  >
   <app-rubic-button class="container__cancel-button" appearance="outline" (onClick)="onCancel()"
     >Cancel</app-rubic-button
   >

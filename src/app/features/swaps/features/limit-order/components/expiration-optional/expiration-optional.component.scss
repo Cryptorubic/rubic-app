@@ -18,6 +18,10 @@
 
     cursor: pointer;
 
+    &_highlighted {
+      color: var(--primary-color);
+    }
+
     &:not(:last-child) {
       border-bottom: 1px solid var(--transparent-line);
     }

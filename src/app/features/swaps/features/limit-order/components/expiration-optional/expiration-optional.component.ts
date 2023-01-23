@@ -18,7 +18,13 @@ export class ExpirationOptionalComponent {
 
   public readonly options = expirationOptions;
 
-  constructor(private readonly orderExpirationService: OrderExpirationService) {}
+  public readonly highlightedOption: number;
+
+  constructor(private readonly orderExpirationService: OrderExpirationService) {
+    const expirationTime = this.orderExpirationService.expirationTime;
+    const index = this.options.findIndex(option => option.minutes === expirationTime);
+    this.highlightedOption = index !== -1 ? index : this.options.length;
+  }
 
   public onOptionsClick(option: ExpirationOption): void {
     this.orderExpirationService.updateExpirationTime(option.minutes);

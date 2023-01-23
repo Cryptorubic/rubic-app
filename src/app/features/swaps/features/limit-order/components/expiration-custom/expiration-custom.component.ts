@@ -14,12 +14,15 @@ export class ExpirationCustomComponent {
 
   @Output() onStateChange = new EventEmitter<void>();
 
-  public readonly timeForm = new FormGroup<TimeFormControls>({
-    hours: new FormControl<number>(1),
-    minutes: new FormControl<number>(0)
-  });
+  public readonly timeForm: FormGroup<TimeFormControls>;
 
-  constructor(private readonly orderExpirationService: OrderExpirationService) {}
+  constructor(private readonly orderExpirationService: OrderExpirationService) {
+    const expirationTime = this.orderExpirationService.expirationTime;
+    this.timeForm = new FormGroup<TimeFormControls>({
+      hours: new FormControl<number>(Math.floor(expirationTime / 60)),
+      minutes: new FormControl<number>(expirationTime % 60)
+    });
+  }
 
   public onSet(): void {
     const form = this.timeForm.value;
@@ -29,5 +32,11 @@ export class ExpirationCustomComponent {
 
   public onCancel(): void {
     this.onStateChange.emit();
+  }
+
+  public onHoursChange(value: number): void {
+    if (value === 0 && this.timeForm.value.minutes === 0) {
+      this.timeForm.controls.minutes.setValue(1);
+    }
   }
 }
