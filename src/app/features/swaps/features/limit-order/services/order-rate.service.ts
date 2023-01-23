@@ -6,11 +6,12 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
-import { blockchainId, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, blockchainId, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
 import { HttpClient } from '@angular/common/http';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { RatePrices } from '@features/swaps/features/limit-order/services/models/rate-prices';
 import { spotPriceContractAbi } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-abi';
+import { spotPriceContractAddress } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-address';
 
 @Injectable()
 export class OrderRateService {
@@ -48,10 +49,18 @@ export class OrderRateService {
     ({ fromTokenPrice, toTokenPrice } = await this.getInchPrices(fromToken, toToken));
     if (!fromTokenPrice && !toTokenPrice) {
       ({ fromTokenPrice, toTokenPrice } = await this.getSpotAggregatorPrices(fromToken, toToken));
-    } else if (!fromTokenPrice) {
-      fromTokenPrice = await this.getSpotAggregatorPrice(fromToken);
-    } else if (!toTokenPrice) {
-      toTokenPrice = await this.getSpotAggregatorPrice(toToken);
+    } else if (!fromTokenPrice || !toTokenPrice) {
+      if (
+        fromToken.blockchain === BLOCKCHAIN_NAME.FANTOM ||
+        fromToken.blockchain === BLOCKCHAIN_NAME.AURORA
+      ) {
+        return new BigNumber(0);
+      }
+      if (!fromTokenPrice) {
+        fromTokenPrice = await this.getSpotAggregatorPrice(fromToken);
+      } else {
+        toTokenPrice = await this.getSpotAggregatorPrice(toToken);
+      }
     }
 
     const fromPriceBn = new BigNumber(fromTokenPrice);
@@ -82,7 +91,7 @@ export class OrderRateService {
     const res = await Injector.web3PublicService
       .getWeb3Public(fromToken.blockchain as EvmBlockchainName)
       .multicallContractMethod<string>(
-        '0x7F069df72b7A39bCE9806e3AfaF579E54D8CF2b9',
+        spotPriceContractAddress[fromToken.blockchain as keyof typeof spotPriceContractAddress],
         spotPriceContractAbi,
         'getRateToEth',
         [
@@ -100,7 +109,7 @@ export class OrderRateService {
     const res = await Injector.web3PublicService
       .getWeb3Public(token.blockchain as EvmBlockchainName)
       .callContractMethod<string>(
-        '0x7F069df72b7A39bCE9806e3AfaF579E54D8CF2b9',
+        spotPriceContractAddress[token.blockchain as keyof typeof spotPriceContractAddress],
         spotPriceContractAbi,
         'getRateToEth',
 
