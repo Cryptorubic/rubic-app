@@ -278,10 +278,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       : null;
 
-    // const receiverAddress = this.receiverAddress; todo return
+    const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
-      // ...(receiverAddress && { receiverAddress }),
+      ...(receiverAddress && { receiverAddress }),
       ...(gasPrice && { gasPrice })
     };
 

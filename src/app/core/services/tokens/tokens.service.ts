@@ -233,14 +233,21 @@ export class TokensService {
   /**
    * Get balance for each token in list.
    * @param tokens List of tokens.
+   * @param tokenBlockchain Token balance.
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
-  private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
+  private async getTokensWithBalance(
+    tokens: List<TokenAmount>,
+    tokenBlockchain?: BlockchainName
+  ): Promise<TokenAmount[]> {
     try {
-      if (!this.authService.user) {
+      const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
+      if (
+        !this.authService.user ||
+        (tokenBlockchain ? !blockchains.includes(tokenBlockchain) : false)
+      ) {
         return tokens.toArray();
       }
-      const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
 
       const tokensWithBlockchain: { [p: string]: TokenAmount[] } = Object.fromEntries(
         blockchains.map(blockchain => [blockchain, []])
@@ -625,7 +632,10 @@ export class TokensService {
     return this.tokensApiService.fetchQueryTokens(params).pipe(
       switchMap(async backendTokens => {
         return List(
-          await this.getTokensWithBalance(this.setDefaultTokensParams(backendTokens, false))
+          await this.getTokensWithBalance(
+            this.setDefaultTokensParams(backendTokens, false),
+            blockchain
+          )
         );
       })
     );
