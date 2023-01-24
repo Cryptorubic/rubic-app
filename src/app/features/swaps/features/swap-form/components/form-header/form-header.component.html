@@ -3,11 +3,15 @@
     <ng-container *ngLet="toBlockchainItem$ | async as toBlockchainItem">
       <div class="swaps-header__icons">
         <div class="swaps-header__icon-wrapper">
-          <img
-            class="swaps-header__blockchain-from"
-            [src]="fromBlockchainItem.icon"
-            [alt]="fromBlockchainItem.label"
-          />
+          <ng-container
+            *ngLet="getFirstBlockchainItem(fromBlockchainItem, toBlockchainItem) as blockchainItem"
+          >
+            <img
+              class="swaps-header__blockchain-from"
+              [src]="blockchainItem.icon"
+              [alt]="blockchainItem.label"
+            />
+          </ng-container>
         </div>
 
         <div class="swaps-header__icon-wrapper" *ngIf="(isLimitOrder$ | async) === false">
