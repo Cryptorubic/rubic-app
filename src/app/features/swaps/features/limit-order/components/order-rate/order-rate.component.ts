@@ -59,8 +59,11 @@ export class OrderRateComponent implements OnInit {
     this.percentValueClass = levelData.class;
   }
 
-  public onRateChange(rate: string): void {
-    this.rate.setValue(rate, { emitViewToModelChange: false });
-    this.orderRateService.updateRateByForm(rate);
+  public onRateChange(formRate: string): void {
+    this.rate.setValue(formRate, { emitViewToModelChange: false });
+    const rate = this.orderRateService.rateValue;
+    if (((rate && !rate.isNaN()) || this.formattedRate) && !rate?.eq(this.formattedRate)) {
+      this.orderRateService.updateRateByForm(formRate);
+    }
   }
 }

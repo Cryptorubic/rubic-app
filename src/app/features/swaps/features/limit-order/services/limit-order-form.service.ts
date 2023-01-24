@@ -100,6 +100,7 @@ export class LimitOrderFormService {
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
+    this.subscribeOnRateChange();
   }
 
   /**
@@ -114,13 +115,7 @@ export class LimitOrderFormService {
             return;
           }
 
-          const orderRate = this.orderRateService.rateValue;
-          const { fromAmount } = this.inputValue;
-          this.swapFormService.outputControl.patchValue({
-            toAmount: fromAmount?.isFinite()
-              ? fromAmount.multipliedBy(orderRate)
-              : new BigNumber(NaN)
-          });
+          this.updateToAmountByRate();
         }),
         debounceTime(200),
         switchMap(calculateData => {
@@ -179,6 +174,14 @@ export class LimitOrderFormService {
       .subscribe();
   }
 
+  private updateToAmountByRate(): void {
+    const orderRate = this.orderRateService.rateValue;
+    const { fromAmount } = this.inputValue;
+    this.swapFormService.outputControl.patchValue({
+      toAmount: fromAmount?.isFinite() ? fromAmount.multipliedBy(orderRate) : new BigNumber(NaN)
+    });
+  }
+
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.updateStatus();
@@ -197,6 +200,12 @@ export class LimitOrderFormService {
       } else {
         this.tradeStatus = TRADE_STATUS.DISABLED;
       }
+    });
+  }
+
+  private subscribeOnRateChange(): void {
+    this.orderRateService.rate$.subscribe(() => {
+      this.updateToAmountByRate();
     });
   }
 
