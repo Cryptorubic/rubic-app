@@ -12,9 +12,9 @@
             [errorText]="criticalErrorText"
           ></app-to-amount-estimated>
         </div>
-        <!--        <app-target-network-address-->
-        <!--          *ngIf="displayTargetAddressInput$ | async"-->
-        <!--        ></app-target-network-address>-->
+        <app-target-network-address
+          *ngIf="displayTargetAddressInput$ | async"
+        ></app-target-network-address>
 
         <ng-container *ngIf="!criticalError">
           <app-best-trade-panel *noFrame></app-best-trade-panel>
