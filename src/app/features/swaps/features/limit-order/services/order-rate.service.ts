@@ -26,6 +26,10 @@ export class OrderRateService {
 
   public readonly rate$ = this._rate$.asObservable();
 
+  public get rateValue(): BigNumber {
+    return this._rate$.getValue().value;
+  }
+
   /**
    * Stores market rate for currently selected tokens.
    */

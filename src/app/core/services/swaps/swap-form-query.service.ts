@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -20,7 +20,6 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -38,7 +37,6 @@ export class SwapFormQueryService {
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnSwapForm();
-    this.subscribeOnSwapType();
 
     this.subscribeOnQueryParams();
   }
@@ -53,27 +51,6 @@ export class SwapFormQueryService {
         ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
         onramperTxId: null
       });
-    });
-
-    this.swapFormService.outputValue$.pipe(skip(1)).subscribe(value => {
-      if (
-        this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-        value.toAmount?.gt(0)
-      ) {
-        this.queryParamsService.patchQueryParams({
-          amountTo: value.toAmount.toFixed()
-        });
-      }
-    });
-  }
-
-  private subscribeOnSwapType(): void {
-    this.swapTypeService.swapMode$.pipe(filter(Boolean)).subscribe(mode => {
-      if (mode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
-        this.queryParamsService.patchQueryParams({
-          amountTo: null
-        });
-      }
     });
   }
 
@@ -120,14 +97,6 @@ export class SwapFormQueryService {
           ...(toToken && { toToken }),
           ...(protectedParams.amount && { fromAmount: new BigNumber(protectedParams.amount) })
         });
-        if (
-          this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-          protectedParams.amountTo
-        ) {
-          this.swapFormService.outputControl.patchValue({
-            toAmount: new BigNumber(protectedParams.amountTo)
-          });
-        }
 
         this._initialLoading$.next(false);
       });

@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  distinctUntilChanged,
-  from,
-  of,
-  Subject,
-  Subscription
-} from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -20,7 +12,7 @@ import {
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens } from '@shared/utils/utils';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap, tap } from 'rxjs/operators';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -36,6 +28,8 @@ import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-
 import { TuiNotification } from '@taiga-ui/core';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
+import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -63,6 +57,8 @@ export class LimitOrderFormService {
    * When `next` is called, recalculation is started.
    */
   private readonly _calculateTrade$ = new Subject<{ stop?: boolean }>();
+
+  private calculating = false;
 
   private get isFormFilled(): boolean {
     const form = this.swapFormService.form.value;
@@ -98,7 +94,8 @@ export class LimitOrderFormService {
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly limitOrdersService: LimitOrdersService,
-    private readonly orderExpirationService: OrderExpirationService
+    private readonly orderExpirationService: OrderExpirationService,
+    private readonly orderRateService: OrderRateService
   ) {
     this.subscribeOnCalculation();
 
@@ -112,20 +109,30 @@ export class LimitOrderFormService {
   private subscribeOnCalculation(): void {
     this._calculateTrade$
       .pipe(
-        debounceTime(200),
-        map(calculateData => {
-          if (calculateData.stop || !this.isFormFilled) {
-            this.tradeStatus = TRADE_STATUS.DISABLED;
-            return { ...calculateData, stop: true };
+        tap(calculateData => {
+          if (calculateData.stop) {
+            return;
           }
-          return { ...calculateData, stop: false };
+
+          const orderRate = this.orderRateService.rateValue;
+          const { fromAmount } = this.inputValue;
+          this.swapFormService.outputControl.patchValue({
+            toAmount: fromAmount?.isFinite()
+              ? fromAmount.multipliedBy(orderRate)
+              : new BigNumber(NaN)
+          });
         }),
+        debounceTime(200),
         switchMap(calculateData => {
           if (calculateData.stop) {
             return of(null);
           }
 
           const { fromBlockchain, fromToken, fromAmount } = this.inputValue;
+          if (!fromAmount?.isFinite()) {
+            return of(null);
+          }
+
           const isUserAuthorized =
             Boolean(this.authService.userAddress) &&
             this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
@@ -133,7 +140,12 @@ export class LimitOrderFormService {
             return of(null);
           }
 
-          this.tradeStatus = TRADE_STATUS.LOADING;
+          this.calculating = true;
+          if (this.isFormFilled) {
+            this.tradeStatus = TRADE_STATUS.LOADING;
+          } else {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+          }
           return from(
             SdkTokenAmount.createToken({
               ...(fromToken as TokenBaseStruct<EvmBlockchainName>),
@@ -153,9 +165,12 @@ export class LimitOrderFormService {
                   fromAmount
                 );
               }
-              this.tradeStatus = this.needApprove
-                ? TRADE_STATUS.READY_TO_APPROVE
-                : TRADE_STATUS.READY_TO_SWAP;
+              this.calculating = false;
+              if (this.isFormFilled) {
+                this.tradeStatus = this.needApprove
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
+              }
               this._displayApproveButton$.next(this.needApprove);
             })
           );
@@ -165,13 +180,23 @@ export class LimitOrderFormService {
   }
 
   private subscribeOnFormChanges(): void {
-    combineLatest([
-      this.swapFormService.inputValueDistinct$,
-      this.swapFormService.outputValue$.pipe(distinctUntilChanged())
-    ]).subscribe(() => {
+    this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.updateStatus();
-
       this.updateBlockchains();
+    });
+
+    this.swapFormService.outputValue$.pipe(distinctUntilChanged()).subscribe(() => {
+      if (this.isFormFilled) {
+        if (this.calculating) {
+          this.tradeStatus = TRADE_STATUS.LOADING;
+        } else {
+          this.tradeStatus = this.needApprove
+            ? TRADE_STATUS.READY_TO_APPROVE
+            : TRADE_STATUS.READY_TO_SWAP;
+        }
+      } else {
+        this.tradeStatus = TRADE_STATUS.DISABLED;
+      }
     });
   }
 
@@ -182,6 +207,9 @@ export class LimitOrderFormService {
     this._calculateTrade$.next({});
   }
 
+  /**
+   * Updates form blockchains, so they are equal.
+   */
   private updateBlockchains(): void {
     const { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
     if (fromToken && !toToken) {
