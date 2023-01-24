@@ -1,24 +1,21 @@
 <form [formGroup]="form">
-  <tui-select formControlName="blockchain" [valueContent]="blockchainContent">
+  <tui-select
+    [tuiTextfieldLabelOutside]="true"
+    formControlName="blockchain"
+    [valueContent]="blockchainContent"
+  >
     Choose a blockchain
     <tui-data-list-wrapper
       *tuiDataList
       [size]="'s'"
       [items]="supportedBlockchains"
       [itemContent]="blockchainContent"
-      >test</tui-data-list-wrapper
-    ></tui-select
-  >
+    ></tui-data-list-wrapper
+  ></tui-select>
   <ng-template #blockchainContent let-data>
     <div class="selector-row">
       <img [src]="data.img" [alt]="data.name" />
       {{ data.name }}
     </div>
   </ng-template>
-  <tui-input
-    formControlName="searchQuery"
-    tuiHintContent="Search for a specific contract address, spender or token"
-  >
-    Enter an address
-  </tui-input>
 </form>

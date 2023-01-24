@@ -1,0 +1,16 @@
+<div class="tui-row">
+  <div *ngFor="let approve of approves" class="tui-col_6">
+    <div class="card">
+      <div class="image-container">
+        <img [src]="approve.token.image" [alt]="approve.token.symbol" />
+        {{ approve.token.symbol }}
+        <a
+          [safetyLink]="
+            approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN
+          "
+          ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
+        /></a>
+      </div>
+    </div>
+  </div>
+</div>

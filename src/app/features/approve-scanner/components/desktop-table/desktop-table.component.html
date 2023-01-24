@@ -1,0 +1,69 @@
+<table class="table tui-table_layout_fixed">
+  <tbody>
+    <tr class="table__tr table__tr_head">
+      <th class="table__th">
+        <tui-input tuiTextfieldSize="s" [formControl]="tokenControl">Asset</tui-input>
+      </th>
+      <th class="table__th">
+        <tui-input tuiTextfieldSize="s" [formControl]="spenderControl">Spender</tui-input>
+      </th>
+      <th class="table__th">Allowance</th>
+      <th class="table__th">Date</th>
+      <th class="table__th"></th>
+    </tr>
+    <tr *ngFor="let approve of approves">
+      <td>
+        <div class="image-container">
+          <img [src]="approve.token.image" [alt]="approve.token.symbol" />
+          {{ approve.token.symbol }}
+          <a
+            [safetyLink]="
+              approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN
+            "
+            ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
+          /></a>
+        </div>
+      </td>
+      <td>
+        <div class="image-container">
+          {{ approve.spender | shortAddress : 5 : 3 }}
+          <a
+            [safetyLink]="
+              approve.spender | scannerLink : approve.token.blockchain : ADDRESS_TYPE.WALLET
+            "
+            ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
+          /></a>
+        </div>
+      </td>
+      <td>{{ approve.value }}</td>
+      <td>{{ approve.timeStamp | date : 'MMM dd, yyyy h:mm' }}</td>
+      <td>
+        <app-rubic-button
+          *ngIf="allowChangeBlockchain; else revoke"
+          [attr.error]="true"
+          appearance="primary"
+          [loading]="revokeLoading"
+          [disabled]="revokeLoading"
+          size="s"
+          (onClick)="changeNetwork()"
+          >Switch network
+        </app-rubic-button>
+
+        <ng-template #revoke>
+          <button
+            tuiButton
+            type="button"
+            class="tui-space_right-3 tui-space_bottom-3"
+            (click)="handleRevoke(approve.tokenAddress, approve.spender)"
+            appearance="primary"
+            [showLoader]="revokeLoading"
+            size="s"
+          >
+            Revoke
+          </button>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+  <ng-template></ng-template>
+</table>

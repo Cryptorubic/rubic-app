@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
-import { combineLatestWith, firstValueFrom, lastValueFrom } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { combineLatestWith } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { EvmBlockchainName } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
+import { Router } from '@angular/router';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
 
 @Component({
   selector: 'app-approve-scanner-page',
@@ -16,13 +17,12 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 export class ApproveScannerPageComponent {
   public readonly address$ = this.walletConnectorService.addressChange$;
 
-  public readonly allowChangeBlockchain$ = this.walletConnectorService.networkChange$.pipe(
-    combineLatestWith(this.service.selectedBlockchain$),
-    map(([currentBlockchain, selectedBlockchain]) => currentBlockchain !== selectedBlockchain.key)
-  );
-
-  public readonly fromBlockchainLabel$ = this.service.selectedBlockchain$.pipe(
-    map(blockchain => blockchainLabel[blockchain.key])
+  public readonly userBalance$ = this.service.selectedBlockchain$.pipe(
+    combineLatestWith(this.tokensService.tokens$.pipe(first(Boolean))),
+    switchMap(([blockchain]) =>
+      this.tokensService.getAndUpdateTokenBalance(nativeTokensList[blockchain.key])
+    ),
+    map(balance => `${balance} ${nativeTokensList[this.walletConnectorService.network].symbol}`)
   );
 
   public loading = false;
@@ -31,18 +31,19 @@ export class ApproveScannerPageComponent {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly service: ApproveScannerService,
     private readonly sdkService: SdkService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router,
+    private readonly tokensService: TokensService
+  ) {
+    this.handleUnlogin();
+  }
 
-  public async changeNetwork(): Promise<void> {
-    this.loading = true;
-    try {
-      const blockchain = await firstValueFrom(this.service.selectedBlockchain$);
-      await this.walletConnectorService.switchChain(blockchain.key as EvmBlockchainName);
-      await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));
-    } finally {
-      this.loading = false;
-      this.cdr.markForCheck();
-    }
+  private handleUnlogin(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        first(address => address === null),
+        switchMap(() => this.router.navigateByUrl('/approve-scanner/'))
+      )
+      .subscribe();
   }
 }

@@ -1,0 +1,8 @@
+@use 'src/scss/core' as *;
+
+.card {
+  padding: 10px;
+
+  background: var(--form-background);
+  border-radius: $border-radius-2;
+}

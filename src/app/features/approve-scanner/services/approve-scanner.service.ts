@@ -14,17 +14,20 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
 import { SupportedBlockchain, supportedBlockchains } from '../constants/supported-blockchains';
 import {
+  BehaviorSubject,
   combineLatestWith,
+  forkJoin,
   map,
   Observable,
+  of,
   shareReplay,
+  skipUntil,
   startWith,
   Subscription,
   switchMap
 } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime } from 'rxjs/operators';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RevokeModalComponent } from '@features/approve-scanner/components/revoke-modal/revoke-modal.component';
@@ -35,17 +38,21 @@ import { TokenApproveData } from '@features/approve-scanner/models/token-approve
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { catchError, first, share, tap } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 interface ApproveForm {
   blockchain: Blockchain;
-  searchQuery: string;
 }
 
-interface ApproveTransaction {
+export interface ApproveTransaction {
   hash: string;
   tokenAddress: string;
   spender: string;
   value: string;
+  timeStamp: number;
+  token: TokenAmount;
 }
 
 interface ScannerResult {
@@ -53,16 +60,23 @@ interface ScannerResult {
   functionName: string;
   to: string;
   input: string;
+  timeStamp: number;
 }
 
 interface ScannerResponse {
   result: ScannerResult[] | string;
+  status: string;
+  message: string;
 }
 
 type ApproveFormControl = FormControlType<ApproveForm>;
 
 @Injectable()
 export class ApproveScannerService {
+  private readonly _exceededLimits$ = new BehaviorSubject<boolean>(false);
+
+  public readonly exceededLimits$ = this._exceededLimits$.asObservable();
+
   public readonly supportedBlockchains = Object.entries(BLOCKCHAINS)
     .filter(([blockchain]: [SupportedBlockchain, Blockchain]) =>
       supportedBlockchains.includes(blockchain)
@@ -75,8 +89,12 @@ export class ApproveScannerService {
   );
 
   public readonly form = new FormGroup<ApproveFormControl>({
-    blockchain: new FormControl(this.defaultBlockchain),
-    searchQuery: new FormControl(null)
+    blockchain: new FormControl(this.defaultBlockchain)
+  });
+
+  public readonly queryForm = new FormGroup({
+    spender: new FormControl(''),
+    token: new FormControl('')
   });
 
   public readonly selectedBlockchain$ = this.form.controls.blockchain.valueChanges.pipe(
@@ -84,16 +102,69 @@ export class ApproveScannerService {
     shareReplay(shareReplayConfig)
   );
 
-  public readonly searchQuery$ = this.form.controls.searchQuery.valueChanges;
-
   public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
-    switchMap(blockchain => this.fetchTransactions(blockchain))
+    tap(() => {
+      this.tableLoading = true;
+      this.page = 0;
+      this.tokenSearchQuery = '';
+      this.spenderSearchQuery = '';
+    }),
+    switchMap(blockchain => this.fetchTransactions(blockchain)),
+    tap(() => (this.tableLoading = false))
   );
 
-  public readonly visibleApproves$ = this.allApproves$.pipe(
-    combineLatestWith(this.searchQuery$.pipe(startWith(null), debounceTime(100))),
-    map(([approves, query]) => this.searchStringInTable(approves, query))
+  private readonly _tableLoading$ = new BehaviorSubject<boolean>(true);
+
+  private set tableLoading(value: boolean) {
+    this._tableLoading$.next(value);
+  }
+
+  public readonly tableLoading$ = this._tableLoading$.asObservable();
+
+  public set tokenSearchQuery(value: string) {
+    this.queryForm.controls.token.patchValue(value);
+  }
+
+  public set spenderSearchQuery(value: string) {
+    this.queryForm.controls.spender.patchValue(value);
+  }
+
+  private readonly _size$ = new BehaviorSubject(10);
+
+  public readonly size$ = this._size$.asObservable();
+
+  public set size(value: number) {
+    this._size$.next(value);
+  }
+
+  private readonly _page$ = new BehaviorSubject(0);
+
+  public readonly page$ = this._page$.asObservable();
+
+  public set page(value: number) {
+    this._page$.next(value);
+  }
+
+  public readonly visibleApproves$: Observable<ApproveTransaction[]> = this.allApproves$.pipe(
+    combineLatestWith(this.page$, this.size$, this.queryForm.valueChanges.pipe(debounceTime(400))),
+    debounceTime(0),
+    map(([approves, page, size, query]) => {
+      if (query.spender || query.token) {
+        return approves.filter(approve => {
+          const hasSpender = approve.spender.toLowerCase().includes(query.spender.toLowerCase());
+          const hasToken =
+            approve.token.symbol.toLowerCase().includes(query.token.toLowerCase()) ||
+            approve.token.address.toLowerCase().includes(query.token.toLowerCase());
+          return hasSpender && hasToken;
+        });
+      }
+      const start = page * size;
+      const end = start + size;
+
+      return approves.filter((_, index) => index >= start && index < end);
+    }),
+    share()
   );
 
   constructor(
@@ -104,7 +175,9 @@ export class ApproveScannerService {
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
-  ) {}
+  ) {
+    this.visibleApproves$.subscribe();
+  }
 
   @Cacheable({ maxAge: 120_000 })
   private fetchTransactions(blockchain: Blockchain): Observable<ApproveTransaction[]> {
@@ -117,20 +190,20 @@ export class ApproveScannerService {
     return this.httpService
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
       .pipe(
-        map(response => {
-          const approveTransactions =
-            typeof response?.result === 'string'
-              ? []
-              : response?.result.filter(tx => tx?.functionName.includes('approve')).reverse();
-          return approveTransactions.map(tx => {
-            const decodedData = MethodDecoder.decodeMethod(
-              ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
-              tx.input
-            );
-            const spender = decodedData.params.find(param => param.name === '_spender')!.value;
-            const value = decodedData.params.find(param => param.name === '_value')!.value;
-            return { hash: tx.hash, tokenAddress: tx.to, spender, value };
-          });
+        map(response => this.handleScannerResponse(response)),
+        skipUntil(
+          this.tokensService.tokens$.pipe(
+            startWith(this.tokensService.tokens),
+            first(tokens => tokens?.size > 0)
+          )
+        ),
+        switchMap(approves => this.findTokensForApproves(approves)),
+        tap(() => this._exceededLimits$.next(false)),
+        catchError(err => {
+          if (err instanceof Error && err.message.includes('Exceed limits')) {
+            this._exceededLimits$.next(true);
+          }
+          return of([]);
         })
       );
   }
@@ -267,5 +340,53 @@ export class ApproveScannerService {
 
       this.notificationsService.show(label, { autoClose: 10000, status });
     }
+  }
+
+  private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
+    if (response.status === '0' || typeof response.result === 'string') {
+      throw new Error('Exceed limints');
+    }
+    const approveTransactions = response.result
+      .filter(tx => tx?.functionName.includes('approve'))
+      .reverse();
+    return approveTransactions.map(tx => {
+      const decodedData = MethodDecoder.decodeMethod(
+        ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
+        tx.input
+      );
+      const spender = decodedData.params.find(param => param.name === '_spender')!.value;
+      const value = decodedData.params.find(param => param.name === '_value')!.value;
+      return {
+        hash: tx.hash,
+        tokenAddress: tx.to,
+        spender,
+        value,
+        timeStamp: tx.timeStamp * 1000
+      };
+    });
+  }
+
+  private findTokensForApproves(
+    sourceApproves: Omit<ApproveTransaction, 'token'>[]
+  ): Observable<ApproveTransaction[]> {
+    const approvesAddresses = sourceApproves.map(approve => approve.tokenAddress);
+    const uniqueAddresses = Array.from(new Set(approvesAddresses));
+    const tokensRequests = uniqueAddresses.map(address =>
+      this.tokensService.findToken(
+        {
+          address,
+          blockchain: this.form.controls.blockchain.value.key
+        },
+        true
+      )
+    );
+    return forkJoin([of(sourceApproves), Promise.all(tokensRequests)]).pipe(
+      map(([approves, tokens]) => {
+        return approves.map(approve => ({
+          ...approve,
+          token: tokens.find(token => token.address === approve.tokenAddress)
+        }));
+      })
+    );
   }
 }

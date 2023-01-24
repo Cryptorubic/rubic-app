@@ -1,44 +1,32 @@
 @use 'src/scss/core' as *;
 
-.table {
-  width: 100%;
-
-  th { font-weight: normal; }
-
-  td {
-    padding: 16px;
+::ng-deep {
+  app-rubic-button {
+    display: block;
+    width: 150px;
   }
 
-  &__tr_head {
-    background: rgba(255, 255, 255, 0.1);
+  .image-container {
+    display: flex;
+
+    img {
+      height: 16px;
+      margin-right: 10px;
+    }
+
+    a {
+      margin-left: 10px;
+
+      img {
+        height: 16px;
+      }
+    }
   }
+}
 
-  .table__th {
-    @include font(14px, 17px, 400, #A2A1A5);
-    padding: 16px;
-
-    text-align: left;
-
-    @include dark {
-      color: white;
-    }
-
-    &:first-child {
-      border-color: transparent;
-      border-left-style: solid;
-      border-top-left-radius: 10px;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-    }
-
-    &:last-child {
-      border-color: transparent;
-      border-left-style: solid;
-      border-top-right-radius: 10px;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-    }
+tui-table-pagination ::ng-deep {
+  > button {
+    background-color: var(--form-background);
+    border-radius: 5px;
   }
 }

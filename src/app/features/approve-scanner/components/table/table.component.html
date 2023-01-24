@@ -1,30 +1,73 @@
-<table class="table">
-  <tbody>
-    <tr class="table__tr table__tr_head">
-      <th class="table__th">Tx hash</th>
-      <th class="table__th">Asset</th>
-      <th class="table__th">Spender</th>
-      <th class="table__th">Allowance</th>
-      <th class="table__th"></th>
-    </tr>
-    <tr *ngFor="let approve of approves$ | async">
-      <td>{{ approve.hash | shortAddress : 5 : 3 }}</td>
-      <td>{{ approve.tokenAddress | shortAddress : 5 : 3 }}</td>
-      <td>{{ approve.spender | shortAddress : 5 : 3 }}</td>
-      <td>{{ approve.value }}</td>
-      <td>
-        <button
-          tuiButton
-          type="button"
-          class="tui-space_right-3 tui-space_bottom-3"
-          (click)="handleRevoke(approve.tokenAddress, approve.spender)"
-          appearance="primary"
-          [showLoader]="loading"
-          size="s"
+<ng-container
+  *ngLet="{
+    approves: approves$ | async,
+    allApproves: allApproves$ | async,
+    page: page$ | async,
+    size: size$ | async,
+    isLimitsExceeded: exceededLimits$ | async,
+    allowChangeBlockchain: allowChangeBlockchain$ | async,
+    tokenControl: queryForm.controls.token,
+    spenderControl: queryForm.controls.spender,
+    revokeLoading: loading,
+    tableLoading: tableLoading$ | async
+  } as table"
+>
+  <ng-container>
+    <tui-loader [showLoader]="table.tableLoading" [overlay]="true">
+      <app-desktop-table
+        *ngIf="!isMobile as isMobile; else mobile"
+        (handleNetworkChange)="changeNetwork()"
+        (handleRevokeCall)="handleRevoke($event)"
+        [allApproves]="table.allApproves"
+        [allowChangeBlockchain]="table.allowChangeBlockchain"
+        [approves]="table.approves"
+        [isLimitsExceeded]="table.isLimitsExceeded"
+        [page]="table.page"
+        [revokeLoading]="table.revokeLoading"
+        [size]="table.size"
+        [spenderControl]="table.spenderControl"
+        [tableLoading]="table.tableLoading"
+        [tokenControl]="table.tokenControl"
+      >
+        {{ isMobile }}
+        <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
+          <tfoot>
+            <tr *ngIf="table.approves?.length; else noApproves">
+              <td [colSpan]="table.allApproves.length">
+                <tui-table-pagination
+                  [total]="table.allApproves.length"
+                  [page]="table.page"
+                  [size]="table.size"
+                  (pageChange)="page = $event"
+                  (sizeChange)="size = $event"
+                >
+                </tui-table-pagination>
+              </td>
+            </tr>
+            <ng-template #noApproves>
+              <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
+            </ng-template>
+          </tfoot>
+        </ng-container>
+      </app-desktop-table>
+      <ng-template #mobile>
+        <app-mobile-table
+          (handleNetworkChange)="changeNetwork()"
+          (handleRevokeCall)="handleRevoke($event)"
+          [allApproves]="table.allApproves"
+          [allowChangeBlockchain]="table.allowChangeBlockchain"
+          [approves]="table.approves"
+          [isLimitsExceeded]="table.isLimitsExceeded"
+          [page]="table.page"
+          [revokeLoading]="table.revokeLoading"
+          [size]="table.size"
+          [spenderControl]="table.spenderControl"
+          [tableLoading]="table.tableLoading"
+          [tokenControl]="table.tokenControl"
         >
-          Revoke
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+          ttt
+        </app-mobile-table>
+      </ng-template>
+    </tui-loader>
+  </ng-container>
+</ng-container>
