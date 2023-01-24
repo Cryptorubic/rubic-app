@@ -56,11 +56,7 @@ export class OrderRateService {
       .subscribe(async ({ fromAsset, toToken }) => {
         if (isMinimalToken(fromAsset) && toToken) {
           this.marketRate = await this.getMarketRate(fromAsset, toToken);
-          this._rate$.next({
-            value: this.marketRate.dp(this.decimalPoints),
-            percentDiff: 0
-          });
-          this.updateToAmountByRate();
+          this.setRateToMarket();
         }
       });
   }
@@ -172,6 +168,14 @@ export class OrderRateService {
     if (fromAmount?.gt(0)) {
       this.updateRate(toAmount.div(fromAmount));
     }
+  }
+
+  public setRateToMarket(): void {
+    this._rate$.next({
+      value: this.marketRate.dp(this.decimalPoints),
+      percentDiff: 0
+    });
+    this.updateToAmountByRate();
   }
 
   private updateToAmountByRate(): void {

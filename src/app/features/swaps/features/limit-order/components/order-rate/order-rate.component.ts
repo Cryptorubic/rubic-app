@@ -66,4 +66,8 @@ export class OrderRateComponent implements OnInit {
       this.orderRateService.updateRate(formRate);
     }
   }
+
+  public setRateToMarket(): void {
+    this.orderRateService.setRateToMarket();
+  }
 }
