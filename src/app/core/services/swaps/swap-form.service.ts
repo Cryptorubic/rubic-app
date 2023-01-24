@@ -91,6 +91,11 @@ export class SwapFormService {
 
   public readonly outputValue$ = this._outputValue$.asObservable();
 
+  public readonly outputValueDistinct$ = this.outputValue$.pipe(
+    distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
   private readonly _isFilled$: BehaviorSubject<boolean> = observableToBehaviorSubject(
     this.inputValue$.pipe(
       map(form =>

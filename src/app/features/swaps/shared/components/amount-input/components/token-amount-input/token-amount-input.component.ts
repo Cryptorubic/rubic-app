@@ -4,8 +4,10 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
@@ -29,6 +31,8 @@ import { combineLatest } from 'rxjs';
 })
 export class TokenAmountInputComponent implements OnInit, AfterViewInit {
   @Input() formType: 'from' | 'to' = 'from';
+
+  @Output() amountUpdated = new EventEmitter<void>();
 
   @ViewChild('tokenAmount') public readonly tokenAmountInput: ElementRef<HTMLInputElement>;
 
@@ -110,6 +114,7 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
       this.swapFormService[controlKey].patchValue({
         [amountKey]: new BigNumber(this.formattedAmount)
       });
+      this.amountUpdated.emit();
     }
   }
 }

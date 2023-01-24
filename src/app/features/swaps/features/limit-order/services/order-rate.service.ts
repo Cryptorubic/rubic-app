@@ -35,14 +35,16 @@ export class OrderRateService {
    */
   private marketRate: BigNumber;
 
+  private readonly decimalPoints = 6;
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient
   ) {
-    this.subscribeOnFormChange();
+    this.subscribeOnTokensChange();
   }
 
-  private subscribeOnFormChange(): void {
+  private subscribeOnTokensChange(): void {
     this.swapFormService.inputValueDistinct$
       .pipe(
         distinctUntilChanged(
@@ -55,9 +57,10 @@ export class OrderRateService {
         if (isMinimalToken(fromAsset) && toToken) {
           this.marketRate = await this.getMarketRate(fromAsset, toToken);
           this._rate$.next({
-            value: this.marketRate,
+            value: this.marketRate.dp(this.decimalPoints),
             percentDiff: 0
           });
+          this.updateToAmountByRate();
         }
       });
   }
@@ -86,7 +89,7 @@ export class OrderRateService {
     const fromPriceBn = new BigNumber(fromTokenPrice);
     const toPriceBn = new BigNumber(toTokenPrice);
     if (fromPriceBn?.isFinite() && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
-      return new BigNumber(fromTokenPrice).div(toTokenPrice).dp(6);
+      return new BigNumber(fromTokenPrice).div(toTokenPrice);
     }
     return new BigNumber(0);
   }
@@ -135,8 +138,14 @@ export class OrderRateService {
     });
   }
 
-  public updateRateByForm(formRate: string): void {
-    const rate = new BigNumber(formRate);
+  /**
+   * Updates rate with new value.
+   * @param newRate Update rate.
+   * @param form True, if rate is update by user through form.
+   */
+  public updateRate(newRate: string | BigNumber, form = false): void {
+    const rate = new BigNumber(newRate).dp(this.decimalPoints);
+
     if (!this.marketRate?.isFinite() || this.marketRate.lte(0)) {
       this._rate$.next({
         value: rate,
@@ -152,5 +161,24 @@ export class OrderRateService {
         percentDiff
       });
     }
+    if (form) {
+      this.updateToAmountByRate();
+    }
+  }
+
+  public recalculateRateBySwapForm(): void {
+    const { fromAmount } = this.swapFormService.inputValue;
+    const { toAmount } = this.swapFormService.outputValue;
+    if (fromAmount?.gt(0)) {
+      this.updateRate(toAmount.div(fromAmount));
+    }
+  }
+
+  private updateToAmountByRate(): void {
+    const orderRate = this.rateValue;
+    const { fromAmount } = this.swapFormService.inputValue;
+    this.swapFormService.outputControl.patchValue({
+      toAmount: fromAmount?.isFinite() ? fromAmount.multipliedBy(orderRate) : new BigNumber(NaN)
+    });
   }
 }

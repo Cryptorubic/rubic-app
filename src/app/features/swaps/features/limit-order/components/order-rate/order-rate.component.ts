@@ -63,7 +63,7 @@ export class OrderRateComponent implements OnInit {
     this.rate.setValue(formRate, { emitViewToModelChange: false });
     const rate = this.orderRateService.rateValue;
     if (((rate && !rate.isNaN()) || this.formattedRate) && !rate?.eq(this.formattedRate)) {
-      this.orderRateService.updateRateByForm(formRate);
+      this.orderRateService.updateRate(formRate);
     }
   }
 }

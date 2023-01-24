@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -100,7 +100,6 @@ export class LimitOrderFormService {
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
-    this.subscribeOnRateChange();
   }
 
   /**
@@ -188,7 +187,7 @@ export class LimitOrderFormService {
       this.updateBlockchains();
     });
 
-    this.swapFormService.outputValue$.pipe(distinctUntilChanged()).subscribe(() => {
+    this.swapFormService.outputValueDistinct$.subscribe(() => {
       if (this.isFormFilled) {
         if (this.calculating) {
           this.tradeStatus = TRADE_STATUS.LOADING;
@@ -200,12 +199,6 @@ export class LimitOrderFormService {
       } else {
         this.tradeStatus = TRADE_STATUS.DISABLED;
       }
-    });
-  }
-
-  private subscribeOnRateChange(): void {
-    this.orderRateService.rate$.subscribe(() => {
-      this.updateToAmountByRate();
     });
   }
 
