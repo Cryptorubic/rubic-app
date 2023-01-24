@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
 
 @Component({
@@ -14,5 +14,8 @@ export class FormComponent {
 
   public readonly supportedBlockchains = this.approveScannerService.supportedBlockchains;
 
-  constructor(private readonly approveScannerService: ApproveScannerService) {}
+  constructor(
+    private readonly approveScannerService: ApproveScannerService,
+    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
+  ) {}
 }
