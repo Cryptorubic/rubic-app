@@ -51,7 +51,9 @@
   &__icon {
     display: flex;
     align-items: center;
+    justify-content: center;
 
+    width: 16px;
     margin-right: 8px;
 
     img {
@@ -60,7 +62,17 @@
   }
 
   &__value {
-    color: var(--primary-color);
+    &_green {
+      color: var(--primary-color);
+    }
+
+    &_yellow {
+      color: #f2994a;
+    }
+
+    &_red {
+      color: #e9590c;
+    }
   }
 }
 

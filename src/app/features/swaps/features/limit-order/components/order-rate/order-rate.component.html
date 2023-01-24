@@ -2,11 +2,15 @@
   <div class="rate__header header">
     <div class="header__rate percent">
       <div class="percent__icon">
-        <img src="assets/images/icons/tick.svg" alt="" />
+        <img [src]="iconSrc" alt="" />
       </div>
       <div class="percent__title">
         Sell ETH at rate
-        <span class="percent__value" *ngIf="percentDiff"
+        <span
+          [class]="
+            'percent__value ' + (percentValueClass ? 'percent__value_' + percentValueClass : '')
+          "
+          *ngIf="percentDiff"
           >({{ percentDiff > 0 ? '+' : '' }}{{ percentDiff }}%)</span
         >
       </div>
