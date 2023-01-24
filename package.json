@@ -28,6 +28,7 @@
   },
   "private": true,
   "dependencies": {
+    "@1inch/limit-order-protocol-utils": "^3.0.1",
     "@angular/animations": "^15.1.0",
     "@angular/cdk": "^14.2.1",
     "@angular/common": "^15.1.0",

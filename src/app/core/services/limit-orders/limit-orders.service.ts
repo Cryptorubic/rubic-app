@@ -5,7 +5,15 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { first } from 'rxjs/operators';
-import { EvmBlockchainName } from 'rubic-sdk';
+import { blockchainId, CHAIN_TYPE, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
+import {
+  ChainId,
+  limirOrderProtocolAdresses,
+  LimitOrderProtocolFacade,
+  Web3ProviderConnector
+} from '@1inch/limit-order-protocol-utils';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { Token } from '@app/shared/models/tokens/token';
 
 @Injectable()
 export class LimitOrdersService {
@@ -27,7 +35,8 @@ export class LimitOrdersService {
   constructor(
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly swapFormService: SwapFormService
   ) {}
 
   public async shouldUpdateOrders(): Promise<void> {
@@ -75,5 +84,38 @@ export class LimitOrdersService {
     await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash);
     const updatedOrders = this._orders$.value.filter(({ hash }) => hash === orderHash);
     this._orders$.next(updatedOrders);
+  }
+
+  public async fillOrder(token: Token, orderHash: string): Promise<void> {
+    const blockchain = token.blockchain as EvmBlockchainName;
+    const order = await this.sdkService.limitOrderManager['apiService'].getOrderByHash(
+      this.authService.userAddress,
+      blockchain,
+      orderHash
+    );
+
+    const chainId = blockchainId[blockchain] as ChainId;
+    const connector = new Web3ProviderConnector(
+      Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM).web3
+    );
+    const limitOrderProtocolFacade = new LimitOrderProtocolFacade(
+      limirOrderProtocolAdresses[chainId],
+      chainId,
+      connector
+    );
+
+    const { fromAmount } = this.swapFormService.inputValue;
+    const data = limitOrderProtocolFacade.fillLimitOrder({
+      order: order.data,
+      signature: order.signature,
+      makingAmount: '0',
+      takingAmount: Web3Pure.toWei(fromAmount, token.decimals),
+      thresholdAmount: '0'
+    });
+    await Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .sendTransaction(limirOrderProtocolAdresses[chainId], {
+        data
+      });
   }
 }

@@ -135,4 +135,13 @@
   >
     Cancel
   </app-rubic-button>
+  <app-rubic-button
+    appearance="primary"
+    class="cancel"
+    (onClick)="fillOrder()"
+    size="s"
+    [loading]="cancelOrderButtonLoading"
+  >
+    Fill
+  </app-rubic-button>
 </ng-template>

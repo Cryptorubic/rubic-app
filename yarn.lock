@@ -14,6 +14,18 @@
     web3 "^1.8.1"
     yargs "^17.0.1"
 
+"@1inch/limit-order-protocol-utils@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@1inch/limit-order-protocol-utils/-/limit-order-protocol-utils-3.0.1.tgz#0f7437ec7c2eb1162e4a1f0738df771d30c122d4"
+  integrity sha512-HpZ1ZRP0PKNOuma1zvffdEfXl64CH/9oajug9Q26HPgyf0Ot+epiArI6rzqKRFvALOHp5Kl6kixiA2qFmGDQzA==
+  dependencies:
+    "@ethersproject/abi" "^5.1.1"
+    "@ethersproject/bignumber" "^5.1.1"
+    "@metamask/eth-sig-util" "^4.0.1"
+    prompts "^2.4.1"
+    web3 "^1.8.1"
+    yargs "^17.0.1"
+
 "@aduh95/viz.js@^3.1.0":
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.7.0.tgz#a20d86c5fc8f6abebdc39b96a4326e10375d77c0"

@@ -85,4 +85,8 @@ export class OrderRowComponent {
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
   }
+
+  public async fillOrder(): Promise<void> {
+    await this.limitOrdersService.fillOrder(this.order.toToken, this.order.hash);
+  }
 }
