@@ -1,9 +1,26 @@
+:host {
+  --yellow: #f2994a;
+  --red: #e9590c;
+}
+
 .rate {
   padding: 16px 16px 15px;
 
   background: var(--form-background);
   border: 1px solid var(--transparent-line);
   border-radius: 19px;
+
+  &_green {
+    border-color: var(--primary-color);
+  }
+
+  &_yellow {
+    border-color: var(--yellow);
+  }
+
+  &_red {
+    border-color: var(--red);
+  }
 
   &__header {
     margin-bottom: 7px;
@@ -67,11 +84,11 @@
     }
 
     &_yellow {
-      color: #f2994a;
+      color: var(--yellow);
     }
 
     &_red {
-      color: #e9590c;
+      color: var(--red);
     }
   }
 }

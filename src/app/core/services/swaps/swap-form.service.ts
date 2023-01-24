@@ -16,6 +16,7 @@ import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
+import { isMinimalToken } from '@shared/utils/is-token';
 
 @Injectable()
 export class SwapFormService {
@@ -69,6 +70,17 @@ export class SwapFormService {
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
     map(inputValue => inputValue.toBlockchain),
     distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
+  public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
+    map(inputValue => {
+      if (isMinimalToken(inputValue.fromAsset)) {
+        return inputValue.fromAsset;
+      }
+      return null;
+    }),
+    distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)
   );
 

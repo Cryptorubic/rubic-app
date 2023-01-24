@@ -1,15 +1,13 @@
-<div class="rate">
+<div [class]="'rate ' + (levelClass ? 'rate_' + levelClass : '')">
   <div class="rate__header header">
     <div class="header__rate percent">
       <div class="percent__icon">
         <img [src]="iconSrc" alt="" />
       </div>
       <div class="percent__title">
-        Sell ETH at rate
+        Sell {{ fromTokenName$ | async }} at rate
         <span
-          [class]="
-            'percent__value ' + (percentValueClass ? 'percent__value_' + percentValueClass : '')
-          "
+          [class]="'percent__value ' + (levelClass ? 'percent__value_' + levelClass : '')"
           *ngIf="percentDiff"
           >({{ percentDiff > 0 ? '+' : '' }}{{ percentDiff }}%)</span
         >

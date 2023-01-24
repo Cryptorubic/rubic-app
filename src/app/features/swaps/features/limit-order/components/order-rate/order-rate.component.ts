@@ -5,6 +5,8 @@ import {
   RateLevel,
   rateLevelsData
 } from '@features/swaps/features/limit-order/constants/rate-levels';
+import { SwapFormService } from '@app/core/services/swaps/swap-form.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-rate',
@@ -19,7 +21,9 @@ export class OrderRateComponent implements OnInit {
 
   public iconSrc: string;
 
-  public percentValueClass: string;
+  public levelClass: string;
+
+  public fromTokenName$ = this.swapFormService.fromToken$.pipe(map(token => token?.symbol || ''));
 
   private get formattedRate(): string {
     return this.rate.value.split(',').join('');
@@ -27,7 +31,8 @@ export class OrderRateComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly orderRateService: OrderRateService
+    private readonly orderRateService: OrderRateService,
+    private readonly swapFormService: SwapFormService
   ) {}
 
   ngOnInit() {
@@ -56,14 +61,14 @@ export class OrderRateComponent implements OnInit {
     }
     const levelData = rateLevelsData[level];
     this.iconSrc = levelData.imgSrc;
-    this.percentValueClass = levelData.class;
+    this.levelClass = levelData.class;
   }
 
   public onRateChange(formRate: string): void {
     this.rate.setValue(formRate, { emitViewToModelChange: false });
     const rate = this.orderRateService.rateValue;
     if (((rate && !rate.isNaN()) || this.formattedRate) && !rate?.eq(this.formattedRate)) {
-      this.orderRateService.updateRate(formRate);
+      this.orderRateService.updateRate(this.formattedRate);
     }
   }
 

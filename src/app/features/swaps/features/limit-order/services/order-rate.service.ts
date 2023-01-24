@@ -141,7 +141,6 @@ export class OrderRateService {
    */
   public updateRate(newRate: string | BigNumber, form = false): void {
     const rate = new BigNumber(newRate).dp(this.decimalPoints);
-
     if (!this.marketRate?.isFinite() || this.marketRate.lte(0)) {
       this._rate$.next({
         value: rate,
