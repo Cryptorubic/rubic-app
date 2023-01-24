@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
 
+export type RateTokenPrice = number | string | BigNumber;
+
 export interface RatePrices {
-  fromTokenPrice: number | string | BigNumber;
-  toTokenPrice: number | string | BigNumber;
+  fromTokenPrice: RateTokenPrice;
+  toTokenPrice: RateTokenPrice;
 }

@@ -11,6 +11,8 @@ import { OrderRateService } from '@features/swaps/features/limit-order/services/
 export class OrderRateComponent implements OnInit {
   public rate = new FormControl<string>('');
 
+  public percentDiff = 0;
+
   private get formattedRate(): string {
     return this.rate.value.split(',').join('');
   }
@@ -21,17 +23,19 @@ export class OrderRateComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.orderRateService.rate$.subscribe(rate => {
-      if (!rate || rate.isNaN()) {
+    this.orderRateService.rate$.subscribe(({ value, percentDiff }) => {
+      if (!value?.isFinite()) {
         this.rate.setValue('');
-      } else if (!rate.eq(this.formattedRate)) {
-        this.rate.setValue(rate.toFixed());
+      } else if (!value.eq(this.formattedRate)) {
+        this.rate.setValue(value.toFixed());
       }
+      this.percentDiff = percentDiff;
       this.cdr.markForCheck();
     });
   }
 
   public onRateChange(rate: string): void {
     this.rate.setValue(rate, { emitViewToModelChange: false });
+    this.orderRateService.updateRateByForm(rate);
   }
 }

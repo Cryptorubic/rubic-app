@@ -6,18 +6,30 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
-import { BLOCKCHAIN_NAME, blockchainId, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, blockchainId, Injector, Web3Pure } from 'rubic-sdk';
 import { HttpClient } from '@angular/common/http';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { RatePrices } from '@features/swaps/features/limit-order/services/models/rate-prices';
+import {
+  RatePrices,
+  RateTokenPrice
+} from '@features/swaps/features/limit-order/services/models/rate-prices';
 import { spotPriceContractAbi } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-abi';
 import { spotPriceContractAddress } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-address';
+import { OrderRate } from '@features/swaps/features/limit-order/services/models/order-rate';
 
 @Injectable()
 export class OrderRateService {
-  private readonly _rate$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  private readonly _rate$ = new BehaviorSubject<OrderRate>({
+    value: new BigNumber(0),
+    percentDiff: 0
+  });
 
   public readonly rate$ = this._rate$.asObservable();
+
+  /**
+   * Stores market rate for currently selected tokens.
+   */
+  private marketRate: BigNumber;
 
   constructor(
     private readonly swapFormService: SwapFormService,
@@ -37,18 +49,22 @@ export class OrderRateService {
       )
       .subscribe(async ({ fromAsset, toToken }) => {
         if (isMinimalToken(fromAsset) && toToken) {
-          this._rate$.next(await this.getRate(fromAsset, toToken));
+          this.marketRate = await this.getMarketRate(fromAsset, toToken);
+          this._rate$.next({
+            value: this.marketRate,
+            percentDiff: 0
+          });
         }
       });
   }
 
-  private async getRate(fromToken: Token, toToken: Token): Promise<BigNumber> {
+  private async getMarketRate(fromToken: Token, toToken: Token): Promise<BigNumber> {
     let fromTokenPrice: number | string | BigNumber;
     let toTokenPrice: number | string | BigNumber;
 
     ({ fromTokenPrice, toTokenPrice } = await this.getInchPrices(fromToken, toToken));
     if (!fromTokenPrice && !toTokenPrice) {
-      ({ fromTokenPrice, toTokenPrice } = await this.getSpotAggregatorPrices(fromToken, toToken));
+      [fromTokenPrice, toTokenPrice] = await this.getSpotAggregatorPrices([fromToken, toToken]);
     } else if (!fromTokenPrice || !toTokenPrice) {
       if (
         fromToken.blockchain === BLOCKCHAIN_NAME.FANTOM ||
@@ -57,9 +73,9 @@ export class OrderRateService {
         return new BigNumber(0);
       }
       if (!fromTokenPrice) {
-        fromTokenPrice = await this.getSpotAggregatorPrice(fromToken);
+        [fromTokenPrice] = await this.getSpotAggregatorPrices([fromToken]);
       } else {
-        toTokenPrice = await this.getSpotAggregatorPrice(toToken);
+        [toTokenPrice] = await this.getSpotAggregatorPrices([toToken]);
       }
     }
 
@@ -71,6 +87,9 @@ export class OrderRateService {
     return new BigNumber(0);
   }
 
+  /**
+   * Gets tokens' prices from 1inch api.
+   */
   private async getInchPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
     const chainId = blockchainId[fromToken.blockchain];
     const prices = await firstValueFrom(
@@ -78,43 +97,56 @@ export class OrderRateService {
         [address: string]: string;
       }>(`https://token-prices.1inch.io/v1.1/${chainId}`)
     );
-    let fromTokenPrice: number | string = Object.entries(prices).find(([address]) =>
+    let fromTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, fromToken.address)
     )?.[1];
-    let toTokenPrice: number | string = Object.entries(prices).find(([address]) =>
+    let toTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, toToken.address)
     )?.[1];
     return { fromTokenPrice, toTokenPrice };
   }
 
-  private async getSpotAggregatorPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
+  /**
+   * Gets tokens' prices from spot aggregator contract through multicall.
+   */
+  private async getSpotAggregatorPrices(tokens: Token[]): Promise<RateTokenPrice[]> {
+    if (!tokens.length) {
+      return [];
+    }
+    const blockchain = tokens[0].blockchain as keyof typeof spotPriceContractAddress;
+    const methodArguments = tokens.map(token => [token.address, true]);
     const res = await Injector.web3PublicService
-      .getWeb3Public(fromToken.blockchain as EvmBlockchainName)
+      .getWeb3Public(blockchain)
       .multicallContractMethod<string>(
-        spotPriceContractAddress[fromToken.blockchain as keyof typeof spotPriceContractAddress],
+        spotPriceContractAddress[blockchain],
         spotPriceContractAbi,
         'getRateToEth',
-        [
-          [fromToken.address, true],
-          [toToken.address, true]
-        ]
+        methodArguments
       );
-    return {
-      fromTokenPrice: Web3Pure.fromWei(res[0].output, 18 - fromToken.decimals),
-      toTokenPrice: Web3Pure.fromWei(res[1].output, 18 - toToken.decimals)
-    };
+    return res.map((tokenPrice, index) => {
+      if (tokenPrice.success) {
+        return Web3Pure.fromWei(tokenPrice.output, 18 - tokens[index].decimals);
+      }
+      return new BigNumber(0);
+    });
   }
 
-  private async getSpotAggregatorPrice(token: Token): Promise<BigNumber> {
-    const res = await Injector.web3PublicService
-      .getWeb3Public(token.blockchain as EvmBlockchainName)
-      .callContractMethod<string>(
-        spotPriceContractAddress[token.blockchain as keyof typeof spotPriceContractAddress],
-        spotPriceContractAbi,
-        'getRateToEth',
-
-        [token.address, true]
+  public updateRateByForm(formRate: string): void {
+    const rate = new BigNumber(formRate);
+    if (!this.marketRate?.isFinite() || this.marketRate.lte(0)) {
+      this._rate$.next({
+        value: rate,
+        percentDiff: 0
+      });
+    } else {
+      const percentDiff = Math.min(
+        rate.minus(this.marketRate).div(this.marketRate).multipliedBy(100).dp(2).toNumber(),
+        999
       );
-    return Web3Pure.fromWei(res, 18 - token.decimals);
+      this._rate$.next({
+        value: rate,
+        percentDiff
+      });
+    }
   }
 }
