@@ -1,8 +1,18 @@
 <div class="rate">
-  <div class="rate__header">
-    <div class="header__percent-container"></div>
-    <div class="header__market-locker"></div>
+  <div class="rate__header header">
+    <div class="header__rate percent">
+      <div class="percent__icon">
+        <img src="assets/images/icons/tick.svg" alt="" />
+      </div>
+      <div class="percent__title">Sell ETH at rate <span class="percent__value">(+0.66)</span></div>
+    </div>
+
+    <button class="header__setter setter">
+      <span class="setter__title">Set to market</span>
+      <img src="assets/images/icons/lock.svg" alt="locker" class="setter__icon" />
+    </button>
   </div>
+
   <label class="rate__label">
     <input
       autocomplete="off"
