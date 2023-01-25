@@ -79,10 +79,21 @@
   <td class="status">
     <div class="status__header">
       <div class="status__header__filled">Filled: {{ order.filledPercent }}%</div>
-      <div class="status__header__warning">Unfavorable</div>
+      <div class="status__header__warning" *ngIf="rateLevelData">
+        <img
+          [src]="rateLevelData.imgSrc"
+          alt="warning"
+          [tuiHint]="'Your rate is ' + order.filledPercent + '% worse than market rate'"
+          [tuiHintMode]="'error'"
+        />
+        Unfavorable rate
+      </div>
     </div>
     <div class="status__progress">
-      <div class="status__progress__value" [style.width]="order.filledPercent + '%'"></div>
+      <div
+        [class]="'status__progress__value ' + (rateLevelData ? rateLevelData.class : '')"
+        [style.width]="order.filledPercent + '%'"
+      ></div>
       <div class="status__progress__background"></div>
     </div>
   </td>

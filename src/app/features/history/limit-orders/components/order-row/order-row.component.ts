@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit
+} from '@angular/core';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -14,6 +20,11 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import {
+  RateLevel,
+  RateLevelData,
+  rateLevelsData
+} from '@features/swaps/shared/constants/limit-orders/rate-levels';
 
 @Component({
   selector: '[order-row]',
@@ -21,7 +32,7 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
   styleUrls: ['./order-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderRowComponent {
+export class OrderRowComponent implements OnInit {
   @Input() order: LimitOrder;
 
   @Input() mode: 'mobile' | 'order-row';
@@ -29,6 +40,8 @@ export class OrderRowComponent {
   public readonly defaultTokenImage = DEFAULT_TOKEN_IMAGE;
 
   public cancelOrderButtonLoading = false;
+
+  public rateLevelData: RateLevelData;
 
   public get showCancel(): boolean {
     return this.order.status === LIMIT_ORDER_STATUS.VALID;
@@ -41,6 +54,16 @@ export class OrderRowComponent {
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService
   ) {}
+
+  ngOnInit() {
+    const { orderRate, marketRate } = this.order;
+    const percentDiff = orderRate.minus(marketRate).div(marketRate).dp(2).toNumber();
+    if (percentDiff <= -0.1) {
+      this.rateLevelData = rateLevelsData[RateLevel.RED];
+    } else if (percentDiff <= -0.05) {
+      this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
+    }
+  }
 
   public getBlockchainImg(blockchain: BlockchainName): string {
     if (!blockchain) {

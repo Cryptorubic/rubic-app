@@ -5,7 +5,15 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { first } from 'rxjs/operators';
-import { blockchainId, CHAIN_TYPE, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  blockchainId,
+  CHAIN_TYPE,
+  EvmBlockchainName,
+  Injector,
+  Web3Pure,
+  Cache
+} from 'rubic-sdk';
 import {
   ChainId,
   limirOrderProtocolAdresses,
@@ -14,6 +22,15 @@ import {
 } from '@1inch/limit-order-protocol-utils';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Token } from '@app/shared/models/tokens/token';
+import BigNumber from 'bignumber.js';
+import {
+  RatePrices,
+  RateTokenPrice
+} from '@features/swaps/features/limit-order/services/models/rate-prices';
+import { compareAddresses } from '@shared/utils/utils';
+import { spotPriceContractAddress } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-address';
+import { spotPriceContractAbi } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-abi';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class LimitOrdersService {
@@ -36,7 +53,8 @@ export class LimitOrdersService {
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,
     private readonly tokensService: TokensService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly httpClient: HttpClient
   ) {}
 
   public async shouldUpdateOrders(): Promise<void> {
@@ -66,11 +84,15 @@ export class LimitOrdersService {
           this.tokensService.findToken(order.fromToken, true),
           this.tokensService.findToken(order.toToken, true)
         ]);
+        const marketRate = await this.getMarketRate(fromToken, toToken);
+        const orderRate = new BigNumber(order.toAmount).div(order.fromAmount);
 
         return {
           ...order,
           fromToken,
-          toToken
+          toToken,
+          marketRate,
+          orderRate
         };
       })
     );
@@ -117,5 +139,85 @@ export class LimitOrdersService {
       .sendTransaction(limirOrderProtocolAdresses[chainId], {
         data
       });
+  }
+
+  public async getMarketRate(fromToken: Token, toToken: Token): Promise<BigNumber> {
+    let fromTokenPrice: number | string | BigNumber;
+    let toTokenPrice: number | string | BigNumber;
+
+    ({ fromTokenPrice, toTokenPrice } = await this.getInchPrices(fromToken, toToken));
+    if (!fromTokenPrice && !toTokenPrice) {
+      [fromTokenPrice, toTokenPrice] = await this.getSpotAggregatorPrices([fromToken, toToken]);
+    } else if (!fromTokenPrice || !toTokenPrice) {
+      if (
+        fromToken.blockchain === BLOCKCHAIN_NAME.FANTOM ||
+        fromToken.blockchain === BLOCKCHAIN_NAME.AURORA
+      ) {
+        return new BigNumber(0);
+      }
+      if (!fromTokenPrice) {
+        [fromTokenPrice] = await this.getSpotAggregatorPrices([fromToken]);
+      } else {
+        [toTokenPrice] = await this.getSpotAggregatorPrices([toToken]);
+      }
+    }
+
+    const fromPriceBn = new BigNumber(fromTokenPrice);
+    const toPriceBn = new BigNumber(toTokenPrice);
+    if (fromPriceBn?.isFinite() && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
+      return new BigNumber(fromTokenPrice).div(toTokenPrice);
+    }
+    return new BigNumber(0);
+  }
+
+  /**
+   * Gets tokens' prices from 1inch api.
+   */
+  private async getInchPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
+    const prices = await this.getInchAllPrices(blockchainId[fromToken.blockchain]);
+    let fromTokenPrice = Object.entries(prices).find(([address]) =>
+      compareAddresses(address, fromToken.address)
+    )?.[1];
+    let toTokenPrice = Object.entries(prices).find(([address]) =>
+      compareAddresses(address, toToken.address)
+    )?.[1];
+    return { fromTokenPrice, toTokenPrice };
+  }
+
+  @Cache({
+    maxAge: 15_000
+  })
+  private getInchAllPrices(chainId: number): Promise<Record<string, string>> {
+    return firstValueFrom(
+      this.httpClient.get<Record<string, string>>(`https://token-prices.1inch.io/v1.1/${chainId}`)
+    );
+  }
+
+  /**
+   * Gets tokens' prices from spot aggregator contract through multicall.
+   */
+  @Cache({
+    maxAge: 15_000
+  })
+  private async getSpotAggregatorPrices(tokens: Token[]): Promise<RateTokenPrice[]> {
+    if (!tokens.length) {
+      return [];
+    }
+    const blockchain = tokens[0].blockchain as keyof typeof spotPriceContractAddress;
+    const methodArguments = tokens.map(token => [token.address, true]);
+    const res = await Injector.web3PublicService
+      .getWeb3Public(blockchain)
+      .multicallContractMethod<string>(
+        spotPriceContractAddress[blockchain],
+        spotPriceContractAbi,
+        'getRateToEth',
+        methodArguments
+      );
+    return res.map((tokenPrice, index) => {
+      if (tokenPrice.success) {
+        return Web3Pure.fromWei(tokenPrice.output, 18 - tokens[index].decimals);
+      }
+      return new BigNumber(0);
+    });
   }
 }

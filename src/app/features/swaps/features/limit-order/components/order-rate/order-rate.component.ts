@@ -4,7 +4,7 @@ import { OrderRateService } from '@features/swaps/features/limit-order/services/
 import {
   RateLevel,
   rateLevelsData
-} from '@features/swaps/features/limit-order/constants/rate-levels';
+} from '@features/swaps/shared/constants/limit-orders/rate-levels';
 import { SwapFormService } from '@app/core/services/swaps/swap-form.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';

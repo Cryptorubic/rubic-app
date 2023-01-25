@@ -98,6 +98,18 @@ td {
     display: flex;
     justify-content: space-between;
     width: 80%;
+    height: 24px;
+
+    &__filled {
+      display: flex;
+      align-items: center;
+    }
+
+    &__warning {
+      display: flex;
+      grid-gap: 11px;
+      align-items: center;
+    }
   }
 
   &__progress {
@@ -118,6 +130,14 @@ td {
 
       background-color: var(--primary-color);
       border-radius: 97px;
+
+      &.yellow {
+        background-color: #f2994a;
+      }
+
+      &.red {
+        background-color: #e9590c;
+      }
     }
 
     &__background {

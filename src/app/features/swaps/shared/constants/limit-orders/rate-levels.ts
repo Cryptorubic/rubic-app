@@ -5,7 +5,7 @@ export enum RateLevel {
   RED
 }
 
-interface RateLevelData {
+export interface RateLevelData {
   imgSrc: string;
   class: string;
 }
