@@ -13027,7 +13027,7 @@ resolve@1.1.7:
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
   integrity sha512-9znBF0vBcaSN3W2j7wKvdERPwqTxSpCq+if5C0WoTCyV9n24rua28jeuQ2pL/HOf+yUe/Mef+H/5p60K0Id3bg==
 
-resolve@1.22.1, resolve@>=1.9.0, resolve@^1.1.5, resolve@^1.10.0, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.3.2:
+resolve@1.22.1, resolve@^1.1.5, resolve@^1.10.0, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.3.2:
   version "1.22.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.22.1.tgz#27cb2ebb53f91abb49470a928bba7558066ac177"
   integrity sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==
@@ -13125,10 +13125,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.17.0-alpha-ao.3:
-  version "3.17.0-alpha-ao.3"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.17.0-alpha-ao.3.tgz#b216ecf4111922b4268a20e8dc9a2f9ea131af79"
-  integrity sha512-9SpsoESwTagJpxb+jnqd6z8BZCgCcfgY95Are1OQ2fdyE8+OYu9dSWxyf2KjJoxZCNWYsRH/RhE3RSCARyWleA==
+rubic-sdk@3.17.0-alpha-ao.4:
+  version "3.17.0-alpha-ao.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.17.0-alpha-ao.4.tgz#09085ba25be8e1e382ef35a6f42edf6ae919b198"
+  integrity sha512-pKowfo0bXR6mRo3q2ZxYPuPolMRwKsr6J6BzGI2yx4DOCfvcMB740nSbIhx3EfpjhHGEhtH4I87QJ0xpn/G16g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@lifi/sdk" "^1.6.3"
