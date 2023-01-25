@@ -13,6 +13,8 @@
           class="image-container__blockchain-icon"
           [src]="getBlockchainImg(order.fromToken?.blockchain)"
           [alt]="order.fromToken?.blockchain"
+          [tuiHint]="getBlockchainLabel(order.fromToken?.blockchain)"
+          [tuiHintShowDelay]="0"
         />
       </div>
 
@@ -39,6 +41,8 @@
           class="image-container__blockchain-icon"
           [src]="getBlockchainImg(order.toToken?.blockchain)"
           [alt]="order.toToken?.blockchain"
+          [tuiHint]="getBlockchainLabel(order.toToken?.blockchain)"
+          [tuiHintShowDelay]="0"
         />
       </div>
 
@@ -68,6 +72,18 @@
         <span>{{ order.expiration | date : 'HH:mm' }}</span>
       </ng-container>
       <ng-container *ngIf="!order.expiration">-</ng-container>
+    </div>
+  </td>
+
+  <!-- Status -->
+  <td class="status">
+    <div class="status__header">
+      <div class="status__header__filled">Filled: 100%</div>
+      <div class="status__header__warning">Unfavorable</div>
+    </div>
+    <div class="status__progress">
+      <div class="status__progress__value" [style.width]="'50%'"></div>
+      <div class="status__progress__background"></div>
     </div>
   </td>
 
@@ -141,7 +157,7 @@
 </ng-template>
 
 <ng-template #cancel>
-  <tui-loader [showLoader]="cancelOrderButtonLoading">
+  <tui-loader [showLoader]="cancelOrderButtonLoading" [overlay]="true">
     <button class="cancel-button" (click)="cancelOrder()">
       Cancel the order <img src="assets/images/icons/cross-red.svg" alt="cancel" />
     </button>

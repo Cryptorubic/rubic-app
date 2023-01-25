@@ -13,6 +13,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({
   selector: '[order-row]',
@@ -46,6 +47,13 @@ export class OrderRowComponent {
       return '';
     }
     return blockchainIcon[blockchain];
+  }
+
+  public getBlockchainLabel(blockchain: BlockchainName): string {
+    if (!blockchain) {
+      return '';
+    }
+    return blockchainLabel[blockchain];
   }
 
   public async cancelOrder(): Promise<void> {

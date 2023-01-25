@@ -11,7 +11,7 @@
   position: relative;
 
   display: block;
-  max-width: 1200px;
+  max-width: 1100px;
   padding-top: 44px;
 }
 
@@ -65,17 +65,23 @@
     th,
     td {
       display: inline-flex;
+      padding: 0;
 
       font-weight: normal;
 
       &:nth-child(1),
-      &:nth-child(2) {
-        width: 28%;
+      &:nth-child(2),
+      &:nth-child(3) {
+        width: 18%;
       };
 
-      &:nth-child(n + 3) {
-        width: 22%;
-      }
+      &:nth-child(4) {
+        width: 30%;
+      };
+
+      &:nth-child(5) {
+        width: 16%;
+      };
     }
   }
 
