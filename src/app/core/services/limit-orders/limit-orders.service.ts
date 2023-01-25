@@ -42,13 +42,6 @@ export class LimitOrdersService {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  /**
-   * Set to true by default and after orders list was changed.
-   * Set to false after update.
-   * @private
-   */
-  private dirtyState = true;
-
   constructor(
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,
@@ -58,9 +51,7 @@ export class LimitOrdersService {
   ) {}
 
   public async shouldUpdateOrders(): Promise<void> {
-    if (this.dirtyState) {
-      await this.updateOrders();
-    }
+    await this.updateOrders();
   }
 
   private async updateOrders(): Promise<void> {
@@ -72,7 +63,6 @@ export class LimitOrdersService {
     this._loading$.next(true);
     this._orders$.next(await this.getUserTrades(walletAddress));
     this._loading$.next(false);
-    this.dirtyState = false;
   }
 
   private async getUserTrades(walletAddress: string): Promise<LimitOrder[]> {
@@ -96,10 +86,6 @@ export class LimitOrdersService {
         };
       })
     );
-  }
-
-  public setDirty(): void {
-    this.dirtyState = true;
   }
 
   public async cancelOrder(blockchain: EvmBlockchainName, orderHash: string): Promise<void> {

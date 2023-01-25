@@ -48,10 +48,15 @@ export class ExpiresInComponent {
 
   public onClose(): void {
     this.settingsOpen = false;
-    this.dropdownState = 'optional';
   }
 
   public toggleState(): void {
     this.dropdownState = this.dropdownState === 'optional' ? 'custom' : 'optional';
+  }
+
+  public onOpenChange(open: boolean): void {
+    if (!open) {
+      this.dropdownState = 'optional';
+    }
   }
 }

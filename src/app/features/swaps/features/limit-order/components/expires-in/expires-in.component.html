@@ -1,9 +1,9 @@
 <tui-hosted-dropdown
   class="dropdown"
   [(open)]="settingsOpen"
+  (openChange)="onOpenChange($event)"
   [content]="dropdown"
-  [tuiDropdownSided]="true"
-  tuiDropdownAlign="right"
+  tuiDropdownDirection="bottom"
 >
   <div class="dropdown__header header">
     <span class="header__title">Expires in</span>
