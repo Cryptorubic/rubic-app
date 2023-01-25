@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -30,8 +23,6 @@ export class OrderRowComponent {
   @Input() order: LimitOrder;
 
   @Input() mode: 'mobile' | 'order-row';
-
-  @Output() onClose = new EventEmitter<void>();
 
   public readonly defaultTokenImage = DEFAULT_TOKEN_IMAGE;
 

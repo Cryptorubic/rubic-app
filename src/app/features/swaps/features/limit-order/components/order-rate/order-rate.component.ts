@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import {
@@ -6,13 +6,15 @@ import {
   rateLevelsData
 } from '@features/swaps/features/limit-order/constants/rate-levels';
 import { SwapFormService } from '@app/core/services/swaps/swap-form.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-order-rate',
   templateUrl: './order-rate.component.html',
   styleUrls: ['./order-rate.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class OrderRateComponent implements OnInit {
   public rate = new FormControl<string>('');
@@ -40,20 +42,23 @@ export class OrderRateComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly orderRateService: OrderRateService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
-    this.orderRateService.rate$.subscribe(({ value, percentDiff }) => {
-      if (!value?.isFinite()) {
-        this.rate.setValue('');
-      } else if (!value.eq(this.formattedRate)) {
-        this.rate.setValue(value.toFixed());
-      }
-      this.percentDiff = percentDiff;
-      this.updateRateLevelData();
-      this.cdr.markForCheck();
-    });
+    this.orderRateService.rate$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ value, percentDiff }) => {
+        if (!value?.isFinite()) {
+          this.rate.setValue('');
+        } else if (!value.eq(this.formattedRate)) {
+          this.rate.setValue(value.toFixed());
+        }
+        this.percentDiff = percentDiff;
+        this.updateRateLevelData();
+        this.cdr.markForCheck();
+      });
   }
 
   private updateRateLevelData(): void {

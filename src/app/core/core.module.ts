@@ -25,7 +25,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
-import { LimitOrdersModule } from '@core/limit-orders/limit-orders.module';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 
 @NgModule({
@@ -87,8 +86,7 @@ import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.ser
         deps: [HttpClient]
       }
     }),
-    RecentTradesModule,
-    LimitOrdersModule
+    RecentTradesModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })

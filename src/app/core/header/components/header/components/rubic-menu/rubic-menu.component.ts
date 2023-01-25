@@ -102,12 +102,4 @@ export class RubicMenuComponent implements AfterViewInit {
       })
       .subscribe();
   }
-
-  public openLimitOrdersModal(): void {
-    this.commonModalService
-      .openLimitOrdersModal({
-        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
-  }
 }

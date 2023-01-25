@@ -10,9 +10,7 @@
   <ng-container *noFrame>
     <ng-container *ngIf="withRecentTrades">
       <span>{{ 'notifications.checkIn' | translate }}</span>
-      <a class="notification__link" (click)="openModal()">{{
-        type === 'limit-order' ? 'Limit Orders' : 'Recent Trades'
-      }}</a>
+      <a class="notification__link" (click)="openModal()">Recent Trades</a>
     </ng-container>
   </ng-container>
 </div>

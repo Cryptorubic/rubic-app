@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'polymorpheus-limit-orders',
+  selector: 'app-limit-orders',
   templateUrl: './limit-orders.component.html',
   styleUrls: ['./limit-orders.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,7 +22,6 @@ export class LimitOrdersComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext,
     private readonly windowWidthService: WindowWidthService,
     private readonly limitOrdersService: LimitOrdersService
   ) {}
@@ -33,11 +30,7 @@ export class LimitOrdersComponent implements OnInit {
     this.limitOrdersService.shouldUpdateOrders();
   }
 
-  public onClose(): void {
-    this.context.completeWith(null);
-  }
-
   public navigateToLimitOrder(): void {
-    this.router.navigate(['/limit-order']).then(() => this.context.completeWith(null));
+    this.router.navigate(['/limit-order']);
   }
 }
