@@ -8,6 +8,7 @@
 
   .image-container {
     display: flex;
+    align-items: center;
 
     img {
       height: 16px;
@@ -15,6 +16,8 @@
     }
 
     a {
+      display: flex;
+      align-items: center;
       margin-left: 10px;
 
       img {
@@ -29,4 +32,8 @@ tui-table-pagination ::ng-deep {
     background-color: var(--form-background);
     border-radius: 5px;
   }
+}
+
+.full-width {
+  width: 100%;
 }

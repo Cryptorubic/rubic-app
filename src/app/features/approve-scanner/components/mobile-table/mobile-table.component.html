@@ -1,58 +1,67 @@
 <div class="table-row">
   <div *ngFor="let approve of approves" class="table-col">
     <div class="card">
-      <div class="image-container">
-        <img [src]="approve.token.image" [alt]="approve.token.symbol" />
-        {{ approve.token.symbol }}
-        <a
-          [safetyLink]="
-            approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN
-          "
-          ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
-        /></a>
+      <div class="top">
+        <div class="left">
+          <div class="image-container">
+            <img [src]="approve.token.image" [alt]="approve.token.symbol" />
+            {{ approve.token.symbol }}
+            <a
+              [safetyLink]="
+                approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN
+              "
+              ><img
+                src="assets/images/icons/scanner.svg"
+                [alt]="'common.checkOnScanner' | translate"
+            /></a>
+          </div>
+
+          <div class="image-container">
+            <span>Spender: </span>
+            {{ approve.spender | shortAddress : 3 : 3 }}
+            <a
+              [safetyLink]="
+                approve.spender | scannerLink : approve.token.blockchain : ADDRESS_TYPE.WALLET
+              "
+              ><img
+                src="assets/images/icons/scanner.svg"
+                [alt]="'common.checkOnScanner' | translate"
+            /></a>
+          </div>
+        </div>
+        <div class="right">
+          <div class="image-container">
+            {{ approve.timeStamp | date : 'MMM dd, yyyy h:mm' }}
+          </div>
+
+          <app-rubic-button
+            *ngIf="allowChangeBlockchain; else revoke"
+            [attr.error]="true"
+            appearance="primary"
+            [loading]="revokeLoading"
+            [disabled]="revokeLoading"
+            size="s"
+            (onClick)="changeNetwork()"
+            >Switch
+          </app-rubic-button>
+
+          <ng-template #revoke>
+            <button
+              tuiButton
+              type="button"
+              class="tui-space_right-3 tui-space_bottom-3"
+              (click)="handleRevoke(approve.tokenAddress, approve.spender)"
+              appearance="primary"
+              [showLoader]="revokeLoading"
+              size="s"
+            >
+              Revoke
+            </button>
+          </ng-template>
+        </div>
       </div>
-
-      <div class="image-container">
-        <span>Spender: </span>
-        {{ approve.spender | shortAddress : 3 : 3 }}
-        <a
-          [safetyLink]="
-            approve.spender | scannerLink : approve.token.blockchain : ADDRESS_TYPE.WALLET
-          "
-          ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
-        /></a>
-      </div>
-
-      <div class="image-container"><span>Allowance: </span>{{ approve.value }}</div>
-
-      <div class="image-container">
-        <span>Date: </span>{{ approve.timeStamp | date : 'MMM dd, yyyy h:mm' }}
-      </div>
-
-      <app-rubic-button
-        *ngIf="allowChangeBlockchain; else revoke"
-        [attr.error]="true"
-        appearance="primary"
-        [loading]="revokeLoading"
-        [disabled]="revokeLoading"
-        size="s"
-        (onClick)="changeNetwork()"
-        >Switch
-      </app-rubic-button>
-
-      <ng-template #revoke>
-        <button
-          tuiButton
-          type="button"
-          class="tui-space_right-3 tui-space_bottom-3"
-          (click)="handleRevoke(approve.tokenAddress, approve.spender)"
-          appearance="primary"
-          [showLoader]="revokeLoading"
-          size="s"
-        >
-          Revoke
-        </button>
-      </ng-template>
+      <div><span>Allowance: </span>{{ approve.value }}</div>
     </div>
   </div>
+  <ng-content></ng-content>
 </div>

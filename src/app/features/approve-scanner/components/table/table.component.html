@@ -12,10 +12,44 @@
     tableLoading: tableLoading$ | async
   } as table"
 >
-  <ng-container>
-    <tui-loader [showLoader]="table.tableLoading" [overlay]="true">
-      <app-desktop-table
-        *ngIf="!isMobile as isMobile; else mobile"
+  <tui-loader [showLoader]="table.tableLoading" [overlay]="true">
+    <app-desktop-table
+      *ngIf="!isMobile as isMobile; else mobile"
+      (handleNetworkChange)="changeNetwork()"
+      (handleRevokeCall)="handleRevoke($event)"
+      [allApproves]="table.allApproves"
+      [allowChangeBlockchain]="table.allowChangeBlockchain"
+      [approves]="table.approves"
+      [isLimitsExceeded]="table.isLimitsExceeded"
+      [page]="table.page"
+      [revokeLoading]="table.revokeLoading"
+      [size]="table.size"
+      [spenderControl]="table.spenderControl"
+      [tableLoading]="table.tableLoading"
+      [tokenControl]="table.tokenControl"
+    >
+      <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
+        <tfoot>
+          <tr *ngIf="table.approves?.length; else noApproves">
+            <td [colSpan]="table.allApproves.length">
+              <tui-table-pagination
+                [total]="table.allApproves.length"
+                [page]="table.page"
+                [size]="table.size"
+                (pageChange)="page = $event"
+                (sizeChange)="size = $event"
+              >
+              </tui-table-pagination>
+            </td>
+          </tr>
+          <ng-template #noApproves>
+            <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
+          </ng-template>
+        </tfoot>
+      </ng-container>
+    </app-desktop-table>
+    <ng-template #mobile>
+      <app-mobile-table
         (handleNetworkChange)="changeNetwork()"
         (handleRevokeCall)="handleRevoke($event)"
         [allApproves]="table.allApproves"
@@ -29,45 +63,22 @@
         [tableLoading]="table.tableLoading"
         [tokenControl]="table.tokenControl"
       >
-        {{ isMobile }}
         <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
-          <tfoot>
-            <tr *ngIf="table.approves?.length; else noApproves">
-              <td [colSpan]="table.allApproves.length">
-                <tui-table-pagination
-                  [total]="table.allApproves.length"
-                  [page]="table.page"
-                  [size]="table.size"
-                  (pageChange)="page = $event"
-                  (sizeChange)="size = $event"
-                >
-                </tui-table-pagination>
-              </td>
-            </tr>
-            <ng-template #noApproves>
-              <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
-            </ng-template>
-          </tfoot>
+          <div class="full-width" *ngIf="table.approves?.length; else noApproves">
+            <tui-table-pagination
+              [total]="table.allApproves.length"
+              [page]="table.page"
+              [size]="table.size"
+              (pageChange)="page = $event"
+              (sizeChange)="size = $event"
+            >
+            </tui-table-pagination>
+          </div>
+          <ng-template #noApproves>
+            <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
+          </ng-template>
         </ng-container>
-      </app-desktop-table>
-      <ng-template #mobile>
-        <app-mobile-table
-          (handleNetworkChange)="changeNetwork()"
-          (handleRevokeCall)="handleRevoke($event)"
-          [allApproves]="table.allApproves"
-          [allowChangeBlockchain]="table.allowChangeBlockchain"
-          [approves]="table.approves"
-          [isLimitsExceeded]="table.isLimitsExceeded"
-          [page]="table.page"
-          [revokeLoading]="table.revokeLoading"
-          [size]="table.size"
-          [spenderControl]="table.spenderControl"
-          [tableLoading]="table.tableLoading"
-          [tokenControl]="table.tokenControl"
-        >
-          ttt
-        </app-mobile-table>
-      </ng-template>
-    </tui-loader>
-  </ng-container>
+      </app-mobile-table>
+    </ng-template>
+  </tui-loader>
 </ng-container>

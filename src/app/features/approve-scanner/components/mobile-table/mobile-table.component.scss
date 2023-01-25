@@ -1,10 +1,29 @@
 @use 'src/scss/core' as *;
 
 .card {
+  display: flex;
+  flex-direction: column;
   padding: 10px;
 
   background: var(--form-background);
   border-radius: $border-radius-2;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .left,
+  .right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right {
+    .button {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .table-row {
@@ -14,7 +33,7 @@
 }
 
 .table-col {
-  width: calc(50% - 10px);
+  width: 100%;
 }
 
 app-rubic-button {

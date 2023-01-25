@@ -21,7 +21,6 @@ import {
   Observable,
   of,
   shareReplay,
-  skipUntil,
   startWith,
   Subscription,
   switchMap
@@ -39,8 +38,9 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { catchError, first, share, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, first, share, tap } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
+import { switchTap } from '@shared/utils/utils';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -104,6 +104,7 @@ export class ApproveScannerService {
 
   public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
+    distinctUntilChanged(),
     tap(() => {
       this.tableLoading = true;
       this.page = 0;
@@ -191,11 +192,8 @@ export class ApproveScannerService {
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
       .pipe(
         map(response => this.handleScannerResponse(response)),
-        skipUntil(
-          this.tokensService.tokens$.pipe(
-            startWith(this.tokensService.tokens),
-            first(tokens => tokens?.size > 0)
-          )
+        switchTap(() =>
+          this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
         ),
         switchMap(approves => this.findTokensForApproves(approves)),
         tap(() => this._exceededLimits$.next(false)),
