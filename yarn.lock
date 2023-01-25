@@ -13144,9 +13144,7 @@ rubic-sdk@3.17.0-alpha-ao.3:
     rango-sdk-basic "^0.0.7"
     rxjs "^7.8.0"
     symbiosis-js-sdk "^2.9.6"
-    symbiosis-js-sdk-v1 "npm:symbiosis-js-sdk@2.8.22"
     tronweb "^4.3.0"
-    ttypescript "^1.5.15"
     web3 "^1.8.1"
 
 run-async@^2.4.0:
@@ -14364,24 +14362,6 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-"symbiosis-js-sdk-v1@npm:symbiosis-js-sdk@2.8.22":
-  version "2.8.22"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.22.tgz#4ec0d90cc3f73fde0770ab05f3a0d13e832a8908"
-  integrity sha512-0YIIw3GoRblP/RZxX2ySqtBWnlloTZAQPds0o+Asnxu+EYY0xsOROoTJ4MGCaeMwkbYZ1DHO/61djA/fezX+iw==
-  dependencies:
-    "@renproject/chains-bitcoin" "^3.4.2"
-    "@renproject/chains-ethereum" "^3.4.3"
-    "@renproject/ren" "~3.3.0"
-    big.js "^5.2.2"
-    bignumber.js "^9.0.1"
-    decimal.js-light "^2.5.0"
-    isomorphic-unfetch "^3.1.0"
-    jsbi "^3.1.1"
-    lodash.flatmap "^4.5.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 symbiosis-js-sdk@^2.9.6:
   version "2.9.8"
   resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.8.tgz#5b898f704224564a4f9b1b262af3f2dc8199f616"
@@ -14838,13 +14818,6 @@ tsutils@^3.0.0, tsutils@^3.17.1, tsutils@^3.21.0:
   integrity sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
   dependencies:
     tslib "^1.8.1"
-
-ttypescript@^1.5.15:
-  version "1.5.15"
-  resolved "https://registry.yarnpkg.com/ttypescript/-/ttypescript-1.5.15.tgz#e45550ad69289d06d3bc3fd4a3c87e7c1ef3eba7"
-  integrity sha512-48ykDNHzFnPMnv4hYX1P8Q84TvCZyL1QlFxeuxsuZ48X2+ameBgPenvmCkHJtoOSxpoWTWi8NcgNrRnVDOmfSg==
-  dependencies:
-    resolve ">=1.9.0"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
