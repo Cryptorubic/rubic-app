@@ -9,7 +9,7 @@
         <span
           [class]="'percent__value ' + (levelClass ? 'percent__value_' + levelClass : '')"
           *ngIf="percentDiff"
-          >({{ percentDiff > 0 ? '+' : '' }}{{ percentDiff }}%)</span
+          >({{ percentDiff > 0 ? '+' : '-' }}{{ formattedPercentDiff }}%)</span
         >
       </div>
     </div>

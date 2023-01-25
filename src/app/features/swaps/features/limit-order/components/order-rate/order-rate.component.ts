@@ -29,6 +29,14 @@ export class OrderRateComponent implements OnInit {
     return this.rate.value.split(',').join('');
   }
 
+  public get formattedPercentDiff(): string {
+    let percent = Math.abs(this.percentDiff).toString().slice(0, 3);
+    if (percent[percent.length - 1] === '.') {
+      percent = percent.slice(0, 2);
+    }
+    return percent;
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly orderRateService: OrderRateService,
