@@ -12,6 +12,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 
 @Component({
   selector: '[order-row]',
@@ -39,6 +40,13 @@ export class OrderRowComponent {
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService
   ) {}
+
+  public getBlockchainImg(blockchain: BlockchainName): string {
+    if (!blockchain) {
+      return '';
+    }
+    return blockchainIcon[blockchain];
+  }
 
   public async cancelOrder(): Promise<void> {
     this.cancelOrderButtonLoading = true;

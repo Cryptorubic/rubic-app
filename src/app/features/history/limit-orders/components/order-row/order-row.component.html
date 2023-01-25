@@ -2,19 +2,23 @@
   <!-- Src crypto-asset -->
   <td class="from">
     <div class="asset">
-      <img
-        class="asset__image"
-        [src]="order.fromToken?.image || defaultTokenImage"
-        [alt]="order.fromToken?.symbol"
-        (error)="onTokenImageError($event)"
-      />
+      <div class="asset__image-container image-container">
+        <img
+          class="image-container__token-icon"
+          [src]="order.fromToken?.image || defaultTokenImage"
+          [alt]="order.fromToken?.symbol"
+          (error)="onTokenImageError($event)"
+        />
+        <img
+          class="image-container__blockchain-icon"
+          [src]="getBlockchainImg(order.fromToken?.blockchain)"
+          [alt]="order.fromToken?.blockchain"
+        />
+      </div>
+
       <div class="asset__data">
         <div class="asset__symbol">
-          {{
-            order.fromToken?.symbol
-              ? order.fromToken.symbol + ' (' + blockchainLabel(order.fromToken.blockchain) + ')'
-              : 'Unknown'
-          }}
+          {{ order.fromToken?.symbol ? order.fromToken.symbol : 'Unknown' }}
         </div>
         <div class="asset__amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
@@ -24,19 +28,23 @@
   <!-- Dst crypto-asset -->
   <td class="to">
     <div class="asset">
-      <img
-        class="asset__image"
-        [src]="order.toToken?.image || defaultTokenImage"
-        [alt]="order.toToken?.symbol"
-        (error)="onTokenImageError($event)"
-      />
+      <div class="asset__image-container image-container">
+        <img
+          class="image-container__token-icon"
+          [src]="order.toToken?.image || defaultTokenImage"
+          [alt]="order.toToken?.symbol"
+          (error)="onTokenImageError($event)"
+        />
+        <img
+          class="image-container__blockchain-icon"
+          [src]="getBlockchainImg(order.toToken?.blockchain)"
+          [alt]="order.toToken?.blockchain"
+        />
+      </div>
+
       <div class="asset__data">
         <div class="asset__symbol">
-          {{
-            order.toToken?.symbol
-              ? order.toToken.symbol + ' (' + blockchainLabel(order.toToken.blockchain) + ')'
-              : 'Unknown'
-          }}
+          {{ order.toToken?.symbol ? order.toToken.symbol : 'Unknown' }}
         </div>
         <div class="asset__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
       </div>
@@ -45,15 +53,22 @@
 
   <!-- Expiration -->
   <td class="date">
-    <span>
-      {{
-        order.expiration
-          ? (order.expiration | date : 'MMM dd, yyyy') +
-            ' at ' +
-            (order.expiration | date : 'HH:mm')
-          : '-'
-      }}
-    </span>
+    <div class="date__creation">
+      <ng-container *ngIf="order.creation">
+        <span class="date_highlighted">{{ order.creation | date : 'dd MMM yyyy' }}</span>
+        &nbsp;
+        <span>{{ order.creation | date : 'HH:mm' }}</span>
+      </ng-container>
+      <ng-container *ngIf="!order.creation">-</ng-container>
+    </div>
+    <div class="date__expiration">
+      <ng-container *ngIf="order.expiration">
+        <span class="date_highlighted">{{ order.expiration | date : 'dd MMM yyyy' }}</span>
+        &nbsp;
+        <span>{{ order.expiration | date : 'HH:mm' }}</span>
+      </ng-container>
+      <ng-container *ngIf="!order.expiration">-</ng-container>
+    </div>
   </td>
 
   <!-- Cancellation -->
@@ -126,22 +141,9 @@
 </ng-template>
 
 <ng-template #cancel>
-  <app-rubic-button
-    appearance="primary"
-    class="cancel"
-    (onClick)="cancelOrder()"
-    size="s"
-    [loading]="cancelOrderButtonLoading"
-  >
-    Cancel
-  </app-rubic-button>
-  <app-rubic-button
-    appearance="primary"
-    class="cancel"
-    (onClick)="fillOrder()"
-    size="s"
-    [loading]="cancelOrderButtonLoading"
-  >
-    Fill
-  </app-rubic-button>
+  <tui-loader [showLoader]="cancelOrderButtonLoading">
+    <button class="cancel-button" (click)="cancelOrder()">
+      Cancel the order <img src="assets/images/icons/cross-red.svg" alt="cancel" />
+    </button>
+  </tui-loader>
 </ng-template>
