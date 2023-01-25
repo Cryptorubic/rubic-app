@@ -78,11 +78,11 @@
   <!-- Status -->
   <td class="status">
     <div class="status__header">
-      <div class="status__header__filled">Filled: 100%</div>
+      <div class="status__header__filled">Filled: {{ order.filledPercent }}%</div>
       <div class="status__header__warning">Unfavorable</div>
     </div>
     <div class="status__progress">
-      <div class="status__progress__value" [style.width]="'50%'"></div>
+      <div class="status__progress__value" [style.width]="order.filledPercent + '%'"></div>
       <div class="status__progress__background"></div>
     </div>
   </td>

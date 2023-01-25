@@ -11,5 +11,5 @@ export interface LimitOrder {
   expiration: Date | null;
   status: LIMIT_ORDER_STATUS;
   hash: string;
-  filledPercent?: number;
+  filledPercent: number;
 }
