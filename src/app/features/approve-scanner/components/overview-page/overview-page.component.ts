@@ -16,7 +16,7 @@ export class OverviewPageComponent {
     {
       image: 'assets/images/icons/approve-scanner-page/empty-wallet.png',
       label: 'Connect',
-      description: 'Click Connect Wallet on the top right or enter an address in the search bar.'
+      description: 'Click Connect Wallet on the top right or just under this card.'
     },
     {
       image: 'assets/images/icons/approve-scanner-page/search-status.png',

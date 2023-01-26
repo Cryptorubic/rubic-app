@@ -33,11 +33,14 @@ export class RevokeModalComponent {
   ).pipe(
     watch(this.cdr),
     finalize(() => {
-      this.loading = false;
+      this.informationLoading = false;
+      this.revokeLoading = false;
     })
   );
 
-  public loading = true;
+  public revokeLoading = true;
+
+  public informationLoading = true;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -49,8 +52,8 @@ export class RevokeModalComponent {
   ) {}
 
   public async handleRevoke(): Promise<void> {
-    this.loading = true;
+    this.revokeLoading = true;
     await this.approveScannerService.revokeApprove(this.tokenAddress, this.spenderAddress);
-    this.context.completeWith(true);
+    this.revokeLoading = false;
   }
 }

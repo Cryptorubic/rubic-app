@@ -3,25 +3,25 @@
     <h4>Token information</h4>
     <p>
       Name:
-      <span [class.tui-skeleton]="loading"
+      <span [class.tui-skeleton]="informationLoading"
         ><img [src]="data?.image" [alt]="data?.symbol" /> {{ data?.symbol }}</span
       >
     </p>
     <p>
-      Address: <span [class.tui-skeleton]="loading">{{ data?.address }}</span>
+      Address: <span [class.tui-skeleton]="informationLoading">{{ data?.address }}</span>
     </p>
 
     <h4>Contract information</h4>
     <p>
-      Address: <span [class.tui-skeleton]="loading">{{ data?.spender }}</span>
+      Address: <span [class.tui-skeleton]="informationLoading">{{ data?.spender }}</span>
     </p>
     <p>
-      Allowance: <span [class.tui-skeleton]="loading">{{ data?.allowance }}</span>
+      Allowance: <span [class.tui-skeleton]="informationLoading">{{ data?.allowance }}</span>
     </p>
     <button
       tuiButton
-      [disabled]="loading || data?.allowance === '0'"
-      [showLoader]="loading"
+      [disabled]="revokeLoading || data?.allowance === '0'"
+      [showLoader]="revokeLoading"
       size="m"
       appearance="primary"
       (click)="handleRevoke()"

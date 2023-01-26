@@ -104,6 +104,7 @@ export class ApproveScannerService {
 
   public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
+    combineLatestWith(this.walletConnectorService.addressChange$),
     distinctUntilChanged(),
     tap(() => {
       this.tableLoading = true;
@@ -111,7 +112,7 @@ export class ApproveScannerService {
       this.tokenSearchQuery = '';
       this.spenderSearchQuery = '';
     }),
-    switchMap(blockchain => this.fetchTransactions(blockchain)),
+    switchMap(([blockchain, address]) => this.fetchTransactions(blockchain, address)),
     tap(() => (this.tableLoading = false))
   );
 
@@ -151,12 +152,14 @@ export class ApproveScannerService {
     combineLatestWith(this.page$, this.size$, this.queryForm.valueChanges.pipe(debounceTime(400))),
     debounceTime(0),
     map(([approves, page, size, query]) => {
-      if (query.spender || query.token) {
+      const tokenQuery = query.token.split(' ').join('');
+      const spenderQuery = query.spender.split(' ').join('');
+      if (tokenQuery || spenderQuery) {
         return approves.filter(approve => {
-          const hasSpender = approve.spender.toLowerCase().includes(query.spender.toLowerCase());
+          const hasSpender = approve.spender.toLowerCase().includes(spenderQuery.toLowerCase());
           const hasToken =
-            approve.token.symbol.toLowerCase().includes(query.token.toLowerCase()) ||
-            approve.token.address.toLowerCase().includes(query.token.toLowerCase());
+            approve.token.symbol.toLowerCase().includes(tokenQuery.toLowerCase()) ||
+            approve.token.address.toLowerCase().includes(tokenQuery.toLowerCase());
           return hasSpender && hasToken;
         });
       }
@@ -181,8 +184,10 @@ export class ApproveScannerService {
   }
 
   @Cacheable({ maxAge: 120_000 })
-  private fetchTransactions(blockchain: Blockchain): Observable<ApproveTransaction[]> {
-    const userAddress = this.walletConnectorService.address;
+  private fetchTransactions(
+    blockchain: Blockchain,
+    userAddress: string
+  ): Observable<ApproveTransaction[]> {
     const blockchainAddressMapper: Record<SupportedBlockchain, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: `https://api.etherscan.io/api?module=account&action=txlist&address=${userAddress}`,
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}`,
@@ -342,7 +347,7 @@ export class ApproveScannerService {
 
   private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
     if (response.status === '0' || typeof response.result === 'string') {
-      throw new Error('Exceed limints');
+      throw new Error('Exceed limits');
     }
     const approveTransactions = response.result
       .filter(tx => tx?.functionName.includes('approve'))

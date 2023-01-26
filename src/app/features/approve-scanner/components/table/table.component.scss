@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-::ng-deep {
+:host ::ng-deep {
   app-rubic-button {
     display: block;
     width: 150px;
