@@ -8,34 +8,18 @@
 }
 
 .order {
-  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 16px 15px;
 
-  padding: 18px 0;
-
-  &:last-child {
-    &__divider {
-      display: none;
-    }
-  }
-
-  &__divider {
-    position: absolute;
-    bottom: 0;
-    left: -24px;
-
-    width: calc(100% + 24px);
-
-    background: #e7e6ea;
-
-    @include dark {
-      background: #1f1f1f;
-    }
-  }
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
+  border-radius: 16px;
 
   &__row {
     display: flex;
+    grid-gap: 30%;
     align-items: center;
-    justify-content: space-between;
 
     &-label {
       @include font(12px, 17px, 400, #7A797D);
@@ -75,5 +59,30 @@
 
   &__asset-amount {
     @include font(12px, 17px, 400, #8E8D91);
+  }
+}
+
+.row-item {
+  &__label {
+    @include font(12px, 120%, 400, #{$text-gray-2});
+    margin-bottom: 8px;
+  }
+
+  &__value {
+    height: 34px;
+  }
+}
+
+.asset {
+  height: 100%;
+}
+
+.image-container {
+  width: 32px;
+  height: 32px;
+
+  &__blockchain-icon {
+    width: 15px;
+    height: 15px;
   }
 }
