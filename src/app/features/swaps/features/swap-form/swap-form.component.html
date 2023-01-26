@@ -47,7 +47,10 @@
           >
           </app-iframe-asset-type-indicator>
 
-          <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
+          <app-token-amount-input
+            *noFrame="'vertical'"
+            (amountUpdated)="onFromAmountUpdate()"
+          ></app-token-amount-input>
 
           <app-vertical-iframe-token-amount-input
             *onlyFrame="'vertical'"
@@ -83,7 +86,10 @@
       <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
     </div>
 
-    <app-limit-order-bottom-form *ngIf="isLimitOrder"></app-limit-order-bottom-form>
+    <app-limit-order-bottom-form
+      *ngIf="isLimitOrder"
+      [fromAmountUpdated$]="fromAmountUpdated$"
+    ></app-limit-order-bottom-form>
   </ng-container>
 
   <ng-container *noFrame>

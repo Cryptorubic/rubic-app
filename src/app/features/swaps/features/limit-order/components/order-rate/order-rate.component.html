@@ -14,13 +14,23 @@
       </div>
     </div>
 
-    <button class="header__setter setter" (click)="setRateToMarket()">
-      <span class="setter__title">Set to market</span>
-      <img src="assets/images/icons/lock.svg" alt="locker" class="setter__icon" />
-    </button>
+    <div class="header__setter setter" *ngIf="!isUnknown">
+      <span class="setter__title" (click)="setRateToMarket()">Set to market</span>
+      <img
+        [src]="'assets/images/icons/lock' + (!isFixed ? '.svg' : '-fixed.svg')"
+        alt="locker"
+        class="setter__icon"
+        (click)="setRateFixed()"
+        [tuiHint]="
+          !isFixed
+            ? 'Lock the rate field to get your sell amount automatically adjusted when changing your buy amount.'
+            : null
+        "
+      />
+    </div>
   </div>
 
-  <label class="rate__label" *ngIf="!isRateUnknown">
+  <label class="rate__label" *ngIf="!isUnknown">
     <input
       autocomplete="off"
       class="rate__input"
@@ -31,8 +41,9 @@
       [decimals]="6"
       (amountChange)="onRateChange($event)"
       inputmode="decimal"
+      [disabled]="isFixed"
     />
   </label>
 
-  <div class="rate__unknown-text" *ngIf="isRateUnknown">Rate is unknown</div>
+  <div class="rate__unknown-text" *ngIf="isUnknown">Rate is unknown</div>
 </div>

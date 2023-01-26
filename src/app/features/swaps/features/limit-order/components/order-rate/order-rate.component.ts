@@ -28,7 +28,9 @@ export class OrderRateComponent implements OnInit {
 
   public fromTokenName$ = this.swapFormService.fromToken$.pipe(map(token => token?.symbol || ''));
 
-  public isRateUnknown: boolean;
+  public isUnknown: boolean;
+
+  public isFixed = this.orderRateService.isFixed;
 
   private get formattedRate(): string {
     return this.rate.value.split(',').join('');
@@ -52,18 +54,14 @@ export class OrderRateComponent implements OnInit {
   ngOnInit() {
     this.orderRateService.rate$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ value, percentDiff }) => {
+      .subscribe(({ value, percentDiff, unknown }) => {
         if (!value?.isFinite()) {
           this.rate.setValue('');
-        } else if (value.eq(-1)) {
-          this.isRateUnknown = true;
-        } else {
-          this.isRateUnknown = false;
-          if (!value.eq(this.formattedRate)) {
-            this.rate.setValue(value.toFixed());
-          }
+        } else if (!value.eq(this.formattedRate)) {
+          this.rate.setValue(value.toFixed());
         }
         this.percentDiff = percentDiff;
+        this.isUnknown = unknown;
         this.updateRateLevelData();
         this.cdr.markForCheck();
       });
@@ -71,7 +69,7 @@ export class OrderRateComponent implements OnInit {
 
   private updateRateLevelData(): void {
     let levelData: RateLevelData;
-    if (this.isRateUnknown) {
+    if (this.isUnknown) {
       levelData = rateLevelsData[RateLevel.YELLOW];
     } else {
       let level: RateLevel;
@@ -101,5 +99,10 @@ export class OrderRateComponent implements OnInit {
 
   public setRateToMarket(): void {
     this.orderRateService.setRateToMarket();
+  }
+
+  public setRateFixed(): void {
+    this.isFixed = !this.isFixed;
+    this.orderRateService.isFixed = this.isFixed;
   }
 }

@@ -189,10 +189,10 @@ export class LimitOrdersService {
 
     const fromPriceBn = new BigNumber(fromTokenPrice);
     const toPriceBn = new BigNumber(toTokenPrice);
-    if (fromPriceBn?.isFinite() && fromPriceBn.gt(0) && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
+    if (fromPriceBn?.isFinite() && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
       return new BigNumber(fromTokenPrice).div(toTokenPrice);
     }
-    return new BigNumber(-1);
+    return new BigNumber(0);
   }
 
   /**

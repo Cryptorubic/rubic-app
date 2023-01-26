@@ -12,4 +12,6 @@ export interface OrderRate {
    * Percent difference between rate in form and market rate.
    */
   percentDiff: number;
+
+  unknown: boolean;
 }

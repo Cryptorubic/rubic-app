@@ -12,7 +12,7 @@ import {
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens } from '@shared/utils/utils';
-import { debounceTime, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -25,7 +25,6 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
-import BigNumber from 'bignumber.js';
 import { SuccessTxModalService } from '@core/services/success-tx-modal-service/success-tx-modal.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
@@ -108,13 +107,6 @@ export class LimitOrderFormService {
   private subscribeOnCalculation(): void {
     this._calculateTrade$
       .pipe(
-        tap(calculateData => {
-          if (calculateData.stop) {
-            return;
-          }
-
-          this.updateToAmountByRate();
-        }),
         debounceTime(200),
         switchMap(calculateData => {
           if (calculateData.stop) {
@@ -170,14 +162,6 @@ export class LimitOrderFormService {
         })
       )
       .subscribe();
-  }
-
-  private updateToAmountByRate(): void {
-    const orderRate = this.orderRateService.rateValue;
-    const { fromAmount } = this.inputValue;
-    this.swapFormService.outputControl.patchValue({
-      toAmount: fromAmount?.isFinite() ? fromAmount.multipliedBy(orderRate) : new BigNumber(NaN)
-    });
   }
 
   private subscribeOnFormChanges(): void {

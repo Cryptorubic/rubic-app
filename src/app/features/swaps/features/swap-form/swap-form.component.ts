@@ -29,6 +29,7 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-swap-form',
@@ -59,6 +60,10 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   public readonly getCurrentUser$ = this.authService.currentUser$;
 
   public readonly onramperWidgetOpened$ = this.onramperFormService.widgetOpened$;
+
+  private readonly _fromAmountUpdated$ = new Subject<void>();
+
+  public readonly fromAmountUpdated$ = this._fromAmountUpdated$.asObservable();
 
   public get isInstantTrade(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -199,5 +204,9 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public closeWidget(): void {
     this.onramperFormService.widgetOpened = false;
+  }
+
+  public onFromAmountUpdate(): void {
+    this._fromAmountUpdated$.next();
   }
 }

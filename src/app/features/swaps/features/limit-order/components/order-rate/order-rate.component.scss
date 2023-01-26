@@ -103,4 +103,13 @@
   display: flex;
   grid-gap: 8px;
   align-items: center;
+
+  > * {
+    cursor: pointer;
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+  }
 }
