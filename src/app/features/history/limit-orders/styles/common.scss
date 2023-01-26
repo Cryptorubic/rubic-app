@@ -129,3 +129,11 @@
   border: 1px solid var(--transparent-line);
   border-radius: 85px;
 }
+
+.cancellation {
+  @include font(14px, 120%, 600, var(--primary-text));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

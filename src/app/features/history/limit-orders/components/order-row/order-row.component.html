@@ -78,7 +78,7 @@
     </div>
   </td>
 
-  <!-- Status -->
+  <!-- Filled -->
   <td (click)="fillOrder()">
     <div class="status">
       <div class="status__header">
@@ -104,9 +104,11 @@
     </div>
   </td>
 
-  <!-- Cancellation -->
-  <td class="cancellation">
-    <span *ngIf="!showCancel; else cancel">Invalid</span>
+  <!-- Status -->
+  <td>
+    <div class="cancellation">
+      <span *ngIf="!showCancel; else cancel">{{ statusText }}</span>
+    </div>
   </td>
 </ng-container>
 

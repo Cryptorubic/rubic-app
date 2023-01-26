@@ -47,6 +47,10 @@ export class OrderRowComponent implements OnInit {
     return this.order.status === LIMIT_ORDER_STATUS.VALID;
   }
 
+  public get statusText(): string {
+    return this.order.status === LIMIT_ORDER_STATUS.FILLED ? 'Filled' : 'Expired';
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensService: TokensService,
@@ -56,6 +60,10 @@ export class OrderRowComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (!this.showCancel) {
+      return;
+    }
+
     const { orderRate, marketRate } = this.order;
     const percentDiff = orderRate.minus(marketRate).div(marketRate).dp(2).toNumber();
     if (percentDiff <= -0.1) {
