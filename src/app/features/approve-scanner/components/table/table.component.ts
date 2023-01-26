@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import { first, map } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { combineLatestWith, firstValueFrom, lastValueFrom } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { EvmBlockchainName } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
@@ -23,10 +22,6 @@ export class TableComponent {
   );
 
   public readonly exceededLimits$ = this.approveScannerService.exceededLimits$;
-
-  public readonly fromBlockchainLabel$ = this.approveScannerService.selectedBlockchain$.pipe(
-    map(blockchain => blockchainLabel[blockchain.key])
-  );
 
   public readonly approves$ = this.approveScannerService.visibleApproves$.pipe(
     map(approves => {
@@ -59,7 +54,9 @@ export class TableComponent {
   public readonly queryForm = this.approveScannerService.queryForm;
 
   public readonly selectedBlockchain$ =
-    this.approveScannerService.form.controls.blockchain.valueChanges;
+    this.approveScannerService.form.controls.blockchain.valueChanges.pipe(
+      startWith(this.approveScannerService.form.controls.blockchain.value)
+    );
 
   constructor(
     private readonly approveScannerService: ApproveScannerService,
