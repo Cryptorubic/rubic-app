@@ -43,7 +43,6 @@ import { SettingsService } from '@features/swaps/core/services/settings-service/
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
 import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
 
@@ -92,12 +91,6 @@ import { FormNavigationComponent } from './features/swap-form/components/form-na
     ClipboardModule,
     TuiAccordionModule
   ],
-  providers: [
-    SettingsService,
-    RefreshService,
-    TradeService,
-    TargetNetworkAddressService,
-    SuccessTxModalService
-  ]
+  providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
 })
 export class SwapsModule {}

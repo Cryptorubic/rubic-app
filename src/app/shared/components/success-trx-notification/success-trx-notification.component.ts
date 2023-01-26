@@ -22,10 +22,7 @@ export class SuccessTrxNotificationComponent {
     if (this.type === 'cross-chain-routing') {
       return 'notifications.successfulCCRTradeTitle';
     }
-    if (this.type === 'on-chain') {
-      return 'notifications.successfulTradeTitle';
-    }
-    return 'Successfully created limit order';
+    return 'notifications.successfulTradeTitle';
   }
 
   constructor(

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -12,7 +12,8 @@ import {
   EvmBlockchainName,
   Injector,
   Web3Pure,
-  Cache
+  Cache,
+  CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import {
   ChainId,
@@ -31,6 +32,12 @@ import { compareAddresses } from '@shared/utils/utils';
 import { spotPriceContractAddress } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-address';
 import { spotPriceContractAbi } from '@features/swaps/features/limit-order/services/constants/spot-price-contract-abi';
 import { HttpClient } from '@angular/common/http';
+import { SuccessTxModalService } from '@core/services/success-tx-modal-service/success-tx-modal.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 
 @Injectable()
 export class LimitOrdersService {
@@ -47,7 +54,9 @@ export class LimitOrdersService {
     private readonly sdkService: SdkService,
     private readonly tokensService: TokensService,
     private readonly swapFormService: SwapFormService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async shouldUpdateOrders(): Promise<void> {
@@ -89,8 +98,41 @@ export class LimitOrdersService {
   }
 
   public async cancelOrder(blockchain: EvmBlockchainName, orderHash: string): Promise<void> {
-    await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash);
-    const updatedOrders = this._orders$.value.filter(({ hash }) => hash === orderHash);
+    let subscription$: Subscription;
+    const onConfirm = (hash: string) => {
+      subscription$ = this.successTxModalService.open(
+        hash,
+        blockchain,
+        'on-chain',
+        CROSS_CHAIN_TRADE_TYPE.CELER,
+        () =>
+          this.notificationsService.showWithoutSubscribe(
+            new PolymorpheusComponent(ProgressTrxNotificationComponent),
+            {
+              status: TuiNotification.Info,
+              autoClose: false
+            }
+          )
+      );
+    };
+
+    try {
+      await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, { onConfirm });
+
+      subscription$.unsubscribe();
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: {
+          type: 'on-chain',
+          withRecentTrades: false
+        }
+      });
+    } finally {
+      subscription$?.unsubscribe();
+    }
+
+    const updatedOrders = this._orders$.value.filter(({ hash }) => hash !== orderHash);
     this._orders$.next(updatedOrders);
   }
 

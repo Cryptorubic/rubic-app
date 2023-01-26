@@ -85,6 +85,10 @@
   }
 
   .cancellation {
+    tui-loader {
+      width: 100%;
+    }
+
     .cancel-button {
       justify-content: center;
       width: 100%;

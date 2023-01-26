@@ -26,7 +26,7 @@ import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-priv
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import BigNumber from 'bignumber.js';
-import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
+import { SuccessTxModalService } from '@core/services/success-tx-modal-service/success-tx-modal.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
 
