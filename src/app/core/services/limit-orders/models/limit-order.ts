@@ -12,6 +12,7 @@ export interface LimitOrder {
   toToken: Token | null;
   fromAmount: BigNumber;
   toAmount: BigNumber;
+  fromBalance: BigNumber;
 
   status: LIMIT_ORDER_STATUS;
   filledPercent: number;

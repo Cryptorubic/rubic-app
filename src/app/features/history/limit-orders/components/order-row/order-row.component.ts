@@ -38,12 +38,41 @@ export class OrderRowComponent implements OnInit {
 
   public rateLevelData: RateLevelData;
 
+  private percentDiff: {
+    value: number;
+    warning: boolean;
+  };
+
+  private isEnoughBalance = true;
+
   public get showCancel(): boolean {
     return this.order.status === LIMIT_ORDER_STATUS.VALID;
   }
 
   public get statusText(): string {
     return this.order.status === LIMIT_ORDER_STATUS.FILLED ? 'Filled' : 'Expired';
+  }
+
+  public get warningText(): string {
+    const symbol = this.order.fromToken.symbol;
+    const percent = this.percentDiff.value;
+    if (this.percentDiff.warning && !this.isEnoughBalance) {
+      return `Insufficient ${symbol} balance for order execution. Once you add ${symbol}, the order will be executed at ${percent}% below the market price.`;
+    }
+    if (!this.isEnoughBalance) {
+      return `Insufficient ${symbol} balance for order execution.`;
+    }
+    return `This order's value is currently ${percent}% below the market price.`;
+  }
+
+  public get warningTitle(): string {
+    if (this.percentDiff.warning && !this.isEnoughBalance) {
+      return 'Bad rate, Balance';
+    }
+    if (!this.isEnoughBalance) {
+      return 'Not enough balance';
+    }
+    return 'Unfavourable rate';
   }
 
   constructor(
@@ -64,6 +93,17 @@ export class OrderRowComponent implements OnInit {
       this.rateLevelData = rateLevelsData[RateLevel.RED];
     } else if (percentDiff <= -0.05) {
       this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
+    }
+    this.percentDiff = {
+      value: percentDiff,
+      warning: Boolean(this.rateLevelData)
+    };
+
+    if (this.order.fromBalance.lt(this.order.fromAmount)) {
+      this.isEnoughBalance = false;
+      if (!this.rateLevelData) {
+        this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
+      }
     }
   }
 
