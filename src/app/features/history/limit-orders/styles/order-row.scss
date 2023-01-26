@@ -4,16 +4,10 @@ td {
   height: 42px;
 }
 
-.date {
-  @include font(14px, 120%, 500, #{$text-gray-2});
-
+.table-date {
   position: relative;
 
   display: block !important;
-
-  &_highlighted {
-    color: var(--primary-text);
-  }
 
   &__expiration {
     position: absolute;

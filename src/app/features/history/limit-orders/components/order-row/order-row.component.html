@@ -56,7 +56,7 @@
   </td>
 
   <!-- Expiration -->
-  <td class="date">
+  <td class="date table-date">
     <div class="date__creation">
       <ng-container *ngIf="order.creation">
         <span class="date_highlighted">{{ order.creation | date : 'dd MMM yyyy' }}</span>
@@ -65,6 +65,7 @@
       </ng-container>
       <ng-container *ngIf="!order.creation">-</ng-container>
     </div>
+
     <div class="date__expiration">
       <ng-container *ngIf="order.expiration">
         <span class="date_highlighted">{{ order.expiration | date : 'dd MMM yyyy' }}</span>
@@ -110,30 +111,28 @@
       <div class="row-item">
         <div class="row-item__label">You sell</div>
 
-        <div class="row-item__value">
-          <div class="asset">
-            <div class="asset__image-container image-container">
-              <img
-                class="image-container__token-icon"
-                [src]="order.fromToken?.image || defaultTokenImage"
-                [alt]="order.fromToken?.symbol"
-                (error)="onTokenImageError($event)"
-              />
-              <img
-                class="image-container__blockchain-icon"
-                [src]="getBlockchainImg(order.fromToken?.blockchain)"
-                [alt]="order.fromToken?.blockchain"
-                [tuiHint]="getBlockchainLabel(order.fromToken?.blockchain)"
-                [tuiHintShowDelay]="0"
-              />
-            </div>
+        <div class="row-item__value asset">
+          <div class="asset__image-container image-container">
+            <img
+              class="image-container__token-icon"
+              [src]="order.fromToken?.image || defaultTokenImage"
+              [alt]="order.fromToken?.symbol"
+              (error)="onTokenImageError($event)"
+            />
+            <img
+              class="image-container__blockchain-icon"
+              [src]="getBlockchainImg(order.fromToken?.blockchain)"
+              [alt]="order.fromToken?.blockchain"
+              [tuiHint]="getBlockchainLabel(order.fromToken?.blockchain)"
+              [tuiHintShowDelay]="0"
+            />
+          </div>
 
-            <div class="asset__data">
-              <div class="asset__symbol">
-                {{ order.fromToken?.symbol ? order.fromToken.symbol : 'Unknown' }}
-              </div>
-              <div class="asset__amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
+          <div class="asset__data">
+            <div class="asset__symbol">
+              {{ order.fromToken?.symbol ? order.fromToken.symbol : 'Unknown' }}
             </div>
+            <div class="asset__amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
           </div>
         </div>
       </div>
@@ -141,71 +140,58 @@
       <div class="row-item">
         <div class="row-item__label">You buy</div>
 
-        <div class="row-item__value">
-          <div class="asset">
-            <div class="asset__image-container image-container">
-              <img
-                class="image-container__token-icon"
-                [src]="order.toToken?.image || defaultTokenImage"
-                [alt]="order.toToken?.symbol"
-                (error)="onTokenImageError($event)"
-              />
-              <img
-                class="image-container__blockchain-icon"
-                [src]="getBlockchainImg(order.toToken?.blockchain)"
-                [alt]="order.toToken?.blockchain"
-                [tuiHint]="getBlockchainLabel(order.toToken?.blockchain)"
-                [tuiHintShowDelay]="0"
-              />
-            </div>
+        <div class="row-item__value asset">
+          <div class="asset__image-container image-container">
+            <img
+              class="image-container__token-icon"
+              [src]="order.toToken?.image || defaultTokenImage"
+              [alt]="order.toToken?.symbol"
+              (error)="onTokenImageError($event)"
+            />
+            <img
+              class="image-container__blockchain-icon"
+              [src]="getBlockchainImg(order.toToken?.blockchain)"
+              [alt]="order.toToken?.blockchain"
+              [tuiHint]="getBlockchainLabel(order.toToken?.blockchain)"
+              [tuiHintShowDelay]="0"
+            />
+          </div>
 
-            <div class="asset__data">
-              <div class="asset__symbol">
-                {{ order.toToken?.symbol ? order.toToken.symbol : 'Unknown' }}
-              </div>
-              <div class="asset__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
+          <div class="asset__data">
+            <div class="asset__symbol">
+              {{ order.toToken?.symbol ? order.toToken.symbol : 'Unknown' }}
             </div>
+            <div class="asset__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!--    <div class="order__row">-->
-    <!--      <div class="order__row-label">To</div>-->
-    <!--      <div class="order__row-value">-->
-    <!--        <img-->
-    <!--          class="order__asset-image"-->
-    <!--          [src]="order.toToken?.image || defaultTokenImage"-->
-    <!--          [alt]="order.toToken?.symbol"-->
-    <!--          (error)="onTokenImageError($event)"-->
-    <!--        />-->
-    <!--        <div class="order__asset-symbol">-->
-    <!--          {{-->
-    <!--            order.toToken?.symbol-->
-    <!--              ? order.toToken.symbol + ' (' + blockchainLabel(order.toToken.blockchain) + ')'-->
-    <!--              : 'Unknown'-->
-    <!--          }}-->
-    <!--        </div>-->
-    <!--        <div class="order__asset-amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="order__row">
+      <div class="row-item row-item_full">
+        <div class="row-item__label">Creation / Expiration</div>
 
-    <!--    <div class="order__row">-->
-    <!--      <div class="order__row-label">Expiration</div>-->
-    <!--      <div class="order__row-value">-->
-    <!--        {{-->
-    <!--          order.expiration-->
-    <!--            ? (order.expiration | date : 'MMM dd, yyyy') +-->
-    <!--              ' at ' +-->
-    <!--              (order.expiration | date : 'HH:mm')-->
-    <!--            : '-'-->
-    <!--        }}-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--    <div class="order__row">-->
-    <!--      <div class="order__row-label">Cancellation</div>-->
-    <!--      <div class="order__row-value" *ngIf="!showCancel; else cancel">Invalid</div>-->
-    <!--    </div>-->
+        <div class="row-item__value date row-date">
+          <div class="date__creation row-date__value">
+            <ng-container *ngIf="order.creation">
+              <span class="date_highlighted">{{ order.creation | date : 'dd MMM yyyy' }}</span>
+              &nbsp;
+              <span>{{ order.creation | date : 'HH:mm' }}</span>
+            </ng-container>
+            <ng-container *ngIf="!order.creation">-</ng-container>
+          </div>
+
+          <div class="date__expiration row-date__value">
+            <ng-container *ngIf="order.expiration">
+              <span class="date_highlighted">{{ order.expiration | date : 'dd MMM yyyy' }}</span>
+              &nbsp;
+              <span>{{ order.expiration | date : 'HH:mm' }}</span>
+            </ng-container>
+            <ng-container *ngIf="!order.expiration">-</ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </ng-template>
 

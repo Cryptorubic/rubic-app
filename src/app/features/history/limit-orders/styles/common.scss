@@ -48,3 +48,11 @@
     bottom: 0;
   }
 }
+
+.date {
+  @include font(14px, 120%, 500, #{$text-gray-2});
+
+  &_highlighted {
+    color: var(--primary-text);
+  }
+}
