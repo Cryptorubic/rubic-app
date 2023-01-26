@@ -4,6 +4,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Injectable()
 export class SwapTypeService {
@@ -52,5 +53,33 @@ export class SwapTypeService {
     } else {
       return SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
     }
+  }
+
+  public async navigateToSwaps(): Promise<void> {
+    this.swapFormService.inputControl.patchValue({
+      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAsset: null,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      toToken: null,
+      fromAmount: null
+    });
+    this.swapFormService.outputControl.patchValue({
+      toAmount: null
+    });
+    await this.router.navigate(['/']);
+  }
+
+  public async navigateToLimitOrder(): Promise<void> {
+    this.swapFormService.inputControl.patchValue({
+      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
+      fromAsset: null,
+      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toToken: null,
+      fromAmount: null
+    });
+    this.swapFormService.outputControl.patchValue({
+      toAmount: null
+    });
+    await this.router.navigate(['/limit-order']);
   }
 }

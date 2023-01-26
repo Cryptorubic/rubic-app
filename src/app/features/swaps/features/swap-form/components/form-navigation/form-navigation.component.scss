@@ -1,0 +1,23 @@
+.buttons-container {
+  display: flex;
+  grid-gap: 8px;
+  justify-content: center;
+
+  app-rubic-button {
+    display: block;
+    width: 100%;
+    max-width: 160px;
+
+    ::ng-deep {
+      --tui-height-l: 36px;
+
+      .wrapper {
+        padding: 0;
+      }
+
+      .content {
+        font-size: 14px;
+      }
+    }
+  }
+}

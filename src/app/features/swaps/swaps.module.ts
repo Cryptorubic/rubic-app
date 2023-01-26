@@ -45,6 +45,7 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
 import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
+import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-ord
     FormHeaderComponent,
     RefreshButtonComponent,
     IframeSettingsComponent,
-    IframeSettingsButtonComponent
+    IframeSettingsButtonComponent,
+    FormNavigationComponent
   ],
   exports: [],
   imports: [

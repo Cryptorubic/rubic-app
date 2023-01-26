@@ -317,3 +317,12 @@ app-analytics-link {
     }
   }
 }
+
+app-form-navigation {
+  display: none;
+
+  @include b($laptop) {
+    display: block;
+    margin-bottom: 8px;
+  }
+}
