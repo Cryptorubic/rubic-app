@@ -20,7 +20,7 @@
     </button>
   </div>
 
-  <label class="rate__label">
+  <label class="rate__label" *ngIf="!isRateUnknown">
     <input
       autocomplete="off"
       class="rate__input"
@@ -33,4 +33,6 @@
       inputmode="decimal"
     />
   </label>
+
+  <div class="rate__unknown-text" *ngIf="isRateUnknown">Rate is unknown</div>
 </div>

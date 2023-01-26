@@ -51,7 +51,7 @@ export class OrderRateService {
           this.marketRate =
             fromAsset.blockchain === toToken.blockchain
               ? await this.limitOrdersService.getMarketRate(fromAsset, toToken)
-              : new BigNumber(0);
+              : new BigNumber(-1);
           this.setRateToMarket();
         }
       });
@@ -66,7 +66,7 @@ export class OrderRateService {
     const rate = new BigNumber(newRate).dp(this.decimalPoints);
     if (!this.marketRate?.isFinite() || this.marketRate.lte(0)) {
       this._rate$.next({
-        value: rate,
+        value: rate.isFinite() ? rate : new BigNumber(-1),
         percentDiff: 0
       });
     } else {

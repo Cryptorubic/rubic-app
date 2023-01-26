@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import {
   RateLevel,
+  RateLevelData,
   rateLevelsData
 } from '@features/swaps/shared/constants/limit-orders/rate-levels';
 import { SwapFormService } from '@app/core/services/swaps/swap-form.service';
@@ -26,6 +27,8 @@ export class OrderRateComponent implements OnInit {
   public levelClass: string;
 
   public fromTokenName$ = this.swapFormService.fromToken$.pipe(map(token => token?.symbol || ''));
+
+  public isRateUnknown: boolean;
 
   private get formattedRate(): string {
     return this.rate.value.split(',').join('');
@@ -52,8 +55,13 @@ export class OrderRateComponent implements OnInit {
       .subscribe(({ value, percentDiff }) => {
         if (!value?.isFinite()) {
           this.rate.setValue('');
-        } else if (!value.eq(this.formattedRate)) {
-          this.rate.setValue(value.toFixed());
+        } else if (value.eq(-1)) {
+          this.isRateUnknown = true;
+        } else {
+          this.isRateUnknown = false;
+          if (!value.eq(this.formattedRate)) {
+            this.rate.setValue(value.toFixed());
+          }
         }
         this.percentDiff = percentDiff;
         this.updateRateLevelData();
@@ -62,17 +70,23 @@ export class OrderRateComponent implements OnInit {
   }
 
   private updateRateLevelData(): void {
-    let level: RateLevel;
-    if (this.percentDiff <= -10) {
-      level = RateLevel.RED;
-    } else if (this.percentDiff <= -5) {
-      level = RateLevel.YELLOW;
-    } else if (this.percentDiff <= 0) {
-      level = RateLevel.NOTHING;
+    let levelData: RateLevelData;
+    if (this.isRateUnknown) {
+      levelData = rateLevelsData[RateLevel.YELLOW];
     } else {
-      level = RateLevel.GREEN;
+      let level: RateLevel;
+      if (this.percentDiff <= -10) {
+        level = RateLevel.RED;
+      } else if (this.percentDiff <= -5) {
+        level = RateLevel.YELLOW;
+      } else if (this.percentDiff <= 0) {
+        level = RateLevel.NOTHING;
+      } else {
+        level = RateLevel.GREEN;
+      }
+      levelData = rateLevelsData[level];
     }
-    const levelData = rateLevelsData[level];
+
     this.iconSrc = levelData.imgSrc;
     this.levelClass = levelData.class;
   }
