@@ -32,6 +32,6 @@ export class ExpirationOptionalComponent {
   }
 
   public onCustomClick(): void {
-    this.onStateChange.emit();
+    this.orderExpirationService.openExpirationCustomModal().subscribe();
   }
 }

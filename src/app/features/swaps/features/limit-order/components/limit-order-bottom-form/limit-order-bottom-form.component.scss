@@ -129,6 +129,12 @@
       width: 180px;
     }
   }
+
+  ::ng-deep {
+    .token-amount-input-container {
+      padding: 0;
+    }
+  }
 }
 
 app-target-network-address {

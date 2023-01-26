@@ -1,8 +1,4 @@
 <form class="container" [formGroup]="timeForm">
-  <button class="container__close-button" type="button" (click)="onClose.emit()">
-    <img src="assets/images/icons/cross.svg" alt="close" />
-  </button>
-
   <div class="container__header">Set up custom period</div>
 
   <div class="inputs">
@@ -41,7 +37,7 @@
     (onClick)="onSet()"
     >Set</app-rubic-button
   >
-  <app-rubic-button class="container__cancel-button" appearance="outline" (onClick)="onCancel()"
+  <app-rubic-button class="container__cancel-button" appearance="outline" (onClick)="onClose()"
     >Cancel</app-rubic-button
   >
 </form>
