@@ -13167,10 +13167,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.17.0-alpha.vk.3:
-  version "3.17.0-alpha.vk.3"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.17.0-alpha.vk.3.tgz#d57011189506315345d409a70314e1047ac5d5fc"
-  integrity sha512-2bkmRpGnh5Pwr1+MxdMkNVVvJ+YgESNhhHh3tvKhuQHNCoHYgTSVcKQmGo2nm7m80g+Qb/OPFnoq5Ml1OLHo3A==
+rubic-sdk@3.17.0-alpha.vk.5:
+  version "3.17.0-alpha.vk.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.17.0-alpha.vk.5.tgz#4a10b85dda09268b22bdbe857c122e0b21f968db"
+  integrity sha512-EiAxldYAAx+VFWDKtcxuRsptTDGTuYk9cynKkyniyIxsuMLRWXOzlLynZ467Z/axHTPZIAhvqXqWm9L3fwTECQ==
   dependencies:
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
     "@lifi/sdk" "^1.6.3"
