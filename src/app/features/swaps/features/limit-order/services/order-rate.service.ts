@@ -76,7 +76,7 @@ export class OrderRateService {
       );
       this._rate$.next({
         value: rate,
-        percentDiff
+        percentDiff: rate.isFinite() ? percentDiff : 0
       });
     }
     if (form) {
