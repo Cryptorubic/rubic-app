@@ -9,7 +9,8 @@
     tokenControl: queryForm.controls.token,
     spenderControl: queryForm.controls.spender,
     revokeLoading: loading,
-    tableLoading: tableLoading$ | async
+    tableLoading: tableLoading$ | async,
+    selectedBlockchain: selectedBlockchain$ | async
   } as table"
 >
   <tui-loader [showLoader]="table.tableLoading" [overlay]="true">
@@ -27,6 +28,7 @@
       [spenderControl]="table.spenderControl"
       [tableLoading]="table.tableLoading"
       [tokenControl]="table.tokenControl"
+      [selectedBlockchain]="table.selectedBlockchain.key"
     >
       <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
         <tfoot>
@@ -62,6 +64,7 @@
         [spenderControl]="table.spenderControl"
         [tableLoading]="table.tableLoading"
         [tokenControl]="table.tokenControl"
+        [selectedBlockchain]="table.selectedBlockchain.key"
       >
         <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
           <div class="full-width" *ngIf="table.approves?.length; else noApproves">

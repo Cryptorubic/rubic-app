@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { ApproveTransaction } from '@features/approve-scanner/services/approve-scanner.service';
 import { FormControl } from '@angular/forms';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
+import { BlockchainName } from 'rubic-sdk';
 
 @Component({
   selector: 'app-mobile-table',
@@ -29,6 +30,8 @@ export class MobileTableComponent {
   @Input() public readonly revokeLoading: boolean;
 
   @Input() public readonly tableLoading: boolean;
+
+  @Input() public readonly selectedBlockchain: BlockchainName;
 
   @Output() public readonly handleNetworkChange = new EventEmitter<void>();
 

@@ -58,6 +58,9 @@ export class TableComponent {
 
   public readonly queryForm = this.approveScannerService.queryForm;
 
+  public readonly selectedBlockchain$ =
+    this.approveScannerService.form.controls.blockchain.valueChanges;
+
   constructor(
     private readonly approveScannerService: ApproveScannerService,
     private readonly errorsService: ErrorsService,

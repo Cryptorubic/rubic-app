@@ -23,7 +23,7 @@
           </ng-template>
           <a
             [safetyLink]="
-              approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN
+              approve.tokenAddress | scannerLink : selectedBlockchain : ADDRESS_TYPE.TOKEN
             "
             ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
           /></a>
@@ -32,10 +32,7 @@
       <td>
         <div class="image-container">
           {{ approve.spender | shortAddress : 5 : 3 }}
-          <a
-            [safetyLink]="
-              approve.spender | scannerLink : approve.token.blockchain : ADDRESS_TYPE.WALLET
-            "
+          <a [safetyLink]="approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET"
             ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
           /></a>
         </div>
