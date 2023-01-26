@@ -48,7 +48,10 @@ export class OrderRateService {
       )
       .subscribe(async ({ fromAsset, toToken }) => {
         if (isMinimalToken(fromAsset) && toToken) {
-          this.marketRate = await this.limitOrdersService.getMarketRate(fromAsset, toToken);
+          this.marketRate =
+            fromAsset.blockchain === toToken.blockchain
+              ? await this.limitOrdersService.getMarketRate(fromAsset, toToken)
+              : new BigNumber(0);
           this.setRateToMarket();
         }
       });

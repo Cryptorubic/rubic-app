@@ -27,6 +27,7 @@
   <div class="token-amount-input-container__wrapper">
     <label class="token-amount-input-container__input-label">
       <input
+        *ngIf="!showLimitOrderOnChainError; else limitOrderOnChainError"
         #tokenAmount
         autocomplete="off"
         class="token-amount-input-container__input"
@@ -39,6 +40,10 @@
         inputmode="decimal"
         id="token-amount-input-element"
       />
+
+      <ng-template #limitOrderOnChainError>
+        <div class="error-text">Limit Orders are on-chain only</div>
+      </ng-template>
     </label>
 
     <ng-container *ngIf="formType === 'from'">

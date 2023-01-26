@@ -21,6 +21,8 @@ import { FormControl } from '@angular/forms';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { Asset } from '@features/swaps/shared/models/form/asset';
 import { combineLatest } from 'rxjs';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -50,8 +52,18 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
 
   public selectedAsset: Asset;
 
+  public get showLimitOrderOnChainError(): boolean {
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    return (
+      this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
+      this.formType === 'to' &&
+      fromAssetType !== toBlockchain
+    );
+  }
+
   constructor(
     public readonly swapFormService: SwapFormService,
+    public readonly swapTypeService: SwapTypeService,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,

@@ -103,7 +103,6 @@ export class BlockchainsListService {
   public isDisabled(blockchain: AvailableBlockchain): boolean {
     return (
       blockchain.disabledConfiguration ||
-      blockchain.disabledLimitOrder ||
       this.isDisabledFrom(blockchain) ||
       this.isDisabledTo(blockchain)
     );
@@ -132,9 +131,6 @@ export class BlockchainsListService {
     }
     if (blockchain.disabledConfiguration) {
       return 'Temporary disabled';
-    }
-    if (blockchain.disabledLimitOrder) {
-      return 'Change selected token';
     }
     return null;
   }

@@ -7,5 +7,4 @@ export interface AvailableBlockchain {
 
   disabledConfiguration: boolean;
   disabledFrom: boolean;
-  disabledLimitOrder: boolean;
 }
