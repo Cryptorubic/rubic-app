@@ -1,12 +1,13 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTxModalComponent } from '@shared/components/success-tx-modal/success-tx-modal.component';
+import { SuccessTxModalComponent } from '@shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
+import { SuccessOrderModalComponent } from '@shared/components/success-modal/success-order-modal/success-order-modal.component';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -36,6 +37,16 @@ export class SuccessTxModalService {
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
         data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
+      })
+      .pipe(switchMap(() => callback?.()))
+      .subscribe();
+  }
+
+  public openLimitOrderModal(callback?: () => Observable<void>): Subscription {
+    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    return this.dialogService
+      .open(new PolymorpheusComponent(SuccessOrderModalComponent, this.injector), {
+        size
       })
       .pipe(switchMap(() => callback?.()))
       .subscribe();

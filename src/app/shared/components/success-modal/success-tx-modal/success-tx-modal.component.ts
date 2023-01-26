@@ -1,9 +1,9 @@
-import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, Self } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
+import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
@@ -39,7 +39,7 @@ export class SuccessTxModalComponent {
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
   constructor(
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,

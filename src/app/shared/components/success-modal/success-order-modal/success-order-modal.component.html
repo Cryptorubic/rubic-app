@@ -1,0 +1,21 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__success-image"
+        src="assets/images/bridge/success-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Limit order successfully created!</h3>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text" (click)="onConfirm()">
+        See in <a routerLink="history/limit-orders">orders</a>.
+      </div>
+
+      <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </footer>
+  </div>
+</div>

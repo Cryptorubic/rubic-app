@@ -23,12 +23,10 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
-import { TuiNotification } from '@taiga-ui/core';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import BigNumber from 'bignumber.js';
+import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -93,7 +91,8 @@ export class LimitOrderFormService {
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly orderExpirationService: OrderExpirationService,
-    private readonly orderRateService: OrderRateService
+    private readonly orderRateService: OrderRateService,
+    private readonly successTxModalService: SuccessTxModalService
   ) {
     this.subscribeOnCalculation();
 
@@ -263,6 +262,7 @@ export class LimitOrderFormService {
     const { toAmount } = this.swapFormService.outputValue;
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    this.successTxModalService.openLimitOrderModal();
     try {
       const deadline = this.orderExpirationService.expirationTime;
       await this.sdkService.limitOrderManager.createOrder(
@@ -273,14 +273,7 @@ export class LimitOrderFormService {
         { deadline }
       );
 
-      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-        status: TuiNotification.Success,
-        autoClose: 15000,
-        data: {
-          type: 'limit-order',
-          withRecentTrades: true
-        }
-      });
+      this.successTxModalService.openLimitOrderModal();
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
       this.errorsService.catch(parsedError);
