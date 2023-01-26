@@ -1,14 +1,17 @@
 .dropdown {
   position: relative;
 
-  display: block;
-  padding: 16px 16px 15px;
-
-  background: var(--form-background);
-  border: 1px solid var(--transparent-line);
-  border-radius: 19px;
+  width: 100%;
 
   cursor: pointer;
+
+  &__container {
+    padding: 16px 16px 15px;
+
+    background: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-radius: 19px;
+  }
 
   &__header {
     margin-bottom: 7px;

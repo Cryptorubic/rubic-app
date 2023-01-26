@@ -5,30 +5,32 @@
   [content]="dropdown"
   tuiDropdownDirection="bottom"
 >
-  <div class="dropdown__header header">
-    <span class="header__title">Expires in</span>
+  <div class="dropdown__container">
+    <div class="dropdown__header header">
+      <span class="header__title">Expires in</span>
+      <img
+        src="assets/images/icons/exclamation-grey.svg"
+        alt="info"
+        tuiHint="Please, note: When a limit order expires, no cancellation fee is charged. In case of manually cancelling a limit order, a gas fee is charged at the time of signing the transaction."
+      />
+    </div>
+
+    <ng-container *ngLet="expirationValue$ | async as value">
+      <div
+        class="dropdown__value"
+        [tuiHint]="value.shortValue !== value.fullValue ? value.fullValue : null"
+      >
+        {{ value.shortValue }}
+      </div>
+    </ng-container>
+
     <img
-      src="assets/images/icons/exclamation-grey.svg"
-      alt="info"
-      tuiHint="Please, note: When a limit order expires, no cancellation fee is charged. In case of manually cancelling a limit order, a gas fee is charged at the time of signing the transaction."
+      src="assets/images/icons/arrow-down.svg"
+      alt="expand"
+      class="dropdown__arrow"
+      [class.transaction-info__arrow_opened]="settingsOpen"
     />
   </div>
-
-  <ng-container *ngLet="expirationValue$ | async as value">
-    <div
-      class="dropdown__value"
-      [tuiHint]="value.shortValue !== value.fullValue ? value.fullValue : null"
-    >
-      {{ value.shortValue }}
-    </div>
-  </ng-container>
-
-  <img
-    src="assets/images/icons/arrow-down.svg"
-    alt="expand"
-    class="dropdown__arrow"
-    [class.transaction-info__arrow_opened]="settingsOpen"
-  />
 </tui-hosted-dropdown>
 
 <ng-template #dropdown>
