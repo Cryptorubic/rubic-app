@@ -70,20 +70,28 @@ export class OrderRateService {
    */
   public updateRate(newRate: string | BigNumber, shouldUpdateToAmount = false): void {
     const rate = new BigNumber(newRate).dp(this.decimalPoints);
-    if (!this.marketRate?.isFinite() || this.marketRate.lte(0)) {
-      this._rate$.next({
-        value: rate.isFinite() ? rate : new BigNumber(-1),
-        percentDiff: 0,
-        unknown: true
-      });
+    if (this.marketRate) {
+      if (this.marketRate.eq(0)) {
+        this._rate$.next({
+          value: rate.isFinite() ? rate : new BigNumber(-1),
+          percentDiff: 0,
+          unknown: true
+        });
+      } else {
+        const percentDiff = Math.min(
+          rate.minus(this.marketRate).div(this.marketRate).multipliedBy(100).dp(2).toNumber(),
+          999
+        );
+        this._rate$.next({
+          value: rate,
+          percentDiff: rate.isFinite() ? percentDiff : 0,
+          unknown: false
+        });
+      }
     } else {
-      const percentDiff = Math.min(
-        rate.minus(this.marketRate).div(this.marketRate).multipliedBy(100).dp(2).toNumber(),
-        999
-      );
       this._rate$.next({
         value: rate,
-        percentDiff: rate.isFinite() ? percentDiff : 0,
+        percentDiff: 0,
         unknown: false
       });
     }
@@ -120,30 +128,26 @@ export class OrderRateService {
     const orderRate = this.rateValue;
     const { fromAsset } = this.swapFormService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
-    const amount = this.withRoundPipe.transform(
-      toAmount.dividedBy(orderRate).toFixed(),
-      'fixedValue',
-      {
-        decimals: Math.min((fromAsset as Token).decimals, 6)
-      }
-    );
+    const amount = toAmount?.isFinite()
+      ? this.withRoundPipe.transform(toAmount.dividedBy(orderRate).toFixed(), 'fixedValue', {
+          decimals: Math.min((fromAsset as Token)?.decimals || 6, 6)
+        })
+      : NaN;
     this.swapFormService.inputControl.patchValue({
-      fromAmount: toAmount?.isFinite() ? new BigNumber(amount) : new BigNumber(NaN)
+      fromAmount: new BigNumber(amount)
     });
   }
 
   private updateToAmountByRate(): void {
     const orderRate = this.rateValue;
     const { fromAmount, toToken } = this.swapFormService.inputValue;
-    const amount = this.withRoundPipe.transform(
-      fromAmount.multipliedBy(orderRate).toFixed(),
-      'fixedValue',
-      {
-        decimals: Math.min(toToken.decimals, 6)
-      }
-    );
+    const amount = fromAmount?.isFinite()
+      ? this.withRoundPipe.transform(fromAmount.multipliedBy(orderRate).toFixed(), 'fixedValue', {
+          decimals: Math.min(toToken?.decimals || 6, 6)
+        })
+      : NaN;
     this.swapFormService.outputControl.patchValue({
-      toAmount: fromAmount?.isFinite() ? new BigNumber(amount) : new BigNumber(NaN)
+      toAmount: new BigNumber(amount)
     });
   }
 }

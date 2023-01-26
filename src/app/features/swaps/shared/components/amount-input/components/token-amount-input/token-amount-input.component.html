@@ -27,7 +27,7 @@
   <div class="token-amount-input-container__wrapper">
     <label class="token-amount-input-container__input-label">
       <input
-        *ngIf="!showLimitOrderOnChainError; else limitOrderOnChainError"
+        *ngIf="(showLimitOrderOnChainError$ | async) === false; else limitOrderOnChainError"
         #tokenAmount
         autocomplete="off"
         class="token-amount-input-container__input"
