@@ -59,13 +59,10 @@ export class LimitOrdersService {
     private readonly notificationsService: NotificationsService
   ) {}
 
-  public async shouldUpdateOrders(): Promise<void> {
-    await this.updateOrders();
-  }
-
-  private async updateOrders(): Promise<void> {
+  public async updateOrders(): Promise<void> {
     const walletAddress = this.authService.userAddress;
     if (!walletAddress) {
+      this._orders$.next([]);
       return;
     }
 
