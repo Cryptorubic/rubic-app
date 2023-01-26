@@ -36,17 +36,8 @@ td {
       width: 80%;
     }
   }
-}
 
-.cancel-button {
-  @include font(14px, 120%, 600, var(--primary-text));
-
-  display: flex;
-  grid-gap: 12px;
-  align-items: center;
-  height: 42px;
-  padding: 0 19px 0 15px;
-
-  border: 1px solid var(--transparent-line);
-  border-radius: 85px;
+  .cancel-button {
+    padding: 0 19px 0 15px;
+  }
 }

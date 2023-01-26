@@ -228,6 +228,14 @@
         </div>
       </div>
     </div>
+
+    <div class="order__row">
+      <div class="row-item row-item_full">
+        <div class="cancellation">
+          <span *ngIf="!showCancel; else cancel">Invalid</span>
+        </div>
+      </div>
+    </div>
   </div>
 </ng-template>
 
