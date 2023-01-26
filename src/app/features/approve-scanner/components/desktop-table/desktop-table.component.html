@@ -14,8 +14,13 @@
     <tr *ngFor="let approve of approves">
       <td>
         <div class="image-container">
-          <img [src]="approve.token.image" [alt]="approve.token.symbol" />
-          {{ approve.token.symbol }}
+          <ng-container *ngIf="approve.token; else address">
+            <img [src]="approve.token.image" [alt]="approve.token.symbol" />
+            {{ approve.token.symbol }}
+          </ng-container>
+          <ng-template #address>
+            <span>{{ approve.tokenAddress | shortAddress : 3 : 3 }}</span>
+          </ng-template>
           <a
             [safetyLink]="
               approve.tokenAddress | scannerLink : approve.token.blockchain : ADDRESS_TYPE.TOKEN

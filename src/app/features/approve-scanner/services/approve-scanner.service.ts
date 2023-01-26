@@ -52,7 +52,7 @@ export interface ApproveTransaction {
   spender: string;
   value: string;
   timeStamp: number;
-  token: TokenAmount;
+  token?: TokenAmount;
 }
 
 interface ScannerResult {
@@ -387,7 +387,7 @@ export class ApproveScannerService {
       map(([approves, tokens]) => {
         return approves.map(approve => ({
           ...approve,
-          token: tokens.find(token => token.address === approve.tokenAddress)
+          token: tokens.find(token => token?.address === approve.tokenAddress)
         }));
       })
     );
