@@ -19,6 +19,10 @@
   height: 56px;
   margin-bottom: 32px;
 
+  @include b($laptop) {
+    margin-bottom: 8px;
+  }
+
   &__title {
     @include font(18px, 120%, 600, var(--primary-text), 0.06em);
     display: flex;

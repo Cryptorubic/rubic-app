@@ -2,26 +2,39 @@
 
 td {
   height: 42px;
-}
 
-.table-date {
-  position: relative;
-
-  display: block !important;
-
-  &__expiration {
-    position: absolute;
-    bottom: 0;
+  > * {
+    width: 100%;
   }
-}
 
-.image-container {
-  width: 40px;
-  height: 40px;
+  .asset {
+    &__image-container {
+      width: 40px;
+      height: 40px;
 
-  &__blockchain-icon {
-    width: 20px;
-    height: 20px;
+      &__blockchain-icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .date {
+    position: relative;
+
+    display: block !important;
+
+    &__expiration {
+      position: absolute;
+      bottom: 0;
+    }
+  }
+
+  .status {
+    &__header,
+    &__progress {
+      width: 80%;
+    }
   }
 }
 
@@ -36,68 +49,4 @@ td {
 
   border: 1px solid var(--transparent-line);
   border-radius: 85px;
-}
-
-.status {
-  @include font(14px, 120%, 400, var(--primary-text));
-
-  position: relative;
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-    height: 24px;
-
-    &__filled {
-      display: flex;
-      align-items: center;
-    }
-
-    &__warning {
-      display: flex;
-      grid-gap: 11px;
-      align-items: center;
-    }
-  }
-
-  &__progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
-    width: 80%;
-    height: 3px;
-
-    border-radius: 97px;
-
-    &__value {
-      position: relative;
-      z-index: 1;
-
-      height: 100%;
-
-      background-color: var(--primary-color);
-      border-radius: 97px;
-
-      &.yellow {
-        background-color: #f2994a;
-      }
-
-      &.red {
-        background-color: #e9590c;
-      }
-    }
-
-    &__background {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-
-      background-color: #333535;
-      border-radius: 97px;
-    }
-  }
 }

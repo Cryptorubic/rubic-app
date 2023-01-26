@@ -46,32 +46,41 @@
   &__value {
     min-width: 130px;
   }
-}
 
-.asset {
-  height: 34px;
-}
+  .asset {
+    height: 34px;
 
-.image-container {
-  width: 32px;
-  height: 32px;
+    &__image-container {
+      width: 32px;
+      height: 32px;
 
-  &__blockchain-icon {
-    width: 15px;
-    height: 15px;
-  }
-}
-
-.row-date {
-  display: flex;
-  grid-gap: 15%;
-  align-items: center;
-
-  @include b(360) {
-    grid-gap: 5%;
+      &__blockchain-icon {
+        width: 15px;
+        height: 15px;
+      }
+    }
   }
 
-  &__value {
-    min-width: 130px;
+  .date {
+    display: flex;
+    grid-gap: 15%;
+    align-items: center;
+
+    @include b(360) {
+      grid-gap: 5%;
+    }
+
+    &__value {
+      min-width: 130px;
+    }
+  }
+
+  .status {
+    height: 40px;
+
+    &__header,
+    &__progress {
+      width: 100%;
+    }
   }
 }
