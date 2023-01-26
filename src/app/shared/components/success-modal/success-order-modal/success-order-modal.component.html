@@ -6,11 +6,12 @@
         src="assets/images/bridge/success-image.svg"
         alt="Success"
       />
-      <h3 class="modal__title">Limit order successfully created!</h3>
+      <h3 class="modal__title">Limit Order Submitted!</h3>
     </main>
     <footer class="modal__footer">
       <div class="modal__footer-text" (click)="onConfirm()">
-        See in <a routerLink="history/limit-orders">orders</a>.
+        You can check your order status in
+        <a routerLink="history/limit-orders">Limit Orders panel</a>.
       </div>
 
       <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">

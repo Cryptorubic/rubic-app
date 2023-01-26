@@ -27,6 +27,8 @@ import { OrderExpirationService } from '@features/swaps/features/limit-order/ser
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import BigNumber from 'bignumber.js';
 import { SuccessTxModalService } from '@features/swaps/features/swap-form/services/success-tx-modal-service/success-tx-modal.service';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -275,7 +277,10 @@ export class LimitOrderFormService {
 
       this.successTxModalService.openLimitOrderModal();
     } catch (error) {
-      const parsedError = RubicSdkErrorParser.parseError(error);
+      let parsedError = RubicSdkErrorParser.parseError(error);
+      if (parsedError instanceof UserRejectError) {
+        parsedError = new UserRejectSigningError();
+      }
       this.errorsService.catch(parsedError);
     }
     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
