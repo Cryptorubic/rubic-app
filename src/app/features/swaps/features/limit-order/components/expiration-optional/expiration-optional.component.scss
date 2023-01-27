@@ -1,7 +1,8 @@
 @use 'src/scss/core' as *;
 
 .container {
-  width: 224px;
+  width: 204px;
+  margin: 0;
   padding: 8px 16px;
 
   background: var(--form-background);
