@@ -73,7 +73,10 @@ export class CrossChainApiService {
       tx_hash: hash,
       wallet_name: this.walletConnectorService.provider.detailedWalletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
-      domain: this.window.location.hostname
+      domain:
+        this.window.location !== this.window.parent.location
+          ? this.window.document.referrer
+          : this.window.document.location.href
     };
 
     await firstValueFrom(
