@@ -55,7 +55,7 @@ export class OrderRowComponent implements OnInit {
 
   public get warningText(): string {
     const symbol = this.order.fromToken.symbol;
-    const percent = this.percentDiff.value;
+    const percent = this.percentDiff.value * 100;
     if (this.percentDiff.warning && !this.isEnoughBalance) {
       return `Insufficient ${symbol} balance for order execution. Once you add ${symbol}, the order will be executed at ${percent}% below the market price.`;
     }
