@@ -26,6 +26,7 @@ import { DesktopTableComponent } from './components/desktop-table/desktop-table.
 import { MobileTableComponent } from './components/mobile-table/mobile-table.component';
 import { RevokeButtonComponent } from './components/revoke-button/revoke-button.component';
 import { SwitchButtonComponent } from './components/switch-button/switch-button.component';
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { SwitchButtonComponent } from './components/switch-button/switch-button.
     TuiIslandModule,
     TuiTablePaginationModule,
     TuiLoaderModule,
-    TuiHintModule
+    TuiHintModule,
+    TextMaskModule
   ],
   providers: [ApproveScannerService]
 })

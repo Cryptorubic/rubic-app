@@ -9,10 +9,17 @@
   <tbody>
     <tr class="table__tr table__tr_head">
       <th class="table__th">
-        <tui-input tuiTextfieldSize="s" [formControl]="tokenControl">Asset</tui-input>
+        <tui-input [textMask]="assetMaskConfig" tuiTextfieldSize="s" [formControl]="tokenControl"
+          >Asset</tui-input
+        >
       </th>
       <th class="table__th">
-        <tui-input tuiTextfieldSize="s" [formControl]="spenderControl">Spender</tui-input>
+        <tui-input
+          [textMask]="spenderMaskConfig"
+          tuiTextfieldSize="s"
+          [formControl]="spenderControl"
+          >Spender</tui-input
+        >
       </th>
       <th class="table__th">Allowance</th>
       <th class="table__th">Date</th>

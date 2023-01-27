@@ -41,6 +41,20 @@ export class DesktopTableComponent {
     callback: () => void;
   }>();
 
+  public readonly assetMaskConfig = {
+    guide: false,
+    mask: (sourceText: string) => {
+      return Array.from(sourceText).map(() => new RegExp('^[A-Za-z0-9]+$'));
+    }
+  };
+
+  public readonly spenderMaskConfig = {
+    guide: false,
+    mask: (sourceText: string) => {
+      return Array.from(sourceText).map(() => new RegExp('^[A-Fa-f0-9]+$'));
+    }
+  };
+
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   constructor() {}
