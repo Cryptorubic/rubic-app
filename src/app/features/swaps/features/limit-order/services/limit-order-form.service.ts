@@ -59,13 +59,9 @@ export class LimitOrderFormService {
   private calculating = false;
 
   private get isFormFilled(): boolean {
-    const form = this.swapFormService.form.value;
-    return (
-      form.input.fromAsset &&
-      form.input.fromAmount?.gt(0) &&
-      form.input.toToken &&
-      form.output.toAmount?.gt(0)
-    );
+    const { fromAsset, fromAmount, toToken } = this.swapFormService.inputValue;
+    const { toAmount } = this.swapFormService.outputValue;
+    return fromAsset && fromAmount?.gt(0) && toToken && toAmount?.gt(0);
   }
 
   /**
