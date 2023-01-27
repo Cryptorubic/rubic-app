@@ -34,7 +34,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { catchError, distinctUntilChanged, first, share, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, first, share, tap } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 
@@ -104,7 +104,10 @@ export class ApproveScannerService {
 
   public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
-    combineLatestWith(this.walletConnectorService.addressChange$, this.refreshTable$),
+    combineLatestWith(
+      this.walletConnectorService.addressChange$.pipe(filter(address => address !== null)),
+      this.refreshTable$
+    ),
     distinctUntilChanged(),
     tap(() => {
       this.tableLoading = true;

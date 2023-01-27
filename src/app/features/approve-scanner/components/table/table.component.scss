@@ -1,6 +1,13 @@
 @use 'src/scss/core' as *;
 
 :host ::ng-deep {
+  .no-transactions {
+    width: 300px;
+    margin-left: 16px;
+
+    font-size: 18px;
+  }
+
   app-rubic-button {
     display: block;
     width: 150px;

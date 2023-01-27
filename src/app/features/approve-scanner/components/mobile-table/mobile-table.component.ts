@@ -33,7 +33,7 @@ export class MobileTableComponent {
 
   @Input() public readonly selectedBlockchain: BlockchainName;
 
-  @Output() public readonly handleNetworkChange = new EventEmitter<void>();
+  @Output() public readonly handleNetworkChange = new EventEmitter<() => void>();
 
   @Output() public readonly handleRevokeCall = new EventEmitter<{
     token: string;
@@ -45,8 +45,8 @@ export class MobileTableComponent {
 
   constructor() {}
 
-  public changeNetwork(): void {
-    this.handleNetworkChange.emit();
+  public changeNetwork(callback: () => void): void {
+    this.handleNetworkChange.emit(callback);
   }
 
   public handleRevoke(token: string, spender: string, callback: () => void): void {

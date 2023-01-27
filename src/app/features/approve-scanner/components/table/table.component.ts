@@ -85,15 +85,15 @@ export class TableComponent {
     }
   }
 
-  public async changeNetwork(): Promise<void> {
-    this.switchLoading = true;
+  public async changeNetwork(callback: () => void): Promise<void> {
     try {
       const blockchain = await firstValueFrom(this.approveScannerService.selectedBlockchain$);
       await this.walletConnectorService.switchChain(blockchain.key as EvmBlockchainName);
       await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));
+    } catch (err) {
+      this.errorsService.catch(err);
     } finally {
-      this.switchLoading = false;
-      this.cdr.markForCheck();
+      callback();
     }
   }
 }

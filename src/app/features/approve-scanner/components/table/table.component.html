@@ -16,7 +16,7 @@
   <tui-loader [showLoader]="table.tableLoading" [overlay]="true">
     <app-desktop-table
       *ngIf="!isMobile as isMobile; else mobile"
-      (handleNetworkChange)="changeNetwork()"
+      (handleNetworkChange)="changeNetwork($event)"
       (handleRevokeCall)="handleRevoke($event)"
       [allApproves]="table.allApproves"
       [allowChangeBlockchain]="table.allowChangeBlockchain"
@@ -44,15 +44,12 @@
               </tui-table-pagination>
             </td>
           </tr>
-          <ng-template #noApproves>
-            <p>{{ table.isLimitsExceeded ? 'Limit exceeded' : 'No transactions' }}</p>
-          </ng-template>
         </tfoot>
       </ng-container>
     </app-desktop-table>
     <ng-template #mobile>
       <app-mobile-table
-        (handleNetworkChange)="changeNetwork()"
+        (handleNetworkChange)="changeNetwork($event)"
         (handleRevokeCall)="handleRevoke($event)"
         [allApproves]="table.allApproves"
         [allowChangeBlockchain]="table.allowChangeBlockchain"
@@ -77,11 +74,17 @@
             >
             </tui-table-pagination>
           </div>
-          <ng-template #noApproves>
-            <p>{{ table.isLimitsExceeded ? 'Limit exceeded' : 'No transactions' }}</p>
-          </ng-template>
         </ng-container>
       </app-mobile-table>
     </ng-template>
   </tui-loader>
+  <ng-template #noApproves>
+    <p class="no-transactions">
+      {{
+        table.isLimitsExceeded
+          ? 'Request limit exceeded, try again in few seconds.'
+          : 'No approve transactions found.'
+      }}
+    </p>
+  </ng-template>
 </ng-container>
