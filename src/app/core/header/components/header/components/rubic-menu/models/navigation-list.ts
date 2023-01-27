@@ -1,5 +1,5 @@
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
-import { EXTERNAL_LINKS } from '@shared/constants/common/links';
+import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
 const defaultSrc = 'assets/images/icons/navigation/';
 
@@ -33,5 +33,11 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,
     imagePath: `assets/images/rbc.svg`
+  },
+  {
+    translateKey: 'Revoke Approve',
+    type: 'internal',
+    link: ROUTE_PATH.APPROVE_SCANNER,
+    imagePath: `${defaultSrc}revoke.svg`
   }
 ] as NavigationItem[];
