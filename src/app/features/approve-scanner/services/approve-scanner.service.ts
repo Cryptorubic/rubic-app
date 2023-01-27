@@ -28,8 +28,6 @@ import {
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpClient } from '@angular/common/http';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { RevokeModalComponent } from '@features/approve-scanner/components/revoke-modal/revoke-modal.component';
 import { Cacheable } from 'ts-cacheable';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import BigNumber from 'bignumber.js';
@@ -158,8 +156,8 @@ export class ApproveScannerService {
         return approves.filter(approve => {
           const hasSpender = approve.spender.toLowerCase().includes(spenderQuery.toLowerCase());
           const hasToken =
-            approve.token.symbol.toLowerCase().includes(tokenQuery.toLowerCase()) ||
-            approve.token.address.toLowerCase().includes(tokenQuery.toLowerCase());
+            approve.token?.symbol.toLowerCase().includes(tokenQuery.toLowerCase()) ||
+            approve.tokenAddress.toLowerCase().includes(tokenQuery.toLowerCase());
           return hasSpender && hasToken;
         });
       }
@@ -191,7 +189,11 @@ export class ApproveScannerService {
     const blockchainAddressMapper: Record<SupportedBlockchain, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: `https://api.etherscan.io/api?module=account&action=txlist&address=${userAddress}`,
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}`,
-      [BLOCKCHAIN_NAME.POLYGON]: `https://api.polygonscan.com/api?module=account&action=txlist&address=${userAddress}`
+      [BLOCKCHAIN_NAME.POLYGON]: `https://api.polygonscan.com/api?module=account&action=txlist&address=${userAddress}`,
+      [BLOCKCHAIN_NAME.ARBITRUM]: `https://api.arbiscan.io/api?module=account&action=txlist&address=${userAddress}`,
+      [BLOCKCHAIN_NAME.OPTIMISM]: `https://api-optimistic.etherscan.io/api?module=account&action=txlist&address=${userAddress}`,
+      [BLOCKCHAIN_NAME.FANTOM]: `https://api.ftmscan.com/api?module=account&action=txlist&address=${userAddress}`,
+      [BLOCKCHAIN_NAME.AVALANCHE]: `https://api.snowtrace.io/api?module=account&action=txlist&address=${userAddress}`
     };
     return this.httpService
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
@@ -201,6 +203,7 @@ export class ApproveScannerService {
           this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
         ),
         switchMap(approves => this.findTokensForApproves(approves)),
+        switchMap(approves => this.fetchLastAllowance(approves, blockchain)),
         tap(() => this._exceededLimits$.next(false)),
         catchError(err => {
           if (err instanceof Error && err.message.includes('Exceed limits')) {
@@ -209,39 +212,6 @@ export class ApproveScannerService {
           return of([]);
         })
       );
-  }
-
-  public async showTokenModal(token: string, spender: string): Promise<void> {
-    this.dialogService
-      .open(new PolymorpheusComponent(RevokeModalComponent, this.injector), {
-        size: 'm',
-        data: {
-          tokenAddress: token,
-          spenderAddress: spender,
-          blockchain: this.form.controls.blockchain.value.key
-        }
-      })
-      .subscribe();
-  }
-
-  private searchStringInTable(
-    approves: ApproveTransaction[],
-    searchQuery: string
-  ): ApproveTransaction[] {
-    return searchQuery
-      ? approves.filter(tx => {
-          const spender = tx.spender.toLowerCase();
-          const token = tx.tokenAddress.toLowerCase();
-          const txHash = tx.hash.toLowerCase();
-          const queryString = searchQuery.toLowerCase();
-
-          return (
-            spender.includes(queryString) ||
-            token.includes(queryString) ||
-            txHash.includes(queryString)
-          );
-        })
-      : approves;
   }
 
   public async fetchApproveTokenData(
@@ -346,27 +316,32 @@ export class ApproveScannerService {
   }
 
   private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
-    if (response.status === '0' || typeof response.result === 'string') {
+    if (typeof response.result === 'string') {
       throw new Error('Exceed limits');
     }
     const approveTransactions = response.result
       .filter(tx => tx?.functionName.includes('approve'))
       .reverse();
-    return approveTransactions.map(tx => {
+    const uniqueTokens = new Map<string, Omit<ApproveTransaction, 'token'>>();
+    approveTransactions.forEach(tx => {
       const decodedData = MethodDecoder.decodeMethod(
         ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
         tx.input
       );
       const spender = decodedData.params.find(param => param.name === '_spender')!.value;
       const value = decodedData.params.find(param => param.name === '_value')!.value;
-      return {
-        hash: tx.hash,
-        tokenAddress: tx.to,
-        spender,
-        value,
-        timeStamp: tx.timeStamp * 1000
-      };
+
+      if (!uniqueTokens.has(tx.to)) {
+        uniqueTokens.set(tx.to, {
+          hash: tx.hash,
+          tokenAddress: tx.to,
+          spender,
+          value,
+          timeStamp: tx.timeStamp * 1000
+        });
+      }
     });
+    return Array.from(uniqueTokens.values()).filter(approve => approve.value !== '0');
   }
 
   private findTokensForApproves(
@@ -391,5 +366,30 @@ export class ApproveScannerService {
         }));
       })
     );
+  }
+
+  private async fetchLastAllowance(
+    approves: ApproveTransaction[],
+    blockchain: Blockchain
+  ): Promise<ApproveTransaction[]> {
+    const web3Public = Injector.web3PublicService.getWeb3Public(
+      blockchain.key as EvmBlockchainName
+    );
+    const allowances = await web3Public.multicallContractsMethods<string>(
+      ERC20_TOKEN_ABI,
+      approves.map(approve => ({
+        contractAddress: approve.tokenAddress,
+        methodsData: [
+          {
+            methodName: 'allowance',
+            methodArguments: [this.walletConnectorService.address, approve.spender]
+          }
+        ]
+      }))
+    );
+    return approves.map((approve, index) => ({
+      ...approve,
+      value: allowances[index]?.[0].success ? allowances[index][0].output : approve.value
+    }));
   }
 }

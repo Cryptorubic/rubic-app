@@ -12,6 +12,7 @@ import {
 import {
   TuiButtonModule,
   TuiHintControllerModule,
+  TuiHintModule,
   TuiLoaderModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -19,7 +20,6 @@ import { SharedModule } from '@shared/shared.module';
 import { FormComponent } from './components/form/form.component';
 import { TableComponent } from './components/table/table.component';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
-import { RevokeModalComponent } from './components/revoke-modal/revoke-modal.component';
 import { OverviewPageComponent } from './components/overview-page/overview-page.component';
 import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
 import { DesktopTableComponent } from './components/desktop-table/desktop-table.component';
@@ -30,7 +30,6 @@ import { MobileTableComponent } from './components/mobile-table/mobile-table.com
     ApproveScannerPageComponent,
     FormComponent,
     TableComponent,
-    RevokeModalComponent,
     OverviewPageComponent,
     DesktopTableComponent,
     MobileTableComponent
@@ -48,7 +47,8 @@ import { MobileTableComponent } from './components/mobile-table/mobile-table.com
     TuiButtonModule,
     TuiIslandModule,
     TuiTablePaginationModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiHintModule
   ],
   providers: [ApproveScannerService]
 })

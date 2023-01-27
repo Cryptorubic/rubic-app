@@ -37,15 +37,31 @@ h1 {
   -webkit-background-clip: text;
   -moz-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  @include b($mobile-sm-middle) {
+    font-size: 28px;
+    line-height: 28px;
+    text-align: center;
+  }
 }
 
 .description {
   margin-bottom: 20px;
 
   font-size: 16px;
+
+  @include b($mobile-sm-middle) {
+    text-align: center;
+  }
 }
 
 .button-container {
   width: 250px;
   margin-bottom: 50px;
+
+  @include b($mobile-sm-middle) {
+    display: flex;
+    justify-content: center;
+    width: auto;
+  }
 }

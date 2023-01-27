@@ -65,7 +65,19 @@
           </ng-template>
         </div>
       </div>
-      <div><span>Allowance: </span>{{ approve.value }}</div>
+      <div
+        [tuiHint]="approve.value === 'Infinity' ? null : allowanceHint"
+        tuiHintMode="onDark"
+        [tuiHintShowDelay]="50"
+        tuiHintDirection="top-right"
+        [tuiHintHideDelay]="100"
+      >
+        <span>Allowance: </span
+        >{{ approve.value === 'Infinity' ? 'Infinity' : (approve.value | shortAddress : 10 : 10) }}
+      </div>
+      <ng-template #allowanceHint>
+        <span class="token-card__name-container-address-hint">{{ approve.value }}</span>
+      </ng-template>
     </div>
   </div>
   <ng-content></ng-content>

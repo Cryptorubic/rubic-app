@@ -37,7 +37,20 @@
           /></a>
         </div>
       </td>
-      <td>{{ approve.value }}</td>
+      <td>
+        <div
+          [tuiHint]="approve.value === 'Infinity' ? null : allowanceHint"
+          tuiHintMode="onDark"
+          [tuiHintShowDelay]="50"
+          tuiHintDirection="top-right"
+          [tuiHintHideDelay]="100"
+        >
+          {{ approve.value === 'Infinity' ? 'Infinity' : (approve.value | shortAddress : 10 : 5) }}
+        </div>
+        <ng-template #allowanceHint>
+          <span class="token-card__name-container-address-hint">{{ approve.value }}</span>
+        </ng-template>
+      </td>
       <td>{{ approve.timeStamp | date : 'MMM dd, yyyy h:mm' }}</td>
       <td>
         <app-rubic-button

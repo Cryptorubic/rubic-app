@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
-import { combineLatestWith } from 'rxjs';
+import { combineLatestWith, forkJoin, of } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -20,9 +20,12 @@ export class ApproveScannerPageComponent {
   public readonly userBalance$ = this.service.selectedBlockchain$.pipe(
     combineLatestWith(this.tokensService.tokens$.pipe(first(Boolean))),
     switchMap(([blockchain]) =>
-      this.tokensService.getAndUpdateTokenBalance(nativeTokensList[blockchain.key])
+      forkJoin([
+        of(blockchain),
+        this.tokensService.getAndUpdateTokenBalance(nativeTokensList[blockchain.key])
+      ])
     ),
-    map(balance => `${balance} ${nativeTokensList[this.walletConnectorService.network].symbol}`)
+    map(([blockchain, balance]) => `${balance} ${nativeTokensList[blockchain.key].symbol}`)
   );
 
   public loading = false;

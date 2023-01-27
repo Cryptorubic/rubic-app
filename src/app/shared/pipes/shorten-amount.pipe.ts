@@ -17,6 +17,7 @@ export class ShortenAmountPipe implements PipeTransform {
     maxDecimals: number = 4,
     allowNull: boolean = false
   ): string {
+    debugger;
     const integerPart = value.split('.')[0];
     const decimalPart = value.split('.')[1]?.slice(0, maxDecimals);
 

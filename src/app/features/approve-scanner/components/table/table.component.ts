@@ -70,7 +70,7 @@ export class TableComponent {
   public async handleRevoke({ token, spender }: { token: string; spender: string }): Promise<void> {
     try {
       this.loading = true;
-      await this.approveScannerService.showTokenModal(token, spender);
+      await this.approveScannerService.revokeApprove(token, spender);
     } catch (err) {
       this.errorsService.catch(err);
     } finally {

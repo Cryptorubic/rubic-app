@@ -33,7 +33,7 @@
       <ng-container *ngIf="!queryForm.controls.spender.value && !queryForm.controls.token.value">
         <tfoot>
           <tr *ngIf="table.approves?.length; else noApproves">
-            <td [colSpan]="table.allApproves.length">
+            <td [colSpan]="5">
               <tui-table-pagination
                 [total]="table.allApproves.length"
                 [page]="table.page"
@@ -45,7 +45,7 @@
             </td>
           </tr>
           <ng-template #noApproves>
-            <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
+            <p>{{ table.isLimitsExceeded ? 'Limit exceeded' : 'No transactions' }}</p>
           </ng-template>
         </tfoot>
       </ng-container>
@@ -78,7 +78,7 @@
             </tui-table-pagination>
           </div>
           <ng-template #noApproves>
-            <p>{{ table.isLimitsExceeded ? 'Limite exceeded' : 'No transactions' }}</p>
+            <p>{{ table.isLimitsExceeded ? 'Limit exceeded' : 'No transactions' }}</p>
           </ng-template>
         </ng-container>
       </app-mobile-table>
