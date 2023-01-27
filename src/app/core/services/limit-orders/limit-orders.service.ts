@@ -140,6 +140,7 @@ export class LimitOrdersService {
     this._orders$.next(updatedOrders);
   }
 
+  // todo move to sdk
   public async fillOrder(token: Token, orderHash: string): Promise<void> {
     const blockchain = token.blockchain as EvmBlockchainName;
     const order = await this.sdkService.limitOrderManager['apiService'].getOrderByHash(
