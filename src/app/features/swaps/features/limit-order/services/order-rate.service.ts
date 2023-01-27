@@ -73,9 +73,9 @@ export class OrderRateService {
     if (this.marketRate) {
       if (this.marketRate.eq(0)) {
         this._rate$.next({
-          value: rate.isFinite() ? rate : new BigNumber(-1),
+          value: rate,
           percentDiff: 0,
-          unknown: true
+          unknown: !rate.isFinite() || rate.eq(0)
         });
       } else {
         const percentDiff = Math.min(

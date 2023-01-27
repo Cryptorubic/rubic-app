@@ -83,12 +83,19 @@ export class LimitOrdersService {
         const marketRate = await this.getMarketRate(fromToken, toToken);
         const orderRate = new BigNumber(order.toAmount).div(order.fromAmount);
 
+        const minutesLeft = Math.floor((Date.now() - order.creation.getTime()) / 60_000);
+        let fromBalance = order.fromBalance;
+        if (minutesLeft < 1 && order.fromBalance.eq(0)) {
+          fromBalance = await this.tokensService.getAndUpdateTokenBalance(fromToken);
+        }
+
         return {
           ...order,
           fromToken,
           toToken,
           marketRate,
-          orderRate
+          orderRate,
+          fromBalance
         };
       })
     );

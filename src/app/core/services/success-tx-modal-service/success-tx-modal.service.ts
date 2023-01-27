@@ -42,13 +42,12 @@ export class SuccessTxModalService {
       .subscribe();
   }
 
-  public openLimitOrderModal(callback?: () => Observable<void>): Subscription {
+  public openLimitOrderModal(): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService
       .open(new PolymorpheusComponent(SuccessOrderModalComponent, this.injector), {
         size
       })
-      .pipe(switchMap(() => callback?.()))
       .subscribe();
   }
 }

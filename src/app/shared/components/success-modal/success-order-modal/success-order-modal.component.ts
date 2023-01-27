@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 export class SuccessOrderModalComponent {
   constructor(
     @Self() private readonly destroy$: TuiDestroyService,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
+    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<boolean>
   ) {
     timer(MODAL_CONFIG.modalLifetime)
       .pipe(takeUntil(this.destroy$))
@@ -24,6 +24,6 @@ export class SuccessOrderModalComponent {
   }
 
   public onConfirm(): void {
-    this.context.completeWith();
+    this.context.completeWith(true);
   }
 }

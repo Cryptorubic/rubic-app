@@ -215,10 +215,12 @@
               <img
                 [src]="rateLevelData.imgSrc"
                 alt="warning"
-                [tuiHint]="'Your rate is ' + order.filledPercent + '% worse than market rate'"
+                [tuiHint]="warningText"
                 [tuiHintMode]="'error'"
+                [tuiHintShowDelay]="0"
+                [tuiHintHideDelay]="0"
               />
-              Unfavorable rate
+              {{ warningTitle }}
             </div>
           </div>
 
@@ -236,7 +238,7 @@
     <div class="order__row">
       <div class="row-item row-item_full">
         <div class="cancellation">
-          <span *ngIf="!showCancel; else cancel">Invalid</span>
+          <span *ngIf="!showCancel; else cancel">{{ statusText }}</span>
         </div>
       </div>
     </div>

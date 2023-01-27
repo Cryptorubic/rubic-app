@@ -248,7 +248,6 @@ export class LimitOrderFormService {
     const { toAmount } = this.swapFormService.outputValue;
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.successTxModalService.openLimitOrderModal();
     try {
       const deadline = this.orderExpirationService.expirationTime;
       await this.sdkService.limitOrderManager.createOrder(
