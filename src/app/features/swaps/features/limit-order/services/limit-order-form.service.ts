@@ -114,7 +114,7 @@ export class LimitOrderFormService {
           }
 
           const { fromBlockchain, fromToken, fromAmount } = this.inputValue;
-          if (!fromAmount?.isFinite()) {
+          if (!fromAmount?.isFinite() || !fromToken) {
             return of(null);
           }
 
