@@ -24,6 +24,8 @@ import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interfa
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 import {
   BLOCKCHAIN_NAME,
+  CbridgeCrossChainSupportedBlockchain,
+  CrossChainCbridgeManager,
   CrossChainTradeType,
   EvmWeb3Public,
   Injector,
@@ -34,6 +36,7 @@ import {
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
+import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 
 @Component({
@@ -93,8 +96,6 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private amountOutMin: string;
 
-  private symbiosisVersion: 'v1' | 'v2';
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -133,8 +134,7 @@ export class SwapSchemeModalComponent implements OnInit {
                 lifiBridgeType: this.bridgeType.name,
                 viaUuid: this.viaUuid,
                 rangoRequestId: this.rangoRequestId,
-                amountOutMin: this.amountOutMin,
-                symbiosisVersion: this.symbiosisVersion
+                amountOutMin: this.amountOutMin
               },
               this.crossChainProvider
             )
@@ -212,8 +212,7 @@ export class SwapSchemeModalComponent implements OnInit {
                     lifiBridgeType: this.bridgeType.name.toLowerCase(),
                     viaUuid: this.viaUuid,
                     rangoRequestId: this.rangoRequestId,
-                    amountOutMin: this.amountOutMin,
-                    symbiosisVersion: this.symbiosisVersion
+                    amountOutMin: this.amountOutMin
                   },
                   this.crossChainProvider
                 )
@@ -230,7 +229,7 @@ export class SwapSchemeModalComponent implements OnInit {
       .subscribe();
   }
 
-  public async revertSymbiosisTrade(): Promise<void> {
+  public async revertTrade(): Promise<void> {
     let tradeInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
       tradeInProgressSubscription$ = this.notificationService.show(
@@ -246,7 +245,19 @@ export class SwapSchemeModalComponent implements OnInit {
     this._revertBtnLoading$.next(true);
 
     try {
-      await this.sdkService.symbiosis.revertTrade(this.srcTxHash, { onConfirm: onTransactionHash });
+      if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE) {
+        await CrossChainCbridgeManager.makeRefund(
+          this.fromBlockchain.key as CbridgeCrossChainSupportedBlockchain,
+          this.srcTxHash,
+          this.amountOutMin,
+          onTransactionHash
+        );
+      }
+      if (this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS) {
+        await this.sdkService.symbiosis.revertTrade(this.srcTxHash, {
+          onConfirm: onTransactionHash
+        });
+      }
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -307,6 +318,5 @@ export class SwapSchemeModalComponent implements OnInit {
     this.timestamp = data.timestamp;
 
     this.amountOutMin = data.amountOutMin;
-    this.symbiosisVersion = data.symbiosisVersion;
   }
 }

@@ -1,41 +1,43 @@
-<ng-container *ngLet="selectedTrade$ | async as selectedTrade">
-  <div class="trade-panel">
-    <div class="trade-panel__row">
-      <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
-        <div class="trade-panel__header">
-          <app-trades-counter></app-trades-counter>
+<ng-container *ngIf="(fromAmount$ | async)?.isFinite()">
+  <ng-container *ngLet="selectedTrade$ | async as selectedTrade">
+    <div class="trade-panel">
+      <div class="trade-panel__row">
+        <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
+          <div class="trade-panel__header">
+            <app-trades-counter></app-trades-counter>
 
-          <div class="trade-panel__text" *ngIf="taggedTrades.length > 1">
-            <button class="trade-panel__expand-button" (click)="toggleExpanded()">
-              Other routes
-              <img
-                src="assets/images/icons/arrow-down.svg"
-                alt="expand"
-                class="trade-panel__expand-arrow"
-                [class.trade-panel__expand-arrow_opened]="expanded"
-              />
-            </button>
+            <div class="trade-panel__text" *ngIf="taggedTrades.length > 1">
+              <button class="trade-panel__expand-button" (click)="toggleExpanded()">
+                Other routes
+                <img
+                  src="assets/images/icons/arrow-down.svg"
+                  alt="expand"
+                  class="trade-panel__expand-arrow"
+                  [class.trade-panel__expand-arrow_opened]="expanded"
+                />
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div
-          class="trade-panel__trades-content"
-          [ngClass]="{
-            'trade-panel__trades-content_expanded': expanded
-          }"
-        >
-          <tui-scrollbar>
-            <app-trades-list
-              [taggedTrades]="showTradesList ? taggedTrades : []"
-              (selectionHandler)="handleSelection()"
-            ></app-trades-list>
-          </tui-scrollbar>
-        </div>
-      </ng-container>
+          <div
+            class="trade-panel__trades-content"
+            [ngClass]="{
+              'trade-panel__trades-content_expanded': expanded
+            }"
+          >
+            <tui-scrollbar>
+              <app-trades-list
+                [taggedTrades]="showTradesList ? taggedTrades : []"
+                (selectionHandler)="handleSelection()"
+              ></app-trades-list>
+            </tui-scrollbar>
+          </div>
+        </ng-container>
+      </div>
     </div>
-  </div>
 
-  <ng-container *ngIf="selectedTrade?.route as route">
-    <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+    <ng-container *ngIf="selectedTrade?.route as route">
+      <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+    </ng-container>
   </ng-container>
 </ng-container>

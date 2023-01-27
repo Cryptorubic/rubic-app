@@ -9,7 +9,6 @@ import {
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
-  SymbiosisCrossChainTrade,
   UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
@@ -106,7 +105,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromAmount: BigNumber
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const receiverAddress = this.receiverAddress;
+    // const receiverAddress = this.receiverAddress; todo return
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
@@ -126,8 +125,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timeout: this.defaultTimeout,
       disabledProviders,
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
-      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
-      ...(receiverAddress && { receiverAddress })
+      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO]
+      // ...(receiverAddress && { receiverAddress })
     };
 
     return this.sdkService.crossChain
@@ -145,7 +144,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
           }
 
           const trade = wrappedTrade?.trade;
-          return from(calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)).pipe(
+
+          const needApprove$ = from(
+            calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
+          );
+
+          return needApprove$.pipe(
             map((needApprove): CrossChainCalculatedTradeData => {
               return {
                 total: total,
@@ -178,14 +182,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
       bridgeProvider: wrappedTrade.tradeType
     };
 
-    if (this.queryParamsService.enabledProviders) {
-      return smartRouting;
-    }
-
     if (
-      wrappedTrade.trade instanceof LifiCrossChainTrade ||
-      wrappedTrade.trade instanceof ViaCrossChainTrade ||
-      wrappedTrade.trade instanceof RangoCrossChainTrade
+      (wrappedTrade.trade instanceof LifiCrossChainTrade ||
+        wrappedTrade.trade instanceof ViaCrossChainTrade ||
+        wrappedTrade.trade instanceof RangoCrossChainTrade) &&
+      wrappedTrade.trade.bridgeType
     ) {
       return {
         ...smartRouting,
@@ -239,17 +240,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ]);
 
     const fromAddress = this.authService.userAddress;
+    let transactionHash: string;
+
     const onTransactionHash = (txHash: string) => {
+      transactionHash = txHash;
       confirmCallback?.();
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade);
 
       const timestamp = Date.now();
       const viaUuid =
         calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
       const rangoRequestId =
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
-      const symbiosisVersion =
-        calculatedTrade.trade instanceof SymbiosisCrossChainTrade && calculatedTrade.trade.version;
-
       const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
         fromToken,
@@ -260,12 +262,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
 
         ...(viaUuid && { viaUuid }),
-        ...(rangoRequestId && { rangoRequestId }),
-        ...(symbiosisVersion && { symbiosisVersion })
+        ...(rangoRequestId && { rangoRequestId })
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
-      this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      try {
+        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
+      } catch {}
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
@@ -285,7 +288,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
     try {
       await calculatedTrade.trade.swap(swapOptions);
       this.showSuccessTrxNotification();
+      await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
+      if (
+        transactionHash &&
+        err instanceof Error &&
+        err.message.includes('Transaction was not mined')
+      ) {
+        await this.crossChainApiService.patchTrade(transactionHash, false);
+      }
+
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(
           err,
@@ -365,10 +377,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.requestId
         : undefined;
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
-    const symbiosisVersion =
-      calculatedTrade.trade instanceof SymbiosisCrossChainTrade
-        ? calculatedTrade.trade.version
-        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -384,8 +392,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
           viaUuid,
           rangoRequestId,
           timestamp,
-          amountOutMin,
-          symbiosisVersion
+          amountOutMin
         }
       })
       .subscribe();

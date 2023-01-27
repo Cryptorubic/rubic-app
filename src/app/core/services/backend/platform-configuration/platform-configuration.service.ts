@@ -11,7 +11,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   LifiBridgeTypes,
-  RangoBridgeTypes
+  RangoBridgeTypes,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
@@ -45,6 +46,20 @@ interface ProvidersConfiguration {
   disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
+const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
+  BLOCKCHAIN_NAME.TRON,
+  BLOCKCHAIN_NAME.BITCOIN,
+  BLOCKCHAIN_NAME.BITGERT,
+  BLOCKCHAIN_NAME.ETHEREUM_POW,
+  BLOCKCHAIN_NAME.MOONBEAM,
+  BLOCKCHAIN_NAME.FUSE,
+  BLOCKCHAIN_NAME.OKE_X_CHAIN,
+  BLOCKCHAIN_NAME.CRONOS,
+  BLOCKCHAIN_NAME.HARMONY,
+  BLOCKCHAIN_NAME.CELO,
+  BLOCKCHAIN_NAME.GNOSIS
+];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -76,7 +91,12 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+    const availableBlockchains = Object.values(BLOCKCHAIN_NAME).filter(
+      blockchain => !temporarelyDisabledBlockchains.includes(blockchain)
+    );
+    this._availableBlockchains$.next(availableBlockchains);
+  }
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
@@ -100,7 +120,7 @@ export class PlatformConfigurationService {
     [chain: string]: boolean;
   }): BlockchainName[] {
     return Object.entries(availableBlockchains)
-      .filter(([_, availability]) => availability)
+      .filter(([blockchain, availability]) => availability || blockchain === 'tron')
       .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
   }
 

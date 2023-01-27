@@ -5,7 +5,8 @@ import {
   distinctUntilChanged,
   map,
   startWith,
-  switchMap
+  switchMap,
+  tap
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
@@ -57,6 +58,7 @@ import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 
 @Injectable()
 export class CrossChainFormService {
@@ -218,6 +220,7 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
+    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -254,10 +257,15 @@ export class CrossChainFormService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
-            this.refreshService.setStopped();
-            this.swapFormService.outputControl.patchValue({
-              toAmount: new BigNumber(NaN)
-            });
+
+            if (
+              this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+            ) {
+              this.refreshService.setStopped();
+              this.swapFormService.outputControl.patchValue({
+                toAmount: new BigNumber(NaN)
+              });
+            }
 
             return { ...calculateData, stop: true };
           }
@@ -282,6 +290,9 @@ export class CrossChainFormService {
                 return of(null);
               }
 
+              if (calculateData.isForced) {
+                this.unsetCalculatedTrades();
+              }
               if (
                 this.tradeStatus !== TRADE_STATUS.READY_TO_APPROVE &&
                 this.tradeStatus !== TRADE_STATUS.READY_TO_SWAP &&
@@ -300,7 +311,7 @@ export class CrossChainFormService {
                 fromAmount
               );
               return crossChainTrade$.pipe(
-                map(({ total, calculated, lastCalculatedTrade }) => {
+                tap(({ total, calculated, lastCalculatedTrade }) => {
                   const calculationEnded = calculated === total;
                   if (calculationEnded) {
                     this.isCalculating = false;
@@ -346,9 +357,10 @@ export class CrossChainFormService {
       this.updateTradesList(lastCalculatedTrade);
 
       if (
-        this.isTradeSelectedByUser ||
-        this.isButtonHovered ||
-        this.isSwapStarted !== SWAP_PROCESS.NONE
+        (this.isTradeSelectedByUser ||
+          this.isButtonHovered ||
+          this.isSwapStarted !== SWAP_PROCESS.NONE) &&
+        lastCalculatedTrade?.trade?.to.tokenAmount.gt(0)
       ) {
         this.compareSelectedTradeToBestTrade();
       } else {
@@ -427,7 +439,9 @@ export class CrossChainFormService {
       ) {
         updatedSelectedTrade = this.taggedTrades[0];
       } else {
-        updatedSelectedTrade = this.taggedTrades.find(taggedTrade => !taggedTrade.needApprove);
+        updatedSelectedTrade = this.taggedTrades.find(
+          taggedTrade => !taggedTrade.needApprove && !taggedTrade.error
+        );
       }
     }
     if (!updatedSelectedTrade) {
@@ -435,9 +449,10 @@ export class CrossChainFormService {
     }
 
     if (
-      this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
-      !this.selectedTrade.trade.to.tokenAmount.eq(updatedSelectedTrade.trade.to.tokenAmount) ||
-      (!this.selectedTrade.error && updatedSelectedTrade.error)
+      this.selectedTrade &&
+      (this.selectedTrade.tradeType !== updatedSelectedTrade.tradeType ||
+        !this.selectedTrade.trade.to.tokenAmount.eq(updatedSelectedTrade.trade.to.tokenAmount) ||
+        (!this.selectedTrade.error && updatedSelectedTrade.error))
     ) {
       this.updatedSelectedTrade = updatedSelectedTrade;
 
@@ -545,8 +560,6 @@ export class CrossChainFormService {
    */
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
-      this.unsetCalculatedTrades();
-
       this.startRecalculation();
     });
   }
@@ -561,8 +574,6 @@ export class CrossChainFormService {
         distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance)
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -583,8 +594,6 @@ export class CrossChainFormService {
         distinctUntilChanged((prev, cur) => (!prev && !cur) || prev === cur)
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -599,8 +608,6 @@ export class CrossChainFormService {
         distinctUntilChanged()
       )
       .subscribe(() => {
-        this.unsetCalculatedTrades();
-
         this.startRecalculation();
       });
   }
@@ -628,7 +635,6 @@ export class CrossChainFormService {
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(({ isForced }) => {
       if (isForced) {
-        this.criticalError = null;
         this.unsetTradeSelectedByUser();
         this.isSwapStarted = SWAP_PROCESS.NONE;
         this.refreshServiceCallsCounter = 0;
@@ -658,16 +664,17 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
-    if (!BlockchainsInfo.isBlockchainName(fromAssetType) || fromAssetType === toBlockchain) {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
       this._calculateTrade$.next({ stop: true });
       return;
     }
 
-    if (!this.crossChainCalculationService.areSupportedBlockchains(fromAssetType, toBlockchain)) {
+    const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
+    const fromBlockchain = fromAssetType as BlockchainName;
+    if (!this.crossChainCalculationService.areSupportedBlockchains(fromBlockchain, toBlockchain)) {
       let unsupportedBlockchain = undefined;
-      if (!this.crossChainCalculationService.isSupportedBlockchain(fromAssetType)) {
-        unsupportedBlockchain = fromAssetType;
+      if (!this.crossChainCalculationService.isSupportedBlockchain(fromBlockchain)) {
+        unsupportedBlockchain = fromBlockchain;
       } else if (!this.crossChainCalculationService.isSupportedBlockchain(toBlockchain)) {
         unsupportedBlockchain = toBlockchain;
       }
