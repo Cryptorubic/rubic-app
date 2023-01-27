@@ -31,11 +31,11 @@ export class SettingsService {
     crossChain: 4
   };
 
-  public defaultItSettings = this.getDefaultITSettings();
+  public defaultItSettings: ItSettingsForm;
 
-  public defaultCcrSettings = this.getDefaultCCRSettings();
+  public defaultCcrSettings: CcrSettingsForm;
 
-  public settingsForm = this.createForm();
+  public settingsForm: FormGroup<SettingsFormControls>;
 
   private ccrShowReceiverAddressUserValue: boolean;
 
@@ -44,7 +44,7 @@ export class SettingsService {
   }
 
   public get instantTradeValue(): ItSettingsForm {
-    return this.settingsForm.controls[SWAP_PROVIDER_TYPE.INSTANT_TRADE].getRawValue();
+    return this.settingsForm.get(SWAP_PROVIDER_TYPE.INSTANT_TRADE).value;
   }
 
   public get instantTradeValueChanges(): Observable<ItSettingsForm> {
@@ -56,7 +56,7 @@ export class SettingsService {
   }
 
   public get crossChainRoutingValue(): CcrSettingsForm {
-    return this.settingsForm.controls[SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING].getRawValue();
+    return this.settingsForm.get(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING).value;
   }
 
   public get crossChainRoutingValueChanges(): Observable<CcrSettingsForm> {
@@ -71,7 +71,12 @@ export class SettingsService {
     private readonly queryParamsService: QueryParamsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
   ) {
+    this.defaultItSettings = this.getDefaultITSettings();
+    this.defaultCcrSettings = this.getDefaultCCRSettings();
+
+    this.createForm();
     this.initSubscriptions();
+
     this.subscribeOnQueryParams();
   }
 
@@ -84,10 +89,14 @@ export class SettingsService {
         };
 
         this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
-        this.instantTrade.patchValue(this.defaultItSettings);
-
         this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
-        this.crossChainRouting.patchValue(this.defaultCcrSettings);
+
+        this.instantTrade.patchValue({
+          slippageTolerance: this.defaultItSettings.slippageTolerance
+        });
+        this.crossChainRouting.patchValue({
+          slippageTolerance: this.defaultCcrSettings.slippageTolerance
+        });
       }
     });
   }
@@ -120,8 +129,8 @@ export class SettingsService {
     return Math.min(Math.max(slippage, 0.1), 50);
   }
 
-  private createForm(): FormGroup<SettingsFormControls> {
-    return new FormGroup<SettingsFormControls>({
+  private createForm(): void {
+    this.settingsForm = new FormGroup<SettingsFormControls>({
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup<ItSettingsFormControls>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
