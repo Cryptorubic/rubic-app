@@ -4,7 +4,6 @@ import {
   BLOCKCHAIN_NAME,
   ERC20_TOKEN_ABI,
   MethodDecoder,
-  Web3Pure,
   Injector,
   EvmBlockchainName,
   RubicSdkError,
@@ -31,7 +30,6 @@ import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Cacheable } from 'ts-cacheable';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import BigNumber from 'bignumber.js';
-import { TokenApproveData } from '@features/approve-scanner/models/token-approve-data';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -100,9 +98,13 @@ export class ApproveScannerService {
     shareReplay(shareReplayConfig)
   );
 
+  private readonly _refreshTable$ = new BehaviorSubject('');
+
+  public readonly refreshTable$ = this._refreshTable$.asObservable();
+
   public readonly allApproves$ = this.selectedBlockchain$.pipe(
     startWith(this.defaultBlockchain),
-    combineLatestWith(this.walletConnectorService.addressChange$),
+    combineLatestWith(this.walletConnectorService.addressChange$, this.refreshTable$),
     distinctUntilChanged(),
     tap(() => {
       this.tableLoading = true;
@@ -110,7 +112,9 @@ export class ApproveScannerService {
       this.tokenSearchQuery = '';
       this.spenderSearchQuery = '';
     }),
-    switchMap(([blockchain, address]) => this.fetchTransactions(blockchain, address)),
+    switchMap(([blockchain, address, revokedAddress]) =>
+      this.fetchTransactions(blockchain, address, revokedAddress)
+    ),
     tap(() => (this.tableLoading = false))
   );
 
@@ -184,7 +188,8 @@ export class ApproveScannerService {
   @Cacheable({ maxAge: 120_000 })
   private fetchTransactions(
     blockchain: Blockchain,
-    userAddress: string
+    userAddress: string,
+    _revokedAddress: string
   ): Observable<ApproveTransaction[]> {
     const blockchainAddressMapper: Record<SupportedBlockchain, string> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: `https://api.etherscan.io/api?module=account&action=txlist&address=${userAddress}`,
@@ -214,46 +219,6 @@ export class ApproveScannerService {
       );
   }
 
-  public async fetchApproveTokenData(
-    tokenAddress: string,
-    spenderAddress: string
-  ): Promise<TokenApproveData> {
-    try {
-      const blockchain = this.form.controls.blockchain.value.key as EvmBlockchainName;
-      const web3 = Injector.web3PublicService.getWeb3Public(blockchain);
-
-      const { decimals, symbol } = await web3.callForTokenInfo(tokenAddress, [
-        'decimals',
-        'symbol'
-      ]);
-
-      const allowance = await web3.getAllowance(
-        tokenAddress,
-        this.walletConnectorService.address,
-        spenderAddress
-      );
-
-      await new Promise(resolve => {
-        setTimeout(resolve, 2_000);
-      });
-      const tokenDetails = await this.tokensService.findToken(
-        { address: tokenAddress, blockchain: blockchain },
-        true
-      );
-      const maxApprove = new BigNumber(2).pow(256).minus(1);
-
-      return {
-        address: tokenAddress,
-        spender: spenderAddress,
-        symbol,
-        image: tokenDetails?.image || 'assets/images/icons/coins/default-token-ico.svg',
-        allowance: maxApprove.eq(allowance)
-          ? 'Infinity'
-          : Web3Pure.fromWei(allowance, Number(decimals)).toFixed()
-      };
-    } catch {}
-  }
-
   async revokeApprove(tokenAddress: string, spenderAddress: string): Promise<void> {
     const blockchain = this.form.controls.blockchain.value.key as EvmBlockchainName;
     const web3 = Injector.web3PublicService.getWeb3Public(blockchain);
@@ -277,6 +242,7 @@ export class ApproveScannerService {
           }
         });
       this.showSuccessNotification();
+      this._refreshTable$.next(tokenAddress);
     } catch (err) {
       this.handleError(err);
     } finally {
@@ -292,7 +258,7 @@ export class ApproveScannerService {
   }
 
   public showSuccessNotification(): Subscription {
-    return this.notificationsService.show('Revoke is success.', {
+    return this.notificationsService.show('Successful revoke', {
       status: TuiNotification.Success,
       autoClose: 10000
     });
@@ -331,8 +297,9 @@ export class ApproveScannerService {
       const spender = decodedData.params.find(param => param.name === '_spender')!.value;
       const value = decodedData.params.find(param => param.name === '_value')!.value;
 
-      if (!uniqueTokens.has(tx.to)) {
-        uniqueTokens.set(tx.to, {
+      const key = `${tx.to}${spender}`;
+      if (!uniqueTokens.has(key)) {
+        uniqueTokens.set(key, {
           hash: tx.hash,
           tokenAddress: tx.to,
           spender,

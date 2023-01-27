@@ -43,25 +43,17 @@
             *ngIf="allowChangeBlockchain; else revoke"
             [attr.error]="true"
             appearance="primary"
-            [loading]="revokeLoading"
-            [disabled]="revokeLoading"
+            [loading]="switchLoading"
+            [disabled]="switchLoading"
             size="s"
             (onClick)="changeNetwork()"
             >Switch
           </app-rubic-button>
 
           <ng-template #revoke>
-            <button
-              tuiButton
-              type="button"
-              class="tui-space_right-3 tui-space_bottom-3"
-              (click)="handleRevoke(approve.tokenAddress, approve.spender)"
-              appearance="primary"
-              [showLoader]="revokeLoading"
-              size="s"
-            >
-              Revoke
-            </button>
+            <app-revoke-button
+              (handleRevoke)="handleRevoke(approve.tokenAddress, approve.spender, $event)"
+            ></app-revoke-button>
           </ng-template>
         </div>
       </div>

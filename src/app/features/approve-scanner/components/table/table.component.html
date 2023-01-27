@@ -8,7 +8,7 @@
     allowChangeBlockchain: allowChangeBlockchain$ | async,
     tokenControl: queryForm.controls.token,
     spenderControl: queryForm.controls.spender,
-    revokeLoading: loading,
+    revokeLoading: switchLoading,
     tableLoading: tableLoading$ | async,
     selectedBlockchain: selectedBlockchain$ | async
   } as table"
@@ -23,7 +23,7 @@
       [approves]="table.approves"
       [isLimitsExceeded]="table.isLimitsExceeded"
       [page]="table.page"
-      [revokeLoading]="table.revokeLoading"
+      [switchLoading]="table.revokeLoading"
       [size]="table.size"
       [spenderControl]="table.spenderControl"
       [tableLoading]="table.tableLoading"
@@ -59,7 +59,7 @@
         [approves]="table.approves"
         [isLimitsExceeded]="table.isLimitsExceeded"
         [page]="table.page"
-        [revokeLoading]="table.revokeLoading"
+        [switchLoading]="table.revokeLoading"
         [size]="table.size"
         [spenderControl]="table.spenderControl"
         [tableLoading]="table.tableLoading"

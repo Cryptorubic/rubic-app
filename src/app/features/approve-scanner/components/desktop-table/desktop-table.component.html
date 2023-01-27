@@ -1,4 +1,11 @@
-<table class="table">
+<table class="table tui-table_layout_fixed">
+  <colgroup>
+    <col width="170" />
+    <col width="150" />
+    <col width="150" />
+    <col width="150" />
+    <col width="170" />
+  </colgroup>
   <tbody>
     <tr class="table__tr table__tr_head">
       <th class="table__th">
@@ -57,25 +64,17 @@
           *ngIf="allowChangeBlockchain; else revoke"
           [attr.error]="true"
           appearance="primary"
-          [loading]="revokeLoading"
-          [disabled]="revokeLoading"
+          [loading]="switchLoading"
+          [disabled]="switchLoading"
           size="s"
           (onClick)="changeNetwork()"
           >Switch network
         </app-rubic-button>
 
         <ng-template #revoke>
-          <button
-            tuiButton
-            type="button"
-            class="tui-space_right-3 tui-space_bottom-3"
-            (click)="handleRevoke(approve.tokenAddress, approve.spender)"
-            appearance="primary"
-            [showLoader]="revokeLoading"
-            size="s"
-          >
-            Revoke
-          </button>
+          <app-revoke-button
+            (handleRevoke)="handleRevoke(approve.tokenAddress, approve.spender, $event)"
+          ></app-revoke-button>
         </ng-template>
       </td>
     </tr>

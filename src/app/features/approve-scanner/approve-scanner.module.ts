@@ -24,6 +24,7 @@ import { OverviewPageComponent } from './components/overview-page/overview-page.
 import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
 import { DesktopTableComponent } from './components/desktop-table/desktop-table.component';
 import { MobileTableComponent } from './components/mobile-table/mobile-table.component';
+import { RevokeButtonComponent } from './components/revoke-button/revoke-button.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MobileTableComponent } from './components/mobile-table/mobile-table.com
     TableComponent,
     OverviewPageComponent,
     DesktopTableComponent,
-    MobileTableComponent
+    MobileTableComponent,
+    RevokeButtonComponent
   ],
   imports: [
     CommonModule,

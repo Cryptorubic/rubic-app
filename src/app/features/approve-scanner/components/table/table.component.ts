@@ -35,7 +35,7 @@ export class TableComponent {
 
   public readonly allApproves$ = this.approveScannerService.allApproves$;
 
-  public loading = false;
+  public switchLoading = false;
 
   public readonly tableLoading$ = this.approveScannerService.tableLoading$;
 
@@ -67,26 +67,32 @@ export class TableComponent {
     @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
   ) {}
 
-  public async handleRevoke({ token, spender }: { token: string; spender: string }): Promise<void> {
+  public async handleRevoke({
+    token,
+    spender,
+    callback
+  }: {
+    token: string;
+    spender: string;
+    callback: () => void;
+  }): Promise<void> {
     try {
-      this.loading = true;
       await this.approveScannerService.revokeApprove(token, spender);
     } catch (err) {
       this.errorsService.catch(err);
     } finally {
-      this.loading = false;
-      this.cdr.detectChanges();
+      callback();
     }
   }
 
   public async changeNetwork(): Promise<void> {
-    this.loading = true;
+    this.switchLoading = true;
     try {
       const blockchain = await firstValueFrom(this.approveScannerService.selectedBlockchain$);
       await this.walletConnectorService.switchChain(blockchain.key as EvmBlockchainName);
       await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));
     } finally {
-      this.loading = false;
+      this.switchLoading = false;
       this.cdr.markForCheck();
     }
   }

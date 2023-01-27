@@ -27,7 +27,7 @@ export class MobileTableComponent {
 
   @Input() public readonly spenderControl: FormControl<string>;
 
-  @Input() public readonly revokeLoading: boolean;
+  @Input() public readonly switchLoading: boolean;
 
   @Input() public readonly tableLoading: boolean;
 
@@ -38,21 +38,18 @@ export class MobileTableComponent {
   @Output() public readonly handleRevokeCall = new EventEmitter<{
     token: string;
     spender: string;
+    callback: () => void;
   }>();
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  constructor() {
-    setTimeout(() => {
-      console.log(this);
-    }, 10000);
-  }
+  constructor() {}
 
   public changeNetwork(): void {
     this.handleNetworkChange.emit();
   }
 
-  public handleRevoke(token: string, spender: string): void {
-    this.handleRevokeCall.emit({ token, spender });
+  public handleRevoke(token: string, spender: string, callback: () => void): void {
+    this.handleRevokeCall.emit({ token, spender, callback });
   }
 }
