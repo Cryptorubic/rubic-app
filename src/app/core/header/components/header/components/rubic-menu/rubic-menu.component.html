@@ -83,7 +83,11 @@
           ></app-notification-badge>
         </a>
 
-        <a class="data-list__link data-list__link_modal" routerLink="history/limit-orders">
+        <a
+          class="data-list__link data-list__link_modal"
+          routerLink="history/limit-orders"
+          queryParamsHandling="merge"
+        >
           <button tuiOption class="data-list__option">Limit Orders</button>
         </a>
 

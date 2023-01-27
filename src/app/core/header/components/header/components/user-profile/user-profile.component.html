@@ -47,7 +47,12 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <div *noFrame class="user-profile__dropdown-item button-link" routerLink="history/limit-orders">
+  <div
+    *noFrame
+    class="user-profile__dropdown-item button-link"
+    routerLink="history/limit-orders"
+    queryParamsHandling="merge"
+  >
     Limit Orders
   </div>
 </ng-template>

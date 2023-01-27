@@ -16,11 +16,37 @@
 }
 
 .header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 56px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
 
   @include b($laptop) {
+    max-width: 400px;
     margin-bottom: 8px;
+  }
+
+  &__arrow-back {
+    position: absolute;
+    top: 50%;
+    left: 24px;
+
+    width: 9px;
+    height: 18px;
+
+    transform: translateY(-50%);
+
+    @include b($laptop) {
+      left: 5px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   &__title {
@@ -29,9 +55,8 @@
     align-items: center;
     justify-content: center;
 
-    @include b($tablet) {
-      font-size: 20px;
-      line-height: 24px;
+    @include b($laptop) {
+      font-size: 16px;
     }
   }
 }

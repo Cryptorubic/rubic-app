@@ -11,7 +11,7 @@
     <footer class="modal__footer">
       <div class="modal__footer-text" (click)="onConfirm()">
         You can check your order status in
-        <a routerLink="history/limit-orders">Limit Orders panel</a>.
+        <a routerLink="history/limit-orders" queryParamsHandling="merge">Limit Orders panel</a>.
       </div>
 
       <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">
