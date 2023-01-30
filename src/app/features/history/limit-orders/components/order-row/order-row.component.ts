@@ -88,10 +88,15 @@ export class OrderRowComponent implements OnInit {
     }
 
     const { orderRate, marketRate } = this.order;
-    const percentDiff = orderRate.minus(marketRate).div(marketRate).dp(2).toNumber();
-    if (percentDiff <= -0.1) {
+    const percentDiff = orderRate
+      .minus(marketRate)
+      .div(marketRate)
+      .multipliedBy(100)
+      .dp(2)
+      .toNumber();
+    if (percentDiff <= -10) {
       this.rateLevelData = rateLevelsData[RateLevel.RED];
-    } else if (percentDiff <= -0.05) {
+    } else if (percentDiff <= -5) {
       this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
     }
     this.percentDiff = {

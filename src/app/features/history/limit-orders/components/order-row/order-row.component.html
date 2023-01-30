@@ -22,7 +22,9 @@
         <div class="asset__data__symbol">
           {{ order.fromToken?.symbol ? order.fromToken.symbol : 'Unknown' }}
         </div>
-        <div class="asset__data__amount">{{ (order.fromAmount | bigNumberFormat) || 'N/A' }}</div>
+        <div class="asset__data__amount">
+          {{ (order.fromAmount | bigNumberFormat | withRound : 'toClosestValue') || 'N/A' }}
+        </div>
       </div>
     </div>
   </td>
@@ -50,7 +52,9 @@
         <div class="asset__data__symbol">
           {{ order.toToken?.symbol ? order.toToken.symbol : 'Unknown' }}
         </div>
-        <div class="asset__data__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
+        <div class="asset__data__amount">
+          {{ (order.toAmount | bigNumberFormat | withRound : 'toClosestValue') || 'N/A' }}
+        </div>
       </div>
     </div>
   </td>
@@ -142,7 +146,7 @@
               {{ order.fromToken?.symbol ? order.fromToken.symbol : 'Unknown' }}
             </div>
             <div class="asset__data__amount">
-              {{ (order.fromAmount | bigNumberFormat) || 'N/A' }}
+              {{ (order.fromAmount | bigNumberFormat | withRound : 'toClosestValue') || 'N/A' }}
             </div>
           </div>
         </div>
@@ -172,7 +176,9 @@
             <div class="asset__data__symbol">
               {{ order.toToken?.symbol ? order.toToken.symbol : 'Unknown' }}
             </div>
-            <div class="asset__data__amount">{{ (order.toAmount | bigNumberFormat) || 'N/A' }}</div>
+            <div class="asset__data__amount">
+              {{ (order.toAmount | bigNumberFormat | withRound : 'toClosestValue') || 'N/A' }}
+            </div>
           </div>
         </div>
       </div>
