@@ -63,6 +63,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: 'trisolaris',
   [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: 'uniswap',
   [ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3]: 'uniswap3',
+  [ON_CHAIN_TRADE_TYPE.VERSE]: 'verse',
   [ON_CHAIN_TRADE_TYPE.VIPER_SWAP]: 'viper',
   [ON_CHAIN_TRADE_TYPE.WANNA_SWAP]: 'wannaswap',
   [ON_CHAIN_TRADE_TYPE.WRAPPED]: 'wrapped',
