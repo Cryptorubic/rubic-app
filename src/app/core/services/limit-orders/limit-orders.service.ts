@@ -8,19 +8,13 @@ import { first } from 'rxjs/operators';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
-  CHAIN_TYPE,
   EvmBlockchainName,
   Injector,
   Web3Pure,
   Cache,
   CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
-import {
-  ChainId,
-  limirOrderProtocolAdresses,
-  LimitOrderProtocolFacade,
-  Web3ProviderConnector
-} from '@1inch/limit-order-protocol-utils';
+
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Token } from '@app/shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
@@ -138,40 +132,6 @@ export class LimitOrdersService {
 
     const updatedOrders = this._orders$.value.filter(({ hash }) => hash !== orderHash);
     this._orders$.next(updatedOrders);
-  }
-
-  // todo move to sdk
-  public async fillOrder(token: Token, orderHash: string): Promise<void> {
-    const blockchain = token.blockchain as EvmBlockchainName;
-    const order = await this.sdkService.limitOrderManager['apiService'].getOrderByHash(
-      this.authService.userAddress,
-      blockchain,
-      orderHash
-    );
-
-    const chainId = blockchainId[blockchain] as ChainId;
-    const connector = new Web3ProviderConnector(
-      Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM).web3
-    );
-    const limitOrderProtocolFacade = new LimitOrderProtocolFacade(
-      limirOrderProtocolAdresses[chainId],
-      chainId,
-      connector
-    );
-
-    const { fromAmount } = this.swapFormService.inputValue;
-    const data = limitOrderProtocolFacade.fillLimitOrder({
-      order: order.data,
-      signature: order.signature,
-      makingAmount: '0',
-      takingAmount: Web3Pure.toWei(fromAmount, token.decimals),
-      thresholdAmount: '0'
-    });
-    await Injector.web3PrivateService
-      .getWeb3Private(CHAIN_TYPE.EVM)
-      .sendTransaction(limirOrderProtocolAdresses[chainId], {
-        data
-      });
   }
 
   public async getMarketRate(fromToken: Token, toToken: Token): Promise<BigNumber> {
