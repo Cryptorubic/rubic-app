@@ -64,11 +64,9 @@ export class BlockchainsListService {
     }
 
     const { formType } = this.assetsSelectorService;
-    const { toToken, fromAsset } = this.swapFormService.inputValue;
+    const { fromAsset } = this.swapFormService.inputValue;
     const selectedBlockchain =
-      isLimitOrder &&
-      ((formType === 'from' && toToken?.blockchain) ||
-        (formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain));
+      isLimitOrder && formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
 
     this._availableBlockchains = blockchains.map(blockchainName => {
       const disabledConfiguration =
@@ -103,6 +101,7 @@ export class BlockchainsListService {
   public isDisabled(blockchain: AvailableBlockchain): boolean {
     return (
       blockchain.disabledConfiguration ||
+      blockchain.disabledLimitOrder ||
       this.isDisabledFrom(blockchain) ||
       this.isDisabledTo(blockchain)
     );
@@ -131,6 +130,9 @@ export class BlockchainsListService {
     }
     if (blockchain.disabledConfiguration) {
       return 'Temporary disabled';
+    }
+    if (blockchain.disabledLimitOrder) {
+      return 'Change selected source token';
     }
     return null;
   }

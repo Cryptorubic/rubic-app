@@ -163,7 +163,7 @@ export class LimitOrderFormService {
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.updateStatus();
-      this.updateBlockchains();
+      setTimeout(() => this.updateBlockchains());
     });
 
     this.swapFormService.outputValueDistinct$.subscribe(() => {
@@ -192,17 +192,19 @@ export class LimitOrderFormService {
    * Updates form blockchains, so they are equal.
    */
   private updateBlockchains(): void {
+    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+      return;
+    }
     const { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
-    if (fromToken && !toToken) {
-      if (fromBlockchain !== toBlockchain) {
-        this.swapFormService.inputControl.patchValue({
-          toBlockchain: fromBlockchain
-        });
-      }
-    } else if (!fromToken && toToken) {
-      if (fromBlockchain !== toBlockchain) {
+    if (fromBlockchain !== toBlockchain) {
+      if (toToken && !fromToken) {
         this.swapFormService.inputControl.patchValue({
           fromAssetType: toBlockchain
+        });
+      } else {
+        this.swapFormService.inputControl.patchValue({
+          toBlockchain: fromBlockchain,
+          toToken: null
         });
       }
     }
