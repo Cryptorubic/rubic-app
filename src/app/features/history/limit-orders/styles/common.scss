@@ -118,6 +118,10 @@
   }
 }
 
+tui-loader {
+  width: 100%;
+}
+
 .cancel-button {
   @include font(14px, 120%, 600, var(--primary-text));
 
