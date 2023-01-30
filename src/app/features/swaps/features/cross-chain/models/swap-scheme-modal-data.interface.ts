@@ -14,5 +14,4 @@ export interface SwapSchemeModalData {
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;
-  symbiosisVersion?: 'v1' | 'v2';
 }

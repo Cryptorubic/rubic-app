@@ -5120,7 +5120,7 @@ cashaddrjs@0.4.4:
   dependencies:
     big-integer "1.6.36"
 
-cbridge-revert-manager@^1.0.0:
+cbridge-revert-manager@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/cbridge-revert-manager/-/cbridge-revert-manager-1.1.0.tgz#ad4790b6b446e25199f98cb9f31ff00404b1f44e"
   integrity sha512-MIj9ldDfm3d/i5emjf4ajxK6OSbjydu2ONouyLf2ZG4UdhXbHyC2Zqz0cAwcnoCLQDAu8ZTjEnRw97mtUtslUg==
@@ -13160,10 +13160,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.16.4:
-  version "3.16.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.16.4.tgz#88b24741e92fa924a13749d8501572a09b9de7ec"
-  integrity sha512-ddK+VoCbjLk12Sm6Dx9+DKQkaVxCU+KFTZYieDPu9hFEDKLA/3oWde7Q9KRw9c0ufFa+34fqSTRrUCa9rKpSbw==
+rubic-sdk@3.17.0:
+  version "3.17.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.17.0.tgz#1ca1e3f74d3eb4a61a3d511db0b60615a5719888"
+  integrity sha512-ixhn4XaO6D6Pc0eqkKVu4KbPgHWPJ7rmUF7ctARd7fzQyQnrABLm2IU65/t9dwtMeE294/XESP04hmf18QJRzw==
   dependencies:
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
@@ -13171,14 +13171,13 @@ rubic-sdk@3.16.4:
     axios "^0.26.1"
     bignumber.js "9.1.0"
     bitcoin-address-validation "2.2.1"
-    cbridge-revert-manager "^1.0.0"
+    cbridge-revert-manager "1.1.0"
     ethers "^5.6.8"
     grpc-web "^1.4.2"
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "^7.8.0"
     symbiosis-js-sdk "^2.9.6"
-    symbiosis-js-sdk-v1 "npm:symbiosis-js-sdk@2.8.22"
     tronweb "^4.3.0"
     web3 "^1.8.1"
 
@@ -14389,24 +14388,6 @@ swarm-js@^0.1.40:
     setimmediate "^1.0.5"
     tar "^4.0.2"
     xhr-request "^1.0.1"
-
-"symbiosis-js-sdk-v1@npm:symbiosis-js-sdk@2.8.22":
-  version "2.8.22"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.8.22.tgz#4ec0d90cc3f73fde0770ab05f3a0d13e832a8908"
-  integrity sha512-0YIIw3GoRblP/RZxX2ySqtBWnlloTZAQPds0o+Asnxu+EYY0xsOROoTJ4MGCaeMwkbYZ1DHO/61djA/fezX+iw==
-  dependencies:
-    "@renproject/chains-bitcoin" "^3.4.2"
-    "@renproject/chains-ethereum" "^3.4.3"
-    "@renproject/ren" "~3.3.0"
-    big.js "^5.2.2"
-    bignumber.js "^9.0.1"
-    decimal.js-light "^2.5.0"
-    isomorphic-unfetch "^3.1.0"
-    jsbi "^3.1.1"
-    lodash.flatmap "^4.5.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
 
 symbiosis-js-sdk@^2.9.6:
   version "2.9.7"

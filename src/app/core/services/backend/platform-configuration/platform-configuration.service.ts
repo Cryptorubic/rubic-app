@@ -120,7 +120,7 @@ export class PlatformConfigurationService {
     [chain: string]: boolean;
   }): BlockchainName[] {
     return Object.entries(availableBlockchains)
-      .filter(([_, availability]) => availability)
+      .filter(([blockchain, availability]) => availability || blockchain === 'tron')
       .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
   }
 
@@ -136,8 +136,7 @@ export class PlatformConfigurationService {
     const disabledCrossChainProviders = crossChainProvidersEntries
       .filter(([_, { active }]) => !active)
       .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
-      .filter(provider => Boolean(provider))
-      .filter(provider => provider !== 'cbridge');
+      .filter(provider => Boolean(provider));
 
     const disabledBridgeTypes = crossChainProvidersEntries
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
