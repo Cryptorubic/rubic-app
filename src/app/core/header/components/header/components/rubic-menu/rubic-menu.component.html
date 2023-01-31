@@ -83,17 +83,6 @@
           ></app-notification-badge>
         </a>
 
-        <a
-          routerLink="promotion"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-          (click)="closeMenu()"
-        >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.promotion' | translate }}
-          </button>
-        </a>
-
         <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
           {{ 'navigation.logout' | translate }}
         </button>
