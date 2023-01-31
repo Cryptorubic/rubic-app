@@ -28,12 +28,6 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <a class="user-profile__dropdown-item" routerLink="promotion">
-    {{ 'navigation.promotion' | translate }}
-  </a>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate>
   <div *noFrame class="user-profile__dropdown-item button-link" (click)="openRecentTradesModal()">
     {{ 'navigation.recentTrades' | translate }}
     <app-notification-badge

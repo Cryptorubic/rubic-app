@@ -5,7 +5,6 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { SuccessOrderModalComponent } from '@shared/components/success-modal/success-order-modal/success-order-modal.component';
 
@@ -33,13 +32,13 @@ export class SuccessTxModalService {
     callback: () => Observable<void>
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
-    return this.dialogService
+    this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
         data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
       })
-      .pipe(switchMap(() => callback?.()))
       .subscribe();
+    return callback().subscribe();
   }
 
   public openLimitOrderModal(): Subscription {
