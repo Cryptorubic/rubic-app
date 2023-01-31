@@ -36,6 +36,8 @@ app-form {
   justify-content: space-between;
 
   &__address {
+    margin-bottom: 5px;
+
     font-size: 24px;
     line-height: 24px;
     text-overflow: ellipsis;
@@ -57,7 +59,10 @@ app-form {
 
     @include b($mobile-md-minus) {
       width: auto;
-      margin-bottom: 10px;
+    }
+
+    @include b($mobile-sm) {
+      font-size: 18px;
     }
   }
 

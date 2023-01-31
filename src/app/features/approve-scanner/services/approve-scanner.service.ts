@@ -173,6 +173,7 @@ export class ApproveScannerService {
 
       return approves.filter((_, index) => index >= start && index < end);
     }),
+    map(approves => approves.filter(approve => approve.value !== '')),
     share()
   );
 
@@ -301,7 +302,7 @@ export class ApproveScannerService {
       const value = decodedData.params.find(param => param.name === '_value')!.value;
 
       const key = `${tx.to}${spender}`;
-      if (!uniqueTokens.has(key)) {
+      if (!uniqueTokens.has(key) && value !== '0') {
         uniqueTokens.set(key, {
           hash: tx.hash,
           tokenAddress: tx.to,
@@ -311,7 +312,7 @@ export class ApproveScannerService {
         });
       }
     });
-    return Array.from(uniqueTokens.values()).filter(approve => approve.value !== '0');
+    return Array.from(uniqueTokens.values());
   }
 
   private findTokensForApproves(

@@ -1,0 +1,20 @@
+@use 'src/scss/core' as *;
+
+:host ::ng-deep {
+  app-rubic-button {
+    @include b($mobile-md-minus) {
+      width: auto;
+    }
+  }
+
+  button .wrapper {
+    @include b($mobile-md-minus) {
+      min-width: 120px;
+      height: 32px;
+
+      .content {
+        font-size: 12px;
+      }
+    }
+  }
+}
