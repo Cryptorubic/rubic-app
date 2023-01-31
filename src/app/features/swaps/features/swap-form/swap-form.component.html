@@ -33,7 +33,7 @@
             *ngIf="!isOnramper && !isLimitOrder"
           ></app-settings-container>
 
-          <app-set-to-market-button *ngIf="isLimitOrder"></app-set-to-market-button>
+          <app-set-to-market-button *ngIf="isLimitOrder && isWithTokens"></app-set-to-market-button>
 
           <app-iframe-logout-button
             *ngIf="hideUnusedUI && getCurrentUser$ | async"

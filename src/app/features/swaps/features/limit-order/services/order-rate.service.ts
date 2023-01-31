@@ -63,7 +63,7 @@ export class OrderRateService {
   }
 
   private subscribeOnAmountsChange(): void {
-    combineLatest([this.swapFormService.fromToken$, this.swapFormService.toAmount$]).subscribe(
+    combineLatest([this.swapFormService.fromAmount$, this.swapFormService.toAmount$]).subscribe(
       () => {
         const marketRate = this.marketRate;
         this._rate$.next({

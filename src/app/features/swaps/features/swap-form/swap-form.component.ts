@@ -81,6 +81,11 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
   }
 
+  public get isWithTokens(): boolean {
+    const { fromAssetType, toToken } = this.swapFormService.inputValue;
+    return fromAssetType && Boolean(toToken);
+  }
+
   constructor(
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,

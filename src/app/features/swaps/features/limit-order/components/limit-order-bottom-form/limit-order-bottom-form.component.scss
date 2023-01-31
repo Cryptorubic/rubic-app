@@ -75,6 +75,8 @@
   }
 
   &__estimate-container {
+    position: relative;
+
     min-height: 65px;
 
     @include iframe-vertical {
@@ -91,6 +93,17 @@
 
     @include b($mobile-sm) {
       flex-direction: column;
+    }
+
+    app-tokens-rate {
+      position: absolute;
+      right: 0;
+      bottom: 22px;
+
+
+      @include b($mobile-sm) {
+        position: unset;
+      }
     }
   }
 
