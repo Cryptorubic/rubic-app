@@ -55,6 +55,13 @@
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
+        <div
+          routerLink="/revoke-approval/"
+          [class.data-list__link_active]="crossChainActive"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">Revoke Approval</button>
+        </div>
       </tui-opt-group>
 
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
