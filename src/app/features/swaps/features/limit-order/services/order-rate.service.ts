@@ -53,6 +53,11 @@ export class OrderRateService {
             value: marketRate,
             percentDiff: this.getPercentDiff(marketRate)
           });
+        } else {
+          this._rate$.next({
+            value: new BigNumber(0),
+            percentDiff: 0
+          });
         }
       });
   }

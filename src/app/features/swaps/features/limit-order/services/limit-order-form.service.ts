@@ -204,7 +204,11 @@ export class LimitOrderFormService {
       } else {
         this.swapFormService.inputControl.patchValue({
           toBlockchain: fromBlockchain,
+          fromAmount: null,
           toToken: null
+        });
+        this.swapFormService.outputControl.patchValue({
+          toAmount: null
         });
       }
     }
