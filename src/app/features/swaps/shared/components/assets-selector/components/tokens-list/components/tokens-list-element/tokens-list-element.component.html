@@ -36,6 +36,30 @@
           ></span>
           <span class="token-card__name-container-copied-text"> Copied </span>
         </span>
+
+        <ng-container *ngIf="isGoPlusAvailable && isSecured !== undefined">
+          <a
+            class="token-card__name-container-security-icon"
+            [ngClass]="{ secured: isSecured, unsecured: isSecured === false }"
+            [inlineSVG]="'assets/images/swaps/swaps-info/secure-icon.svg'"
+            [tuiHint]="tokenSecurityHint"
+            tuiHintMode="onDark"
+            [tuiHintShowDelay]="50"
+            tuiHintDirection="top-right"
+            [tuiHintHideDelay]="100"
+            [href]="goPlusLabsLink"
+            rel="noopener noreferrer"
+            target="_blank"
+            (click)="$event.stopPropagation()"
+          ></a>
+        </ng-container>
+
+        <ng-template #tokenSecurityHint>
+          <span class="token-card__name-container-security-hint">
+            {{ isSecured ? 'Trusted Token' : 'Untrusted Token' }}
+          </span>
+          <span class="token-card__name-container-security-hint-powered-by">Powered by GoPlus</span>
+        </ng-template>
       </div>
       <small>{{ token.name }}</small>
     </div>

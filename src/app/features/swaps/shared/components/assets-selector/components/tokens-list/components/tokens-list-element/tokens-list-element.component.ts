@@ -8,13 +8,16 @@ import {
   Output
 } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { blockchainId, BlockchainName, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -28,6 +31,20 @@ export class TokensListElementComponent {
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
+
+  public readonly GO_PLUS_AVAILABLE_NETWORKS = [
+    BLOCKCHAIN_NAME.ETHEREUM,
+    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    BLOCKCHAIN_NAME.POLYGON,
+    BLOCKCHAIN_NAME.ARBITRUM,
+    BLOCKCHAIN_NAME.OPTIMISM,
+    BLOCKCHAIN_NAME.AVALANCHE,
+    BLOCKCHAIN_NAME.FANTOM,
+    BLOCKCHAIN_NAME.OKE_X_CHAIN,
+    BLOCKCHAIN_NAME.CRONOS,
+    BLOCKCHAIN_NAME.GNOSIS,
+    BLOCKCHAIN_NAME.TRON
+  ] as BlockchainName[];
 
   public readonly isHorizontalFrame: boolean;
 
@@ -99,5 +116,53 @@ export class TokensListElementComponent {
       this.hintShown = true;
       this.cdr.markForCheck();
     }, 1500);
+  }
+
+  /**
+   * Returns true if token's blockchain is available on GoPlus.
+   */
+  public get isGoPlusAvailable(): boolean {
+    return this.GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain);
+  }
+
+  /**
+   * Returns true if token is native token.
+   */
+  public get isNativeToken(): boolean {
+    return this.token.address === NATIVE_TOKEN_ADDRESS;
+  }
+
+  /**
+   * Returns the state of token security.
+   */
+  public get isSecured(): boolean {
+    if (
+      (this.token.tokenSecurity === null && !this.isNativeToken) ||
+      (this.token.tokenSecurity && !this.token.tokenSecurity.has_info)
+    ) {
+      return undefined;
+    }
+
+    if (
+      this.isNativeToken ||
+      this.token.tokenSecurity.trust_list ||
+      this.token.tokenSecurity.risky_security_items === 0
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns the link to GoPlus.
+   * If token is Native, links to wrapped token.
+   */
+  public get goPlusLabsLink(): string {
+    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${blockchainId[this.token.blockchain]}/${
+      this.isNativeToken
+        ? wrappedNativeTokensList[this.token.blockchain].address
+        : this.token.address
+    }`;
   }
 }

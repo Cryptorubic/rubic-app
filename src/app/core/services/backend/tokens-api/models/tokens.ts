@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 
@@ -25,6 +26,7 @@ export interface BackendToken {
   image: string;
   coingeckoId: string;
   usdPrice: number;
+  token_security: TokenSecurity | null;
 }
 
 export interface TokensBackendResponse {

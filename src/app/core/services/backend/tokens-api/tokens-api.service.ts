@@ -56,7 +56,8 @@ export class TokensApiService {
         .map((token: BackendToken) => ({
           ...token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
-          price: token.usdPrice
+          price: token.usdPrice,
+          tokenSecurity: token.token_security
         }))
         .filter(token => token.address && token.blockchain)
     );
@@ -296,7 +297,7 @@ export class TokensApiService {
             price: price.toNumber(),
             usedInIframe: true,
             hasDirectPair: null,
-
+            tokenSecurity: null,
             blockchain: BLOCKCHAIN_NAME.BITCOIN,
             address: EMPTY_ADDRESS,
             name: 'Bitcoin',
