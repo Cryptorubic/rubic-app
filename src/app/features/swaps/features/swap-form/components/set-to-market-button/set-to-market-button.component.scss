@@ -1,0 +1,27 @@
+@use 'src/scss/core' as *;
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+
+    ::ng-deep {
+      svg path {
+        fill: var(--secondary-text);
+      }
+    }
+  }
+}
+
+.tooltip {
+  font-size: 15px;
+}

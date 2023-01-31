@@ -1,0 +1,7 @@
+<button class="button" [tuiHint]="tooltip" [tuiHintShowDelay]="0" (click)="onClick()">
+  <div class="button__icon" inlineSVG="assets/images/icons/stock.svg"></div>
+</button>
+
+<ng-template #tooltip>
+  <span class="tooltip">Set to market</span>
+</ng-template>

@@ -84,6 +84,23 @@ export class OrderRateService {
   }
 
   public setRateToMarket(): void {
-    // this.updateRate(this.marketRate, true); todo
+    const { fromAmount } = this.swapFormService.inputValue;
+    const { toAmount } = this.swapFormService.outputValue;
+    if (!fromAmount?.isFinite() && !toAmount?.isFinite()) {
+      this.swapFormService.inputControl.patchValue({
+        fromAmount: new BigNumber(1)
+      });
+      this.swapFormService.outputControl.patchValue({
+        toAmount: new BigNumber(this.marketRate)
+      });
+    } else if (!fromAmount?.isFinite()) {
+      this.swapFormService.inputControl.patchValue({
+        fromAmount: toAmount.dividedBy(this.marketRate).dp(6)
+      });
+    } else {
+      this.swapFormService.outputControl.patchValue({
+        toAmount: fromAmount.multipliedBy(this.marketRate)
+      });
+    }
   }
 }
