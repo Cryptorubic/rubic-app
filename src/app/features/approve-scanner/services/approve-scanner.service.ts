@@ -173,7 +173,6 @@ export class ApproveScannerService {
 
       return approves.filter((_, index) => index >= start && index < end);
     }),
-    map(approves => approves.filter(approve => approve.value !== '')),
     share()
   );
 
@@ -213,6 +212,7 @@ export class ApproveScannerService {
         ),
         switchMap(approves => this.findTokensForApproves(approves)),
         switchMap(approves => this.fetchLastAllowance(approves, blockchain)),
+        map(approves => approves.filter(approve => approve.value !== '0')),
         tap(() => this._exceededLimits$.next(false)),
         catchError(err => {
           if (err instanceof Error && err.message.includes('Exceed limits')) {
@@ -302,7 +302,7 @@ export class ApproveScannerService {
       const value = decodedData.params.find(param => param.name === '_value')!.value;
 
       const key = `${tx.to}${spender}`;
-      if (!uniqueTokens.has(key) && value !== '0') {
+      if (!uniqueTokens.has(key)) {
         uniqueTokens.set(key, {
           hash: tx.hash,
           tokenAddress: tx.to,
