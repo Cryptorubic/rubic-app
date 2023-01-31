@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { Router } from '@angular/router';
@@ -19,7 +19,9 @@ export class ApproveScannerPageComponent {
   public readonly address$ = this.walletConnectorService.addressChange$;
 
   public readonly userBalance$ = this.service.selectedBlockchain$.pipe(
-    combineLatestWith(this.tokensService.tokens$.pipe(first(Boolean))),
+    combineLatestWith(
+      this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
+    ),
     switchMap(([blockchain]) =>
       forkJoin([
         of(blockchain),

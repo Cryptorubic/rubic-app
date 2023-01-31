@@ -28,17 +28,21 @@
 
           <div class="image-container">
             <a
+              class="spender"
               [safetyLink]="
                 approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET
               "
             >
               <span>Approved Spender: </span>
-              {{ approve.spender | shortAddress : 3 : 3 }}
-              <img
-                class="link"
-                src="assets/images/icons/link-arrow.svg"
-                [alt]="'common.checkOnScanner' | translate"
-            /></a>
+              <div>
+                {{ approve.spender | shortAddress : 5 : 5 }}
+                <img
+                  class="link"
+                  src="assets/images/icons/link-arrow.svg"
+                  [alt]="'common.checkOnScanner' | translate"
+                />
+              </div>
+            </a>
           </div>
         </div>
         <div class="right">
