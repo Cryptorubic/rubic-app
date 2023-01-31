@@ -35,9 +35,9 @@ export const NAVIGATION_LIST = [
     imagePath: `assets/images/rbc.svg`
   },
   {
-    translateKey: 'Revoke Approve',
+    translateKey: 'Revoke Approval',
     type: 'internal',
-    link: ROUTE_PATH.APPROVE_SCANNER,
+    link: ROUTE_PATH.REVOKE_APPROVAL,
     imagePath: `${defaultSrc}revoke.svg`
   }
 ] as NavigationItem[];

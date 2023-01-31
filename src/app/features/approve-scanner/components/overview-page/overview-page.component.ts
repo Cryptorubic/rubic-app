@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { ROUTE_PATH } from '@shared/constants/common/links';
 
 @Component({
   selector: 'app-overview-page',
@@ -46,7 +47,7 @@ export class OverviewPageComponent {
       .pipe(
         first(Boolean),
         takeUntil(this.destroy$),
-        switchMap(() => this.router.navigateByUrl('/approve-scanner/revoke'))
+        switchMap(() => this.router.navigateByUrl(`${ROUTE_PATH.REVOKE_APPROVAL}/revoke`))
       )
       .subscribe();
   }

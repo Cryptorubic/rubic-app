@@ -14,7 +14,7 @@ const routes: Routes = [
       import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)
   },
   {
-    path: ROUTE_PATH.APPROVE_SCANNER,
+    path: ROUTE_PATH.REVOKE_APPROVAL,
     loadChildren: () =>
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
   },
