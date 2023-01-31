@@ -6,8 +6,7 @@ import {
   RateLevelData,
   rateLevelsData
 } from '@features/swaps/shared/constants/limit-orders/rate-levels';
-import { SwapFormService } from '@app/core/services/swaps/swap-form.service';
-import { map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
@@ -18,7 +17,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   providers: [TuiDestroyService]
 })
 export class OrderRateComponent implements OnInit {
-  public rate = new FormControl<string>('');
+  public rate = new FormControl<string>({ value: '', disabled: true });
 
   public percentDiff = 0;
 
@@ -26,20 +25,16 @@ export class OrderRateComponent implements OnInit {
 
   public levelClass: string;
 
-  public fromTokenName$ = this.swapFormService.fromToken$.pipe(map(token => token?.symbol || ''));
-
   public isUnknown: boolean;
-
-  public isFixed = this.orderRateService.isFixed;
 
   private get formattedRate(): string {
     return this.rate.value.split(',').join('');
   }
 
   public get formattedPercentDiff(): string {
-    let percent = Math.abs(this.percentDiff).toString().slice(0, 3);
-    if (percent[percent.length - 1] === '.') {
-      percent = percent.slice(0, 2);
+    const percent = Math.abs(this.percentDiff).toString();
+    if (this.percentDiff >= 100) {
+      return percent.slice(0, 3);
     }
     return percent;
   }
@@ -47,22 +42,23 @@ export class OrderRateComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly orderRateService: OrderRateService,
-    private readonly swapFormService: SwapFormService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
     this.orderRateService.rate$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ value, percentDiff, unknown }) => {
+      .subscribe(({ value, percentDiff }) => {
         if (!value?.isFinite()) {
           this.rate.setValue('');
         } else if (!value.eq(this.formattedRate)) {
           this.rate.setValue(value.toFixed());
         }
+
         this.percentDiff = percentDiff;
-        this.isUnknown = unknown;
+        this.isUnknown = !value?.isFinite();
         this.updateRateLevelData();
+
         this.cdr.markForCheck();
       });
   }
@@ -87,22 +83,5 @@ export class OrderRateComponent implements OnInit {
 
     this.iconSrc = levelData.imgSrc;
     this.levelClass = levelData.class;
-  }
-
-  public onRateChange(formRate: string): void {
-    this.rate.setValue(formRate, { emitViewToModelChange: false });
-    const rate = this.orderRateService.rateValue;
-    if (((rate && !rate.isNaN()) || this.formattedRate) && !rate?.eq(this.formattedRate)) {
-      this.orderRateService.updateRate(this.formattedRate, true);
-    }
-  }
-
-  public setRateToMarket(): void {
-    this.orderRateService.setRateToMarket();
-  }
-
-  public setRateFixed(): void {
-    this.isFixed = !this.isFixed;
-    this.orderRateService.isFixed = this.isFixed;
   }
 }

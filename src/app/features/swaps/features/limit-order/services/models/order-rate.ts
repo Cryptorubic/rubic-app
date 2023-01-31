@@ -2,9 +2,8 @@ import BigNumber from 'bignumber.js';
 
 export interface OrderRate {
   /**
-   * Rate value, displayed in form.
-   * Can be equal to market rate or set by user.
-   * BigNumber(-1) means market rate is unknown.
+   * Market rate value. Equals NaN in case rate cannot be calculated,
+   * because one of tokens does not have price.
    */
   value: BigNumber;
 
@@ -12,6 +11,4 @@ export interface OrderRate {
    * Percent difference between rate in form and market rate.
    */
   percentDiff: number;
-
-  unknown: boolean;
 }

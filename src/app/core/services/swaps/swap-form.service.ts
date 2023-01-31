@@ -17,6 +17,7 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { isMinimalToken } from '@shared/utils/is-token';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class SwapFormService {
@@ -90,6 +91,12 @@ export class SwapFormService {
     shareReplay(shareReplayConfig)
   );
 
+  public readonly fromAmount$: Observable<BigNumber> = this.inputValue$.pipe(
+    map(inputValue => inputValue.fromAmount),
+    distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
   /**
    * Output control, used to patch value.
    */
@@ -104,6 +111,12 @@ export class SwapFormService {
   public readonly outputValue$ = this._outputValue$.asObservable();
 
   public readonly outputValueDistinct$ = this.outputValue$.pipe(
+    distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
+  public readonly toAmount$: Observable<BigNumber> = this.outputValue$.pipe(
+    map(inputValue => inputValue.toAmount),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)
   );

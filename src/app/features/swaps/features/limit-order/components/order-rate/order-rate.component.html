@@ -5,32 +5,19 @@
         <img [src]="iconSrc" alt="" />
       </div>
       <div class="percent__title">
-        Sell {{ fromTokenName$ | async }} at rate
-        <span
-          [class]="'percent__value ' + (levelClass ? 'percent__value_' + levelClass : '')"
-          *ngIf="percentDiff"
-          >({{ percentDiff > 0 ? '+' : '-' }}{{ formattedPercentDiff }}%)</span
-        >
+        <span *ngIf="percentDiff === 0">Market rate</span>
+        <span *ngIf="percentDiff">
+          Your rate is
+          <span [class]="'percent__value ' + (levelClass ? 'percent__value_' + levelClass : '')"
+            >{{ formattedPercentDiff }}% {{ percentDiff > 0 ? 'higher' : 'lower' }}</span
+          >
+          than market
+        </span>
       </div>
-    </div>
-
-    <div class="header__setter setter" *ngIf="!isUnknown">
-      <span class="setter__title" (click)="setRateToMarket()">Set to market</span>
-      <img
-        [src]="'assets/images/icons/lock' + (!isFixed ? '.svg' : '-fixed.svg')"
-        alt="locker"
-        class="setter__icon"
-        (click)="setRateFixed()"
-        [tuiHint]="
-          !isFixed
-            ? 'Lock the rate field to get your sell amount automatically adjusted when changing your buy amount.'
-            : null
-        "
-      />
     </div>
   </div>
 
-  <label class="rate__label" *ngIf="!isUnknown">
+  <div class="rate__input-container" *ngIf="!isUnknown">
     <input
       autocomplete="off"
       class="rate__input"
@@ -39,11 +26,9 @@
       appTokenAmount
       [formControl]="rate"
       [decimals]="6"
-      (amountChange)="onRateChange($event)"
       inputmode="decimal"
-      [disabled]="isFixed"
     />
-  </label>
+  </div>
 
   <div class="rate__unknown-text" *ngIf="isUnknown">Rate is unknown</div>
 </div>

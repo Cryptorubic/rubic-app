@@ -146,7 +146,7 @@ export class LimitOrdersService {
         fromToken.blockchain === BLOCKCHAIN_NAME.FANTOM ||
         fromToken.blockchain === BLOCKCHAIN_NAME.AURORA
       ) {
-        return new BigNumber(0);
+        return new BigNumber(NaN);
       }
       if (!fromTokenPrice) {
         [fromTokenPrice] = await this.getSpotAggregatorPrices([fromToken]);
@@ -160,7 +160,7 @@ export class LimitOrdersService {
     if (fromPriceBn?.isFinite() && toPriceBn?.isFinite() && toPriceBn.gt(0)) {
       return new BigNumber(fromTokenPrice).div(toTokenPrice);
     }
-    return new BigNumber(0);
+    return new BigNumber(NaN);
   }
 
   /**
