@@ -7,6 +7,7 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { Router } from '@angular/router';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
+import { ROUTE_PATH } from '@shared/constants/common/links';
 
 @Component({
   selector: 'app-approve-scanner-page',
@@ -45,7 +46,7 @@ export class ApproveScannerPageComponent {
     this.walletConnectorService.addressChange$
       .pipe(
         first(address => address === null),
-        switchMap(() => this.router.navigateByUrl('/approve-scanner/'))
+        switchMap(() => this.router.navigateByUrl(ROUTE_PATH.REVOKE_APPROVAL))
       )
       .subscribe();
   }
