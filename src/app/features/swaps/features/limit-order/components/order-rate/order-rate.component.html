@@ -1,15 +1,15 @@
-<div [class]="'rate ' + (levelClass ? 'rate_' + levelClass : '')">
+<div [class]="'rate ' + ('rate_' + percentInfo.className)">
   <div class="rate__header header">
     <div class="header__rate percent">
       <div class="percent__icon">
-        <img [src]="iconSrc" alt="" />
+        <img [src]="percentInfo.iconSrc" alt="" />
       </div>
       <div class="percent__title">
-        <span *ngIf="percentDiff === 0">Market rate</span>
-        <span *ngIf="percentDiff">
+        <span *ngIf="percentInfo.percent === 0">Market rate</span>
+        <span *ngIf="percentInfo.percent">
           Your rate is
-          <span [class]="'percent__value ' + (levelClass ? 'percent__value_' + levelClass : '')"
-            >{{ formattedPercentDiff }}% {{ percentDiff > 0 ? 'higher' : 'lower' }}</span
+          <span [class]="'percent__value ' + ('percent__value_' + percentInfo.className)"
+            >{{ formattedPercentDiff }}% {{ percentInfo.percent > 0 ? 'higher' : 'lower' }}</span
           >
           than market
         </span>
@@ -18,16 +18,29 @@
   </div>
 
   <div class="rate__input-container" *ngIf="!isUnknown">
-    <input
-      autocomplete="off"
-      class="rate__input"
-      name="rate"
-      placeholder="0.0"
-      appTokenAmount
-      [formControl]="rate"
-      [decimals]="6"
-      inputmode="decimal"
-    />
+    <ng-container *ngLet="fromTokenName$ | async as fromTokenName">
+      <ng-container *ngLet="toTokenName$ | async as toTokenName">
+        <button
+          class="rate__token-button"
+          *ngIf="fromTokenName && toTokenName"
+          (click)="toggleChangeDirection()"
+        >
+          {{ rateDirection === 'from-to' ? fromTokenName : toTokenName }}
+          <img src="assets/images/icons/two-arrows.svg" alt="" />
+        </button>
+
+        <input
+          autocomplete="off"
+          class="rate__input"
+          name="rate"
+          placeholder="0.0"
+          appTokenAmount
+          [formControl]="rate"
+          [decimals]="6"
+          inputmode="decimal"
+        />
+      </ng-container>
+    </ng-container>
   </div>
 
   <div class="rate__unknown-text" *ngIf="isUnknown">Rate is unknown</div>

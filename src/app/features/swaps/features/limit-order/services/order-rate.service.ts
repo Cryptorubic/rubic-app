@@ -20,6 +20,10 @@ export class OrderRateService {
 
   private readonly decimalPoints = 6;
 
+  public get marketRate(): BigNumber {
+    return this._rate$.value.value;
+  }
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly limitOrdersService: LimitOrdersService
@@ -56,7 +60,7 @@ export class OrderRateService {
   private subscribeOnAmountsChange(): void {
     combineLatest([this.swapFormService.fromToken$, this.swapFormService.toAmount$]).subscribe(
       () => {
-        const marketRate = this._rate$.getValue().value;
+        const marketRate = this.marketRate;
         this._rate$.next({
           value: marketRate,
           percentDiff: this.getPercentDiff(marketRate)
