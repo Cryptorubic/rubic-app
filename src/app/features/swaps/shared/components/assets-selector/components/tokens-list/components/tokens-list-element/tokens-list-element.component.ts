@@ -17,7 +17,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
-import { blockchainId, BlockchainName, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
+import { blockchainId, wrappedNativeTokensList } from 'rubic-sdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -31,20 +31,6 @@ export class TokensListElementComponent {
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
-
-  public readonly GO_PLUS_AVAILABLE_NETWORKS = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.POLYGON,
-    BLOCKCHAIN_NAME.ARBITRUM,
-    BLOCKCHAIN_NAME.OPTIMISM,
-    BLOCKCHAIN_NAME.AVALANCHE,
-    BLOCKCHAIN_NAME.FANTOM,
-    BLOCKCHAIN_NAME.OKE_X_CHAIN,
-    BLOCKCHAIN_NAME.CRONOS,
-    BLOCKCHAIN_NAME.GNOSIS,
-    BLOCKCHAIN_NAME.TRON
-  ] as BlockchainName[];
 
   public readonly isHorizontalFrame: boolean;
 
@@ -119,13 +105,6 @@ export class TokensListElementComponent {
   }
 
   /**
-   * Returns true if token's blockchain is available on GoPlus.
-   */
-  public get isGoPlusAvailable(): boolean {
-    return this.GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain);
-  }
-
-  /**
    * Returns true if token is native token.
    */
   public get isNativeToken(): boolean {
@@ -135,7 +114,7 @@ export class TokensListElementComponent {
   /**
    * Returns the state of token security.
    */
-  public get isSecured(): boolean {
+  public get isSecured(): boolean | undefined {
     if (
       (this.token.tokenSecurity === null && !this.isNativeToken) ||
       (this.token.tokenSecurity && !this.token.tokenSecurity.has_info)
