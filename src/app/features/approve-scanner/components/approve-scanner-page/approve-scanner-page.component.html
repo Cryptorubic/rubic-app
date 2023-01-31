@@ -1,7 +1,7 @@
 <div class="container" *ngLet="address$ | async as address">
   <div class="profile-container">
     <div *ngLet="userBalance$ | async as balance" class="profile">
-      <div class="profile__address">{{ address | shortAddress : 10 : 10 }}</div>
+      <div class="profile__address">{{ address }}</div>
       <div class="profile__balance">
         Balance: <span [class.tui-skeleton]="!balance">{{ balance }}</span>
       </div>

@@ -4,32 +4,40 @@
       <div class="top">
         <div class="left">
           <div class="image-container">
-            <ng-container *ngIf="approve.token; else address">
-              <img [src]="approve.token.image" [alt]="approve.token.symbol" />
-              {{ approve.token.symbol }}
-            </ng-container>
-            <ng-template #address>
-              <span>{{ approve.tokenAddress | shortAddress : 3 : 3 }}</span>
-            </ng-template>
             <a
               [safetyLink]="
                 approve.tokenAddress | scannerLink : selectedBlockchain : ADDRESS_TYPE.TOKEN
               "
-              ><img
-                src="assets/images/icons/scanner.svg"
+            >
+              <ng-container *ngIf="approve.token; else address">
+                <img
+                  [src]="approve.token.image"
+                  [alt]="approve.token.symbol"
+                  (error)="onImageError($event)"
+                />
+                {{ approve.token.symbol }}
+              </ng-container>
+              <ng-template #address>
+                <span>{{ approve.tokenAddress | shortAddress : 3 : 3 }}</span>
+              </ng-template>
+              <img
+                class="link"
+                src="assets/images/icons/link-arrow.svg"
                 [alt]="'common.checkOnScanner' | translate"
             /></a>
           </div>
 
           <div class="image-container">
-            <span>Spender: </span>
-            {{ approve.spender | shortAddress : 3 : 3 }}
             <a
               [safetyLink]="
                 approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET
               "
-              ><img
-                src="assets/images/icons/scanner.svg"
+            >
+              <span>Spender: </span>
+              {{ approve.spender | shortAddress : 3 : 3 }}
+              <img
+                class="link"
+                src="assets/images/icons/link-arrow.svg"
                 [alt]="'common.checkOnScanner' | translate"
             /></a>
           </div>

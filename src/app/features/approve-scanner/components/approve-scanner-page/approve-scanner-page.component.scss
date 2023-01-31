@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 .container {
+  max-width: 1240px;
+
   @include b($mobile-md-minus) {
     padding: 0;
   }
@@ -36,6 +38,7 @@ app-form {
   &__address {
     font-size: 24px;
     line-height: 24px;
+    text-overflow: ellipsis;
 
     background-color: var(--primary-color);
     background-image: linear-gradient(90deg, #{var(--primary-color)}, #{var(--accent-color)});
@@ -43,7 +46,17 @@ app-form {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 
+    @include b($laptop) {
+      font-size: 20px;
+    }
+
+    @include b($tablet) {
+      width: 250px;
+      overflow: hidden;
+    }
+
     @include b($mobile-md-minus) {
+      width: auto;
       margin-bottom: 10px;
     }
   }

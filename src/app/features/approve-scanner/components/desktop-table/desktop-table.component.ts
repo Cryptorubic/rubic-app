@@ -3,6 +3,7 @@ import { ApproveTransaction } from '@features/approve-scanner/services/approve-s
 import { FormControl } from '@angular/forms';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { BlockchainName } from 'rubic-sdk';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-desktop-table',
@@ -57,7 +58,7 @@ export class DesktopTableComponent {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  constructor() {}
+  constructor(private readonly tokensService: TokensService) {}
 
   public changeNetwork(callback: () => void): void {
     this.handleNetworkChange.emit(callback);
@@ -65,5 +66,9 @@ export class DesktopTableComponent {
 
   public handleRevoke(token: string, spender: string, callback: () => void): void {
     this.handleRevokeCall.emit({ token, spender, callback });
+  }
+
+  public onImageError($event: Event): void {
+    this.tokensService.onTokenImageError($event);
   }
 }

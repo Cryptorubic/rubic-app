@@ -4,7 +4,7 @@
     <col width="150" />
     <col width="150" />
     <col width="150" />
-    <col width="170" />
+    <col width="130" />
   </colgroup>
   <tbody>
     <tr class="table__tr table__tr_head">
@@ -28,26 +28,40 @@
     <tr *ngFor="let approve of approves">
       <td>
         <div class="image-container">
-          <ng-container *ngIf="approve.token; else address">
-            <img [src]="approve.token.image" [alt]="approve.token.symbol" />
-            {{ approve.token.symbol }}
-          </ng-container>
-          <ng-template #address>
-            <span>{{ approve.tokenAddress | shortAddress : 3 : 3 }}</span>
-          </ng-template>
           <a
             [safetyLink]="
               approve.tokenAddress | scannerLink : selectedBlockchain : ADDRESS_TYPE.TOKEN
             "
-            ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
-          /></a>
+          >
+            <ng-container *ngIf="approve.token; else address">
+              <img
+                [src]="approve.token.image"
+                [alt]="approve.token.symbol"
+                (error)="onImageError($event)"
+              />
+              {{ approve.token.symbol }}
+            </ng-container>
+            <ng-template #address>
+              <span>{{ approve.tokenAddress | shortAddress : 3 : 3 }}</span>
+            </ng-template>
+            <img
+              class="link"
+              src="assets/images/icons/link-arrow.svg"
+              [alt]="'common.checkOnScanner' | translate"
+            />
+          </a>
         </div>
       </td>
       <td>
         <div class="image-container">
-          {{ approve.spender | shortAddress : 5 : 3 }}
-          <a [safetyLink]="approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET"
-            ><img src="assets/images/icons/scanner.svg" [alt]="'common.checkOnScanner' | translate"
+          <a
+            [safetyLink]="approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET"
+          >
+            {{ approve.spender | shortAddress : 5 : 3 }}
+            <img
+              class="link"
+              src="assets/images/icons/link-arrow.svg"
+              [alt]="'common.checkOnScanner' | translate"
           /></a>
         </div>
       </td>
