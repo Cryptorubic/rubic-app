@@ -81,10 +81,10 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
         this.updateFormValues(form.fromAsset, form.fromAmount);
       });
     } else {
-      combineLatest([this.swapFormService.toToken$, this.swapFormService.outputValue$])
+      combineLatest([this.swapFormService.toToken$, this.swapFormService.toAmount$])
         .pipe(takeUntil(this.destroy$))
-        .subscribe(([toToken, output]) => {
-          this.updateFormValues(toToken, output.toAmount);
+        .subscribe(([toToken, toAmount]) => {
+          this.updateFormValues(toToken, toAmount);
         });
     }
   }

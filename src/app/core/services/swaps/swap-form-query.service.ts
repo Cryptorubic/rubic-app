@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { first, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -68,7 +68,7 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnSwapType(): void {
-    this.swapTypeService.swapMode$.subscribe(mode => {
+    this.swapTypeService.swapMode$.pipe(distinctUntilChanged()).subscribe(mode => {
       if (!this._initialLoading$.getValue() && mode === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
         const amountTo = this.queryParamsService.queryParams.amountTo;
         const { toAmount } = this.swapFormService.outputValue;

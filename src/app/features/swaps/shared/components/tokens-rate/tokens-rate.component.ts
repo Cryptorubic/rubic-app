@@ -31,10 +31,8 @@ export class TokensRateComponent implements OnInit {
     this.tokensRate$ = this.swapFormService.outputValue$.pipe(
       map(outputForm => {
         const { toAmount } = outputForm;
-
-        if (toAmount?.isFinite()) {
-          const { fromAmount, fromAsset, toToken } = this.swapFormService.inputValue;
-
+        const { fromAmount, fromAsset, toToken } = this.swapFormService.inputValue;
+        if (toAmount?.gt(0) && fromAmount?.gt(0) && fromAsset && toToken) {
           return {
             from: {
               amount: fromAmount.dividedBy(toAmount),
