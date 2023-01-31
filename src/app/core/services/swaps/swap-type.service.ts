@@ -58,13 +58,13 @@ export class SwapTypeService {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
     });
-    await this.router.navigate(['/']);
+    await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
   public async navigateToLimitOrder(): Promise<void> {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
     });
-    await this.router.navigate(['/limit-order']);
+    await this.router.navigate(['/limit-order'], { queryParamsHandling: 'merge' });
   }
 }

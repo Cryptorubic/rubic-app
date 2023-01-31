@@ -20,6 +20,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -37,6 +38,7 @@ export class SwapFormQueryService {
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnSwapForm();
+    this.subscribeOnSwapType();
 
     this.subscribeOnQueryParams();
   }
@@ -51,6 +53,31 @@ export class SwapFormQueryService {
         ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
         onramperTxId: null
       });
+    });
+
+    this.swapFormService.outputValue$.pipe(skip(1)).subscribe(value => {
+      if (
+        this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
+        value.toAmount?.gt(0)
+      ) {
+        this.queryParamsService.patchQueryParams({
+          amountTo: value.toAmount.toFixed()
+        });
+      }
+    });
+  }
+
+  private subscribeOnSwapType(): void {
+    this.swapTypeService.swapMode$.subscribe(mode => {
+      if (!this._initialLoading$.getValue() && mode === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+        const amountTo = this.queryParamsService.queryParams.amountTo;
+        const { toAmount } = this.swapFormService.outputValue;
+        if (!toAmount?.eq(amountTo)) {
+          this.swapFormService.outputControl.patchValue({
+            ...(amountTo && { toAmount: new BigNumber(amountTo) })
+          });
+        }
+      }
     });
   }
 
@@ -67,7 +94,7 @@ export class SwapFormQueryService {
           const fromAssetType = protectedParams.fromChain;
           const toBlockchain = protectedParams.toChain;
 
-          const findFromToken$ = BlockchainsInfo.isBlockchainName(fromAssetType)
+          const findFromAsset$ = BlockchainsInfo.isBlockchainName(fromAssetType)
             ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromAssetType)
             : of(fiats.find(fiat => fiat.symbol === protectedParams.from));
           const findToToken$ = this.getTokenBySymbolOrAddress(
@@ -76,18 +103,19 @@ export class SwapFormQueryService {
             toBlockchain
           );
 
-          return forkJoin([findFromToken$, findToToken$]).pipe(
-            map(([fromToken, toToken]) => ({
-              fromAsset: fromToken,
+          return forkJoin([findFromAsset$, findToToken$]).pipe(
+            map(([fromAsset, toToken]) => ({
+              fromAsset,
               toToken,
               fromAssetType,
               toBlockchain,
-              protectedParams
+              amount: protectedParams.amount,
+              amountTo: protectedParams.amountTo
             }))
           );
         })
       )
-      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, protectedParams }) => {
+      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, amount, amountTo }) => {
         this.gtmService.needTrackFormEventsNow = false;
 
         this.swapFormService.inputControl.patchValue({
@@ -95,8 +123,13 @@ export class SwapFormQueryService {
           toBlockchain,
           ...(fromAsset && { fromAsset }),
           ...(toToken && { toToken }),
-          ...(protectedParams.amount && { fromAmount: new BigNumber(protectedParams.amount) })
+          ...(amount && { fromAmount: new BigNumber(amount) })
         });
+        if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+          this.swapFormService.outputControl.patchValue({
+            ...(amountTo && { toAmount: new BigNumber(amountTo) })
+          });
+        }
 
         this._initialLoading$.next(false);
       });
@@ -122,10 +155,7 @@ export class SwapFormQueryService {
     const newParams = {
       ...queryParams,
       fromChain,
-      toChain,
-      ...(queryParams.from && { from: queryParams.from }),
-      ...(queryParams.to && { to: queryParams.to }),
-      ...(queryParams.amount && { amount: queryParams.amount })
+      toChain
     };
 
     if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
