@@ -32,7 +32,7 @@
                 approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET
               "
             >
-              <span>Spender: </span>
+              <span>Approved Spender: </span>
               {{ approve.spender | shortAddress : 3 : 3 }}
               <img
                 class="link"
@@ -58,14 +58,16 @@
         </div>
       </div>
       <div
-        [tuiHint]="approve.value === 'Infinity' ? null : allowanceHint"
+        [tuiHint]="approve.value === 'Unlimited' ? null : allowanceHint"
         tuiHintMode="onDark"
         [tuiHintShowDelay]="50"
         tuiHintDirection="top-right"
         [tuiHintHideDelay]="100"
       >
         <span>Allowance: </span
-        >{{ approve.value === 'Infinity' ? 'Infinity' : (approve.value | shortAddress : 10 : 10) }}
+        >{{
+          approve.value === 'Unlimited' ? 'Unlimited' : (approve.value | shortAddress : 10 : 10)
+        }}
       </div>
       <ng-template #allowanceHint>
         <span class="token-card__name-container-address-hint">{{ approve.value }}</span>

@@ -28,7 +28,7 @@ export class TableComponent {
       const maxApprove = new BigNumber(2).pow(256).minus(1);
       return approves.map(approve => ({
         ...approve,
-        value: maxApprove.eq(approve.value) ? 'Infinity' : approve.value
+        value: maxApprove.eq(approve.value) ? 'Unlimited' : approve.value
       }));
     })
   );
