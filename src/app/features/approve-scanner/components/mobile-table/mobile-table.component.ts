@@ -44,6 +44,8 @@ export class MobileTableComponent {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
+  public readonly defaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
+
   constructor(private readonly tokensService: TokensService) {}
 
   public changeNetwork(callback: () => void): void {
