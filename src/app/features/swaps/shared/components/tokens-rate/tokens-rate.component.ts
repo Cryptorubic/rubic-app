@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
 interface TokenRate {
@@ -28,10 +28,13 @@ export class TokensRateComponent implements OnInit {
   constructor(private readonly swapFormService: SwapFormService) {}
 
   ngOnInit() {
-    this.tokensRate$ = this.swapFormService.outputValue$.pipe(
-      map(outputForm => {
+    this.tokensRate$ = combineLatest([
+      this.swapFormService.inputValueDistinct$,
+      this.swapFormService.outputValueDistinct$
+    ]).pipe(
+      map(([inputForm, outputForm]) => {
+        const { fromAmount, fromAsset, toToken } = inputForm;
         const { toAmount } = outputForm;
-        const { fromAmount, fromAsset, toToken } = this.swapFormService.inputValue;
         if (toAmount?.gt(0) && fromAmount?.gt(0) && fromAsset && toToken) {
           return {
             from: {
