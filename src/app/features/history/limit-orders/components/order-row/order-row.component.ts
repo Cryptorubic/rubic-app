@@ -104,7 +104,11 @@ export class OrderRowComponent implements OnInit {
       warning: Boolean(this.rateLevelData)
     };
 
-    if (this.order.fromBalance.lt(this.order.fromAmount)) {
+    if (
+      this.order.fromBalance.lt(
+        this.order.fromAmount.multipliedBy(100 - this.order.filledPercent).div(100)
+      )
+    ) {
       this.isEnoughBalance = false;
       if (!this.rateLevelData) {
         this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
