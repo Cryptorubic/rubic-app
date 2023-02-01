@@ -27,13 +27,13 @@
           </div>
 
           <div class="image-container">
+            <span>Approved Spender: </span>
             <a
               class="spender"
               [safetyLink]="
                 approve.spender | scannerLink : selectedBlockchain : ADDRESS_TYPE.WALLET
               "
             >
-              <span>Approved Spender: </span>
               <div>
                 {{ approve.spender | shortAddress : 5 : 5 }}
                 <img
