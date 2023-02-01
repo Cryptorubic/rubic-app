@@ -620,5 +620,29 @@
   },
   "blockchainSwap": {
     "to": "to"
+  },
+  "revoke-page": {
+    "overview": {
+      "title": "Take Back Control of Your Wallet",
+      "description": "When using dapps like Uniswap or OpenSea you have to grant them permission to spend your tokens and NFTs. This is called an allowance. If you don't revoke these allowances, the dapp can spend your tokens forever. Take back control by revoking your allowances.",
+      "blocks": {
+        "connect": {
+          "label": "Connect",
+          "description": "Click Connect Wallet on the top right or enter an address in the search bar."
+        },
+        "inspect": {
+          "label": "Inspect",
+          "description": "Inspect your allowances by using the network selection, sorting and filtering options."
+        },
+        "revoke": {
+          "label": "Revoke",
+          "description": "Revoke the allowances that you no longer use to prevent unwanted access to your funds."
+        }
+      }
+    },
+    "revoke": {
+      "zero-approves": "No approve transactions found.",
+      "exceed-requests": "Request limit exceeded, please, try again later."
+    }
   }
 }
