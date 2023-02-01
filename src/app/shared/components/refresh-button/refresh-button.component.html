@@ -3,5 +3,7 @@
 </div>
 
 <ng-template #refreshIconTooltip>
-  <span class="refresh-icon-tooltip">{{ 'common.refreshTrade' | translate }}</span>
+  <span class="refresh-icon-tooltip">{{
+    (mode === 'swaps' ? 'common.refreshTrade' : 'Update orders') | translate
+  }}</span>
 </ng-template>

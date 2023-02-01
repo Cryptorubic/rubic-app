@@ -3,6 +3,12 @@
     <img src="assets/images/icons/arrow-back.svg" alt="go back" />
   </a>
   <div class="header__title">Limit Orders</div>
+  <app-refresh-button
+    mode="limit-orders"
+    [isRotating$]="isRefreshRotating$"
+    [isRotating]="isRefreshRotating"
+    (onRefresh)="onRefresh()"
+  ></app-refresh-button>
 </div>
 
 <tui-loader

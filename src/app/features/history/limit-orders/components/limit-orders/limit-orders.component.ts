@@ -26,6 +26,12 @@ export class LimitOrdersComponent implements OnInit {
 
   public readonly user$ = this.authService.currentUser$;
 
+  public readonly isRefreshRotating$ = this.limitOrdersService.loading$;
+
+  public readonly isRefreshRotating = () => {
+    return this.limitOrdersService.loading === true;
+  };
+
   constructor(
     private readonly router: Router,
     private readonly windowWidthService: WindowWidthService,
@@ -47,5 +53,9 @@ export class LimitOrdersComponent implements OnInit {
 
   public onLogin(): void {
     this.walletsModalService.open().subscribe();
+  }
+
+  public onRefresh(): void {
+    this.limitOrdersService.updateOrders();
   }
 }

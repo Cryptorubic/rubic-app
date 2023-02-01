@@ -59,6 +59,18 @@
       font-size: 16px;
     }
   }
+
+  app-refresh-button {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+
+    transform: translateY(-50%);
+
+    @include b($laptop) {
+      right: 5px;
+    }
+  }
 }
 
 .table {

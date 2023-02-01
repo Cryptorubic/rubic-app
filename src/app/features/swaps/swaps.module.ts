@@ -35,7 +35,6 @@ import { InstantTradeSwapInfoComponent } from './features/swap-form/components/s
 import { FormSwitcherComponent } from '@features/swaps/features/swap-form/components/form-switcher/form-switcher.component';
 import { PlatformTokensAmountComponent } from './features/swap-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { FormHeaderComponent } from '@features/swaps/features/swap-form/components/form-header/form-header.component';
-import { RefreshButtonComponent } from '@features/swaps/features/swap-form/components/refresh-button/refresh-button.component';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
 import { IframeSettingsButtonComponent } from '@core/header/components/header/components/iframe-settings-button/iframe-settings-button.component';
@@ -61,7 +60,6 @@ import { SetToMarketButtonComponent } from '@features/swaps/features/swap-form/c
     FormSwitcherComponent,
     PlatformTokensAmountComponent,
     FormHeaderComponent,
-    RefreshButtonComponent,
     IframeSettingsComponent,
     IframeSettingsButtonComponent,
     FormNavigationComponent,

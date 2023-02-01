@@ -2,14 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
+  Output,
   Self,
   ViewChild
 } from '@angular/core';
-import { fromEvent, Subscription } from 'rxjs';
-import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
-import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
@@ -21,19 +22,25 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   providers: [TuiDestroyService]
 })
 export class RefreshButtonComponent implements OnInit, OnDestroy {
-  @ViewChild('refreshIcon', { static: true }) refreshIconElement: ElementRef;
+  @Input() isRotating$: Observable<boolean>;
+
+  @Input() isRotating: () => boolean;
+
+  @Input() mode: 'swaps' | 'limit-orders';
+
+  @Output() onRefresh = new EventEmitter<void>();
+
+  @ViewChild('refreshIcon', { static: true })
+  refreshIconElement: ElementRef;
 
   private $refreshIconListener: Subscription;
 
-  constructor(
-    private readonly refreshService: RefreshService,
-    @Self() private readonly destroy$: TuiDestroyService
-  ) {}
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    this.refreshService.status$.pipe(takeUntil(this.destroy$)).subscribe(status => {
-      if (status !== REFRESH_STATUS.STOPPED) {
+    this.isRotating$.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
         this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
       }
     });
@@ -45,7 +52,7 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe(() => {
-        if (this.refreshService.status === REFRESH_STATUS.STOPPED) {
+        if (!this.isRotating()) {
           this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
         }
       });
@@ -56,6 +63,6 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
   }
 
   public toggleClick(): void {
-    this.refreshService.onButtonClick();
+    this.onRefresh.emit();
   }
 }

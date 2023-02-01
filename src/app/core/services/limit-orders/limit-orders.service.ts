@@ -43,6 +43,10 @@ export class LimitOrdersService {
 
   public readonly loading$ = this._loading$.asObservable();
 
+  public get loading(): boolean {
+    return this._loading$.getValue();
+  }
+
   constructor(
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,

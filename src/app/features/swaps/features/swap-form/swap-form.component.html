@@ -25,6 +25,10 @@
             *ngIf="
               (isInstantTrade || isCrossChainRouting || isOnramper) && isFormFilled && allowRefresh
             "
+            mode="swaps"
+            [isRotating$]="isRefreshRotating$"
+            [isRotating]="isRefreshRotating"
+            (onRefresh)="onRefresh()"
           >
           </app-refresh-button>
 

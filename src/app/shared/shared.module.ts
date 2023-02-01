@@ -69,6 +69,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { SuccessOrderModalComponent } from './components/success-modal/success-order-modal/success-order-modal.component';
+import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { SuccessOrderModalComponent } from './components/success-modal/success-o
     SymbiosisWarningTxModalComponent,
     IframeLogoutButtonComponent,
     AutoSlippageWarningModalComponent,
+    RefreshButtonComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -187,7 +189,8 @@ import { SuccessOrderModalComponent } from './components/success-modal/success-o
     ChipsComponent,
     IframeLogoutButtonComponent,
     SafeSanitizerPipe,
-    BackButtonComponent
+    BackButtonComponent,
+    RefreshButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
