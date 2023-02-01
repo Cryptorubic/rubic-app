@@ -22,7 +22,6 @@ import { MobileMenuTogglerComponent } from './components/header/components/mobil
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { IframeSettingsButtonComponent } from './components/header/components/iframe-settings-button/iframe-settings-button.component';
 import { HeaderSettingsComponent } from './components/header/components/header-settings/header-settings.component';
 import { SettingsElementComponent } from './components/header/components/settings-element/settings-element.component';
 import { SettingsListComponent } from './components/header/components/settings-list/settings-list.component';
@@ -41,7 +40,6 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    IframeSettingsButtonComponent,
     HeaderSettingsComponent,
     SettingsElementComponent,
     SettingsListComponent,

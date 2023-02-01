@@ -1,4 +1,4 @@
-<app-referral-banner href="https://claim.rubic.exchange/" *noFrame></app-referral-banner>
+<!--<app-referral-banner href="https://claim.rubic.exchange/" *noFrame></app-referral-banner>-->
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
     <img
@@ -56,7 +56,6 @@
   ></app-buy-token>
 
   <div class="rubic-header__profile">
-    <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>

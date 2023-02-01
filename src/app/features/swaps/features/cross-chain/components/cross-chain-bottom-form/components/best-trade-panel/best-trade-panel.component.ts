@@ -46,7 +46,7 @@ export class BestTradePanelComponent {
   }
 
   private formSubscribe(): void {
-    this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.expanded = false;
     });
   }

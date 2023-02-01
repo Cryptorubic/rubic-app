@@ -91,6 +91,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     return 'Fiats';
   }
 
+  public readonly BLOCKCHAIN_LABEL = blockchainLabel;
+
   public get showToContinue(): boolean {
     return (
       isOnramperRecentTrade(this.trade) &&
