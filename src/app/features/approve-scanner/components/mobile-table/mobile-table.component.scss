@@ -20,6 +20,8 @@
   }
 
   .right {
+    align-items: flex-end;
+
     .button {
       margin-bottom: 0;
     }
@@ -53,4 +55,15 @@ app-rubic-button {
 .spender {
   flex-direction: column;
   align-items: flex-start;
+}
+
+.date {
+  text-align: right;
+}
+
+:host ::ng-deep {
+  app-switch-button,
+  app-revoke-button {
+    min-width: auto;
+  }
 }

@@ -20,6 +20,7 @@ export class ApproveScannerPageComponent {
 
   public readonly userBalance$ = this.service.selectedBlockchain$.pipe(
     combineLatestWith(
+      this.address$,
       this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
     ),
     switchMap(([blockchain]) =>
