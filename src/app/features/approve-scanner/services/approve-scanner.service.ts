@@ -8,7 +8,8 @@ import {
   EvmBlockchainName,
   RubicSdkError,
   UserRejectError,
-  compareAddresses
+  compareAddresses,
+  Web3Pure
 } from 'rubic-sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
@@ -38,6 +39,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { catchError, distinctUntilChanged, filter, first, share, tap } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -184,7 +187,8 @@ export class ApproveScannerService {
     private readonly dialogService: TuiDialogService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly gasService: GasService
   ) {
     this.visibleApproves$.subscribe();
   }
@@ -239,12 +243,17 @@ export class ApproveScannerService {
     }
 
     try {
+      const gasPrice = shouldCalculateGas[blockchain]
+        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        : null;
+
       await Injector.web3PrivateService
         .getWeb3PrivateByBlockchain(blockchain)
         .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
           onTransactionHash: _hash => {
             revokeProgressNotification = this.showProgressNotification();
-          }
+          },
+          ...(gasPrice && { gasPrice })
         });
       this.showSuccessNotification();
       this._refreshTable$.next(tokenAddress);
