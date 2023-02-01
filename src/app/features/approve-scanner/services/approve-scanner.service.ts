@@ -7,7 +7,8 @@ import {
   Injector,
   EvmBlockchainName,
   RubicSdkError,
-  UserRejectError
+  UserRejectError,
+  compareAddresses
 } from 'rubic-sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
@@ -333,7 +334,7 @@ export class ApproveScannerService {
       map(([approves, tokens]) => {
         return approves.map(approve => ({
           ...approve,
-          token: tokens.find(token => token?.address === approve.tokenAddress)
+          token: tokens.find(token => compareAddresses(token?.address, approve.tokenAddress))
         }));
       })
     );
