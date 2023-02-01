@@ -68,6 +68,13 @@ export class HeaderComponent implements AfterViewInit {
     return this.window.location.pathname === '/';
   }
 
+  public get isRevokePage(): boolean {
+    return (
+      this.window.location.pathname === '/revoke-approval/revoke' ||
+      this.window.location.pathname === '/revoke-approval'
+    );
+  }
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
