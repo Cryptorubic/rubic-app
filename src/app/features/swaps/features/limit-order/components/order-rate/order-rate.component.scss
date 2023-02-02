@@ -10,6 +10,8 @@
   border: 1px solid var(--transparent-line);
   border-radius: 19px;
 
+  cursor: pointer;
+
   &_green {
     border-color: var(--primary-color);
   }

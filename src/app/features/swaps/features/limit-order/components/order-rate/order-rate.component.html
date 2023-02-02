@@ -1,4 +1,4 @@
-<div [class]="'rate ' + ('rate_' + percentInfo.className)">
+<div [class]="'rate ' + ('rate_' + percentInfo.className)" (click)="toggleRateDirection()">
   <div class="rate__header header">
     <div class="header__rate percent">
       <div class="percent__icon">
@@ -34,7 +34,6 @@
           <div
             class="rate__direction-button"
             inlineSVG="assets/images/swaps/icons/rate-direction-button.svg"
-            (click)="toggleRateDirection()"
           ></div>
         </ng-container>
       </ng-container>
