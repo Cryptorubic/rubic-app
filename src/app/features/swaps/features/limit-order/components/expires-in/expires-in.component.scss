@@ -18,12 +18,14 @@
   }
 
   &__value {
+    display: flex;
+    align-items: center;
     width: 155px;
     height: 28px;
     overflow: hidden;
 
     color: var(--primary-text);
-    font-size: 23px;
+    font-size: 19px;
     line-height: 120%;
     letter-spacing: 0.06em;
     white-space: nowrap;
