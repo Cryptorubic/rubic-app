@@ -26,48 +26,30 @@
     margin-bottom: 7px;
   }
 
-  &__input-container {
+  &__value-container {
     display: flex;
-    grid-gap: 30px;
+    grid-gap: 10px;
     align-items: center;
-    justify-content: space-between;
-  }
+    justify-content: end;
 
-  &__token-button {
-    display: flex;
-    grid-gap: 8px;
-    align-items: center;
-    height: fit-content;
-    padding: 1px 6px;
-
-    color: #00ffa0;
-    font-size: 13px;
-    line-height: 120%;
-    letter-spacing: 0.03em;
-
-    background: rgba(0, 226, 142, 0.15);
-    border-radius: 4px;
-
-    img {
-      width: 12px;
-    }
-  }
-
-  &__input {
     width: 100%;
     height: 28px;
 
-    padding: 0;
-
     color: var(--primary-text);
-    font-weight: 400;
-    font-size: 23px;
-    letter-spacing: 0.1em;
-    text-align: right;
+    font-size: 19px;
+    white-space: nowrap;
+  }
 
-    background-color: transparent;
-    border: none;
-    opacity: 1;
+  &__direction-button {
+    display: flex;
+    align-items: center;
+    width: 15px;
+
+    cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: var(--primary-text);
+    }
   }
 
   &__unknown-text {

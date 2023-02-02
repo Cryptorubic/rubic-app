@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { OrderRateService } from '@features/swaps/features/limit-order/services/order-rate.service';
 import {
   RateLevel,
@@ -20,7 +19,7 @@ import BigNumber from 'bignumber.js';
   providers: [TuiDestroyService]
 })
 export class OrderRateComponent implements OnInit {
-  public rate = new FormControl<string>({ value: '', disabled: true });
+  public rate = new BigNumber(0);
 
   public percentInfo: PercentInfo;
 
@@ -31,10 +30,6 @@ export class OrderRateComponent implements OnInit {
   public fromTokenName$ = this.swapFormService.fromToken$.pipe(map(token => token?.symbol || ''));
 
   public toTokenName$ = this.swapFormService.toToken$.pipe(map(token => token?.symbol || ''));
-
-  private get formattedRate(): string {
-    return this.rate.value.split(',').join('');
-  }
 
   public get formattedPercentDiff(): string {
     const percent = Math.abs(this.percentInfo.percent).toString();
@@ -56,12 +51,11 @@ export class OrderRateComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ value, percentDiff }) => {
         if (!value?.isFinite()) {
-          this.rate.setValue('');
-        } else if (!value.eq(this.formattedRate)) {
+          this.isUnknown = true;
+        } else if (!value.eq(this.rate)) {
+          this.isUnknown = false;
           this.updateRateFormValue();
         }
-
-        this.isUnknown = !value?.isFinite();
         this.updateRateLevelData(percentDiff);
 
         this.cdr.markForCheck();
@@ -93,9 +87,9 @@ export class OrderRateComponent implements OnInit {
     };
   }
 
-  public toggleChangeDirection(): void {
+  public toggleRateDirection(): void {
     this.rateDirection = this.rateDirection === 'from-to' ? 'to-from' : 'from-to';
-    if (this.rate.value) {
+    if (this.rate.isFinite() && this.rate.gt(0)) {
       this.updateRateFormValue();
     }
   }
@@ -103,9 +97,9 @@ export class OrderRateComponent implements OnInit {
   public updateRateFormValue(): void {
     const marketRate = this.orderRateService.marketRate;
     if (this.rateDirection === 'from-to') {
-      this.rate.setValue(marketRate.toFixed());
+      this.rate = marketRate;
     } else {
-      this.rate.setValue(new BigNumber(1).div(marketRate).dp(6).toFixed());
+      this.rate = new BigNumber(1).div(marketRate).dp(6);
     }
   }
 }
