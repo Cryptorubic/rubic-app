@@ -65,6 +65,20 @@ export class SwapTypeService {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
     });
+    const { fromAssetType, toBlockchain, fromAsset, toToken } = this.swapFormService.inputValue;
+    if (fromAssetType !== toBlockchain) {
+      if (fromAssetType !== 'fiat' && (fromAsset || !toToken)) {
+        this.swapFormService.inputControl.patchValue({
+          toBlockchain: fromAssetType,
+          toToken: null
+        });
+      } else {
+        this.swapFormService.inputControl.patchValue({
+          fromAssetType: toBlockchain,
+          fromAsset: null
+        });
+      }
+    }
     await this.router.navigate(['/limit-order'], { queryParamsHandling: 'merge' });
   }
 }
