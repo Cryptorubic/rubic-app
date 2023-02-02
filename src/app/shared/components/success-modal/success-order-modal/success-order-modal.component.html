@@ -9,9 +9,9 @@
       <h3 class="modal__title">Limit Order Submitted!</h3>
     </main>
     <footer class="modal__footer">
-      <div class="modal__footer-text" (click)="onConfirm()">
+      <div class="modal__footer-text">
         You can check your order status in
-        <a routerLink="history/limit-orders" queryParamsHandling="merge">Limit Orders panel</a>.
+        <span class="text-link" (click)="navigateToOrders()">Limit Orders panel</span>.
       </div>
 
       <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">
