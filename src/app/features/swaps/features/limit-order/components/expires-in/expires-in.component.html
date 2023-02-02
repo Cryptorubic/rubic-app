@@ -23,15 +23,14 @@
         tuiHintMode="onDark"
       >
         {{ value.shortValue }}
+        <img
+          src="assets/images/icons/arrow-down.svg"
+          alt="expand"
+          class="dropdown__arrow"
+          [class.transaction-info__arrow_opened]="settingsOpen"
+        />
       </div>
     </ng-container>
-
-    <img
-      src="assets/images/icons/arrow-down.svg"
-      alt="expand"
-      class="dropdown__arrow"
-      [class.transaction-info__arrow_opened]="settingsOpen"
-    />
   </div>
 </tui-hosted-dropdown>
 

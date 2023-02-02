@@ -19,8 +19,9 @@
 
   &__value {
     display: flex;
+    grid-gap: 12px;
     align-items: center;
-    width: 155px;
+    width: fit-content;
     height: 28px;
     overflow: hidden;
 
@@ -32,13 +33,7 @@
   }
 
   &__arrow {
-    position: absolute;
-    top: 50%;
-    right: 21px;
-
     width: 13px;
-
-    transform: translateY(-50%);
 
     transition: 0.2s ease-in-out;
 
