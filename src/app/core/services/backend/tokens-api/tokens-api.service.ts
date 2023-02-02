@@ -53,11 +53,11 @@ export class TokensApiService {
   public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => ({
+        .map(({ token_security, ...token }: BackendToken) => ({
           ...token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
           price: token.usdPrice,
-          tokenSecurity: token.token_security
+          tokenSecurity: token_security
         }))
         .filter(token => token.address && token.blockchain)
     );

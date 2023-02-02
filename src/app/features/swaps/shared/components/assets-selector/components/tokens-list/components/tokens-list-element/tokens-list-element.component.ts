@@ -13,11 +13,13 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TokenSecurityStatus } from '@shared/models/tokens/token-security';
+import { GO_PLUS_AVAILABLE_NETWORKS } from '@features/swaps/shared/components/assets-selector/constants/go-plus-available-networks';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
-import { blockchainId, wrappedNativeTokensList } from 'rubic-sdk';
+import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -33,6 +35,16 @@ export class TokensListElementComponent {
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   public readonly isHorizontalFrame: boolean;
+
+  public readonly TokenSecurityStatus = TokenSecurityStatus;
+
+  public readonly securityMessages = {
+    [TokenSecurityStatus.TRUST_LIST]: 'Token is in the Go+ Trust List',
+    [TokenSecurityStatus.SECURED]: 'Token has no elements of concern',
+    [TokenSecurityStatus.LOW_RISK]: 'Token code contains some low risk elements of concern',
+    [TokenSecurityStatus.HIGH_RISK]: 'Token code contains some high risk elements of concern',
+    [TokenSecurityStatus.NO_INFO]: 'No information'
+  };
 
   public hintShown = true;
 
@@ -113,24 +125,39 @@ export class TokensListElementComponent {
 
   /**
    * Returns the state of token security.
+   *
+   * UNSUPPORTED_BLOCKCHAIN - network is not supported by Go+.
+   * NO_INFO - network is supported by Go+, but there is no security info about token.
+   * TRUST_LIST - token is in Go+ trust list OR a token is a Native Token in a supported netwrok.
+   * SECURED - token has 0 Go+ warnings, but not in the Trust List.
+   * HIGH_RISK - token has some risky Go+ warnings.
+   * LOW_RISK - token has some attention Go+ warnings and 0 risky warnings.
    */
-  public get isSecured(): boolean | undefined {
-    if (
-      (this.token.tokenSecurity === null && !this.isNativeToken) ||
-      (this.token.tokenSecurity && !this.token.tokenSecurity.has_info)
-    ) {
-      return undefined;
+  public get securityStatus(): TokenSecurityStatus {
+    if (GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain) === false) {
+      return TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN;
+    }
+
+    if (this.token.tokenSecurity && !this.token.tokenSecurity.has_info) {
+      return TokenSecurityStatus.NO_INFO;
+    }
+
+    if (this.isNativeToken || (this.token.tokenSecurity && this.token.tokenSecurity.trust_list)) {
+      return TokenSecurityStatus.TRUST_LIST;
     }
 
     if (
-      this.isNativeToken ||
-      this.token.tokenSecurity.trust_list ||
-      this.token.tokenSecurity.risky_security_items === 0
+      this.token.tokenSecurity.risky_security_items === 0 &&
+      this.token.tokenSecurity.attention_security_items === 0
     ) {
-      return true;
+      return TokenSecurityStatus.SECURED;
     }
 
-    return false;
+    if (this.token.tokenSecurity.risky_security_items > 0) {
+      return TokenSecurityStatus.HIGH_RISK;
+    }
+
+    return TokenSecurityStatus.LOW_RISK;
   }
 
   /**
@@ -138,10 +165,12 @@ export class TokensListElementComponent {
    * If token is Native, links to wrapped token.
    */
   public get goPlusLabsLink(): string {
-    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${blockchainId[this.token.blockchain]}/${
-      this.isNativeToken
-        ? wrappedNativeTokensList[this.token.blockchain].address
-        : this.token.address
-    }`;
+    const goPlusChainID =
+      this.token.blockchain === BLOCKCHAIN_NAME.TRON ? 'tron' : blockchainId[this.token.blockchain];
+    const goPlusTokenAddress = this.isNativeToken
+      ? wrappedNativeTokensList[this.token.blockchain].address
+      : this.token.address;
+
+    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress}`;
   }
 }

@@ -85,8 +85,7 @@
       }
     }
 
-    &-address-hint,
-    &-security-hint {
+    &-address-hint {
       display: block;
 
       span {
@@ -94,14 +93,7 @@
       }
     }
 
-    &-security-hint {
-      &-powered-by {
-        font-size: 10px !important;
-      }
-    }
-
-    &-copy-icon,
-    &-security-icon {
+    &-copy-icon {
       display: flex;
       align-items: center;
       margin-bottom: 2px;
@@ -112,42 +104,15 @@
       @include iframe-vertical {
         margin-bottom: 0;
       }
-
-      ::ng-deep svg {
-        path {
-          fill: var(--primary-text);
-        }
-      }
     }
 
     &-copy-icon {
       ::ng-deep svg {
         width: 13px;
         height: 17px;
-      }
-    }
 
-    &-security-icon {
-      ::ng-deep svg {
-        width: 15px;
-        height: 19px;
-      }
-
-      &.secured {
-        ::ng-deep svg {
-          path {
-            fill: var(--tui-primary);
-            stroke: var(--tui-primary);
-          }
-        }
-      }
-
-      &.unsecured {
-        ::ng-deep svg {
-          path {
-            fill: $rubic-text-error;
-            stroke: $rubic-text-error;
-          }
+        path {
+          fill: var(--primary-text);
         }
       }
     }
@@ -199,7 +164,8 @@
     }
   }
 
-  &__favorite-container {
+  &__favorite-container,
+  &__security-container {
     width: 24px;
     height: 24px;
     margin-left: 20px;
@@ -229,6 +195,19 @@
 
     &:hover:not(&_active) svg path {
       stroke: var(--primary-color);
+    }
+  }
+
+  &__security-container {
+    &-security-hint {
+      display: block;
+      max-width: 200px;
+
+      font-size: 13px !important;
+
+      &-powered-by {
+        font-size: 10px !important;
+      }
     }
   }
 

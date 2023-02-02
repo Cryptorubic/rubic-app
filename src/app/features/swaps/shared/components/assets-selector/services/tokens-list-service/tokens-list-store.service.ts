@@ -241,7 +241,8 @@ export class TokensListStoreService {
             amount: new BigNumber(NaN),
             price: 0,
             available: this.isTokenAvailable(token),
-            favorite: this.isTokenFavorite(token)
+            favorite: this.isTokenFavorite(token),
+            tokenSecurity: null
           };
         }
       }
