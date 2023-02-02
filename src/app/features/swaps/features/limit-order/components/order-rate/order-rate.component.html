@@ -23,16 +23,12 @@
         <ng-container *ngIf="fromTokenName && toTokenName && rate.gt(0)">
           <span *ngIf="rateDirection === 'from-to'"
             >1 {{ fromTokenName }} =
-            {{
-              rate | bigNumberFormat | withRound : 'toClosestValue' : { minRound: 2, maxRound: 3 }
-            }}
+            {{ rate | bigNumberFormat | withRound : 'toClosestValue' }}
             {{ toTokenName }}</span
           >
           <span *ngIf="rateDirection === 'to-from'"
-            >{{
-              rate | bigNumberFormat | withRound : 'toClosestValue' : { minRound: 2, maxRound: 3 }
-            }}
-            {{ fromTokenName }} = 1 {{ toTokenName }}</span
+            >{{ rate | bigNumberFormat | withRound : 'toClosestValue' }} {{ fromTokenName }} = 1
+            {{ toTokenName }}</span
           >
 
           <div
