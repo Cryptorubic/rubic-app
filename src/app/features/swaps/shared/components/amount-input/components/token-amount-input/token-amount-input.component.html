@@ -22,6 +22,10 @@
         (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
       ></app-user-balance-container>
     </ng-container>
+
+    <ng-container *ngIf="formType === 'to'">
+      <app-set-to-market-button *ngIf="isWithTokens"></app-set-to-market-button>
+    </ng-container>
   </div>
 
   <div class="token-amount-input-container__wrapper">

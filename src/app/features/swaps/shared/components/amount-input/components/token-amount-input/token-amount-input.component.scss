@@ -74,6 +74,11 @@
         order: 1;
       }
     }
+
+    app-set-to-market-button {
+      display: block;
+      margin-top: 10px;
+    }
   }
 
   &__input-label {

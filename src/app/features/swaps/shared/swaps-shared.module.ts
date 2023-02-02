@@ -14,6 +14,7 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/components/swa
 import { TokenAmountInputComponent } from '@features/swaps/shared/components/amount-input/components/token-amount-input/token-amount-input.component';
 import { VerticalIframeTokenAmountInputComponent } from '@features/swaps/shared/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { UserBalanceContainerComponent } from '@features/swaps/shared/components/amount-input/components/user-balance-container/user-balance-container.component';
+import { SetToMarketButtonComponent } from '@features/swaps/shared/components/amount-input/components/set-to-market-button/set-to-market-button.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { UserBalanceContainerComponent } from '@features/swaps/shared/components
     SelectAssetButtonComponent,
     TokenAmountInputComponent,
     UserBalanceContainerComponent,
-    VerticalIframeTokenAmountInputComponent
+    VerticalIframeTokenAmountInputComponent,
+    SetToMarketButtonComponent
   ],
   exports: [
     ToAmountEstimatedComponent,

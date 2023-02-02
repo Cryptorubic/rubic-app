@@ -66,6 +66,11 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
     })
   );
 
+  public get isWithTokens(): boolean {
+    const { fromAssetType, toToken } = this.swapFormService.inputValue;
+    return fromAssetType && Boolean(toToken);
+  }
+
   constructor(
     public readonly swapFormService: SwapFormService,
     public readonly swapTypeService: SwapTypeService,
