@@ -94,10 +94,8 @@ export class OrderRowComponent implements OnInit {
       .multipliedBy(100)
       .dp(2)
       .toNumber();
-    if (percentDiff <= -10) {
+    if (percentDiff <= -5) {
       this.rateLevelData = rateLevelsData[RateLevel.RED];
-    } else if (percentDiff <= -5) {
-      this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
     }
     this.percentDiff = {
       value: percentDiff,
@@ -111,7 +109,7 @@ export class OrderRowComponent implements OnInit {
     ) {
       this.isEnoughBalance = false;
       if (!this.rateLevelData) {
-        this.rateLevelData = rateLevelsData[RateLevel.YELLOW];
+        this.rateLevelData = rateLevelsData[RateLevel.RED];
       }
     }
   }
