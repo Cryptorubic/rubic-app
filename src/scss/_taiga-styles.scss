@@ -7,7 +7,6 @@ tui-dropdown-box {
   border: 1px solid var(--transparent-line) !important;
   box-shadow: none !important;
   backdrop-filter: blur(50px);
-
 }
 
 tui-dialog {
@@ -122,6 +121,8 @@ tui-dialog {
 }
 
 tui-dialog-host {
+  overflow-y: auto;
+
   > div {
     backdrop-filter: blur(12px);
   }
@@ -216,6 +217,7 @@ html.iframe-vertical tui-dialog > div.content > h2 {
 }
 
 tui-wrapper[data-appearance='textfield'] {
+  --tui-base-03: rgba(255, 255, 255, 0.1);
   background: transparent !important;
 }
 
@@ -223,6 +225,14 @@ tui-wrapper[data-appearance='secondary'] {
   &:hover,
   &:active {
     background-color: var(--tui-secondary-hover);
+  }
+}
+
+tui-wrapper[data-appearance='outline'] {
+  color: var(--primary-color);
+
+  &::after {
+    display: none;
   }
 }
 

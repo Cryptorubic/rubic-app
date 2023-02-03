@@ -49,7 +49,7 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { IframeAssetTypeIndicatorComponent } from 'src/app/shared/components/iframe-asset-type-indicator/iframe-asset-type-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
-import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
@@ -68,6 +68,8 @@ import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
 import { BackButtonComponent } from './components/back-button/back-button.component';
+import { SuccessOrderModalComponent } from './components/success-modal/success-order-modal/success-order-modal.component';
+import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 
 @NgModule({
@@ -103,6 +105,7 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     AutoSlippageWarningModalComponent,
     BackButtonComponent,
     LoginButtonComponent,
+    RefreshButtonComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -118,7 +121,8 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    SuccessOrderModalComponent
   ],
   imports: [
     CommonModule,
@@ -188,6 +192,7 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     IframeLogoutButtonComponent,
     SafeSanitizerPipe,
     BackButtonComponent,
+    RefreshButtonComponent,
     LoginButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]

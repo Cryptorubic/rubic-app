@@ -23,7 +23,6 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
-import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Injectable()
@@ -93,14 +92,18 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValue$.subscribe((form: SwapFormInput) => {
-      const { fromAmount } = form;
-      this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0);
-
+    this.swapFormService.inputValue$.subscribe(() => {
+      this.checkAmounts();
       this.checkWalletSupportsFromBlockchain();
       this.checkSelectedToken();
       this.checkUserBlockchain();
       this.checkUserBalance();
+
+      this.updateError();
+    });
+
+    this.swapFormService.outputValue$.subscribe(() => {
+      this.checkAmounts();
 
       this.updateError();
     });
@@ -164,6 +167,18 @@ export class SwapButtonContainerErrorsService {
   }
 
   /**
+   * Checks, that user entered all necessary amounts in form.
+   */
+  private checkAmounts(): void {
+    const { fromAmount } = this.swapFormService.inputValue;
+    const { toAmount } = this.swapFormService.outputValue;
+    this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] =
+      !fromAmount?.gt(0) ||
+      (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
+        !toAmount?.gt(0));
+  }
+
+  /**
    * Checks that from blockchain can be used for current wallet.
    */
   private checkWalletSupportsFromBlockchain(): void {
@@ -190,6 +205,11 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
+    if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+      return;
+    }
+
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
     if (!isTokenAmount(fromAsset)) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;

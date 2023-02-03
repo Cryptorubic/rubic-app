@@ -16,6 +16,8 @@ import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
+import { isMinimalToken } from '@shared/utils/is-token';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class SwapFormService {
@@ -72,9 +74,26 @@ export class SwapFormService {
     shareReplay(shareReplayConfig)
   );
 
+  public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
+    map(inputValue => {
+      if (isMinimalToken(inputValue.fromAsset)) {
+        return inputValue.fromAsset;
+      }
+      return null;
+    }),
+    distinctObjectUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
   public readonly toToken$: Observable<TokenAmount> = this.inputValue$.pipe(
     map(inputValue => inputValue.toToken),
     distinctObjectUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
+  public readonly fromAmount$: Observable<BigNumber> = this.inputValue$.pipe(
+    map(inputValue => inputValue.fromAmount),
+    distinctUntilChanged(),
     shareReplay(shareReplayConfig)
   );
 
@@ -90,6 +109,17 @@ export class SwapFormService {
   private readonly _outputValue$ = new BehaviorSubject<SwapFormOutput>(this.outputValue);
 
   public readonly outputValue$ = this._outputValue$.asObservable();
+
+  public readonly outputValueDistinct$ = this.outputValue$.pipe(
+    distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
+
+  public readonly toAmount$: Observable<BigNumber> = this.outputValue$.pipe(
+    map(inputValue => inputValue.toAmount),
+    distinctUntilChanged(),
+    shareReplay(shareReplayConfig)
+  );
 
   private readonly _isFilled$: BehaviorSubject<boolean> = observableToBehaviorSubject(
     this.inputValue$.pipe(
