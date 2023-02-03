@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -11,8 +11,8 @@ import {
   TokenBaseStruct
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { compareTokens } from '@shared/utils/utils';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { compareTokens, switchIif } from '@shared/utils/utils';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -127,24 +127,34 @@ export class LimitOrderFormService {
           } else {
             this.tradeStatus = TRADE_STATUS.DISABLED;
           }
+
           return from(
             SdkTokenAmount.createToken({
               ...(fromToken as TokenBaseStruct<EvmBlockchainName>),
               tokenAmount: fromAmount
             })
           ).pipe(
-            switchMap(async fromTokenAmount => {
-              if (
-                !this.prevFromTokenAmount ||
-                !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
-                !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
-              ) {
-                this.needApprove = await this.sdkService.limitOrderManager.needApprove(
-                  fromTokenAmount,
-                  fromAmount
+            switchIif(
+              fromTokenAmount => {
+                return (
+                  !this.prevFromTokenAmount ||
+                  !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
+                  !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
                 );
-                this.prevFromTokenAmount = fromTokenAmount;
-              }
+              },
+              fromTokenAmount => {
+                return from(
+                  this.sdkService.limitOrderManager.needApprove(fromTokenAmount, fromAmount)
+                ).pipe(
+                  map(needApprove => {
+                    this.prevFromTokenAmount = fromTokenAmount;
+                    this.needApprove = needApprove;
+                  })
+                );
+              },
+              () => EMPTY
+            ),
+            tap(() => {
               this.calculating = false;
               if (this.isFormFilled) {
                 this.tradeStatus = this.needApprove
