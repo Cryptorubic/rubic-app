@@ -1,0 +1,27 @@
+@use 'src/scss/core' as *;
+
+form {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+
+  @include b($mobile-sm-middle) {
+    flex-direction: column;
+  }
+
+  > * {
+    width: 100%;
+  }
+}
+
+.selector-row {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  img {
+    height: 20px;
+    margin-right: 10px;
+  }
+}

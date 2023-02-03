@@ -45,6 +45,13 @@
       [class.button-link_active]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"
       >Limit Order</a
     >
+    <div
+      class="button-link"
+      routerLink="/revoke-approval"
+      [class.button-link_active]="isRevokePage"
+    >
+      Revoke Approval
+    </div>
   </nav>
 
   <app-buy-token

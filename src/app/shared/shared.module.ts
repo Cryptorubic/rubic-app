@@ -70,6 +70,7 @@ import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { SuccessOrderModalComponent } from './components/success-modal/success-order-modal/success-order-modal.component';
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
+import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,8 @@ import { RefreshButtonComponent } from '@shared/components/refresh-button/refres
     SymbiosisWarningTxModalComponent,
     IframeLogoutButtonComponent,
     AutoSlippageWarningModalComponent,
+    BackButtonComponent,
+    LoginButtonComponent,
     RefreshButtonComponent,
     // Pipes.
     BigNumberFormatPipe,
@@ -119,7 +122,6 @@ import { RefreshButtonComponent } from '@shared/components/refresh-button/refres
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    BackButtonComponent,
     SuccessOrderModalComponent
   ],
   imports: [
@@ -190,7 +192,8 @@ import { RefreshButtonComponent } from '@shared/components/refresh-button/refres
     IframeLogoutButtonComponent,
     SafeSanitizerPipe,
     BackButtonComponent,
-    RefreshButtonComponent
+    RefreshButtonComponent,
+    LoginButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

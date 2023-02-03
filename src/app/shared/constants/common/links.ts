@@ -5,6 +5,7 @@ export enum ROUTE_PATH {
   BYT_CRYPTO = 'buy-crypto',
   ABOUT = 'about',
   FAQ = 'faq',
+  REVOKE_APPROVAL = 'revoke-approval',
   REST = '**'
 }
 
