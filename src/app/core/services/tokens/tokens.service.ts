@@ -7,6 +7,7 @@ import {
   from,
   Observable,
   of,
+  shareReplay,
   Subject
 } from 'rxjs';
 import { List } from 'immutable';
@@ -37,7 +38,7 @@ import {
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
-import { share } from 'rxjs/operators';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -53,7 +54,7 @@ export class TokensService {
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable().pipe(
     distinctUntilChanged((prev, curr) => prev?.size === curr?.size),
-    share()
+    shareReplay(shareReplayConfig)
   );
 
   /**
