@@ -4,15 +4,18 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName,
+  EvmWeb3Pure,
+  limitOrderSupportedBlockchains,
   TokenAmount as SdkTokenAmount,
   TokenBaseStruct
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens, switchIif } from '@shared/utils/utils';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -28,6 +31,7 @@ import { OrderRateService } from '@features/swaps/features/limit-order/services/
 import { SuccessTxModalService } from '@core/services/success-tx-modal-service/success-tx-modal.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
+import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -94,6 +98,7 @@ export class LimitOrderFormService {
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
+    this.subscribeOnSwapTypeChanges();
   }
 
   /**
@@ -190,6 +195,12 @@ export class LimitOrderFormService {
     });
   }
 
+  private subscribeOnSwapTypeChanges(): void {
+    this.swapTypeService.swapMode$.pipe(distinctUntilChanged()).subscribe(() => {
+      this.updateBlockchains();
+    });
+  }
+
   private async updateStatus(): Promise<void> {
     if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
       return;
@@ -204,14 +215,35 @@ export class LimitOrderFormService {
     if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
       return;
     }
-    const { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
+    let { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
+    if (!limitOrderSupportedBlockchains.some(el => el === fromBlockchain)) {
+      fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+      fromToken = null;
+    } else if (EvmWeb3Pure.isNativeAddress(fromToken?.address)) {
+      fromToken = null;
+    }
+    if (!limitOrderSupportedBlockchains.some(el => el === toBlockchain)) {
+      toBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+      toToken = null;
+    } else if (EvmWeb3Pure.isNativeAddress(toToken?.address)) {
+      toToken = null;
+    }
+    const inputValues: Partial<SwapFormInput> = {
+      fromAssetType: fromBlockchain,
+      toBlockchain,
+      fromAsset: fromToken,
+      toToken
+    };
+
     if (fromBlockchain !== toBlockchain) {
       if (toToken && !fromToken) {
         this.swapFormService.inputControl.patchValue({
+          ...inputValues,
           fromAssetType: toBlockchain
         });
       } else {
         this.swapFormService.inputControl.patchValue({
+          ...inputValues,
           toBlockchain: fromBlockchain,
           fromAmount: null,
           toToken: null
@@ -220,6 +252,8 @@ export class LimitOrderFormService {
           toAmount: null
         });
       }
+    } else {
+      this.swapFormService.inputControl.patchValue(inputValues);
     }
   }
 
