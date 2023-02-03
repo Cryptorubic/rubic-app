@@ -28,6 +28,10 @@ export class SwapFormQueryService {
 
   public readonly initialLoading$ = this._initialLoading$.asObservable();
 
+  public get initialLoading(): boolean {
+    return this._initialLoading$.getValue();
+  }
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
