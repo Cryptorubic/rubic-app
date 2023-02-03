@@ -23,7 +23,7 @@ export class OrderRateComponent implements OnInit {
 
   public percentInfo: PercentInfo;
 
-  public isUnknown: boolean;
+  public isRateUknown: boolean;
 
   public rateDirection: 'from-to' | 'to-from' = 'from-to';
 
@@ -51,9 +51,9 @@ export class OrderRateComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ value, percentDiff }) => {
         if (!value?.isFinite()) {
-          this.isUnknown = true;
+          this.isRateUknown = true;
         } else if (!value.eq(this.rate)) {
-          this.isUnknown = false;
+          this.isRateUknown = false;
           this.updateRateFormValue();
         }
         this.updateRateLevelData(percentDiff);
@@ -64,18 +64,18 @@ export class OrderRateComponent implements OnInit {
 
   private updateRateLevelData(percentDiff: number): void {
     let levelData: RateLevelData;
-    if (this.isUnknown) {
-      levelData = rateLevelsData[RateLevel.YELLOW];
+    if (this.isRateUknown) {
+      levelData = rateLevelsData[RateLevel.WARNING];
     } else {
       let level: RateLevel;
       if (percentDiff <= -10) {
-        level = RateLevel.RED;
+        level = RateLevel.ERROR;
       } else if (percentDiff <= -5) {
-        level = RateLevel.YELLOW;
+        level = RateLevel.WARNING;
       } else if (percentDiff <= 0) {
         level = RateLevel.NOTHING;
       } else {
-        level = RateLevel.GREEN;
+        level = RateLevel.FINE;
       }
       levelData = rateLevelsData[level];
     }

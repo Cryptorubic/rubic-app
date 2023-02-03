@@ -1,8 +1,3 @@
-:host {
-  --yellow: #f2994a;
-  --red: #e9590c;
-}
-
 .rate {
   padding: 16px 16px 15px;
 
@@ -12,16 +7,16 @@
 
   cursor: pointer;
 
-  &_green {
+  &_fine {
     border-color: var(--primary-color);
   }
 
-  &_yellow {
-    border-color: var(--yellow);
+  &_warning {
+    border-color: var(--warning-color);
   }
 
-  &_red {
-    border-color: var(--red);
+  &_error {
+    border-color: var(--error-color);
   }
 
   &__header {
@@ -55,7 +50,7 @@
   }
 
   &__unknown-text {
-    color: var(--yellow);
+    color: var(--warning-color);
     font-size: 23px;
     line-height: 28px;
     letter-spacing: 0.1em;
@@ -92,16 +87,16 @@
   }
 
   &__value {
-    &_green {
+    &_fine {
       color: var(--primary-color);
     }
 
-    &_yellow {
-      color: var(--yellow);
+    &_warning {
+      color: var(--warning-color);
     }
 
-    &_red {
-      color: var(--red);
+    &_error {
+      color: var(--error-color);
     }
   }
 }

@@ -1,12 +1,5 @@
 @use 'src/scss/core' as *;
 
-@mixin assetImage {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  border-radius: 100%;
-}
-
 .asset {
   display: flex;
   align-items: center;
@@ -96,12 +89,12 @@
       background-color: var(--primary-color);
       border-radius: 97px;
 
-      &.yellow {
-        background-color: #f2994a;
+      &.warning {
+        background-color: var(--warning-color);
       }
 
-      &.red {
-        background-color: #e9590c;
+      &.error {
+        background-color: var(--error-color);
       }
     }
 

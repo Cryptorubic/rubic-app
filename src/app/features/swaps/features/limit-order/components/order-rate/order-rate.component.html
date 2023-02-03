@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="rate__value-container" *ngIf="!isUnknown">
+  <div class="rate__value-container" *ngIf="!isRateUknown">
     <ng-container *ngLet="fromTokenName$ | async as fromTokenName">
       <ng-container *ngLet="toTokenName$ | async as toTokenName">
         <ng-container *ngIf="fromTokenName && toTokenName && rate.gt(0)">
@@ -40,5 +40,5 @@
     </ng-container>
   </div>
 
-  <div class="rate__unknown-text" *ngIf="isUnknown">Rate is unknown</div>
+  <div class="rate__unknown-text" *ngIf="isRateUknown">Rate is unknown</div>
 </div>

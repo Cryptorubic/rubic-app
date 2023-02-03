@@ -139,12 +139,11 @@ export class LimitOrderFormService {
                 !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
                 !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
               ) {
-                this.prevFromTokenAmount = fromTokenAmount;
-
                 this.needApprove = await this.sdkService.limitOrderManager.needApprove(
                   fromTokenAmount,
                   fromAmount
                 );
+                this.prevFromTokenAmount = fromTokenAmount;
               }
               this.calculating = false;
               if (this.isFormFilled) {

@@ -83,6 +83,10 @@ export class OrderRowComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.setRateData();
+  }
+
+  private setRateData(): void {
     if (!this.showCancel) {
       return;
     }
@@ -95,7 +99,7 @@ export class OrderRowComponent implements OnInit {
       .dp(2)
       .toNumber();
     if (percentDiff <= -5) {
-      this.rateLevelData = rateLevelsData[RateLevel.RED];
+      this.rateLevelData = rateLevelsData[RateLevel.ERROR];
     }
     this.percentDiff = {
       value: percentDiff,
@@ -109,7 +113,7 @@ export class OrderRowComponent implements OnInit {
     ) {
       this.isEnoughBalance = false;
       if (!this.rateLevelData) {
-        this.rateLevelData = rateLevelsData[RateLevel.RED];
+        this.rateLevelData = rateLevelsData[RateLevel.ERROR];
       }
     }
   }

@@ -1,8 +1,8 @@
 export enum RateLevel {
   NOTHING,
-  GREEN,
-  YELLOW,
-  RED
+  FINE,
+  WARNING,
+  ERROR
 }
 
 export interface RateLevelData {
@@ -17,16 +17,16 @@ export const rateLevelsData: Record<RateLevel, RateLevelData> = {
     imgSrc: `${baseImgSrc}tick.svg`,
     class: ''
   },
-  [RateLevel.GREEN]: {
+  [RateLevel.FINE]: {
     imgSrc: `${baseImgSrc}tick.svg`,
-    class: 'green'
+    class: 'fine'
   },
-  [RateLevel.YELLOW]: {
+  [RateLevel.WARNING]: {
     imgSrc: `${baseImgSrc}exclamation-yellow.svg`,
-    class: 'yellow'
+    class: 'warning'
   },
-  [RateLevel.RED]: {
+  [RateLevel.ERROR]: {
     imgSrc: `${baseImgSrc}exclamation-red.svg`,
-    class: 'red'
+    class: 'error'
   }
 };

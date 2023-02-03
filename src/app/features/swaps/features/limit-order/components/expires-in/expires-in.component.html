@@ -1,7 +1,6 @@
 <tui-hosted-dropdown
   class="dropdown"
   [(open)]="settingsOpen"
-  (openChange)="onOpenChange($event)"
   [content]="dropdown"
   tuiDropdownDirection="bottom"
 >
@@ -35,9 +34,5 @@
 </tui-hosted-dropdown>
 
 <ng-template #dropdown>
-  <app-expiration-optional
-    *ngIf="dropdownState === 'optional'"
-    (onClose)="onClose()"
-    (onStateChange)="toggleState()"
-  ></app-expiration-optional>
+  <app-expiration-optional (onClose)="onClose()"></app-expiration-optional>
 </ng-template>

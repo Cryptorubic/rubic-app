@@ -14,8 +14,6 @@ import { OrderExpirationService } from '@features/swaps/features/limit-order/ser
 export class ExpirationOptionalComponent {
   @Output() onClose = new EventEmitter<void>();
 
-  @Output() onStateChange = new EventEmitter<void>();
-
   public readonly options = expirationOptions;
 
   public readonly highlightedOption: number;

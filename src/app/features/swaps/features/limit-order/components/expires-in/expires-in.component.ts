@@ -16,47 +16,38 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpiresInComponent {
-  public dropdownState: 'optional' | 'custom' = 'optional';
-
   public settingsOpen = false;
 
   public readonly expirationValue$: Observable<ExpirationValue> =
-    this.orderExpirationService.expirationTime$.pipe(
-      map(minutes => {
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-
-        const values = [];
-        if (days) {
-          values.push(getFormattedDays(days));
-        }
-        if (hours % 24) {
-          values.push(getFormattedHours(hours % 24));
-        }
-        if (minutes % 60) {
-          values.push(getFormattedMinutes(minutes % 60));
-        }
-
-        return {
-          shortValue: values[0],
-          fullValue: values.join(' ')
-        };
-      })
-    );
+    this.orderExpirationService.expirationTime$.pipe(map(minutes => this.getDateValues(minutes)));
 
   constructor(private readonly orderExpirationService: OrderExpirationService) {}
 
+  private getDateValues(minutes: number): {
+    shortValue: string;
+    fullValue: string;
+  } {
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    const values = [];
+    if (days) {
+      values.push(getFormattedDays(days));
+    }
+    if (hours % 24) {
+      values.push(getFormattedHours(hours % 24));
+    }
+    if (minutes % 60) {
+      values.push(getFormattedMinutes(minutes % 60));
+    }
+
+    return {
+      shortValue: values[0],
+      fullValue: values.join(' ')
+    };
+  }
+
   public onClose(): void {
     this.settingsOpen = false;
-  }
-
-  public toggleState(): void {
-    this.dropdownState = this.dropdownState === 'optional' ? 'custom' : 'optional';
-  }
-
-  public onOpenChange(open: boolean): void {
-    if (!open) {
-      this.dropdownState = 'optional';
-    }
   }
 }
