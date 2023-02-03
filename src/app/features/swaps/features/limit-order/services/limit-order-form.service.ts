@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -32,6 +32,7 @@ import { SuccessTxModalService } from '@core/services/success-tx-modal-service/s
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
+import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -88,6 +89,7 @@ export class LimitOrderFormService {
     private readonly sdkService: SdkService,
     private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
+    private readonly swapFormQueryService: SwapFormQueryService,
     private readonly authService: AuthService,
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
@@ -157,7 +159,7 @@ export class LimitOrderFormService {
                   })
                 );
               },
-              () => EMPTY
+              () => of(null)
             ),
             tap(() => {
               this.calculating = false;
@@ -212,9 +214,13 @@ export class LimitOrderFormService {
    * Updates form blockchains, so they are equal.
    */
   private updateBlockchains(): void {
-    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+    if (
+      this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER ||
+      this.swapFormQueryService.initialLoading
+    ) {
       return;
     }
+
     let { fromToken, toToken, fromBlockchain, toBlockchain } = this.inputValue;
     if (!limitOrderSupportedBlockchains.some(el => el === fromBlockchain)) {
       fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
