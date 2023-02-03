@@ -9,6 +9,8 @@ import { WindowWidthService } from '@core/services/widnow-width-service/window-w
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -34,21 +36,27 @@ export class AssetTypesAsideComponent {
         return this.blockchainsAmount;
       }
 
-      const isFrom = this.formType === 'from' ? 1 : 0;
+      const showFiats = this.showFiats ? 1 : 0;
 
       if (windowSize >= WindowSize.MOBILE_MD) {
-        return 9 - isFrom;
+        return 9 - showFiats;
       }
 
       const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return Math.floor(asideHeight / 82) - 1 - isFrom;
+        return Math.floor(asideHeight / 82) - 1 - showFiats;
       }
-      return Math.floor(asideHeight / 66) - 1 - isFrom;
+      return Math.floor(asideHeight / 66) - 1 - showFiats;
     })
   );
 
   public readonly fiatsDisabled = this.fiatsListService.isDisabled();
+
+  public get showFiats(): boolean {
+    return (
+      this.formType === 'from' && this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
+    );
+  }
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
@@ -56,6 +64,7 @@ export class AssetTypesAsideComponent {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
+    private readonly swapTypeService: SwapTypeService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 

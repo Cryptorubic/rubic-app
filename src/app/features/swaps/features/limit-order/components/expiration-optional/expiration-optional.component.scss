@@ -1,0 +1,29 @@
+@use 'src/scss/core' as *;
+
+.container {
+  width: 204px;
+  margin: 0;
+  padding: 8px 16px;
+
+  background: var(--form-background);
+
+  &__option {
+    display: flex;
+    align-items: center;
+
+    height: 36px;
+
+    font-size: 14px;
+    line-height: 120%;
+
+    cursor: pointer;
+
+    &_highlighted {
+      color: var(--primary-color);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--transparent-line);
+    }
+  }
+}

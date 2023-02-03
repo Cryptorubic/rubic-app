@@ -9,6 +9,14 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
+    path: ROUTE_PATH.LIMIT_ORDER,
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
+  },
+  {
+    path: ROUTE_PATH.HISTORY,
+    loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
+  },
+  {
     path: ROUTE_PATH.BYT_CRYPTO,
     loadChildren: () =>
       import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)

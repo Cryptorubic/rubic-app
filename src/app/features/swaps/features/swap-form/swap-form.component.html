@@ -1,5 +1,7 @@
 <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
 
+<app-form-navigation></app-form-navigation>
+
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
   <ng-container *ngLet="onramperWidgetOpened$ | async as onramperWidgetOpened">
     <div class="close-widget-button" *ngIf="onramperWidgetOpened">
@@ -9,7 +11,10 @@
     <div
       class="swap-form"
       [ngStyle]="{ 'background-color': backgroundColor }"
-      [ngClass]="{ 'swap-form_extended': onramperWidgetOpened }"
+      [ngClass]="{
+        'swap-form_extended': onramperWidgetOpened,
+        'swap-form_limit-order': isLimitOrder
+      }"
     >
       <header *noFrame class="swap-form__header">
         <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
@@ -20,12 +25,16 @@
             *ngIf="
               (isInstantTrade || isCrossChainRouting || isOnramper) && isFormFilled && allowRefresh
             "
+            mode="swaps"
+            [isRotating$]="isRefreshRotating$"
+            [isRotating]="isRefreshRotating"
+            (onRefresh)="onRefresh()"
           >
           </app-refresh-button>
 
           <app-settings-container
             class="swap-form__settings"
-            *ngIf="!isOnramper"
+            *ngIf="!isOnramper && !isLimitOrder"
           ></app-settings-container>
 
           <app-iframe-logout-button
@@ -42,7 +51,10 @@
           >
           </app-iframe-asset-type-indicator>
 
-          <app-token-amount-input *noFrame="'vertical'"></app-token-amount-input>
+          <app-token-amount-input
+            *noFrame="'vertical'"
+            (amountUpdated)="onFromAmountUpdate()"
+          ></app-token-amount-input>
 
           <app-vertical-iframe-token-amount-input
             *onlyFrame="'vertical'"
@@ -77,11 +89,16 @@
 
       <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
     </div>
+
+    <app-limit-order-bottom-form
+      *ngIf="isLimitOrder"
+      [fromAmountUpdated$]="fromAmountUpdated$"
+    ></app-limit-order-bottom-form>
   </ng-container>
 
   <ng-container *noFrame>
     <app-swap-info-container
-      *ngIf="isFormFilled && !isOnramper"
+      *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
       [swapType]="swapType"
       [currentInstantTradeInfo]="currentInstantTradeInfo"
       [tradeStatus]="tradeStatus"

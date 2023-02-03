@@ -51,6 +51,9 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-text-03: var(--tui-text-02);
 
   --selection-color: rgb(243 249 243);
+
+  --error-color: #e9590c;
+  --warning-color: #f2994a;
 }
 
 // ***** typography *****
@@ -88,6 +91,8 @@ $rubic-text-disable: #909090;
 $rubic-text-error: #d9573f;
 
 $text-gray: #a8a8a8;
+
+$text-gray-2: #878787;
 
 // ***** font-sizes *****
 $rubic-font-size-main: 14px;

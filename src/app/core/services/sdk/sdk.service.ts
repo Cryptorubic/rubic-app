@@ -9,7 +9,8 @@ import {
   WalletProvider,
   WalletProviderCore,
   CHAIN_TYPE,
-  CrossChainSymbiosisManager
+  CrossChainSymbiosisManager,
+  LimitOrderManager
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -49,6 +50,10 @@ export class SdkService {
 
   public get crossChainStatusManager(): CrossChainStatusManager {
     return this.SDK.crossChainStatusManager;
+  }
+
+  public get limitOrderManager(): LimitOrderManager {
+    return this.SDK.limitOrderManager;
   }
 
   private set SDK(value: SDK) {

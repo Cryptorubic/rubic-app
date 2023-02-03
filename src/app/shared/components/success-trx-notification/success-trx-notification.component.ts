@@ -18,6 +18,13 @@ export class SuccessTrxNotificationComponent {
 
   public readonly withRecentTrades: boolean;
 
+  public get title(): string {
+    if (this.type === 'cross-chain-routing') {
+      return 'notifications.successfulCCRTradeTitle';
+    }
+    return 'notifications.successfulTradeTitle';
+  }
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
@@ -31,7 +38,7 @@ export class SuccessTrxNotificationComponent {
     this.withRecentTrades = context.data.withRecentTrades;
   }
 
-  public openRecentTrades(): void {
+  public openModal(): void {
     // CompleteWith doesn't work.
     (this.context as RubicAny).closeHook();
 

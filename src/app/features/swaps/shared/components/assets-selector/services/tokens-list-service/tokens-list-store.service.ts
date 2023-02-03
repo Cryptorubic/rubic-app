@@ -27,6 +27,8 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Injectable()
 export class TokensListStoreService {
@@ -93,7 +95,8 @@ export class TokensListStoreService {
     private readonly tokensService: TokensService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly swapTypeService: SwapTypeService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -162,7 +165,10 @@ export class TokensListStoreService {
       )
       .subscribe((tokensList: TokensList) => {
         if ('tokensToShow' in tokensList) {
-          this.tokensToShow = tokensList.tokensToShow;
+          this.tokensToShow =
+            this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
+              ? tokensList.tokensToShow
+              : tokensList.tokensToShow.filter(t => !EvmWeb3Pure.isNativeAddress(t.address));
           this.customToken = null;
         } else {
           this.tokensToShow = [];

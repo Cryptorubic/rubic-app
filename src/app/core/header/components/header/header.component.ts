@@ -20,8 +20,6 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -90,7 +88,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
@@ -143,15 +140,11 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    this.swapFormService.inputControl.patchValue({
-      fromAssetType: BLOCKCHAIN_NAME.ETHEREUM,
-      fromAsset: null,
-      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      toToken: null,
-      fromAmount: null
-    });
-    this.gtmService.reloadGtmSession();
-    await this.router.navigate(['/']);
+    await this.swapTypeService.navigateToSwaps();
+  }
+
+  public async navigateToLimitOrder(): Promise<void> {
+    await this.swapTypeService.navigateToLimitOrder();
   }
 
   public handleMenuButtonClick(): void {
