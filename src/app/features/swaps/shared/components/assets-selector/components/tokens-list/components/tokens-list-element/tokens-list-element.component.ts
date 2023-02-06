@@ -40,6 +40,7 @@ export class TokensListElementComponent {
 
   public readonly securityMessages = {
     [TokenSecurityStatus.TRUST_LIST]: 'Token is in the Go+ Trust List',
+    [TokenSecurityStatus.SCAM_LIST]: 'Token is in the Scam List',
     [TokenSecurityStatus.SECURED]: 'Token has no elements of concern',
     [TokenSecurityStatus.LOW_RISK]: 'Token code contains some low risk elements of concern',
     [TokenSecurityStatus.HIGH_RISK]: 'Token code contains some high risk elements of concern',
@@ -125,25 +126,25 @@ export class TokensListElementComponent {
 
   /**
    * Returns the state of token security.
-   *
-   * UNSUPPORTED_BLOCKCHAIN - network is not supported by Go+.
-   * NO_INFO - network is supported by Go+, but there is no security info about token.
-   * TRUST_LIST - token is in Go+ trust list OR a token is a Native Token in a supported netwrok.
-   * SECURED - token has 0 Go+ warnings, but not in the Trust List.
-   * HIGH_RISK - token has some risky Go+ warnings.
-   * LOW_RISK - token has some attention Go+ warnings and 0 risky warnings.
    */
   public get securityStatus(): TokenSecurityStatus {
     if (GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain) === false) {
       return TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN;
     }
 
-    if (this.token.tokenSecurity && !this.token.tokenSecurity.has_info) {
+    if (this.isNativeToken || (this.token.tokenSecurity && this.token.tokenSecurity.trust_list)) {
+      return TokenSecurityStatus.TRUST_LIST;
+    }
+
+    if (
+      this.token.tokenSecurity === null ||
+      (this.token.tokenSecurity && this.token.tokenSecurity.has_info === false)
+    ) {
       return TokenSecurityStatus.NO_INFO;
     }
 
-    if (this.isNativeToken || (this.token.tokenSecurity && this.token.tokenSecurity.trust_list)) {
-      return TokenSecurityStatus.TRUST_LIST;
+    if (this.token.tokenSecurity.fake_token || this.token.tokenSecurity.is_airdrop_scam) {
+      return TokenSecurityStatus.SCAM_LIST;
     }
 
     if (

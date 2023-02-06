@@ -7,7 +7,8 @@ import { BlockchainName } from 'rubic-sdk';
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',
   IFRAME_TOKENS = 'v1/tokens/iframe/',
-  FAVORITE_TOKENS = 'v1/tokens/favorite/'
+  FAVORITE_TOKENS = 'v1/tokens/favorite/',
+  TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -34,6 +35,10 @@ export interface TokensBackendResponse {
   readonly next: string;
   readonly previous: string;
   readonly results: BackendToken[];
+}
+
+export interface TokenSecurityBackendResponse {
+  readonly token_security: TokenSecurity;
 }
 
 export interface TokensRequestQueryOptions {

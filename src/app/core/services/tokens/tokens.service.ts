@@ -26,6 +26,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import {
   BlockchainName,
   Web3Pure,
@@ -639,6 +640,26 @@ export class TokensService {
         );
       })
     );
+  }
+
+  /**
+   * Fetches tokens from backend by address and network
+   * @param address Token address to fetch.
+   * @param blockchain Token's network.
+   * @returns Promise<TokenSecurity> with token's security data.
+   */
+  public async fetchTokenSecurity(
+    address: string,
+    blockchain: BlockchainName
+  ): Promise<TokenSecurity> {
+    const isAddress = address.length >= 42;
+
+    const params: TokensRequestQueryOptions = {
+      network: blockchain,
+      ...(isAddress && { address })
+    };
+
+    return firstValueFrom(this.tokensApiService.fetchTokenSecurity(params));
   }
 
   /**
