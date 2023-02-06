@@ -15,10 +15,12 @@ import {
   ENDPOINTS,
   FavoriteTokenRequestParams,
   TokensBackendResponse,
+  TokenSecurityBackendResponse,
   TokensListResponse,
   TokensRequestNetworkOptions,
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
@@ -53,10 +55,11 @@ export class TokensApiService {
   public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => ({
+        .map(({ token_security, ...token }: BackendToken) => ({
           ...token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
-          price: token.usdPrice
+          price: token.usdPrice,
+          tokenSecurity: token_security
         }))
         .filter(token => token.address && token.blockchain)
     );
@@ -261,6 +264,27 @@ export class TokensApiService {
   }
 
   /**
+   * Fetches token security info from backend.
+   * @param requestOptions Request options to get token security info by.
+   * @returns Observable<TokenSecurity> Token security info from backend.
+   */
+  public fetchTokenSecurity(requestOptions: TokensRequestQueryOptions): Observable<TokenSecurity> {
+    const options = {
+      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+      ...(requestOptions.address && { address: requestOptions.address })
+    };
+
+    return this.httpService
+      .get<TokenSecurityBackendResponse>(ENDPOINTS.TOKENS_SECURITY, options, this.tokensApiUrl)
+      .pipe(
+        map(({ token_security }) => ({
+          ...token_security
+        })),
+        catchError(() => of(null))
+      );
+  }
+
+  /**
    * Fetches specific network tokens from backend.
    * @param requestOptions Request options to get tokens by.
    * @return Observable<TokensListResponse> Tokens response from backend with count.
@@ -296,7 +320,7 @@ export class TokensApiService {
             price: price.toNumber(),
             usedInIframe: true,
             hasDirectPair: null,
-
+            tokenSecurity: null,
             blockchain: BLOCKCHAIN_NAME.BITCOIN,
             address: EMPTY_ADDRESS,
             name: 'Bitcoin',

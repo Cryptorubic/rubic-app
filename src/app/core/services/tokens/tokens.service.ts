@@ -27,6 +27,7 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import {
   BlockchainName,
   Web3Pure,
@@ -35,7 +36,9 @@ import {
   Token as SdkToken,
   BlockchainsInfo,
   Web3PublicService,
-  Web3PublicSupportedBlockchain
+  Web3PublicSupportedBlockchain,
+  isAddressCorrect,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
@@ -611,8 +614,11 @@ export class TokensService {
     query: string,
     blockchain: BlockchainName
   ): Observable<List<TokenAmount>> {
-    query = query.toLowerCase();
-    const isAddress = query.length >= 42;
+    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
+      query = query.toLowerCase();
+    }
+
+    const isAddress = isAddressCorrect(query, blockchain);
 
     const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
     if (isLifiTokens) {
@@ -644,6 +650,26 @@ export class TokensService {
         );
       })
     );
+  }
+
+  /**
+   * Fetches tokens from backend by address and network
+   * @param address Token address to fetch.
+   * @param blockchain Token's network.
+   * @returns Promise<TokenSecurity> with token's security data.
+   */
+  public async fetchTokenSecurity(
+    address: string,
+    blockchain: BlockchainName
+  ): Promise<TokenSecurity> {
+    const isAddress = isAddressCorrect(address, blockchain);
+
+    const params: TokensRequestQueryOptions = {
+      network: blockchain,
+      ...(isAddress && { address })
+    };
+
+    return firstValueFrom(this.tokensApiService.fetchTokenSecurity(params));
   }
 
   /**

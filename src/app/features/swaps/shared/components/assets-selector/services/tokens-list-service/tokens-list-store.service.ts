@@ -9,6 +9,7 @@ import {
   timer
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -247,7 +248,8 @@ export class TokensListStoreService {
             amount: new BigNumber(NaN),
             price: 0,
             available: this.isTokenAvailable(token),
-            favorite: this.isTokenFavorite(token)
+            favorite: this.isTokenFavorite(token),
+            tokenSecurity: await this.getTokenSecurity(token)
           };
         }
       }
@@ -375,5 +377,9 @@ export class TokensListStoreService {
       this.assetsSelectorService.formType === 'from' ? 'toToken' : 'fromAsset';
     const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
+  }
+
+  private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
+    return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 }
