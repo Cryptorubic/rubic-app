@@ -194,8 +194,8 @@ export class TokensApiService {
         .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
           tap(networkTokens => {
-            const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
             if (networkTokens?.results) {
+              const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
               tokensNetworkState$.next({
                 ...tokensNetworkState$.value,
                 [blockchain]: {

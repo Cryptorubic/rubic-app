@@ -41,6 +41,7 @@ import { debounceTime } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -186,6 +187,7 @@ export class ApproveScannerService {
     @Inject(INJECTOR) private readonly injector: AngularInjector,
     private readonly dialogService: TuiDialogService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly gasService: GasService
@@ -212,9 +214,7 @@ export class ApproveScannerService {
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
       .pipe(
         map(response => this.handleScannerResponse(response)),
-        switchTap(() =>
-          this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
-        ),
+        switchTap(() => this.tokensStoreService.tokens$.pipe(first(Boolean))),
         switchMap(approves => this.findTokensForApproves(approves)),
         switchMap(approves => this.fetchLastAllowance(approves, blockchain)),
         map(approves => approves.filter(approve => approve.value !== '0')),
@@ -331,7 +331,7 @@ export class ApproveScannerService {
     const approvesAddresses = sourceApproves.map(approve => approve.tokenAddress);
     const uniqueAddresses = Array.from(new Set(approvesAddresses));
     const tokensRequests = uniqueAddresses.map(address =>
-      this.tokensService.findToken(
+      this.tokensStoreService.findToken(
         {
           address,
           blockchain: this.form.controls.blockchain.value.key

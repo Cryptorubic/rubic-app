@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +11,7 @@ import { isSupportedLanguage } from '@shared/models/languages/supported-language
 import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +54,7 @@ export class QueryParamsService {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly iframeService: IframeService,
@@ -183,7 +183,7 @@ export class QueryParamsService {
     );
 
     if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensService.tokensRequestParameters = tokensQueryParams;
+      this.tokensStoreService.tokensRequestParameters = tokensQueryParams;
     }
   }
 

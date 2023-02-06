@@ -62,6 +62,7 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
+import { areTokensEqual } from '@app/core/services/tokens/utils';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -222,10 +223,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
 
     this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
-      if (
-        TokensService.areTokensEqual(this.toToken, toToken) &&
-        this.toToken?.price !== toToken?.price
-      ) {
+      if (areTokensEqual(this.toToken, toToken) && this.toToken?.price !== toToken?.price) {
         this.toToken = toToken;
         this.cdr.markForCheck();
       }

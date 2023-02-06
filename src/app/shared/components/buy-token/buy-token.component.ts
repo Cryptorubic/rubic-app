@@ -11,7 +11,7 @@ import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-
 import { compareTokens } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 export interface TokenInfo {
   blockchain: BlockchainName;
@@ -53,7 +53,7 @@ export class BuyTokenComponent {
     private readonly swapFormService: SwapFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly themeService: ThemeService,
-    private readonly tokensService: TokensService
+    private readonly tokensStoreService: TokensStoreService
   ) {
     this.tokensType = 'default';
     this.customTokens = {
@@ -101,7 +101,7 @@ export class BuyTokenComponent {
         ? this.defaultTokens.to
         : this.customTokens.to;
 
-    return this.tokensService.tokens$.pipe(
+    return this.tokensStoreService.tokens$.pipe(
       first(tokens => tokens?.size > 0),
       map((tokens: List<TokenAmount>) => ({
         fromToken: tokens.find(token => compareTokens(token, fromToken)),

@@ -11,7 +11,6 @@ import {
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
@@ -29,6 +28,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -92,7 +92,7 @@ export class TokensListStoreService {
   constructor(
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapFormService,
@@ -107,13 +107,14 @@ export class TokensListStoreService {
   }
 
   private subscribeOnTokensChange(): void {
-    combineLatest([this.tokensService.tokens$, this.tokensService.favoriteTokens$]).subscribe(
-      () => {
-        if (!this.searchQuery) {
-          this.updateTokens();
-        }
+    combineLatest([
+      this.tokensStoreService.tokens$,
+      this.tokensStoreService.favoriteTokens$
+    ]).subscribe(() => {
+      if (!this.searchQuery) {
+        this.updateTokens();
       }
-    );
+    });
   }
 
   private subscribeOnSearchQueryChange(): void {
@@ -208,7 +209,7 @@ export class TokensListStoreService {
       return of([]);
     }
 
-    return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
+    return this.tokensStoreService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
       map(backendTokens => {
         if (backendTokens.size) {
           return backendTokens
@@ -284,7 +285,7 @@ export class TokensListStoreService {
    * Gets filtered favorite tokens by blockchain and query.
    */
   private getFilteredFavoriteTokens(): AvailableTokenAmount[] {
-    const allFavoriteTokens = this.tokensService.favoriteTokens.toArray();
+    const allFavoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
     const query = this.searchQuery.toLowerCase();
     const filteredFavoriteTokens = allFavoriteTokens
@@ -320,7 +321,7 @@ export class TokensListStoreService {
    */
   private getSortedTokens(): AvailableTokenAmount[] {
     if (this.listType === 'default') {
-      const tokens = this.tokensService.tokens.toArray();
+      const tokens = this.tokensStoreService.tokens.toArray();
 
       const currentBlockchainTokens = tokens
         .filter(token => token.blockchain === this.blockchain && this.isTokenAvailable(token))
@@ -331,7 +332,7 @@ export class TokensListStoreService {
         }));
       return this.sortTokensByComparator(currentBlockchainTokens);
     } else {
-      const favoriteTokens = this.tokensService.favoriteTokens.toArray();
+      const favoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
       const currentBlockchainFavoriteTokens = favoriteTokens
         .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
@@ -360,7 +361,7 @@ export class TokensListStoreService {
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
-    return this.tokensService.favoriteTokens.some(favoriteToken =>
+    return this.tokensStoreService.favoriteTokens.some(favoriteToken =>
       compareTokens(favoriteToken, token)
     );
   }

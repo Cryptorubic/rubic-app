@@ -49,6 +49,7 @@ import { CrossChainApiService } from '@core/services/backend/cross-chain-routing
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -76,7 +77,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService
   ) {
     super('cross-chain-routing');
   }
@@ -235,8 +237,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this.checkDeviceAndShowNotification();
 
     const [fromToken, toToken] = await Promise.all([
-      this.tokensService.findToken(calculatedTrade.trade.from),
-      this.tokensService.findToken(calculatedTrade.trade.to)
+      this.tokensStoreService.findToken(calculatedTrade.trade.from),
+      this.tokensStoreService.findToken(calculatedTrade.trade.to)
     ]);
 
     const fromAddress = this.authService.userAddress;

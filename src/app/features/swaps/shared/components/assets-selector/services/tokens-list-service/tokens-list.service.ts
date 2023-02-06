@@ -3,7 +3,6 @@ import { TokensListStoreService } from '@features/swaps/shared/components/assets
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, pairwise, switchMap } from 'rxjs/operators';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -12,6 +11,7 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class TokensListService {
@@ -47,7 +47,7 @@ export class TokensListService {
   constructor(
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly tokensListTypeService: TokensListTypeService,
-    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
     private readonly iframeService: IframeService
@@ -80,7 +80,7 @@ export class TokensListService {
               if (!BlockchainsInfo.isBlockchainName(blockchain)) {
                 return false;
               }
-              const tokensNetworkState = this.tokensService.tokensNetworkState[blockchain];
+              const tokensNetworkState = this.tokensStoreService.tokensNetworkState[blockchain];
               if (
                 this.loading ||
                 this.searchQueryService.query ||
@@ -104,7 +104,7 @@ export class TokensListService {
       .subscribe(shouldUpdate => {
         if (shouldUpdate) {
           this._listUpdating$.next(true);
-          this.tokensService.fetchNetworkTokens(
+          this.tokensStoreService.fetchNetworkTokens(
             this.assetsSelectorService.assetType as BlockchainName,
             () => {
               this._listUpdating$.next(false);

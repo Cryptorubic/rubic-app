@@ -32,6 +32,7 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class LimitOrdersService {
@@ -51,6 +52,7 @@ export class LimitOrdersService {
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient,
     private readonly successTxModalService: SuccessTxModalService,
@@ -71,12 +73,12 @@ export class LimitOrdersService {
 
   private async getUserTrades(walletAddress: string): Promise<LimitOrder[]> {
     const orders = await this.sdkService.limitOrderManager.getUserTrades(walletAddress);
-    await firstValueFrom(this.tokensService.tokens$.pipe(first(v => Boolean(v))));
+    await firstValueFrom(this.tokensStoreService.tokens$.pipe(first(v => Boolean(v))));
     return Promise.all(
       orders.map(async order => {
         const [fromToken, toToken] = await Promise.all([
-          this.tokensService.findToken(order.fromToken, true),
-          this.tokensService.findToken(order.toToken, true)
+          this.tokensStoreService.findToken(order.fromToken, true),
+          this.tokensStoreService.findToken(order.toToken, true)
         ]);
         const marketRate = await this.getMarketRate(fromToken, toToken);
         const orderRate = new BigNumber(order.toAmount).div(order.fromAmount);
