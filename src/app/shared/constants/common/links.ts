@@ -1,8 +1,11 @@
 export enum ROUTE_PATH {
   NONE = '',
+  LIMIT_ORDER = 'limit-order',
+  HISTORY = 'history',
   BYT_CRYPTO = 'buy-crypto',
   ABOUT = 'about',
   FAQ = 'faq',
+  REVOKE_APPROVAL = 'revoke-approval',
   REST = '**'
 }
 

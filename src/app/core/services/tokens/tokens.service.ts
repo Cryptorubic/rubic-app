@@ -7,6 +7,7 @@ import {
   from,
   Observable,
   of,
+  shareReplay,
   Subject
 } from 'rxjs';
 import { List } from 'immutable';
@@ -15,7 +16,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
@@ -40,6 +41,7 @@ import {
   BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -53,7 +55,10 @@ export class TokensService {
    */
   private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
 
-  public readonly tokens$ = this._tokens$.asObservable();
+  public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable().pipe(
+    distinctUntilChanged((prev, curr) => prev?.size === curr?.size),
+    shareReplay(shareReplayConfig)
+  );
 
   /**
    * Current favorite tokens list state.

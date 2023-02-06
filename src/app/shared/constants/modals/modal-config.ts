@@ -1,3 +1,3 @@
 export const MODAL_CONFIG = {
-  modalLifetime: 6000
+  modalLifetime: 15_000
 };

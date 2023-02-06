@@ -25,6 +25,8 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
+import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
+import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -69,7 +71,9 @@ import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
     SwapFormService,
     SwapFormQueryService,
     SwapTokensUpdaterService,
-    FiatsService
+    FiatsService,
+    LimitOrdersService,
+    SuccessTxModalService
   ],
   imports: [
     CommonModule,

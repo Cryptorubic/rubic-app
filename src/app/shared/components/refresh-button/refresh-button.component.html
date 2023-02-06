@@ -1,0 +1,9 @@
+<div class="refresh-button" [tuiHint]="refreshIconTooltip" (click)="toggleClick()">
+  <div #refreshIcon class="refresh-button__icon" inlineSVG="assets/images/icons/reload.svg"></div>
+</div>
+
+<ng-template #refreshIconTooltip>
+  <span class="refresh-icon-tooltip">{{
+    (mode === 'swaps' ? 'common.refreshTrade' : 'Update orders') | translate
+  }}</span>
+</ng-template>

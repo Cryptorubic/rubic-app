@@ -93,4 +93,6 @@ export class UserProfileComponent implements AfterViewInit {
       })
       .subscribe();
   }
+
+  public openLimitOrdersModal(): void {}
 }
