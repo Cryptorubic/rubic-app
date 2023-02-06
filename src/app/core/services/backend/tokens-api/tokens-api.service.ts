@@ -271,7 +271,7 @@ export class TokensApiService {
   public fetchTokenSecurity(requestOptions: TokensRequestQueryOptions): Observable<TokenSecurity> {
     const options = {
       network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
-      ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
+      ...(requestOptions.address && { address: requestOptions.address })
     };
 
     return this.httpService

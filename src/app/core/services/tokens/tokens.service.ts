@@ -35,7 +35,9 @@ import {
   Token as SdkToken,
   BlockchainsInfo,
   Web3PublicService,
-  Web3PublicSupportedBlockchain
+  Web3PublicSupportedBlockchain,
+  isAddressCorrect,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
@@ -607,8 +609,11 @@ export class TokensService {
     query: string,
     blockchain: BlockchainName
   ): Observable<List<TokenAmount>> {
-    query = query.toLowerCase();
-    const isAddress = query.length >= 42;
+    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
+      query = query.toLowerCase();
+    }
+
+    const isAddress = isAddressCorrect(query, blockchain);
 
     const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
     if (isLifiTokens) {
@@ -652,7 +657,7 @@ export class TokensService {
     address: string,
     blockchain: BlockchainName
   ): Promise<TokenSecurity> {
-    const isAddress = address.length >= 42;
+    const isAddress = isAddressCorrect(address, blockchain);
 
     const params: TokensRequestQueryOptions = {
       network: blockchain,

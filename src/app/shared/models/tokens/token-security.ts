@@ -8,20 +8,21 @@ export type TokenSecurity = {
 } | null;
 
 /**
- * UNSUPPORTED_BLOCKCHAIN - network is not supported by Go+.
- * NO_INFO - network is supported by Go+, but there is no security info about token.
- * TRUST_LIST - token is in Go+ trust list OR a token is a Native Token in a supported netwrok.
- * SCAM_LIST - token is in the Rubic's Scam List
- * SECURED - token has 0 Go+ warnings, but not in the Trust List.
- * HIGH_RISK - token has some risky Go+ warnings.
- * LOW_RISK - token has some attention Go+ warnings and 0 risky warnings.
+ * Enum for token security status.
  */
 export enum TokenSecurityStatus {
+  /** Token is in Go+ Trust List OR a token is a Native Token in a Go+ supported network. */
   TRUST_LIST = 'trust-list',
+  /** Token has 0 Go+ warnings, but not in the Go+ Trust List. */
   SECURED = 'safe',
+  /** Token has some attention Go+ warnings and 0 risky warnings. */
   LOW_RISK = 'low-risk',
+  /** Token has some risky Go+ warnings. */
   HIGH_RISK = 'high-risk',
+  /** Network is supported by Go+, but there is no security info about token. */
   NO_INFO = 'no-info',
+  /** Network is not supported by Go+. */
   UNSUPPORTED_BLOCKCHAIN = 'unsupported',
+  /** Token is in the Rubic's Scam List */
   SCAM_LIST = 'scam-list'
 }
