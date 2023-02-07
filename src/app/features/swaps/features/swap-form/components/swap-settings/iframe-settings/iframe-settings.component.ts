@@ -41,6 +41,8 @@ export class IframeSettingsComponent {
   public readonly isCrossChain =
     this.swapService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
+  public autoSlippageTolerance = this.form.controls.autoSlippageTolerance.value;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) readonly context: { content: { injector: Injector } },
     @Self() private readonly destroy$: TuiDestroyService
@@ -58,12 +60,14 @@ export class IframeSettingsComponent {
 
   public toggleAutoSlippageTolerance(): void {
     const autoSlippage = this.form.getRawValue().autoSlippageTolerance;
+
     if (autoSlippage) {
       this.form.patchValue({
         autoSlippageTolerance: false
       });
     } else {
       this.form.patchValue({
+        slippageTolerance: this.settingsService.defaultItSettings.slippageTolerance,
         autoSlippageTolerance: true
       });
     }
