@@ -23,10 +23,12 @@ import { areTokensEqual } from '@core/services/tokens/utils';
 import {
   BlockchainName,
   BlockchainsInfo,
+  BLOCKCHAIN_NAME,
   EvmBlockchainName,
   Injector,
   Web3PublicSupportedBlockchain,
-  Web3Pure
+  Web3Pure,
+  isAddressCorrect
 } from 'rubic-sdk';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
@@ -487,8 +489,11 @@ export class TokensStoreService {
     query: string,
     blockchain: BlockchainName
   ): Observable<List<TokenAmount>> {
-    query = query.toLowerCase();
-    const isAddress = query.length >= 42;
+    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
+      query = query.toLowerCase();
+    }
+
+    const isAddress = isAddressCorrect(query, blockchain);
 
     const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
     if (isLifiTokens) {
