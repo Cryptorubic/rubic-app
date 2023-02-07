@@ -65,6 +65,13 @@ export class TokensStoreService {
     {} as Record<BlockchainName, boolean>
   );
 
+  private _isBalanceLoading$: Record<BlockchainName, BehaviorSubject<boolean>> = Object.values(
+    BLOCKCHAIN_NAME
+  ).reduce(
+    (acc, blockchain) => ({ ...acc, [blockchain]: new BehaviorSubject(true) }),
+    {} as Record<BlockchainName, BehaviorSubject<boolean>>
+  );
+
   private get userAddress(): string | undefined {
     return this.authService.userAddress;
   }
@@ -95,10 +102,14 @@ export class TokensStoreService {
 
   private setupSubscriptions(): void {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
-      this.startBalanceCalculating(blockchain);
+      if (blockchain) {
+        this.startBalanceCalculating(blockchain);
+      }
     });
     this.swapFormService.toBlockchain$.subscribe(blockchain => {
-      this.startBalanceCalculating(blockchain);
+      if (blockchain) {
+        this.startBalanceCalculating(blockchain);
+      }
     });
 
     this.authService.currentUser$
@@ -151,16 +162,22 @@ export class TokensStoreService {
           if (!user) {
             return this.getDefaultTokenAmounts(tokens, false);
           }
+          this._isBalanceLoading$[blockchain].next(true);
           return this.getTokensWithBalance(tokens);
         })
       )
       .subscribe((tokensWithBalances: List<TokenAmount>) => {
         this.patchTokensBalances(tokensWithBalances);
+        this._isBalanceLoading$[blockchain].next(false);
       });
   }
 
   public balanceCalculatingStarted(blockchain: BlockchainName): boolean {
     return this.isBalanceCalculatingStarted[blockchain];
+  }
+
+  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+    return this._isBalanceLoading$[blockchain].asObservable();
   }
 
   /**

@@ -31,6 +31,8 @@ import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sd
 export class TokensListElementComponent {
   @Input() token: TokenAmount;
 
+  @Input() balanceLoading = false;
+
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;

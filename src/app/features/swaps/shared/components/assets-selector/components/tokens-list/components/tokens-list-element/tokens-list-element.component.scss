@@ -249,6 +249,11 @@
     }
   }
 
+  &__amount-container {
+    width: 70px;
+    height: 24px;
+  }
+
   &__amount {
     @include b($mobile-sm-middle) {
       font-size: 14px;

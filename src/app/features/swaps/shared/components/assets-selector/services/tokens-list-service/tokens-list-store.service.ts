@@ -385,4 +385,8 @@ export class TokensListStoreService {
   private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
+
+  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+    return this.tokensStoreService.isBalanceLoading$(blockchain);
+  }
 }
