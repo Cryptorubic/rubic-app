@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -54,8 +54,13 @@ export class TokensApiService {
     return List(
       tokens
         .map((token: BackendToken) => ({
-          ...token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          rank: token.rank,
           price: token.usdPrice
         }))
         .filter(token => token.address && token.blockchain)
@@ -86,17 +91,19 @@ export class TokensApiService {
    * Fetches favorite tokens from backend.
    * @return Observable<BackendToken[]> Favorite Tokens.
    */
-  public fetchFavoriteTokens(): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendToken[]>(
-        ENDPOINTS.FAVORITE_TOKENS,
-        { user: this.authService.userAddress },
-        this.tokensApiUrl
-      )
-      .pipe(
-        map(tokens => TokensApiService.prepareTokens(tokens)),
-        catchError(() => of(List([])))
-      );
+  public fetchFavoriteTokens(): Promise<List<Token>> {
+    return firstValueFrom(
+      this.httpService
+        .get<BackendToken[]>(
+          ENDPOINTS.FAVORITE_TOKENS,
+          { user: this.authService.userAddress },
+          this.tokensApiUrl
+        )
+        .pipe(
+          map(tokens => TokensApiService.prepareTokens(tokens)),
+          catchError(() => of(List([])))
+        )
+    );
   }
 
   /**

@@ -13,7 +13,7 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 import { TOKENS_PAGINATION } from '@core/services/tokens/constants/tokens-pagination';
-import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -31,8 +31,9 @@ import {
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareObjects, compareTokens } from '@shared/utils/utils';
 import { TokensRequestQueryOptions } from '@core/services/backend/tokens-api/models/tokens';
+import { StoreService } from '@core/services/store/store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,36 +47,18 @@ export class TokensStoreService {
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
   /**
-   * Current favorite tokens list state.
-   */
-  private readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
-
-  public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
-
-  /**
-   * Current tokens request options state.
-   */
-  private readonly _tokensRequestParameters$ = new Subject<{ [p: string]: unknown }>();
-
-  /**
-   * Current tokens network state.
-   */
-  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(
-    TOKENS_PAGINATION
-  );
-
-  public needRefetchTokens: boolean;
-
-  public get tokensNetworkState(): TokensNetworkState {
-    return this._tokensNetworkState$.value;
-  }
-
-  /**
    * Current tokens list.
    */
   get tokens(): List<TokenAmount> {
     return this._tokens$.getValue();
   }
+
+  /**
+   * Current favorite tokens list state.
+   */
+  private readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+
+  public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
   /**
    * Current favorite tokens list.
@@ -85,10 +68,40 @@ export class TokensStoreService {
   }
 
   /**
+   * Current tokens request options state.
+   */
+  private readonly _tokensRequestParameters$ = new Subject<{ [p: string]: unknown }>();
+
+  /**
    * Sets new tokens request options.
    */
   set tokensRequestParameters(parameters: { [p: string]: unknown }) {
     this._tokensRequestParameters$.next(parameters);
+  }
+
+  /**
+   * Current tokens network state.
+   */
+  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(
+    TOKENS_PAGINATION
+  );
+
+  public get tokensNetworkState(): TokensNetworkState {
+    return this._tokensNetworkState$.value;
+  }
+
+  public needRefetchTokens: boolean;
+
+  private readonly _storageTokensState$ = new BehaviorSubject<{
+    tokens: Omit<Token, 'price'>[]; // todo move
+    loaded: boolean;
+  }>({
+    tokens: undefined,
+    loaded: false
+  });
+
+  private get storageTokens(): Omit<Token, 'price'>[] {
+    return this._storageTokensState$.getValue().tokens;
   }
 
   private get userAddress(): string | undefined {
@@ -98,9 +111,31 @@ export class TokensStoreService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly storeService: StoreService
   ) {
+    this.getStorageTokens();
+
     this.setupSubscriptions();
+  }
+
+  public getStorageTokens(): void {
+    const storageTokens = this.storeService.getItem('tokens');
+    if (storageTokens.length) {
+      this._storageTokensState$.next({ tokens: storageTokens, loaded: false });
+
+      this.authService.currentUser$
+        .pipe(first(user => Boolean(user) || user === null))
+        .subscribe(async () => {
+          const tokensList = List(storageTokens.map(token => ({ ...token, price: 0 })));
+          const tokensWithBalance = await this.calculateTokensBalancesByType('default', tokensList);
+          this._tokens$.next(List(this.patchTokensBalances(tokensWithBalance)));
+
+          this._storageTokensState$.next({ tokens: storageTokens, loaded: true });
+        });
+    } else {
+      this._storageTokensState$.next({ tokens: [], loaded: true });
+    }
   }
 
   /**
@@ -112,34 +147,103 @@ export class TokensStoreService {
         switchMap(params => {
           return this.tokensApiService.getTokensList(params, this._tokensNetworkState$);
         }),
-        switchMap(tokens => {
-          return this.calculateTokensBalancesByType('default', tokens);
-        }),
-        catchError((err: unknown) => {
-          console.error('Error retrieving tokens', err);
-          return of();
+        switchMap(backendTokens => {
+          this.updateStorageTokens(backendTokens);
+
+          const newAddedTokens = backendTokens.filter(
+            token => !this.storageTokens.some(localToken => compareTokens(localToken, token))
+          );
+          return forkJoin([
+            this._storageTokensState$.pipe(first(({ loaded }) => loaded)),
+            this.calculateTokensBalancesByType('default', newAddedTokens)
+          ]).pipe(
+            tap(([_, tokensWithBalance]) => {
+              const patchedTokens = this.patchTokensBalances(tokensWithBalance).map(
+                currentToken => {
+                  const backendToken = backendTokens.find(bT => compareTokens(bT, currentToken));
+                  if (!backendToken) {
+                    return currentToken;
+                  }
+                  return {
+                    ...currentToken,
+                    ...backendToken
+                  };
+                }
+              );
+              this._tokens$.next(patchedTokens);
+            })
+          );
         })
       )
       .subscribe(() => {
         this.needRefetchTokens = this.tokensApiService.needRefetchTokens;
       });
-
-    this.authService.currentUser$.subscribe(async user => {
-      await this.calculateTokensBalancesByType('default');
-      if (user?.address) {
-        this.fetchFavoriteTokens();
-      } else {
-        this._favoriteTokens$.next(List([]));
-      }
-    });
-
     this._tokensRequestParameters$.next(undefined);
+
+    this.authService.currentUser$
+      .pipe(
+        switchMap(async user => {
+          if (this.tokens) {
+            return await this.calculateTokensBalancesByType('default');
+          }
+          if (user?.address) {
+            const favoriteTokens = await this.tokensApiService.fetchFavoriteTokens();
+            return this.calculateTokensBalancesByType('favorite', favoriteTokens);
+          } else {
+            return [];
+          }
+        })
+      )
+      .subscribe(favoriteTokens => {
+        this._favoriteTokens$.next(List(favoriteTokens));
+      });
   }
 
-  public fetchFavoriteTokens(): void {
-    this.tokensApiService
-      .fetchFavoriteTokens()
-      .subscribe(tokens => this.calculateTokensBalancesByType('favorite', tokens));
+  private updateStorageTokens(tokens: List<Token>): void {
+    const storageTokens = this.storageTokens;
+    const updatedTokens = tokens
+      .map(token => ({
+        blockchain: token.blockchain,
+        address: token.address,
+        name: token.name,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        image: token.image,
+        rank: token.rank
+      }))
+      .toArray();
+
+    const shouldUpdateList = updatedTokens.some(updatedToken => {
+      const foundLocalToken = storageTokens.find(localToken =>
+        compareTokens(updatedToken, localToken)
+      );
+      return !foundLocalToken || !compareObjects(updatedToken, foundLocalToken);
+    });
+    if (shouldUpdateList) {
+      this.storeService.setItem('tokens', updatedTokens);
+    }
+  }
+
+  private patchTokensBalances(tokensWithBalance: TokenAmount[]): List<TokenAmount> {
+    return (this.tokens || List([]))
+      .map(token => {
+        const foundToken = tokensWithBalance?.find(tokenWithBalance =>
+          areTokensEqual(token, tokenWithBalance)
+        );
+        if (!foundToken) {
+          return token;
+        } else {
+          return {
+            ...token,
+            ...foundToken
+          };
+        }
+      })
+      .concat(
+        tokensWithBalance.filter(
+          tokenWithBalance => !this.tokens?.find(token => areTokensEqual(token, tokenWithBalance))
+        )
+      );
   }
 
   /**
@@ -158,43 +262,28 @@ export class TokensStoreService {
   /**
    * Calculates balance for default or favorite tokens list.
    * @param type Type of tokens list: default or favorite.
-   * @param oldTokens Favorite tokens list.
+   * @param oldTokens Token list to calculate.
    */
-  public async calculateTokensBalancesByType(
+  private async calculateTokensBalancesByType(
     type: 'favorite' | 'default',
     oldTokens?: List<TokenAmount | Token>
-  ): Promise<void> {
+  ): Promise<TokenAmount[]> {
     const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
     const tokens = oldTokens || subject$.value;
 
+    if (!tokens) {
+      return [];
+    }
     if (type === 'default') {
-      if (!tokens) {
-        return;
-      }
       if (!this.userAddress) {
-        this._tokens$.next(this.setDefaultTokensParams(tokens, false));
-        return;
+        return this.setDefaultTokensParams(tokens, false).toArray();
       }
-    } else if (!tokens || !this.userAddress) {
-      this._favoriteTokens$.next(List([]));
-      return;
+    } else if (!this.userAddress) {
+      return [];
     }
 
     const newTokens = this.setDefaultTokensParams(tokens, type === 'favorite');
-    const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
-
-    const updatedTokens = tokens.map(token => {
-      const currentToken = this.tokens?.find(t => areTokensEqual(token, t));
-      const balance = tokensWithBalance?.find(tWithBalance =>
-        areTokensEqual(token, tWithBalance)
-      )?.amount;
-      return {
-        ...token,
-        ...currentToken,
-        amount: balance || new BigNumber(NaN)
-      };
-    });
-    subject$.next(List(updatedTokens));
+    return this.getTokensWithBalance(newTokens as List<TokenAmount>);
   }
 
   /**
@@ -231,11 +320,11 @@ export class TokensStoreService {
         );
         return from(publicAdapter.getTokensBalances(this.userAddress, tokensAddresses)).pipe(
           timeout(3000),
-          catchError(() => [])
+          catchError(() => of([]))
         );
       });
 
-      const balancesSettled = await Promise.all(balances$.map(el$ => el$.toPromise()));
+      const balancesSettled = await Promise.all(balances$.map(el$ => firstValueFrom(el$)));
 
       return blockchains
         .map((blockchain, blockchainIndex) => {
@@ -252,6 +341,7 @@ export class TokensStoreService {
         .flat();
     } catch (err: unknown) {
       console.debug(err);
+      return [];
     }
   }
 
@@ -300,7 +390,7 @@ export class TokensStoreService {
 
   /**
    * Patches token in tokens list.
-   * @param token Tokens to patch.
+   * @param token Token to patch.
    */
   public patchToken(token: TokenAmount): void {
     this._tokens$.next(this.tokens.filter(t => !areTokensEqual(t, token)).push(token));
@@ -350,12 +440,16 @@ export class TokensStoreService {
    * @param updateCallback Callback after tokens fetching.
    */
   public fetchNetworkTokens(blockchain: BlockchainName, updateCallback?: () => void): void {
-    this.tokensApiService
-      .fetchSpecificBackendTokens({
+    const page = Math.max(2, this._tokensNetworkState$.value[blockchain].page + 1);
+    forkJoin([
+      this._tokensNetworkState$.pipe(first(state => state[blockchain].page >= 1)),
+      this.tokensApiService.fetchSpecificBackendTokens({
         network: blockchain,
-        page: this._tokensNetworkState$.value[blockchain].page + 1
+        page
       })
+    ])
       .pipe(
+        map(([_, tokensResponse]) => tokensResponse),
         tap(() => this.updateNetworkPage(blockchain)),
         map(tokensResponse => ({
           ...tokensResponse,
