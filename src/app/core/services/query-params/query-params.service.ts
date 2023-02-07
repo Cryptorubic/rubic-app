@@ -12,6 +12,7 @@ import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +56,7 @@ export class QueryParamsService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensNetworkService: TokensNetworkService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly iframeService: IframeService,
@@ -183,7 +185,7 @@ export class QueryParamsService {
     );
 
     if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensStoreService.tokensRequestParameters = tokensQueryParams;
+      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
     }
   }
 

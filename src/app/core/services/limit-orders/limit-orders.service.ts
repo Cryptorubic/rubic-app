@@ -77,8 +77,8 @@ export class LimitOrdersService {
     return Promise.all(
       orders.map(async order => {
         const [fromToken, toToken] = await Promise.all([
-          this.tokensStoreService.findToken(order.fromToken, true),
-          this.tokensStoreService.findToken(order.toToken, true)
+          this.tokensService.findToken(order.fromToken, true),
+          this.tokensService.findToken(order.toToken, true)
         ]);
         const marketRate = await this.getMarketRate(fromToken, toToken);
         const orderRate = new BigNumber(order.toAmount).div(order.fromAmount);

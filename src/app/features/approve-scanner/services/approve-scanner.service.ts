@@ -331,7 +331,7 @@ export class ApproveScannerService {
     const approvesAddresses = sourceApproves.map(approve => approve.tokenAddress);
     const uniqueAddresses = Array.from(new Set(approvesAddresses));
     const tokensRequests = uniqueAddresses.map(address =>
-      this.tokensStoreService.findToken(
+      this.tokensService.findToken(
         {
           address,
           blockchain: this.form.controls.blockchain.value.key

@@ -12,6 +12,7 @@ import { TokensListType } from '@features/swaps/shared/components/assets-selecto
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 
 @Injectable()
 export class TokensListService {
@@ -48,6 +49,7 @@ export class TokensListService {
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensNetworkService: TokensNetworkService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
     private readonly iframeService: IframeService
@@ -80,7 +82,7 @@ export class TokensListService {
               if (!BlockchainsInfo.isBlockchainName(blockchain)) {
                 return false;
               }
-              const tokensNetworkState = this.tokensStoreService.tokensNetworkState[blockchain];
+              const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
               if (
                 this.loading ||
                 this.searchQueryService.query ||
@@ -104,7 +106,7 @@ export class TokensListService {
       .subscribe(shouldUpdate => {
         if (shouldUpdate) {
           this._listUpdating$.next(true);
-          this.tokensStoreService.fetchNetworkTokens(
+          this.tokensNetworkService.fetchNetworkTokens(
             this.assetsSelectorService.assetType as BlockchainName,
             () => {
               this._listUpdating$.next(false);

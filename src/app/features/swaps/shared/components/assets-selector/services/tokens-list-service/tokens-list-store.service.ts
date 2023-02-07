@@ -63,7 +63,7 @@ export class TokensListStoreService {
     this._tokensToShow$.next(value);
   }
 
-  private readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount>(undefined);
+  private readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount>(undefined); // todo check
 
   public readonly customToken$ = this._customToken$.asObservable();
 
@@ -212,7 +212,7 @@ export class TokensListStoreService {
       return of([]);
     }
 
-    return this.tokensStoreService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
+    return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
       map(backendTokens => {
         if (backendTokens.size) {
           return backendTokens

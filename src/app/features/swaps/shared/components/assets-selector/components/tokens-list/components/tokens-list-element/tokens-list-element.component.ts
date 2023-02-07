@@ -139,7 +139,7 @@ export class TokensListElementComponent {
     }
 
     if (
-      this.token.tokenSecurity === null ||
+      !this.token.tokenSecurity ||
       (this.token.tokenSecurity && this.token.tokenSecurity.has_info === false)
     ) {
       return TokenSecurityStatus.NO_INFO;

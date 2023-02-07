@@ -14,6 +14,7 @@ import {
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class OnramperService {
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly gasService: GasService,
     private readonly swapFormService: SwapFormService,
+    private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly queryParamsService: QueryParamsService,
     private readonly platformConfigurationService: PlatformConfigurationService
@@ -35,7 +37,7 @@ export class OnramperService {
     }
 
     const blockchain = trade.toToken.blockchain as EvmBlockchainName;
-    const nativeToken = await this.tokensStoreService.findToken({
+    const nativeToken = await this.tokensService.findToken({
       address: EvmWeb3Pure.nativeTokenAddress,
       blockchain
     });
@@ -43,7 +45,7 @@ export class OnramperService {
     const fromFee = await this.getFromFees(blockchain);
     const fromAmount = new BigNumber(trade.nativeAmount).minus(fromFee);
 
-    const toToken = await this.tokensStoreService.findToken(trade.toToken);
+    const toToken = await this.tokensService.findToken(trade.toToken);
 
     this.swapFormService.inputControl.patchValue({
       fromAssetType: blockchain,

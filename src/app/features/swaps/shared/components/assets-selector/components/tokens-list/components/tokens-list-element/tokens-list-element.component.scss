@@ -166,6 +166,7 @@
 
   &__favorite-container,
   &__security-container {
+    flex-shrink: 0;
     width: 24px;
     height: 24px;
     margin-left: 20px;

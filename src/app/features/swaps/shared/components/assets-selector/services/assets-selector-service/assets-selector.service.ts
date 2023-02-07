@@ -8,6 +8,7 @@ import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { BlockchainName } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -47,6 +48,7 @@ export class AssetsSelectorService {
 
   constructor(
     private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensNetworkService: TokensNetworkService,
     private readonly swapFormService: SwapFormService
   ) {
     this.subscribeOnAssetChange();
@@ -78,8 +80,8 @@ export class AssetsSelectorService {
   }
 
   private checkAndRefetchTokenList(): void {
-    if (this.tokensStoreService.needRefetchTokens) {
-      this.tokensStoreService.tokensRequestParameters = undefined;
+    if (this.tokensNetworkService.needRefetchTokens) {
+      this.tokensNetworkService.tokensRequestParameters = undefined;
     }
   }
 

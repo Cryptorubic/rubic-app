@@ -8,7 +8,6 @@ import { filter, pairwise, startWith } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { areTokensEqual } from '@core/services/tokens/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
@@ -31,7 +30,7 @@ export class SwapTokensUpdaterService {
         if (
           (!compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
             isMinimalToken(curForm.fromAsset)) ||
-          (!areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
+          (!compareTokens(prevForm?.toToken, curForm.toToken) && curForm.toToken)
         ) {
           this.updateTokensPrices(curForm);
         }

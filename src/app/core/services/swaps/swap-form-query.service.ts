@@ -21,6 +21,7 @@ import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -36,6 +37,7 @@ export class SwapFormQueryService {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
+    private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly fiatsService: FiatsService,
     private readonly gtmService: GoogleTagManagerService,
@@ -200,7 +202,7 @@ export class SwapFormQueryService {
     );
 
     if (!similarTokens.size) {
-      return this.tokensStoreService.fetchQueryTokens(symbol, chain).pipe(
+      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
         map(foundTokens => {
           if (foundTokens?.size) {
             const token =
@@ -233,7 +235,7 @@ export class SwapFormQueryService {
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensStoreService.fetchQueryTokens(address, chain).pipe(
+      : this.tokensService.fetchQueryTokens(address, chain).pipe(
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
             backendTokens => of(backendTokens.first()),

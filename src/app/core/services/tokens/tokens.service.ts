@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import BigNumber from 'bignumber.js';
@@ -8,7 +8,7 @@ import { CoingeckoApiService } from 'src/app/core/services/external-api/coingeck
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { compareAddresses } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import {
   BlockchainName,
@@ -17,10 +17,14 @@ import {
   Token as SdkToken,
   BlockchainsInfo,
   Web3PublicService,
-  isAddressCorrect
+  isAddressCorrect,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
-import { areTokensEqual } from './utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { List } from 'immutable';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -28,6 +32,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 @Injectable({
   providedIn: 'root'
 })
+// todo move to balances service
 export class TokensService {
   private get userAddress(): string | undefined {
     return this.authService.userAddress;
@@ -58,12 +63,13 @@ export class TokensService {
   public getNativeCoinPriceInUsd(blockchain: BlockchainName): Promise<number> {
     const nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
     const nativeCoin = this.tokensStoreService.tokens.find(token =>
-      areTokensEqual(token, { blockchain, address: nativeCoinAddress })
+      compareTokens(token, { blockchain, address: nativeCoinAddress })
     );
-    return this.coingeckoApiService
-      .getNativeCoinPrice(blockchain)
-      .pipe(map(price => price || nativeCoin?.price))
-      .toPromise();
+    return firstValueFrom(
+      this.coingeckoApiService
+        .getNativeCoinPrice(blockchain)
+        .pipe(map(price => price || nativeCoin?.price))
+    );
   }
 
   /**
@@ -86,20 +92,20 @@ export class TokensService {
           }
           return null;
           // @TODO Uncomment after coingecko refactoring.
-          // const foundToken = this.tokens?.find(t => TokensService.areTokensEqual(t, token));
+          // const foundToken = this.tokens?.find(t => TokensService.compareTokens(t, token));
           // return foundToken?.price;
         }),
         switchMap(tokenPrice => {
           if (!tokenPrice && searchBackend) {
-            return this.tokensStoreService
-              .fetchQueryTokens(token.address, token.blockchain)
-              .pipe(map(backendTokens => backendTokens.get(0)?.price));
+            return this.fetchQueryTokens(token.address, token.blockchain).pipe(
+              map(backendTokens => backendTokens.get(0)?.price)
+            );
           }
           return of(tokenPrice);
         }),
         tap(tokenPrice => {
           if (tokenPrice) {
-            const foundToken = this.tokensStoreService.tokens?.find(t => areTokensEqual(t, token));
+            const foundToken = this.tokensStoreService.tokens?.find(t => compareTokens(t, token));
             if (foundToken) {
               const newToken = {
                 ...foundToken,
@@ -136,7 +142,7 @@ export class TokensService {
         ? await blockchainAdapter.getBalance(this.userAddress)
         : await blockchainAdapter.getTokenBalance(this.userAddress, token.address);
 
-      const foundToken = this.tokensStoreService.tokens.find(t => areTokensEqual(t, token));
+      const foundToken = this.tokensStoreService.tokens.find(t => compareTokens(t, token));
       if (!foundToken) {
         return new BigNumber(NaN);
       }
@@ -151,7 +157,7 @@ export class TokensService {
       return new BigNumber(balance);
     } catch (err) {
       console.debug(err);
-      const foundToken = this.tokensStoreService.tokens.find(t => areTokensEqual(t, token));
+      const foundToken = this.tokensStoreService.tokens.find(t => compareTokens(t, token));
       return foundToken?.amount;
     }
   }
@@ -245,5 +251,69 @@ export class TokensService {
       address: tokenAddress
     });
     return token.symbol;
+  }
+
+  /**
+   * Fetches tokens from backend by search query string.
+   * @param query Search query.
+   * @param blockchain Tokens blockchain.
+   */
+  public fetchQueryTokens(
+    query: string,
+    blockchain: BlockchainName
+  ): Observable<List<TokenAmount>> {
+    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
+      query = query.toLowerCase();
+    }
+
+    const isAddress = isAddressCorrect(query, blockchain);
+
+    const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
+    if (isLifiTokens) {
+      return of(
+        this.tokensStoreService.tokens.filter(
+          token =>
+            token.blockchain === blockchain &&
+            ((isAddress && compareAddresses(token.address, query)) ||
+              (!isAddress &&
+                (token.name.toLowerCase().includes(query) ||
+                  token.symbol.toLowerCase().includes(query))))
+        )
+      );
+    }
+
+    const params: TokensRequestQueryOptions = {
+      network: blockchain,
+      ...(!isAddress && { symbol: query }),
+      ...(isAddress && { address: query })
+    };
+
+    return this.tokensApiService.fetchQueryTokens(params).pipe(
+      switchMap(async backendTokens => {
+        return List(await this.tokensStoreService.getTokensWithBalance(backendTokens));
+      })
+    );
+  }
+
+  /**
+   * Gets token by address.
+   * @param token Tokens's data to find it by.
+   * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
+   */
+  public async findToken(token: MinimalToken, searchBackend = false): Promise<TokenAmount> {
+    const foundToken = this.tokensStoreService.tokens.find(t => compareTokens(t, token));
+    if (foundToken) {
+      return foundToken;
+    }
+
+    if (searchBackend) {
+      return firstValueFrom(
+        this.fetchQueryTokens(token.address, token.blockchain).pipe(
+          map(backendTokens => backendTokens.get(0))
+        )
+      );
+    }
+
+    return null;
   }
 }
