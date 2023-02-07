@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import BigNumber from 'bignumber.js';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses } from '@shared/utils/utils';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import {
   BlockchainName,
   Web3Pure,
   Injector,
   Token as SdkToken,
   BlockchainsInfo,
-  Web3PublicService
+  Web3PublicService,
+  isAddressCorrect
 } from 'rubic-sdk';
 import { areTokensEqual } from './utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -30,6 +34,7 @@ export class TokensService {
   }
 
   constructor(
+    private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly tokensStoreService: TokensStoreService
@@ -202,6 +207,26 @@ export class TokensService {
       );
     }
     await Promise.all(balancePromises);
+  }
+
+  /**
+   * Fetches tokens from backend by address and network
+   * @param address Token address to fetch.
+   * @param blockchain Token's network.
+   * @returns Promise<TokenSecurity> with token's security data.
+   */
+  public async fetchTokenSecurity(
+    address: string,
+    blockchain: BlockchainName
+  ): Promise<TokenSecurity> {
+    const isAddress = isAddressCorrect(address, blockchain);
+
+    const params: TokensRequestQueryOptions = {
+      network: blockchain,
+      ...(isAddress && { address })
+    };
+
+    return firstValueFrom(this.tokensApiService.fetchTokenSecurity(params));
   }
 
   /**

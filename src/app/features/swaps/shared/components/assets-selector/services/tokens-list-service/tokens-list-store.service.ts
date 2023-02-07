@@ -9,6 +9,7 @@ import {
   timer
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -29,6 +30,7 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -92,6 +94,7 @@ export class TokensListStoreService {
   constructor(
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
+    private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
@@ -248,7 +251,8 @@ export class TokensListStoreService {
             amount: new BigNumber(NaN),
             price: 0,
             available: this.isTokenAvailable(token),
-            favorite: this.isTokenFavorite(token)
+            favorite: this.isTokenFavorite(token),
+            tokenSecurity: await this.getTokenSecurity(token)
           };
         }
       }
@@ -376,5 +380,9 @@ export class TokensListStoreService {
       this.assetsSelectorService.formType === 'from' ? 'toToken' : 'fromAsset';
     const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
+  }
+
+  private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
+    return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 }
