@@ -23,6 +23,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +82,8 @@ export class TokensStoreService {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly storeService: StoreService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly iframeService: IframeService
   ) {
     this.setupStorageTokens();
 
@@ -89,15 +91,19 @@ export class TokensStoreService {
   }
 
   public setupStorageTokens(): void {
-    this.storageTokens = this.storeService.getItem('tokens') || [];
-    if (this.storageTokens.length) {
-      this._tokens$.next(
-        this.getDefaultTokenAmounts(
-          List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
-          false
-        )
-      );
-    }
+    this.iframeService.isIframe$.pipe(first(v => v !== undefined)).subscribe(isIframe => {
+      if (!isIframe) {
+        this.storageTokens = this.storeService.getItem('tokens') || [];
+        if (this.storageTokens.length) {
+          this._tokens$.next(
+            this.getDefaultTokenAmounts(
+              List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
+              false
+            )
+          );
+        }
+      }
+    });
   }
 
   private setupSubscriptions(): void {
@@ -246,7 +252,7 @@ export class TokensStoreService {
       .toArray();
 
     const shouldUpdateList = updatedTokens.some(updatedToken => {
-      const foundStorageToken = this.storageTokens.find(localToken =>
+      const foundStorageToken = this.storageTokens?.find(localToken =>
         compareTokens(updatedToken, localToken)
       );
       return !foundStorageToken || !compareObjects(updatedToken, foundStorageToken);
