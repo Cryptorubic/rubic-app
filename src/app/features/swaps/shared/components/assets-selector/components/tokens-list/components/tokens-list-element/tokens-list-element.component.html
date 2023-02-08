@@ -70,7 +70,9 @@
         <span class="token-card__security-container-security-hint">
           {{ securityMessages[securityStatus] }}
         </span>
-        <span class="token-card__security-container-security-hint-powered-by">Powered by Go+</span>
+        <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
+          <span class="token-card__security-container-security-hint-powered-by">Powered by Go+</span>
+        </ng-container>
       </ng-template>
     </div>
   </ng-container>
