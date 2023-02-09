@@ -58,7 +58,7 @@ tui-dialog {
   &[data-size='xl'] {
     width: 100% !important;
     max-width: 910px !important;
-    
+
     > .content {
       padding: 32px !important;
     }
@@ -155,9 +155,21 @@ tui-notification-alert {
   transition: 0.2s ease-in-out;
 }
 
-@include b($mobile-md-minus) {
+@include b($mobile-md) {
   tui-dialog {
-    height: 100%;
+    &[data-size='l'] {
+      min-width: calc(100vw + 14px) !important;
+      height: 74%;
+      margin-bottom: 0 !important;
+      margin-bottom: -7px !important;
+      margin-left: -7px !important;
+
+      border-radius: 16px 16px 0 0;
+
+      > .content {
+        border-radius: 20px 20px 0 0 !important;
+      }
+    }
   }
 
   tui-hint-box {
@@ -166,6 +178,18 @@ tui-notification-alert {
 
   .t-text {
     font-size: $rubic-font-size-main;
+  }
+
+  tui-dialog-host {
+    overflow-y: auto;
+
+    > div {
+      backdrop-filter: unset;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.4) !important;
+    }
   }
 }
 

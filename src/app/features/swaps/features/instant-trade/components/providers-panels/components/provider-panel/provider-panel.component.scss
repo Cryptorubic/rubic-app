@@ -10,6 +10,14 @@ $white: white;
 
   @include b($mobile-md) {
     .provider-panel {
+      &__provider-name {
+        display: none;
+      }
+    }
+  }
+
+  @include b($mobile-md) {
+    .provider-panel {
       &__body {
         flex-direction: column;
         padding-top: 10px;

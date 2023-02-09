@@ -1,5 +1,9 @@
 @use '../../../../../../../../scss/core' as *;
 
+:host {
+  width: 100%;
+}
+
 .user-balance-container {
   margin-top: 10px;
 
@@ -14,8 +18,13 @@
     margin-top: 0;
   }
 
-  &__balance {
+  @include b($mobile-md) {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 
+  &__balance {
     @include iframe-card;
     margin-right: 10px;
 

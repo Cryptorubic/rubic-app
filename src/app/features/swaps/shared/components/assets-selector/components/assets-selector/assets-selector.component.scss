@@ -1,5 +1,13 @@
 @use 'src/scss/core' as *;
 
+:host {
+  tui-dialog {
+    &[data-size='l'] {
+      height: 100% !important;
+    }
+  }
+}
+
 .assets-selector {
   display: flex;
   flex-direction: column;
@@ -83,6 +91,10 @@
       padding: 20px;
     }
   }
+
+  &__top {
+    display: none;
+  }
 }
 
 app-search-bar {
@@ -110,7 +122,7 @@ tui-loader {
     align-items: center;
     height: 90px;
     overflow: hidden;
-  
+
     &__search {
       position: relative;
       top: -2px;
@@ -137,9 +149,59 @@ tui-loader {
   }
 }
 
+.token-list {
+  &__header {
+    display: none;
+  }
+}
+
 .blockchains-list-container,
 .fiats-list-container {
   width: 100%;
+}
+
+@include b($mobile-md) {
+  .assets-selector {
+    background-color: #222425;
+    border-radius: 20px 20px 0 0;
+
+    &__content {
+      flex-direction: column;
+    }
+
+    &__header {
+      h2 {
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+      }
+    }
+
+    &__top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: -7px;
+    }
+  }
+
+  .token-list-container {
+    height: 100%;
+  }
+
+  .token-list {
+    &__header {
+      display: block;
+      margin: 1rem 0;
+      padding: 0 1rem;
+
+      &-label {
+        font-weight: 600;
+        font-size: 16px;
+      }
+    }
+  }
 }
 
 @include b($mobile-md-minus) {

@@ -33,6 +33,8 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
+// import {TuiTouchableModule} from '@taiga-ui/addon-mobile';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,8 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    AppReferralBannerComponent
+    AppReferralBannerComponent,
+    MobileMenuComponent
   ],
   imports: [
     CommonModule,
@@ -71,6 +74,7 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     TuiToggleModule,
     FormsModule,
     TuiLoaderModule
+    // TuiTouchableModule
   ],
   exports: [HeaderComponent]
 })

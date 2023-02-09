@@ -32,3 +32,22 @@
     {{ !showAllProviders ? 'Show more providers' : 'Hide providers' }}
   </button>
 </div>
+
+<div class="providers-mobile">
+  <div class="providers-mobile__header">
+    <span>Providers</span>
+    <span [inlineSVG]="'assets/images/swaps/swaps-info/question-icon.svg'"></span>
+  </div>
+  <!-- <div class="providers__item">
+    <app-provider-panel-mobile [providerData]="providersData[0]"></app-provider-panel-mobile>
+  </div> -->
+
+  <div>
+    <div
+      class="providers__item"
+      *ngFor="let providerData of providersData.slice(0, 1); let i = index; trackBy: trackByFn"
+    >
+      <app-provider-panel-mobile [providerData]="providerData"></app-provider-panel-mobile>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 #chat-widget-container {
   position: fixed;
   bottom: 0;
@@ -10,6 +12,10 @@
 
   visibility: initial !important;
   opacity: initial !important;
+
+  @include b($mobile-md) {
+    display: none;
+  }
 
   * {
     max-width: 84px !important;

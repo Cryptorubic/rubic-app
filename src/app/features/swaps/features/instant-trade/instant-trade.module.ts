@@ -6,12 +6,14 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiHintModule } from '@taiga-ui/core';
+import { ProviderPanelMobileComponent } from './components/providers-panels/components/provider-panel-mobile/provider-panel-mobile.component';
 
 @NgModule({
   declarations: [
     InstantTradeBottomFormComponent,
     ProviderPanelComponent,
-    ProvidersPanelsContainerComponent
+    ProvidersPanelsContainerComponent,
+    ProviderPanelMobileComponent
   ],
   providers: [InstantTradeService],
   exports: [InstantTradeBottomFormComponent],

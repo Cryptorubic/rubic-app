@@ -22,7 +22,7 @@
       }
     }
 
-    &:not(:nth-child(2n+1)):last-child {
+    &:not(:nth-child(2n + 1)):last-child {
       width: 100%;
 
       ::ng-deep .provider-panel__body {
@@ -57,6 +57,40 @@
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  &-mobile {
+    display: none;
+  }
+}
+
+@include b($mobile-md) {
+  .providers {
+    display: none;
+
+    &-mobile {
+      display: flex;
+      flex-direction: column;
+
+      &__header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        ::ng-deep {
+          svg {
+            display: block;
+            width: 18px;
+            height: 18px;
+            margin-left: 0.5rem;
+
+            path {
+              fill: #dadada;
+            }
+          }
+        }
+      }
     }
   }
 }

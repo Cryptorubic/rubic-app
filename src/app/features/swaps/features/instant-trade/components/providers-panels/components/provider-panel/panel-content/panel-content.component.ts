@@ -40,7 +40,6 @@ export class PanelContentComponent implements OnInit {
 
   public ngOnInit(): void {
     this.displayGas = this.tradePanelData?.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
-
     this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       const { toToken } = form;
       if (this.toToken?.price !== toToken?.price) {

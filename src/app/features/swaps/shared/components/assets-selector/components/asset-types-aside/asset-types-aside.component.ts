@@ -42,11 +42,11 @@ export class AssetTypesAsideComponent {
         return 9 - showFiats;
       }
 
-      const asideHeight = this.window.innerHeight - 135;
+      // const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return Math.floor(asideHeight / 82) - 1 - showFiats;
+        return this.blockchainsAmount;
       }
-      return Math.floor(asideHeight / 66) - 1 - showFiats;
+      return this.blockchainsAmount;
     })
   );
 
@@ -57,6 +57,8 @@ export class AssetTypesAsideComponent {
       this.formType === 'from' && this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
     );
   }
+
+  public isBlockchainListExpanded: boolean = false;
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
@@ -110,5 +112,9 @@ export class AssetTypesAsideComponent {
 
   public openFiatsList(): void {
     this.assetsSelectorService.openFiatsList();
+  }
+
+  public toggleBlockchainList(): void {
+    this.isBlockchainListExpanded = !this.isBlockchainListExpanded;
   }
 }

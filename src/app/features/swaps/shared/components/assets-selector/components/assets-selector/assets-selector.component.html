@@ -1,4 +1,8 @@
 <section class="assets-selector">
+  <div class="assets-selector__top">
+    <div [inlineSVG]="'assets/images/mobile-modal-chevron.svg'"></div>
+  </div>
+
   <header class="assets-selector__header" *noFrame>
     <h2>
       {{ headerText$ | async | translate }}
@@ -43,6 +47,10 @@
               [expandableField]="true"
             ></app-search-bar>
           </ng-container>
+
+          <div class="token-list__header">
+            <div class="token-list__header-label">Tokens</div>
+          </div>
 
           <div class="token-list-container__list">
             <app-tokens-list></app-tokens-list>

@@ -1,3 +1,82 @@
+@use 'src/scss/core' as *;
+
 :host {
   width: 100%;
+}
+
+.provider-panel-mobile {
+  &__body {
+    display: none;
+  }
+
+  &__logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.5rem;
+
+    background-color: white;
+    border-radius: 50%;
+  }
+
+  &__provider-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  &__rate {
+    color: #aaa;
+  }
+
+  &__best {
+    align-self: flex-end;
+    margin-left: 1rem;
+    padding: 4px 12px;
+
+    color: #00e28e;
+
+    background: #00e28e26;
+    border-radius: 30px;
+
+    &--loading {
+      display: none;
+    }
+  }
+
+  &__expand {
+    margin-top: -17px;
+    margin-left: auto;
+
+    &--loading {
+      display: none;
+    }
+
+    ::ng-deep {
+      svg {
+        display: block;
+
+        path {
+          fill: #00e28e;
+        }
+      }
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .provider-panel {
+    &__body {
+      display: none;
+    }
+
+    &__best-rate {
+      display: none;
+    }
+
+    &-mobile {
+      &__body {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 }

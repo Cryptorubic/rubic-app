@@ -42,3 +42,55 @@
     </div>
   </div>
 </div>
+
+<div class="provider-panel-mobile__body">
+  <div class="provider-panel-mobile__logo" [class.tui-skeleton]="!tradePanelData"></div>
+  <div>
+    <div class="provider-panel-mobile__provider-name" [class.tui-skeleton]="!tradePanelData">
+      {{ providerPanelData.label }}
+    </div>
+    <div class="provider-panel-mobile__rate" [class.tui-skeleton]="!tradePanelData">
+      {{ tradePanelData?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
+    </div>
+  </div>
+  <div
+    class="provider-panel-mobile__best"
+    [class.provider-panel-mobile__best--loading]="!tradePanelData"
+  >
+    Best
+  </div>
+  <div
+    class="provider-panel-mobile__expand"
+    [class.provider-panel-mobile__expand--loading]
+    [inlineSVG]="'assets/images/icons/chevron.svg'"
+  ></div>
+
+  <!-- <div class="provider-panel__right">
+    <div
+      *ngIf="
+        displayGas &&
+        (this.tradePanelData?.gasFeeInEth?.isFinite() ||
+          this.tradePanelData?.gasFeeInUsd?.isFinite())
+      "
+      class="provider-panel__token-gas-fee"
+    >
+      {{ 'instantTrades.gasFee' | translate }}
+
+      <ng-container
+        *ngIf="providerPanelData.appearance !== 'small' && tradePanelData.gasFeeInEth?.isFinite()"
+      >
+        {{ tradePanelData.gasFeeInEth | bigNumberFormat : 5 }} ETH
+      </ng-container>
+
+      <ng-container *ngIf="tradePanelData.gasFeeInUsd?.isFinite()">
+        ≈ ${{ tradePanelData.gasFeeInUsd | bigNumberFormat : 2 : true }}
+      </ng-container>
+
+      <div
+        class="provider-panel__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+      ></div>
+    </div>
+  </div> -->
+</div>

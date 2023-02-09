@@ -1,6 +1,6 @@
 <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
 
-<app-form-navigation></app-form-navigation>
+<app-form-navigation class="swap-form-navigation"></app-form-navigation>
 
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
   <ng-container *ngLet="onramperWidgetOpened$ | async as onramperWidgetOpened">
@@ -97,11 +97,17 @@
   </ng-container>
 
   <ng-container *noFrame>
-    <app-swap-info-container
-      *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
-      [swapType]="swapType"
-      [currentInstantTradeInfo]="currentInstantTradeInfo"
-      [tradeStatus]="tradeStatus"
-    ></app-swap-info-container>
+    <div class="swap-info-container">
+      <app-swap-info-container
+        *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
+        [swapType]="swapType"
+        [currentInstantTradeInfo]="currentInstantTradeInfo"
+        [tradeStatus]="tradeStatus"
+      ></app-swap-info-container>
+    </div>
+    <div class="swap-info-container-mobile" *ngIf="isFormFilled && !isOnramper && !isLimitOrder">
+      <div>Transaction details</div>
+      <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
+    </div>
   </ng-container>
 </ng-container>

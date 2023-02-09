@@ -79,6 +79,19 @@ $green: rgb(74, 169, 86);
   &__providers {
     display: block;
     margin-top: 50px;
+
+    @include b($mobile-md) {
+      position: absolute;
+
+      width: 100%;
+      margin-top: 3.5rem;
+      margin-left: -20px;
+      padding: 12px 16px;
+
+      background-color: #26282a;
+      border: 1px solid #37383a;
+      border-radius: 16px;
+    }
   }
 
   &__body {
@@ -113,7 +126,7 @@ $green: rgb(74, 169, 86);
     }
 
     @include b($mobile-sm) {
-      flex-direction: column;
+      // flex-direction: column;
       align-items: flex-start;
     }
 
@@ -272,6 +285,14 @@ $green: rgb(74, 169, 86);
       }
     }
 
+    @include b($mobile-md) {
+      position: absolute;
+
+      width: calc(100% + 2rem);
+      margin-top: 8rem;
+      margin-left: -1rem;
+    }
+
     app-swap-button-container {
       display: block;
 
@@ -296,10 +317,17 @@ $green: rgb(74, 169, 86);
 
 @include b($mobile-md) {
   .instant-trade-bottom-form {
+    margin-top: 1rem;
     padding: 20px;
 
     &__swap {
       padding: 0 20px;
+
+      transition-duration: 0.2s;
+
+      &.loading-mobile {
+        margin-top: 1rem;
+      }
     }
 
     &__token-amount {
@@ -311,7 +339,7 @@ $green: rgb(74, 169, 86);
 @include b($mobile-sm) {
   .instant-trade-bottom-form {
     &__token-amount {
-      text-align: left;
+      // text-align: left;
     }
 
     app-tokens-rate {

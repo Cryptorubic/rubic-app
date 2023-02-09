@@ -58,6 +58,10 @@
       background: transparent !important;
       border-color: unset;
       border-radius: $border-radius-2;
+
+      @include b($mobile-md) {
+        background: var(--form-background);
+      }
     }
   }
 

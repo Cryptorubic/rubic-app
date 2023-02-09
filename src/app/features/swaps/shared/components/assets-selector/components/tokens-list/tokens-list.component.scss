@@ -60,6 +60,12 @@ tui-loader {
 
     cursor: pointer;
 
+    @include b($mobile-md) {
+      padding: 0.5rem 1rem;
+
+      background-color: #333535;
+    }
+
     &:not(:last-child) {
       margin-bottom: 15px;
 
@@ -150,7 +156,7 @@ tui-loader {
 
       border: 0;
       cursor: default;
-    
+
       &:hover {
         background-color: unset;
       }

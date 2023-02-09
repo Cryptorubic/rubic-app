@@ -84,6 +84,10 @@
     }
   }
 
+  &__blockchain-header {
+    display: none;
+  }
+
   ::ng-deep app-icon-button {
     button {
       width: 77px !important;
@@ -134,13 +138,51 @@
   }
 }
 
+@include b($mobile-md) {
+  .asset-types-aside {
+    flex-direction: column;
+    width: 100%;
+    padding-top: 14px 0;
+
+    background-color: unset;
+
+    &__list {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      padding-left: 0.5rem;
+
+      &.expanded {
+        flex-wrap: wrap;
+      }
+    }
+
+    &__blockchain-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+
+      &-label {
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      &-expand {
+        color: #00e28e;
+        font-weight: 600;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md-minus) {
   .asset-types-aside {
     display: flex;
     align-items: unset;
     justify-content: center;
 
-    width: 95px;
     height: 100%;
     padding: 14px 0 0;
 
@@ -148,7 +190,6 @@
 
     &__list {
       display: flex;
-      flex-direction: column;
       align-items: center;
 
       li:not(:last-child) {
@@ -163,8 +204,6 @@
 
 @include b($mobile-sm-middle) {
   .asset-types-aside {
-    width: 76px;
-
     li {
       ::ng-deep app-icon-button {
         button {
