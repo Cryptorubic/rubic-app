@@ -63,6 +63,10 @@ export class IframeService implements OnDestroy {
     this.documentListener?.();
   }
 
+  public setIframeFalse(): void {
+    this._isIframe$.next(false);
+  }
+
   public setIframeInfo(iframeParameters: IframeParameters): void {
     this.iframeParameters = iframeParameters;
 
