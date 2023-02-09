@@ -11,6 +11,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { List } from 'immutable';
+import { Token } from '@shared/models/tokens/token';
 
 @Injectable({
   providedIn: 'root'
@@ -71,26 +72,30 @@ export class TokensNetworkService {
         switchMap(backendTokens => {
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
           return Promise.all(
-            uniqueBlockchains.map(async blockchain => {
-              const newAddedTokens = backendTokens.filter(
-                bT =>
-                  bT.blockchain === blockchain &&
-                  !this.tokensStoreService.tokens.some(t => compareTokens(bT, t))
-              );
-              if (
-                newAddedTokens.size &&
-                this.tokensStoreService.balanceCalculatingStarted(blockchain)
-              ) {
-                this.tokensStoreService.patchTokensBalances(
-                  await this.tokensStoreService.getTokensWithBalance(newAddedTokens)
-                );
-              }
-            })
+            uniqueBlockchains.map(blockchain =>
+              this.addNewTokensWithBalances(backendTokens, blockchain)
+            )
           );
         })
       )
       .subscribe();
     this._tokensRequestParameters$.next(undefined);
+  }
+
+  private async addNewTokensWithBalances(
+    backendTokens: List<Token>,
+    blockchain: BlockchainName
+  ): Promise<void> {
+    const newAddedTokens = backendTokens.filter(
+      bT =>
+        bT.blockchain === blockchain &&
+        !this.tokensStoreService.tokens.some(t => compareTokens(bT, t))
+    );
+    if (newAddedTokens.size && this.tokensStoreService.balanceCalculatingStarted(blockchain)) {
+      this.tokensStoreService.patchTokensBalances(
+        await this.tokensStoreService.getTokensWithBalance(newAddedTokens)
+      );
+    }
   }
 
   /**
