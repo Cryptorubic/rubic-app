@@ -31,7 +31,6 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
-import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 
 @Component({
   selector: 'app-swap-form',
@@ -67,13 +66,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly fromAmountUpdated$ = this._fromAmountUpdated$.asObservable();
 
-  public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
-    map(status => status !== REFRESH_STATUS.STOPPED)
-  );
-
-  public readonly isRefreshRotating = () => {
-    return this.refreshService.status !== REFRESH_STATUS.STOPPED;
-  };
+  public readonly isRefreshRotating$ = this.refreshService.isRefreshRotating$;
 
   public get isInstantTrade(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
