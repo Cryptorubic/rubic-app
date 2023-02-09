@@ -47,6 +47,7 @@
 
     @include iframe-horizontal {
       width: 60px;
+      margin-right: 0;
     }
 
     span,
@@ -170,6 +171,10 @@
     width: 24px;
     height: 24px;
     margin-left: 20px;
+
+    @include iframe-horizontal {
+      margin-left: -35px;
+    }
   }
 
   ::ng-deep &__favorite {

@@ -3,6 +3,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { map } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 interface TokenRate {
   amount: BigNumber;
@@ -25,7 +26,12 @@ export class TokensRateComponent implements OnInit {
 
   public rateDirection: 'from' | 'to' = 'from';
 
-  constructor(private readonly swapFormService: SwapFormService) {}
+  public readonly isIframe = this.iframeService.isIframe;
+
+  constructor(
+    private readonly swapFormService: SwapFormService,
+    private readonly iframeService: IframeService
+  ) {}
 
   ngOnInit() {
     this.tokensRate$ = combineLatest([
