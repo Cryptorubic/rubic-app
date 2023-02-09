@@ -3,6 +3,7 @@ import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { StorageToken } from '@core/services/tokens/models/storage-token';
 
 export interface Store {
   /**
@@ -58,4 +59,6 @@ export interface Store {
   unreadTrades: {
     [address: string]: number;
   };
+
+  tokens: StorageToken[];
 }

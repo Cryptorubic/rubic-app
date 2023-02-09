@@ -14,11 +14,13 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokenSecurityStatus } from '@shared/models/tokens/token-security';
+import { PLATFORM_TOKEN_ADDRESS } from '@shared/constants/blockchain/platform-token-address';
 import { GO_PLUS_AVAILABLE_NETWORKS } from '@features/swaps/shared/components/assets-selector/constants/go-plus-available-networks';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
 
 @Component({
@@ -29,6 +31,8 @@ import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sd
 })
 export class TokensListElementComponent {
   @Input() token: TokenAmount;
+
+  @Input() balanceLoading = false;
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
@@ -41,10 +45,11 @@ export class TokensListElementComponent {
   public readonly securityMessages = {
     [TokenSecurityStatus.TRUST_LIST]: 'Token is in the Go+ Trust List',
     [TokenSecurityStatus.SCAM_LIST]: 'Token is in the Scam List',
-    [TokenSecurityStatus.SECURED]: 'Token has no elements of concern',
+    [TokenSecurityStatus.SECURED]: 'Token code has no elements of concern',
     [TokenSecurityStatus.LOW_RISK]: 'Token code contains some low risk elements of concern',
     [TokenSecurityStatus.HIGH_RISK]: 'Token code contains some high risk elements of concern',
-    [TokenSecurityStatus.NO_INFO]: 'No information'
+    [TokenSecurityStatus.NO_INFO]: 'No information',
+    [TokenSecurityStatus.PLATFORM_TOKEN]: 'Platform Token'
   };
 
   public hintShown = true;
@@ -54,6 +59,7 @@ export class TokensListElementComponent {
   constructor(
     iframeService: IframeService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
@@ -81,8 +87,8 @@ export class TokensListElementComponent {
 
     this.loadingFavoriteToken = true;
     const request$ = this.token.favorite
-      ? this.tokensService.removeFavoriteToken(this.token)
-      : this.tokensService.addFavoriteToken(this.token);
+      ? this.tokensStoreService.removeFavoriteToken(this.token)
+      : this.tokensStoreService.addFavoriteToken(this.token);
     this.token.favorite = !this.token.favorite;
 
     request$.subscribe({
@@ -125,6 +131,13 @@ export class TokensListElementComponent {
   }
 
   /**
+   * Returns true if token is platform token.
+   */
+  public get isPlatformToken(): boolean {
+    return this.token.address === PLATFORM_TOKEN_ADDRESS;
+  }
+
+  /**
    * Returns the state of token security.
    */
   public get securityStatus(): TokenSecurityStatus {
@@ -132,12 +145,16 @@ export class TokensListElementComponent {
       return TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN;
     }
 
+    if (this.isPlatformToken) {
+      return TokenSecurityStatus.PLATFORM_TOKEN;
+    }
+
     if (this.isNativeToken || (this.token.tokenSecurity && this.token.tokenSecurity.trust_list)) {
       return TokenSecurityStatus.TRUST_LIST;
     }
 
     if (
-      this.token.tokenSecurity === null ||
+      !this.token.tokenSecurity ||
       (this.token.tokenSecurity && this.token.tokenSecurity.has_info === false)
     ) {
       return TokenSecurityStatus.NO_INFO;

@@ -13,6 +13,7 @@ import { combineLatest } from 'rxjs';
 import { AssetsSelectorServices } from '@features/swaps/shared/components/assets-selector/constants/assets-selector-services';
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'polymorpheus-assets-selector',
@@ -49,6 +50,7 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: AssetsSelectorComponentContext,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly iframeService: IframeService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListTypeService: TokensListTypeService,
@@ -58,7 +60,7 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
 
     this.assetsSelectorService.assetSelected$.subscribe(selectedAsset => {
       if (isMinimalToken(selectedAsset)) {
-        this.tokensService.addToken(selectedAsset);
+        this.tokensStoreService.addToken(selectedAsset);
       }
       this.context.completeWith(selectedAsset);
     });

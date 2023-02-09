@@ -4,14 +4,13 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   Self,
   ViewChild
 } from '@angular/core';
-import { fromEvent, Observable, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { EMPTY, fromEvent, Observable } from 'rxjs';
+import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
@@ -21,7 +20,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class RefreshButtonComponent implements OnInit, OnDestroy {
+export class RefreshButtonComponent implements OnInit {
   @Input() isRotating$: Observable<boolean>;
 
   @Input() isRotating: () => boolean;
@@ -33,33 +32,36 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
   @ViewChild('refreshIcon', { static: true })
   refreshIconElement: ElementRef;
 
-  private $refreshIconListener: Subscription;
-
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    this.isRotating$.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (value) {
-        this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
-      }
-    });
+    this.isRotating$
+      .pipe(
+        pairwise(),
+        mergeMap(([wasRotating, isRotating]) => {
+          const shouldRotate = isRotating && wasRotating === false;
+          const shouldStop = wasRotating && isRotating === false;
 
-    this.$refreshIconListener = fromEvent(
-      this.refreshIconElement.nativeElement,
-      'animationiteration'
-    )
-      .pipe(takeUntil(this.destroy$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-      .subscribe(() => {
-        if (!this.isRotating()) {
-          this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
-        }
-      });
-  }
-
-  public ngOnDestroy(): void {
-    this.$refreshIconListener.unsubscribe();
+          if (shouldRotate) {
+            this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
+            return EMPTY;
+          } else {
+            return fromEvent(this.refreshIconElement.nativeElement, 'animationiteration').pipe(
+              take(1),
+              tap(() => {
+                if (shouldStop) {
+                  this.refreshIconElement.nativeElement.classList.remove(
+                    'refresh-button__icon_refreshing'
+                  );
+                }
+              })
+            );
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   public toggleClick(): void {
