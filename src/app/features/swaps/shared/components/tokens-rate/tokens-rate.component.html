@@ -6,13 +6,13 @@
     >
       <ng-container *ngIf="amount.length < 15">{{ amount }}</ng-container>
       <span
-        *ngIf="amount.length >= 15"
+        *ngIf="(isIframe && amount.length >= 10) || amount.length >= 15"
         [tuiHint]="amount"
         tuiHintMode="onDark"
         tuiHintDirection="bottom-right"
         [tuiHintShowDelay]="0"
         [tuiHintHideDelay]="0"
-        >{{ amount.slice(0, 10) }}...</span
+        >{{ amount.slice(0, isIframe ? 5 : 10) }}...</span
       >
     </ng-container>
     {{ tokensRate.to.symbol }}
@@ -24,13 +24,13 @@
     >
       <ng-container *ngIf="amount.length < 15">{{ amount }}</ng-container>
       <span
-        *ngIf="amount.length >= 15"
+        *ngIf="(isIframe && amount.length >= 10) || amount.length >= 15"
         [tuiHint]="amount"
         tuiHintMode="onDark"
         tuiHintDirection="bottom-right"
         [tuiHintShowDelay]="0"
         [tuiHintHideDelay]="0"
-        >{{ amount.slice(0, 10) }}...</span
+        >{{ amount.slice(0, isIframe ? 5 : 10) }}...</span
       >
     </ng-container>
     {{ tokensRate.from.symbol }} = 1
