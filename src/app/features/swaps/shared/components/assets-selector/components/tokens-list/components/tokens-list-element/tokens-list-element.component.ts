@@ -20,6 +20,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
 
 @Component({
@@ -30,6 +31,8 @@ import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sd
 })
 export class TokensListElementComponent {
   @Input() token: TokenAmount;
+
+  @Input() balanceLoading = false;
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
@@ -56,6 +59,7 @@ export class TokensListElementComponent {
   constructor(
     iframeService: IframeService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
@@ -83,8 +87,8 @@ export class TokensListElementComponent {
 
     this.loadingFavoriteToken = true;
     const request$ = this.token.favorite
-      ? this.tokensService.removeFavoriteToken(this.token)
-      : this.tokensService.addFavoriteToken(this.token);
+      ? this.tokensStoreService.removeFavoriteToken(this.token)
+      : this.tokensStoreService.addFavoriteToken(this.token);
     this.token.favorite = !this.token.favorite;
 
     request$.subscribe({
@@ -150,7 +154,7 @@ export class TokensListElementComponent {
     }
 
     if (
-      this.token.tokenSecurity === null ||
+      !this.token.tokenSecurity ||
       (this.token.tokenSecurity && this.token.tokenSecurity.has_info === false)
     ) {
       return TokenSecurityStatus.NO_INFO;

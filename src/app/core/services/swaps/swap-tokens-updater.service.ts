@@ -8,6 +8,7 @@ import { filter, pairwise, startWith } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class SwapTokensUpdaterService {
@@ -15,7 +16,8 @@ export class SwapTokensUpdaterService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService
   ) {
     this.subscribeOnForm();
     this.subscribeOnTokens();
@@ -28,7 +30,7 @@ export class SwapTokensUpdaterService {
         if (
           (!compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
             isMinimalToken(curForm.fromAsset)) ||
-          (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
+          (!compareTokens(prevForm?.toToken, curForm.toToken) && curForm.toToken)
         ) {
           this.updateTokensPrices(curForm);
         }
@@ -75,7 +77,7 @@ export class SwapTokensUpdaterService {
   }
 
   private subscribeOnTokens(): void {
-    this.tokensService.tokens$.pipe(filter(Boolean)).subscribe(tokens => {
+    this.tokensStoreService.tokens$.pipe(filter(Boolean)).subscribe(tokens => {
       const form = this.swapFormService.inputValue;
       const fromToken =
         isMinimalToken(form.fromAsset) &&
