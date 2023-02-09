@@ -104,7 +104,9 @@
       @include iframe-vertical {
         margin-bottom: 0;
       }
+    }
 
+    &-copy-icon {
       ::ng-deep svg {
         width: 13px;
         height: 17px;
@@ -162,7 +164,8 @@
     }
   }
 
-  &__favorite-container {
+  &__favorite-container,
+  &__security-container {
     width: 24px;
     height: 24px;
     margin-left: 20px;
@@ -192,6 +195,19 @@
 
     &:hover:not(&_active) svg path {
       stroke: var(--primary-color);
+    }
+  }
+
+  &__security-container {
+    &-security-hint {
+      display: block;
+      max-width: 200px;
+
+      font-size: 13px !important;
+
+      &-powered-by {
+        font-size: 10px !important;
+      }
     }
   }
 
