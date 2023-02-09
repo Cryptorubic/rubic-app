@@ -33,6 +33,7 @@ import { UserRejectError } from '@core/errors/models/provider/user-reject-error'
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
+import { LimitOrdersApiService } from '@core/services/backend/limit-orders-api/limit-orders-api.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -95,7 +96,8 @@ export class LimitOrderFormService {
     private readonly notificationsService: NotificationsService,
     private readonly orderExpirationService: OrderExpirationService,
     private readonly orderRateService: OrderRateService,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly limitOrdersApiService: LimitOrdersApiService
   ) {
     this.subscribeOnCalculation();
 
@@ -294,14 +296,15 @@ export class LimitOrderFormService {
   }
 
   public async onCreateOrder(): Promise<void> {
-    const { fromAsset, fromAmount, toToken } = this.swapFormService.inputValue;
+    const inputForm = this.swapFormService.inputValue;
+    const { fromAsset, fromAmount, toToken } = inputForm;
     const fromToken = fromAsset as AvailableTokenAmount;
     const { toAmount } = this.swapFormService.outputValue;
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     try {
       const deadline = this.orderExpirationService.expirationTime;
-      await this.sdkService.limitOrderManager.createOrder(
+      const hash = await this.sdkService.limitOrderManager.createOrder(
         fromToken as TokenBaseStruct<EvmBlockchainName>,
         toToken as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
@@ -309,6 +312,12 @@ export class LimitOrderFormService {
         { deadline }
       );
 
+      this.limitOrdersApiService.createTrade(
+        hash,
+        inputForm,
+        toAmount,
+        this.authService.userAddress
+      );
       this.successTxModalService.openLimitOrderModal();
     } catch (error) {
       let parsedError = RubicSdkErrorParser.parseError(error);
