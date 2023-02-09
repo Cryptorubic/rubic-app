@@ -67,7 +67,9 @@ export class IframeSettingsComponent {
       });
     } else {
       this.form.patchValue({
-        slippageTolerance: this.settingsService.defaultItSettings.slippageTolerance,
+        slippageTolerance: this.isCrossChain
+          ? this.settingsService.defaultCcrSettings.slippageTolerance
+          : this.settingsService.defaultItSettings.slippageTolerance,
         autoSlippageTolerance: true
       });
     }
