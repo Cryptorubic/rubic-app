@@ -120,31 +120,31 @@ export class TokensStoreService {
 
     this.authService.currentUser$
       .pipe(
-        switchMap(async user => {
+        switchMap(user => {
           if (user?.address) {
-            const favoriteTokens = await this.tokensApiService.fetchFavoriteTokens();
-
-            const blockchains = [...new Set(favoriteTokens.map(t => t.blockchain))];
-            return (
-              await Promise.all(
-                blockchains.map(async blockchain => {
-                  const favoriteTokensByBlockchain = favoriteTokens.filter(
-                    fT => fT.blockchain === blockchain
-                  );
-                  return (
-                    await this.getTokensWithBalance(
-                      this.getDefaultTokenAmounts(favoriteTokensByBlockchain, true)
-                    )
-                  ).toArray();
-                })
-              )
-            ).flat();
-          } else {
-            return [];
+            return this.tokensApiService.fetchFavoriteTokens();
           }
+          return [];
+        }),
+        switchMap(async (favoriteTokens: TokenAmount[]) => {
+          const uniqueBlockchains = [...new Set(favoriteTokens.map(t => t.blockchain))];
+          return (
+            await Promise.all(
+              uniqueBlockchains.map(async blockchain => {
+                const favoriteTokensByBlockchain = favoriteTokens.filter(
+                  fT => fT.blockchain === blockchain
+                );
+                return (
+                  await this.getTokensWithBalance(
+                    this.getDefaultTokenAmounts(List(favoriteTokensByBlockchain), true)
+                  )
+                ).toArray();
+              })
+            )
+          ).flat();
         })
       )
-      .subscribe((favoriteTokens: TokenAmount[]) => {
+      .subscribe(favoriteTokens => {
         this._favoriteTokens$.next(List(favoriteTokens));
       });
   }

@@ -63,7 +63,7 @@ export class TokensListStoreService {
     this._tokensToShow$.next(value);
   }
 
-  private readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount>(undefined); // todo check
+  private readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount>(undefined);
 
   public readonly customToken$ = this._customToken$.asObservable();
 

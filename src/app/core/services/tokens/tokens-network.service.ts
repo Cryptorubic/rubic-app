@@ -60,17 +60,18 @@ export class TokensNetworkService {
         switchMap(params => {
           return this.tokensApiService.getTokensList(params, this._tokensNetworkState$);
         }),
-        tap(async backendTokens => {
+        tap(backendTokens => {
           this.needRefetchTokens = this.tokensApiService.needRefetchTokens;
 
           if (!this.iframeService.isIframe) {
             this.tokensStoreService.updateStorageTokens(backendTokens);
           }
           this.tokensStoreService.patchTokens(backendTokens, false);
-
-          const blockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
-          await Promise.all(
-            blockchains.map(async blockchain => {
+        }),
+        switchMap(backendTokens => {
+          const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
+          return Promise.all(
+            uniqueBlockchains.map(async blockchain => {
               const newAddedTokens = backendTokens.filter(
                 bT =>
                   bT.blockchain === blockchain &&
