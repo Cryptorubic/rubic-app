@@ -20,6 +20,7 @@ import {
 } from 'rubic-sdk';
 import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -63,6 +64,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapFormService: SwapFormService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly priceImpactService: PriceImpactService,
     private readonly swapButtonService: SwapButtonService,
     @Self() private readonly destroy$: TuiDestroyService
@@ -98,7 +100,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
           const { fromBlockchain } = this.crossChainFormService.inputValue;
           return from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)).pipe(
             map(nativeCoinPrice => {
-              const tokens = this.tokensService.tokens;
+              const tokens = this.tokensStoreService.tokens;
 
               const nativeToken = tokens.find(
                 token =>
