@@ -40,11 +40,13 @@
       <small>{{ token.name }}</small>
     </div>
 
-    <div class="token-card__amount" *ngIf="token.amount.gt(0)">
-      <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
-        token.amount | bigNumberFormat | shortenAmount : 6 : 4
-      }}</span>
-      <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+    <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
+      <div class="token-card__amount" *ngIf="token.amount.gt(0)">
+        <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
+          token.amount | bigNumberFormat | shortenAmount : 6 : 4
+        }}</span>
+        <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+      </div>
     </div>
   </div>
 
