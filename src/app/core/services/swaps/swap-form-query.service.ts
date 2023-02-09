@@ -13,7 +13,6 @@ import {
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, switchIif } from '@shared/utils/utils';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -21,6 +20,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -37,6 +38,7 @@ export class SwapFormQueryService {
     private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly fiatsService: FiatsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService
@@ -87,7 +89,7 @@ export class SwapFormQueryService {
 
   private subscribeOnQueryParams(): void {
     forkJoin([
-      this.tokensService.tokens$.pipe(first(Boolean)),
+      this.tokensStoreService.tokens$.pipe(first(Boolean)),
       this.fiatsService.fiats$.pipe(first(Boolean))
     ])
       .pipe(
@@ -211,7 +213,7 @@ export class SwapFormQueryService {
               return null;
             }
             const newToken = { ...token, amount: new BigNumber(NaN) };
-            this.tokensService.addToken(newToken);
+            this.tokensStoreService.addToken(newToken);
             return newToken;
           }
           return null;
@@ -237,11 +239,11 @@ export class SwapFormQueryService {
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
             backendTokens => of(backendTokens.first()),
-            () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
+            () => this.tokensStoreService.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
             const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
-            this.tokensService.addToken(newToken);
+            this.tokensStoreService.addToken(newToken);
             return newToken;
           })
         );

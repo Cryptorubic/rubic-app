@@ -24,5 +24,7 @@ export enum TokenSecurityStatus {
   /** Network is not supported by Go+. */
   UNSUPPORTED_BLOCKCHAIN = 'unsupported',
   /** Token is in the Rubic's Scam List */
-  SCAM_LIST = 'scam-list'
+  SCAM_LIST = 'scam-list',
+  /** Token is Platform Token */
+  PLATFORM_TOKEN = 'platform-token'
 }
