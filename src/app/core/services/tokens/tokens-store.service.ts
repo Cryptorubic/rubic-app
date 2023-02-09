@@ -126,27 +126,29 @@ export class TokensStoreService {
           }
           return [];
         }),
-        switchMap(async (favoriteTokens: TokenAmount[]) => {
-          const uniqueBlockchains = [...new Set(favoriteTokens.map(t => t.blockchain))];
-          return (
-            await Promise.all(
-              uniqueBlockchains.map(async blockchain => {
-                const favoriteTokensByBlockchain = favoriteTokens.filter(
-                  fT => fT.blockchain === blockchain
-                );
-                return (
-                  await this.getTokensWithBalance(
-                    this.getDefaultTokenAmounts(List(favoriteTokensByBlockchain), true)
-                  )
-                ).toArray();
-              })
-            )
-          ).flat();
-        })
+        switchMap((favoriteTokens: Token[]) => this.getFavoriteTokensWithBalances(favoriteTokens))
       )
       .subscribe(favoriteTokens => {
         this._favoriteTokens$.next(List(favoriteTokens));
       });
+  }
+
+  private async getFavoriteTokensWithBalances(favoriteTokens: Token[]): Promise<TokenAmount[]> {
+    const uniqueBlockchains = [...new Set(favoriteTokens.map(t => t.blockchain))];
+    return (
+      await Promise.all(
+        uniqueBlockchains.map(async blockchain => {
+          const favoriteTokensByBlockchain = favoriteTokens.filter(
+            fT => fT.blockchain === blockchain
+          );
+          return (
+            await this.getTokensWithBalance(
+              this.getDefaultTokenAmounts(List(favoriteTokensByBlockchain), true)
+            )
+          ).toArray();
+        })
+      )
+    ).flat();
   }
 
   private startBalanceCalculating(blockchain: BlockchainName): void {
