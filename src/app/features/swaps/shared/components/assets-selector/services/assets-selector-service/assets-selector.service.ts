@@ -100,6 +100,7 @@ export class AssetsSelectorService {
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.assetType = blockchainName;
+    this.tokensStoreService.startBalanceCalculating(blockchainName);
     this.selectorListType = 'tokens';
   }
 
