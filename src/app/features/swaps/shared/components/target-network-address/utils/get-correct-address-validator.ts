@@ -7,5 +7,8 @@ export function getCorrectAddressValidator(inputForm: {
   fromAssetType: AssetType;
   toBlockchain: BlockchainName;
 }): ValidatorFn {
-  return correctAddressValidator(inputForm.fromAssetType, inputForm.toBlockchain);
+  if (inputForm.toBlockchain) {
+    return correctAddressValidator(inputForm.fromAssetType, inputForm.toBlockchain);
+  }
+  return () => null;
 }

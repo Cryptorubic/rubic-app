@@ -8,6 +8,7 @@ import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selecto
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-tokens-list',
@@ -29,6 +30,15 @@ export class TokensListComponent {
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
   public readonly customToken$ = this.tokensListStoreService.customToken$;
+
+  public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
+    switchMap(tokens => {
+      if (!tokens.length) {
+        return of(false);
+      }
+      return this.tokensListStoreService.isBalanceLoading$(tokens[0].blockchain);
+    })
+  );
 
   public readonly rubicDomain = 'app.rubic.exchange';
 

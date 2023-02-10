@@ -1,12 +1,14 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',
   IFRAME_TOKENS = 'v1/tokens/iframe/',
-  FAVORITE_TOKENS = 'v1/tokens/favorite/'
+  FAVORITE_TOKENS = 'v1/tokens/favorite/',
+  TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -25,6 +27,7 @@ export interface BackendToken {
   image: string;
   coingeckoId: string;
   usdPrice: number;
+  token_security: TokenSecurity | null;
 }
 
 export interface TokensBackendResponse {
@@ -32,6 +35,10 @@ export interface TokensBackendResponse {
   readonly next: string;
   readonly previous: string;
   readonly results: BackendToken[];
+}
+
+export interface TokenSecurityBackendResponse {
+  readonly token_security: TokenSecurity;
 }
 
 export interface TokensRequestQueryOptions {

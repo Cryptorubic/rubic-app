@@ -27,11 +27,11 @@
   </div>
 </ng-template>
 
-<ng-template #dropdownOptionTemplate>
-  <a class="user-profile__dropdown-item" routerLink="promotion">
-    {{ 'navigation.promotion' | translate }}
-  </a>
-</ng-template>
+<!--<ng-template #dropdownOptionTemplate>-->
+<!--  <a class="user-profile__dropdown-item" routerLink="revoke-approval">-->
+<!--    {{ 'Revoke Approval' }}-->
+<!--  </a>-->
+<!--</ng-template>-->
 
 <ng-template #dropdownOptionTemplate>
   <div *noFrame class="user-profile__dropdown-item button-link" (click)="openRecentTradesModal()">
@@ -43,6 +43,17 @@
       color="red"
       [value]="unreadTrades$ | async"
     ></app-notification-badge>
+  </div>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
+  <div
+    *noFrame
+    class="user-profile__dropdown-item button-link"
+    routerLink="history/limit-orders"
+    queryParamsHandling="merge"
+  >
+    Limit Orders
   </div>
 </ng-template>
 

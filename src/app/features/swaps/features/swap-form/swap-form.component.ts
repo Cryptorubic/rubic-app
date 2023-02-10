@@ -29,6 +29,8 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
+import { Subject } from 'rxjs';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 
 @Component({
   selector: 'app-swap-form',
@@ -60,6 +62,12 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly onramperWidgetOpened$ = this.onramperFormService.widgetOpened$;
 
+  private readonly _fromAmountUpdated$ = new Subject<void>();
+
+  public readonly fromAmountUpdated$ = this._fromAmountUpdated$.asObservable();
+
+  public readonly isRefreshRotating$ = this.refreshService.isRefreshRotating$;
+
   public get isInstantTrade(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -70,6 +78,10 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public get isOnramper(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+  }
+
+  public get isLimitOrder(): boolean {
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
   }
 
   constructor(
@@ -84,6 +96,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
     private readonly onramperFormService: OnramperFormService,
+    private readonly refreshService: RefreshService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -119,22 +132,25 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   public async revert(): Promise<void> {
-    const { fromAssetType, toBlockchain, fromAsset, toToken } = this.swapFormService.inputValue;
+    const { fromAssetType, toBlockchain, fromAsset, toToken, fromAmount } =
+      this.swapFormService.inputValue;
     if (!BlockchainsInfo.isBlockchainName(fromAssetType) || !isMinimalToken(fromAsset)) {
       return;
     }
     const { toAmount } = this.swapFormService.outputValue;
 
-    const revertData = {
+    this.swapFormService.inputControl.patchValue({
       fromAssetType: toBlockchain,
       fromAsset: toToken,
       toToken: fromAsset,
       toBlockchain: fromAssetType,
       ...(toAmount?.gt(0) && { fromAmount: toAmount })
-    };
-    this.swapFormService.form.patchValue({
-      input: revertData,
-      output: { toAmount: new BigNumber(NaN) }
+    });
+    this.swapFormService.outputControl.patchValue({
+      toAmount:
+        this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER
+          ? fromAmount
+          : new BigNumber(NaN)
     });
   }
 
@@ -192,5 +208,13 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public closeWidget(): void {
     this.onramperFormService.widgetOpened = false;
+  }
+
+  public onFromAmountUpdate(): void {
+    this._fromAmountUpdated$.next();
+  }
+
+  public onRefresh(): void {
+    this.refreshService.onButtonClick();
   }
 }

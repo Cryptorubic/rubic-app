@@ -73,6 +73,12 @@
     &[data-appearance='secondary'] {
       border: 0;
     }
+
+    &[data-appearance='primary'] {
+      ::ng-deep .wrapper {
+        transition: none;
+      }
+    }
   }
 }
 

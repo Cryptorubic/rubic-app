@@ -4,12 +4,11 @@
     <img
       [src]="
         (isDarkTheme$ | async)
-          ? 'assets/images/rubic-logo.svg'
-          : 'assets/images/rubic-logo-dark.svg'
+          ? 'assets/images/rubic-logo.png'
+          : 'assets/images/rubic-logo-dark.png'
       "
       alt="Rubic logotype"
       width="122"
-      height="39"
     />
   </a>
   <a
@@ -19,7 +18,7 @@
     target="_blank"
     [href]="noFrameLink"
   >
-    <img src="assets/images/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
+    <img src="assets/images/rubic-logo.png" alt="Rubic logotype" width="90" />
   </a>
 
   <app-rubic-menu
@@ -39,6 +38,19 @@
       "
       >Swaps</a
     >
+    <a
+      class="button-link"
+      (click)="navigateToLimitOrder()"
+      [class.button-link_active]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"
+      >Limit Order</a
+    >
+    <div
+      class="button-link"
+      routerLink="/revoke-approval"
+      [class.button-link_active]="isRevokePage"
+    >
+      Revoke Approval
+    </div>
   </nav>
 
   <app-buy-token

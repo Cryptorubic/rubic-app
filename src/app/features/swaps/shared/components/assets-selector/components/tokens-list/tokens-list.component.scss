@@ -116,6 +116,10 @@ tui-loader {
 
     cursor: pointer;
 
+    @include iframe-horizontal {
+      padding: 4px;
+    }
+
     @include light-iframe {
       border: 1px solid #e9e9e9;
 

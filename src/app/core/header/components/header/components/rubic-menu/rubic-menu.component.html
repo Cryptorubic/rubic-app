@@ -55,6 +55,13 @@
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
+        <div
+          routerLink="/revoke-approval/"
+          [class.data-list__link_active]="crossChainActive"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">Revoke Approval</button>
+        </div>
       </tui-opt-group>
 
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
@@ -70,7 +77,7 @@
           {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
         </button>
 
-        <a class="data-list__link data-list__link_my-trades" (click)="openRecentTradesModal()">
+        <a class="data-list__link data-list__link_modal" (click)="openRecentTradesModal()">
           <button tuiOption class="data-list__option">
             {{ 'navigation.recentTrades' | translate }}
           </button>
@@ -84,14 +91,11 @@
         </a>
 
         <a
-          routerLink="promotion"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-          (click)="closeMenu()"
+          class="data-list__link data-list__link_modal"
+          routerLink="history/limit-orders"
+          queryParamsHandling="merge"
         >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.promotion' | translate }}
-          </button>
+          <button tuiOption class="data-list__option">Limit Orders</button>
         </a>
 
         <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
