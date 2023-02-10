@@ -22,6 +22,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -63,7 +64,8 @@ export class TokensListElementComponent {
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
   ) {
     this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
   }
