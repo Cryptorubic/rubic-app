@@ -20,6 +20,7 @@
 
   @include b($mobile-md) {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     width: 100%;
   }
@@ -44,8 +45,14 @@
 
     background-color: transparent;
 
-    @include b($mobile-sm) {
-      font-size: 18px;
+    @include b($mobile-md) {
+      padding: 4px 6px;
+
+      color: #00ffa0;
+      font-size: 14px;
+
+      background-color: #00e28e26;
+      border-radius: 4px;
     }
 
     &_disabled {

@@ -163,7 +163,6 @@ tui-loader {
 @include b($mobile-md) {
   .assets-selector {
     background-color: #222425;
-    border-radius: 20px 20px 0 0;
 
     &__content {
       flex-direction: column;
@@ -187,7 +186,7 @@ tui-loader {
   }
 
   .token-list-container {
-    height: 100%;
+    height: 100vh;
   }
 
   .token-list {

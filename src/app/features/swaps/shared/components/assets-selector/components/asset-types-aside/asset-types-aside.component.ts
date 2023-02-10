@@ -11,6 +11,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { MobileNativeModalService } from '@app/core/services/modal/mobile-native-modal.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -67,7 +68,8 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly mobileNativeService: MobileNativeModalService
   ) {}
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -115,6 +117,7 @@ export class AssetTypesAsideComponent {
   }
 
   public toggleBlockchainList(): void {
+    this.mobileNativeService.forceChangeSize(this.isBlockchainListExpanded ? 'collapse' : 'expand');
     this.isBlockchainListExpanded = !this.isBlockchainListExpanded;
   }
 }

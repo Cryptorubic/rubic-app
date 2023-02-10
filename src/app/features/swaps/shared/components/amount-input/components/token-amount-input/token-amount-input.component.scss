@@ -117,6 +117,10 @@
       font-size: 20px;
       text-align: left;
     }
+
+    @include b($mobile-md) {
+      font-size: 18px;
+    }
   }
 
   &__iframe-info-cards {

@@ -23,9 +23,6 @@
     width: 100%;
 
     @include b($mobile-sm-middle) {
-      flex-direction: column;
-      align-items: unset;
-
       @include iframe {
         flex-direction: row;
         align-items: center;
