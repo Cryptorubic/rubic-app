@@ -11,7 +11,7 @@
   <div class="token-card__name-amount-container">
     <div class="token-card__name-container">
       <div class="token-card__name-container-symbol">
-        {{ token.symbol }}
+        {{ token.symbol.length > 10 ? token.symbol.slice(0, 10) + '...' : token.symbol }}
 
         <span
           class="token-card__name-container-copy-icon"
