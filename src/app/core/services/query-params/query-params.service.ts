@@ -113,11 +113,13 @@ export class QueryParamsService {
     }
 
     if (!queryParams.hasOwnProperty('iframe')) {
+      this.iframeService.setIframeFalse();
       return;
     }
 
     const { iframe } = queryParams;
     if (iframe !== 'vertical' && iframe !== 'horizontal') {
+      this.iframeService.setIframeFalse();
       return;
     }
 

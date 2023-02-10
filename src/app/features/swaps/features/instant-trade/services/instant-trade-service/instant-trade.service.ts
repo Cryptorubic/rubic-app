@@ -222,7 +222,7 @@ export class InstantTradeService extends TradeCalculationService {
 
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
-    // const receiverAddress = this.receiverAddress; todo return
+    const receiverAddress = this.receiverAddress;
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -248,8 +248,8 @@ export class InstantTradeService extends TradeCalculationService {
       },
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      })
-      // ...(receiverAddress && { receiverAddress })
+      }),
+      ...(receiverAddress && { receiverAddress })
     };
 
     try {
