@@ -97,8 +97,6 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private amountOutMin: string;
 
-  private symbiosisVersion: 'v1' | 'v2';
-
   private changenowId: string;
 
   constructor(
@@ -140,7 +138,6 @@ export class SwapSchemeModalComponent implements OnInit {
                 viaUuid: this.viaUuid,
                 rangoRequestId: this.rangoRequestId,
                 amountOutMin: this.amountOutMin,
-                symbiosisVersion: this.symbiosisVersion,
                 changenowId: this.changenowId
               },
               this.crossChainProvider
@@ -220,7 +217,6 @@ export class SwapSchemeModalComponent implements OnInit {
                     viaUuid: this.viaUuid,
                     rangoRequestId: this.rangoRequestId,
                     amountOutMin: this.amountOutMin,
-                    symbiosisVersion: this.symbiosisVersion,
                     changenowId: this.changenowId
                   },
                   this.crossChainProvider
@@ -327,7 +323,6 @@ export class SwapSchemeModalComponent implements OnInit {
     this.timestamp = data.timestamp;
 
     this.amountOutMin = data.amountOutMin;
-    this.symbiosisVersion = data.symbiosisVersion;
     this.changenowId = data.changenowId;
   }
 }

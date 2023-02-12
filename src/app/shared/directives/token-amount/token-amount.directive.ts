@@ -21,6 +21,8 @@ export class TokenAmountDirective {
 
   private prevCaretPosition = 0;
 
+  private isFocused = false;
+
   constructor(private readonly elementRef: ElementRef) {}
 
   @HostListener('ngModelChange')
@@ -56,7 +58,9 @@ export class TokenAmountDirective {
     }
 
     this.elementRef.nativeElement.value = value;
-    this.elementRef.nativeElement.setSelectionRange(caretPosition, caretPosition);
+    if (this.isFocused) {
+      this.elementRef.nativeElement.setSelectionRange(caretPosition, caretPosition);
+    }
     this.amountChange.emit(value);
 
     this.prevValue = value;
@@ -100,5 +104,15 @@ export class TokenAmountDirective {
   @HostListener('click')
   private onCaretPositionChange(): void {
     this.prevCaretPosition = this.elementRef.nativeElement.selectionStart;
+  }
+
+  @HostListener('focus')
+  private onFocus(): void {
+    this.isFocused = true;
+  }
+
+  @HostListener('focusout')
+  private onFocusOut(): void {
+    this.isFocused = false;
   }
 }

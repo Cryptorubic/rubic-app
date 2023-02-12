@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/assets-selector/models/assets-selector-component-context';
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
@@ -8,6 +7,8 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { BlockchainName } from 'rubic-sdk';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
@@ -47,7 +48,8 @@ export class AssetsSelectorService {
   }
 
   constructor(
-    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensNetworkService: TokensNetworkService,
     private readonly swapFormService: SwapFormService,
     private readonly destroy$: TuiDestroyService
   ) {
@@ -82,8 +84,8 @@ export class AssetsSelectorService {
   }
 
   private checkAndRefetchTokenList(): void {
-    if (this.tokensService.needRefetchTokens) {
-      this.tokensService.tokensRequestParameters = undefined;
+    if (this.tokensNetworkService.needRefetchTokens) {
+      this.tokensNetworkService.tokensRequestParameters = undefined;
     }
   }
 
@@ -102,6 +104,7 @@ export class AssetsSelectorService {
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.assetType = blockchainName;
+    this.tokensStoreService.startBalanceCalculating(blockchainName);
     this.selectorListType = 'tokens';
   }
 

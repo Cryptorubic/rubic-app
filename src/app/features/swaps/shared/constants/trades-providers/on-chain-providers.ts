@@ -406,6 +406,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#FD017A'
   },
 
+  [ON_CHAIN_TRADE_TYPE.VERSE]: {
+    name: 'Verse',
+    image: `${imageBasePath}verse.png`,
+    color: '#0085FF'
+  },
   [ON_CHAIN_TRADE_TYPE.VIPER_SWAP]: {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`,

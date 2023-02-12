@@ -34,4 +34,10 @@ export const NAVIGATION_LIST = [
     link: EXTERNAL_LINKS.AIRDROP,
     imagePath: `assets/images/rbc.svg`
   }
+  // {
+  //   translateKey: 'Revoke Approval',
+  //   type: 'internal',
+  //   link: ROUTE_PATH.REVOKE_APPROVAL,
+  //   imagePath: `${defaultSrc}revoke.svg`
+  // }
 ] as NavigationItem[];

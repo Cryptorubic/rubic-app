@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -15,10 +15,12 @@ import {
   ENDPOINTS,
   FavoriteTokenRequestParams,
   TokensBackendResponse,
+  TokenSecurityBackendResponse,
   TokensListResponse,
   TokensRequestNetworkOptions,
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
+import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
@@ -52,10 +54,16 @@ export class TokensApiService {
   public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => ({
-          ...token,
+        .map(({ token_security, ...token }: BackendToken) => ({
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
-          price: token.usdPrice
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          rank: token.rank,
+          price: token.usdPrice,
+          tokenSecurity: token_security
         }))
         .filter(token => token.address && token.blockchain)
     );
@@ -85,17 +93,19 @@ export class TokensApiService {
    * Fetches favorite tokens from backend.
    * @return Observable<BackendToken[]> Favorite Tokens.
    */
-  public fetchFavoriteTokens(): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendToken[]>(
-        ENDPOINTS.FAVORITE_TOKENS,
-        { user: this.authService.userAddress },
-        this.tokensApiUrl
-      )
-      .pipe(
-        map(tokens => TokensApiService.prepareTokens(tokens)),
-        catchError(() => of(List([])))
-      );
+  public fetchFavoriteTokens(): Promise<List<Token>> {
+    return firstValueFrom(
+      this.httpService
+        .get<BackendToken[]>(
+          ENDPOINTS.FAVORITE_TOKENS,
+          { user: this.authService.userAddress },
+          this.tokensApiUrl
+        )
+        .pipe(
+          map(tokens => TokensApiService.prepareTokens(tokens)),
+          catchError(() => of(List([])))
+        )
+    );
   }
 
   /**
@@ -193,8 +203,8 @@ export class TokensApiService {
         .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
           tap(networkTokens => {
-            const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
             if (networkTokens?.results) {
+              const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
               tokensNetworkState$.next({
                 ...tokensNetworkState$.value,
                 [blockchain]: {
@@ -260,6 +270,27 @@ export class TokensApiService {
   }
 
   /**
+   * Fetches token security info from backend.
+   * @param requestOptions Request options to get token security info by.
+   * @returns Observable<TokenSecurity> Token security info from backend.
+   */
+  public fetchTokenSecurity(requestOptions: TokensRequestQueryOptions): Observable<TokenSecurity> {
+    const options = {
+      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+      ...(requestOptions.address && { address: requestOptions.address })
+    };
+
+    return this.httpService
+      .get<TokenSecurityBackendResponse>(ENDPOINTS.TOKENS_SECURITY, options, this.tokensApiUrl)
+      .pipe(
+        map(({ token_security }) => ({
+          ...token_security
+        })),
+        catchError(() => of(null))
+      );
+  }
+
+  /**
    * Fetches specific network tokens from backend.
    * @param requestOptions Request options to get tokens by.
    * @return Observable<TokensListResponse> Tokens response from backend with count.
@@ -298,7 +329,7 @@ export class TokensApiService {
             price: bitcoinPrice.toNumber(),
             usedInIframe: true,
             hasDirectPair: null,
-
+            tokenSecurity: null,
             blockchain: BLOCKCHAIN_NAME.BITCOIN,
             address: BitcoinWeb3Pure.nativeTokenAddress,
             name: 'Bitcoin',

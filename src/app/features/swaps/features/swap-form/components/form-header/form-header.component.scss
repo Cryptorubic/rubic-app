@@ -25,12 +25,12 @@
     background: var(--form-background);
     border-radius: 50%;
 
-    img {
-      border-radius: 50%;
+    &:nth-child(2) {
+      margin-left: -15px;
     }
 
-    &:last-child {
-      margin-left: -15px;
+    img {
+      border-radius: 50%;
     }
   }
 

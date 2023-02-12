@@ -15,6 +15,5 @@ export interface CrossChainRecentTrade extends CommonRecentTrade {
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;
-  symbiosisVersion?: 'v1' | 'v2';
   changenowId?: string;
 }

@@ -6,14 +6,14 @@
 
   @include iframe-vertical {
     position: absolute;
-    top: 89px;
+    top: 110px;
     right: 0;
   }
 
   @include iframe-horizontal {
     position: absolute;
-    top: 47px;
-    right: 0;
+    top: 43px;
+    right: -195px;
   }
 
   tui-input {

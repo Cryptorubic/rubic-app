@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { watch } from '@taiga-ui/cdk';
-import { map, switchMap } from 'rxjs/operators';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
@@ -19,12 +19,14 @@ import {
   nativeTokensList
 } from 'rubic-sdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
   templateUrl: './cross-chain-swap-info.component.html',
   styleUrls: ['./cross-chain-swap-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class CrossChainSwapInfoComponent implements OnInit {
   public fromToken: TokenAmount;
@@ -61,7 +63,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapFormService: SwapFormService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly tokensService: TokensService,
-    private readonly priceImpactService: PriceImpactService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly priceImpactService: PriceImpactService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +74,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
   }
 
   private subscribeOnInputValue(): void {
-    this.swapFormService.inputValueDistinct$.subscribe(form => {
+    this.swapFormService.inputValueDistinct$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       this.fromToken = form.fromAsset as TokenAmount;
       this.toToken = form.toToken;
 
@@ -94,7 +98,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
           const { fromBlockchain } = this.crossChainFormService.inputValue;
           return from(this.tokensService.getNativeCoinPriceInUsd(fromBlockchain)).pipe(
             map(nativeCoinPrice => {
-              const tokens = this.tokensService.tokens;
+              const tokens = this.tokensStoreService.tokens;
 
               const nativeToken = tokens.find(
                 token =>
@@ -112,7 +116,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
             })
           );
         }),
-        watch(this.cdr)
+        watch(this.cdr),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

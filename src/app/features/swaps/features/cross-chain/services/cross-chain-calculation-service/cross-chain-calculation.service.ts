@@ -9,7 +9,6 @@ import {
   NotWhitelistedProviderError,
   RangoCrossChainTrade,
   SwapTransactionOptions,
-  SymbiosisCrossChainTrade,
   UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
@@ -259,8 +258,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
       const rangoRequestId =
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
-      const symbiosisVersion =
-        calculatedTrade.trade instanceof SymbiosisCrossChainTrade && calculatedTrade.trade.version;
       const changenowId =
         calculatedTrade.trade instanceof ChangenowCrossChainTrade && calculatedTrade.trade.id;
 
@@ -275,7 +272,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId }),
-        ...(symbiosisVersion && { symbiosisVersion }),
         ...(changenowId && { changenowId })
       };
 
@@ -397,10 +393,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.requestId
         : undefined;
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
-    const symbiosisVersion =
-      calculatedTrade.trade instanceof SymbiosisCrossChainTrade
-        ? calculatedTrade.trade.version
-        : undefined;
     const changenowId =
       calculatedTrade.trade instanceof ChangenowCrossChainTrade
         ? calculatedTrade.trade.id
@@ -421,7 +413,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
           rangoRequestId,
           timestamp,
           amountOutMin,
-          symbiosisVersion,
           changenowId
         }
       })

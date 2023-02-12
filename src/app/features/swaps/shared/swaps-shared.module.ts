@@ -11,6 +11,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsWarningModalComponent } from './components/settings-warning-modal/settings-warning-modal.component';
 import { SelectAssetButtonComponent } from '@features/swaps/shared/components/select-asset-button/select-asset-button.component';
 import { SwapButtonContainerModule } from '@features/swaps/shared/components/swap-button-container/swap-button-container.module';
+import { TokenAmountInputComponent } from '@features/swaps/shared/components/amount-input/components/token-amount-input/token-amount-input.component';
+import { VerticalIframeTokenAmountInputComponent } from '@features/swaps/shared/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
+import { UserBalanceContainerComponent } from '@features/swaps/shared/components/amount-input/components/user-balance-container/user-balance-container.component';
+import { SetToMarketButtonComponent } from '@features/swaps/shared/components/amount-input/components/set-to-market-button/set-to-market-button.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +22,11 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/components/swa
     TokensRateComponent,
     TargetNetworkAddressComponent,
     SettingsWarningModalComponent,
-    SelectAssetButtonComponent
+    SelectAssetButtonComponent,
+    TokenAmountInputComponent,
+    UserBalanceContainerComponent,
+    VerticalIframeTokenAmountInputComponent,
+    SetToMarketButtonComponent
   ],
   exports: [
     ToAmountEstimatedComponent,
@@ -27,6 +35,9 @@ import { SwapButtonContainerModule } from '@features/swaps/shared/components/swa
     SettingsWarningModalComponent,
     SelectAssetButtonComponent,
     SwapButtonContainerModule,
+    TokenAmountInputComponent,
+    UserBalanceContainerComponent,
+    VerticalIframeTokenAmountInputComponent,
     CommonModule,
     SharedModule
   ],

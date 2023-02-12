@@ -1,8 +1,20 @@
 #chat-widget-container {
+  position: fixed;
+  bottom: 0;
+
   z-index: 1 !important;
+
+  //width: 84px !important;
+  //height: 84px !important;
+  //overflow: hidden;
 
   visibility: initial !important;
   opacity: initial !important;
+
+  //* {
+  //  max-width: 84px !important;
+  //  max-height: 84px !important;
+  //}
 }
 
 .iframe {

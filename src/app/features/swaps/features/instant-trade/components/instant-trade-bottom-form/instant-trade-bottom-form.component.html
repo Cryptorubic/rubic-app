@@ -3,12 +3,6 @@
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__left-part">
         <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
-
-        <ng-container *noFrame>
-          <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-            {{ 'common.tradeVia' | translate }} {{ selectedProvider.label }}
-          </div>
-        </ng-container>
       </div>
 
       <div
@@ -85,9 +79,9 @@
       >
       </app-providers-panels-container>
     </ng-container>
-    <!--    <app-target-network-address-->
-    <!--      *ngIf="displayTargetAddressInput$ | async"-->
-    <!--    ></app-target-network-address>-->
+    <app-target-network-address
+      *ngIf="displayTargetAddressInput$ | async"
+    ></app-target-network-address>
   </main>
 </div>
 

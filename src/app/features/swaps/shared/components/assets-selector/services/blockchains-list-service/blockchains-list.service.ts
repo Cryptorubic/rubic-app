@@ -12,6 +12,11 @@ import { SearchQueryService } from '@features/swaps/shared/components/assets-sel
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { isMinimalToken } from '@shared/utils/is-token';
 
 @Injectable()
 export class BlockchainsListService {
@@ -39,6 +44,8 @@ export class BlockchainsListService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
+    private readonly swapTypeService: SwapTypeService,
+    private readonly swapFormService: SwapFormService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
@@ -48,23 +55,34 @@ export class BlockchainsListService {
   }
 
   private setAvailableBlockchains(): void {
-    let blockchains = blockchainsList;
+    const isLimitOrder = this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
+    let blockchains: readonly BlockchainName[] = isLimitOrder
+      ? limitOrderSupportedBlockchains
+      : blockchainsList;
     if (this.queryParamsService.enabledBlockchains) {
       blockchains = blockchains.filter(blockchain =>
         this.queryParamsService.enabledBlockchains.includes(blockchain)
       );
     }
+
+    const { formType } = this.assetsSelectorService;
+    const { fromAsset } = this.swapFormService.inputValue;
+    const selectedBlockchain =
+      isLimitOrder && formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
+
     this._availableBlockchains = blockchains.map(blockchainName => {
       const disabledConfiguration =
         !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
       const disabledFrom = disabledFromBlockchains.includes(blockchainName);
+      const disabledLimitOrder = selectedBlockchain && blockchainName !== selectedBlockchain;
 
       return {
         name: blockchainName,
         icon: blockchainIcon[blockchainName],
         label: blockchainLabel[blockchainName],
         disabledConfiguration,
-        disabledFrom
+        disabledFrom,
+        disabledLimitOrder
       };
     });
   }
@@ -86,6 +104,7 @@ export class BlockchainsListService {
   public isDisabled(blockchain: AvailableBlockchain): boolean {
     return (
       blockchain.disabledConfiguration ||
+      blockchain.disabledLimitOrder ||
       this.isDisabledFrom(blockchain) ||
       this.isDisabledTo(blockchain)
     );
@@ -114,6 +133,9 @@ export class BlockchainsListService {
     }
     if (blockchain.disabledConfiguration) {
       return 'Temporary disabled';
+    }
+    if (blockchain.disabledLimitOrder) {
+      return 'Change selected source token';
     }
     return null;
   }
