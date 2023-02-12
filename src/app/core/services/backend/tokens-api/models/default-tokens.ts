@@ -12,6 +12,10 @@ const defaultTokenParams = {
 };
 
 export const defaultTokens: Record<BlockchainName, Token[]> = {
+  ...Object.values(BLOCKCHAIN_NAME).reduce(
+    (acc, blockchain) => ({ ...acc, [blockchain]: [] }),
+    {} as Record<BlockchainName, Token[]>
+  ),
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM],

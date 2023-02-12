@@ -1,6 +1,10 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 export const blockchainImageKey: Record<BlockchainName, string> = {
+  ...Object.values(BLOCKCHAIN_NAME).reduce(
+    (acc, blockchain) => ({ ...acc, [blockchain]: null }),
+    {} as Record<BlockchainName, string>
+  ),
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -15,14 +19,10 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.NEAR]: 'near',
   [BLOCKCHAIN_NAME.OPTIMISM]: 'optimism',
   [BLOCKCHAIN_NAME.CRONOS]: 'cronos',
-  [BLOCKCHAIN_NAME.OKE_X_CHAIN]: null,
   [BLOCKCHAIN_NAME.GNOSIS]: 'xdai',
-  [BLOCKCHAIN_NAME.FUSE]: null,
   [BLOCKCHAIN_NAME.MOONBEAM]: 'moonbeam',
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
-  [BLOCKCHAIN_NAME.BOBA_BSC]: null,
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: null,
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
@@ -34,6 +34,5 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
   [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
   [BLOCKCHAIN_NAME.VELAS]: 'velas',
-  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
-  [BLOCKCHAIN_NAME.ICP]: null
+  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
 };
