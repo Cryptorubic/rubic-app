@@ -25,6 +25,7 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -126,9 +127,13 @@ export class TokensService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
-    const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    let chainType: CHAIN_TYPE | undefined;
+    try {
+      chainType = BlockchainsInfo.getChainType(token.blockchain);
+    } catch {}
     if (
       !this.userAddress ||
+      !chainType ||
       !Web3Pure[chainType].isAddressCorrect(this.userAddress) ||
       !Web3PublicService.isSupportedBlockchain(token.blockchain)
     ) {
@@ -265,7 +270,10 @@ export class TokensService {
       query = query.toLowerCase();
     }
 
-    const isAddress = isAddressCorrect(query, blockchain);
+    let isAddress = false;
+    try {
+      isAddress = isAddressCorrect(query, blockchain);
+    } catch {}
 
     const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
     if (isLifiTokens) {

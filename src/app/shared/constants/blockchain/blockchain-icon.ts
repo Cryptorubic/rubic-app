@@ -55,7 +55,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ARK]: `${basePath}ark.svg`,
   [BLOCKCHAIN_NAME.COSMOS]: `${basePath}cosmos.png`,
   [BLOCKCHAIN_NAME.BAND_PROTOCOL]: `${basePath}band-protocol.png`,
-  [BLOCKCHAIN_NAME.BITCOIN_DIAMOND]: `${basePath}bitcoin-diamong.svg`,
+  [BLOCKCHAIN_NAME.BITCOIN_DIAMOND]: `${basePath}bitcoin-diamond.svg`,
   [BLOCKCHAIN_NAME.BSV]: `${basePath}bsv.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_GOLD]: `${basePath}bitcoin-gold.svg`,
   [BLOCKCHAIN_NAME.CASPER]: `${basePath}casper.svg`,

@@ -24,6 +24,7 @@ import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -194,9 +195,13 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    const chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    let chainType: CHAIN_TYPE | undefined;
+    try {
+      chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    } catch {}
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
+      chainType &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
   }
 
@@ -216,11 +221,14 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    const fromChainType =
-      fromAsset?.blockchain && BlockchainsInfo.getChainType(fromAsset.blockchain);
+    let fromChainType: CHAIN_TYPE | undefined;
+    try {
+      fromChainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    } catch {}
     if (
       !fromAsset ||
       !this.authService.userAddress ||
+      !fromChainType ||
       fromChainType !== this.authService.userChainType
     ) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;

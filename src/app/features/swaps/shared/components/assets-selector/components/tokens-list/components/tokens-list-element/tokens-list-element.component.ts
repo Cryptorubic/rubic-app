@@ -23,12 +23,11 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import {
-  BlockchainsInfo,
-  Web3Pure,
   blockchainId,
   BLOCKCHAIN_NAME,
   wrappedNativeTokensList,
-  EvmBlockchainName
+  EvmBlockchainName,
+  EMPTY_ADDRESS
 } from 'rubic-sdk';
 
 @Component({
@@ -77,8 +76,7 @@ export class TokensListElementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const chainType = BlockchainsInfo.getChainType(this.token.blockchain);
-    this.allowCopy = !Web3Pure[chainType].isNativeAddress(this.token.address);
+    this.allowCopy = this.token.address !== EMPTY_ADDRESS;
   }
 
   public onImageError($event: Event): void {
@@ -199,9 +197,9 @@ export class TokensListElementComponent implements OnInit {
     const goPlusChainID =
       this.token.blockchain === BLOCKCHAIN_NAME.TRON ? 'tron' : blockchainId[this.token.blockchain];
     const goPlusTokenAddress = this.isNativeToken
-      ? wrappedNativeTokensList[this.token.blockchain as EvmBlockchainName].address
+      ? wrappedNativeTokensList[this.token.blockchain as EvmBlockchainName]?.address
       : this.token.address;
 
-    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress}`;
+    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress || ''}`;
   }
 }

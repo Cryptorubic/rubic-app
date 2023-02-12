@@ -184,8 +184,11 @@ export class SwapFormQueryService {
       return of(null);
     }
 
-    const chainType = BlockchainsInfo.getChainType(chain);
-    if (Web3Pure[chainType].isAddressCorrect(token)) {
+    let chainType: CHAIN_TYPE | undefined;
+    try {
+      chainType = BlockchainsInfo.getChainType(chain);
+    } catch {}
+    if (chainType && Web3Pure[chainType].isAddressCorrect(token)) {
       const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
       return this.searchTokenByAddress(tokens, address, chain);
     }

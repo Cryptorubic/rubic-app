@@ -13,7 +13,8 @@ import {
   ViaCrossChainTrade,
   Web3Pure,
   WrappedCrossChainTrade,
-  ChangenowCrossChainTrade
+  ChangenowCrossChainTrade,
+  Token as SdkToken
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -132,7 +133,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     return this.sdkService.crossChain
-      .calculateTradesReactively(fromToken, fromAmount, toToken, options)
+      .calculateTradesReactively(
+        new SdkToken(fromToken),
+        fromAmount,
+        new SdkToken(toToken),
+        options
+      )
       .pipe(
         switchMap(reactivelyCalculatedTradeData => {
           const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
