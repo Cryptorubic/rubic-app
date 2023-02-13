@@ -25,9 +25,10 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName, Injector, BitcoinWeb3Pure, IcpWeb3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, Injector, BitcoinWeb3Pure } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -196,9 +197,9 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
+    const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
 
-    const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
+    const requests$ = blockchains.map((network: BackendBlockchain) =>
       this.httpService
         .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
@@ -220,6 +221,8 @@ export class TokensApiService {
           })
         )
     );
+    requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
+
     const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
         if (results.every(el => el === null)) {
@@ -245,6 +248,43 @@ export class TokensApiService {
         return backendTokens.concat(staticTokens);
       })
     );
+  }
+
+  private fetchTokensFromOnePageBlockchains(
+    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
+  ): Observable<TokensBackendResponse> {
+    const onePageBlockchains = blockchainsWithOnePage
+      .map(b => TO_BACKEND_BLOCKCHAINS[b])
+      .reduce((acc, blockchain) => {
+        if (acc.length) {
+          return acc + ',' + blockchain;
+        }
+        return blockchain;
+      }, '');
+    return this.httpService
+      .get<TokensBackendResponse>(
+        ENDPOINTS.TOKENS,
+        { page: 1, pageSize: 100, networks: onePageBlockchains },
+        this.tokensApiUrl
+      )
+      .pipe(
+        tap(networkTokens => {
+          if (networkTokens?.results) {
+            blockchainsWithOnePage.forEach(blockchain => {
+              tokensNetworkState$.next({
+                ...tokensNetworkState$.value,
+                [blockchain]: {
+                  page: 1,
+                  maxPage: 1
+                }
+              });
+            });
+          }
+        }),
+        catchError(() => {
+          return of(null);
+        })
+      );
   }
 
   /**
@@ -317,11 +357,8 @@ export class TokensApiService {
   }
 
   private fetchStaticTokens(): Observable<Token[]> {
-    return forkJoin([
-      Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN),
-      Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.ICP)
-    ]).pipe(
-      switchMap(([bitcoinPrice, icpPrice]) =>
+    return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)]).pipe(
+      switchMap(([bitcoinPrice]) =>
         of([
           {
             image: '/assets/images/icons/coins/bitcoin.svg',
@@ -334,19 +371,6 @@ export class TokensApiService {
             address: BitcoinWeb3Pure.nativeTokenAddress,
             name: 'Bitcoin',
             symbol: 'BTC',
-            decimals: 8
-          },
-          {
-            image: '/assets/images/icons/coins/icp.svg',
-            rank: 1,
-            price: icpPrice.toNumber(),
-            usedInIframe: true,
-            hasDirectPair: null,
-
-            blockchain: BLOCKCHAIN_NAME.ICP,
-            address: IcpWeb3Pure.nativeTokenAddress,
-            name: 'Internet Computer',
-            symbol: 'ICP',
             decimals: 8
           }
         ])
