@@ -221,7 +221,7 @@ export class SettingsService {
       return firstValueFrom(
         this.dialogService.open<boolean>(new PolymorpheusComponent(SettingsWarningModalComponent), {
           data: settingsChecks,
-          size: 'm'
+          size: 'l'
         })
       );
     }
