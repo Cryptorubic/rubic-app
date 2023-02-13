@@ -3,6 +3,10 @@
 :host {
   display: block;
   padding-bottom: 32px;
+
+  @include iframe-horizontal {
+    padding-bottom: 0;
+  }
 }
 
 .modal {
@@ -12,7 +16,7 @@
     text-align: center;
 
     @include b($tablet) {
-      padding: 0;
+      padding: 10px;
     }
   }
 
@@ -50,7 +54,6 @@
 
   /* stylelint-disable */
   @include iframe-horizontal {
-    height: 100vh;
     display: flex;
     align-items: center;
 
@@ -59,7 +62,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: $iframe-horizontal-height;
       padding-top: 0;
     }
 
@@ -70,14 +72,24 @@
       align-items: center;
 
       img {
-        transform: scale(1.5);
+        width: 120px;
+      }
+    }
+
+    &__footer {
+
+      &-text {
+        @include font(20px, 32px, 500, var(--primary-text));
+
+        img {
+          margin-left: 4px;
+        }
       }
     }
 
     h3 {
       text-align: left;
       font-size: 18px;
-      margin: 0 0 20px;
     }
 
     ::ng-deep app-rubic-button button {

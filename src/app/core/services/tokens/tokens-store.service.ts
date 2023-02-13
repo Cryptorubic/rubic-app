@@ -151,7 +151,7 @@ export class TokensStoreService {
     ).flat();
   }
 
-  private startBalanceCalculating(blockchain: BlockchainName): void {
+  public startBalanceCalculating(blockchain: BlockchainName): void {
     if (this.isBalanceCalculatingStarted[blockchain]) {
       return;
     }
