@@ -323,5 +323,9 @@ app-form-navigation {
   @include b($laptop) {
     display: block;
     margin-bottom: 8px;
+
+    @include iframe {
+      display: none;
+    }
   }
 }

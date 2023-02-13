@@ -218,6 +218,15 @@ html.iframe-vertical tui-dialog > div.content > h2 {
   padding: 2rem 0.5rem 0 1rem;
 }
 
+html.iframe-vertical tui-hint-box {
+  max-width: 18rem !important;
+}
+
+html.iframe-horizontal tui-hint-box {
+  max-width: 36rem !important;
+}
+
+
 tui-wrapper[data-appearance='textfield'] {
   --tui-base-03: rgba(255, 255, 255, 0.1);
   background: transparent !important;
