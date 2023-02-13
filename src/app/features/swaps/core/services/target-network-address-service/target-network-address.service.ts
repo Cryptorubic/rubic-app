@@ -40,7 +40,7 @@ export class TargetNetworkAddressService {
         toChainType = BlockchainsInfo.getChainType(to);
       } catch {}
       const isAddressRequired =
-        from && from !== to && (!toChainType || fromChainType !== toChainType);
+        from && to && from !== to && (!toChainType || fromChainType !== toChainType);
       this._isAddressRequired$.next(isAddressRequired);
     });
   }

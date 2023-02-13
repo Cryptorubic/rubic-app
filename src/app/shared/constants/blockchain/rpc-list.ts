@@ -107,7 +107,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://besu-at.etc-network.info',
     'https://geth-at.etc-network.info'
   ],
-  [BLOCKCHAIN_NAME.FILECOIN]: ['https://rpc.ankr.com/filecoin', 'https://api.node.glif.io'],
   [BLOCKCHAIN_NAME.FLARE]: ['https://flare-api.flare.network/ext/C/rpc'],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
   [BLOCKCHAIN_NAME.ONTOLOGY]: ['https://dappnode1.ont.io:10339', 'https://dappnode2.ont.io:10339'],
