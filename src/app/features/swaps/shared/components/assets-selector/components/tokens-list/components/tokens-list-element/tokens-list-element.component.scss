@@ -158,6 +158,8 @@
       align-items: center;
       width: fit-content;
 
+      white-space: nowrap;
+
       @include iframe {
         font-size: 14px;
         line-height: 16px;
