@@ -34,7 +34,9 @@
       class="button-link"
       (click)="navigateToSwaps()"
       [class.button-link_active]="
-        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+        rootPath &&
+        ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
+          (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
       "
       >Swaps</a
     >
