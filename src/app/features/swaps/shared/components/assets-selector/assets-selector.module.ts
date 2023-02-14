@@ -14,7 +14,6 @@ import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { AssetsSelectorComponent } from '@features/swaps/shared/components/assets-selector/components/assets-selector/assets-selector.component';
-import { AssetsSelectorModalService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-modal.service';
 import { AssetTypesAsideComponent } from '@features/swaps/shared/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
 import { SearchBarComponent } from '@features/swaps/shared/components/assets-selector/components/search-bar/search-bar.component';
 import { TokensListComponent } from '@features/swaps/shared/components/assets-selector/components/tokens-list/tokens-list.component';
@@ -59,7 +58,6 @@ import { FiatsListElementComponent } from '@features/swaps/shared/components/ass
     TuiLoaderModule,
     InlineSVGModule,
     TuiAutoFocusModule
-  ],
-  providers: [AssetsSelectorModalService]
+  ]
 })
 export class AssetsSelectorModule {}

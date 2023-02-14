@@ -1,0 +1,69 @@
+<div class="mobile-user-profile">
+  <div class="mobile-user-profile__card">
+    <div class="mobile-user-profile__card-header">
+      <div class="mobile-user-profile__card-header-account">
+        <ng-container *ngIf="currentUser$ | async as currentUser">
+          <img
+            [src]="currentUser.blockchainIcon"
+            [alt]="currentUser.blockchainName"
+            width="25"
+            height="25"
+          />
+          <span class="mobile-user-profile__card-header-address">{{
+            currentUser.address.length > 20
+              ? (currentUser.address | shortAddress : 5 : 5)
+              : currentUser.address
+          }}</span>
+
+          <div class="mobile-user-profile__card-header-buttons">
+            <button
+              [cdkCopyToClipboard]="currentUser.address"
+              (cdkCopyToClipboardCopied)="onWalletAddressCopied()"
+            >
+              <img
+                *ngIf="!isWalletCopied"
+                src="assets/images/swaps/swaps-info/copy-icon.svg"
+                alt="copy"
+              />
+              <img
+                *ngIf="isWalletCopied"
+                src="assets/images/swaps/swaps-info/tick.svg"
+                alt="copied"
+              />
+            </button>
+            <a
+              [safetyLink]="
+                currentUser.address | scannerLink : currentUser.blockchainName : ADDRESS_TYPE.WALLET
+              "
+              ><img
+                src="assets/images/icons/scanner.svg"
+                [alt]="'common.checkOnScanner' | translate"
+            /></a>
+            <button (click)="logout()">
+              <img src="assets/images/icons/header/logout.svg" [alt]="'Logout'" />
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="mobile-user-profile__card-body">
+      <div class="mobile-user-profile__card-body-title">Balance</div>
+
+      <ng-container *ngLet="currentBalance$ | async as currentBalance">
+        <div class="mobile-user-profile__card-body-balance" [class.tui-skeleton]="!currentBalance">
+          {{ currentBalance }}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div [ngSwitch]="menu">
+    <div *ngSwitchCase="TradesHistory.CROSS_CHAIN">
+      <app-recent-crosschain-tx></app-recent-crosschain-tx>
+    </div>
+    <div *ngSwitchCase="TradesHistory.LIMIT_ORDER">
+      <app-limit-orders-list></app-limit-orders-list>
+    </div>
+  </div>
+</div>

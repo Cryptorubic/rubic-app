@@ -81,7 +81,45 @@
 
 <ng-template #mobile>
   <div class="tx">
-    <div class="tx__row">
+    <div style="display: flex">
+      <img
+        class="tx__asset-image"
+        [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
+        [alt]="uiTrade?.fromAsset?.symbol"
+        (error)="onTokenImageError($event)"
+      />
+      <img
+        class="tx__asset-image"
+        [src]="uiTrade?.toToken?.image || defaultTokenImage"
+        [alt]="uiTrade?.toToken?.symbol"
+        (error)="onTokenImageError($event)"
+      />
+    </div>
+
+    <div style="margin-left: 0.5rem">
+      <div>Swapped</div>
+      <div>
+        {{
+          (uiTrade?.timestamp | date : 'MMM dd, yyyy') +
+            ' at ' +
+            (uiTrade?.timestamp | date : 'h:mm')
+        }}
+      </div>
+    </div>
+
+    <ng-container *ngIf="uiTrade?.fromAmount">
+      <div style="margin-left: auto; font-size: 1rem">
+        {{ uiTrade?.fromAmount }}
+        {{ uiTrade?.fromAsset?.symbol }}
+      </div>
+    </ng-container>
+
+    <!-- <div>
+      {{ uiTrade?.toAmount }}
+      {{ uiTrade?.toToken?.symbol }}
+    </div> -->
+
+    <!-- <div class="tx__row">
       <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
       <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         {{
@@ -164,7 +202,7 @@
           </ng-template>
         </ng-container>
       </div>
-    </div>
+    </div> -->
     <hr class="tx__divider" />
   </div>
 </ng-template>

@@ -10,6 +10,9 @@
 .tx {
   position: relative;
 
+  display: flex;
+  align-items: center;
+
   padding: 18px 0;
 
   &:last-child {
@@ -38,7 +41,7 @@
     justify-content: space-between;
 
     &-label {
-      @include font(12px, 17px, 400, #7A797D);
+      @include font(12px, 17px, 400, #7a797d);
 
       @include dark {
         color: #8e8d91;
@@ -59,13 +62,16 @@
 
   &__asset-image {
     @include assetImage();
-    width: 26px;
-    height: 26px;
-    margin-right: 8px;
+    width: 32px;
+    height: 32px;
+
+    &:last-of-type {
+      margin-left: -8px;
+    }
   }
 
   &__asset-symbol {
-    @include font(14px, 17px, 500, #37373D);
+    @include font(14px, 17px, 500, #37373d);
     margin-right: 8px;
 
     @include dark {
@@ -74,7 +80,7 @@
   }
 
   &__asset-type {
-    @include font(12px, 17px, 400, #8E8D91);
+    @include font(12px, 17px, 400, #8e8d91);
   }
 
   &__status-from,
@@ -99,7 +105,7 @@
     cursor: default;
 
     pointer-events: none;
-    
+
     &::after {
       visibility: hidden;
     }

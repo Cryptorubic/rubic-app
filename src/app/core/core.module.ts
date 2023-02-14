@@ -27,7 +27,7 @@ import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updat
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
-import { MOBILE_NATIVE_MODAL_PROVIDER } from './services/modal/mobile-native-modal.service';
+import { ModalsModule } from './modals/modals.module';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -74,8 +74,7 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from './services/modal/mobile-native-mod
     SwapTokensUpdaterService,
     FiatsService,
     LimitOrdersService,
-    SuccessTxModalService,
-    MOBILE_NATIVE_MODAL_PROVIDER
+    SuccessTxModalService
   ],
   imports: [
     CommonModule,
@@ -90,7 +89,8 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from './services/modal/mobile-native-mod
         deps: [HttpClient]
       }
     }),
-    RecentTradesModule
+    RecentTradesModule,
+    ModalsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })

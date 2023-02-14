@@ -5,6 +5,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsItComponent } from '@features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/swaps/features/swap-form/components/swap-settings/settings-ccr/settings-ccr.component';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-settings-container',
@@ -24,7 +25,8 @@ export class SettingsContainerComponent implements OnInit {
 
   constructor(
     private readonly swapService: SwapTypeService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly modalService: ModalService
   ) {
     this.open = false;
   }
@@ -52,5 +54,9 @@ export class SettingsContainerComponent implements OnInit {
         component = SettingsCcrComponent;
     }
     return new PolymorpheusComponent(component as Type<SettingsItComponent | SettingsCcrComponent>);
+  }
+
+  public openMobile(): void {
+    this.modalService.openSwapSettings(SettingsItComponent).subscribe();
   }
 }

@@ -15,4 +15,6 @@ export interface UiRecentTrade {
   dstTxLink?: string | null;
   statusFrom?: TxStatus;
   statusTo?: TxStatus;
+  fromAmount?: string;
+  toAmount?: string;
 }

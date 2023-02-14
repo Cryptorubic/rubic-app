@@ -1,0 +1,13 @@
+<div class="mobile-native-backdrop" (click)="close()"></div>
+<div class="mobile-native-content">
+  <div class="mobile-native-chevron" (tuiSwipe)="onSwipe($event)" (click)="toggle()">
+    <div
+      [inlineSVG]="'assets/images/mobile-modal-chevron.svg'"
+      [class.mobile-native-chevron--rotated]="state === ModalStates.COLLAPSED"
+    ></div>
+  </div>
+  <ng-container *ngIf="title">
+    <div class="mobile-native__title">{{ title }}</div>
+  </ng-container>
+  <div polymorpheus-outlet [content]="context.content" [context]="context"></div>
+</div>

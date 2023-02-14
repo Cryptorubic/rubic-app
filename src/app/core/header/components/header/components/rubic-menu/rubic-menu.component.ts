@@ -39,19 +39,17 @@ export class RubicMenuComponent implements AfterViewInit {
 
   @Output() public readonly swapClick = new EventEmitter<void>();
 
+  @Output() public readonly onClose = new EventEmitter<void>();
+
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
-
-  public isOpened = false;
-
-  public readonly currentUser$ = this.authService.currentUser$;
 
   public currentBlockchainIcon: string;
 
   public readonly navigationList = NAVIGATION_LIST;
 
-  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+  public readonly currentUser$ = this.authService.currentUser$;
 
-  public readonly isMobile = this.headerStore.isMobile;
+  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
   constructor(
     private readonly authService: AuthService,
@@ -74,13 +72,9 @@ export class RubicMenuComponent implements AfterViewInit {
       });
   }
 
-  public closeMenu(): void {
-    this.isOpened = false;
-  }
-
   public menuClickHandler(): void {
     this.handleButtonClick();
-    this.closeMenu();
+    this.onClose.emit();
     this.swapClick.emit();
   }
 

@@ -260,6 +260,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         timestamp,
         bridgeType: calculatedTrade.trade.bridgeType,
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
+        fromAmount: calculatedTrade.trade.from.stringWeiAmount,
+        toAmount: calculatedTrade.trade.to.stringWeiAmount,
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId })

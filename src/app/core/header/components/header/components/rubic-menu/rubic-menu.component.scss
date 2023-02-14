@@ -40,6 +40,10 @@
   min-width: 230px;
   padding: 16px 0;
 
+  @include b($mobile-md) {
+    padding: 0;
+  }
+
   &__option {
     justify-content: flex-start;
     height: 45px;
@@ -54,6 +58,26 @@
 
     border: none;
     border-radius: 156px;
+
+    @include b($mobile-md) {
+      padding: 28px;
+
+      &:active {
+        color: var(--primary-color);
+
+        background-color: unset;
+
+        ::ng-deep svg {
+          path[fill='black'] {
+            fill: var(--primary-color);
+          }
+
+          rect[fill='black'] {
+            fill: var(--primary-color);
+          }
+        }
+      }
+    }
 
     &:hover {
       color: var(--primary-color);
@@ -136,7 +160,15 @@
 
   &__link {
     text-decoration: none !important;
-    
+
+    @include b($mobile-md) {
+      border-bottom: 1px solid #333535;
+
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+
     &_modal {
       position: relative;
       top: auto;
@@ -251,7 +283,8 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 @include b($laptop) {
   .rubic-menu {
     &__mobile {
-      display: block;
+      // display: block;
+      display: none;
     }
 
     &__container {

@@ -7,9 +7,7 @@ import { RubicLanguageSelectComponent } from 'src/app/core/header/components/hea
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
-import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { CurrentLanguageComponent } from 'src/app/core/header/components/header/components/current-language/current-language.component';
-import { TutorialsComponent } from 'src/app/core/header/components/header/components/tutorials/tutorials.component';
 import { SettingsListItem } from 'src/app/core/header/models/settings-list-item';
 import { ThemeSwitcherComponent } from 'src/app/core/header/components/header/components/theme-switcher/theme-switcher.component';
 import { LANGUAGES_LIST } from '@core/header/models/languages-list';
@@ -52,20 +50,20 @@ export class SettingsListComponent {
         component: new PolymorpheusComponent(CurrentLanguageComponent),
         action: this.switchToLanguageSettings.bind(this),
         arrow: true
-      },
-      {
-        title: 'settings.header.gasPrice.title',
-        description: 'settings.header.gasPrice.desc',
-        component: new PolymorpheusComponent(GasIndicatorComponent),
-        arrow: false
-      },
-      {
-        title: 'settings.header.tutorials.title',
-        description: 'settings.header.tutorials.desc',
-        component: new PolymorpheusComponent(TutorialsComponent),
-        action: this.navigateExternalLink.bind(null, ['https://www.youtube.com/c/RubicExchange']),
-        arrow: true
       }
+      // {
+      //   title: 'settings.header.gasPrice.title',
+      //   description: 'settings.header.gasPrice.desc',
+      //   component: new PolymorpheusComponent(GasIndicatorComponent),
+      //   arrow: false
+      // },
+      // {
+      //   title: 'settings.header.tutorials.title',
+      //   description: 'settings.header.tutorials.desc',
+      //   component: new PolymorpheusComponent(TutorialsComponent),
+      //   action: this.navigateExternalLink.bind(null, ['https://www.youtube.com/c/RubicExchange']),
+      //   arrow: true
+      // }
     ];
   }
 

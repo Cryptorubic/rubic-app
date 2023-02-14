@@ -27,10 +27,14 @@
     font-size: 20px;
     line-height: 24px;
   }
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .description {
-  @include font(16px, 19px, 500, #A2A1A5);
+  @include font(16px, 19px, 500, #a2a1a5);
   margin-bottom: 32px;
 
   @include b($tablet) {
@@ -39,19 +43,25 @@
     font-size: 13px;
     line-height: 16px;
   }
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .table {
   width: 100%;
 
-  th { font-weight: normal; }
+  th {
+    font-weight: normal;
+  }
 
   &__tr_head {
     background: rgba(255, 255, 255, 0.1);
   }
 
   .table__th {
-    @include font(14px, 17px, 400, #A2A1A5);
+    @include font(14px, 17px, 400, #a2a1a5);
     padding: 16px;
 
     text-align: left;
@@ -89,7 +99,7 @@
   padding: 64px 0;
 
   &__title {
-    @include font(16px, 18px, 500, #8E8D91);
+    @include font(16px, 18px, 500, #8e8d91);
     margin-bottom: 24px;
 
     text-align: center;

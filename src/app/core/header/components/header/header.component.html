@@ -22,13 +22,15 @@
     <img src="assets/images/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
-  <app-rubic-menu
-    *noFrame
-    class="rubic-header__menu"
-    [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-    [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
-    (swapClick)="navigateToSwaps()"
-  ></app-rubic-menu>
+  <app-rubic-menu-toggler *noFrame class="rubic-header__menu">
+    <app-rubic-menu
+      [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+      [crossChainActive]="
+        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+      "
+      (swapClick)="navigateToSwaps()"
+    ></app-rubic-menu>
+  </app-rubic-menu-toggler>
 
   <nav *noFrame class="rubic-header__nav">
     <a
@@ -69,7 +71,9 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-settings *noFrame class="rubic-header__settings"></app-settings>
+    <app-settings-toggler *noFrame class="rubic-header__settings">
+      <app-settings></app-settings>
+    </app-settings-toggler>
   </div>
 
   <div class="rubic-header-mobile">

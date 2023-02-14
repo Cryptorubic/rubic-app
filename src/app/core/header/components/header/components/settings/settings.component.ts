@@ -22,7 +22,8 @@ import { SettingsComponentData } from 'src/app/core/header/models/settings-compo
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class SettingsComponent implements OnInit {
   @Input() displaySettings = false;

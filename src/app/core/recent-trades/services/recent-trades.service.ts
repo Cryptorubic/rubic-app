@@ -20,7 +20,8 @@ import {
   EvmWeb3Pure,
   Injector,
   TxStatus,
-  Web3PublicSupportedBlockchain
+  Web3PublicSupportedBlockchain,
+  Web3Pure
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
@@ -62,6 +63,17 @@ export class RecentTradesService {
     const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
     const toBlockchain = trade.toToken.blockchain;
 
+    const fromAmount = isCrossChainRecentTrade(trade)
+      ? trade.fromAmount
+        ? Web3Pure.fromWei(trade.fromAmount, trade.fromToken.decimals).toString()
+        : ''
+      : '';
+    const toAmount = isCrossChainRecentTrade(trade)
+      ? trade.toAmount
+        ? Web3Pure.fromWei(trade.toAmount, trade.toToken.decimals).toString()
+        : ''
+      : '';
+
     const srcBlockchain = isCrossChainRecentTrade(trade)
       ? trade.fromToken.blockchain
       : toBlockchain;
@@ -76,7 +88,9 @@ export class RecentTradesService {
       toToken,
       timestamp,
       srcTxLink,
-      srcTxHash
+      srcTxHash,
+      fromAmount,
+      toAmount
     };
 
     if (calculatedDstTxHash) {

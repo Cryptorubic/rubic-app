@@ -87,6 +87,7 @@ export class LimitOrdersService {
           fromBalance = await this.tokensService.getAndUpdateTokenBalance(fromToken);
         }
 
+        console.log('ORDER', order.fromAmount.toString(), order.toAmount.toString());
         return {
           ...order,
           fromToken,

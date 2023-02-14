@@ -1,0 +1,60 @@
+.mobile-user-profile {
+  padding: 1rem;
+
+  &__card {
+    padding: 1rem;
+
+    background-color: #171919;
+    border: 1px solid #333535;
+    border-radius: 20px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+
+      &-account {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      &-address {
+        margin-left: 0.5rem;
+
+        color: #aaa;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      &-buttons {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        > * {
+          margin-left: 1.5rem;
+        }
+      }
+    }
+
+    &-body {
+      &-title {
+        margin-bottom: 8px;
+
+        color: #878787;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      &-balance {
+        font-size: 24px;
+
+        &.tui-skeleton {
+          max-width: 150px;
+        }
+      }
+    }
+  }
+}

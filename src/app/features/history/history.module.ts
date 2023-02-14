@@ -5,10 +5,12 @@ import { SharedModule } from '@shared/shared.module';
 import { TuiHintModule, TuiLoaderModule } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { OrderRowComponent } from '@features/history/limit-orders/components/order-row/order-row.component';
+import { LimitOrdersListComponent } from './limit-orders/components/limit-orders-list/limit-orders-list.component';
 
 @NgModule({
-  declarations: [LimitOrdersComponent, OrderRowComponent],
+  declarations: [LimitOrdersComponent, LimitOrdersListComponent, OrderRowComponent],
   imports: [CommonModule, HistoryRoutingModule, SharedModule, TuiLoaderModule, TuiHintModule],
-  providers: []
+  providers: [],
+  exports: [LimitOrdersListComponent]
 })
 export class HistoryModule {}
