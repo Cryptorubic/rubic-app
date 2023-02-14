@@ -29,6 +29,7 @@ import {
   EvmBlockchainName,
   EMPTY_ADDRESS
 } from 'rubic-sdk';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -72,7 +73,8 @@ export class TokensListElementComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
   ) {}
 
   ngOnInit() {
