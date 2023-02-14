@@ -14,7 +14,8 @@ import {
   Web3Pure,
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
-  Token as SdkToken
+  Token as SdkToken,
+  ChangenowPaymentInfo
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -129,7 +130,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       disabledProviders,
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
-      ...(receiverAddress && { receiverAddress })
+      ...(receiverAddress && { receiverAddress }),
+      changenowFullyEnabled: true
     };
 
     return this.sdkService.crossChain
@@ -431,5 +433,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
     tradeType: CrossChainTradeType
   ): void {
     this.crossChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+  }
+
+  public async getChangenowPaymentInfo(
+    trade: ChangenowCrossChainTrade
+  ): Promise<{ paymentInfo: ChangenowPaymentInfo; receiverAddress: string }> {
+    const receiverAddress = this.receiverAddress;
+    const paymentInfo = await trade.getChangenowPostTrade(receiverAddress);
+    return {
+      paymentInfo,
+      receiverAddress
+    };
   }
 }

@@ -23,7 +23,8 @@ import {
   NotSupportedTokensError,
   RubicSdkError,
   TooLowAmountError,
-  UnsupportedReceiverAddressError
+  UnsupportedReceiverAddressError,
+  ChangenowCrossChainTrade
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -59,6 +60,8 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class CrossChainFormService {
@@ -232,6 +235,8 @@ export class CrossChainFormService {
     private readonly iframeService: IframeService,
     private readonly dialogService: TuiDialogService,
     private readonly tradeService: TradeService,
+    private readonly changenowPostTradeService: ChangenowPostTradeService,
+    private readonly router: Router,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.subscribeOnCalculation();
@@ -277,9 +282,12 @@ export class CrossChainFormService {
           }
 
           const { fromBlockchain, fromToken, toToken, fromAmount } = this.inputValue;
-          const isUserAuthorized =
-            Boolean(this.authService.userAddress) &&
-            this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
+          let isUserAuthorized = false;
+          try {
+            isUserAuthorized =
+              Boolean(this.authService.userAddress) &&
+              this.authService.userChainType === BlockchainsInfo.getChainType(fromBlockchain);
+          } catch {}
 
           const balance$ = isUserAuthorized
             ? from(this.tokensService.getAndUpdateTokenBalance(fromToken))
@@ -741,6 +749,14 @@ export class CrossChainFormService {
   }
 
   public async swapTrade(): Promise<void> {
+    if (
+      this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+      !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
+    ) {
+      await this.handleChangenowNonEvmTrade();
+      return;
+    }
+
     if (this.isSwapStarted === SWAP_PROCESS.NONE) {
       this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
     }
@@ -782,6 +798,17 @@ export class CrossChainFormService {
     } catch (error) {
       this.handleSwapError(error, currentSelectedTrade.tradeType);
     }
+  }
+
+  private async handleChangenowNonEvmTrade(): Promise<void> {
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    const { paymentInfo, receiverAddress } =
+      await this.crossChainCalculationService.getChangenowPaymentInfo(
+        this.selectedTrade.trade as ChangenowCrossChainTrade
+      );
+    this.changenowPostTradeService.updateTrade(paymentInfo, receiverAddress);
+    await this.router.navigate(['/changenow-post'], { queryParamsHandling: 'merge' });
+    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
   }
 
   private isSlippageCorrect(): boolean {

@@ -256,7 +256,12 @@ export class SwapButtonContainerErrorsService {
     const { fromAsset } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && isMinimalToken(fromAsset)) {
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromAsset.blockchain !== userBlockchain;
+      let chainType: CHAIN_TYPE | undefined;
+      try {
+        chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+      } catch {}
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] =
+        Boolean(chainType) && fromAsset.blockchain !== userBlockchain;
       this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = disabledFromBlockchains.includes(
         fromAsset.blockchain
       );
