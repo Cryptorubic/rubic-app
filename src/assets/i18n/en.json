@@ -54,7 +54,7 @@
     "wrongNetwork": "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
     "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our",
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
-    "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
+    "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our support",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
     "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
