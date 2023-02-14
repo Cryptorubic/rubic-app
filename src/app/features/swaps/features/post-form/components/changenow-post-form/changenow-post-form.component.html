@@ -1,0 +1,103 @@
+<div class="block-container">
+  <button class="arrow-back" (click)="navigateToSwaps()">
+    <img src="assets/images/icons/arrow-back.svg" alt="go back" />
+  </button>
+
+  <div class="header">Please send the funds you would like to exchange</div>
+
+  <div class="rows">
+    <div class="row">
+      <div class="row-item row-item_small">
+        <div class="row-item__header">Amount</div>
+        <div class="row-item__value">
+          <span class="break-word">10,000</span> USDT
+          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+        </div>
+      </div>
+
+      <div class="tokens-diagram">
+        <div class="token-diagram">
+          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+          <div class="token-diagram__meta-text">
+            <div class="token-diagram__symbol">USDT</div>
+            <div class="token-diagram__chain">BNB Chain</div>
+          </div>
+        </div>
+
+        <img
+          class="tokens-diagram__arrow"
+          src="assets/images/icons/arrow-long.svg"
+          alt="swap arrow"
+        />
+
+        <div class="token-diagram">
+          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+          <div class="token-diagram__meta-text">
+            <div class="token-diagram__symbol">XRP</div>
+            <div class="token-diagram__chain">Ethereum</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-item">
+        <div class="row-item__header">To this address</div>
+        <div class="row-item__value break-word">
+          poh45p2h5kn452505k45n34l5m3hh34m34l53
+          <button
+            class="copy-icon copy-icon_green"
+            inlineSVG="assets/images/icons/copy.svg"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-item">
+        <div class="row-item__header">Destination tag</div>
+        <div class="row-item__value">
+          159115851
+          <button
+            class="copy-icon copy-icon_green"
+            inlineSVG="assets/images/icons/copy.svg"
+          ></button>
+        </div>
+      </div>
+
+      <div class="additional-info">
+        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="copy" />
+        Please don’t forget to specify the Destination Tag while sending the XRP transaction for the
+        exchange
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="estimated-time">
+        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="copy" />
+        Estimated Arrival <span class="primary-text">~10 minutes</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="delimiter" />
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">Transaction ID</div>
+    <div class="bottom-row__value">
+      7a4e87d9d70ff6<button>
+        <img class="copy-icon" src="assets/images/icons/copy.svg" alt="copy" />
+      </button>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">You get</div>
+    <div class="bottom-row__value">174,34634 XRP</div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">Recipient Wallet</div>
+    <div class="bottom-row__value break-word">poh45p2h5kn452505k45n34l5m3hh34m34l53</div>
+  </div>
+</div>
