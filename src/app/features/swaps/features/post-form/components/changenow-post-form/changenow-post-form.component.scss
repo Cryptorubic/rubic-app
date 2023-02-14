@@ -141,6 +141,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+
+  font-size: 12px;
 }
 
 .primary-text {
@@ -169,6 +171,8 @@
     display: flex;
     grid-gap: 10px;
     align-items: center;
+
+    font-size: 12px;
   }
 }
 
@@ -182,6 +186,15 @@ button {
   &:active {
     transform: scale(0.9);
   }
+}
+
+.contact-support-hint {
+  max-width: 384px;
+
+  color: var(--secondary-text);
+  font-size: 12px;
+  line-height: 120%;
+  text-align: center;
 }
 
 @include b($mobile-sm-plus) {

@@ -74,7 +74,14 @@
 
     <div class="row">
       <div class="estimated-time">
-        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="copy" />
+        <img
+          class="info-icon"
+          src="assets/images/icons/exclamation-grey.svg"
+          alt="copy"
+          [tuiHint]="contactSupportHint"
+          [tuiHintShowDelay]="0"
+          [tuiHintMode]="'onDark'"
+        />
         Estimated Arrival <span class="primary-text">~10 minutes</span>
       </div>
     </div>
@@ -101,3 +108,10 @@
     <div class="bottom-row__value break-word">poh45p2h5kn452505k45n34l5m3hh34m34l53</div>
   </div>
 </div>
+
+<ng-template #contactSupportHint>
+  <div class="contact-support-hint">
+    If your transaction seems to be taking longer than normal (more than 10 minutes), please contact
+    our Support Team at <span class="primary-text">support@rubic.exchange</span>.
+  </div>
+</ng-template>
