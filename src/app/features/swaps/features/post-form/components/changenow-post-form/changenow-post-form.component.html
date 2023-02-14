@@ -10,17 +10,28 @@
       <div class="row-item row-item_small">
         <div class="row-item__header">Amount</div>
         <div class="row-item__value">
-          <span class="break-word">10,000</span> USDT
-          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+          <span class="break-word">{{ trade.fromAmount | bigNumberFormat }}</span>
+          {{ trade.fromToken.symbol }}
+          <img
+            [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
         </div>
       </div>
 
       <div class="tokens-diagram">
         <div class="token-diagram">
-          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+          <img
+            [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
           <div class="token-diagram__meta-text">
-            <div class="token-diagram__symbol">USDT</div>
-            <div class="token-diagram__chain">BNB Chain</div>
+            <div class="token-diagram__symbol">{{ trade.fromToken.symbol }}</div>
+            <div class="token-diagram__chain">
+              {{ getBlockchainLabel(trade.fromToken.blockchain) }}
+            </div>
           </div>
         </div>
 
@@ -31,10 +42,16 @@
         />
 
         <div class="token-diagram">
-          <img src="assets/images/icons/coins/default-token-ico.svg" alt="token" />
+          <img
+            [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
           <div class="token-diagram__meta-text">
-            <div class="token-diagram__symbol">XRP</div>
-            <div class="token-diagram__chain">Ethereum</div>
+            <div class="token-diagram__symbol">{{ trade.toToken.symbol }}</div>
+            <div class="token-diagram__chain">
+              {{ getBlockchainLabel(trade.toToken.blockchain) }}
+            </div>
           </div>
         </div>
       </div>
@@ -44,7 +61,7 @@
       <div class="row-item">
         <div class="row-item__header">To this address</div>
         <div class="row-item__value break-word">
-          poh45p2h5kn452505k45n34l5m3hh34m34l53
+          {{ trade.depositAddress }}
           <button
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
@@ -53,11 +70,11 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" *ngIf="trade.extraField">
       <div class="row-item">
-        <div class="row-item__header">Destination tag</div>
+        <div class="row-item__header">{{ trade.extraField.name }}</div>
         <div class="row-item__value">
-          159115851
+          {{ trade.extraField.value }}
           <button
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
@@ -67,8 +84,8 @@
 
       <div class="additional-info">
         <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="copy" />
-        Please don’t forget to specify the Destination Tag while sending the XRP transaction for the
-        exchange
+        Please don’t forget to specify the {{ trade.extraField.name }} while sending the
+        {{ trade.fromToken.symbol }} transaction for the exchange
       </div>
     </div>
 
@@ -92,7 +109,8 @@
   <div class="bottom-row">
     <div class="bottom-row__header">Transaction ID</div>
     <div class="bottom-row__value">
-      7a4e87d9d70ff6<button>
+      {{ trade.id
+      }}<button>
         <img class="copy-icon" src="assets/images/icons/copy.svg" alt="copy" />
       </button>
     </div>
@@ -100,12 +118,14 @@
 
   <div class="bottom-row">
     <div class="bottom-row__header">You get</div>
-    <div class="bottom-row__value">174,34634 XRP</div>
+    <div class="bottom-row__value">
+      {{ trade.toAmount | bigNumberFormat }} {{ trade.toToken.symbol }}
+    </div>
   </div>
 
   <div class="bottom-row">
     <div class="bottom-row__header">Recipient Wallet</div>
-    <div class="bottom-row__value break-word">poh45p2h5kn452505k45n34l5m3hh34m34l53</div>
+    <div class="bottom-row__value break-word">{{ trade.receiverAddress }}</div>
   </div>
 </div>
 

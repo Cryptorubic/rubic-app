@@ -45,6 +45,7 @@ import { TargetNetworkAddressService } from '@features/swaps/core/services/targe
 import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
 import { ChangenowPostFormComponent } from './features/post-form/components/changenow-post-form/changenow-post-form.component';
+import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 
 @NgModule({
   declarations: [
@@ -91,6 +92,12 @@ import { ChangenowPostFormComponent } from './features/post-form/components/chan
     ClipboardModule,
     TuiAccordionModule
   ],
-  providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
+  providers: [
+    SettingsService,
+    RefreshService,
+    TradeService,
+    TargetNetworkAddressService,
+    ChangenowPostTradeService
+  ]
 })
 export class SwapsModule {}
