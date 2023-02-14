@@ -63,6 +63,7 @@
         <div class="row-item__value break-word">
           {{ trade.depositAddress }}
           <button
+            [cdkCopyToClipboard]="trade.depositAddress"
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
           ></button>
@@ -76,6 +77,7 @@
         <div class="row-item__value">
           {{ trade.extraField.value }}
           <button
+            [cdkCopyToClipboard]="trade.extraField.value"
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
           ></button>
@@ -83,7 +85,7 @@
       </div>
 
       <div class="additional-info">
-        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="copy" />
+        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="info" />
         Please don’t forget to specify the {{ trade.extraField.name }} while sending the
         {{ trade.fromToken.symbol }} transaction for the exchange
       </div>
@@ -94,7 +96,7 @@
         <img
           class="info-icon"
           src="assets/images/icons/exclamation-grey.svg"
-          alt="copy"
+          alt="info"
           [tuiHint]="contactSupportHint"
           [tuiHintShowDelay]="0"
           [tuiHintMode]="'onDark'"
@@ -111,7 +113,12 @@
     <div class="bottom-row__value">
       {{ trade.id
       }}<button>
-        <img class="copy-icon" src="assets/images/icons/copy.svg" alt="copy" />
+        <img
+          [cdkCopyToClipboard]="trade.id"
+          class="copy-icon"
+          src="assets/images/icons/copy.svg"
+          alt="copy"
+        />
       </button>
     </div>
   </div>
