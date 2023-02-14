@@ -24,6 +24,9 @@ export class ChangenowPostFormComponent {
     private readonly tokensService: TokensService
   ) {
     this.trade = this.changenowPostTradeService.trade;
+    if (!this.trade) {
+      this.router.navigate(['/'], { queryParamsHandling: 'merge' });
+    }
   }
 
   public getBlockchainLabel(blockchain: BlockchainName): string {
