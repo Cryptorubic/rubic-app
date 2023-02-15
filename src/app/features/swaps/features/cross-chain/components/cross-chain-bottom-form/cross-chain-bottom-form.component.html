@@ -30,6 +30,7 @@
             [status]="tradeStatus$ | async"
             [error]="selectedTradeError$ | async"
             buttonText="Swap"
+            [nonEvmChangenow]="nonEvmChangenow$ | async"
             (onUpdateRateClick)="onUpdateRate()"
             (onSwapClick)="onSwapTrade()"
             (onApproveClick)="onApproveTrade()"

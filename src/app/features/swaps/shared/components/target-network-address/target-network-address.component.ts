@@ -61,7 +61,7 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
-      .pipe(debounceTime(10), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(10), takeUntil(this.destroy$))
       .subscribe(address => {
         this.targetNetworkAddressService.setIsAddressValid(this.address.valid);
         this.targetNetworkAddressService.setAddress(this.address.valid ? address : null);

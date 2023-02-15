@@ -749,6 +749,10 @@ export class CrossChainFormService {
   }
 
   public async swapTrade(): Promise<void> {
+    if (this.isSwapStarted === SWAP_PROCESS.NONE) {
+      this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
+    }
+
     if (
       this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
       !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
@@ -757,14 +761,9 @@ export class CrossChainFormService {
       return;
     }
 
-    if (this.isSwapStarted === SWAP_PROCESS.NONE) {
-      this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
-    }
-
     if (!this.isSlippageCorrect()) {
       return;
     }
-
     if (
       !(await this.settingsService.checkSlippageAndPriceImpact(
         SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
@@ -802,13 +801,26 @@ export class CrossChainFormService {
 
   private async handleChangenowNonEvmTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    const { paymentInfo, receiverAddress } =
-      await this.crossChainCalculationService.getChangenowPaymentInfo(
-        this.selectedTrade.trade as ChangenowCrossChainTrade
-      );
-    this.changenowPostTradeService.updateTrade(paymentInfo, receiverAddress);
-    await this.router.navigate(['/changenow-post'], { queryParamsHandling: 'merge' });
-    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+    this.refreshService.startInProgress();
+
+    try {
+      const { paymentInfo, receiverAddress } =
+        await this.crossChainCalculationService.getChangenowPaymentInfo(
+          this.selectedTrade.trade as ChangenowCrossChainTrade
+        );
+      this.changenowPostTradeService.updateTrade(paymentInfo, receiverAddress);
+      await this.router.navigate(['/changenow-post'], { queryParamsHandling: 'merge' });
+
+      this.isSwapStarted = SWAP_PROCESS.NONE;
+      this.unsetTradeSelectedByUser();
+
+      if (this.updatedSelectedTrade) {
+        this.updateSelectedTrade(this.updatedSelectedTrade);
+      }
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+    } catch (error) {
+      this.handleSwapError(error, CROSS_CHAIN_TRADE_TYPE.CHANGENOW);
+    }
   }
 
   private isSlippageCorrect(): boolean {

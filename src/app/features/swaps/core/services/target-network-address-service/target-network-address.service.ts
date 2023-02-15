@@ -18,7 +18,7 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
-  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(true);
+  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(false);
 
   public readonly isAddressValid$ = this._isAddressValid$.asObservable();
 

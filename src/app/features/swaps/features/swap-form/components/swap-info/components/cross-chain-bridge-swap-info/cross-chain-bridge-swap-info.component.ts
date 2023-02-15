@@ -79,7 +79,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
         this.toWalletAddress =
           !toChainType || fromChainType !== toChainType
             ? targetAddress
-            : targetAddress || user.address;
+            : targetAddress || user?.address;
 
         this.cdr.detectChanges();
       });
