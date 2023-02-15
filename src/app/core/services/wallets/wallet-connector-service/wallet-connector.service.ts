@@ -31,6 +31,8 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +65,7 @@ export class WalletConnectorService {
   public readonly addressChange$ = this.addressChangeSubject$.asObservable();
 
   constructor(
+    private readonly notificationsService: NotificationsService,
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
@@ -164,6 +167,14 @@ export class WalletConnectorService {
         } catch (err) {
           this.errorService.catch(err);
         }
+      } else if (switchError.code === 4001) {
+        this.errorService.catch(new UserRejectNetworkSwitchError());
+        // this.notificationsService.show(switchError.message, {
+        //   label: 'Error',
+        //   status: TuiNotification.Error,
+        //   data: switchError.data || switchError,
+        //   autoClose: 7000
+        // });
       } else {
         this.errorService.catch(switchError);
       }
