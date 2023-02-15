@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, skip, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -19,7 +19,7 @@ import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
   providers: [TuiDestroyService]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  public readonly address = new FormControl<string>(undefined, [
+  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address, [
     getCorrectAddressValidator(this.swapFormService.inputValue)
   ]);
 
@@ -41,6 +41,7 @@ export class TargetNetworkAddressComponent implements OnInit {
   private subscribeOnFormValues(): void {
     this.swapFormService.inputValue$
       .pipe(
+        skip(1),
         tap(inputForm => {
           this.address.setValidators(getCorrectAddressValidator(inputForm));
         }),
@@ -59,10 +60,12 @@ export class TargetNetworkAddressComponent implements OnInit {
   }
 
   private subscribeOnTargetAddress(): void {
-    this.address.valueChanges.pipe(debounceTime(10), distinctUntilChanged()).subscribe(address => {
-      this.targetNetworkAddressService.setIsAddressValid(this.address.valid);
-      this.targetNetworkAddressService.setAddress(this.address.valid ? address : null);
-    });
+    this.address.valueChanges
+      .pipe(debounceTime(10), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(address => {
+        this.targetNetworkAddressService.setIsAddressValid(this.address.valid);
+        this.targetNetworkAddressService.setAddress(this.address.valid ? address : null);
+      });
   }
 
   public async setValueFromClipboard(): Promise<void> {

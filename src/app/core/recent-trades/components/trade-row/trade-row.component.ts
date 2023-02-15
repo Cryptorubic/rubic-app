@@ -121,8 +121,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     this.saveTrades();
   }
 
-  public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradeData(trade);
+  public getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
+    return this.recentTradesService.getTradeData(trade);
   }
 
   private initTradeDataPolling(): void {

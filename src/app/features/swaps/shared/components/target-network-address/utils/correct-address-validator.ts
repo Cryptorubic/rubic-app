@@ -25,6 +25,9 @@ export function correctAddressValidator(
         return { wrongAddress: address };
       }
     }
+    if (!toChainType) {
+      return !address?.length ? { wrongAddress: address } : null;
+    }
     return null;
   };
 }

@@ -7,7 +7,7 @@ import {
   Self
 } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -17,6 +17,7 @@ import { combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 @Component({
   selector: 'app-cross-chain-bridge-swap-info',
@@ -59,14 +60,26 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   private initSubscriptions(): void {
     combineLatest([
-      this.swapFormService.toBlockchain$,
+      this.swapFormService.inputValueDistinct$,
       this.authService.currentUser$,
       this.targetNetworkAddressService.address$
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([toBlockchain, user, targetAddress]) => {
-        this.toBlockchain = toBlockchain;
-        this.toWalletAddress = targetAddress ?? user?.address;
+      .subscribe(([form, user, targetAddress]) => {
+        this.toBlockchain = form.toBlockchain;
+
+        let fromChainType: CHAIN_TYPE | undefined;
+        try {
+          fromChainType = BlockchainsInfo.getChainType(form.fromAssetType as BlockchainName);
+        } catch {}
+        let toChainType: CHAIN_TYPE | undefined;
+        try {
+          toChainType = BlockchainsInfo.getChainType(form.toBlockchain);
+        } catch {}
+        this.toWalletAddress =
+          !toChainType || fromChainType !== toChainType
+            ? targetAddress
+            : targetAddress || user.address;
 
         this.cdr.detectChanges();
       });

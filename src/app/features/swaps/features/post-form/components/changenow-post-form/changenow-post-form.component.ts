@@ -26,6 +26,8 @@ export class ChangenowPostFormComponent {
     this.trade = this.changenowPostTradeService.trade;
     if (!this.trade) {
       this.router.navigate(['/'], { queryParamsHandling: 'merge' });
+    } else {
+      this.changenowPostTradeService.setupUpdate();
     }
   }
 

@@ -35,4 +35,8 @@ export class ChangenowPostTradeService {
     };
     this.storeService.setItem('changenowPostTrade', this.trade);
   }
+
+  public setupUpdate(): void {
+    // todo make interval with requests on status
+  }
 }
