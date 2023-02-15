@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -24,7 +24,6 @@ import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -201,7 +200,7 @@ export class SwapButtonContainerErrorsService {
     } catch {}
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      chainType &&
+      (chainType === CHAIN_TYPE.EVM || chainType === CHAIN_TYPE.TRON) &&
       !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
   }
 
@@ -261,7 +260,7 @@ export class SwapButtonContainerErrorsService {
         chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
       } catch {}
       this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        Boolean(chainType) && fromAsset.blockchain !== userBlockchain;
+        chainType === CHAIN_TYPE.EVM && fromAsset.blockchain !== userBlockchain;
       this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = disabledFromBlockchains.includes(
         fromAsset.blockchain
       );
