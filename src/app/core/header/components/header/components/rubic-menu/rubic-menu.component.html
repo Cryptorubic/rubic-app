@@ -59,6 +59,7 @@
           routerLink="/revoke-approval/"
           [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">Revoke Approval</button>
         </div>
