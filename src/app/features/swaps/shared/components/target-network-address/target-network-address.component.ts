@@ -6,8 +6,6 @@ import { TargetNetworkAddressService } from '@features/swaps/core/services/targe
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
-import { NotificationsService } from '@app/core/services/notifications/notifications.service';
-import { TuiNotification } from '@taiga-ui/core';
 import { getCorrectAddressValidator } from '@features/swaps/shared/components/target-network-address/utils/get-correct-address-validator';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 
@@ -28,7 +26,6 @@ export class TargetNetworkAddressComponent implements OnInit {
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly swapFormService: SwapFormService,
-    private readonly notificationsService: NotificationsService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
@@ -63,17 +60,5 @@ export class TargetNetworkAddressComponent implements OnInit {
       this.targetNetworkAddressService.setIsAddressValid(this.address.valid);
       this.targetNetworkAddressService.setAddress(this.address.valid ? address : null);
     });
-  }
-
-  public async setValueFromClipboard(): Promise<void> {
-    try {
-      const clipboardContent = await this.window.navigator.clipboard.readText();
-      this.address.patchValue(clipboardContent);
-    } catch (err) {
-      this.notificationsService.show('Failed to read from clipboard.', {
-        autoClose: 5000,
-        status: TuiNotification.Error
-      });
-    }
   }
 }
