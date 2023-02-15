@@ -10,7 +10,7 @@ export enum ROUTE_PATH {
 }
 
 export enum EXTERNAL_LINKS {
-  LANDING = 'https://rubic.exchange/',
+  LANDING = 'https://rubic.exchange',
   LANDING_STAKING = 'https://rubic.exchange/staking',
   LANDING_SETUP_WIDGET = 'https://rubic.exchange/widget',
   LANDING_TEAM = 'https://rubic.exchange/team',

@@ -12,9 +12,7 @@
 
   <tui-input
     *noFrame
-    [tuiTextfieldCustomContent]="
-      !!address.value ? (address.valid ? success : error) : valueFromClipboard
-    "
+    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
@@ -28,9 +26,7 @@
   <tui-input
     *onlyFrame
     class="network-container__iframe-input"
-    [tuiTextfieldCustomContent]="
-      !!address.value ? (address.valid ? success : error) : valueFromClipboard
-    "
+    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
     tuiTextfieldSize="s"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
@@ -39,13 +35,6 @@
     [tuiTextfieldCleaner]="!!address.value"
     >{{ 'crossChainPage.targetAddress.placeholder' | translate }}</tui-input
   >
-  <ng-template #valueFromClipboard>
-    <div
-      class="network-container__input-clipboard-icon"
-      [inlineSVG]="'assets/images/icons/insert-from-clipboard.svg'"
-      (click)="setValueFromClipboard()"
-    ></div>
-  </ng-template>
   <ng-template #success>
     <div
       class="network-container__input-status-icon"
