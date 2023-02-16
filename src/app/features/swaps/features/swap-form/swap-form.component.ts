@@ -31,6 +31,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 
 @Component({
   selector: 'app-swap-form',
@@ -47,6 +48,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   private fromAssetType: AssetType;
 
   public toBlockchain: BlockchainName;
+
+  public toBlockchainIsEVM: boolean;
 
   public swapType: SWAP_PROVIDER_TYPE;
 
@@ -85,6 +88,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private readonly crossChainFormService: CrossChainFormService,
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
@@ -121,6 +125,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   private setFormValues(form: SwapFormInput): void {
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
+
+    this.toBlockchainIsEVM = BlockchainsInfo.isEvmBlockchainName(this.toBlockchain);
   }
 
   public async revert(): Promise<void> {

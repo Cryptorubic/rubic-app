@@ -60,8 +60,14 @@
           ></app-vertical-iframe-token-amount-input>
         </div>
 
-        <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
-          <app-form-switcher *ngIf="!isOnramper" (switcherClick)="revert()"></app-form-switcher>
+        <div
+          class="swap-form__delimiter"
+          [ngClass]="{ 'swap-form__delimiter_full': isOnramper || !toBlockchainIsEVM }"
+        >
+          <app-form-switcher
+            *ngIf="!isOnramper && toBlockchainIsEVM"
+            (switcherClick)="revert()"
+          ></app-form-switcher>
         </div>
 
         <div class="swap-form__block">
