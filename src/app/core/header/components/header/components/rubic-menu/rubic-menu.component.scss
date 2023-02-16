@@ -248,7 +248,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 }
 
-@include b(1140) {
+@include b($laptop-xl) {
   .rubic-menu {
     &__mobile {
       display: block;
