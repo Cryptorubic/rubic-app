@@ -35,7 +35,6 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
-import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 
 @Component({
   selector: '[trade-row]',
@@ -108,7 +107,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public hintShown: boolean;
 
-  public changenowId: string | undefined;
+  public changenowId: string;
 
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
@@ -134,8 +133,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     return this.recentTradesService.getTradeData(trade);
   }
 
-  public getChangenowId(): string | undefined {
-    return (this.trade as CrossChainRecentTrade).changenowId;
+  public getChangenowId(): string {
+    if ('changenowId' in this.trade) {
+      return this.trade.changenowId;
+    }
+    return '';
   }
 
   private initTradeDataPolling(): void {
