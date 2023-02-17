@@ -48,8 +48,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain: BlockchainName;
 
-  // public hideTokenSwitcher: boolean;
-
   public swapType: SWAP_PROVIDER_TYPE;
 
   public currentInstantTradeInfo: InstantTradeInfo;
