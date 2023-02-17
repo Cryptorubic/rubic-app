@@ -62,10 +62,10 @@
 
         <div
           class="swap-form__delimiter"
-          [ngClass]="{ 'swap-form__delimiter_full': isOnramper || hideTokenSwitcher }"
+          [ngClass]="{ 'swap-form__delimiter_full': !hideTokenSwitcher }"
         >
           <app-form-switcher
-            *ngIf="!isOnramper && !hideTokenSwitcher"
+            *ngIf="hideTokenSwitcher"
             (switcherClick)="revert()"
           ></app-form-switcher>
         </div>

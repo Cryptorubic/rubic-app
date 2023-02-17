@@ -48,7 +48,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain: BlockchainName;
 
-  public hideTokenSwitcher: boolean;
+  // public hideTokenSwitcher: boolean;
 
   public swapType: SWAP_PROVIDER_TYPE;
 
@@ -80,6 +80,14 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public get isOnramper(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+  }
+
+  public get hideTokenSwitcher(): boolean {
+    return !(
+      this.isOnramper ||
+      (this.toBlockchain !== BLOCKCHAIN_NAME.TRON &&
+        !BlockchainsInfo.isEvmBlockchainName(this.toBlockchain))
+    );
   }
 
   public get isLimitOrder(): boolean {
@@ -123,13 +131,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   private setFormValues(form: SwapFormInput): void {
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
-
-    if (
-      this.toBlockchain !== BLOCKCHAIN_NAME.TRON &&
-      !BlockchainsInfo.isEvmBlockchainName(this.toBlockchain)
-    ) {
-      this.hideTokenSwitcher = true;
-    }
   }
 
   public async revert(): Promise<void> {
