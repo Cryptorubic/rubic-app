@@ -78,7 +78,7 @@ export class TokensListElementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.allowCopy = this.token.address !== EMPTY_ADDRESS;
+    this.allowCopy = this.token.address !== EMPTY_ADDRESS && this.token.address !== '';
   }
 
   public onImageError($event: Event): void {
