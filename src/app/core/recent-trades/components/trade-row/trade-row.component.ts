@@ -35,6 +35,7 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 
 @Component({
   selector: '[trade-row]',
@@ -134,6 +135,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public getChangenowId(): string {
+    console.log((this.trade as CrossChainRecentTrade).changenowId);
     if ('changenowId' in this.trade) {
       return this.trade.changenowId;
     }
