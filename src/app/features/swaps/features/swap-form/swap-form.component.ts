@@ -82,6 +82,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
+  // @TODO Remove when the swap back form for changeNow is ready
   public get showTokenSwitcher(): boolean {
     return !(
       this.isOnramper ||
