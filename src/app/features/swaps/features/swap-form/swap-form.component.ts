@@ -10,7 +10,7 @@ import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -48,7 +48,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain: BlockchainName;
 
-  public toBlockchainIsEVM: boolean;
+  public hideTokenSwitcher: boolean;
 
   public swapType: SWAP_PROVIDER_TYPE;
 
@@ -124,7 +124,12 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
 
-    this.toBlockchainIsEVM = BlockchainsInfo.isEvmBlockchainName(this.toBlockchain);
+    if (
+      this.toBlockchain !== BLOCKCHAIN_NAME.TRON &&
+      !BlockchainsInfo.isEvmBlockchainName(this.toBlockchain)
+    ) {
+      this.hideTokenSwitcher = true;
+    }
   }
 
   public async revert(): Promise<void> {

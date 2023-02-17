@@ -62,10 +62,10 @@
 
         <div
           class="swap-form__delimiter"
-          [ngClass]="{ 'swap-form__delimiter_full': isOnramper || !toBlockchainIsEVM }"
+          [ngClass]="{ 'swap-form__delimiter_full': isOnramper || hideTokenSwitcher }"
         >
           <app-form-switcher
-            *ngIf="!isOnramper && toBlockchainIsEVM"
+            *ngIf="!isOnramper && !hideTokenSwitcher"
             (switcherClick)="revert()"
           ></app-form-switcher>
         </div>

@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -12,7 +13,7 @@ import {
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { interval } from 'rxjs';
+import { interval, timer } from 'rxjs';
 import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
@@ -33,6 +34,7 @@ import {
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: '[trade-row]',
@@ -103,6 +105,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public hintShown: boolean;
+
+  public trxId: boolean = false;
+
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly cdr: ChangeDetectorRef,
@@ -110,10 +116,15 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService,
     private readonly onramperService: OnramperService,
-    private readonly swapFormQueryService: SwapFormQueryService
+    private readonly swapFormQueryService: SwapFormQueryService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {}
 
   ngOnInit(): void {
+    // console.log(this.trade);
+    // // if (typeof this.trade === CrossChainRecentTrade) {
+    // //
+    // // }
     this.initTradeDataPolling();
   }
 
@@ -223,5 +234,18 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
+  }
+
+  public copyToClipboard(): void {
+    this.showHint();
+    this.navigator.clipboard.writeText('sss');
+  }
+
+  private showHint(): void {
+    this.hintShown = true;
+    timer(2500).subscribe(() => {
+      this.hintShown = false;
+      this.cdr.markForCheck();
+    });
   }
 }
