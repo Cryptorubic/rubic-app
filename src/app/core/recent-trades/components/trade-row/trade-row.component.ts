@@ -35,6 +35,7 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 
 @Component({
   selector: '[trade-row]',
@@ -107,7 +108,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public hintShown: boolean;
 
-  public trxId: boolean = false;
+  public changenowId: string | undefined;
 
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
@@ -121,10 +122,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // console.log(this.trade);
-    // // if (typeof this.trade === CrossChainRecentTrade) {
-    // //
-    // // }
+    this.changenowId = this.getChangenowId();
     this.initTradeDataPolling();
   }
 
@@ -134,6 +132,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     return this.recentTradesService.getTradeData(trade);
+  }
+
+  public getChangenowId(): string | undefined {
+    return (this.trade as CrossChainRecentTrade).changenowId;
   }
 
   private initTradeDataPolling(): void {
@@ -238,7 +240,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public copyToClipboard(): void {
     this.showHint();
-    this.navigator.clipboard.writeText('sss');
+    this.navigator.clipboard.writeText(this.changenowId);
   }
 
   private showHint(): void {
