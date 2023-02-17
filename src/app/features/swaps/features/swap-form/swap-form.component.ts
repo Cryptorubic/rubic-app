@@ -82,7 +82,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
-  public get hideTokenSwitcher(): boolean {
+  public get showTokenSwitcher(): boolean {
     return !(
       this.isOnramper ||
       (this.toBlockchain !== BLOCKCHAIN_NAME.TRON &&

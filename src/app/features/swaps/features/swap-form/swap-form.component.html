@@ -62,10 +62,10 @@
 
         <div
           class="swap-form__delimiter"
-          [ngClass]="{ 'swap-form__delimiter_full': !hideTokenSwitcher }"
+          [ngClass]="{ 'swap-form__delimiter_full': !showTokenSwitcher }"
         >
           <app-form-switcher
-            *ngIf="hideTokenSwitcher"
+            *ngIf="showTokenSwitcher"
             (switcherClick)="revert()"
           ></app-form-switcher>
         </div>
