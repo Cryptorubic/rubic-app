@@ -1,5 +1,14 @@
-<ng-container *ngLet="orders$ | async as orders">
-  <div class="list">
-    <div *ngFor="let order of orders" order-row [order]="order" mode="mobile"></div>
-  </div>
-</ng-container>
+<div class="limit-orders-list">
+  <tui-loader
+    class="loader"
+    *ngLet="loading$ | async as loading"
+    [showLoader]="loading"
+    [overlay]="true"
+  >
+    <ng-container *ngLet="orders$ | async as orders">
+      <div class="list">
+        <div *ngFor="let order of orders" order-row [order]="order" mode="mobile"></div>
+      </div>
+    </ng-container>
+  </tui-loader>
+</div>

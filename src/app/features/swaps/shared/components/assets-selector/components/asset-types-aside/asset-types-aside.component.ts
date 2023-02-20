@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, Injector } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { AvailableBlockchain } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -12,6 +12,7 @@ import { FiatsListService } from '@features/swaps/shared/components/assets-selec
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -59,8 +60,6 @@ export class AssetTypesAsideComponent {
     );
   }
 
-  public isBlockchainListExpanded: boolean = false;
-
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
     private readonly fiatsListService: FiatsListService,
@@ -69,6 +68,8 @@ export class AssetTypesAsideComponent {
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
     @Inject(WINDOW) private readonly window: Window,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector,
     private readonly mobileNativeService: MobileNativeModalService
   ) {}
 
@@ -117,7 +118,6 @@ export class AssetTypesAsideComponent {
   }
 
   public toggleBlockchainList(): void {
-    this.mobileNativeService.forceChangeSize(this.isBlockchainListExpanded ? 'collapse' : 'expand');
-    this.isBlockchainListExpanded = !this.isBlockchainListExpanded;
+    this.modalService.openBlockchainList(this.injector);
   }
 }

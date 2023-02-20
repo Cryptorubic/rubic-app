@@ -11,6 +11,10 @@
 
   height: 100%;
 
+  @include b($mobile-md) {
+    display: none;
+  }
+
   &__header {
     display: flex;
     align-items: center;
@@ -83,6 +87,6 @@
 }
 
 app-cross-chain-route {
-  margin-top: 25px;
-  margin-bottom: 10px;
+  margin-top: 8px;
+  margin-bottom: 0;
 }

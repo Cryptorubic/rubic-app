@@ -8,11 +8,18 @@
 }
 
 :host {
+
+  --tx-height: 78px;
+  --tx-list-height: calc(var(--tx-height) * 3 + 1px);
   position: relative;
 
   display: block;
   width: 100%;
   min-height: 382px;
+
+  @include b($mobile-md) {
+    min-height: unset;
+  }
 }
 
 .title {
@@ -98,6 +105,11 @@
   margin: auto;
   padding: 64px 0;
 
+  @include b($mobile-md) {
+    min-height: var(--tx-list-height);
+    max-height: var(--tx-list-height);
+  }
+
   &__title {
     @include font(16px, 18px, 500, #8e8d91);
     margin-bottom: 24px;
@@ -112,5 +124,14 @@
   &__navigate {
     width: 100%;
     max-width: 218px;
+
+    @include b($mobile-md) {
+      max-width: unset;
+    }
   }
+}
+
+tui-scrollbar {
+  min-height: var(--tx-list-height);
+  max-height: var(--tx-list-height);
 }

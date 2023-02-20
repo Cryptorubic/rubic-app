@@ -78,6 +78,10 @@
 .swaps-info {
   color: var(--primary-text);
 
+  @include b($mobile-md) {
+    padding: 1rem;
+  }
+
   &__title {
     margin: 0;
 

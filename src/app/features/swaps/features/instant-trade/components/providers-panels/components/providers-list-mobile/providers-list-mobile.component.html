@@ -1,0 +1,38 @@
+<ul class="providers-list">
+  <ng-container *ngFor="let provider of providersData; index as i">
+    <tui-accordion class="providers-list-item" (click)="selectProvider(provider)">
+      <tui-accordion-item
+        [showArrow]="provider.showGas"
+        [class.selected-provider]="provider.isSelected"
+      >
+        <div class="providers-list-item__logo">
+          <img [src]="provider.image" [alt]="provider.name" />
+        </div>
+
+        <div>
+          <div class="providers-list-item__name">{{ provider.label }}</div>
+          <div class="providers-list-item__rate">
+            {{ provider?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
+          </div>
+        </div>
+
+        <div class="providers-list-item__best" *ngIf="i === 0">Best</div>
+
+        <ng-template tuiAccordionItemContent>
+          <div class="providers-list-item__gas-wrapper">
+            <div
+              [inlineSVG]="'assets/images/icons/gas.svg'"
+              class="providers-list-item__gas-icon"
+            ></div>
+            <div class="providers-list-item__gas-title">
+              {{ 'instantTrades.gasFee' | translate }}
+            </div>
+            <div class="providers-list-item__gas-value">
+              {{ provider.gasFeeInEth | bigNumberFormat : 5 }} ETH
+            </div>
+          </div>
+        </ng-template>
+      </tui-accordion-item>
+    </tui-accordion>
+  </ng-container>
+</ul>

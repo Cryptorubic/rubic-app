@@ -8,16 +8,13 @@ import { MobileNativeModalComponent } from './components/mobile-native-modal/mob
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiSwipeModule } from '@taiga-ui/cdk';
-import { SettingsService } from '@app/features/swaps/core/services/settings-service/settings.service';
-import { TargetNetworkAddressService } from '@app/features/swaps/core/services/target-network-address-service/target-network-address.service';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
-  imports: [CommonModule, PolymorpheusModule, InlineSVGModule, TuiSwipeModule],
+  imports: [CommonModule, SharedModule, PolymorpheusModule, InlineSVGModule, TuiSwipeModule],
   declarations: [MobileNativeModalComponent],
   providers: [
     ModalService,
-    SettingsService,
-    TargetNetworkAddressService,
     {
       provide: AbstractModalService,
       useFactory: modalServiceFactory,

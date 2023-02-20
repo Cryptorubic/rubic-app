@@ -7,3 +7,11 @@
     }
   }
 }
+
+.limit-orders-list {
+  --tx-height: 78px;
+  --tx-list-height: calc(var(--tx-height) * 3 + 1px);
+
+  min-height: var(--tx-list-height);
+  max-height: var(--tx-list-height);
+}

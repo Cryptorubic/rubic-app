@@ -77,8 +77,10 @@
 
     transition: opacity ease-in-out 0.3s;
 
-    @include b($mobile-sm) {
-      text-align: left;
+    @include b($mobile-md) {
+      overflow: visible;
+
+      text-align: right;
     }
 
     @include iframe-horizontal {

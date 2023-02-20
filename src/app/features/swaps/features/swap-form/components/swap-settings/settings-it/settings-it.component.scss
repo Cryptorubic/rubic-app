@@ -9,6 +9,10 @@
   max-width: 320px;
   padding: 20px;
 
+  @include b($mobile-md) {
+    max-width: unset;
+  }
+
   &__form {
     display: flex;
     flex-direction: column;

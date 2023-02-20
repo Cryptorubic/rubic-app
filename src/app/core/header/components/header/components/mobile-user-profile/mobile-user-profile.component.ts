@@ -6,6 +6,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
+import BigNumber from 'bignumber.js';
 import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 
 import { Observable, combineLatest, from } from 'rxjs';
@@ -22,16 +23,11 @@ enum TradesHistory {
   styleUrls: ['./mobile-user-profile.component.scss']
 })
 export class MobileUserProfileComponent {
-  // На полиморфеус
   public menu: TradesHistory = TradesHistory.CROSS_CHAIN;
 
   public readonly TradesHistory = TradesHistory;
 
-  // public readonly currentUser$: Observable<UserInterface>;
-
-  // public readonly currentBlockchain$: Observable<any>;
-
-  public readonly currentBalance$: Observable<string>;
+  public readonly currentBalance$: Observable<{ balance: BigNumber; symbol: string }>;
 
   public isWalletCopied: boolean;
 
@@ -72,7 +68,12 @@ export class MobileUserProfileComponent {
             address: NATIVE_TOKEN_ADDRESS,
             blockchain
           })
-        ).pipe(map(balance => `${balance} ${nativeTokensList[blockchain].symbol}`))
+        ).pipe(
+          map(balance => ({
+            balance,
+            symbol: nativeTokensList[blockchain].symbol
+          }))
+        )
       )
     );
   }
@@ -87,5 +88,9 @@ export class MobileUserProfileComponent {
 
   public logout(): void {
     this.authService.disconnectWallet();
+  }
+
+  public switchMenu(menu: TradesHistory): void {
+    this.menu = menu;
   }
 }

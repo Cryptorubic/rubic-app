@@ -6,15 +6,15 @@
   </header>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <div class="assets-selector__row" *noFrame>
-      <app-search-bar></app-search-bar>
-
-      <app-switch-list-type-button
-        *ngIf="selectorListType === 'tokens'"
-      ></app-switch-list-type-button>
-    </div>
-
     <div class="assets-selector__content">
+      <div class="assets-selector__row" *noFrame>
+        <app-search-bar></app-search-bar>
+
+        <app-switch-list-type-button
+          *ngIf="selectorListType === 'tokens'"
+        ></app-switch-list-type-button>
+      </div>
+
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
           <app-blockchains-list></app-blockchains-list>

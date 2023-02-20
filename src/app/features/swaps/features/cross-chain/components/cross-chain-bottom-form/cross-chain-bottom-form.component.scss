@@ -13,6 +13,11 @@
     height: 212px;
   }
 
+  @include b($mobile-md) {
+    position: relative;
+    z-index: 1;
+  }
+
   &__container {
     z-index: 9999;
 
@@ -59,7 +64,8 @@
 
     @include b($mobile-md) {
       height: auto;
-      padding: 30px 20px;
+      margin-top: 0;
+      padding: 0;
     }
 
     @include b($mobile-sm) {
@@ -86,8 +92,14 @@
       min-height: auto;
     }
 
-    @include b($mobile-sm) {
-      flex-direction: column;
+    @include b($mobile-md) {
+      margin-bottom: 8px;
+      padding: 30px 20px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
     }
   }
 
@@ -106,7 +118,7 @@
 
     @include b($mobile-md) {
       margin-top: 0;
-      padding: 0 20px;
+      padding: 0;
     }
   }
 

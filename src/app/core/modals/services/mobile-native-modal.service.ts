@@ -1,36 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, Type, Component } from '@angular/core';
 import { AbstractTuiDialogService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MobileNativeModalComponent } from '../components/mobile-native-modal/mobile-native-modal.component';
-import { IMobileNativeOptions } from '../models/mobile-native-options';
+import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MobileNativeModalService extends AbstractTuiDialogService<IMobileNativeOptions> {
-  private readonly _forceChangeSize$ = new Subject<'expand' | 'collapse'>();
+  private readonly _forceClose$ = new Subject<void>();
 
-  public readonly forceChangeSize$ = this._forceChangeSize$.asObservable();
+  public readonly forceClose$ = this._forceClose$.asObservable();
 
-  protected defaultOptions: {
-    title: string;
-    size: string;
-    data: { formType: string; idPrefix: string };
-    forceChangeSize$: Observable<'expand' | 'collapse'>;
-  } = {
-    title: '',
-    size: 'l',
-    data: {
-      formType: 'from',
-      idPrefix: ''
-    },
-    forceChangeSize$: this.forceChangeSize$
+  private readonly _nextModal$ = new Subject<INextModal>();
+
+  public readonly nextModal$ = this._nextModal$.asObservable();
+
+  protected defaultOptions: IMobileNativeOptions = {
+    forceClose$: this.forceClose$,
+    nextModal$: this.nextModal$
   } as const;
 
   readonly component = new PolymorpheusComponent(MobileNativeModalComponent);
 
-  forceChangeSize(size: 'expand' | 'collapse'): void {
-    this._forceChangeSize$.next(size);
+  /**
+   * Force close opened modal dialog.
+   */
+  public forceClose(): void {
+    this._forceClose$.next();
+  }
+
+  /**
+   * Open Next Modal from current Modal.
+   * @param component Next Modal Component
+   * @param data Next Modal data
+   * @param injector Next Modal injector
+   */
+  public openNextModal(
+    component: Type<Component & object>,
+    data: object,
+    injector?: Injector
+  ): void {
+    this._nextModal$.next({
+      component,
+      ...data,
+      injector
+    });
   }
 }

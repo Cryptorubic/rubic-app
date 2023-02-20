@@ -1,53 +1,79 @@
-<div class="providers">
-  <div
-    class="providers__item"
-    *ngFor="let providerData of providersData.slice(0, 3); let i = index; trackBy: trackByFn"
-  >
-    <app-provider-panel
-      [providerData]="providerData"
-      [isBestProvider]="i === 0"
-      (onSelectProvider)="onSelectProvider.emit(providerData)"
-    ></app-provider-panel>
-  </div>
+<ng-container *ngIf="isMobile$ | async; then providersMobile; else providersDesktop"></ng-container>
 
-  <ng-container *ngIf="showAllProviders">
-    <div class="providers__item" *ngFor="let providerData of providersData.slice(3); let i = index">
+<ng-template #providersDesktop>
+  <div class="providers">
+    <div
+      class="providers__item"
+      *ngFor="let providerData of providersData.slice(0, 3); let i = index; trackBy: trackByFn"
+    >
       <app-provider-panel
         [providerData]="providerData"
+        [isBestProvider]="i === 0"
         (onSelectProvider)="onSelectProvider.emit(providerData)"
       ></app-provider-panel>
     </div>
-  </ng-container>
 
-  <button
-    *ngIf="providersData.length > 3"
-    class="providers__toggler"
-    (click)="showAllProviders = !showAllProviders"
-  >
-    <img
-      [class.reverted]="showAllProviders"
-      src="assets/images/swaps/icons/show-more-arrow.svg"
-      alt="arrow"
-    />
-    {{ !showAllProviders ? 'Show more providers' : 'Hide providers' }}
-  </button>
-</div>
+    <ng-container *ngIf="showAllProviders">
+      <div
+        class="providers__item"
+        *ngFor="let providerData of providersData.slice(3); let i = index"
+      >
+        <app-provider-panel
+          [providerData]="providerData"
+          (onSelectProvider)="onSelectProvider.emit(providerData)"
+        ></app-provider-panel>
+      </div>
+    </ng-container>
 
-<div class="providers-mobile">
-  <div class="providers-mobile__header">
-    <span>Providers</span>
-    <span [inlineSVG]="'assets/images/swaps/swaps-info/question-icon.svg'"></span>
-  </div>
-  <!-- <div class="providers__item">
-    <app-provider-panel-mobile [providerData]="providersData[0]"></app-provider-panel-mobile>
-  </div> -->
-
-  <div>
-    <div
-      class="providers__item"
-      *ngFor="let providerData of providersData.slice(0, 1); let i = index; trackBy: trackByFn"
+    <button
+      *ngIf="providersData.length > 3"
+      class="providers__toggler"
+      (click)="showAllProviders = !showAllProviders"
     >
-      <app-provider-panel-mobile [providerData]="providerData"></app-provider-panel-mobile>
-    </div>
+      <img
+        [class.reverted]="showAllProviders"
+        src="assets/images/swaps/icons/show-more-arrow.svg"
+        alt="arrow"
+      />
+      {{ !showAllProviders ? 'Show more providers' : 'Hide providers' }}
+    </button>
   </div>
-</div>
+</ng-template>
+
+<ng-template #providersMobile>
+  <button
+    class="providers-mobile"
+    [class.providers-animation]="isSearchingForProvider"
+    [disabled]="isSearchingForProvider"
+    (click)="openProvidersList()"
+  >
+    <div class="providers-mobile__header">
+      <ng-container
+        *ngIf="isSearchingForProvider; then searchingForProvider; else providerFound"
+      ></ng-container>
+
+      <ng-template #searchingForProvider>
+        <span>Finding Optimal Route...</span>
+      </ng-template>
+
+      <ng-template #providerFound>
+        <span>Providers</span>
+        <span [inlineSVG]="'assets/images/swaps/swaps-info/question-icon.svg'"></span>
+      </ng-template>
+    </div>
+
+    <div>
+      <div class="providers__item">
+        <app-provider-panel
+          *ngIf="!isSearchingForProvider; else providerLoading"
+          [providerData]="selectedProvider"
+        ></app-provider-panel>
+
+        <ng-template #providerLoading>
+          <div class="providers__item-logo-skeleton tui-skeleton tui-skeleton_rounded"></div>
+          <div class="providers__item-label-skeleton tui-skeleton"></div>
+        </ng-template>
+      </div>
+    </div>
+  </button>
+</ng-template>

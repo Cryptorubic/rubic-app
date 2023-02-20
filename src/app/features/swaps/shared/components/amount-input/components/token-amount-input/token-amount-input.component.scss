@@ -82,6 +82,12 @@
     app-set-to-market-button {
       display: block;
       margin-top: 10px;
+
+      @include b($mobile-md) {
+        position: absolute;
+        right: 0;
+        bottom: 1rem;
+      }
     }
   }
 
@@ -144,6 +150,11 @@
     height: auto;
     margin: 0;
     padding: 40px 20px 20px;
+
+    background-color: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-top: none;
+    border-bottom: none;
   }
 }
 

@@ -12,28 +12,13 @@
 
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 
-  padding: 18px 0;
+  padding: 12px 16px;
 
-  &:last-child {
-    &__divider {
-      display: none;
-    }
-  }
-
-  &__divider {
-    position: absolute;
-    bottom: 0;
-    left: -24px;
-
-    width: 100vw;
-
-    background: #e7e6ea;
-
-    @include dark {
-      background: #1f1f1f;
-    }
-  }
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
+  border-radius: 12px;
 
   &__row {
     display: flex;

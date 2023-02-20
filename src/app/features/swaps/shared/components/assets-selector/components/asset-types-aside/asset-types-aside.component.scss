@@ -142,7 +142,7 @@
   .asset-types-aside {
     flex-direction: column;
     width: 100%;
-    padding-top: 14px 0;
+    padding-top: 0;
 
     background-color: unset;
 
@@ -150,11 +150,6 @@
       flex-direction: row;
       flex-wrap: nowrap;
       padding-left: 0.5rem;
-
-      &.expanded {
-        flex-wrap: wrap;
-        grid-column-gap: 7px;
-      }
     }
 
     &__blockchain-header {
@@ -185,7 +180,7 @@
     justify-content: center;
 
     height: 100%;
-    padding: 14px 0 0;
+    padding: 0;
 
     border-radius: unset;
 

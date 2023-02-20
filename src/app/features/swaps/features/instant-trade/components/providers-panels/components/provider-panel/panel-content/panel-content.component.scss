@@ -6,7 +6,8 @@
 
 .provider-panel-mobile {
   &__body {
-    display: none;
+    display: flex;
+    align-items: center;
   }
 
   &__logo {
@@ -16,6 +17,11 @@
 
     background-color: white;
     border-radius: 50%;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   &__provider-name {
@@ -57,25 +63,6 @@
         path {
           fill: #00e28e;
         }
-      }
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .provider-panel {
-    &__body {
-      display: none;
-    }
-
-    &__best-rate {
-      display: none;
-    }
-
-    &-mobile {
-      &__body {
-        display: flex;
-        align-items: center;
       }
     }
   }

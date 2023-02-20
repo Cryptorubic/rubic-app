@@ -1,0 +1,49 @@
+<ng-container *ngLet="isCalculating$ | async as isCalculating">
+  <div class="provider-panel-mobile" [class.providers-animation]="isCalculating">
+    <div class="provider-panel-mobile__header">
+      <ng-container
+        *ngIf="isCalculating || !bridgeProvider; then searchingForProvider; else providerFound"
+      ></ng-container>
+    </div>
+
+    <ng-template #searchingForProvider>
+      <app-trades-counter></app-trades-counter>
+    </ng-template>
+
+    <ng-template #providerFound> Bridge Provider </ng-template>
+
+    <ng-container *ngIf="!isCalculating && bridgeProvider; else providerLoading">
+      <div class="provider-panel-mobile__body" tuiTouchable="opacity">
+        <div class="provider-panel-mobile__logo">
+          <img [src]="bridgeProvider.image" [alt]="bridgeProvider.name" />
+        </div>
+        <div>
+          <div class="provider-panel-mobile__provider-name">
+            {{ bridgeProvider.name }}
+          </div>
+          <div class="provider-panel-mobile__rate">
+            {{
+              toTrade?.tokenAmount
+                | bigNumberFormat
+                | withRound
+                  : 'toClosestValue'
+                  : { minRound: 3, maxRound: 5, decimals: toTrade?.decimals }
+            }}
+          </div>
+        </div>
+        <div class="provider-panel-mobile__best">Best</div>
+        <div
+          class="provider-panel-mobile__expand"
+          [inlineSVG]="'assets/images/icons/chevron.svg'"
+        ></div>
+      </div>
+    </ng-container>
+
+    <ng-template #providerLoading>
+      <div class="provider-skeleton-wrapper">
+        <div class="provider-logo-skeleton tui-skeleton tui-skeleton_rounded"></div>
+        <div class="provider-label-skeleton tui-skeleton"></div>
+      </div>
+    </ng-template>
+  </div>
+</ng-container>

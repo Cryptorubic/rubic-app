@@ -6,6 +6,7 @@ import { SettingsItComponent } from '@features/swaps/features/swap-form/componen
 import { SettingsCcrComponent } from '@features/swaps/features/swap-form/components/swap-settings/settings-ccr/settings-ccr.component';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-settings-container',
@@ -23,7 +24,10 @@ export class SettingsContainerComponent implements OnInit {
 
   private prevMode: SWAP_PROVIDER_TYPE;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly swapService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly modalService: ModalService
@@ -57,6 +61,12 @@ export class SettingsContainerComponent implements OnInit {
   }
 
   public openMobile(): void {
-    this.modalService.openSwapSettings(SettingsItComponent).subscribe();
+    switch (this.swapService.swapMode) {
+      case SWAP_PROVIDER_TYPE.INSTANT_TRADE:
+        this.modalService.openItSettings().subscribe();
+        break;
+      default:
+        this.modalService.openCcrSettings().subscribe();
+    }
   }
 }

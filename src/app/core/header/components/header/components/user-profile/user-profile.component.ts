@@ -20,6 +20,7 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -37,6 +38,7 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly commonModalService: CommonModalService,
+    private readonly modalService: ModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
@@ -95,4 +97,8 @@ export class UserProfileComponent implements AfterViewInit {
   }
 
   public openLimitOrdersModal(): void {}
+
+  public openProfileModal(): void {
+    this.modalService.openUserProfile().subscribe();
+  }
 }

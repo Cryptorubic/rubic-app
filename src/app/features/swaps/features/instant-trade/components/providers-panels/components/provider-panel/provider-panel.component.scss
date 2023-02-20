@@ -3,6 +3,12 @@
 $default-transition: 0.2s ease-in-out;
 $white: white;
 
+:host {
+  @include b($mobile-md) {
+    width: 100%;
+  }
+}
+
 ::ng-deep .provider-panel {
   height: 100%;
 
@@ -55,6 +61,24 @@ $white: white;
 
     transition: $default-transition;
 
+    @include b($mobile-md) {
+      &:hover {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    @include b($mobile-md) {
+      padding: 0;
+
+      background-color: transparent;
+
+      &:hover {
+        border: none;
+        box-shadow: none;
+      }
+    }
+
     &:not(&_loading):not(&_error) {
       cursor: pointer;
 
@@ -86,6 +110,14 @@ $white: white;
 
       background-color: var(--primary-color);
       border-color: var(--primary-color);
+
+      @include b($mobile-md) {
+        color: unset;
+
+        background-color: unset;
+        border: none;
+        box-shadow: none;
+      }
 
       .provider-panel__provider-name {
         color: var(--primary-text-invert);
@@ -185,6 +217,10 @@ $white: white;
     background: var(--solid-background);
     border: 1px solid var(--transparent-line);
     border-radius: 4px;
+
+    @include b($mobile-md) {
+      display: none;
+    }
   }
 
   &__body {

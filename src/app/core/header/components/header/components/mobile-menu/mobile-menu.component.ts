@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Inject } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { Observable } from 'rxjs';
@@ -22,8 +23,9 @@ export class MobileMenuComponent {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
-  public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
+  public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
+  public readonly currentUser$ = this.authService.currentUser$;
   // public MenuItems = MenuItems;
 
   // private readonly MenuComponents = {
@@ -34,8 +36,10 @@ export class MobileMenuComponent {
   // }
 
   constructor(
+    private readonly authService: AuthService,
     private readonly swapTypeService: SwapTypeService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {
     this.swapType$ = this.swapTypeService.swapMode$;
   }
@@ -68,5 +72,9 @@ export class MobileMenuComponent {
 
   public openProfile(): void {
     this.modalService.openUserProfile().subscribe();
+  }
+
+  public openWallet(): void {
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

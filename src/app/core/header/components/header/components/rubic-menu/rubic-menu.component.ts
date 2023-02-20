@@ -16,7 +16,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { WINDOW } from '@ng-web-apis/common';
-import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
+import {
+  NAVIGATION_LIST,
+  MOBILE_NAVIGATION_LIST
+} from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -24,6 +27,8 @@ import { CommonModalService } from '@app/core/services/modal/common-modal.servic
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { KeyValue } from '@angular/common';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -47,9 +52,13 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public readonly navigationList = NAVIGATION_LIST;
 
+  public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST;
+
   public readonly currentUser$ = this.authService.currentUser$;
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
+
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(
     private readonly authService: AuthService,
@@ -59,6 +68,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly commonModalService: CommonModalService,
+    private readonly mobileNativeService: MobileNativeModalService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
@@ -95,5 +105,11 @@ export class RubicMenuComponent implements AfterViewInit {
         size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
       .subscribe();
+  }
+
+  public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
+
+  public mobileClose(): void {
+    this.mobileNativeService.forceClose();
   }
 }

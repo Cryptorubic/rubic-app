@@ -81,15 +81,11 @@ $green: rgb(74, 169, 86);
     margin-top: 50px;
 
     @include b($mobile-md) {
-      position: absolute;
-
       width: 100%;
-      margin-top: 3.5rem;
-      margin-left: -20px;
-      padding: 12px 16px;
+      margin-top: 8px;
 
-      background-color: #26282a;
-      border: 1px solid #37383a;
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
       border-radius: 16px;
     }
   }
@@ -123,6 +119,15 @@ $green: rgb(74, 169, 86);
       height: 100%;
 
       min-height: unset;
+    }
+
+    @include b($mobile-md) {
+      padding: 36px 20px 20px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
     }
 
     @include b($mobile-sm) {
@@ -286,11 +291,9 @@ $green: rgb(74, 169, 86);
     }
 
     @include b($mobile-md) {
-      position: absolute;
-
-      width: calc(100% + 2rem);
-      margin-top: 8rem;
-      margin-left: -1rem;
+      app-swap-button-container {
+        margin-top: 0 !important;
+      }
     }
 
     app-swap-button-container {
@@ -317,12 +320,9 @@ $green: rgb(74, 169, 86);
 
 @include b($mobile-md) {
   .instant-trade-bottom-form {
-    margin-top: 1rem;
-    padding: 20px;
+    padding-top: 0;
 
     &__swap {
-      padding: 0 20px;
-
       transition-duration: 0.2s;
 
       &.loading-mobile {

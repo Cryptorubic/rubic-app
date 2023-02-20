@@ -1,8 +1,8 @@
 <ng-container *ngIf="(fromAmount$ | async)?.isFinite()">
   <ng-container *ngLet="selectedTrade$ | async as selectedTrade">
-    <div class="trade-panel">
-      <div class="trade-panel__row">
-        <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
+    <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
+      <div class="trade-panel">
+        <div class="trade-panel__row">
           <div class="trade-panel__header">
             <app-trades-counter></app-trades-counter>
 
@@ -32,12 +32,25 @@
               ></app-trades-list>
             </tui-scrollbar>
           </div>
-        </ng-container>
+        </div>
       </div>
-    </div>
 
-    <ng-container *ngIf="selectedTrade?.route as route">
-      <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+      <ng-container *ngIf="isMobile$ | async; then routeMobile; else routeDesktop"></ng-container>
+
+      <ng-template #routeDesktop>
+        <ng-container *ngIf="selectedTrade.route as route">
+          <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #routeMobile>
+        <button [disabled]="!selectedTrade" (click)="openProvidersList(taggedTrades)">
+          <app-cross-chain-best-route-mobile
+            *noFrame
+            [trade]="selectedTrade"
+          ></app-cross-chain-best-route-mobile>
+        </button>
+      </ng-template>
     </ng-container>
   </ng-container>
 </ng-container>

@@ -96,8 +96,26 @@
       />
     </div>
 
-    <div style="margin-left: 0.5rem">
-      <div>Swapped</div>
+    <div style="margin-left: 1rem">
+      <ng-container *ngIf="!showRevert; else revert">
+        <a
+          *ngIf="!showToContinue; else toContinue"
+          class="tx__status-from"
+          [href]="uiTrade?.srcTxLink"
+          target="_blank"
+          [class.hide-arrow]="!uiTrade?.srcTxLink"
+        >
+          <app-status-badge
+            [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
+            [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
+          >
+          </app-status-badge>
+        </a>
+
+        <ng-template #toContinue>
+          <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
+        </ng-template>
+      </ng-container>
       <div>
         {{
           (uiTrade?.timestamp | date : 'MMM dd, yyyy') +
@@ -109,8 +127,8 @@
 
     <ng-container *ngIf="uiTrade?.fromAmount">
       <div style="margin-left: auto; font-size: 1rem">
-        {{ uiTrade?.fromAmount }}
-        {{ uiTrade?.fromAsset?.symbol }}
+        <span>{{ '+' + uiTrade?.fromAmount }}</span>
+        <span style="color: #00ffa0; margin-left: 4px">{{ uiTrade?.fromAsset?.symbol }}</span>
       </div>
     </ng-container>
 
@@ -203,7 +221,6 @@
         </ng-container>
       </div>
     </div> -->
-    <hr class="tx__divider" />
   </div>
 </ng-template>
 

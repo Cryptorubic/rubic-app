@@ -5,16 +5,39 @@
 
   height: 100%;
 
+  @include b($mobile-md) {
+    flex-direction: column;
+  }
+
+  &__search {
+    display: none;
+
+    @include b($mobile-md) {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+
+      display: block;
+      padding: 1rem 1rem 0;
+
+      background: #222425;
+    }
+  }
+
   &__back-button {
     margin: 16px 0 0 23px;
 
-    @include b($mobile-md-minus) {
-      margin-top: 21px;
+    @include b($mobile-md) {
+      display: none;
     }
 
-    @include b($mobile-sm-middle) {
-      margin-left: 10px;
-    }
+    // @include b($mobile-md-minus) {
+    //   margin-top: 21px;
+    // }
+
+    // @include b($mobile-sm-middle) {
+    //   margin-left: 10px;
+    // }
   }
 }
 
@@ -42,6 +65,13 @@
 
     width: calc(33% - 15px);
     padding: 5px 10px;
+
+    @include b($mobile-md) {
+      padding: 0.5rem 1rem;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+    }
 
     @include b($tablet) {
       width: calc(50% - 15px);

@@ -6,7 +6,10 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  ViewContainerRef,
+  Injector,
+  Inject
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -32,6 +35,7 @@ import {
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: '[trade-row]',
@@ -108,7 +112,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService,
     private readonly onramperService: OnramperService,
-    private readonly swapFormQueryService: SwapFormQueryService
+    private readonly swapFormQueryService: SwapFormQueryService,
+    private readonly viewContainerRef: ViewContainerRef,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   ngOnInit(): void {
@@ -138,7 +145,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   protected setUiTrade(uiTrade: UiRecentTrade): void {
     this.uiTrade = uiTrade;
-    console.log('UI TRADE', uiTrade);
     if (this.initialLoading) {
       this.swapFormQueryService.initialLoading$.pipe(first(loading => !loading)).subscribe(() => {
         this.initialLoading = false;

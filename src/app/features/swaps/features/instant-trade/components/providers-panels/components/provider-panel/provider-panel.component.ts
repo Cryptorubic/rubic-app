@@ -4,7 +4,8 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  OnChanges
 } from '@angular/core';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
@@ -13,6 +14,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
 import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
+import { TRADES_PROVIDERS } from '@app/features/swaps/shared/constants/trades-providers/trades-providers';
+import { NgChanges } from '@app/shared/models/utility-types/ng-changes';
 
 @Component({
   selector: 'app-provider-panel',
@@ -20,7 +23,7 @@ import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
   styleUrls: ['./provider-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderPanelComponent implements OnInit {
+export class ProviderPanelComponent implements OnInit, OnChanges {
   @Input() public providerData: InstantTradeProviderData;
 
   @Input() public isBestProvider = false;
@@ -37,6 +40,12 @@ export class ProviderPanelComponent implements OnInit {
     this.setupProviderPanelData();
   }
 
+  ngOnChanges(changes: NgChanges<ProviderPanelComponent>) {
+    if (changes.providerData) {
+      this.setupProviderPanelData();
+    }
+  }
+
   private setupProviderPanelData(): void {
     const data = this.providerData;
     const hasError = data.tradeStatus === INSTANT_TRADE_STATUS.ERROR;
@@ -47,7 +56,8 @@ export class ProviderPanelComponent implements OnInit {
       loading:
         data.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION ||
         data.tradeStatus === INSTANT_TRADE_STATUS.TX_IN_PROGRESS,
-      appearance: this.isBestProvider ? 'normal' : 'small'
+      appearance: this.isBestProvider ? 'normal' : 'small',
+      image: TRADES_PROVIDERS[data.name].image
     };
 
     if (hasError) {

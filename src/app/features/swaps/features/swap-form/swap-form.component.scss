@@ -66,6 +66,10 @@
 
     border-bottom: 0;
     border-radius: 19px 19px 0 0;
+
+    @include b($mobile-md) {
+      padding-bottom: 0 !important;
+    }
   }
 
   ~ *:not(:last-child) {
@@ -271,12 +275,6 @@ app-analytics-link {
 }
 
 @include b($mobile-md) {
-  // .swap-form {
-  //   background: transparent;
-  //   border: none;
-  //   border-radius: 0;
-  // }
-
   .swap-form-navigation {
     display: none;
   }
@@ -284,20 +282,28 @@ app-analytics-link {
   .close-widget-button {
     display: block;
   }
-}
 
-@include b($mobile-md) {
   .swap-form {
     position: relative;
 
-    padding: 20px 0;
+    margin-bottom: 0;
+
+    padding: 0 0 20px;
+
+    background: unset;
+    border: unset;
 
     &__content {
       margin-top: 0;
     }
 
     &__header {
-      padding: 0 20px;
+      padding: 20px 20px 0;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
     }
 
     &__title {
@@ -305,6 +311,9 @@ app-analytics-link {
     }
 
     &__delimiter {
+      position: relative;
+      z-index: 2;
+
       &::before,
       &::after {
         width: calc(50% - 44px);
@@ -347,22 +356,19 @@ app-form-navigation {
     display: none !important;
 
     &-mobile {
-      position: absolute;
-
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      margin-top: 10.5rem;
       padding: 1rem;
 
       color: #aaa;
       font-weight: 400;
       font-size: 14px;
 
-      background-color: #222425;
-      border: 1px solid #333535;
-      border-radius: 20px;
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 16px;
 
       ::ng-deep {
         svg {

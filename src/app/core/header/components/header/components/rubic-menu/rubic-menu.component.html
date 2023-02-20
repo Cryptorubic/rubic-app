@@ -1,33 +1,75 @@
 <div class="rubic-menu__container">
   <tui-data-list class="data-list">
     <tui-opt-group>
-      <ng-container *ngFor="let item of navigationList">
-        <a
-          *ngIf="item.type === 'internal'"
-          (click)="close.emit()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
-            <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
-            {{ item.translateKey | translate }}
-          </button>
-        </a>
-        <a
-          *ngIf="item.type === 'external'"
-          [href]="item.link"
-          target="_blank"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option" (click)="handleButtonClick()">
-            <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
-            {{ item.translateKey | translate }}
-          </button>
-        </a>
-      </ng-container>
+      <ng-container *ngIf="isMobile$ | async; then mobileMenu; else desktopMenu"></ng-container>
+
+      <ng-template #desktopMenu>
+        <ng-container *ngFor="let item of navigationList">
+          <a
+            *ngIf="item.type === 'internal'"
+            (click)="onClose.emit()"
+            routerLinkActive="data-list__link_active"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+          <a
+            *ngIf="item.type === 'external'"
+            [href]="item.link"
+            target="_blank"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #mobileMenu>
+        <ng-container *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder">
+          <div class="data-list__title">{{ item.key }}</div>
+
+          <ng-container *ngFor="let menu of item.value">
+            <ng-container
+              *ngIf="menu.type === 'internal'; then internal; else external"
+            ></ng-container>
+
+            <ng-template #external>
+              <a
+                class="data-list__link"
+                [href]="menu.link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button tuiOption class="data-list__option" (click)="handleButtonClick()">
+                  {{ menu.translateKey | translate }}
+                </button>
+              </a>
+            </ng-template>
+
+            <ng-template #internal>
+              <a
+                class="data-list__link"
+                (click)="mobileClose()"
+                [routerLink]="menu.link"
+                routerLinkActive="data-list__link_active"
+              >
+                <button tuiOption class="data-list__option">
+                  {{ menu.translateKey | translate }}
+                </button>
+              </a>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </ng-template>
     </tui-opt-group>
 
-    <tui-opt-group class="rubic-menu__mobile">
+    <!-- <tui-opt-group class="rubic-menu__mobile">
       <a
         (click)="menuClickHandler()"
         [class.data-list__link_active]="crossChainActive"
@@ -42,9 +84,9 @@
       >
         <button tuiOption class="data-list__option">Revoke Approval</button>
       </div>
-    </tui-opt-group>
+    </tui-opt-group> -->
 
-    <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
+    <!-- <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
       <button tuiOption class="data-list__address">
         <img
           *ngIf="currentBlockchainIcon"
@@ -81,12 +123,12 @@
       <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
         {{ 'navigation.logout' | translate }}
       </button>
-    </tui-opt-group>
+    </tui-opt-group> -->
   </tui-data-list>
 
-  <div class="rubic-menu__mobile">
+  <!-- <div class="rubic-menu__mobile">
     <div class="rubic-menu__bottom" *ngIf="!(currentUser$ | async)?.address">
       <app-login-button class="rubic-menu__login" appearance="outline"></app-login-button>
     </div>
-  </div>
+  </div> -->
 </div>

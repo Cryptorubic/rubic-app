@@ -6,6 +6,10 @@ ul {
   gap: 10px;
 
   padding: 0 21px;
+
+  @include b($mobile-md) {
+    padding: 20px;
+  }
 }
 
 .trade {
@@ -20,8 +24,54 @@ ul {
 
   transition: 0.2s ease-in-out;
 
+  @include b($mobile-md) {
+    flex-direction: column;
+
+    background-color: var(--form-background);
+  }
+
   @include b($mobile-sm-plus) {
     height: auto;
+  }
+
+  &-provider {
+    @include b($mobile-md) {
+      &__logo {
+        width: 32px;
+        height: 32px;
+        margin-right: 0.5rem;
+
+        border-radius: 50%;
+
+        img {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      &__name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      &__rate {
+        color: #aaa;
+      }
+
+      &__best {
+        margin-left: auto;
+        padding: 4px 12px;
+
+        color: #00e28e;
+
+        background: #00e28e26;
+        border-radius: 30px;
+
+        &--loading {
+          display: none;
+        }
+      }
+    }
   }
 
   &__container {
@@ -31,9 +81,14 @@ ul {
 
     width: 85%;
 
-    @include b($mobile-sm-plus) {
-      flex-direction: column;
+    @include b($mobile-md) {
+      gap: unset;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+    }
 
+    @include b($mobile-sm-plus) {
       app-cross-chain-route {
         width: 100%;
       }
@@ -62,6 +117,11 @@ ul {
 app-cross-chain-route {
   display: block;
   width: 55%;
+
+  @include b($mobile-md) {
+    width: 100%;
+    padding: 0 1rem;
+  }
 }
 
 :host ::ng-deep {

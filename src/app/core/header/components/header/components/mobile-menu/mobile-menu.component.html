@@ -5,34 +5,17 @@
   <button class="native-mobile-menu__item" (click)="openLiveChat()">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/chat-button.svg'"></span>
   </button>
-  <button class="native-mobile-menu__main-button" (click)="toggleMenu()">
-    <span [inlineSVG]="'assets/images/icons/mobile-menu/main-button.svg'"></span>
-  </button>
   <button class="native-mobile-menu__item" (click)="openSettings()">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/settings-button.svg'"></span>
   </button>
-  <button class="native-mobile-menu__item" (click)="openProfile()">
-    <span [inlineSVG]="'assets/images/icons/mobile-menu/profile-button.svg'"></span>
-  </button>
-</div>
-
-<div class="native-main-mobile-menu" [ngClass]="{ opened: isMenuOpened }">
-  <button
-    class="native-main-mobile-menu__item"
-    [class.native-main-mobile-menu__item--active]="
-      (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-    "
-    (click)="navigateToSwaps()"
-  >
-    Instant Trade
-  </button>
-  <button
-    class="native-main-mobile-menu__item"
-    [class.native-main-mobile-menu__item--active]="
-      (swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER
-    "
-    (click)="navigateToLimitOrder()"
-  >
-    Limit Orders
-  </button>
+  <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
+    <button class="native-mobile-menu__item" (click)="openWallet()">
+      <span [inlineSVG]="'assets/images/icons/mobile-menu/wallet-button.svg'"></span>
+    </button>
+  </ng-container>
+  <ng-template #loggedIn>
+    <button class="native-mobile-menu__item" (click)="openProfile()">
+      <span [inlineSVG]="'assets/images/icons/mobile-menu/profile-button.svg'"></span>
+    </button>
+  </ng-template>
 </div>

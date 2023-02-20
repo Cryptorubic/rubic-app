@@ -43,6 +43,7 @@ import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { HistoryModule } from '@app/features/history/history.module';
+import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -88,7 +89,8 @@ import { HistoryModule } from '@app/features/history/history.module';
     ModalsModule,
     RecentTradesModule,
     ClipboardModule,
-    HistoryModule
+    HistoryModule,
+    InstantTradeModule
     // TuiTouchableModule
   ],
   providers: [TuiDestroyService],

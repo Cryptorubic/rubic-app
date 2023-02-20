@@ -97,17 +97,30 @@
   </ng-container>
 
   <ng-container *noFrame>
-    <div class="swap-info-container">
-      <app-swap-info-container
-        *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
-        [swapType]="swapType"
-        [currentInstantTradeInfo]="currentInstantTradeInfo"
-        [tradeStatus]="tradeStatus"
-      ></app-swap-info-container>
-    </div>
-    <div class="swap-info-container-mobile" *ngIf="isFormFilled && !isOnramper && !isLimitOrder">
-      <div>Transaction details</div>
-      <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
-    </div>
+    <ng-container
+      *ngIf="isMobile$ | async; then swapInfoMobile; else swapInfoDesktop"
+    ></ng-container>
+
+    <ng-template #swapInfoDesktop>
+      <div class="swap-info-container">
+        <app-swap-info-container
+          *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
+          [swapType]="swapType"
+          [currentInstantTradeInfo]="currentInstantTradeInfo"
+          [tradeStatus]="tradeStatus"
+        ></app-swap-info-container>
+      </div>
+    </ng-template>
+
+    <ng-template #swapInfoMobile>
+      <button
+        class="swap-info-container-mobile"
+        *ngIf="isFormFilled && !isOnramper && !isLimitOrder && tradeStatus !== TradeStatus.LOADING"
+        (click)="openSwapInfo()"
+      >
+        <div>Transaction details</div>
+        <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
+      </button>
+    </ng-template>
   </ng-container>
 </ng-container>

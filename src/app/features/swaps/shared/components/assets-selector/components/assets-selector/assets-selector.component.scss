@@ -101,6 +101,10 @@ app-search-bar {
   width: 100%;
   margin-bottom: 14px;
 
+  @include b($mobile-md) {
+    margin-bottom: 0;
+  }
+
   &.vertical-iframe-token-search {
     margin-top: 10px;
     margin-bottom: 0;
@@ -162,18 +166,22 @@ tui-loader {
 
 @include b($mobile-md) {
   .assets-selector {
+    padding-top: 0;
+
     background-color: #222425;
+
+    &__row {
+      order: 2;
+      margin-top: 1rem;
+      padding-left: 10px;
+    }
 
     &__content {
       flex-direction: column;
     }
 
     &__header {
-      h2 {
-        color: white;
-        font-weight: 600;
-        font-size: 18px;
-      }
+      display: none;
     }
 
     &__top {
@@ -185,7 +193,12 @@ tui-loader {
     }
   }
 
+  app-asset-types-aside {
+    order: 1;
+  }
+
   .token-list-container {
+    order: 3;
     height: 100vh;
   }
 
@@ -216,7 +229,7 @@ tui-loader {
 
 @include b($mobile-sm-middle) {
   .assets-selector {
-    padding: 1.5em 0 0 10px;
+    padding: 1rem 0 0 10px;
 
     &__row {
       padding-right: 10px;
