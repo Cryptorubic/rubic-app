@@ -1,18 +1,17 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTxModalComponent } from '@shared/components/success-modal/success-tx-modal/success-tx-modal.component';
-import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { Observable, Subscription } from 'rxjs';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { SuccessOrderModalComponent } from '@shared/components/success-modal/success-order-modal/success-order-modal.component';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class SuccessTxModalService {
   constructor(
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly iframeService: IframeService
   ) {}
 
@@ -33,10 +32,15 @@ export class SuccessTxModalService {
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-        size,
-        data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
-      })
+      .showDialog(
+        SuccessTxModalComponent,
+        {
+          size,
+          data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType },
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe();
     return callback().subscribe();
   }
@@ -44,9 +48,14 @@ export class SuccessTxModalService {
   public openLimitOrderModal(): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService
-      .open(new PolymorpheusComponent(SuccessOrderModalComponent, this.injector), {
-        size
-      })
+      .showDialog(
+        SuccessOrderModalComponent,
+        {
+          size,
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe();
   }
 }

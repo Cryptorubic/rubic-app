@@ -17,7 +17,7 @@ import {
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { from, Observable, of, Subscription } from 'rxjs';
@@ -25,9 +25,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { TuiDialogService } from '@taiga-ui/core';
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -49,6 +47,7 @@ import { CrossChainApiService } from '@core/services/backend/cross-chain-routing
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -68,7 +67,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
@@ -381,7 +380,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
 
     this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+      .showDialog<SwapSchemeModalComponent, SwapSchemeModalData>(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
         data: {
           fromToken,
@@ -395,7 +394,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
           rangoRequestId,
           timestamp,
           amountOutMin
-        }
+        },
+        fitContent: true
       })
       .subscribe();
   }

@@ -23,12 +23,12 @@ import {
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { KeyValue } from '@angular/common';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -67,7 +67,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly commonModalService: CommonModalService,
+    private readonly modalService: ModalService,
     private readonly mobileNativeService: MobileNativeModalService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
@@ -100,7 +100,7 @@ export class RubicMenuComponent implements AfterViewInit {
   }
 
   public openRecentTradesModal(): void {
-    this.commonModalService
+    this.modalService
       .openRecentTradesModal({
         size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })

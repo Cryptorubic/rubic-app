@@ -25,6 +25,8 @@ import { CrossChainTaggedTrade } from '@app/features/swaps/features/cross-chain/
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { TRADE_STATUS } from '@app/shared/models/swaps/trade-status';
 import { InstantTradeInfo } from '@app/features/swaps/features/instant-trade/models/instant-trade-info';
+import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
+import { TuiDialogOptions } from '@taiga-ui/core';
 
 @Injectable()
 export class ModalService {
@@ -68,6 +70,7 @@ export class ModalService {
    */
   public openSettings(): Observable<void> {
     return this.showDialog<SettingsComponent, void>(SettingsComponent, {
+      title: 'Settings',
       fitContent: true
     });
   }
@@ -77,6 +80,7 @@ export class ModalService {
    */
   public openLiveChat(): Observable<void> {
     return this.showDialog(MobileLiveChatComponent, {
+      title: 'Live Chat',
       fitContent: true
     });
   }
@@ -210,10 +214,18 @@ export class ModalService {
   /**
    * Show Wallet Modal dialog.
    * @param injector Injector
-   * @returns
    */
   public openWalletModal(injector: Injector): Observable<void> {
     return this.showDialog(WalletsModalComponent, {}, injector);
+  }
+
+  /**
+   * Show Recent Trades Modal dialog.
+   */
+  public openRecentTradesModal(data: { size: string }): Observable<void> {
+    return this.showDialog(RecentCrosschainTxComponent, {
+      data
+    });
   }
 
   /**
@@ -242,9 +254,9 @@ export class ModalService {
    * @param options Modal options
    * @param injector Injector
    */
-  private showDialog<Component, Resolver>(
+  public showDialog<Component, Resolver>(
     component: Type<Component & object>,
-    options?: IMobileNativeOptions,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
     injector?: Injector
   ): Observable<Resolver> {
     return this.modalService.open(new PolymorpheusComponent(component, injector || this.injector), {

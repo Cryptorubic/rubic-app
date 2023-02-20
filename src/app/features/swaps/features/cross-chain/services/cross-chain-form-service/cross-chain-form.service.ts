@@ -43,10 +43,8 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { TuiDialogService } from '@taiga-ui/core';
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
@@ -59,6 +57,7 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class CrossChainFormService {
@@ -230,7 +229,7 @@ export class CrossChainFormService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly errorsService: ErrorsService,
     private readonly iframeService: IframeService,
-    private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly tradeService: TradeService,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
@@ -793,9 +792,14 @@ export class CrossChainFormService {
 
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
-        size
-      })
+      .showDialog(
+        AutoSlippageWarningModalComponent,
+        {
+          size,
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe();
     return false;
   }

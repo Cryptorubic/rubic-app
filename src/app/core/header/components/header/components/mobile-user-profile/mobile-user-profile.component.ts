@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, Inject } from '@angular/core';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { UserInterface } from '@app/core/services/auth/models/user.interface';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
@@ -6,6 +6,8 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
+import { TuiDialogContext } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
 import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 
@@ -40,6 +42,8 @@ export class MobileUserProfileComponent {
   >;
 
   constructor(
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, void>,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokenService: TokensService,
@@ -87,6 +91,7 @@ export class MobileUserProfileComponent {
   }
 
   public logout(): void {
+    this.context.completeWith();
     this.authService.disconnectWallet();
   }
 

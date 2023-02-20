@@ -109,6 +109,10 @@
 
       background-color: var(--primary-color);
 
+      @include b($mobile-md) {
+        background-color: transparent;
+      }
+
       a {
         color: white;
       }

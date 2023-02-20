@@ -1,5 +1,5 @@
 export enum ModalStates {
-  OPENED = 5,
-  COLLAPSED = 40,
-  HIDDEN = 100
+  OPENED,
+  COLLAPSED,
+  HIDDEN
 }

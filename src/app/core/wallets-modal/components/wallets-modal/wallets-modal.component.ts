@@ -10,8 +10,8 @@ import { USER_AGENT } from '@ng-web-apis/common';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainId, BlockchainName } from 'rubic-sdk';
@@ -25,6 +25,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -75,7 +76,7 @@ export class WalletsModalComponent implements OnInit {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
@@ -148,13 +149,15 @@ export class WalletsModalComponent implements OnInit {
       provider === WALLET_NAME.WALLET_LINK
     ) {
       this.dialogService
-        .open<BlockchainName>(
-          new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
+        .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
+          CoinbaseConfirmModalComponent,
           {
             dismissible: true,
             label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
-            size: 'm'
-          }
+            size: 'm',
+            fitContent: true
+          },
+          this.injector
         )
         .subscribe({
           next: async blockchainName => {
@@ -187,9 +190,14 @@ export class WalletsModalComponent implements OnInit {
 
   private openIframeWarning(): void {
     this.dialogService
-      .open<boolean>(new PolymorpheusComponent(IframeWalletsWarningComponent, this.injector), {
-        size: 'fullscreen'
-      })
+      .showDialog<IframeWalletsWarningComponent, boolean>(
+        IframeWalletsWarningComponent,
+        {
+          size: 'fullscreen',
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe(confirm => {
         if (confirm) {
           this.connectProvider(WALLET_NAME.METAMASK);

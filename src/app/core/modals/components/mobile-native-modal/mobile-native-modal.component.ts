@@ -72,7 +72,8 @@ export class MobileNativeModalComponent implements OnInit {
 
   public toggle(): void {
     if (this.context.fitContent) {
-      this.context.completeWith();
+      this.hide();
+      animationTimeout(this.context.completeWith);
       return;
     }
 

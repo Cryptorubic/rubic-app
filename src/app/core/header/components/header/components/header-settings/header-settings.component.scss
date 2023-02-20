@@ -55,8 +55,18 @@
     font-size: 18px;
     line-height: 21px;
 
+    @include b($mobile-md) {
+      display: none;
+    }
+
     &::first-letter {
       text-transform: uppercase;
+    }
+  }
+
+  &__close {
+    @include b($mobile-md) {
+      display: none;
     }
   }
 }
