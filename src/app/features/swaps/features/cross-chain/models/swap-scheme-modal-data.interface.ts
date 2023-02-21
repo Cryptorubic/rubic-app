@@ -14,4 +14,5 @@ export interface SwapSchemeModalData {
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;
+  changenowId?: string;
 }

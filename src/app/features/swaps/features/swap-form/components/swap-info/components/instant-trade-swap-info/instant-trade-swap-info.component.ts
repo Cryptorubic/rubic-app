@@ -1,5 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Self, Input } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
@@ -21,8 +20,7 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
   selector: 'app-instant-trade-swap-info',
   templateUrl: './instant-trade-swap-info.component.html',
   styleUrls: ['./instant-trade-swap-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeSwapInfoComponent {
   @Input() set currentOnChainTrade(onChainTrade: OnChainTrade) {
@@ -80,8 +78,7 @@ export class InstantTradeSwapInfoComponent {
     private readonly instantTradeService: InstantTradeService,
     private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
-    private readonly withRoundPipe: WithRoundPipe,
-    @Self() private readonly destroy$: TuiDestroyService
+    private readonly withRoundPipe: WithRoundPipe
   ) {
     this.rateType = 'fromTokenRate';
   }

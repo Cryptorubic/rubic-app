@@ -156,6 +156,10 @@ export class CoingeckoApiService {
     address: string;
     blockchain: BlockchainName;
   }): Observable<number | undefined> {
+    if (!this.isSupportedBlockchain(token.blockchain)) {
+      return of(undefined);
+    }
+
     if (Web3Pure[BlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(token.address)) {
       return this.getNativeCoinPrice(token.blockchain);
     }

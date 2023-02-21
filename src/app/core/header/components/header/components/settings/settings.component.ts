@@ -6,23 +6,24 @@ import {
   TemplateRef,
   Inject,
   Injector,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { TuiHostedDropdownComponent } from '@taiga-ui/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SettingsListComponent } from 'src/app/core/header/components/header/components/settings-list/settings-list.component';
-import { takeUntil } from 'rxjs/operators';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class SettingsComponent implements OnInit {
   @Input() displaySettings = false;
@@ -54,7 +55,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(Injector) public readonly injector: Injector
   ) {
     this.defaultComponent = {

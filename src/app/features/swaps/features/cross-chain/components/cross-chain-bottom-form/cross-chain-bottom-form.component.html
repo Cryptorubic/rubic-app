@@ -12,6 +12,7 @@
             [errorText]="criticalErrorText"
           ></app-to-amount-estimated>
         </div>
+
         <app-target-network-address
           *ngIf="displayTargetAddressInput$ | async"
         ></app-target-network-address>
@@ -29,6 +30,7 @@
             [status]="tradeStatus$ | async"
             [error]="selectedTradeError$ | async"
             buttonText="Swap"
+            [nonEvmChangenow]="nonEvmChangenow$ | async"
             (onUpdateRateClick)="onUpdateRate()"
             (onSwapClick)="onSwapTrade()"
             (onApproveClick)="onApproveTrade()"

@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnInit,
   Output
 } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -21,7 +22,12 @@ import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { blockchainId, BLOCKCHAIN_NAME, wrappedNativeTokensList } from 'rubic-sdk';
+import {
+  blockchainId,
+  BLOCKCHAIN_NAME,
+  wrappedNativeTokensList,
+  EvmBlockchainName
+} from 'rubic-sdk';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Component({
@@ -30,7 +36,7 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
   styleUrls: ['./tokens-list-element.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensListElementComponent {
+export class TokensListElementComponent implements OnInit {
   @Input() token: TokenAmount;
 
   @Input() balanceLoading = false;
@@ -39,7 +45,7 @@ export class TokensListElementComponent {
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public readonly isHorizontalFrame: boolean;
+  public readonly isHorizontalFrame = this.iframeService.iframeAppearance === 'horizontal';
 
   public readonly TokenSecurityStatus = TokenSecurityStatus;
 
@@ -57,8 +63,10 @@ export class TokensListElementComponent {
 
   public loadingFavoriteToken = false;
 
+  public allowCopy: boolean;
+
   constructor(
-    iframeService: IframeService,
+    private readonly iframeService: IframeService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly cdr: ChangeDetectorRef,
@@ -66,8 +74,12 @@ export class TokensListElementComponent {
     private readonly authService: AuthService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
-  ) {
-    this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
+  ) {}
+
+  ngOnInit() {
+    this.allowCopy =
+      this.token.address !== '0x0000000000000000000000000000000000000000' &&
+      this.token.address !== '';
   }
 
   public onImageError($event: Event): void {
@@ -188,9 +200,9 @@ export class TokensListElementComponent {
     const goPlusChainID =
       this.token.blockchain === BLOCKCHAIN_NAME.TRON ? 'tron' : blockchainId[this.token.blockchain];
     const goPlusTokenAddress = this.isNativeToken
-      ? wrappedNativeTokensList[this.token.blockchain].address
+      ? wrappedNativeTokensList[this.token.blockchain as EvmBlockchainName]?.address
       : this.token.address;
 
-    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress}`;
+    return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress || ''}`;
   }
 }
