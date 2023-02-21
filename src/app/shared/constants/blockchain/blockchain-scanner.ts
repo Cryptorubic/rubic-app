@@ -875,7 +875,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.ZILLIQA]: {
-    baseUrl: 'https://viewblock.io/zilliqa',
+    baseUrl: 'https://viewblock.io/zilliqa/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: '',

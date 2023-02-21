@@ -10,7 +10,7 @@ import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -78,6 +78,15 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public get isOnramper(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+  }
+
+  // @TODO Remove when the swap back form for changeNow is ready
+  public get showTokenSwitcher(): boolean {
+    return !(
+      this.isOnramper ||
+      (this.toBlockchain !== BLOCKCHAIN_NAME.TRON &&
+        !BlockchainsInfo.isEvmBlockchainName(this.toBlockchain))
+    );
   }
 
   public get isLimitOrder(): boolean {

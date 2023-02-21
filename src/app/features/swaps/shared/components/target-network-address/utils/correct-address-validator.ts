@@ -1,22 +1,25 @@
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
 export function correctAddressValidator(
   fromAssetType: AssetType,
   toBlockchain: BlockchainName
-): ValidatorFn {
-  let toChainType: CHAIN_TYPE | undefined;
-  try {
-    toChainType = BlockchainsInfo.getChainType(toBlockchain);
-  } catch {}
+): AsyncValidatorFn {
+  const toChainType: CHAIN_TYPE = BlockchainsInfo.getChainType(toBlockchain);
 
-  return (control: AbstractControl): ValidationErrors | null => {
+  return async (control: AbstractControl): Promise<ValidationErrors | null> => {
     const address = control.value;
 
-    if (toChainType && !Web3Pure[toChainType].isAddressCorrect(address)) {
-      let fromChainType: CHAIN_TYPE | undefined;
+    if (address === '') {
+      return null;
+    }
+
+    const isAddressCorrectValue = await Web3Pure[toChainType].isAddressCorrect(address);
+
+    if (toChainType && !isAddressCorrectValue) {
+      let fromChainType: CHAIN_TYPE;
       try {
         fromChainType = BlockchainsInfo.getChainType(fromAssetType as BlockchainName);
       } catch {}

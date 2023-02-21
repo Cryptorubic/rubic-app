@@ -26,14 +26,30 @@
 
   <!-- Status of src transaction -->
   <td class="status-from">
-    <div [class.tui-skeleton]="initialLoading">
+    <div class="status-from-wrapper" [class.tui-skeleton]="initialLoading">
       <a [href]="uiTrade?.srcTxLink" [class.hide-arrow]="!uiTrade?.srcTxLink" target="_blank">
         <app-status-badge
           [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
           [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
           cursor="pointer"
         ></app-status-badge>
+        <img
+          class="status-from-link-arrow"
+          *ngIf="!changenowId"
+          src="assets/images/icons/arrow/link-arrow.svg"
+          alt="link-arrow"
+        />
       </a>
+      <img
+        *ngIf="changenowId"
+        class="status-from-copy-icon"
+        src="assets/images/icons/copy.svg"
+        alt="Copy"
+        (click)="copyToClipboard()"
+        [tuiHint]="'Copy transaction ID'"
+        [tuiManualHint]="template"
+        [tuiManualHintShow]="hintShown"
+      />
     </div>
   </td>
 
@@ -180,3 +196,5 @@
     {{ 'common.revert' | translate }}
   </app-rubic-button>
 </ng-template>
+
+<ng-template #template>Transaction ID copied on clipboard</ng-template>
