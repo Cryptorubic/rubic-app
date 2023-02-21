@@ -200,12 +200,6 @@ export class SwapFormQueryService {
         return this.searchTokenBySymbol(tokens, token, chain);
       })
     );
-
-    // if (chainType && Web3Pure[chainType].isAddressCorrect(token)) {
-    //   const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
-    //   return this.searchTokenByAddress(tokens, address, chain);
-    // }
-    // return this.searchTokenBySymbol(tokens, token, chain);
   }
 
   private searchTokenBySymbol(
