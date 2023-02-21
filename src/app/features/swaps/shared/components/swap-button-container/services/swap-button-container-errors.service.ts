@@ -181,27 +181,28 @@ export class SwapButtonContainerErrorsService {
   /**
    * Checks that from blockchain can be used for current wallet.
    */
-  private checkWalletSupportsFromBlockchain(): void {
+  private async checkWalletSupportsFromBlockchain(): Promise<void> {
     const fromAsset = this.swapFormService.inputValue.fromAsset;
+    const isUserAddressCorrect = await EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
     if (!isMinimalToken(fromAsset)) {
       if (!fromAsset) {
         this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
         return;
       }
       this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
-        Boolean(this.authService.userAddress) &&
-        !EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
+        Boolean(this.authService.userAddress) && !isUserAddressCorrect;
       return;
     }
 
-    let chainType: CHAIN_TYPE | undefined;
-    try {
-      chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
-    } catch {}
+    const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    const isAddressCorrectValue = Web3Pure[chainType].isAddressCorrect(
+      this.authService.userAddress
+    );
+
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
       (chainType === CHAIN_TYPE.EVM || chainType === CHAIN_TYPE.TRON) &&
-      !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
+      !isAddressCorrectValue;
   }
 
   /**

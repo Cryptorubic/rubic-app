@@ -17,9 +17,9 @@ import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
   providers: [TuiDestroyService]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address, [
-    getCorrectAddressValidator(this.swapFormService.inputValue)
-  ]);
+  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address, {
+    asyncValidators: [getCorrectAddressValidator(this.swapFormService.inputValue)]
+  });
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 
@@ -33,6 +33,10 @@ export class TargetNetworkAddressComponent implements OnInit {
   public ngOnInit(): void {
     this.subscribeOnTargetAddress();
     this.subscribeOnFormValues();
+    // setTimeout(() => {
+    //   console.log(this.address.asyncValidator);
+    // }, 1000);
+    // this.address.statusChanges.subscribe(console.log);
   }
 
   private subscribeOnFormValues(): void {

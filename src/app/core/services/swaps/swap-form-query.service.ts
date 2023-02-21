@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
+import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from, Observable, of, skip } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -184,15 +184,28 @@ export class SwapFormQueryService {
       return of(null);
     }
 
-    let chainType: CHAIN_TYPE | undefined;
-    try {
-      chainType = BlockchainsInfo.getChainType(chain);
-    } catch {}
-    if (chainType && Web3Pure[chainType].isAddressCorrect(token)) {
-      const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
-      return this.searchTokenByAddress(tokens, address, chain);
-    }
-    return this.searchTokenBySymbol(tokens, token, chain);
+    const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(chain);
+
+    return from(Web3Pure[chainType].isAddressCorrect(token)).pipe(
+      switchMap(isAddressCorrect => {
+        if (chainType && isAddressCorrect) {
+          const address =
+            chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
+          return this.searchTokenByAddress(tokens, address, chain);
+        }
+
+        return this.searchTokenBySymbol(tokens, token, chain);
+      }),
+      catchError(() => {
+        return this.searchTokenBySymbol(tokens, token, chain);
+      })
+    );
+
+    // if (chainType && Web3Pure[chainType].isAddressCorrect(token)) {
+    //   const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
+    //   return this.searchTokenByAddress(tokens, address, chain);
+    // }
+    // return this.searchTokenBySymbol(tokens, token, chain);
   }
 
   private searchTokenBySymbol(
