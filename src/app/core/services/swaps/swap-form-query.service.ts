@@ -186,6 +186,7 @@ export class SwapFormQueryService {
 
     const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(chain);
 
+    // @TODO refactoring.
     return from(Web3Pure[chainType].isAddressCorrect(token)).pipe(
       switchMap(isAddressCorrect => {
         if (chainType && isAddressCorrect) {
