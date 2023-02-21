@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
+  BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS,
-  BackendBlockchain
+  TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
 import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
@@ -25,7 +25,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BitcoinWeb3Pure, BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
@@ -171,7 +171,7 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.VELAS,
       BLOCKCHAIN_NAME.SYSCOIN
     ];
-    const backendTokens$ = this.httpService
+    return this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
       .pipe(
         map(backendTokens =>
@@ -182,12 +182,6 @@ export class TokensApiService {
         ),
         map(backendTokens => TokensApiService.prepareTokens(backendTokens))
       );
-
-    const staticTokens$ = this.fetchStaticTokens();
-
-    return forkJoin([backendTokens$, staticTokens$]).pipe(
-      map(([backendTokens, staticTokens]) => backendTokens.concat(staticTokens))
-    );
   }
 
   /**
@@ -223,7 +217,7 @@ export class TokensApiService {
     );
     requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
 
-    const backendTokens$ = forkJoin(requests$).pipe(
+    return forkJoin(requests$).pipe(
       map(results => {
         if (results.every(el => el === null)) {
           this.needRefetchTokens = true;
@@ -238,14 +232,6 @@ export class TokensApiService {
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
         return TokensApiService.prepareTokens(backendTokens);
-      })
-    );
-
-    const staticTokens$ = this.fetchStaticTokens();
-
-    return forkJoin([backendTokens$, staticTokens$]).pipe(
-      map(([backendTokens, staticTokens]) => {
-        return backendTokens.concat(staticTokens);
       })
     );
   }
@@ -357,28 +343,24 @@ export class TokensApiService {
   }
 
   private fetchStaticTokens(): Observable<Token[]> {
-    return of([]);
+    return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)]).pipe(
+      switchMap(([bitcoinPrice]) =>
+        of([
+          {
+            image: '/assets/images/icons/coins/bitcoin.svg',
+            rank: 1,
+            price: bitcoinPrice.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+            tokenSecurity: null,
+            blockchain: BLOCKCHAIN_NAME.BITCOIN,
+            address: BitcoinWeb3Pure.nativeTokenAddress,
+            name: 'Bitcoin',
+            symbol: 'BTC',
+            decimals: 8
+          }
+        ])
+      )
+    );
   }
-
-  // private fetchStaticTokens(): Observable<Token[]> {
-  //   return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)]).pipe(
-  //     switchMap(([bitcoinPrice]) =>
-  //       of([
-  //         {
-  //           image: '/assets/images/icons/coins/bitcoin.svg',
-  //           rank: 1,
-  //           price: bitcoinPrice.toNumber(),
-  //           usedInIframe: true,
-  //           hasDirectPair: null,
-  //           tokenSecurity: null,
-  //           blockchain: BLOCKCHAIN_NAME.BITCOIN,
-  //           address: BitcoinWeb3Pure.nativeTokenAddress,
-  //           name: 'Bitcoin',
-  //           symbol: 'BTC',
-  //           decimals: 8
-  //         }
-  //       ])
-  //     )
-  //   );
-  //}
 }
