@@ -17,8 +17,7 @@ import {
   CelerCrossChainTrade,
   FeeInfo,
   nativeTokensList,
-  CHAIN_TYPE,
-  EMPTY_ADDRESS
+  CHAIN_TYPE
 } from 'rubic-sdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -110,7 +109,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 return (
                   token.blockchain === fromBlockchain &&
                   ((chainType && Web3Pure[chainType].isNativeAddress(token.address)) ||
-                    token.address === EMPTY_ADDRESS)
+                    token.address === Web3Pure[chainType].EMPTY_ADDRESS)
                 );
               });
 

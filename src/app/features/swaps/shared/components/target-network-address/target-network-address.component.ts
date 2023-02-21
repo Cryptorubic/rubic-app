@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { getCorrectAddressValidator } from '@features/swaps/shared/components/target-network-address/utils/get-correct-address-validator';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
+import { combineLatestWith } from 'rxjs';
 
 @Component({
   selector: 'app-target-network-address',
@@ -55,10 +56,14 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
-      .pipe(debounceTime(10), takeUntil(this.destroy$))
-      .subscribe(address => {
-        this.targetNetworkAddressService.setIsAddressValid(this.address.valid);
-        this.targetNetworkAddressService.setAddress(this.address.valid ? address : null);
+      .pipe(
+        combineLatestWith(this.address.statusChanges),
+        debounceTime(10),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(([address, status]) => {
+        this.targetNetworkAddressService.setIsAddressValid(status === 'VALID');
+        this.targetNetworkAddressService.setAddress(status === 'VALID' ? address : null);
       });
   }
 }

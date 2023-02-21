@@ -26,8 +26,7 @@ import {
   blockchainId,
   BLOCKCHAIN_NAME,
   wrappedNativeTokensList,
-  EvmBlockchainName,
-  EMPTY_ADDRESS
+  EvmBlockchainName
 } from 'rubic-sdk';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
@@ -78,7 +77,9 @@ export class TokensListElementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.allowCopy = this.token.address !== EMPTY_ADDRESS && this.token.address !== '';
+    this.allowCopy =
+      this.token.address !== '0x0000000000000000000000000000000000000000' &&
+      this.token.address !== '';
   }
 
   public onImageError($event: Event): void {

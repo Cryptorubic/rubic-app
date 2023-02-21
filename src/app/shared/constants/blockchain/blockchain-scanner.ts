@@ -367,7 +367,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction?id=',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AION]: {
