@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, skip, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, skip, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -40,6 +40,9 @@ export class TargetNetworkAddressComponent implements OnInit {
     this.swapFormService.inputValue$
       .pipe(
         skip(1),
+        tap(inputForm => {
+          this.address.setAsyncValidators(getCorrectAddressValidator(inputForm));
+        }),
         filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (

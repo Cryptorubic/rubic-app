@@ -10,6 +10,7 @@ export function correctAddressValidator(
   const toChainType: CHAIN_TYPE = BlockchainsInfo.getChainType(toBlockchain);
 
   return async (control: AbstractControl): Promise<ValidationErrors | null> => {
+    console.log(toChainType);
     const address = control.value;
 
     if (address === '') {
