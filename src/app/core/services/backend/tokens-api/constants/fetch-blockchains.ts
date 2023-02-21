@@ -30,7 +30,8 @@ export const blockchainsToFetch = [
   BLOCKCHAIN_NAME.VELAS,
   BLOCKCHAIN_NAME.SYSCOIN,
   BLOCKCHAIN_NAME.NEAR,
-  BLOCKCHAIN_NAME.SOLANA
+  BLOCKCHAIN_NAME.SOLANA,
+  BLOCKCHAIN_NAME.BITCOIN
 ];
 
 export const blockchainsWithOnePage = [

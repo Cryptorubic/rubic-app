@@ -25,7 +25,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BitcoinWeb3Pure, BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
@@ -340,27 +340,5 @@ export class TokensApiService {
           };
         })
       );
-  }
-
-  private fetchStaticTokens(): Observable<Token[]> {
-    return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)]).pipe(
-      switchMap(([bitcoinPrice]) =>
-        of([
-          {
-            image: '/assets/images/icons/coins/bitcoin.svg',
-            rank: 1,
-            price: bitcoinPrice.toNumber(),
-            usedInIframe: true,
-            hasDirectPair: null,
-            tokenSecurity: null,
-            blockchain: BLOCKCHAIN_NAME.BITCOIN,
-            address: BitcoinWeb3Pure.nativeTokenAddress,
-            name: 'Bitcoin',
-            symbol: 'BTC',
-            decimals: 8
-          }
-        ])
-      )
-    );
   }
 }
