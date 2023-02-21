@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<div class="info-line" *ngLet="feeInfo?.provider as fee">
+<div class="info-line" *ngIf="feeInfo?.provider as fee">
   <div class="info-line__title title">
     <span class="title__text">Network fee</span>
     <img

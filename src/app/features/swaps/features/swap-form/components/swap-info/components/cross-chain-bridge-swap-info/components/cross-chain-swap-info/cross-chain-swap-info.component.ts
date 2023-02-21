@@ -16,9 +16,9 @@ import {
   EvmBridgersCrossChainTrade,
   CelerCrossChainTrade,
   FeeInfo,
-  nativeTokensList
+  nativeTokensList,
+  CHAIN_TYPE
 } from 'rubic-sdk';
-import { SwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/swap-button.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
@@ -66,7 +66,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly priceImpactService: PriceImpactService,
-    private readonly swapButtonService: SwapButtonService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -102,13 +101,17 @@ export class CrossChainSwapInfoComponent implements OnInit {
             map(nativeCoinPrice => {
               const tokens = this.tokensStoreService.tokens;
 
-              const nativeToken = tokens.find(
-                token =>
+              const nativeToken = tokens.find(token => {
+                let chainType: CHAIN_TYPE | undefined;
+                try {
+                  chainType = SdkBlockchainsInfo.getChainType(token.blockchain);
+                } catch {}
+                return (
                   token.blockchain === fromBlockchain &&
-                  Web3Pure[SdkBlockchainsInfo.getChainType(token.blockchain)].isNativeAddress(
-                    token.address
-                  )
-              );
+                  ((chainType && Web3Pure[chainType].isNativeAddress(token.address)) ||
+                    token.address === Web3Pure[chainType].EMPTY_ADDRESS)
+                );
+              });
 
               this.nativeCoinSymbol = nativeToken?.symbol;
 
@@ -156,7 +159,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
     this.minimumReceived = trade.toTokenAmountMin.multipliedBy(1 - this.slippage / 100);
     this.feeInfo = tradeInfo.feeInfo;
-    this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain].decimals;
+    this.nativeCoinDecimals = nativeTokensList[trade.from.blockchain]?.decimals || 18;
 
     if (tradeInfo.priceImpact) {
       if ('total' in tradeInfo.priceImpact) {

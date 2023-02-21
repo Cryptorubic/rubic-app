@@ -15,14 +15,12 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { BehaviorSubject } from 'rxjs';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
 import { SettingsListComponent } from 'src/app/core/header/components/header/components/settings-list/settings-list.component';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-rubic-language-select',
   templateUrl: './rubic-language-select.component.html',
   styleUrls: ['./rubic-language-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicLanguageSelectComponent {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;

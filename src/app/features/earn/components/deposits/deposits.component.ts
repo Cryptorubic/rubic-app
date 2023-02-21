@@ -3,7 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Deposit } from '../../models/deposit.inteface';
@@ -53,7 +54,7 @@ export class DepositsComponent implements OnInit {
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
     @Inject(WINDOW) private readonly window: Window,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {

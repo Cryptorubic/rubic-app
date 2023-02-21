@@ -1,0 +1,144 @@
+<div class="block-container">
+  <button class="arrow-back" (click)="navigateToSwaps()">
+    <img src="assets/images/icons/arrow-back.svg" alt="go back" />
+  </button>
+
+  <div class="header">Please send the funds you would like to exchange</div>
+
+  <div class="rows">
+    <div class="row">
+      <div class="row-item row-item_small">
+        <div class="row-item__header">Amount</div>
+        <div class="row-item__value">
+          <span class="break-word">{{ trade.fromAmount | bigNumberFormat }}</span>
+          {{ trade.fromToken.symbol }}
+          <img
+            [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
+        </div>
+      </div>
+
+      <div class="tokens-diagram">
+        <div class="token-diagram">
+          <img
+            [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
+          <div class="token-diagram__meta-text">
+            <div class="token-diagram__symbol">{{ trade.fromToken.symbol }}</div>
+            <div class="token-diagram__chain">
+              {{ getBlockchainLabel(trade.fromToken.blockchain) }}
+            </div>
+          </div>
+        </div>
+
+        <img
+          class="tokens-diagram__arrow"
+          src="assets/images/icons/arrow-long.svg"
+          alt="swap arrow"
+        />
+
+        <div class="token-diagram">
+          <img
+            [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
+            alt="token"
+            (error)="onImageError($event)"
+          />
+          <div class="token-diagram__meta-text">
+            <div class="token-diagram__symbol">{{ trade.toToken.symbol }}</div>
+            <div class="token-diagram__chain">
+              {{ getBlockchainLabel(trade.toToken.blockchain) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-item">
+        <div class="row-item__header">To this address</div>
+        <div class="row-item__value break-word">
+          {{ trade.depositAddress }}
+          <button
+            [cdkCopyToClipboard]="trade.depositAddress"
+            class="copy-icon copy-icon_green"
+            inlineSVG="assets/images/icons/copy.svg"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="trade.extraField">
+      <div class="row-item">
+        <div class="row-item__header">{{ trade.extraField.name }}</div>
+        <div class="row-item__value">
+          {{ trade.extraField.value }}
+          <button
+            [cdkCopyToClipboard]="trade.extraField.value"
+            class="copy-icon copy-icon_green"
+            inlineSVG="assets/images/icons/copy.svg"
+          ></button>
+        </div>
+      </div>
+
+      <div class="additional-info">
+        <img class="info-icon" src="assets/images/icons/exclamation-grey.svg" alt="info" />
+        Please don’t forget to specify the {{ trade.extraField.name }} while sending the
+        {{ trade.fromToken.symbol }} transaction for the exchange
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="estimated-time">
+        <img
+          class="info-icon"
+          src="assets/images/icons/exclamation-grey.svg"
+          alt="info"
+          [tuiHint]="contactSupportHint"
+          [tuiHintShowDelay]="0"
+          [tuiHintMode]="'onDark'"
+        />
+        Estimated Arrival <span class="primary-text">~10 minutes</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="delimiter" />
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">Transaction ID</div>
+    <div class="bottom-row__value">
+      {{ trade.id
+      }}<button>
+        <img
+          [cdkCopyToClipboard]="trade.id"
+          class="copy-icon"
+          src="assets/images/icons/copy.svg"
+          alt="copy"
+        />
+      </button>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">You get</div>
+    <div class="bottom-row__value">
+      {{ trade.toAmount | bigNumberFormat }} {{ trade.toToken.symbol }}
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="bottom-row__header">Recipient Wallet</div>
+    <div class="bottom-row__value break-word">{{ trade.receiverAddress }}</div>
+  </div>
+</div>
+
+<ng-template #contactSupportHint>
+  <div class="contact-support-hint">
+    If your transaction seems to be taking longer than normal (more than 10 minutes), please contact
+    our Support Team at <span class="primary-text">support@rubic.exchange</span>.
+  </div>
+</ng-template>

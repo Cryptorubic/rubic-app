@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom, from, Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import BigNumber from 'bignumber.js';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
@@ -32,7 +32,6 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 @Injectable({
   providedIn: 'root'
 })
-// todo move to balances service
 export class TokensService {
   private get userAddress(): string | undefined {
     return this.authService.userAddress;
@@ -128,9 +127,12 @@ export class TokensService {
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
+    const isAddressCorrectValue = await Web3Pure[chainType].isAddressCorrect(this.userAddress);
+
     if (
       !this.userAddress ||
-      !Web3Pure[chainType].isAddressCorrect(this.userAddress) ||
+      !chainType ||
+      !isAddressCorrectValue ||
       !Web3PublicService.isSupportedBlockchain(token.blockchain)
     ) {
       return null;
@@ -266,31 +268,35 @@ export class TokensService {
       query = query.toLowerCase();
     }
 
-    const isAddress = isAddressCorrect(query, blockchain);
+    return from(isAddressCorrect(query, blockchain)).pipe(
+      catchError(() => of(false)),
+      switchMap(isAddress => {
+        const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
 
-    const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
-    if (isLifiTokens) {
-      return of(
-        this.tokensStoreService.tokens.filter(
-          token =>
-            token.blockchain === blockchain &&
-            ((isAddress && compareAddresses(token.address, query)) ||
-              (!isAddress &&
-                (token.name.toLowerCase().includes(query) ||
-                  token.symbol.toLowerCase().includes(query))))
-        )
-      );
-    }
+        if (isLifiTokens) {
+          return of(
+            this.tokensStoreService.tokens.filter(
+              token =>
+                token.blockchain === blockchain &&
+                ((isAddress && compareAddresses(token.address, query)) ||
+                  (!isAddress &&
+                    (token.name.toLowerCase().includes(query) ||
+                      token.symbol.toLowerCase().includes(query))))
+            )
+          );
+        } else {
+          const params: TokensRequestQueryOptions = {
+            network: blockchain,
+            ...(!isAddress && { symbol: query }),
+            ...(isAddress && { address: query })
+          };
 
-    const params: TokensRequestQueryOptions = {
-      network: blockchain,
-      ...(!isAddress && { symbol: query }),
-      ...(isAddress && { address: query })
-    };
-
-    return this.tokensApiService.fetchQueryTokens(params).pipe(
-      switchMap(async backendTokens => {
-        return List(await this.tokensStoreService.getTokensWithBalance(backendTokens));
+          return this.tokensApiService.fetchQueryTokens(params).pipe(
+            switchMap(backendTokens => {
+              return this.tokensStoreService.getTokensWithBalance(backendTokens);
+            })
+          );
+        }
       })
     );
   }

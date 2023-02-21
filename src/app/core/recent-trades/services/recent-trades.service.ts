@@ -119,7 +119,8 @@ export class RecentTradesService {
           lifiBridgeType: trade.bridgeType,
           viaUuid: trade.viaUuid,
           rangoRequestId: trade.rangoRequestId,
-          amountOutMin: trade.amountOutMin
+          amountOutMin: trade.amountOutMin,
+          changenowId: trade.changenowId
         },
         trade.crossChainTradeType
       );

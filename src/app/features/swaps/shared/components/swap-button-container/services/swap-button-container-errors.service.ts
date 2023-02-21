@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -181,23 +181,28 @@ export class SwapButtonContainerErrorsService {
   /**
    * Checks that from blockchain can be used for current wallet.
    */
-  private checkWalletSupportsFromBlockchain(): void {
+  private async checkWalletSupportsFromBlockchain(): Promise<void> {
     const fromAsset = this.swapFormService.inputValue.fromAsset;
+    const isUserAddressCorrect = await EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
     if (!isMinimalToken(fromAsset)) {
       if (!fromAsset) {
         this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] = false;
         return;
       }
       this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
-        Boolean(this.authService.userAddress) &&
-        !EvmWeb3Pure.isAddressCorrect(this.authService.userAddress);
+        Boolean(this.authService.userAddress) && !isUserAddressCorrect;
       return;
     }
 
-    const chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    const isAddressCorrectValue = Web3Pure[chainType].isAddressCorrect(
+      this.authService.userAddress
+    );
+
     this.errorType[BUTTON_ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.authService.userAddress) &&
-      !Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
+      (chainType === CHAIN_TYPE.EVM || chainType === CHAIN_TYPE.TRON) &&
+      !isAddressCorrectValue;
   }
 
   /**
@@ -216,11 +221,14 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    const fromChainType =
-      fromAsset?.blockchain && BlockchainsInfo.getChainType(fromAsset.blockchain);
+    let fromChainType: CHAIN_TYPE | undefined;
+    try {
+      fromChainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    } catch {}
     if (
       !fromAsset ||
       !this.authService.userAddress ||
+      !fromChainType ||
       fromChainType !== this.authService.userChainType
     ) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
@@ -248,7 +256,12 @@ export class SwapButtonContainerErrorsService {
     const { fromAsset } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && isMinimalToken(fromAsset)) {
-      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] = fromAsset.blockchain !== userBlockchain;
+      let chainType: CHAIN_TYPE | undefined;
+      try {
+        chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
+      } catch {}
+      this.errorType[BUTTON_ERROR_TYPE.WRONG_BLOCKCHAIN] =
+        chainType === CHAIN_TYPE.EVM && fromAsset.blockchain !== userBlockchain;
       this.errorType[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK] = disabledFromBlockchains.includes(
         fromAsset.blockchain
       );

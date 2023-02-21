@@ -9,7 +9,6 @@ import {
   Inject,
   OnChanges
 } from '@angular/core';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { NgChanges } from '@shared/models/utility-types/ng-changes';
 
@@ -20,8 +19,7 @@ import { NgChanges } from '@shared/models/utility-types/ng-changes';
   selector: 'app-rotating-icon',
   templateUrl: './rotating-icon.component.html',
   styleUrls: ['./rotating-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RotatingIconComponent implements OnChanges {
   /**
