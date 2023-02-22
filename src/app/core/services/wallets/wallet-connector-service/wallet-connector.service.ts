@@ -169,12 +169,6 @@ export class WalletConnectorService {
         }
       } else if (switchError.code === 4001) {
         this.errorService.catch(new UserRejectNetworkSwitchError());
-        // this.notificationsService.show(switchError.message, {
-        //   label: 'Error',
-        //   status: TuiNotification.Error,
-        //   data: switchError.data || switchError,
-        //   autoClose: 7000
-        // });
       } else {
         this.errorService.catch(switchError);
       }
