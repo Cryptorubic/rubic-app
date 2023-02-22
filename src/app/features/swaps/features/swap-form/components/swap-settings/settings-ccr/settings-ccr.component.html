@@ -18,18 +18,21 @@
       >
         Auto
       </div>
-      <tui-input-number
-        id="slippageTolerance"
-        tuiTextfieldSize="s"
-        postfix="%"
-        [ngModel]="slippageTolerance"
-        (ngModelChange)="onSlippageToleranceChange($event)"
-        [ngModelOptions]="{ standalone: true }"
-        [tuiTextfieldLabelOutside]="true"
-        [max]="50"
-        [min]="minimumSlippageTolerance"
-        >{{ defaultSlippageTolerance }}%
-      </tui-input-number>
+      <button (click)="onSlippageToleranceChange(3)" class="settings__button-auto">3</button>
+      <button (click)="onSlippageToleranceChange(5)" class="settings__button-auto">5</button>
+      <div class="slippage-container">
+        <input
+          appCommaToPeriod
+          [ngModel]="slippageTolerance"
+          (amountChange)="onSlippageToleranceChange($event)"
+          [ngModelOptions]="{ standalone: true }"
+          [tuiTextfieldLabelOutside]="true"
+          [tuiTextfieldSize]="'s'"
+          [minAmount]="minimumSlippageTolerance"
+        />
+        <div>%</div>
+        <span></span>
+      </div>
     </div>
 
     <div class="settings__form-row">

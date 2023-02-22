@@ -16,17 +16,21 @@
       >
         Auto
       </div>
-      <tui-input-number
-        [ngModel]="slippageTolerance"
-        (ngModelChange)="onSlippageToleranceChange($event)"
-        [ngModelOptions]="{ standalone: true }"
-        [tuiTextfieldLabelOutside]="true"
-        [tuiTextfieldSize]="'s'"
-        [max]="50"
-        [min]="0.1"
-        [postfix]="'%'"
-        >2%
-      </tui-input-number>
+      <button (click)="onSlippageToleranceChange(0.1)" class="settings__button-auto">0.1</button>
+      <button (click)="onSlippageToleranceChange(0.5)" class="settings__button-auto">0.5</button>
+      <div class="slippage-container">
+        <input
+          appCommaToPeriod
+          [ngModel]="slippageTolerance"
+          (amountChange)="onSlippageToleranceChange($event)"
+          [ngModelOptions]="{ standalone: true }"
+          [tuiTextfieldLabelOutside]="true"
+          [tuiTextfieldSize]="'s'"
+          [minAmount]="0.01"
+        />
+        <div>%</div>
+        <span></span>
+      </div>
     </div>
     <div class="settings__form-row settings__form-row_small-input">
       <div class="settings__form-row">
@@ -41,7 +45,7 @@
         id="deadline"
         [tuiTextfieldLabelOutside]="true"
         formControlName="deadline"
-        [decimal]="'never'"
+        decimal="never"
         [max]="240"
         [min]="1"
         [tuiTextfieldSize]="'s'"

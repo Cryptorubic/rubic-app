@@ -27,7 +27,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 @Injectable()
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
-    instantTrades: 2,
+    instantTrades: 1,
     crossChain: 4
   };
 
