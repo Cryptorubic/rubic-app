@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Self } from '@angular/core';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -12,13 +11,7 @@ import { CcrSettingsFormControls } from '@features/swaps/core/services/settings-
   templateUrl: './settings-ccr.component.html',
   styleUrls: ['./settings-ccr.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: TUI_NUMBER_FORMAT,
-      useValue: { decimalSeparator: '.', thousandSeparator: ',' }
-    },
-    TuiDestroyService
-  ]
+  providers: [TuiDestroyService]
 })
 export class SettingsCcrComponent implements OnInit {
   public readonly defaultSlippageTolerance: number;

@@ -1,22 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { TUI_NUMBER_FORMAT } from '@taiga-ui/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ItSettingsFormControls } from '@features/swaps/core/services/settings-service/models/settings-form-controls';
+import { TuiInputNumberComponent } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-settings-it',
   templateUrl: './settings-it.component.html',
   styleUrls: ['./settings-it.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: TUI_NUMBER_FORMAT,
-      useValue: { decimalSeparator: '.', thousandSeparator: ',' }
-    }
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsItComponent implements OnInit {
+  @ViewChild('slippageInput') public readonly slippageInput: TuiInputNumberComponent;
+
   private readonly defaultSlippageTolerance: number;
 
   public instantTradeForm: FormGroup<ItSettingsFormControls>;
@@ -69,7 +65,8 @@ export class SettingsItComponent implements OnInit {
     }
   }
 
-  public onSlippageToleranceChange(slippageTolerance: number): void {
+  public onSlippageToleranceChange(slippageString: number): void {
+    const slippageTolerance = Number(slippageString);
     this.slippageTolerance = slippageTolerance || this.defaultSlippageTolerance;
     this.instantTradeForm.patchValue({
       autoSlippageTolerance: false,

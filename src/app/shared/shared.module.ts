@@ -71,6 +71,7 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
 import { SuccessOrderModalComponent } from './components/success-modal/success-order-modal/success-order-modal.component';
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
+import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     BackButtonComponent,
     LoginButtonComponent,
     RefreshButtonComponent,
+    SuccessOrderModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -122,7 +124,7 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    SuccessOrderModalComponent
+    CommaToPeriodDirective
   ],
   imports: [
     CommonModule,
@@ -193,7 +195,8 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
     SafeSanitizerPipe,
     BackButtonComponent,
     RefreshButtonComponent,
-    LoginButtonComponent
+    LoginButtonComponent,
+    CommaToPeriodDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
