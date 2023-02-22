@@ -84,10 +84,11 @@ export class ApproveScannerService {
     )
     .map(([_blockchain, meta]) => meta);
 
-  private readonly defaultBlockchain = this.supportedBlockchains.find(
-    blockchain =>
-      blockchain.key === (this.walletConnectorService.network ?? BLOCKCHAIN_NAME.ETHEREUM)
-  );
+  private readonly defaultBlockchain =
+    this.supportedBlockchains.find(
+      blockchain =>
+        blockchain.key === (this.walletConnectorService.network ?? BLOCKCHAIN_NAME.ETHEREUM)
+    ) ?? BLOCKCHAINS.ETH;
 
   public readonly form = new FormGroup<ApproveFormControl>({
     blockchain: new FormControl(this.defaultBlockchain)

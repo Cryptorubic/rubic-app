@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BlockchainName } from 'rubic-sdk';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 
@@ -9,8 +8,7 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
   selector: 'polymorpheus-symbiosis-warning-tx-modal',
   templateUrl: './symbiosis-warning-tx-modal.component.html',
   styleUrls: ['./symbiosis-warning-tx-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SymbiosisWarningTxModalComponent {
   public readonly amount: string;

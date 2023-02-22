@@ -46,6 +46,7 @@
     "complete": "Complete"
   },
   "errors": {
+    "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
     "noMetamaskInstalled": "Veuillez vous assurer que le plugin MetaMask est installé et connecté. Vous pouvez le télécharger sur",
     "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",

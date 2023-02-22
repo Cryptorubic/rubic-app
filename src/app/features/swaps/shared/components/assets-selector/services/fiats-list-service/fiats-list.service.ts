@@ -5,8 +5,9 @@ import { FiatsService } from '@core/services/fiats/fiats.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { BlockchainName } from 'rubic-sdk';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class FiatsListService {
@@ -21,7 +22,8 @@ export class FiatsListService {
   constructor(
     private readonly fiatsService: FiatsService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly searchQueryService: SearchQueryService
+    private readonly searchQueryService: SearchQueryService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnSearchQuery();
   }
@@ -30,7 +32,8 @@ export class FiatsListService {
     combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
       .pipe(
         filter(([_, selectorListType]) => selectorListType === 'fiats'),
-        map(([query]) => query)
+        map(([query]) => query),
+        takeUntil(this.destroy$)
       )
       .subscribe(query => {
         this.fiatsToShow = this.fiatsService.fiats.filter(
