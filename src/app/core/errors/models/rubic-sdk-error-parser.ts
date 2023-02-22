@@ -34,6 +34,7 @@ import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
+import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -92,6 +93,9 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err.message.includes('You rejected the network switch.')) {
+      return new UserRejectNetworkSwitchError();
+    }
     if (
       err.message.includes('Received amount of tokens are less then expected') ||
       err.message.includes('DODORouteProxy: Return amount is not enough')
