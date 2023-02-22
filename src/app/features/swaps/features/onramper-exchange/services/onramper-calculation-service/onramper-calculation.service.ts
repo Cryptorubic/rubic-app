@@ -4,7 +4,6 @@ import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   BlockchainName,
-  EvmBlockchainName,
   EvmWeb3Pure,
   MaxAmountError,
   MinAmountError,
@@ -48,14 +47,14 @@ export class OnramperCalculationService {
       return receivedNativeAmount;
     }
 
-    const fromFee = await this.onramperService.getFromFees(input.toBlockchain as EvmBlockchainName);
+    // const fromFee = await this.onramperService.getFromFees(input.toBlockchain as EvmBlockchainName);
     const useProxy = this.platformConfigurationService.useOnChainProxy;
     const onChainTrades = await this.sdkService.instantTrade.calculateTrade(
       {
         address: EvmWeb3Pure.nativeTokenAddress,
         blockchain: input.toToken.blockchain
       },
-      receivedNativeAmount.minus(fromFee).toFixed(),
+      receivedNativeAmount.toFixed(),
       input.toToken.address,
       {
         gasCalculation: 'disabled',

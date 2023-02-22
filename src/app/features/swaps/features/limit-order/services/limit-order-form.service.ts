@@ -11,7 +11,8 @@ import {
   EvmWeb3Pure,
   limitOrderSupportedBlockchains,
   TokenAmount as SdkTokenAmount,
-  TokenBaseStruct
+  TokenBaseStruct,
+  Web3Pure
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens, switchIif } from '@shared/utils/utils';
@@ -34,6 +35,8 @@ import { UserRejectSigningError } from '@core/errors/models/provider/user-reject
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 import { LimitOrdersApiService } from '@core/services/backend/limit-orders-api/limit-orders-api.service';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -97,7 +100,8 @@ export class LimitOrderFormService {
     private readonly orderExpirationService: OrderExpirationService,
     private readonly orderRateService: OrderRateService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly limitOrdersApiService: LimitOrdersApiService
+    private readonly limitOrdersApiService: LimitOrdersApiService,
+    private readonly gasService: GasService
   ) {
     this.subscribeOnCalculation();
 
@@ -271,17 +275,21 @@ export class LimitOrderFormService {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
 
     let approveInProgressSubscription$: Subscription;
-    const options: BasicTransactionOptions = {
-      onTransactionHash: () => {
-        approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
-      }
-    };
+
     try {
-      await this.sdkService.limitOrderManager.approve(
-        fromAsset as TokenBaseStruct<EvmBlockchainName>,
-        fromAmount,
-        options
-      );
+      const fromToken = fromAsset as TokenBaseStruct<EvmBlockchainName>;
+      const gasPrice = shouldCalculateGas[fromToken.blockchain]
+        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromToken.blockchain))
+        : null;
+
+      const options: BasicTransactionOptions = {
+        onTransactionHash: () => {
+          approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+        },
+        ...(gasPrice && { gasPrice })
+      };
+
+      await this.sdkService.limitOrderManager.approve(fromToken, fromAmount, options);
       this.notificationsService.showApproveSuccessful();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
