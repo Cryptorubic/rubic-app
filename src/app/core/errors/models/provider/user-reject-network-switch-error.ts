@@ -3,7 +3,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 export class UserRejectNetworkSwitchError extends RubicError<ERROR_TYPE.TEXT> {
   constructor() {
-    super('You rejected the network switch.');
+    super('errors.rejectedNetworkSwitch');
     Object.setPrototypeOf(this, UserRejectNetworkSwitchError.prototype);
   }
 }
