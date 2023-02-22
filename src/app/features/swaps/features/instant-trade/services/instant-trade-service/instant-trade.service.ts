@@ -177,10 +177,13 @@ export class InstantTradeService extends TradeCalculationService {
     const deadlineMinutes = settings.deadline;
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const isAddressCorrectValue = await Web3Pure[chainType].isAddressCorrect(
+      this.authService.userAddress
+    );
     const calculateGas =
       shouldCalculateGas[fromToken.blockchain] &&
       this.authService.userAddress &&
-      Web3Pure[chainType].isAddressCorrect(this.authService.userAddress);
+      isAddressCorrectValue;
 
     const useProxy = this.platformConfigurationService.useOnChainProxy;
 

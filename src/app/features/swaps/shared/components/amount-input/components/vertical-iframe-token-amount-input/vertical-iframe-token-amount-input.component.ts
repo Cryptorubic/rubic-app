@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -34,7 +34,7 @@ export class VerticalIframeTokenAmountInputComponent implements OnInit {
     public readonly swapFormService: SwapFormService,
     private readonly translateService: TranslateService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class SearchQueryService {
@@ -20,13 +21,18 @@ export class SearchQueryService {
     this._query$.next(value);
   }
 
-  constructor(public readonly assetsSelectorService: AssetsSelectorService) {
+  constructor(
+    public readonly assetsSelectorService: AssetsSelectorService,
+    private readonly destroy$: TuiDestroyService
+  ) {
     this.subscribeOnSelectorListTypeChange();
   }
 
   private subscribeOnSelectorListTypeChange(): void {
-    this.assetsSelectorService.selectorListType$.pipe(distinctUntilChanged()).subscribe(() => {
-      this.query = '';
-    });
+    this.assetsSelectorService.selectorListType$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.query = '';
+      });
   }
 }

@@ -9,8 +9,9 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
@@ -44,7 +45,8 @@ export class BlockchainsListService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
     private readonly swapTypeService: SwapTypeService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
@@ -89,7 +91,8 @@ export class BlockchainsListService {
     combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
       .pipe(
         filter(([_, selectorListType]) => selectorListType === 'blockchains'),
-        map(([query]) => query)
+        map(([query]) => query),
+        takeUntil(this.destroy$)
       )
       .subscribe(query => {
         this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>
