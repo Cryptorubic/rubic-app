@@ -59,6 +59,7 @@
           routerLink="/revoke-approval/"
           [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">Revoke Approval</button>
         </div>
@@ -94,6 +95,7 @@
           class="data-list__link data-list__link_modal"
           routerLink="history/limit-orders"
           queryParamsHandling="merge"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">Limit Orders</button>
         </a>

@@ -46,6 +46,7 @@
     "complete": "Complete"
   },
   "errors": {
+    "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de MetaMask. Para poder comerciar, se solicita su firma. Haga clic en Firmar si desea continuar.",
     "noMetamaskInstalled": "Por favor, asegúrese de que tiene instalado y desbloqueado la extensión de metamask.\nSe puede descargar en",
     "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",

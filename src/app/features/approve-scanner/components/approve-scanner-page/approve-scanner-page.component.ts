@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
 import { combineLatestWith, forkJoin, of } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { Router } from '@angular/router';
@@ -9,12 +9,14 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-approve-scanner-page',
   templateUrl: './approve-scanner-page.component.html',
   styleUrls: ['./approve-scanner-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class ApproveScannerPageComponent {
   public readonly address$ = this.walletConnectorService.addressChange$;
@@ -39,7 +41,8 @@ export class ApproveScannerPageComponent {
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
     private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.handleUnlogin();
   }
@@ -48,6 +51,7 @@ export class ApproveScannerPageComponent {
     this.walletConnectorService.addressChange$
       .pipe(
         first(address => address === null),
+        takeUntil(this.destroy$),
         switchMap(() => this.router.navigateByUrl(ROUTE_PATH.REVOKE_APPROVAL))
       )
       .subscribe();

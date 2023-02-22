@@ -320,7 +320,7 @@ app-analytics-link {
 app-form-navigation {
   display: none;
 
-  @include b($laptop) {
+  @include b($laptop-xl) {
     display: block;
     margin-bottom: 8px;
 
