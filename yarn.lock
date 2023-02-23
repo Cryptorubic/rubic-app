@@ -13188,10 +13188,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.19.5:
-  version "3.19.5"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.19.5.tgz#8ee965bc13c4eacd98d9054ee598c8e011d2b4f8"
-  integrity sha512-nwyrOX1vZ/P3DNPwm5w2I9DEA62IiYQjlk9Ig+gmMhGZgW7Wd1lStNDiWVfUBewnZaF8aq5hwaOZvNUwcIk4gQ==
+rubic-sdk@3.19.6-alpha-sd.1:
+  version "3.19.6-alpha-sd.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.19.6-alpha-sd.1.tgz#788a478e905f8edbdee42dc80cddffd1d9c1fe95"
+  integrity sha512-qiahJRhBPYW9sD0iXiym+4t4PaYbdpy866TItaK/z+zbu1XV4mKwT90osrwAp2eQ7J1W3D1ko3jk9f5vf/dTIQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@lifi/sdk" "^1.6.3"
