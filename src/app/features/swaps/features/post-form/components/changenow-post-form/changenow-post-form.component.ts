@@ -21,6 +21,12 @@ export class ChangenowPostFormComponent {
 
   public readonly status$: Observable<ChangenowApiStatus>;
 
+  // private readonly _fakeStatus$ = new BehaviorSubject<ChangenowApiStatus>(
+  //   ChangenowApiStatus.WAITING
+  // );
+  //
+  // public readonly fakeStatus$ = this._fakeStatus$.asObservable();
+
   constructor(
     private readonly router: Router,
     private readonly changenowPostTradeService: ChangenowPostTradeService,
@@ -33,6 +39,19 @@ export class ChangenowPostFormComponent {
     } else {
       this.changenowPostTradeService.setupUpdate();
       this.status$ = this.changenowPostTradeService.status$;
+
+      // setTimeout(() => {
+      //   this._fakeStatus$.next(ChangenowApiStatus.CONFIRMING);
+      // }, 3000);
+      // setTimeout(() => {
+      //   this._fakeStatus$.next(ChangenowApiStatus.EXCHANGING);
+      // }, 6000);
+      // setTimeout(() => {
+      //   this._fakeStatus$.next(ChangenowApiStatus.SENDING);
+      // }, 9000);
+      // setTimeout(() => {
+      //   this._fakeStatus$.next(ChangenowApiStatus.FINISHED);
+      // }, 12000);
     }
   }
 

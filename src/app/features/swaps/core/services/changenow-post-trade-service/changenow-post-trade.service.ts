@@ -78,7 +78,7 @@ export class ChangenowPostTradeService {
           this._status$.next(status);
           console.log('Status trx: ', status);
         }),
-        takeWhile(status => status === ChangenowApiStatus.FINISHED)
+        takeWhile(status => status !== ChangenowApiStatus.FINISHED)
       )
       .subscribe();
   }

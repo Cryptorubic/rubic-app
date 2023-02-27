@@ -91,55 +91,117 @@
       </div>
     </div>
 
-    <div class="row" *ngLet="status$ | async as status" style="margin-top: 66px">
+    <div class="row" *ngLet="status$ | async as status">
       <div class="row-item status-item">
-        <div class="row-item__spinner-static"></div>
+        <div class="status-item__spinner-wrapper" *ngIf="status === 'waiting'">
+          <div class="status-item__spinner"></div>
+        </div>
         <div
-          class="status-item__spinner"
-          [ngClass]="{ 'status-item__spinner_active': status === 'waiting' }"
-        ></div>
+          class="status-item__circle_complete"
+          *ngIf="
+            status === 'confirming' ||
+            status === 'exchanging' ||
+            status === 'sending' ||
+            status === 'finished'
+          "
+        >
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
         <div
           class="row-item__value status-item__value"
-          [ngClass]="{ 'status-item__value_active': status === 'waiting' }"
+          [ngClass]="{
+            'status-item__value_active':
+              status === 'waiting' ||
+              status === 'confirming' ||
+              status === 'exchanging' ||
+              status === 'sending' ||
+              status === 'finished'
+          }"
         >
           Awaiting deposit
         </div>
       </div>
+
       <div class="row-item status-item">
-        <div class="row-item__spinner-static"></div>
+        <div class="status-item__circle" *ngIf="status === 'waiting'"></div>
+        <div class="status-item__spinner-wrapper" *ngIf="status === 'confirming'">
+          <div class="status-item__spinner"></div>
+        </div>
         <div
-          class="status-item__spinner"
-          [ngClass]="{ 'status-item__spinner_active': status === 'confirming' }"
-        ></div>
+          class="status-item__circle_complete"
+          *ngIf="status === 'exchanging' || status === 'sending' || status === 'finished'"
+        >
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
         <div
           class="row-item__value status-item__value"
-          [ngClass]="{ 'status-item__value_active': status === 'confirming' }"
+          [ngClass]="{
+            'status-item__value_active':
+              status === 'confirming' ||
+              status === 'exchanging' ||
+              status === 'sending' ||
+              status === 'finished'
+          }"
         >
           Confirming
         </div>
       </div>
       <div class="row-item status-item">
-        <div class="row-item__spinner-static"></div>
         <div
-          class="status-item__spinner"
-          [ngClass]="{ 'status-item__spinner_active': status === 'exchanging' }"
+          class="status-item__circle"
+          *ngIf="status === 'waiting' || status === 'confirming'"
         ></div>
+        <div class="status-item__spinner-wrapper" *ngIf="status === 'exchanging'">
+          <div class="status-item__spinner"></div>
+        </div>
+        <div
+          class="status-item__circle_complete"
+          *ngIf="status === 'sending' || status === 'finished'"
+        >
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
         <div
           class="row-item__value status-item__value"
-          [ngClass]="{ 'status-item__value_active': status === 'exchanging' }"
+          [ngClass]="{
+            'status-item__value_active':
+              status === 'exchanging' || status === 'sending' || status === 'finished'
+          }"
         >
           Exchanging
         </div>
       </div>
       <div class="row-item status-item">
-        <div class="row-item__spinner-static"></div>
         <div
-          class="status-item__spinner"
-          [ngClass]="{ 'status-item__spinner_active': status === 'sending' }"
+          class="status-item__circle"
+          *ngIf="status === 'waiting' || status === 'confirming' || status === 'exchanging'"
         ></div>
+        <div class="status-item__spinner-wrapper" *ngIf="status === 'sending'">
+          <div class="status-item__spinner"></div>
+        </div>
+        <div class="status-item__circle_complete" *ngIf="status === 'finished'">
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
         <div
           class="row-item__value status-item__value"
-          [ngClass]="{ 'status-item__value_active': status === 'sending' }"
+          [ngClass]="{
+            'status-item__value_active': status === 'sending' || status === 'finished'
+          }"
         >
           Sending to you
         </div>
