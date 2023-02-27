@@ -91,6 +91,61 @@
       </div>
     </div>
 
+    <div class="row" *ngLet="status$ | async as status" style="margin-top: 66px">
+      <div class="row-item status-item">
+        <div class="row-item__spinner-static"></div>
+        <div
+          class="status-item__spinner"
+          [ngClass]="{ 'status-item__spinner_active': status === 'waiting' }"
+        ></div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{ 'status-item__value_active': status === 'waiting' }"
+        >
+          Awaiting deposit
+        </div>
+      </div>
+      <div class="row-item status-item">
+        <div class="row-item__spinner-static"></div>
+        <div
+          class="status-item__spinner"
+          [ngClass]="{ 'status-item__spinner_active': status === 'confirming' }"
+        ></div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{ 'status-item__value_active': status === 'confirming' }"
+        >
+          Confirming
+        </div>
+      </div>
+      <div class="row-item status-item">
+        <div class="row-item__spinner-static"></div>
+        <div
+          class="status-item__spinner"
+          [ngClass]="{ 'status-item__spinner_active': status === 'exchanging' }"
+        ></div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{ 'status-item__value_active': status === 'exchanging' }"
+        >
+          Exchanging
+        </div>
+      </div>
+      <div class="row-item status-item">
+        <div class="row-item__spinner-static"></div>
+        <div
+          class="status-item__spinner"
+          [ngClass]="{ 'status-item__spinner_active': status === 'sending' }"
+        ></div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{ 'status-item__value_active': status === 'sending' }"
+        >
+          Sending to you
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="estimated-time">
         <img

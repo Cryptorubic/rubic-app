@@ -1,5 +1,15 @@
 @use 'src/scss/core' as *;
 
+@keyframes dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .block-container {
   max-width: 542px;
   margin: 0 auto;
@@ -72,6 +82,78 @@
 
     img {
       max-height: 24px;
+    }
+  }
+}
+
+.status-item {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+
+  &__spinner-static {
+    position: relative;
+
+    width: 26px;
+    height: 26px;
+
+    background-color: #9a9a9a;
+    border-radius: 50%;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      width: 23px;
+      height: 23px;
+
+      background-color: var(--form-background);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+
+      content: '';
+    }
+  }
+
+  &__spinner {
+    display: none;
+    width: 26px;
+    height: 26px;
+
+    &_active {
+      position: absolute;
+      top: -23px;
+
+      display: inline-block;
+
+      &::after {
+        display: block;
+        width: 26px;
+        height: 26px;
+
+        border: 2px solid var(--primary-color);
+        border-color: var(--primary-color) transparent var(--primary-color) transparent;
+        border-radius: 50%;
+
+        animation: dual-ring 1.2s linear infinite;
+
+        content: ' ';
+      }
+    }
+  }
+
+  &__value {
+    color: #9a9a9a;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 120%;
+
+    &_active {
+      color: var(--primary-color);
     }
   }
 }

@@ -1,17 +1,31 @@
 import { Injectable } from '@angular/core';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { StoreService } from '@core/services/store/store.service';
-import { ChangenowPaymentInfo } from 'rubic-sdk';
+import {
+  changenowApiKey,
+  ChangenowApiResponse,
+  ChangenowApiStatus,
+  ChangenowPaymentInfo,
+  RubicSdkError
+} from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Token } from '@app/shared/models/tokens/token';
+import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
+import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ChangenowPostTradeService {
   public trade: ChangenowPostTrade | undefined;
 
+  private readonly _status$ = new BehaviorSubject<ChangenowApiStatus>(ChangenowApiStatus.WAITING);
+
+  public readonly status$ = this._status$.asObservable();
+
   constructor(
     private readonly storeService: StoreService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly httpClient: HttpClient
   ) {
     this.trade = this.storeService.getItem('changenowPostTrade');
   }
@@ -36,7 +50,36 @@ export class ChangenowPostTradeService {
     this.storeService.setItem('changenowPostTrade', this.trade);
   }
 
+  private async getChangenowSwapStatus(id: string): Promise<ChangenowApiStatus> {
+    if (!id) {
+      throw new RubicSdkError('Must provide changenow trade id');
+    }
+
+    try {
+      const responce = await firstValueFrom(
+        this.httpClient.get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
+          params: { id: id },
+          headers: { 'x-changenow-api-key': changenowApiKey }
+        })
+      );
+
+      return responce.status;
+    } catch {
+      return ChangenowApiStatus.WAITING;
+    }
+  }
+
   public setupUpdate(): void {
-    // todo make interval with requests on status
+    interval(30000)
+      .pipe(
+        startWith(-1),
+        switchMap(() => this.getChangenowSwapStatus(this.trade.id)),
+        tap(status => {
+          this._status$.next(status);
+          console.log('Status trx: ', status);
+        }),
+        takeWhile(status => status === ChangenowApiStatus.FINISHED)
+      )
+      .subscribe();
   }
 }
