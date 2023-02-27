@@ -99,10 +99,10 @@ export class WalletsModalComponent implements OnInit {
     }
   }
 
-  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
+  private async deepLinkRedirectIfSupported(provider: WALLET_NAME): Promise<boolean> {
     switch (provider) {
       case WALLET_NAME.METAMASK:
-        this.redirectToMetamaskBrowser();
+        await this.redirectToMetamaskBrowser();
         return true;
       case WALLET_NAME.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
@@ -112,8 +112,15 @@ export class WalletsModalComponent implements OnInit {
     }
   }
 
-  private redirectToMetamaskBrowser(): void {
-    this.window.location.assign(`${this.metamaskAppLink}${this.window.location.hostname}`);
+  private async redirectToMetamaskBrowser(): Promise<void> {
+    const queryUrl = `${this.window.location.hostname}/${this.window.location.pathname}`;
+    this.window.location.assign(`metamask://dapp/${queryUrl}`);
+    await new Promise<void>(resolve => {
+      setTimeout(() => {
+        this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
+      }, 500);
+      resolve();
+    });
   }
 
   private redirectToCoinbaseBrowser(): void {
@@ -134,7 +141,7 @@ export class WalletsModalComponent implements OnInit {
     }
 
     if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-      const redirected = this.deepLinkRedirectIfSupported(provider);
+      const redirected = await this.deepLinkRedirectIfSupported(provider);
       if (redirected) {
         return;
       }
