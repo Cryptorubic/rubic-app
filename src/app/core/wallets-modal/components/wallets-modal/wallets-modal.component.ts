@@ -113,12 +113,12 @@ export class WalletsModalComponent implements OnInit {
   }
 
   private async redirectToMetamaskBrowser(): Promise<void> {
-    const queryUrl = `${this.window.location.hostname}/${this.window.location.pathname}`;
+    const queryUrl = `${this.window.location.host}${this.window.location.search}`;
     this.window.location.assign(`metamask://dapp/${queryUrl}`);
     await new Promise<void>(resolve => {
       setTimeout(() => {
         this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
-      }, 500);
+      }, 5000);
       resolve();
     });
   }
