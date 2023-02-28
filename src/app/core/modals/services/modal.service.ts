@@ -60,7 +60,6 @@ export class ModalService {
   public openRubicMenu(): Observable<void> {
     return this.showDialog<RubicMenuComponent, void>(RubicMenuComponent, {
       title: 'Menu',
-      fitContent: true,
       scrollableContent: true
     });
   }

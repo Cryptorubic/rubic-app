@@ -197,7 +197,8 @@ tui-loader {
     order: 1;
   }
 
-  .token-list-container {
+  .token-list-container,
+  .fiats-list-container {
     order: 3;
     height: 100vh;
   }

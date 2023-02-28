@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { TuiDestroyService, TuiDialog, TuiSwipe } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { ModalStates } from '../../models/modal-states.enum';
@@ -7,6 +14,7 @@ import { switchMap } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { IMobileNativeOptions } from '../../models/mobile-native-options';
 import { animationTimeout } from '../../utils/animation-timeout';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-mobile-native-modal',
@@ -15,7 +23,7 @@ import { animationTimeout } from '../../utils/animation-timeout';
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class MobileNativeModalComponent implements OnInit {
+export class MobileNativeModalComponent implements OnInit, OnDestroy {
   public title: string = this.context.title;
 
   public state: ModalStates;
@@ -25,12 +33,13 @@ export class MobileNativeModalComponent implements OnInit {
     readonly context: TuiDialog<IMobileNativeOptions, void>,
     private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
-    private readonly el: ElementRef<HTMLElement>
+    private readonly el: ElementRef<HTMLElement>,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     if (this.context.forceClose$) {
       this.context.forceClose$.pipe(takeUntil(this.destroy$)).subscribe(() => {
         if (this.state === ModalStates.HIDDEN) {
-          this.state = ModalStates.OPENED;
+          this.state = ModalStates.FULL;
           this.show();
         } else {
           this.hide();
@@ -68,6 +77,11 @@ export class MobileNativeModalComponent implements OnInit {
 
   ngOnInit(): void {
     animationTimeout(() => this.show());
+    this.document.documentElement.style.overflowY = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    this.document.documentElement.style.overflowY = 'unset';
   }
 
   public toggle(): void {
@@ -77,11 +91,11 @@ export class MobileNativeModalComponent implements OnInit {
       return;
     }
 
-    if (this.state === ModalStates.COLLAPSED) {
-      this.state = ModalStates.OPENED;
+    if (this.state === ModalStates.MEDIUM) {
+      this.state = ModalStates.FULL;
       this.expand();
     } else {
-      this.state = ModalStates.COLLAPSED;
+      this.state = ModalStates.MEDIUM;
       this.collapse();
     }
   }
@@ -92,13 +106,17 @@ export class MobileNativeModalComponent implements OnInit {
   }
 
   public onSwipe(swipe: TuiSwipe): void {
-    if (swipe.direction === 'top' && this.state === ModalStates.COLLAPSED) {
-      this.state = ModalStates.OPENED;
+    if (
+      swipe.direction === 'top' &&
+      this.state === ModalStates.MEDIUM &&
+      !this.context.fitContent
+    ) {
+      this.state = ModalStates.FULL;
       this.expand();
-    } else if (swipe.direction === 'bottom' && this.state === ModalStates.OPENED) {
-      this.state = ModalStates.COLLAPSED;
+    } else if (swipe.direction === 'bottom' && this.state === ModalStates.FULL) {
+      this.state = ModalStates.MEDIUM;
       this.collapse();
-    } else if (swipe.direction === 'bottom' && this.state === ModalStates.COLLAPSED) {
+    } else if (swipe.direction === 'bottom' && this.state === ModalStates.MEDIUM) {
       this.close();
     }
   }
@@ -112,8 +130,10 @@ export class MobileNativeModalComponent implements OnInit {
   private show(): void {
     this.el.nativeElement.classList.remove('hidden');
     if (this.context.fitContent) {
+      this.state = ModalStates.MEDIUM;
       this.el.nativeElement.classList.add('fit-content');
     } else {
+      this.state = ModalStates.FULL;
       this.el.nativeElement.classList.add('opened');
     }
     if (this.context.scrollableContent) {

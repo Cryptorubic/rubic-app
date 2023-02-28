@@ -1,5 +1,5 @@
 <ng-container *ngLet="isCalculating$ | async as isCalculating">
-  <div class="provider-panel-mobile" [class.providers-animation]="isCalculating">
+  <div class="provider-panel-mobile" [class.providers-animation]="true">
     <div class="provider-panel-mobile__header">
       <ng-container
         *ngIf="isCalculating || !bridgeProvider; then searchingForProvider; else providerFound"
@@ -12,7 +12,7 @@
 
     <ng-template #providerFound> Bridge Provider </ng-template>
 
-    <ng-container *ngIf="!isCalculating && bridgeProvider; else providerLoading">
+    <ng-container *ngIf="bridgeProvider; else providerLoading">
       <div class="provider-panel-mobile__body" tuiTouchable="opacity">
         <div class="provider-panel-mobile__logo">
           <img [src]="bridgeProvider.image" [alt]="bridgeProvider.name" />

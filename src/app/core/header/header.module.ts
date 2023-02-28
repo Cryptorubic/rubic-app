@@ -15,7 +15,7 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule
 } from '@taiga-ui/core';
-import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
@@ -44,6 +44,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { HistoryModule } from '@app/features/history/history.module';
 import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
+
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -90,7 +91,8 @@ import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/i
     RecentTradesModule,
     ClipboardModule,
     HistoryModule,
-    InstantTradeModule
+    InstantTradeModule,
+    TuiAccordionModule
     // TuiTouchableModule
   ],
   providers: [TuiDestroyService],

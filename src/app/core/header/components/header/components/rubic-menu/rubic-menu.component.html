@@ -1,9 +1,9 @@
 <div class="rubic-menu__container">
-  <tui-data-list class="data-list">
-    <tui-opt-group>
-      <ng-container *ngIf="isMobile$ | async; then mobileMenu; else desktopMenu"></ng-container>
+  <ng-container *ngIf="isMobile$ | async; then mobileMenu; else desktopMenu"></ng-container>
 
-      <ng-template #desktopMenu>
+  <ng-template #desktopMenu>
+    <tui-data-list class="data-list">
+      <tui-opt-group>
         <ng-container *ngFor="let item of navigationList">
           <a
             *ngIf="item.type === 'internal'"
@@ -28,16 +28,25 @@
             </button>
           </a>
         </ng-container>
-      </ng-template>
+      </tui-opt-group>
+    </tui-data-list>
+  </ng-template>
 
-      <ng-template #mobileMenu>
-        <ng-container *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder">
-          <div class="data-list__title">{{ item.key }}</div>
+  <ng-template #mobileMenu>
+    <tui-accordion [closeOthers]="false" [rounded]="false">
+      <tui-accordion-item
+        *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder; index as i"
+        [open]="i === 0"
+      >
+        <div class="data-list__title">{{ item.key }}</div>
 
+        <ng-template tuiAccordionItemContent>
           <ng-container *ngFor="let menu of item.value">
-            <ng-container
-              *ngIf="menu.type === 'internal'; then internal; else external"
-            ></ng-container>
+            <div>
+              <ng-container
+                *ngIf="menu.type === 'internal'; then internal; else external"
+              ></ng-container>
+            </div>
 
             <ng-template #external>
               <a
@@ -46,7 +55,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <button tuiOption class="data-list__option" (click)="handleButtonClick()">
+                <button class="data-list__option" (click)="handleButtonClick()">
                   {{ menu.translateKey | translate }}
                 </button>
               </a>
@@ -59,76 +68,14 @@
                 [routerLink]="menu.link"
                 routerLinkActive="data-list__link_active"
               >
-                <button tuiOption class="data-list__option">
+                <button class="data-list__option">
                   {{ menu.translateKey | translate }}
                 </button>
               </a>
             </ng-template>
           </ng-container>
-        </ng-container>
-      </ng-template>
-    </tui-opt-group>
-
-    <!-- <tui-opt-group class="rubic-menu__mobile">
-      <a
-        (click)="menuClickHandler()"
-        [class.data-list__link_active]="crossChainActive"
-        class="data-list__link"
-      >
-        <button tuiOption class="data-list__option">Swaps</button>
-      </a>
-      <div
-        routerLink="/revoke-approval/"
-        [class.data-list__link_active]="crossChainActive"
-        class="data-list__link"
-      >
-        <button tuiOption class="data-list__option">Revoke Approval</button>
-      </div>
-    </tui-opt-group> -->
-
-    <!-- <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
-      <button tuiOption class="data-list__address">
-        <img
-          *ngIf="currentBlockchainIcon"
-          class="rubic-menu__chain-icon"
-          [src]="currentBlockchainIcon"
-          alt="($currentBlockchain | async)?.name"
-          width="25"
-          height="25"
-        />
-        {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
-      </button>
-
-      <a class="data-list__link data-list__link_modal" (click)="openRecentTradesModal()">
-        <button tuiOption class="data-list__option">
-          {{ 'navigation.recentTrades' | translate }}
-        </button>
-        <app-notification-badge
-          class="notification-counter notification-counter_menu"
-          *ngIf="(unreadTrades$ | async) && (currentUser$ | async)"
-          size="xs"
-          color="red"
-          [value]="unreadTrades$ | async"
-        ></app-notification-badge>
-      </a>
-
-      <a
-        class="data-list__link data-list__link_modal"
-        routerLink="history/limit-orders"
-        queryParamsHandling="merge"
-      >
-        <button tuiOption class="data-list__option">Limit Orders</button>
-      </a>
-
-      <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
-        {{ 'navigation.logout' | translate }}
-      </button>
-    </tui-opt-group> -->
-  </tui-data-list>
-
-  <!-- <div class="rubic-menu__mobile">
-    <div class="rubic-menu__bottom" *ngIf="!(currentUser$ | async)?.address">
-      <app-login-button class="rubic-menu__login" appearance="outline"></app-login-button>
-    </div>
-  </div> -->
+        </ng-template>
+      </tui-accordion-item>
+    </tui-accordion>
+  </ng-template>
 </div>
