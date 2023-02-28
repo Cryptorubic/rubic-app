@@ -10,16 +10,6 @@
   }
 }
 
-@keyframes line {
-  0% {
-    width: 70px;
-  }
-
-  100% {
-    width: 0;
-  }
-}
-
 .block-container {
   max-width: 542px;
   margin: 0 auto;
@@ -170,24 +160,6 @@
     &_completed {
       background-color: var(--primary-color);
     }
-
-    &_load {
-      background-color: var(--primary-color);
-
-      &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-
-        height: 2px;
-
-        background-color: #9a9a9a;
-
-        animation: line 3s ease-out infinite;
-
-        content: '';
-      }
-    }
   }
 
   &__spinner-wrapper {
@@ -211,6 +183,7 @@
     font-weight: 300;
     font-size: 13px;
     line-height: 120%;
+    white-space: nowrap;
 
     &_completed {
       color: var(--primary-color);
@@ -361,6 +334,51 @@ button {
   .row-item {
     &_small {
       max-width: unset;
+    }
+  }
+}
+
+@include b(460) {
+  .row {
+    &-status {
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: flex-start;
+    }
+  }
+
+  .status-item {
+    position: relative;
+
+    flex-direction: row;
+    gap: 10px;
+    justify-content: initial;
+
+    height: auto;
+
+    &__line {
+      position: absolute;
+      top: initial;
+      right: initial;
+      bottom: -20px;
+      left: 12px;
+
+      width: 2px;
+      height: 20px;
+
+      &_confirming,
+      &_exchanging {
+        right: initial;
+      }
+
+      &_completed {
+        background-color: var(--primary-color);
+      }
+    }
+
+    &__spinner-wrapper {
+      width: 26px;
+      height: 26px;
     }
   }
 }
