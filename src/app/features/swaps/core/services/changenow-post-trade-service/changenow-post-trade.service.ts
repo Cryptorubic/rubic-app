@@ -74,10 +74,7 @@ export class ChangenowPostTradeService {
       .pipe(
         startWith(-1),
         switchMap(() => this.getChangenowSwapStatus(this.trade.id)),
-        tap(status => {
-          this._status$.next(status);
-          console.log('Status trx: ', status);
-        }),
+        tap(status => this._status$.next(status)),
         takeWhile(status => status !== ChangenowApiStatus.FINISHED)
       )
       .subscribe();
