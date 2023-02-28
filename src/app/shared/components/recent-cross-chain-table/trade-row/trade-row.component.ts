@@ -12,10 +12,12 @@ import {
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
 import { interval, timer } from 'rxjs';
 import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
+import {
+  getStatusBadgeText,
+  getStatusBadgeType
+} from '@core/recent-trades/utils/recent-trades-utils';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
@@ -35,6 +37,7 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { UiRecentTrade } from '@core/recent-trades/models/ui-recent-trade.interface';
 
 @Component({
   selector: '[trade-row]',

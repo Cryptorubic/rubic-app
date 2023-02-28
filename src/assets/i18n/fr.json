@@ -102,6 +102,7 @@
   },
   "navigation": { 
     "recentTrades": "Recent Trades",
+    "changeNowRecentTrades": "ChangeNow Tx",
     "about": "À propos",
     "faq": "FAQ",
     "features": "Fonctionnalités",

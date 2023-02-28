@@ -5,10 +5,9 @@ import { RecentTradesService } from './services/recent-trades.service';
 import { TuiHintModule, TuiLoaderModule, TuiManualHintModule } from '@taiga-ui/core';
 import { SharedModule } from '@app/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TradeRowComponent } from './components/trade-row/trade-row.component';
 
 @NgModule({
-  declarations: [RecentCrosschainTxComponent, TradeRowComponent],
+  declarations: [RecentCrosschainTxComponent],
   imports: [
     CommonModule,
     TuiLoaderModule,

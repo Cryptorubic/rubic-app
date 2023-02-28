@@ -103,6 +103,7 @@
   },
   "navigation": { 
     "recentTrades": "Recent Trades",
+    "changeNowRecentTrades": "ChangeNow Tx",
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",

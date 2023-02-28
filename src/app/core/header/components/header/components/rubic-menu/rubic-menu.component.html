@@ -28,7 +28,13 @@
             routerLinkActive="data-list__link_active"
             class="data-list__link"
           >
-            <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
+            <button
+              tuiOption
+              class="data-list__option"
+              (click)="
+                handleButtonClick(item, item.link === 'changenow-recent-trades' ? '_self' : '')
+              "
+            >
               <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
             </button>

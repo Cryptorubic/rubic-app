@@ -103,6 +103,7 @@
   },
   "navigation": { 
     "recentTrades": "Recent Trades",
+    "changeNowRecentTrades": "ChangeNow Tx",
     "about": "关于",
     "faq": "常见问题解答",
     "features": "特点",
