@@ -100,9 +100,7 @@
             'status-item__line_load': status === 'waiting'
           }"
         ></div>
-        <div class="status-item__spinner-wrapper" *ngIf="status === 'waiting'">
-          <div class="status-item__spinner"></div>
-        </div>
+        <div class="status-item__spinner" *ngIf="status === 'waiting'"></div>
         <div class="status-item__circle_complete" *ngIf="status !== 'waiting'">
           <img
             class="scheme__status-icon"
@@ -130,9 +128,7 @@
             'status-item__line_load': status === 'confirming'
           }"
         ></div>
-        <div class="status-item__spinner-wrapper" *ngIf="status === 'confirming'">
-          <div class="status-item__spinner"></div>
-        </div>
+        <div class="status-item__spinner" *ngIf="status === 'confirming'"></div>
         <div
           class="status-item__circle_complete"
           *ngIf="status === 'exchanging' || status === 'sending' || status === 'finished'"
@@ -168,9 +164,7 @@
             'status-item__line_load': status === 'exchanging'
           }"
         ></div>
-        <div class="status-item__spinner-wrapper" *ngIf="status === 'exchanging'">
-          <div class="status-item__spinner"></div>
-        </div>
+        <div class="status-item__spinner" *ngIf="status === 'exchanging'"></div>
         <div
           class="status-item__circle_complete"
           *ngIf="status === 'sending' || status === 'finished'"
@@ -196,9 +190,7 @@
           class="status-item__circle"
           *ngIf="status === 'waiting' || status === 'confirming' || status === 'exchanging'"
         ></div>
-        <div class="status-item__spinner-wrapper" *ngIf="status === 'sending'">
-          <div class="status-item__spinner"></div>
-        </div>
+        <div class="status-item__spinner" *ngIf="status === 'sending'"></div>
         <div class="status-item__circle_complete" *ngIf="status === 'finished'">
           <img
             class="scheme__status-icon"
