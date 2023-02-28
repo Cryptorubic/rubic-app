@@ -1,0 +1,15 @@
+.receiver {
+  display: flex;
+  align-items: center;
+
+  > * {
+    display: flex;
+    align-items: center;
+  }
+
+  img {
+    width: 18px;
+    height: 100%;
+    margin-left: 10px;
+  }
+}

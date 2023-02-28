@@ -19,18 +19,9 @@
   <div tuiAccordionItemContent>
     <tui-loader [showLoader]="loading" [overlay]="true">
       <div class="swaps-info">
-        <hr class="delimiter" />
-
-        <app-instant-trade-swap-info
-          *ngIf="isInstantTrade; else crossChainSwapInfo"
+        <app-transaction-details
           [currentOnChainTrade]="currentInstantTradeInfo?.trade"
-        ></app-instant-trade-swap-info>
-
-        <ng-template #crossChainSwapInfo>
-          <app-cross-chain-bridge-swap-info
-            [swapType]="swapType"
-          ></app-cross-chain-bridge-swap-info>
-        </ng-template>
+        ></app-transaction-details>
       </div>
     </tui-loader>
   </div>
