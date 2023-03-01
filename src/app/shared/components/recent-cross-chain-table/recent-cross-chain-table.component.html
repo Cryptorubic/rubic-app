@@ -17,7 +17,7 @@
           trade-row
           [trade]="trade"
           mode="table-row"
-          (onClose)="onClose()"
+          (onClose)="closeModal()"
         ></tr>
       </tbody>
     </table>
@@ -36,7 +36,7 @@
     <app-rubic-button
       class="no-transactions__navigate"
       appearance="secondary"
-      (onClick)="navigateToCrossChainSwaps()"
+      (onClick)="navigateToCrossChainSwapsOnClick()"
     >
       {{ 'recentTrades.swapNow' | translate }}
     </app-rubic-button>

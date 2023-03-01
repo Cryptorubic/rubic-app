@@ -112,6 +112,9 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     if ('changenowId' in this.trade) {
       return this.trade.changenowId;
     }
+    if ('id' in this.trade) {
+      return this.trade.id;
+    }
     return undefined;
   }
 

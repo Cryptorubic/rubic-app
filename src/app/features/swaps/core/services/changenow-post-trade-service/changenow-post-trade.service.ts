@@ -13,6 +13,7 @@ import { Token } from '@app/shared/models/tokens/token';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
 import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { ChangenowResentTradesStoreService } from '@core/services/recent-trades/changenow-resent-trades-store.service';
 
 @Injectable()
 export class ChangenowPostTradeService {
@@ -24,13 +25,15 @@ export class ChangenowPostTradeService {
 
   constructor(
     private readonly storeService: StoreService,
+    private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService,
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient
-  ) {
-    this.trade = this.storeService.getItem('changenowPostTrade');
-  }
+  ) {}
 
-  public updateTrade(paymentInfo: ChangenowPaymentInfo, receiverAddress: string): void {
+  public async updateTrade(
+    paymentInfo: ChangenowPaymentInfo,
+    receiverAddress: string
+  ): Promise<void> {
     const { fromAsset, toToken, fromAmount } = this.swapFormService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
 
@@ -41,13 +44,19 @@ export class ChangenowPostTradeService {
       toToken,
       fromAmount: fromAmount.toFixed(),
       toAmount: toAmount.toFixed(),
+      timestamp: Date.now(),
 
       depositAddress: paymentInfo.depositAddress,
       receiverAddress,
-
       extraField: paymentInfo.extraField
     };
-    this.storeService.setItem('changenowPostTrade', this.trade);
+
+    const tradeStatus = await this.getChangenowSwapStatus(this.trade.id);
+    this.changenowResentTradesStoreService.saveTrade(this.trade);
+
+    if (tradeStatus === ChangenowApiStatus.CONFIRMING) {
+      this.changenowResentTradesStoreService.saveTrade(this.trade);
+    }
   }
 
   private async getChangenowSwapStatus(id: string): Promise<ChangenowApiStatus> {

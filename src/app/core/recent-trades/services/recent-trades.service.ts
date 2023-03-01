@@ -57,9 +57,18 @@ export class RecentTradesService {
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const srcTxHash = 'srcTxHash' in trade ? trade.srcTxHash : null;
+    const calculatedDstTxHash = 'dstTxHash' in trade ? trade.dstTxHash : null;
+    const { toToken, timestamp } = trade;
     const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
-    const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
+
+    let fromAsset;
+    if ('fromToken' in trade) {
+      fromAsset = trade.fromToken;
+    } else {
+      fromAsset = trade.fromFiat;
+    }
+
     const toBlockchain = trade.toToken.blockchain;
 
     const srcBlockchain = isCrossChainRecentTrade(trade)
@@ -88,7 +97,7 @@ export class RecentTradesService {
       );
     }
 
-    if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
+    if ('calculatedStatusTo' in trade && 'calculatedStatusFrom' in trade) {
       uiTrade.statusTo = trade.calculatedStatusTo;
       uiTrade.statusFrom = trade.calculatedStatusFrom;
 
@@ -97,6 +106,9 @@ export class RecentTradesService {
 
     if (isCrossChainRecentTrade(trade)) {
       return this.getCrossChainStatuses(trade, uiTrade);
+    }
+    if ('id' in trade) {
+      return uiTrade;
     }
     return this.getOnramperStatuses(trade, uiTrade);
   }

@@ -11,6 +11,8 @@ export interface ChangenowPostTrade {
   depositAddress: string;
   receiverAddress: string;
 
+  timestamp: number;
+
   extraField?: {
     name: string;
     value: string;

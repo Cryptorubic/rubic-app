@@ -1,9 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
-import { Router } from '@angular/router';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-recent-cross-chain-table-tx',
@@ -14,19 +11,19 @@ import { TuiDialogContext } from '@taiga-ui/core';
 export class RecentCrossChainTableTxComponent {
   @Input() public recentTrades: RecentTrade[];
 
+  @Output() onClose = new EventEmitter<void>();
+
+  @Output() navigateToCrossChainSwaps = new EventEmitter<void>();
+
+  public closeModal(): void {
+    this.onClose.emit();
+  }
+
+  public navigateToCrossChainSwapsOnClick(): void {
+    this.navigateToCrossChainSwaps.emit();
+  }
+
   public readonly isMobile = this.recentTradesService.isMobile;
 
-  constructor(
-    private readonly recentTradesService: RecentTradesService,
-    private readonly router: Router,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
-  ) {}
-
-  public onClose(): void {
-    this.context.completeWith(null);
-  }
-
-  public navigateToCrossChainSwaps(): void {
-    this.router.navigate(['/']).then(() => this.context.completeWith(null));
-  }
+  constructor(private readonly recentTradesService: RecentTradesService) {}
 }

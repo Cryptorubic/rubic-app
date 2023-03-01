@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangenowResentTradesStoreService } from '@core/services/recent-trades/changenow-resent-trades-store.service';
 
 @Component({
   selector: 'app-changenow-recent-trades-crypto',
@@ -7,5 +8,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangenowRecentTradesComponent {
-  constructor() {}
+  public readonly changenowRecentTrades =
+    this.changenowResentTradesStoreService.changenowRecentTrades;
+
+  constructor(
+    private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService
+  ) {}
 }

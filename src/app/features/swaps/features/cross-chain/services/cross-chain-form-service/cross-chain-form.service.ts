@@ -808,7 +808,7 @@ export class CrossChainFormService {
         await this.crossChainCalculationService.getChangenowPaymentInfo(
           this.selectedTrade.trade as ChangenowCrossChainTrade
         );
-      this.changenowPostTradeService.updateTrade(paymentInfo, receiverAddress);
+      await this.changenowPostTradeService.updateTrade(paymentInfo, receiverAddress);
       await this.router.navigate(['/changenow-post'], { queryParamsHandling: 'merge' });
 
       this.isSwapStarted = SWAP_PROCESS.NONE;
