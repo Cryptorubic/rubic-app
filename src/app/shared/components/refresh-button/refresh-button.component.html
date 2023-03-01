@@ -1,4 +1,4 @@
-<div class="refresh-button" [tuiHint]="refreshIconTooltip" (click)="toggleClick()">
+<div class="refresh-button" [tuiHint]="isMobile ? '' : refreshIconTooltip" (click)="toggleClick()">
   <div #refreshIcon class="refresh-button__icon" inlineSVG="assets/images/icons/reload.svg"></div>
 </div>
 
