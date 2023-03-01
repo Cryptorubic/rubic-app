@@ -278,7 +278,17 @@
     "pending": "Pending",
     "success": "Success",
     "fallback": "Fallback",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+
+    "new": "New",
+    "waiting":"Waiting",
+    "confirming": "Confirming",
+    "exchanging":"Exchanging",
+    "sending": "Sending",
+    "finished":"Finished",
+    "failed": "Failed",
+    "refunded":"Refunded",
+    "verifying": "Verifying"
   },
   "gasRefund": {
     "title": "Gas Refund",

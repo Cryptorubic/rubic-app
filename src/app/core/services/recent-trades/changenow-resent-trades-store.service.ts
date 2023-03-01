@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '../store/store.service';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
-const MAX_LATEST_TRADES = 20;
+const MAX_LATEST_TRADES = 8;
 
 @Injectable({
   providedIn: 'root'

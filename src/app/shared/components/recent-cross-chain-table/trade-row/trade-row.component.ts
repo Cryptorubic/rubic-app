@@ -31,6 +31,7 @@ import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.servi
 import {
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
+  ChangenowApiStatus,
   CROSS_CHAIN_TRADE_TYPE,
   TxStatus
 } from 'rubic-sdk';
@@ -59,9 +60,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public readonly CrossChainTxStatus = TxStatus;
 
-  public readonly getStatusBadgeType: (status: TxStatus) => string = getStatusBadgeType;
+  public readonly getStatusBadgeType: (status: TxStatus | ChangenowApiStatus) => string =
+    getStatusBadgeType;
 
-  public readonly getFromStatusBadgeText: (status: TxStatus) => string = getStatusBadgeText;
+  public readonly getFromStatusBadgeText: (status: TxStatus | ChangenowApiStatus) => string =
+    getStatusBadgeText;
 
   public readonly defaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
 
@@ -150,7 +153,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         switchMap(() => this.getTradeData(this.trade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
-        takeWhile(uiTrade => uiTrade?.statusTo === TxStatus.PENDING),
+        takeWhile(
+          uiTrade =>
+            uiTrade?.statusTo === TxStatus.PENDING ||
+            uiTrade?.statusTo !== ChangenowApiStatus.FINISHED
+        ),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -166,7 +173,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getToStatusBadgeText(status: TxStatus): string {
+  public getToStatusBadgeText(status: TxStatus | ChangenowApiStatus): string {
     if (isOnramperRecentTrade(this.trade)) {
       if (this.uiTrade?.statusFrom === TxStatus.PENDING) {
         return 'Waiting';

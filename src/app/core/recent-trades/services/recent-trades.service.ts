@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { Subscription } from 'rxjs';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
+import { Token } from '@shared/models/tokens/token';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
@@ -29,6 +30,9 @@ import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
+import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
+import { FiatAsset } from '@shared/models/fiats/fiat-asset';
+import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 @Injectable()
 export class RecentTradesService {
@@ -53,20 +57,23 @@ export class RecentTradesService {
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly sdkService: SdkService,
-    private readonly onramperApiService: OnramperApiService
+    private readonly onramperApiService: OnramperApiService,
+    private readonly changenowPostTradeService: ChangenowPostTradeService
   ) {}
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const srcTxHash = 'srcTxHash' in trade ? trade.srcTxHash : null;
     const calculatedDstTxHash = 'dstTxHash' in trade ? trade.dstTxHash : null;
     const { toToken, timestamp } = trade;
-    const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
 
-    let fromAsset;
+    let fromAsset: Token | FiatAsset;
+    let fromAssetType: AssetType;
     if ('fromToken' in trade) {
       fromAsset = trade.fromToken;
+      fromAssetType = trade.fromToken.blockchain;
     } else {
       fromAsset = trade.fromFiat;
+      fromAssetType = 'fiat';
     }
 
     const toBlockchain = trade.toToken.blockchain;
@@ -104,11 +111,15 @@ export class RecentTradesService {
       return uiTrade;
     }
 
+    if ('id' in trade) {
+      uiTrade.statusTo = await this.changenowPostTradeService.getChangenowSwapStatus(trade.id);
+      uiTrade.statusFrom = uiTrade.statusTo;
+
+      return uiTrade;
+    }
+
     if (isCrossChainRecentTrade(trade)) {
       return this.getCrossChainStatuses(trade, uiTrade);
-    }
-    if ('id' in trade) {
-      return uiTrade;
     }
     return this.getOnramperStatuses(trade, uiTrade);
   }
