@@ -26,13 +26,13 @@ export class CrossChainRouteComponent {
       ? TRADES_PROVIDERS[routing.fromProvider]
       : {
           ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name
         };
     this.toProvider = routing.toProvider
       ? TRADES_PROVIDERS[routing.toProvider]
       : {
           ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name + ' Pool'
+          name: TRADES_PROVIDERS[routing.bridgeProvider].name
         };
   }
 
