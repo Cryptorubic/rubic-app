@@ -1,4 +1,4 @@
-<ng-container *ngIf="(fromAmount$ | async)?.isFinite()">
+<ng-container *ngIf="isReady$ | async">
   <ng-container *ngLet="selectedTrade$ | async as selectedTrade">
     <ng-container *ngLet="taggedTrades$ | async as taggedTrades">
       <div class="trade-panel">

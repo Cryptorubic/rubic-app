@@ -37,8 +37,11 @@ export class BestTradePanelComponent {
 
   public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
-  public readonly fromAmount$ = this.swapFormService.inputValue$.pipe(
-    map(input => input.fromAmount)
+  public readonly isReady$ = this.swapFormService.inputValue$.pipe(
+    map(
+      input =>
+        Boolean(input.fromAmount?.isFinite()) && Boolean(input.toToken) && Boolean(input.fromAsset)
+    )
   );
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
