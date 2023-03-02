@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ChangenowResentTradesStoreService } from '@core/services/recent-trades/changenow-resent-trades-store.service';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
+import { BehaviorSubject, from, mergeMap } from 'rxjs';
 import { ChangenowApiStatus } from 'rubic-sdk';
 
 @Component({
@@ -14,7 +15,9 @@ export class ChangenowRecentTradesComponent {
   public readonly allChangenowRecentTrades =
     this.changenowResentTradesStoreService.changenowRecentTrades;
 
-  public changenowRecentTrades: ChangenowPostTrade[] = [];
+  private readonly _changenowRecentTrades$ = new BehaviorSubject<ChangenowPostTrade[]>([]);
+
+  public readonly changenowRecentTrades$ = this._changenowRecentTrades$.asObservable();
 
   constructor(
     private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService,
@@ -24,11 +27,26 @@ export class ChangenowRecentTradesComponent {
   }
 
   private getChangenowRecentTrades(): void {
-    this.changenowRecentTrades = this.allChangenowRecentTrades.filter(trade => {
-      setTimeout(async () => {
-        const status = await this.changenowPostTradeService.getChangenowSwapStatus(trade.id);
-        return status !== ChangenowApiStatus.WAITING;
-      }, 1000);
-    });
+    let confirmedTrades: ChangenowPostTrade[] = [];
+
+    from(this.allChangenowRecentTrades)
+      .pipe(
+        mergeMap(async trade => {
+          const status = await this.changenowPostTradeService.getChangenowSwapStatus(trade.id);
+
+          if (status !== ChangenowApiStatus.WAITING) {
+            return trade;
+          }
+
+          return null;
+        })
+      )
+      .subscribe(trade => {
+        if (trade !== null) {
+          confirmedTrades.push(trade);
+        }
+        console.log(confirmedTrades);
+        this._changenowRecentTrades$.next(confirmedTrades);
+      });
   }
 }
