@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
+import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
 @Component({
   selector: 'app-recent-cross-chain-table-tx',
@@ -9,7 +10,7 @@ import { RecentTradesService } from '@core/recent-trades/services/recent-trades.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentCrossChainTableTxComponent {
-  @Input() public recentTrades: RecentTrade[];
+  @Input() public recentTrades: RecentTrade[] | ChangenowPostTrade[];
 
   @Output() onClose = new EventEmitter<void>();
 

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { TransactionReceipt } from 'web3-eth';
 import { Subscription } from 'rxjs';
 import { UiRecentTrade } from '../models/ui-recent-trade.interface';
-import { Token } from '@shared/models/tokens/token';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../../shared/models/blockchain/address-type';
@@ -31,8 +30,7 @@ import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recen
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
-import { FiatAsset } from '@shared/models/fiats/fiat-asset';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
+import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
 @Injectable()
 export class RecentTradesService {
@@ -61,21 +59,27 @@ export class RecentTradesService {
     private readonly changenowPostTradeService: ChangenowPostTradeService
   ) {}
 
+  public async getChangeNowTradeData(trade: ChangenowPostTrade): Promise<UiRecentTrade> {
+    const { id, toToken, timestamp, fromToken } = trade;
+    const status = await this.changenowPostTradeService.getChangenowSwapStatus(id);
+
+    return {
+      fromAssetType: fromToken.blockchain,
+      toBlockchain: toToken.blockchain,
+      fromAsset: fromToken,
+      toToken,
+      timestamp,
+      srcTxLink: null,
+      srcTxHash: null,
+      statusTo: status,
+      statusFrom: status
+    };
+  }
+
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    const srcTxHash = 'srcTxHash' in trade ? trade.srcTxHash : null;
-    const calculatedDstTxHash = 'dstTxHash' in trade ? trade.dstTxHash : null;
-    const { toToken, timestamp } = trade;
-
-    let fromAsset: Token | FiatAsset;
-    let fromAssetType: AssetType;
-    if ('fromToken' in trade) {
-      fromAsset = trade.fromToken;
-      fromAssetType = trade.fromToken.blockchain;
-    } else {
-      fromAsset = trade.fromFiat;
-      fromAssetType = 'fiat';
-    }
-
+    const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
+    const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
+    const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
     const toBlockchain = trade.toToken.blockchain;
 
     const srcBlockchain = isCrossChainRecentTrade(trade)
@@ -104,16 +108,9 @@ export class RecentTradesService {
       );
     }
 
-    if ('calculatedStatusTo' in trade && 'calculatedStatusFrom' in trade) {
+    if (trade.calculatedStatusTo && trade.calculatedStatusFrom) {
       uiTrade.statusTo = trade.calculatedStatusTo;
       uiTrade.statusFrom = trade.calculatedStatusFrom;
-
-      return uiTrade;
-    }
-
-    if ('id' in trade) {
-      uiTrade.statusTo = await this.changenowPostTradeService.getChangenowSwapStatus(trade.id);
-      uiTrade.statusFrom = uiTrade.statusTo;
 
       return uiTrade;
     }
