@@ -279,7 +279,12 @@
     "pending": "Pending",
     "success": "Success",
     "fallback": "Fallback",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+
+    "waiting":"Waiting",
+    "confirming": "Confirming",
+    "exchanging":"Exchanging",
+    "sending": "Sending"
   },
   "gasRefund": {
     "title": "天然氣退款",
