@@ -11,7 +11,7 @@ export const STATUS_BADGE_TYPE: Partial<Record<TxStatus | ChangenowApiStatus, st
   [ChangenowApiStatus.WAITING]: 'info',
   [ChangenowApiStatus.CONFIRMING]: 'info',
   [ChangenowApiStatus.EXCHANGING]: 'info',
-  [ChangenowApiStatus.SENDING]: 'info',
+  [ChangenowApiStatus.SENDING]: 'active',
   [ChangenowApiStatus.FINISHED]: 'active',
   [ChangenowApiStatus.FAILED]: 'error',
   [ChangenowApiStatus.REFUNDED]: 'info',

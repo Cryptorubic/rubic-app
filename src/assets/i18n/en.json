@@ -280,15 +280,10 @@
     "fallback": "Fallback",
     "unknown": "Unknown",
 
-    "new": "New",
     "waiting":"Waiting",
     "confirming": "Confirming",
     "exchanging":"Exchanging",
-    "sending": "Sending",
-    "finished":"Finished",
-    "failed": "Failed",
-    "refunded":"Refunded",
-    "verifying": "Verifying"
+    "sending": "Sending"
   },
   "gasRefund": {
     "title": "Gas Refund",

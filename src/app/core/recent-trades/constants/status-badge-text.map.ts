@@ -7,13 +7,13 @@ export const STATUS_BADGE_TEXT: Partial<Record<TxStatus | ChangenowApiStatus, st
   [TxStatus.FALLBACK]: 'recentTrades.fallback',
   [TxStatus.UNKNOWN]: 'recentTrades.unknown',
 
-  [ChangenowApiStatus.NEW]: 'recentTrades.new',
+  [ChangenowApiStatus.NEW]: 'recentTrades.waiting',
   [ChangenowApiStatus.WAITING]: 'recentTrades.waiting',
   [ChangenowApiStatus.CONFIRMING]: 'recentTrades.confirming',
   [ChangenowApiStatus.EXCHANGING]: 'recentTrades.exchanging',
   [ChangenowApiStatus.SENDING]: 'recentTrades.sending',
-  [ChangenowApiStatus.FINISHED]: 'recentTrades.finished',
-  [ChangenowApiStatus.FAILED]: 'recentTrades.failed',
-  [ChangenowApiStatus.REFUNDED]: 'recentTrades.refunded',
-  [ChangenowApiStatus.VERIFYING]: 'recentTrades.verifying'
+  [ChangenowApiStatus.FINISHED]: 'recentTrades.sending',
+  [ChangenowApiStatus.FAILED]: 'recentTrades.sending',
+  [ChangenowApiStatus.REFUNDED]: 'recentTrades.sending',
+  [ChangenowApiStatus.VERIFYING]: 'recentTrades.sending'
 };
