@@ -5,7 +5,7 @@
 
   <div class="header">Please send the funds you would like to exchange</div>
 
-  <div class="rows">
+  <div class="rows" *ngLet="status$ | async as status">
     <div class="row">
       <div class="row-item row-item_small">
         <div class="row-item__header">Amount</div>
@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <div class="row row-status" *ngLet="status$ | async as status">
+    <div class="row row-status">
       <div class="row-item status-item">
         <div
           class="status-item__line"
@@ -220,6 +220,18 @@
           [tuiHintMode]="'onDark'"
         />
         Estimated Arrival <span class="primary-text">~10 minutes</span>
+      </div>
+    </div>
+
+    <div class="row row__recent-trades">
+      <div class="recent-trades">
+        Transaction status can also be tracked in
+        <a
+          class="recent-trades__link"
+          [ngClass]="{ 'recent-trades__link_active': status !== 'waiting' }"
+        >
+          <button class="data-list__option" (click)="handleButtonClick()">Recent Trades</button>
+        </a>
       </div>
     </div>
   </div>

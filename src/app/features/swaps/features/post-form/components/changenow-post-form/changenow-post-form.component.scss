@@ -72,6 +72,10 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     justify-items: center;
   }
+
+  &__recent-trades {
+    margin-top: 10px;
+  }
 }
 
 .row-item {
@@ -270,7 +274,8 @@
   height: 20px;
 }
 
-.estimated-time {
+.estimated-time,
+.recent-trades {
   display: flex;
   grid-gap: 9px;
   align-items: center;
@@ -278,6 +283,22 @@
   width: 100%;
 
   font-size: 12px;
+}
+
+.recent-trades {
+  grid-gap: 3px;
+
+  &__link {
+    color: var(--secondary-text);
+
+    pointer-events: none;;
+  }
+
+  &__link_active {
+    color: var(--primary-color);
+
+    pointer-events: initial;
+  }
 }
 
 .primary-text {
