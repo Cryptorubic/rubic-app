@@ -121,13 +121,15 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ...(iframeDisabledTradeTypes || [])
       ])
     );
+    console.log(disabledProviders);
 
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      disabledProviders,
+      // @TODO CCR
+      disabledProviders: [],
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress }),
