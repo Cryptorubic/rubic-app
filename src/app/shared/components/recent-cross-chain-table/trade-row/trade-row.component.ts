@@ -89,13 +89,12 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public get isCbridgeTrade(): boolean {
-    if ('id' in this.trade) {
-      return false;
+    if (!this.isChangenowTrade(this.trade)) {
+      return (
+        isCrossChainRecentTrade(this.trade) &&
+        this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
+      );
     }
-    return (
-      isCrossChainRecentTrade(this.trade) &&
-      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
-    );
   }
 
   public get fromAssetTypeName(): string {
@@ -125,6 +124,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     if ('changenowId' in this.trade) {
       return this.trade.changenowId;
     }
+
+    if (this.isChangenowTrade(this.trade)) {
+      return this.trade.id;
+    }
     return undefined;
   }
 
@@ -149,8 +152,12 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     this.saveTrades();
   }
 
+  public isChangenowTrade(trade: RecentTrade | ChangenowPostTrade): trade is ChangenowPostTrade {
+    return 'id' in trade;
+  }
+
   public getTradeData(trade: RecentTrade | ChangenowPostTrade): Promise<UiRecentTrade> {
-    if ('id' in trade) {
+    if (this.isChangenowTrade(trade)) {
       return this.recentTradesService.getChangeNowTradeData(trade);
     }
 
@@ -204,22 +211,22 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   private saveTrades(): void {
-    if ('id' in this.trade) {
-      return;
+    if (!this.isChangenowTrade(this.trade)) {
+      const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
+
+      this.recentTradesStoreService.updateTrade({
+        ...this.trade,
+        ...(isCrossChainFinished && {
+          calculatedStatusTo: this.uiTrade.statusTo,
+          calculatedStatusFrom: this.uiTrade.statusFrom
+        }),
+        dstTxHash: this.uiTrade.dstTxHash
+      });
     }
-    const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
-    this.recentTradesStoreService.updateTrade({
-      ...this.trade,
-      ...(isCrossChainFinished && {
-        calculatedStatusTo: this.uiTrade.statusTo,
-        calculatedStatusFrom: this.uiTrade.statusFrom
-      }),
-      dstTxHash: this.uiTrade.dstTxHash
-    });
   }
 
   public async revertTrade(): Promise<void> {
-    if ('id' in this.trade) {
+    if (this.isChangenowTrade(this.trade)) {
       return;
     }
     if (!isCrossChainRecentTrade(this.trade)) {
@@ -258,7 +265,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public async continueOnramperTrade(): Promise<void> {
-    if ('id' in this.trade) {
+    if (this.isChangenowTrade(this.trade)) {
       return;
     }
     if (!isOnramperRecentTrade(this.trade)) {
