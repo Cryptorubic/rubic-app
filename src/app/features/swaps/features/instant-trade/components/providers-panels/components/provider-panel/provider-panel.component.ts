@@ -13,7 +13,7 @@ import { TradePanelData } from '@features/swaps/features/instant-trade/component
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
-import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
 import { TRADES_PROVIDERS } from '@app/features/swaps/shared/constants/trades-providers/trades-providers';
 import { NgChanges } from '@app/shared/models/utility-types/ng-changes';
 
@@ -80,7 +80,8 @@ export class ProviderPanelComponent implements OnInit, OnChanges {
     this.tradePanelData = {
       blockchain: trade.from.blockchain,
       amount: trade.to.tokenAmount,
-      ...gas
+      ...gas,
+      showGas: trade.from.blockchain === BLOCKCHAIN_NAME.ETHEREUM
     };
   }
 

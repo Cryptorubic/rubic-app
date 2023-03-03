@@ -27,14 +27,21 @@
   &__provider-name {
     font-weight: 600;
     font-size: 14px;
+    line-height: 23px;
   }
 
   &__rate {
     color: #aaa;
   }
 
+  &__info {
+    margin-left: auto;
+
+    text-align: right;
+  }
+
   &__best {
-    align-self: flex-end;
+    display: inline-flex;
     margin-left: 1rem;
     padding: 4px 12px;
 
@@ -48,9 +55,41 @@
     }
   }
 
+  &__gas {
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      margin-top: 4px;
+
+      color: #aaa;
+    }
+
+    &-icon {
+      ::ng-deep {
+        svg {
+          display: block;
+          width: 16px;
+          height: 16px;
+
+          path {
+            fill: #aaa;
+          }
+        }
+      }
+    }
+
+    &-title {
+      margin: 0 5px;
+    }
+
+    &-value {
+      color: var(--primary-color);
+    }
+  }
+
   &__expand {
     margin-top: -17px;
-    margin-left: auto;
+    margin-left: 1rem;
 
     &--loading {
       display: none;

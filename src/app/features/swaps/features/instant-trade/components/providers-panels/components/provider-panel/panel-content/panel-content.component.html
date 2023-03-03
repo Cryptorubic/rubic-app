@@ -62,11 +62,26 @@
         {{ tradePanelData?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
       </div>
     </div>
-    <div
-      class="provider-panel-mobile__best"
-      [class.provider-panel-mobile__best--loading]="!tradePanelData"
-    >
-      Best
+    <div class="provider-panel-mobile__info">
+      <div
+        class="provider-panel-mobile__best"
+        [class.provider-panel-mobile__best--loading]="!tradePanelData"
+      >
+        Best
+      </div>
+      <div
+        class="provider-panel-mobile__gas-wrapper"
+        *ngIf="tradePanelData.showGas && tradePanelData.gasFeeInEth"
+      >
+        <div
+          [inlineSVG]="'assets/images/icons/gas.svg'"
+          class="provider-panel-mobile__gas-icon"
+        ></div>
+        <div class="provider-panel-mobile__gas-title">Gas:</div>
+        <div class="provider-panel-mobile__gas-value">
+          {{ tradePanelData.gasFeeInEth | bigNumberFormat : 5 }} ETH
+        </div>
+      </div>
     </div>
     <div
       class="provider-panel-mobile__expand"

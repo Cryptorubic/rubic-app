@@ -1,0 +1,20 @@
+.mobile-navigation-list {
+  &__link {
+    display: block;
+    padding: 28px;
+
+    color: white;
+    font-size: 16px;
+
+    border-bottom: 1px solid var(--transparent-line);
+
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    &--active {
+      color: var(--primary-color);
+    }
+  }
+}

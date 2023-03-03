@@ -1,8 +1,9 @@
 <ul class="providers-list">
   <ng-container *ngFor="let provider of providersData; index as i">
-    <tui-accordion class="providers-list-item" (click)="selectProvider(provider)">
-      <tui-accordion-item
-        [showArrow]="provider.showGas"
+    <li>
+      <button
+        class="providers-list-item"
+        (click)="selectProvider(provider)"
         [class.selected-provider]="provider.isSelected"
       >
         <div class="providers-list-item__logo">
@@ -16,23 +17,22 @@
           </div>
         </div>
 
-        <div class="providers-list-item__best" *ngIf="i === 0">Best</div>
-
-        <ng-template tuiAccordionItemContent>
-          <div class="providers-list-item__gas-wrapper">
-            <div
-              [inlineSVG]="'assets/images/icons/gas.svg'"
-              class="providers-list-item__gas-icon"
-            ></div>
-            <div class="providers-list-item__gas-title">
-              {{ 'instantTrades.gasFee' | translate }}
+        <div class="providers-list-item__info">
+          <div class="providers-list-item__best" *ngIf="i === 0">Best</div>
+          <ng-container *ngIf="provider.showGas && provider.gasFeeInEth">
+            <div class="providers-list-item__gas-wrapper">
+              <div
+                [inlineSVG]="'assets/images/icons/gas.svg'"
+                class="providers-list-item__gas-icon"
+              ></div>
+              <div class="providers-list-item__gas-title">Gas:</div>
+              <div class="providers-list-item__gas-value">
+                {{ provider.gasFeeInEth | bigNumberFormat : 5 }} ETH
+              </div>
             </div>
-            <div class="providers-list-item__gas-value">
-              {{ provider.gasFeeInEth | bigNumberFormat : 5 }} ETH
-            </div>
-          </div>
-        </ng-template>
-      </tui-accordion-item>
-    </tui-accordion>
+          </ng-container>
+        </div>
+      </button>
+    </li>
   </ng-container>
 </ul>

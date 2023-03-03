@@ -39,11 +39,12 @@ export class ProvidersListMobileComponent implements OnInit {
         loading:
           provider.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION ||
           provider.tradeStatus === INSTANT_TRADE_STATUS.TX_IN_PROGRESS,
-        ...(provider instanceof EvmOnChainTrade && provider.gasFeeInfo?.gasLimit?.isFinite()
+        ...(provider.trade instanceof EvmOnChainTrade &&
+        provider.trade.gasFeeInfo?.gasLimit?.isFinite()
           ? {
-              gasLimit: provider.gasFeeInfo.gasLimit.toFixed(),
-              gasFeeInUsd: provider.gasFeeInfo.gasFeeInUsd,
-              gasFeeInEth: provider.gasFeeInfo.gasFeeInEth
+              gasLimit: provider.trade.gasFeeInfo.gasLimit.toFixed(),
+              gasFeeInUsd: provider.trade.gasFeeInfo.gasFeeInUsd,
+              gasFeeInEth: provider.trade.gasFeeInfo.gasFeeInEth
             }
           : {}),
         amount: provider?.trade?.to.tokenAmount,

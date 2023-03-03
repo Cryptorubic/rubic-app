@@ -27,6 +27,7 @@ import { TRADE_STATUS } from '@app/shared/models/swaps/trade-status';
 import { InstantTradeInfo } from '@app/features/swaps/features/instant-trade/models/instant-trade-info';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { TuiDialogOptions } from '@taiga-ui/core';
+import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 
 @Injectable()
 export class ModalService {
@@ -70,6 +71,16 @@ export class ModalService {
   public openSettings(): Observable<void> {
     return this.showDialog<SettingsComponent, void>(SettingsComponent, {
       title: 'Settings',
+      fitContent: true
+    });
+  }
+
+  /**
+   * Show Mobile navigation menu dialog.
+   */
+  public openMobileNavigationMenu(): Observable<void> {
+    return this.showDialog<MobileNavigationMenuComponent, void>(MobileNavigationMenuComponent, {
+      title: 'Main Menu',
       fitContent: true
     });
   }

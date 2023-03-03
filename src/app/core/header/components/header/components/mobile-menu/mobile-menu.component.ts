@@ -44,18 +44,16 @@ export class MobileMenuComponent {
     this.swapType$ = this.swapTypeService.swapMode$;
   }
 
-  public toggleMenu(): void {
-    this.isMenuOpened = !this.isMenuOpened;
-  }
-
   public async navigateToSwaps(): Promise<void> {
     await this.swapTypeService.navigateToSwaps();
-    this.toggleMenu();
   }
 
   public async navigateToLimitOrder(): Promise<void> {
     await this.swapTypeService.navigateToLimitOrder();
-    this.toggleMenu();
+  }
+
+  public openNavigationMenu(): void {
+    this.modalService.openMobileNavigationMenu().subscribe();
   }
 
   public openRubicMenu(): void {

@@ -2,7 +2,21 @@
   padding: 1rem;
 
   &-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
     margin-bottom: 10px;
+    padding: 10px;
+
+    text-align: left;
+
+    background-color: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-radius: 14px;
+
+    &.selected-provider {
+      border-color: var(--primary-color);
+    }
 
     &__logo {
       width: 32px;
@@ -21,13 +35,21 @@
     &__name {
       font-weight: 600;
       font-size: 14px;
+      line-height: 23px;
     }
 
     &__rate {
       color: #aaa;
     }
 
+    &__info {
+      margin-left: auto;
+
+      text-align: right;
+    }
+
     &__best {
+      display: inline-flex;
       margin-left: auto;
       padding: 4px 12px;
 
@@ -41,34 +63,13 @@
       }
     }
 
-    &__expand {
-      margin-top: -17px;
-
-      &--loading {
-        display: none;
-      }
-
-      ::ng-deep {
-        svg {
-          display: block;
-
-          path {
-            fill: #00e28e;
-          }
-        }
-      }
-    }
-
     &__gas {
       &-wrapper {
         display: flex;
         align-items: center;
-        padding: 0.5rem 1rem;
+        margin-top: 4px;
 
-        color: white;
-
-        background-color: #222425;
-        border-radius: 8px;
+        color: #aaa;
       }
 
       &-icon {
@@ -79,74 +80,19 @@
             height: 16px;
 
             path {
-              fill: #00e28e;
+              fill: #aaa;
             }
           }
         }
       }
 
       &-title {
-        margin-left: 10px;
+        margin: 0 5px;
       }
 
       &-value {
-        margin-left: auto;
+        color: var(--primary-color);
       }
-    }
-  }
-}
-
-::ng-deep tui-accordion {
-  .group {
-    width: 100% !important;
-  }
-
-  .tui-group {
-    width: 100% !important;
-  }
-}
-
-::ng-deep tui-accordion-item {
-  --tui-base-01: #333535;
-  --tui-base-04: transparent;
-
-  &.selected-provider {
-    --tui-base-04: #00ffa0;
-  }
-
-  .wrapper {
-    .header {
-      border-bottom: none;
-
-      &_open {
-        border: 1px solid #00ffa0;
-        border-bottom: none;
-        border-radius: 12px 12px 0 0;
-
-        .icon_open {
-          color: #00ffa0;
-        }
-      }
-    }
-  }
-
-  .title {
-    display: flex;
-    align-items: center;
-  }
-}
-
-::ng-deep tui-expand {
-  &._expanded {
-    border: 1px solid #00ffa0;
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-  }
-
-  .wrapper {
-    .content {
-      padding-top: 0;
-      padding-bottom: 1rem;
     }
   }
 }

@@ -44,6 +44,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { HistoryModule } from '@app/features/history/history.module';
 import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
+import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/i
     RubicMenuTogglerComponent,
     SettingsTogglerComponent,
     MobileLiveChatComponent,
-    MobileUserProfileComponent
+    MobileUserProfileComponent,
+    MobileNavigationMenuComponent
   ],
   imports: [
     CommonModule,
