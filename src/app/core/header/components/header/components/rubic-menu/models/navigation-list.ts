@@ -14,7 +14,7 @@ export const NAVIGATION_LIST = [
     translateKey: 'navigation.changeNowRecentTrades',
     type: 'internal',
     link: 'changenow-recent-trades',
-    imagePath: `${defaultSrc}widget.svg`,
+    imagePath: `${defaultSrc}history.svg`,
     target: '_self'
   },
   {
