@@ -47,6 +47,8 @@
         alt="Copy"
         (click)="copyToClipboard()"
         [tuiHint]="'Copy transaction ID'"
+        [tuiManualHint]="template"
+        [tuiManualHintShow]="hintShown"
       />
     </div>
   </td>
@@ -194,3 +196,5 @@
     {{ 'common.revert' | translate }}
   </app-rubic-button>
 </ng-template>
+
+<ng-template #template>Transaction ID copied on clipboard!</ng-template>
