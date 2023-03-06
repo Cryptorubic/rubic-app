@@ -1,22 +1,24 @@
 <div class="block-container">
-  <button class="arrow-back" (click)="navigateToSwaps()">
-    <img src="assets/images/icons/arrow-back.svg" alt="go back" />
-  </button>
+  <div class="header__wrapper">
+    <button class="arrow-back" (click)="navigateToSwaps()">
+      <img src="assets/images/icons/arrow-back.svg" alt="go back" />
+    </button>
 
-  <div class="header">Please send the funds you would like to exchange</div>
+    <div class="header">Please send the funds you would like to exchange</div>
+  </div>
 
-  <div class="rows">
+  <div class="rows" *ngLet="status$ | async as status">
     <div class="row">
       <div class="row-item row-item_small">
         <div class="row-item__header">Amount</div>
         <div class="row-item__value">
           <span class="break-word">{{ trade.fromAmount | bigNumberFormat }}</span>
-          {{ trade.fromToken.symbol }}
           <img
             [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
             alt="token"
             (error)="onImageError($event)"
           />
+          {{ trade.fromToken.symbol }}
         </div>
       </div>
 
@@ -66,6 +68,9 @@
             [cdkCopyToClipboard]="trade.depositAddress"
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
+            (click)="copyToClipboard()"
+            [tuiManualHint]="template"
+            [tuiManualHintShow]="hintShown"
           ></button>
         </div>
       </div>
@@ -91,6 +96,124 @@
       </div>
     </div>
 
+    <div class="row row-status">
+      <div class="row-item status-item">
+        <div
+          class="status-item__line"
+          [ngClass]="{
+            'status-item__line_completed': status !== 'waiting',
+            'status-item__line_load': status === 'waiting'
+          }"
+        ></div>
+        <div class="status-item__spinner" *ngIf="status === 'waiting'"></div>
+        <div class="status-item__circle_complete" *ngIf="status !== 'waiting'">
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{
+            'status-item__value_completed': status
+          }"
+        >
+          Awaiting deposit
+        </div>
+      </div>
+
+      <div class="row-item status-item">
+        <div class="status-item__circle" *ngIf="status === 'waiting'"></div>
+        <div
+          class="status-item__line status-item__line_confirming"
+          [ngClass]="{
+            'status-item__line_completed':
+              status === 'exchanging' || status === 'sending' || status === 'finished',
+            'status-item__line_load': status === 'confirming'
+          }"
+        ></div>
+        <div class="status-item__spinner" *ngIf="status === 'confirming'"></div>
+        <div
+          class="status-item__circle_complete"
+          *ngIf="status === 'exchanging' || status === 'sending' || status === 'finished'"
+        >
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{
+            'status-item__value_completed':
+              status === 'confirming' ||
+              status === 'exchanging' ||
+              status === 'sending' ||
+              status === 'finished'
+          }"
+        >
+          Confirming
+        </div>
+      </div>
+      <div class="row-item status-item">
+        <div
+          class="status-item__circle"
+          *ngIf="status === 'waiting' || status === 'confirming'"
+        ></div>
+        <div
+          class="status-item__line status-item__line_exchanging"
+          [ngClass]="{
+            'status-item__line_completed': status === 'sending' || status === 'finished',
+            'status-item__line_load': status === 'exchanging'
+          }"
+        ></div>
+        <div class="status-item__spinner" *ngIf="status === 'exchanging'"></div>
+        <div
+          class="status-item__circle_complete"
+          *ngIf="status === 'sending' || status === 'finished'"
+        >
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{
+            'status-item__value_completed':
+              status === 'exchanging' || status === 'sending' || status === 'finished'
+          }"
+        >
+          Exchanging
+        </div>
+      </div>
+      <div class="row-item status-item">
+        <div
+          class="status-item__circle"
+          *ngIf="status === 'waiting' || status === 'confirming' || status === 'exchanging'"
+        ></div>
+        <div class="status-item__spinner" *ngIf="status === 'sending'"></div>
+        <div class="status-item__circle_complete" *ngIf="status === 'finished'">
+          <img
+            class="scheme__status-icon"
+            src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+            alt=""
+          />
+        </div>
+        <div
+          class="row-item__value status-item__value"
+          [ngClass]="{
+            'status-item__value_completed': status === 'sending' || status === 'finished'
+          }"
+        >
+          Sending to you
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="estimated-time">
         <img
@@ -102,6 +225,18 @@
           [tuiHintMode]="'onDark'"
         />
         Estimated Arrival <span class="primary-text">~10 minutes</span>
+      </div>
+    </div>
+
+    <div class="row row__recent-trades">
+      <div class="recent-trades">
+        Transaction status can also be tracked in
+        <a
+          class="recent-trades__link"
+          [ngClass]="{ 'recent-trades__link_active': status !== 'waiting' }"
+        >
+          <button class="data-list__option" (click)="handleButtonClick()">Recent Trades</button>
+        </a>
       </div>
     </div>
   </div>
@@ -142,3 +277,5 @@
     our Support Team at <span class="primary-text">support@rubic.exchange</span>.
   </div>
 </ng-template>
+
+<ng-template #template>Address copied on clipboard!</ng-template>

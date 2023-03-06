@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { RecentTradesService } from '../../services/recent-trades.service';
-import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recent-crosschain-tx',
@@ -13,12 +13,10 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 export class RecentCrosschainTxComponent implements OnInit {
   public readonly recentTrades = this.recentTradesService.recentTrades;
 
-  public readonly isMobile = this.recentTradesService.isMobile;
-
   constructor(
     private readonly recentTradesService: RecentTradesService,
-    private readonly router: Router,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext
+    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext,
+    private readonly router: Router
   ) {}
 
   public ngOnInit(): void {

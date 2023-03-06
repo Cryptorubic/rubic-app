@@ -64,4 +64,6 @@ export interface Store {
   tokens: StorageToken[];
 
   changenowPostTrade: ChangenowPostTrade;
+
+  changenowRecentTrades: ChangenowPostTrade[];
 }
