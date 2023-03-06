@@ -102,6 +102,7 @@
   },
   "navigation": { 
     "recentTrades": "Recent Trades",
+    "changeNowRecentTrades": "ChangeNow Tx",
     "about": "Über Rubic",
     "faq": "FAQ",
     "features": "Funktionen",
@@ -276,7 +277,12 @@
     "pending": "Pending",
     "success": "Success",
     "fallback": "Fallback",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+
+    "waiting":"Waiting",
+    "confirming": "Confirming",
+    "exchanging":"Exchanging",
+    "sending": "Sending"
   },
   "gasRefund": {
     "title": "Rückerstattung von Gas-Gebühren",

@@ -29,6 +29,8 @@ import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
+import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
+import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
 @Injectable()
 export class RecentTradesService {
@@ -53,8 +55,26 @@ export class RecentTradesService {
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly sdkService: SdkService,
-    private readonly onramperApiService: OnramperApiService
+    private readonly onramperApiService: OnramperApiService,
+    private readonly changenowPostTradeService: ChangenowPostTradeService
   ) {}
+
+  public async getChangeNowTradeData(trade: ChangenowPostTrade): Promise<UiRecentTrade> {
+    const { id, toToken, timestamp, fromToken } = trade;
+    const status = await this.changenowPostTradeService.getChangenowSwapStatus(id);
+
+    return {
+      fromAssetType: fromToken.blockchain,
+      toBlockchain: toToken.blockchain,
+      fromAsset: fromToken,
+      toToken,
+      timestamp,
+      srcTxLink: null,
+      srcTxHash: null,
+      statusTo: status,
+      statusFrom: status
+    };
+  }
 
   public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
     const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;

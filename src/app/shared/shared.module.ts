@@ -72,6 +72,8 @@ import { SuccessOrderModalComponent } from './components/success-modal/success-o
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
+import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cross-chain-table/recent-cross-chain-table.component';
+import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +110,8 @@ import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-pe
     LoginButtonComponent,
     RefreshButtonComponent,
     SuccessOrderModalComponent,
+    RecentCrossChainTableTxComponent,
+    TradeRowComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -196,6 +200,8 @@ import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-pe
     BackButtonComponent,
     RefreshButtonComponent,
     LoginButtonComponent,
+    RecentCrossChainTableTxComponent,
+    TradeRowComponent,
     CommaToPeriodDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
