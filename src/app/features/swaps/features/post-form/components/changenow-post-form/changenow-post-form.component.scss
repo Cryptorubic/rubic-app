@@ -99,6 +99,14 @@
 
 .header {
   margin-bottom: 20px;
+
+  font-size: 16px;
+
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .row {
@@ -403,7 +411,7 @@ button {
   max-width: 384px;
 
   color: var(--secondary-text);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 120%;
   text-align: center;
 }
@@ -431,6 +439,10 @@ button {
     &_small {
       max-width: unset;
     }
+  }
+
+  .header__wrapper {
+    display: block;
   }
 }
 

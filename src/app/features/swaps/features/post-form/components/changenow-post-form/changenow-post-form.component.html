@@ -1,9 +1,11 @@
 <div class="block-container">
-  <button class="arrow-back" (click)="navigateToSwaps()">
-    <img src="assets/images/icons/arrow-back.svg" alt="go back" />
-  </button>
+  <div class="header__wrapper">
+    <button class="arrow-back" (click)="navigateToSwaps()">
+      <img src="assets/images/icons/arrow-back.svg" alt="go back" />
+    </button>
 
-  <div class="header">Please send the funds you would like to exchange</div>
+    <div class="header">Please send the funds you would like to exchange</div>
+  </div>
 
   <div class="rows" *ngLet="status$ | async as status">
     <div class="row">
@@ -217,6 +219,7 @@
           alt="info"
           [tuiHint]="contactSupportHint"
           [tuiHintShowDelay]="0"
+          [tuiHintHideDelay]="100000"
           [tuiHintMode]="'onDark'"
         />
         Estimated Arrival <span class="primary-text">~10 minutes</span>
