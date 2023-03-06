@@ -7,6 +7,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiManualHintModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -89,7 +90,8 @@ import { ChangenowPostFormComponent } from './features/post-form/components/chan
     FormsModule,
     TuiLoaderModule,
     ClipboardModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiManualHintModule
   ],
   providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
 })

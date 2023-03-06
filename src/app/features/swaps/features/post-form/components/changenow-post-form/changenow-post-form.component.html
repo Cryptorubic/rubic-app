@@ -13,12 +13,12 @@
         <div class="row-item__header">Amount</div>
         <div class="row-item__value">
           <span class="break-word">{{ trade.fromAmount | bigNumberFormat }}</span>
-          {{ trade.fromToken.symbol }}
           <img
             [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
             alt="token"
             (error)="onImageError($event)"
           />
+          {{ trade.fromToken.symbol }}
         </div>
       </div>
 
@@ -68,6 +68,10 @@
             [cdkCopyToClipboard]="trade.depositAddress"
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
+            (click)="copyToClipboard()"
+            [tuiManualHint]="template"
+            [tuiManualHintShow]="hintShown"
+            tuiHintMode="onDark"
           ></button>
         </div>
       </div>
@@ -275,3 +279,5 @@
     our Support Team at <span class="primary-text">support@rubic.exchange</span>.
   </div>
 </ng-template>
+
+<ng-template #template>Address copied on clipboard!</ng-template>
