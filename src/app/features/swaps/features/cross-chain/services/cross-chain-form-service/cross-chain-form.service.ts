@@ -62,6 +62,10 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { Router } from '@angular/router';
+import {
+  NotEvmChangeNowBlockchainsList,
+  notEvmChangeNowBlockchainsList
+} from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 @Injectable()
 export class CrossChainFormService {
@@ -595,10 +599,20 @@ export class CrossChainFormService {
         startWith(this.settingsService.crossChainRoutingValue),
         map(settings => settings.showReceiverAddress)
       ),
-      this.targetNetworkAddressService.address$
+      this.targetNetworkAddressService.address$,
+      this.swapFormService.fromBlockchain$
     ])
       .pipe(
-        map(([showReceiverAddress, address]) => (showReceiverAddress ? address : null)),
+        map(([showReceiverAddress, address, fromBlockchain]) => {
+          if (!showReceiverAddress) {
+            return null;
+          }
+          if (notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]) {
+            return null;
+          }
+
+          return address;
+        }),
         distinctUntilChanged((prev, cur) => (!prev && !cur) || prev === cur)
       )
       .subscribe(() => {
