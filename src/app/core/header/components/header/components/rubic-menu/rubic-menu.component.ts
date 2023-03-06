@@ -88,10 +88,10 @@ export class RubicMenuComponent implements AfterViewInit {
     this.authService.disconnectWallet();
   }
 
-  public handleButtonClick(item?: NavigationItem, target: string = '_blank'): void {
+  public handleButtonClick(item?: NavigationItem): void {
     this.gtmService.reloadGtmSession();
     if (item) {
-      this.window.open(item.link, target);
+      this.window.open(item.link, item.target ? item.target : '_blank');
     }
   }
 

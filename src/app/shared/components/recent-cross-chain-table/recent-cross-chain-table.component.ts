@@ -10,7 +10,7 @@ import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentCrossChainTableTxComponent {
-  @Input() public recentTrades: (RecentTrade | ChangenowPostTrade)[];
+  @Input() public recentTrades: Array<RecentTrade | ChangenowPostTrade>;
 
   @Output() onClose = new EventEmitter<void>();
 

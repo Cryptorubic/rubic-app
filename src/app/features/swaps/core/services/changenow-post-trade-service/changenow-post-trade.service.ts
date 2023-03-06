@@ -59,14 +59,14 @@ export class ChangenowPostTradeService {
     }
 
     try {
-      const responce = await firstValueFrom(
+      const response = await firstValueFrom(
         this.httpClient.get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
           params: { id: id },
           headers: { 'x-changenow-api-key': changenowApiKey }
         })
       );
 
-      return responce.status;
+      return response.status;
     } catch {
       return ChangenowApiStatus.WAITING;
     }

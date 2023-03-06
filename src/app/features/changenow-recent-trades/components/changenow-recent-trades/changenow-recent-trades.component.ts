@@ -34,17 +34,15 @@ export class ChangenowRecentTradesComponent {
 
     forkJoin(tradeStatuses)
       .pipe(
-        map(statuses => {
-          return statuses
-            .map((status, index) => {
-              return {
-                trade: this.allChangenowRecentTrades[index],
-                status
-              };
-            })
+        map(statuses =>
+          statuses
+            .map((status, index) => ({
+              trade: this.allChangenowRecentTrades[index],
+              status
+            }))
             .filter(tradeInfo => tradeInfo.status !== ChangenowApiStatus.WAITING)
-            .map(tradeInfo => tradeInfo.trade);
-        })
+            .map(tradeInfo => tradeInfo.trade)
+        )
       )
       .subscribe(trades => {
         this._changenowRecentTrades$.next(trades);

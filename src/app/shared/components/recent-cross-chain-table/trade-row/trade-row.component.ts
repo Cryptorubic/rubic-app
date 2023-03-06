@@ -72,7 +72,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public revertBtnLoading = false;
 
   public get isSymbiosisTrade(): boolean {
-    if ('id' in this.trade) {
+    if (this.isChangenowTrade(this.trade)) {
       return false;
     }
     return (
@@ -110,9 +110,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public readonly BLOCKCHAIN_LABEL = blockchainLabel;
 
   public get showToContinue(): boolean {
-    if ('id' in this.trade) {
+    if (this.isChangenowTrade(this.trade)) {
       return !this.uiTrade?.statusTo && this.uiTrade?.statusFrom === TxStatus.SUCCESS;
     }
+
     return (
       isOnramperRecentTrade(this.trade) &&
       !this.uiTrade?.statusTo &&
@@ -192,9 +193,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public getToStatusBadgeText(status: TxStatus | ChangenowApiStatus): string {
-    if ('id' in this.trade) {
+    if (this.isChangenowTrade(this.trade)) {
       return getStatusBadgeText(status);
     }
+
     if (isOnramperRecentTrade(this.trade)) {
       if (this.uiTrade?.statusFrom === TxStatus.PENDING) {
         return 'Waiting';
