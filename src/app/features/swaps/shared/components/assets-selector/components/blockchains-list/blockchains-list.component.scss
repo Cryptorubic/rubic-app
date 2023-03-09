@@ -58,6 +58,13 @@
   flex-wrap: wrap;
   grid-gap: 15px;
 
+  @include b($mobile-md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    row-gap: 15px;
+  }
+
   &__item {
     display: flex;
     grid-gap: 20px;
@@ -112,5 +119,9 @@
   &__label {
     font-size: 16px;
     line-height: 20px;
+
+    @include b($mobile-md) {
+      width: min-content;
+    }
   }
 }
