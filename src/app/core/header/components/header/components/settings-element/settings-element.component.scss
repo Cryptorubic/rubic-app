@@ -1,5 +1,14 @@
 @use 'src/scss/core' as *;
 
+.image {
+  display: flex;
+  align-items: center;
+
+  ::ng-deep svg path {
+    fill: var(--secondary-text);
+  }
+}
+
 .option {
   position: relative;
 
@@ -25,6 +34,10 @@
 
   &__component {
     flex-grow: 1;
+
+    @include b($mobile-md) {
+      flex-grow: initial;
+    }
   }
 
   &__desc {
@@ -58,6 +71,14 @@
       right: 15px;
 
       transform: translateY(-50%);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .option {
+    &__function {
+      margin-bottom: 0;
     }
   }
 }

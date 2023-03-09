@@ -49,8 +49,7 @@
 
     font-size: 18px;
 
-    background-color: #292b2d;
-    border-bottom: 1px solid #282a2b;
+    background-color: var(--form-background);
 
     @include b($mobile-md) {
       padding: 16px 28px;
@@ -75,12 +74,12 @@
     @include b($mobile-md) {
       width: 100%;
       height: unset;
-      padding: 28px;
+      padding: 15px 28px 15px 50px;
 
       font-size: 16px;
       text-align: left;
 
-      background-color: #222425;
+      background-color: var(--form-background);
       border-bottom: 1px solid var(--transparent-line);
       border-radius: 0;
 
@@ -322,7 +321,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 
   ::ng-deep tui-accordion-item {
-    --tui-base-01: #292b2d;
+    --tui-base-01: var(--form-background);
     --tui-base-04: var(--transparent-line);
 
     .wrapper {

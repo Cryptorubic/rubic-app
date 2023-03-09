@@ -11,22 +11,14 @@
   width: 100%;
   padding: 1rem 1.5rem;
 
-  background-color: #222425;
-  border: 1px solid #333535;
+  background-color: var(--form-background);
+  border: 1px solid var(--transparent-line);
   border-radius: 12px 12px 0 0;
 
   &__item {
     width: 42px;
     height: 42px;
 
-    border-radius: 50%;
-  }
-
-  &__main-button {
-    width: 48px;
-    height: 48px;
-
-    background-color: #00e28e;
     border-radius: 50%;
   }
 }
