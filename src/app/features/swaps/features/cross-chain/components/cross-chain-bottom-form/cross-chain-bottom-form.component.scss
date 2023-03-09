@@ -132,4 +132,8 @@
 app-target-network-address {
   display: block;
   margin-top: 10px;
+
+  @include b($mobile-md) {
+    margin-bottom: 10px;
+  }
 }

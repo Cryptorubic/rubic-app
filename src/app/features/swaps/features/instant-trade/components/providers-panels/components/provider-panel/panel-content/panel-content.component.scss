@@ -35,7 +35,7 @@
   }
 
   &__info {
-    margin-left: auto;
+    align-self: flex-end;
 
     text-align: right;
   }
@@ -89,7 +89,7 @@
 
   &__expand {
     margin-top: -17px;
-    margin-left: 1rem;
+    margin-left: auto;
 
     &--loading {
       display: none;

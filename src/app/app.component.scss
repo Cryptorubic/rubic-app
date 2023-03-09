@@ -44,6 +44,10 @@
   ::ng-deep {
     > * {
       margin: 0 auto;
+
+      @include b($mobile-md) {
+        margin: 0 auto 40px;
+      }
     }
   }
 }
