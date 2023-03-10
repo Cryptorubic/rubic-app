@@ -132,6 +132,10 @@
         fill: var(--primary-text);
       }
     }
+
+    &_history {
+      height: 24px;
+    }
   }
 
   &__link {

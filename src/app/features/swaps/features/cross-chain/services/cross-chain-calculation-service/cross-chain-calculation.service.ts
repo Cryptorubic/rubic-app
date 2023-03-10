@@ -381,13 +381,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ? TRADES_PROVIDERS[route.fromProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider.name + ' Pool'
+          name: bridgeProvider.name
         };
     const toTradeProvider = route.toProvider
       ? TRADES_PROVIDERS[route.toProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider.name + ' Pool'
+          name: bridgeProvider.name
         };
     if (centralizedBridges.some(centralizedBridge => centralizedBridge === bridgeType)) {
       bridgeProvider = {

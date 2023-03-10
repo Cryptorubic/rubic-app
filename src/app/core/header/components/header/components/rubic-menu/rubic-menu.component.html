@@ -29,7 +29,13 @@
             class="data-list__link"
           >
             <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              <div
+                class="data-list__option-image"
+                [ngClass]="{
+                  'data-list__option-image_history': item.link === 'changenow-recent-trades'
+                }"
+                [inlineSVG]="item.imagePath"
+              ></div>
               {{ item.translateKey | translate }}
             </button>
           </a>

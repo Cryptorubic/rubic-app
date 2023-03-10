@@ -7,6 +7,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiManualHintModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -41,7 +42,6 @@ import { TargetNetworkAddressService } from '@features/swaps/core/services/targe
 import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
 import { ChangenowPostFormComponent } from './features/post-form/components/changenow-post-form/changenow-post-form.component';
-import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { TransactionDetailsComponent } from '@features/swaps/features/swap-form/components/swap-info/components/transaction-details/transaction-details.component';
 import { TransactionDetailsElementComponent } from '@features/swaps/features/swap-form/components/swap-info/components/transaction-details-element/transaction-details-element.component';
 import { RubicFeeValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/rubic-fee-value/rubic-fee-value.component';
@@ -96,14 +96,9 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     FormsModule,
     TuiLoaderModule,
     ClipboardModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiManualHintModule
   ],
-  providers: [
-    SettingsService,
-    RefreshService,
-    TradeService,
-    TargetNetworkAddressService,
-    ChangenowPostTradeService
-  ]
+  providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
 })
 export class SwapsModule {}

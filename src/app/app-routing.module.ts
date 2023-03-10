@@ -27,6 +27,13 @@ const routes: Routes = [
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
   },
   {
+    path: ROUTE_PATH.CHANGENOW_RECENT_TRADES,
+    loadChildren: () =>
+      import('./features/changenow-recent-trades/changenow-recent-trades.module').then(
+        m => m.ChangenowRecentTradesModuleModule
+      )
+  },
+  {
     path: ROUTE_PATH.ABOUT,
     loadChildren: () =>
       import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule),

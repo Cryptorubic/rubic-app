@@ -1,4 +1,4 @@
-import { BlockchainName, TxStatus } from 'rubic-sdk';
+import { BlockchainName, ChangenowApiStatus, TxStatus } from 'rubic-sdk';
 import { Token } from '@shared/models/tokens/token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
@@ -13,6 +13,6 @@ export interface UiRecentTrade {
   srcTxHash?: string | null;
   dstTxHash?: string | null;
   dstTxLink?: string | null;
-  statusFrom?: TxStatus;
-  statusTo?: TxStatus;
+  statusFrom?: TxStatus | ChangenowApiStatus;
+  statusTo?: TxStatus | ChangenowApiStatus;
 }
