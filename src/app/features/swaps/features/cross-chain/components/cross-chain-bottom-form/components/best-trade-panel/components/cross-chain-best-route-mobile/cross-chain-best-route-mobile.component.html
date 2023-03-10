@@ -2,12 +2,12 @@
   <div class="provider-panel-mobile" [class.providers-animation]="true">
     <div class="provider-panel-mobile__header">
       <ng-container
-        *ngIf="isCalculating || !bridgeProvider; then searchingForProvider; else providerFound"
+        *ngIf="!bridgeProvider || isCalculating; then searchingForProvider; else providerFound"
       ></ng-container>
     </div>
 
     <ng-template #searchingForProvider>
-      <!-- <app-trades-counter></app-trades-counter> -->
+      <app-trades-counter></app-trades-counter>
     </ng-template>
 
     <ng-template #providerFound> Bridge Provider </ng-template>

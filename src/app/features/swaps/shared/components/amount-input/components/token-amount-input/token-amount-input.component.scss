@@ -155,6 +155,10 @@
     border: 1px solid var(--transparent-line);
     border-top: none;
     border-bottom: none;
+
+    &_onramper {
+      border: none;
+    }
   }
 }
 
@@ -162,7 +166,6 @@
   .token-amount-input-container {
     flex-direction: column;
     gap: 10px;
-    align-items: flex-start;
 
     &__input {
       padding-left: 0;

@@ -293,6 +293,11 @@ app-analytics-link {
     background: unset;
     border: unset;
 
+    &_onramper {
+      background: var(--form-background);
+      border: 1px solid var(--transparent-line);
+    }
+
     &__content {
       margin-top: 0;
     }
@@ -304,6 +309,10 @@ app-analytics-link {
       border: 1px solid var(--transparent-line);
       border-bottom: none;
       border-radius: 16px 16px 0 0;
+
+      &_onramper {
+        border: none;
+      }
     }
 
     &__title {

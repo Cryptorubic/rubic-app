@@ -1,4 +1,9 @@
-<div class="token-amount-input-container">
+<div
+  class="token-amount-input-container"
+  [ngClass]="{
+    'token-amount-input-container_onramper': isOnramper
+  }"
+>
   <div class="token-amount-input-container__wrapper">
     <app-select-asset-button-tokens
       class="token-amount-input-container__token-button"
