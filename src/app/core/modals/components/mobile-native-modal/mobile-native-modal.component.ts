@@ -95,8 +95,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
       this.state = ModalStates.FULL;
       this.expand();
     } else {
-      this.state = ModalStates.MEDIUM;
-      this.collapse();
+      this.close();
     }
   }
 
@@ -113,10 +112,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     ) {
       this.state = ModalStates.FULL;
       this.expand();
-    } else if (swipe.direction === 'bottom' && this.state === ModalStates.FULL) {
-      this.state = ModalStates.MEDIUM;
-      this.collapse();
-    } else if (swipe.direction === 'bottom' && this.state === ModalStates.MEDIUM) {
+    } else if (swipe.direction === 'bottom') {
       this.close();
     }
   }

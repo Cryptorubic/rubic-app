@@ -1,3 +1,3 @@
 export function animationTimeout(fn: Function): void {
-  setTimeout(fn, 300);
+  setTimeout(fn, 100);
 }
