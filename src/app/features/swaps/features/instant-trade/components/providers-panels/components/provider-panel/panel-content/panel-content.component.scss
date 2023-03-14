@@ -7,13 +7,20 @@
 .provider-panel-mobile {
   &__body {
     display: flex;
+    gap: 0.5rem;
     align-items: center;
+    margin-top: 5px;
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
   }
 
   &__logo {
     width: 32px;
     height: 32px;
-    margin-right: 0.5rem;
 
     background-color: white;
     border-radius: 50%;
@@ -27,22 +34,19 @@
   &__provider-name {
     font-weight: 600;
     font-size: 14px;
-    line-height: 23px;
+    line-height: 1;
   }
 
   &__rate {
     color: #aaa;
   }
 
-  &__info {
-    align-self: flex-end;
-
-    text-align: right;
-  }
-
   &__best {
+    position: absolute;
+    top: -22px;
+    right: 0;
+
     display: inline-flex;
-    margin-left: 1rem;
     padding: 4px 12px;
 
     color: #00e28e;
@@ -59,7 +63,6 @@
     &-wrapper {
       display: flex;
       align-items: center;
-      margin-top: 4px;
 
       color: #aaa;
     }
@@ -88,7 +91,6 @@
   }
 
   &__expand {
-    margin-top: -17px;
     margin-left: auto;
 
     &--loading {

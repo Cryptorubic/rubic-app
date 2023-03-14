@@ -54,20 +54,9 @@
     <div class="provider-panel-mobile__logo">
       <img [src]="providerPanelData.image" [alt]="providerPanelData.label" />
     </div>
-    <div>
+    <div class="provider-panel-mobile__body-info">
       <div class="provider-panel-mobile__provider-name">
         {{ providerPanelData.label }}
-      </div>
-      <div class="provider-panel-mobile__rate" [class.tui-skeleton]="!tradePanelData">
-        {{ tradePanelData?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
-      </div>
-    </div>
-    <div class="provider-panel-mobile__info">
-      <div
-        class="provider-panel-mobile__best"
-        [class.provider-panel-mobile__best--loading]="!tradePanelData"
-      >
-        Best
       </div>
       <div
         class="provider-panel-mobile__gas-wrapper"
@@ -82,6 +71,12 @@
           {{ tradePanelData.gasFeeInEth | bigNumberFormat : 5 }} ETH
         </div>
       </div>
+    </div>
+    <div
+      class="provider-panel-mobile__best"
+      [class.provider-panel-mobile__best--loading]="!tradePanelData"
+    >
+      Best
     </div>
     <div
       class="provider-panel-mobile__expand"

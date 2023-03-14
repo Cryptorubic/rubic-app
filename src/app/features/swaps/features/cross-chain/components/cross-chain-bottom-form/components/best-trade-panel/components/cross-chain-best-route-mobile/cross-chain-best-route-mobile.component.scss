@@ -12,18 +12,26 @@
   border-radius: 16px;
 
   &__header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
   }
 
   &__body {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  &__founded-provider {
+    display: flex;
+    gap: 0.5rem;
+    align-self: center;
   }
 
   &__logo {
     width: 32px;
     height: 32px;
-    margin-right: 0.5rem;
 
     background-color: transparent;
     border-radius: 50%;
@@ -35,6 +43,9 @@
   }
 
   &__provider-name {
+    display: flex;
+    align-self: center;
+
     font-weight: 600;
     font-size: 14px;
   }
@@ -44,7 +55,6 @@
   }
 
   &__best {
-    align-self: flex-end;
     margin-left: 1rem;
     padding: 4px 12px;
 
@@ -59,9 +69,6 @@
   }
 
   &__expand {
-    margin-top: -17px;
-    margin-left: auto;
-
     &--loading {
       display: none;
     }

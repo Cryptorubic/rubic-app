@@ -7,31 +7,25 @@
     </div>
 
     <ng-template #searchingForProvider>
-      <app-trades-counter></app-trades-counter>
+      <app-trades-counter [disabledFakeProviders]="true"></app-trades-counter>
     </ng-template>
 
-    <ng-template #providerFound> Bridge Provider </ng-template>
+    <ng-template #providerFound>
+      <span>Cross-Chain Provider</span>
+      <div class="provider-panel-mobile__best">Best</div>
+    </ng-template>
 
     <ng-container *ngIf="bridgeProvider; else providerLoading">
       <div class="provider-panel-mobile__body" tuiTouchable="opacity">
-        <div class="provider-panel-mobile__logo">
-          <img [src]="bridgeProvider.image" [alt]="bridgeProvider.name" />
-        </div>
-        <div>
+        <div class="provider-panel-mobile__founded-provider">
+          <div class="provider-panel-mobile__logo">
+            <img [src]="bridgeProvider.image" [alt]="bridgeProvider.name" />
+          </div>
           <div class="provider-panel-mobile__provider-name">
             {{ bridgeProvider.name }}
           </div>
-          <div class="provider-panel-mobile__rate">
-            {{
-              toTrade?.tokenAmount
-                | bigNumberFormat
-                | withRound
-                  : 'toClosestValue'
-                  : { minRound: 3, maxRound: 5, decimals: toTrade?.decimals }
-            }}
-          </div>
         </div>
-        <div class="provider-panel-mobile__best">Best</div>
+
         <div
           class="provider-panel-mobile__expand"
           [inlineSVG]="'assets/images/icons/chevron.svg'"

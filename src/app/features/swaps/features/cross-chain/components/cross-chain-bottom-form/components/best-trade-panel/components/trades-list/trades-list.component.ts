@@ -37,6 +37,8 @@ export class TradesListComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
+  public readonly toToken = this.crossChainFormService.inputValue.toToken.symbol;
+
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)

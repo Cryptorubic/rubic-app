@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { iif, of, switchMap, timer, combineLatest } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
@@ -21,6 +21,8 @@ import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-
   ]
 })
 export class TradesCounterComponent {
+  @Input() public readonly disabledFakeProviders: boolean = false;
+
   public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
 
   public readonly displayCounter$ = combineLatest([

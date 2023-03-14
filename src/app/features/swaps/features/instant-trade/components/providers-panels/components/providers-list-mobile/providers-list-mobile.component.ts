@@ -7,19 +7,23 @@ import { InstantTradeProviderData } from '../../../../models/providers-controlle
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { TradePanelData } from '../provider-panel/models/trade-panel-data';
+import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 
 @Component({
   selector: 'app-providers-list-mobile',
   templateUrl: './providers-list-mobile.component.html',
   styleUrls: ['./providers-list-mobile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [InstantTradeService]
 })
 export class ProvidersListMobileComponent implements OnInit {
   public providersData: (InstantTradeProviderData & TradePanelData)[];
 
+  // public readonly toToken = this.instantTradeService.inputValue.toToken.symbol;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<InstantTradeProviderData, InstantTradeProviderData[]>
+    private readonly context: TuiDialogContext<InstantTradeProviderData, InstantTradeProviderData[]> // private readonly instantTradeService: InstantTradeService
   ) {}
 
   ngOnInit(): void {

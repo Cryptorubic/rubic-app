@@ -4,6 +4,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-cross-chain-bottom-form',
@@ -35,7 +36,10 @@ export class CrossChainBottomFormComponent {
 
   public readonly selectedTradeError$ = this.crossChainFormService.selectedTradeError$;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly settingsService: SettingsService,
     private readonly crossChainFormService: CrossChainFormService
   ) {

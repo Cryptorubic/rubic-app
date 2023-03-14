@@ -126,6 +126,10 @@
 
     @include b($mobile-md) {
       font-size: 25px;
+
+      &::placeholder {
+        font-size: 22px;
+      }
     }
   }
 

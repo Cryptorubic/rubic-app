@@ -13,7 +13,8 @@
         <div>
           <div class="providers-list-item__name">{{ provider.label }}</div>
           <div class="providers-list-item__rate">
-            {{ provider?.amount | bigNumberFormat | withRound : 'toClosestValue' }}
+            <span>{{ provider?.amount | bigNumberFormat | withRound : 'toClosestValue' }}</span>
+            <!--<span>{{ toToken }}</span>-->
           </div>
         </div>
 
