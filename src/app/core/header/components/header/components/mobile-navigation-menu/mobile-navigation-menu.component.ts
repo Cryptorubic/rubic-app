@@ -8,7 +8,7 @@ import { MOBILE_NAVIGATION_LIST } from '../rubic-menu/models/navigation-list';
   styleUrls: ['./mobile-navigation-menu.component.scss']
 })
 export class MobileNavigationMenuComponent {
-  public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST;
+  public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST.Trade;
 
   constructor(private readonly mobileNativeService: MobileNativeModalService) {}
 

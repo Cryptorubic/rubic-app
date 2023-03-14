@@ -80,6 +80,8 @@
     @include b($mobile-md) {
       overflow: visible;
 
+      font-size: 25px;
+
       text-align: right;
     }
 

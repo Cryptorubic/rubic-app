@@ -63,7 +63,8 @@ tui-loader {
     @include b($mobile-md) {
       padding: 0.5rem 1rem;
 
-      background-color: #333535;
+      background-color: transparent;
+      border: 1px solid var(--transparent-line);
     }
 
     &:not(:last-child) {

@@ -76,10 +76,6 @@
         font-size: 12px;
         line-height: 14px;
       }
-
-      @include b($mobile-sm-middle) {
-        // display: none;
-      }
     }
 
     &-address-hint {

@@ -62,9 +62,9 @@ ul {
         margin-left: auto;
         padding: 4px 12px;
 
-        color: #00e28e;
+        color: var(--mobile-ccr-best-route-label-text);
 
-        background: #00e28e26;
+        background: var(--mobile-ccr-best-route-label-background);
         border-radius: 30px;
 
         &--loading {

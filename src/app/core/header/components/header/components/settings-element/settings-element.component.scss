@@ -26,6 +26,12 @@
     letter-spacing: 0.5px;
   }
 
+  &__wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
   &__function {
     display: flex;
     align-items: center;

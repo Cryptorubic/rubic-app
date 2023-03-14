@@ -3,6 +3,8 @@ import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
 const defaultSrc = 'assets/images/icons/navigation/';
 
+type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
+
 export const NAVIGATION_LIST = [
   {
     translateKey: 'navigation.setupWidget',
@@ -42,7 +44,7 @@ export const NAVIGATION_LIST = [
   // }
 ] as NavigationItem[];
 
-export const MOBILE_NAVIGATION_LIST: { [key: string]: NavigationItem[] } = {
+export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
   ['Trade']: [
     {
       translateKey: 'Swap',

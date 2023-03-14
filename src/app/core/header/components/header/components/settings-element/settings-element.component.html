@@ -18,7 +18,7 @@
 
 <div class="option" *ngIf="isMobile">
   <div class="option__function" *ngLet="isDark$ | async as isDark">
-    <div style="display: flex; align-items: center; gap: 15px">
+    <div class="option__wrapper">
       <div
         *ngIf="!withAction"
         class="image"

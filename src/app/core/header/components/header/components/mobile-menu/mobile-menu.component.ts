@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
 export class MobileMenuComponent {
   public isMenuOpened = false;
 
-  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
+  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE> = this.swapTypeService.swapMode$;
 
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
@@ -40,9 +40,7 @@ export class MobileMenuComponent {
     private readonly swapTypeService: SwapTypeService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector
-  ) {
-    this.swapType$ = this.swapTypeService.swapMode$;
-  }
+  ) {}
 
   public async navigateToSwaps(): Promise<void> {
     await this.swapTypeService.navigateToSwaps();

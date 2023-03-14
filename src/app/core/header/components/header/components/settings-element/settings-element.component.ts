@@ -23,12 +23,12 @@ export class SettingsElementComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  public readonly isDark$: Observable<boolean>;
+  public readonly isDark$: Observable<boolean> = this.themeService.theme$.pipe(
+    map(theme => theme === 'dark')
+  );
 
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService
-  ) {
-    this.isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
-  }
+  ) {}
 }

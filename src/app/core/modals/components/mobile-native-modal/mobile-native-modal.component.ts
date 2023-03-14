@@ -36,6 +36,19 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     private readonly el: ElementRef<HTMLElement>,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
+    this.subscribeOnModal();
+  }
+
+  ngOnInit(): void {
+    animationTimeout(() => this.show());
+    this.document.documentElement.style.overflowY = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    this.document.documentElement.style.overflowY = 'unset';
+  }
+
+  private subscribeOnModal(): void {
     if (this.context.forceClose$) {
       this.context.forceClose$.pipe(takeUntil(this.destroy$)).subscribe(() => {
         if (this.state === ModalStates.HIDDEN) {
@@ -73,15 +86,6 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
         )
         .subscribe();
     }
-  }
-
-  ngOnInit(): void {
-    animationTimeout(() => this.show());
-    this.document.documentElement.style.overflowY = 'hidden';
-  }
-
-  ngOnDestroy(): void {
-    this.document.documentElement.style.overflowY = 'unset';
   }
 
   public toggle(): void {

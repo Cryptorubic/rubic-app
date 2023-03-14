@@ -4,13 +4,13 @@
   &__card {
     padding: 1rem;
 
-    background-color: #171919;
+    background-color: var(--mobile-user-profile-background);
 
     background-image: url('/assets/images/rubic-account-card.png');
     background-repeat: no-repeat;
     background-position: 100% 100%;
     background-size: 140px;
-    border: 1px solid #333535;
+    border: 1px solid var(--transparent-line);
     border-radius: 20px;
 
     &-header {
@@ -104,7 +104,7 @@
     display: flex;
     margin: 1rem 0;
 
-    background-color: #333535;
+    background-color: var(--transparent-line);
     border-radius: 12px;
 
     &-ink {
@@ -133,11 +133,12 @@
       color: #aaa;
       font-weight: 600;
       font-size: 14px;
+      letter-spacing: 1px;
 
       transition-duration: 0.3s;
 
       &.active {
-        color: #171919;
+        color: var(--form-background);
       }
     }
   }

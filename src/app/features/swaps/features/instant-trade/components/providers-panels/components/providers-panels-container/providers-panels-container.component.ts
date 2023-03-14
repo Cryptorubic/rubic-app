@@ -27,6 +27,14 @@ export class ProvidersPanelsContainerComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
+  public get selectedProvider(): InstantTradeProviderData {
+    return this.providersData.find(provider => provider.isSelected) || this.providersData[0];
+  }
+
+  public get isSearchingForProvider(): boolean {
+    return this.selectedProvider.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION;
+  }
+
   constructor(
     private headerStore: HeaderStore,
     private readonly modalService: ModalService,
@@ -45,13 +53,5 @@ export class ProvidersPanelsContainerComponent {
           this.onSelectProvider.emit(selectedProvider);
         }
       });
-  }
-
-  public get selectedProvider(): InstantTradeProviderData {
-    return this.providersData.find(provider => provider.isSelected) || this.providersData[0];
-  }
-
-  public get isSearchingForProvider(): boolean {
-    return this.selectedProvider.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION;
   }
 }

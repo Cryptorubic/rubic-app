@@ -187,7 +187,7 @@
     text-decoration: none !important;
 
     @include b($mobile-md) {
-      border-bottom: 1px solid #333535;
+      border-bottom: 1px solid var(--transparent-line);
 
       &:last-of-type {
         border-bottom: none;
@@ -348,7 +348,6 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 @include b($laptop) {
   .rubic-menu {
     &__mobile {
-      // display: block;
       display: none;
     }
 

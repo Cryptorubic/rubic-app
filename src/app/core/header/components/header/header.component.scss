@@ -71,11 +71,13 @@
     padding: 5px 10px !important;
 
     > * {
-      transform: scale(0.75);
-
       @include iframe {
         transform: unset;
       }
+    }
+
+    &__profile-user {
+      margin-right: 5px;
     }
   }
 
@@ -223,6 +225,8 @@
 
     &__profile-user {
       display: block;
+
+      transform: scale(0.75);
     }
 
     &__login {
@@ -243,7 +247,7 @@
   .rubic-header {
     &__logo {
       img {
-        width: 95px;
+        margin-left: -5px;
       }
     }
 

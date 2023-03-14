@@ -1,5 +1,5 @@
 <ng-container *ngLet="isCalculating$ | async as isCalculating">
-  <div class="provider-panel-mobile" [class.providers-animation]="true">
+  <div class="provider-panel-mobile" [class.providers-animation]="isCalculating">
     <div class="provider-panel-mobile__header">
       <ng-container
         *ngIf="!bridgeProvider || isCalculating; then searchingForProvider; else providerFound"

@@ -48,9 +48,9 @@
     margin-left: 1rem;
     padding: 4px 12px;
 
-    color: #00e28e;
+    color: var(--mobile-ccr-best-route-label-text);
 
-    background: #00e28e26;
+    background: var(--mobile-ccr-best-route-label-background);
     border-radius: 30px;
 
     &--loading {
@@ -71,7 +71,7 @@
         display: block;
 
         path {
-          fill: #00e28e;
+          fill: var(--mobile-ccr-best-route-label-text);
         }
       }
     }
