@@ -3,7 +3,6 @@ import { TRADES_PROVIDERS } from '@app/features/swaps/shared/constants/trades-pr
 import { INSTANT_TRADE_STATUS } from '../../../../models/instant-trades-trade-status';
 import { BLOCKCHAIN_NAME, EvmOnChainTrade } from 'rubic-sdk';
 import { InstantTradeProviderData } from '../../../../models/providers-controller-data';
-
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { TradePanelData } from '../provider-panel/models/trade-panel-data';
@@ -19,11 +18,9 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 export class ProvidersListMobileComponent implements OnInit {
   public providersData: (InstantTradeProviderData & TradePanelData)[];
 
-  // public readonly toToken = this.instantTradeService.inputValue.toToken.symbol;
-
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<InstantTradeProviderData, InstantTradeProviderData[]> // private readonly instantTradeService: InstantTradeService
+    private readonly context: TuiDialogContext<InstantTradeProviderData, InstantTradeProviderData[]>
   ) {}
 
   ngOnInit(): void {

@@ -128,7 +128,7 @@
       font-size: 25px;
 
       &::placeholder {
-        font-size: 22px;
+        font-size: 20px;
       }
     }
   }
@@ -153,12 +153,16 @@
 
     height: auto;
     margin: 0;
-    padding: 40px 20px 20px;
+    padding: 20px;
 
     background-color: var(--form-background);
     border: 1px solid var(--transparent-line);
-    border-top: none;
     border-bottom: none;
+    border-radius: 16px 16px 0 0;
+
+    &__wrapper {
+      gap: 5px;
+    }
 
     &_onramper {
       border: none;

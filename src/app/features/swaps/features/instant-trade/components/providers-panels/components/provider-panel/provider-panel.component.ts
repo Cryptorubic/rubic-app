@@ -24,9 +24,18 @@ import { NgChanges } from '@app/shared/models/utility-types/ng-changes';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderPanelComponent implements OnInit, OnChanges {
-  @Input() public providerData: InstantTradeProviderData;
-
   @Input() public isBestProvider = false;
+
+  private _providerData: InstantTradeProviderData;
+
+  @Input() set providerData(providerData: InstantTradeProviderData) {
+    this._providerData = providerData;
+    this.setupProviderPanelData();
+  }
+
+  public get providerData(): InstantTradeProviderData {
+    return this._providerData;
+  }
 
   @Output() private onSelectProvider = new EventEmitter<void>();
 

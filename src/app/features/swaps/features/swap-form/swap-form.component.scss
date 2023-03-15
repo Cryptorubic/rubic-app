@@ -303,12 +303,12 @@ app-analytics-link {
     }
 
     &__header {
-      padding: 20px 20px 0;
+      margin-bottom: 8px;
+      padding: 10px 20px;
 
       background-color: var(--form-background);
       border: 1px solid var(--transparent-line);
-      border-bottom: none;
-      border-radius: 16px 16px 0 0;
+      border-radius: 16px;
 
       &_onramper {
         border: none;

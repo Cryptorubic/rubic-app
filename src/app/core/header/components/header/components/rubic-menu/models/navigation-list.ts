@@ -60,6 +60,11 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Revoke Approval',
       type: 'internal',
       link: ROUTE_PATH.REVOKE_APPROVAL
+    },
+    {
+      translateKey: 'ChangeNow Tx',
+      type: 'internal',
+      link: ROUTE_PATH.CHANGENOW_RECENT_TRADES
     }
   ],
   ['More']: [
@@ -84,7 +89,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       link: EXTERNAL_LINKS.LANDING
     }
   ],
-  // ['About']: EXTERNAL_LINKS.LANDING,
   ['Social']: [
     {
       translateKey: 'Facebook',
