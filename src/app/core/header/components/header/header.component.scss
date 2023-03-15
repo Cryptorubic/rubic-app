@@ -182,7 +182,7 @@
   }
 }
 
-@include b($laptop) {
+@include b($laptop-xl) {
   .rubic-header {
     padding: 21px 20px 19px;
 
@@ -247,7 +247,7 @@
   .rubic-header {
     &__logo {
       img {
-        margin-left: -5px;
+        margin-left: 3px;
       }
     }
 

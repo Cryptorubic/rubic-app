@@ -32,6 +32,9 @@ import { ProgressTrxNotificationComponent } from '@shared/components/progress-tr
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class LimitOrdersService {
@@ -51,10 +54,12 @@ export class LimitOrdersService {
     private readonly authService: AuthService,
     private readonly sdkService: SdkService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly gasService: GasService
   ) {}
 
   public async updateOrders(): Promise<void> {
@@ -71,7 +76,7 @@ export class LimitOrdersService {
 
   private async getUserTrades(walletAddress: string): Promise<LimitOrder[]> {
     const orders = await this.sdkService.limitOrderManager.getUserTrades(walletAddress);
-    await firstValueFrom(this.tokensService.tokens$.pipe(first(v => Boolean(v))));
+    await firstValueFrom(this.tokensStoreService.tokens$.pipe(first(v => Boolean(v))));
     return Promise.all(
       orders.map(async order => {
         const [fromToken, toToken] = await Promise.all([
@@ -119,7 +124,14 @@ export class LimitOrdersService {
     };
 
     try {
-      await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, { onConfirm });
+      const gasPrice = shouldCalculateGas[blockchain]
+        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        : null;
+
+      await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
+        onConfirm,
+        ...(gasPrice && { gasPrice })
+      });
 
       subscription$.unsubscribe();
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {

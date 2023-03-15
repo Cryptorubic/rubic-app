@@ -128,8 +128,7 @@
       display: flex;
       justify-content: center;
 
-      min-height: 60px;
-      padding: 15px 0;
+      padding: 0;
 
       background: transparent;
     }
@@ -348,9 +347,13 @@ app-analytics-link {
 app-form-navigation {
   display: none;
 
-  @include b($laptop) {
+  @include b($laptop-xl) {
     display: block;
     margin-bottom: 8px;
+
+    @include iframe {
+      display: none;
+    }
   }
 }
 

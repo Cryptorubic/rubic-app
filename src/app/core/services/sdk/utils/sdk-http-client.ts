@@ -1,10 +1,19 @@
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 export class SdkHttpClient {
   constructor(private readonly httpClient: HttpClient) {}
 
-  public post<ResponseBody>(url: string, body: Object): Promise<ResponseBody> {
-    return this.httpClient.post<ResponseBody>(url, body).toPromise();
+  public post<ResponseBody>(
+    url: string,
+    body: Object,
+    options?: {
+      headers?: {
+        [header: string]: string;
+      };
+    }
+  ): Promise<ResponseBody> {
+    return firstValueFrom(this.httpClient.post<ResponseBody>(url, body, options));
   }
 
   public get<ResponseBody>(
@@ -18,6 +27,6 @@ export class SdkHttpClient {
       };
     }
   ): Promise<ResponseBody> {
-    return this.httpClient.get<ResponseBody>(url, options).toPromise();
+    return firstValueFrom(this.httpClient.get<ResponseBody>(url, options));
   }
 }

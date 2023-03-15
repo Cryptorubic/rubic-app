@@ -1,5 +1,5 @@
 <div class="rubic-menu__container">
-  <ng-container *ngIf="isMobile$ | async; then mobileMenu; else desktopMenu"></ng-container>
+  <ng-container *ngIf="isMobile; then mobileMenu; else desktopMenu"></ng-container>
 
   <ng-template #desktopMenu>
     <tui-data-list class="data-list">

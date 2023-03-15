@@ -9,9 +9,6 @@
   visibility: initial !important;
   opacity: initial !important;
 
-  // width: 84px !important;
-  // height: 84px !important;
-  // overflow: hidden;
   @include b($mobile-md) {
     max-height: 85vh !important;
   }
@@ -19,7 +16,7 @@
   @include b($mobile-md) {
     display: none;
 
-    transition-duration: 0 !important;
+    transition-duration: 0s !important;
 
     &.visible {
       display: block;
@@ -27,14 +24,12 @@
   }
 
   * {
-    // max-width: 84px !important;
-    // max-height: 84px !important;
     @include b($mobile-md) {
       bottom: 0;
 
       max-height: 85vh !important;
 
-      transition-duration: 0 !important;
+      transition-duration: 0s !important;
     }
   }
 }

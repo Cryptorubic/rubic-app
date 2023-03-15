@@ -1,12 +1,13 @@
 <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
 
-<app-form-navigation class="swap-form-navigation"></app-form-navigation>
+<app-form-navigation *ngIf="!hideUnusedUI" class="swap-form-navigation"></app-form-navigation>
 
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
   <ng-container *ngLet="onramperWidgetOpened$ | async as onramperWidgetOpened">
     <div class="close-widget-button" *ngIf="onramperWidgetOpened">
       <app-back-button (onClick)="closeWidget()"></app-back-button>
     </div>
+
     <div
       class="swap-form"
       [ngStyle]="{ 'background-color': backgroundColor }"
@@ -33,7 +34,6 @@
             "
             mode="swaps"
             [isRotating$]="isRefreshRotating$"
-            [isRotating]="isRefreshRotating"
             (onRefresh)="onRefresh()"
           >
           </app-refresh-button>
@@ -48,6 +48,7 @@
           ></app-iframe-logout-button>
         </div>
       </header>
+
       <main class="swap-form__content">
         <div class="swap-form__block">
           <app-iframe-asset-type-indicator

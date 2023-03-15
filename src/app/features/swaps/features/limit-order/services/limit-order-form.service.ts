@@ -11,10 +11,11 @@ import {
   EvmWeb3Pure,
   limitOrderSupportedBlockchains,
   TokenAmount as SdkTokenAmount,
-  TokenBaseStruct
+  TokenBaseStruct,
+  Web3Pure
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { compareTokens, switchIif } from '@shared/utils/utils';
+import { compareTokens, switchIif, switchTap } from '@shared/utils/utils';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -33,6 +34,10 @@ import { UserRejectError } from '@core/errors/models/provider/user-reject-error'
 import { UserRejectSigningError } from '@core/errors/models/provider/user-reject-signing-error';
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
+import { LimitOrdersApiService } from '@core/services/backend/limit-orders-api/limit-orders-api.service';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class LimitOrderFormService {
@@ -55,11 +60,13 @@ export class LimitOrderFormService {
 
   private needApprove = false;
 
+  private prevAddress = this.walletConnectorService.address;
+
   /**
    * Controls approve calculation flow.
    * When `next` is called, recalculation is started.
    */
-  private readonly _calculateTrade$ = new Subject<{ stop?: boolean }>();
+  private readonly _calculateTrade$ = new Subject<{ stop?: boolean; force?: boolean }>();
 
   private calculating = false;
 
@@ -95,12 +102,16 @@ export class LimitOrderFormService {
     private readonly notificationsService: NotificationsService,
     private readonly orderExpirationService: OrderExpirationService,
     private readonly orderRateService: OrderRateService,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly limitOrdersApiService: LimitOrdersApiService,
+    private readonly gasService: GasService,
+    protected readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnCalculation();
 
     this.subscribeOnFormChanges();
     this.subscribeOnSwapTypeChanges();
+    this.subscribeOnWalletChange();
   }
 
   /**
@@ -146,7 +157,8 @@ export class LimitOrderFormService {
                 return (
                   !this.prevFromTokenAmount ||
                   !compareTokens(this.prevFromTokenAmount, fromTokenAmount) ||
-                  !this.prevFromTokenAmount.tokenAmount.eq(fromAmount)
+                  !this.prevFromTokenAmount.tokenAmount.eq(fromAmount) ||
+                  calculateData?.force
                 );
               },
               fromTokenAmount => {
@@ -173,6 +185,12 @@ export class LimitOrderFormService {
           );
         })
       )
+      .subscribe();
+  }
+
+  private subscribeOnWalletChange(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(switchTap(() => from(this.updateStatus({ force: true }))))
       .subscribe();
   }
 
@@ -203,11 +221,13 @@ export class LimitOrderFormService {
     });
   }
 
-  private async updateStatus(): Promise<void> {
+  private async updateStatus(
+    updateStatus: { stop?: boolean; force?: boolean } = {}
+  ): Promise<void> {
     if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
       return;
     }
-    this._calculateTrade$.next({});
+    this._calculateTrade$.next(updateStatus);
   }
 
   /**
@@ -269,17 +289,21 @@ export class LimitOrderFormService {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
 
     let approveInProgressSubscription$: Subscription;
-    const options: BasicTransactionOptions = {
-      onTransactionHash: () => {
-        approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
-      }
-    };
+
     try {
-      await this.sdkService.limitOrderManager.approve(
-        fromAsset as TokenBaseStruct<EvmBlockchainName>,
-        fromAmount,
-        options
-      );
+      const fromToken = fromAsset as TokenBaseStruct<EvmBlockchainName>;
+      const gasPrice = shouldCalculateGas[fromToken.blockchain]
+        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromToken.blockchain))
+        : null;
+
+      const options: BasicTransactionOptions = {
+        onTransactionHash: () => {
+          approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
+        },
+        ...(gasPrice && { gasPrice })
+      };
+
+      await this.sdkService.limitOrderManager.approve(fromToken, fromAmount, options);
       this.notificationsService.showApproveSuccessful();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
@@ -294,14 +318,15 @@ export class LimitOrderFormService {
   }
 
   public async onCreateOrder(): Promise<void> {
-    const { fromAsset, fromAmount, toToken } = this.swapFormService.inputValue;
+    const inputForm = this.swapFormService.inputValue;
+    const { fromAsset, fromAmount, toToken } = inputForm;
     const fromToken = fromAsset as AvailableTokenAmount;
     const { toAmount } = this.swapFormService.outputValue;
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     try {
       const deadline = this.orderExpirationService.expirationTime;
-      await this.sdkService.limitOrderManager.createOrder(
+      const hash = await this.sdkService.limitOrderManager.createOrder(
         fromToken as TokenBaseStruct<EvmBlockchainName>,
         toToken as TokenBaseStruct<EvmBlockchainName>,
         fromAmount,
@@ -309,6 +334,12 @@ export class LimitOrderFormService {
         { deadline }
       );
 
+      this.limitOrdersApiService.createTrade(
+        hash,
+        inputForm,
+        toAmount,
+        this.authService.userAddress
+      );
       this.successTxModalService.openLimitOrderModal();
     } catch (error) {
       let parsedError = RubicSdkErrorParser.parseError(error);

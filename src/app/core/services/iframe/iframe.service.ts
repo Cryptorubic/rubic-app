@@ -11,7 +11,7 @@ import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance
 export class IframeService implements OnDestroy {
   private documentListener: () => void;
 
-  private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
+  private readonly _isIframe$ = new BehaviorSubject<boolean | undefined>(undefined);
 
   public readonly isIframe$ = this._isIframe$.asObservable();
 
@@ -61,6 +61,10 @@ export class IframeService implements OnDestroy {
 
   ngOnDestroy() {
     this.documentListener?.();
+  }
+
+  public setIframeFalse(): void {
+    this._isIframe$.next(false);
   }
 
   public setIframeInfo(iframeParameters: IframeParameters): void {

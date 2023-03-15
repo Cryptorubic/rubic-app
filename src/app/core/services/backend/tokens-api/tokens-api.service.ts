@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
+  BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS,
-  BackendBlockchain
+  TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
 import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
@@ -25,10 +25,10 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName, Injector } from 'rubic-sdk';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -56,8 +56,13 @@ export class TokensApiService {
     return List(
       tokens
         .map(({ token_security, ...token }: BackendToken) => ({
-          ...token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          rank: token.rank,
           price: token.usdPrice,
           tokenSecurity: token_security
         }))
@@ -89,17 +94,19 @@ export class TokensApiService {
    * Fetches favorite tokens from backend.
    * @return Observable<BackendToken[]> Favorite Tokens.
    */
-  public fetchFavoriteTokens(): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendToken[]>(
-        ENDPOINTS.FAVORITE_TOKENS,
-        { user: this.authService.userAddress },
-        this.tokensApiUrl
-      )
-      .pipe(
-        map(tokens => TokensApiService.prepareTokens(tokens)),
-        catchError(() => of(List([])))
-      );
+  public fetchFavoriteTokens(): Promise<List<Token>> {
+    return firstValueFrom(
+      this.httpService
+        .get<BackendToken[]>(
+          ENDPOINTS.FAVORITE_TOKENS,
+          { user: this.authService.userAddress },
+          this.tokensApiUrl
+        )
+        .pipe(
+          map(tokens => TokensApiService.prepareTokens(tokens)),
+          catchError(() => of(List([])))
+        )
+    );
   }
 
   /**
@@ -164,7 +171,7 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.VELAS,
       BLOCKCHAIN_NAME.SYSCOIN
     ];
-    const backendTokens$ = this.httpService
+    return this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
       .pipe(
         map(backendTokens =>
@@ -175,12 +182,6 @@ export class TokensApiService {
         ),
         map(backendTokens => TokensApiService.prepareTokens(backendTokens))
       );
-
-    const staticTokens$ = this.fetchStaticTokens();
-
-    return forkJoin([backendTokens$, staticTokens$]).pipe(
-      map(([backendTokens, staticTokens]) => backendTokens.concat(staticTokens))
-    );
   }
 
   /**
@@ -190,15 +191,15 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchainsToFetch = Object.values(TO_BACKEND_BLOCKCHAINS);
+    const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
 
-    const requests$ = blockchainsToFetch.map((network: BackendBlockchain) =>
+    const requests$ = blockchains.map((network: BackendBlockchain) =>
       this.httpService
         .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
           tap(networkTokens => {
-            const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
             if (networkTokens?.results) {
+              const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
               tokensNetworkState$.next({
                 ...tokensNetworkState$.value,
                 [blockchain]: {
@@ -214,7 +215,9 @@ export class TokensApiService {
           })
         )
     );
-    const backendTokens$ = forkJoin(requests$).pipe(
+    requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
+
+    return forkJoin(requests$).pipe(
       map(results => {
         if (results.every(el => el === null)) {
           this.needRefetchTokens = true;
@@ -231,14 +234,43 @@ export class TokensApiService {
         return TokensApiService.prepareTokens(backendTokens);
       })
     );
+  }
 
-    const staticTokens$ = this.fetchStaticTokens();
-
-    return forkJoin([backendTokens$, staticTokens$]).pipe(
-      map(([backendTokens, staticTokens]) => {
-        return backendTokens.concat(staticTokens);
-      })
-    );
+  private fetchTokensFromOnePageBlockchains(
+    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
+  ): Observable<TokensBackendResponse> {
+    const onePageBlockchains = blockchainsWithOnePage
+      .map(b => TO_BACKEND_BLOCKCHAINS[b])
+      .reduce((acc, blockchain) => {
+        if (acc.length) {
+          return acc + ',' + blockchain;
+        }
+        return blockchain;
+      }, '');
+    return this.httpService
+      .get<TokensBackendResponse>(
+        ENDPOINTS.TOKENS,
+        { page: 1, pageSize: 100, networks: onePageBlockchains },
+        this.tokensApiUrl
+      )
+      .pipe(
+        tap(networkTokens => {
+          if (networkTokens?.results) {
+            blockchainsWithOnePage.forEach(blockchain => {
+              tokensNetworkState$.next({
+                ...tokensNetworkState$.value,
+                [blockchain]: {
+                  page: 1,
+                  maxPage: 1
+                }
+              });
+            });
+          }
+        }),
+        catchError(() => {
+          return of(null);
+        })
+      );
   }
 
   /**
@@ -308,27 +340,5 @@ export class TokensApiService {
           };
         })
       );
-  }
-
-  private fetchStaticTokens(): Observable<Token[]> {
-    return from(Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.BITCOIN)).pipe(
-      switchMap(price =>
-        of([
-          {
-            image: '/assets/images/icons/coins/bitcoin.svg',
-            rank: 1,
-            price: price.toNumber(),
-            usedInIframe: true,
-            hasDirectPair: null,
-            tokenSecurity: null,
-            blockchain: BLOCKCHAIN_NAME.BITCOIN,
-            address: EMPTY_ADDRESS,
-            name: 'Bitcoin',
-            symbol: 'BTC',
-            decimals: 8
-          }
-        ])
-      )
-    );
   }
 }

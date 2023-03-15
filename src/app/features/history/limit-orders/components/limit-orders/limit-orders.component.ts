@@ -28,10 +28,6 @@ export class LimitOrdersComponent implements OnInit {
 
   public readonly isRefreshRotating$ = this.limitOrdersService.loading$;
 
-  public readonly isRefreshRotating = () => {
-    return this.limitOrdersService.loading === true;
-  };
-
   constructor(
     private readonly router: Router,
     private readonly windowWidthService: WindowWidthService,

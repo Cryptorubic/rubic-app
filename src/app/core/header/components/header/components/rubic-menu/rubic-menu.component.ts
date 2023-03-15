@@ -46,6 +46,8 @@ export class RubicMenuComponent implements AfterViewInit {
 
   @Output() public readonly onClose = new EventEmitter<void>();
 
+  public isOpened = false;
+
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
 
   public currentBlockchainIcon: string;
@@ -58,7 +60,7 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
 
-  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+  public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
     private readonly authService: AuthService,
@@ -95,7 +97,7 @@ export class RubicMenuComponent implements AfterViewInit {
   public handleButtonClick(item?: NavigationItem): void {
     this.gtmService.reloadGtmSession();
     if (item) {
-      this.window.open(item.link, '_blank');
+      this.window.open(item.link, item?.target || '_blank');
     }
   }
 
@@ -111,5 +113,9 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public mobileClose(): void {
     this.mobileNativeService.forceClose();
+  }
+
+  public closeMenu(): void {
+    this.isOpened = false;
   }
 }

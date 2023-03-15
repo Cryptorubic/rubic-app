@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, pairwise, switchMap } from 'rxjs/operators';
-import { TokensService } from '@core/services/tokens/tokens.service';
+import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -12,6 +11,9 @@ import { TokensListTypeService } from '@features/swaps/shared/components/assets-
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class TokensListService {
@@ -47,10 +49,12 @@ export class TokensListService {
   constructor(
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly tokensListTypeService: TokensListTypeService,
-    private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensNetworkService: TokensNetworkService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnScroll();
 
@@ -80,7 +84,7 @@ export class TokensListService {
               if (!BlockchainsInfo.isBlockchainName(blockchain)) {
                 return false;
               }
-              const tokensNetworkState = this.tokensService.tokensNetworkState[blockchain];
+              const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
               if (
                 this.loading ||
                 this.searchQueryService.query ||
@@ -99,12 +103,13 @@ export class TokensListService {
               );
             })
           )
-        )
+        ),
+        takeUntil(this.destroy$)
       )
       .subscribe(shouldUpdate => {
         if (shouldUpdate) {
           this._listUpdating$.next(true);
-          this.tokensService.fetchNetworkTokens(
+          this.tokensNetworkService.fetchNetworkTokens(
             this.assetsSelectorService.assetType as BlockchainName,
             () => {
               this._listUpdating$.next(false);
@@ -119,7 +124,7 @@ export class TokensListService {
     let prevListType = this.listType;
 
     this.tokensListStoreService.tokensToShow$
-      .pipe(pairwise())
+      .pipe(pairwise(), takeUntil(this.destroy$))
       .subscribe(([prevTokensToShow, tokensToShow]) => {
         if (prevTokensToShow?.length && tokensToShow?.length) {
           const prevToken = prevTokensToShow[0];

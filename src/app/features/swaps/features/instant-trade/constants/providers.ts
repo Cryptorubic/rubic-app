@@ -100,8 +100,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.TRISOLARIS,
       ON_CHAIN_TRADE_TYPE.WANNA_SWAP
     ]),
-    [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([]),
-    [BLOCKCHAIN_NAME.NEAR]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.ZAPPY,

@@ -44,6 +44,7 @@
 
     @include iframe-horizontal {
       width: 60px;
+      margin-right: 0;
     }
 
     span,
@@ -150,6 +151,8 @@
       align-items: center;
       width: fit-content;
 
+      white-space: nowrap;
+
       @include iframe {
         font-size: 14px;
         line-height: 16px;
@@ -159,9 +162,14 @@
 
   &__favorite-container,
   &__security-container {
+    flex-shrink: 0;
     width: 24px;
     height: 24px;
     margin-left: 20px;
+
+    @include iframe-horizontal {
+      margin-left: -35px;
+    }
   }
 
   ::ng-deep &__favorite {
@@ -239,6 +247,11 @@
         max-height: 24px;
       }
     }
+  }
+
+  &__amount-container {
+    width: 70px;
+    height: 24px;
   }
 
   &__amount {

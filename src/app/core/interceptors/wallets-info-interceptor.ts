@@ -37,6 +37,10 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
       {
         route: '/api/trades/',
         methods: new Set(['PATCH'])
+      },
+      {
+        route: '/api/limit_orders/',
+        methods: new Set(['POST'])
       }
     ];
   }

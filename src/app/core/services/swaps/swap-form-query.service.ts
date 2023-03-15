@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, Observable, of, skip } from 'rxjs';
+import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from, Observable, of, skip } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -13,7 +13,6 @@ import {
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, switchIif } from '@shared/utils/utils';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -21,6 +20,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -37,6 +38,7 @@ export class SwapFormQueryService {
     private readonly swapFormService: SwapFormService,
     private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly fiatsService: FiatsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService
@@ -87,7 +89,7 @@ export class SwapFormQueryService {
 
   private subscribeOnQueryParams(): void {
     forkJoin([
-      this.tokensService.tokens$.pipe(first(Boolean)),
+      this.tokensStoreService.tokens$.pipe(first(Boolean)),
       this.fiatsService.fiats$.pipe(first(Boolean))
     ])
       .pipe(
@@ -182,12 +184,23 @@ export class SwapFormQueryService {
       return of(null);
     }
 
-    const chainType = BlockchainsInfo.getChainType(chain);
-    if (Web3Pure[chainType].isAddressCorrect(token)) {
-      const address = chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
-      return this.searchTokenByAddress(tokens, address, chain);
-    }
-    return this.searchTokenBySymbol(tokens, token, chain);
+    const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(chain);
+
+    // @TODO refactoring.
+    return from(Web3Pure[chainType].isAddressCorrect(token)).pipe(
+      switchMap(isAddressCorrect => {
+        if (chainType && isAddressCorrect) {
+          const address =
+            chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
+          return this.searchTokenByAddress(tokens, address, chain);
+        }
+
+        return this.searchTokenBySymbol(tokens, token, chain);
+      }),
+      catchError(() => {
+        return this.searchTokenBySymbol(tokens, token, chain);
+      })
+    );
   }
 
   private searchTokenBySymbol(
@@ -211,7 +224,7 @@ export class SwapFormQueryService {
               return null;
             }
             const newToken = { ...token, amount: new BigNumber(NaN) };
-            this.tokensService.addToken(newToken);
+            this.tokensStoreService.addToken(newToken);
             return newToken;
           }
           return null;
@@ -237,11 +250,11 @@ export class SwapFormQueryService {
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
             backendTokens => of(backendTokens.first()),
-            () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
+            () => this.tokensStoreService.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
             const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
-            this.tokensService.addToken(newToken);
+            this.tokensStoreService.addToken(newToken);
             return newToken;
           })
         );

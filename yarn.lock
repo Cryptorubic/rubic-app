@@ -5771,6 +5771,11 @@ crc-32@^1.2.0:
   resolved "https://registry.yarnpkg.com/crc-32/-/crc-32-1.2.2.tgz#3cad35a934b8bf71f25ca524b6da51fb7eace2ff"
   integrity sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==
 
+crc32@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/crc32/-/crc32-0.2.2.tgz#7ad220d6ffdcd119f9fc127a7772cacea390a4ba"
+  integrity sha512-PFZEGbDUeoNbL2GHIEpJRQGheXReDody/9axKTxhXtQqIL443wnNigtVZO9iuCIMPApKZRv7k2xr8euXHqNxQQ==
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
@@ -13190,10 +13195,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.18.0-alpha-ao.2:
-  version "3.18.0-alpha-ao.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.18.0-alpha-ao.2.tgz#1311f709c8986b7e85c224ad30cb653276f5c35a"
-  integrity sha512-BNTR46LL+d67pawu3sSc6vww8VcJ8Oj0DrxTNQto6l29KmFliTScV15w3Q+9cK1i3z/jE0dE8HD/rxfCM69j1Q==
+rubic-sdk@3.19.7:
+  version "3.19.7"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.19.7.tgz#40c70a57df2ba0e763b421e5ddc28223339757ac"
+  integrity sha512-ctkv0Ei22DtHCbnzxP2COf68sQ0k7fOHhSX1YgsLl2Nc/utQQr42KN7u7JGRNRmpr2Q2EyIE5cHoTXs5SbDNHg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@lifi/sdk" "^1.6.3"
@@ -13203,6 +13208,7 @@ rubic-sdk@3.18.0-alpha-ao.2:
     bignumber.js "9.1.0"
     bitcoin-address-validation "2.2.1"
     cbridge-revert-manager "1.1.0"
+    crc32 "^0.2.2"
     ethers "^5.6.8"
     grpc-web "^1.4.2"
     lodash.clonedeep "^4.5.0"

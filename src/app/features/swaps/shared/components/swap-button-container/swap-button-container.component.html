@@ -2,7 +2,7 @@
   <app-connect-wallet-button></app-connect-wallet-button>
 </ng-template>
 
-<ng-container *ngIf="user$ | async; else connectWalletButton">
+<ng-container *ngIf="nonEvmChangenow || (user$ | async); else connectWalletButton">
   <ng-template #updateRateButton>
     <app-update-rate-button (onClick)="onUpdateRateClick.emit()"></app-update-rate-button>
   </ng-template>

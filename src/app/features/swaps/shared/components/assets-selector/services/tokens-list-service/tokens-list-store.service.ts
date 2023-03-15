@@ -12,10 +12,17 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { TokensList } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
@@ -30,6 +37,9 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Injectable()
 export class TokensListStoreService {
@@ -94,10 +104,12 @@ export class TokensListStoreService {
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapFormService,
-    private readonly swapTypeService: SwapTypeService
+    private readonly swapTypeService: SwapTypeService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -108,18 +120,21 @@ export class TokensListStoreService {
   }
 
   private subscribeOnTokensChange(): void {
-    combineLatest([this.tokensService.tokens$, this.tokensService.favoriteTokens$]).subscribe(
-      () => {
+    combineLatest([this.tokensStoreService.tokens$, this.tokensStoreService.favoriteTokens$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
         if (!this.searchQuery) {
           this.updateTokens();
         }
-      }
-    );
+      });
   }
 
   private subscribeOnSearchQueryChange(): void {
     combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
-      .pipe(filter(([_, selectorListType]) => selectorListType === 'tokens'))
+      .pipe(
+        filter(([_, selectorListType]) => selectorListType === 'tokens'),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.updateTokens();
       });
@@ -129,7 +144,8 @@ export class TokensListStoreService {
     this.assetsSelectorService.assetType$
       .pipe(
         distinctUntilChanged(),
-        filter(assetType => BlockchainsInfo.isBlockchainName(assetType))
+        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.updateTokens();
@@ -137,7 +153,7 @@ export class TokensListStoreService {
   }
 
   private subscribeOnListType(): void {
-    this.tokensListTypeService.listType$.subscribe(() => {
+    this.tokensListTypeService.listType$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.updateTokens();
     });
   }
@@ -162,7 +178,8 @@ export class TokensListStoreService {
             }
           }
           return of({ tokensToShow: this.getSortedTokens() });
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((tokensList: TokensList) => {
         if ('tokensToShow' in tokensList) {
@@ -286,7 +303,7 @@ export class TokensListStoreService {
    * Gets filtered favorite tokens by blockchain and query.
    */
   private getFilteredFavoriteTokens(): AvailableTokenAmount[] {
-    const allFavoriteTokens = this.tokensService.favoriteTokens.toArray();
+    const allFavoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
     const query = this.searchQuery.toLowerCase();
     const filteredFavoriteTokens = allFavoriteTokens
@@ -322,7 +339,7 @@ export class TokensListStoreService {
    */
   private getSortedTokens(): AvailableTokenAmount[] {
     if (this.listType === 'default') {
-      const tokens = this.tokensService.tokens.toArray();
+      const tokens = this.tokensStoreService.tokens.toArray();
 
       const currentBlockchainTokens = tokens
         .filter(token => token.blockchain === this.blockchain && this.isTokenAvailable(token))
@@ -333,7 +350,7 @@ export class TokensListStoreService {
         }));
       return this.sortTokensByComparator(currentBlockchainTokens);
     } else {
-      const favoriteTokens = this.tokensService.favoriteTokens.toArray();
+      const favoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
       const currentBlockchainFavoriteTokens = favoriteTokens
         .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
@@ -362,7 +379,7 @@ export class TokensListStoreService {
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
-    return this.tokensService.favoriteTokens.some(favoriteToken =>
+    return this.tokensStoreService.favoriteTokens.some(favoriteToken =>
       compareTokens(favoriteToken, token)
     );
   }
@@ -381,5 +398,9 @@ export class TokensListStoreService {
 
   private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
+  }
+
+  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+    return this.tokensStoreService.isBalanceLoading$(blockchain);
   }
 }

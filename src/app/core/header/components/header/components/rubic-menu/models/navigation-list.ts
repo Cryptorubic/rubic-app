@@ -13,6 +13,13 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}widget.svg`
   },
   {
+    translateKey: 'navigation.changeNowRecentTrades',
+    type: 'internal',
+    link: 'changenow-recent-trades',
+    imagePath: `${defaultSrc}history.svg`,
+    target: '_self'
+  },
+  {
     translateKey: 'navigation.sdk',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING_SDK,

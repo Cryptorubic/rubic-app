@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -31,7 +30,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
   providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit, AfterViewInit {
+export class TokenAmountInputComponent implements OnInit {
   @Input() formType: 'from' | 'to' = 'from';
 
   @Output() amountUpdated = new EventEmitter<void>();
@@ -108,12 +107,6 @@ export class TokenAmountInputComponent implements OnInit, AfterViewInit {
     this.selectedAsset = asset;
     this.selectedToken = isMinimalToken(asset) ? asset : null;
     this.cdr.markForCheck();
-  }
-
-  public ngAfterViewInit() {
-    if (!this.iframeService.isIframe && this.formType === 'from') {
-      this.tokenAmountInput.nativeElement.focus();
-    }
   }
 
   public onUserBalanceMaxButtonClick(): void {

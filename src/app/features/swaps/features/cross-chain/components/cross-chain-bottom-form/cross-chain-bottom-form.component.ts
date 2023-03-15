@@ -5,6 +5,8 @@ import { SettingsService } from '@features/swaps/core/services/settings-service/
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { BlockchainName, BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 
 @Component({
   selector: 'app-cross-chain-bottom-form',
@@ -36,12 +38,23 @@ export class CrossChainBottomFormComponent {
 
   public readonly selectedTradeError$ = this.crossChainFormService.selectedTradeError$;
 
+  public readonly nonEvmChangenow$ = this.crossChainFormService.selectedTrade$.pipe(
+    map(
+      trade =>
+        trade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+        !BlockchainsInfo.isEvmBlockchainName(
+          this.swapFormService.inputValue.fromAssetType as BlockchainName
+        )
+    )
+  );
+
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly settingsService: SettingsService,
-    private readonly crossChainFormService: CrossChainFormService
+    private readonly crossChainFormService: CrossChainFormService,
+    private readonly swapFormService: SwapFormService
   ) {
     this.crossChainFormService.tradeStatus$.subscribe(status => {
       this.tradeStatusChange.emit(status);

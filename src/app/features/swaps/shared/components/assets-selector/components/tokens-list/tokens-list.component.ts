@@ -2,19 +2,18 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selector/animations/list-animation';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
   animations: [LIST_ANIMATION]
 })
 export class TokensListComponent {
@@ -29,6 +28,15 @@ export class TokensListComponent {
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
   public readonly customToken$ = this.tokensListStoreService.customToken$;
+
+  public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
+    switchMap(tokens => {
+      if (!tokens.length) {
+        return of(false);
+      }
+      return this.tokensListStoreService.isBalanceLoading$(tokens[0].blockchain);
+    })
+  );
 
   public readonly rubicDomain = 'app.rubic.exchange';
 

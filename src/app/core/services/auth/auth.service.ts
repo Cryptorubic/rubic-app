@@ -24,7 +24,7 @@ export class AuthService {
     return this._currentUser$.getValue();
   }
 
-  get userAddress(): string {
+  get userAddress(): string | undefined {
     return this.user?.address;
   }
 

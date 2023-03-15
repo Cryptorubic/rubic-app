@@ -60,6 +60,7 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
+import { compareTokens } from '@shared/utils/utils';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
 interface SettledProviderTrade {
@@ -221,10 +222,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
 
     this.swapFormService.toToken$.pipe(takeUntil(this.destroy$)).subscribe(toToken => {
-      if (
-        TokensService.areTokensEqual(this.toToken, toToken) &&
-        this.toToken?.price !== toToken?.price
-      ) {
+      if (compareTokens(this.toToken, toToken) && this.toToken?.price !== toToken?.price) {
         this.toToken = toToken;
         this.cdr.markForCheck();
       }
