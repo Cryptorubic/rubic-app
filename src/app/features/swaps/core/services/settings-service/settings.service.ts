@@ -26,7 +26,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 @Injectable()
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
-    instantTrades: 2,
+    instantTrades: 1,
     crossChain: 4
   };
 
@@ -222,7 +222,7 @@ export class SettingsService {
           SettingsWarningModalComponent,
           {
             data: settingsChecks,
-            size: 'm',
+            size: 'l',
             fitContent: true
           }
         )

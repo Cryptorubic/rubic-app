@@ -41,6 +41,7 @@ import { debounceTime } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -83,10 +84,11 @@ export class ApproveScannerService {
     )
     .map(([_blockchain, meta]) => meta);
 
-  private readonly defaultBlockchain = this.supportedBlockchains.find(
-    blockchain =>
-      blockchain.key === (this.walletConnectorService.network ?? BLOCKCHAIN_NAME.ETHEREUM)
-  );
+  private readonly defaultBlockchain =
+    this.supportedBlockchains.find(
+      blockchain =>
+        blockchain.key === (this.walletConnectorService.network ?? BLOCKCHAIN_NAME.ETHEREUM)
+    ) ?? BLOCKCHAINS.ETH;
 
   public readonly form = new FormGroup<ApproveFormControl>({
     blockchain: new FormControl(this.defaultBlockchain)
@@ -185,6 +187,7 @@ export class ApproveScannerService {
     private readonly httpService: HttpClient,
     @Inject(INJECTOR) private readonly injector: AngularInjector,
     private readonly tokensService: TokensService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly gasService: GasService
@@ -211,9 +214,7 @@ export class ApproveScannerService {
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
       .pipe(
         map(response => this.handleScannerResponse(response)),
-        switchTap(() =>
-          this.tokensService.tokens$.pipe(startWith(this.tokensService.tokens), first(Boolean))
-        ),
+        switchTap(() => this.tokensStoreService.tokens$.pipe(first(Boolean))),
         switchMap(approves => this.findTokensForApproves(approves)),
         switchMap(approves => this.fetchLastAllowance(approves, blockchain)),
         map(approves => approves.filter(approve => approve.value !== '0')),
