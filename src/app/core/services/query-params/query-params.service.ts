@@ -13,6 +13,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
+import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,8 @@ export class QueryParamsService {
 
   public disabledProviders: CrossChainTradeType[] | undefined;
 
+  public disabledLifiBridges: LifiBridgeTypes[] | undefined;
+
   public enabledProviders: CrossChainTradeType[] | undefined;
 
   public enabledBlockchains: BlockchainName[];
@@ -80,6 +83,10 @@ export class QueryParamsService {
       this.enabledBlockchains = queryParams.enabledBlockchains;
     }
 
+    if (queryParams.disabledLifiBridges) {
+      this.setDisabledLifiBridges(queryParams.disabledLifiBridges);
+    }
+
     this.queryParams = queryParams;
   }
 
@@ -92,6 +99,12 @@ export class QueryParamsService {
       queryParams: this.queryParams,
       queryParamsHandling: 'merge'
     });
+  }
+
+  private setDisabledLifiBridges(disabledBridges: string[]): void {
+    this.disabledLifiBridges = Object.values(LifiBridgeTypes).filter(bridge =>
+      disabledBridges.includes(bridge.toLowerCase())
+    );
   }
 
   private setDisabledProviders(enabledProviders: string[]): void {
@@ -227,27 +240,5 @@ export class QueryParamsService {
     image.style.background = 'rgb(255, 255, 255)';
     image.style.background = stringToTest;
     return image.style.background !== 'rgb(255, 255, 255)';
-  }
-
-  /**
-   * Clears all near query params.
-   */
-  private clearNearParams(): void {
-    this.patchQueryParams({
-      errorCode: null,
-      errorMessage: null,
-      toAmount: null,
-      transactionHashes: null,
-      walletAddress: null,
-      swap_type: null,
-      nearLogin: null,
-      account_id: null,
-      all_keys: null,
-      public_key: null
-    });
-  }
-
-  public getUrlSearchParam(key: string): string {
-    return new URLSearchParams(this.window.location.search).get(key) || undefined;
   }
 }

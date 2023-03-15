@@ -40,20 +40,7 @@ interface AllQueryParams {
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
-
-  // Near specific query params.
-  // Transaction.
-  nearLogin: string;
-  toAmount: string;
-  transactionHashes: string;
-  walletAddress: string;
-  errorCode: string;
-  errorMessage: string;
-  swap_type: string;
-  // Login.
-  account_id: string;
-  public_key: string;
-  all_keys: string;
+  disabledLifiBridges: string[];
 }
 
 export type QueryParams = {

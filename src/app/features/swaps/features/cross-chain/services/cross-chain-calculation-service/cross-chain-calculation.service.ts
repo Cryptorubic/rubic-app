@@ -113,6 +113,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
+    const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
+
     const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
     const disabledProviders = Array.from(
       new Set<CrossChainTradeType>([
@@ -130,7 +132,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timeout: this.defaultTimeout,
       // @TODO CCR
       disabledProviders: [],
-      lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
+      lifiDisabledBridgeTypes: [
+        ...disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
+        ...queryLifiDisabledBridges
+      ],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true
