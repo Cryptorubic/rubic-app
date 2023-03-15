@@ -66,6 +66,7 @@
         <app-provider-panel
           *ngIf="!isSearchingForProvider; else providerLoading"
           [providerData]="selectedProvider"
+          [isBestProvider]="isBestProvider"
         ></app-provider-panel>
 
         <ng-template #providerLoading>

@@ -12,7 +12,7 @@
 
     <ng-template #providerFound>
       <span>Cross-Chain Provider</span>
-      <div class="provider-panel-mobile__best">Best</div>
+      <div *ngIf="isBestTrade" class="provider-panel-mobile__best">Best</div>
     </ng-template>
 
     <ng-container *ngIf="bridgeProvider; else providerLoading">

@@ -18,13 +18,22 @@ export class CrossChainBestRouteMobileComponent {
 
   @Input() set trade(trade: CrossChainTaggedTrade) {
     this.bridgeProvider = TRADES_PROVIDERS[trade?.route?.bridgeProvider];
-
     this.toTrade = trade?.trade?.to;
+
+    this.crossChainFormService.taggedTrades$.pipe().subscribe(trades => {
+      if (trades.length > 0 && this.bridgeProvider) {
+        this.isBestTrade =
+          this.crossChainFormService.taggedTrades[0].trade.bridgeType ===
+          this.bridgeProvider.name.toLowerCase();
+      }
+    });
   }
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly isCalculating$ = this.crossChainFormService.isCalculating$;
+
+  public isBestTrade: boolean = false;
 
   constructor(
     private readonly headerStore: HeaderStore,

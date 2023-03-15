@@ -19,7 +19,19 @@ import { INSTANT_TRADE_STATUS } from '../../../../models/instant-trades-trade-st
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProvidersPanelsContainerComponent {
-  @Input() public providersData: InstantTradeProviderData[];
+  private _providersData: InstantTradeProviderData[];
+
+  @Input() set providersData(providersData: InstantTradeProviderData[]) {
+    this._providersData = providersData;
+
+    if (this.providersData[0].trade && this.selectedProvider) {
+      this.isBestProvider = this.providersData[0].trade.type === this.selectedProvider.name;
+    }
+  }
+
+  public get providersData(): InstantTradeProviderData[] {
+    return this._providersData;
+  }
 
   @Output() public onSelectProvider = new EventEmitter<InstantTradeProviderData>();
 
@@ -34,6 +46,8 @@ export class ProvidersPanelsContainerComponent {
   public get isSearchingForProvider(): boolean {
     return this.selectedProvider.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION;
   }
+
+  public isBestProvider = false;
 
   constructor(
     private headerStore: HeaderStore,

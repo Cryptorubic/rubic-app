@@ -75,6 +75,7 @@
     <div
       class="provider-panel-mobile__best"
       [class.provider-panel-mobile__best--loading]="!tradePanelData"
+      *ngIf="isBestProvider"
     >
       Best
     </div>
