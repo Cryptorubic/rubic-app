@@ -102,7 +102,8 @@ export class QueryParamsService {
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
-    this.disabledLifiBridges = Object.values(LifiBridgeTypes).filter(bridge =>
+    const bridges = Object.values(LifiBridgeTypes) || [];
+    this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
   }

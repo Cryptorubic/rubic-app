@@ -134,7 +134,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       disabledProviders: [],
       lifiDisabledBridgeTypes: [
         ...disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
-        ...queryLifiDisabledBridges
+        ...(queryLifiDisabledBridges || [])
       ],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress }),
