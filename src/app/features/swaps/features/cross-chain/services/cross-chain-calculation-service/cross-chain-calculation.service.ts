@@ -133,7 +133,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       // @TODO CCR
       disabledProviders: [],
       lifiDisabledBridgeTypes: [
-        ...disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
+        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
       ],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
