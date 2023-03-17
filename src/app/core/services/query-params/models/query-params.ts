@@ -40,6 +40,7 @@ interface AllQueryParams {
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
+  domain: string;
 
   // Near specific query params.
   // Transaction.
