@@ -45,6 +45,8 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public domain: string;
+
   public disabledProviders: CrossChainTradeType[] | undefined;
 
   public enabledProviders: CrossChainTradeType[] | undefined;
@@ -71,6 +73,7 @@ export class QueryParamsService {
     }
 
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+    this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setIframeInfo(queryParams);
 

@@ -18,6 +18,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class CrossChainApiService {
   constructor(
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
+    private readonly queryParamsService: QueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(WINDOW) private readonly window: RubicWindow
@@ -51,6 +53,16 @@ export class CrossChainApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
+    const getDomain = (): string => {
+      if (this.queryParamsService.domain) {
+        return this.queryParamsService.domain;
+      } else {
+        return this.window.location !== this.window.parent.location
+          ? this.window.document.referrer
+          : this.window.document.location.href;
+      }
+    };
+
     const {
       fromBlockchain,
       toBlockchain,
@@ -73,10 +85,7 @@ export class CrossChainApiService {
       tx_hash: hash,
       wallet_name: this.walletConnectorService.provider.detailedWalletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
-      domain:
-        this.window.location !== this.window.parent.location
-          ? this.window.document.referrer
-          : this.window.document.location.href
+      domain: getDomain()
     };
 
     await firstValueFrom(
