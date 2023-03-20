@@ -20,6 +20,7 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -97,6 +98,6 @@ export class UserProfileComponent implements AfterViewInit {
   public openLimitOrdersModal(): void {}
 
   public openProfileModal(): void {
-    this.modalService.openUserProfile().subscribe();
+    this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
   }
 }

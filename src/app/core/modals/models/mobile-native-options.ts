@@ -1,5 +1,6 @@
 import { Injector, Component, Type } from '@angular/core';
 import { Observable } from 'rxjs';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 
 export interface IMobileNativeOptions {
   title?: string;
@@ -9,6 +10,7 @@ export interface IMobileNativeOptions {
   forceClose$?: Observable<void>;
   nextModal$?: Observable<INextModal>;
   previousComponent?: boolean;
+  tradesHistory?: TradesHistory;
 }
 
 export interface INextModal extends IMobileNativeOptions {

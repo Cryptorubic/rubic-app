@@ -6,9 +6,11 @@
     [overlay]="true"
   >
     <ng-container *ngLet="orders$ | async as orders">
-      <div class="list">
-        <div *ngFor="let order of orders" order-row [order]="order" mode="mobile"></div>
-      </div>
+      <tui-scrollbar>
+        <div class="list">
+          <div *ngFor="let order of orders" order-row [order]="order" mode="mobile"></div>
+        </div>
+      </tui-scrollbar>
     </ng-container>
   </tui-loader>
 </div>

@@ -9,7 +9,10 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileLiveChatComponent } from '@app/core/header/components/header/components/mobile-live-chat/mobile-live-chat.component';
-import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
+import {
+  MobileUserProfileComponent,
+  TradesHistory
+} from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { BlockchainsListComponent } from '@app/features/swaps/shared/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { MobileNativeModalService } from './mobile-native-modal.service';
 import { InstantTradeProviderData } from '@app/features/swaps/features/instant-trade/models/providers-controller-data';
@@ -118,10 +121,11 @@ export class ModalService {
   /**
    * Show User Profile dialog.
    */
-  public openUserProfile(): Observable<void> {
+  public openUserProfile(tradesHistory: TradesHistory): Observable<void> {
     return this.showDialog(MobileUserProfileComponent, {
       title: 'Account',
-      fitContent: true
+      fitContent: true,
+      tradesHistory: tradesHistory
     });
   }
 

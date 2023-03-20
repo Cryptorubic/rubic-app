@@ -1,6 +1,6 @@
 <div class="mobile-native-backdrop" (click)="close()"></div>
-<div class="mobile-native-content">
-  <div class="mobile-native-chevron" (tuiSwipe)="onSwipe($event)" (click)="toggle()">
+<div class="mobile-native-content" (tuiSwipe)="onSwipe($event)">
+  <div class="mobile-native-chevron" (click)="toggle()">
     <div class="mobile-native-chevron-rectangle"></div>
   </div>
   <ng-container *ngIf="title && title !== 'Menu'">

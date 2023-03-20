@@ -4,6 +4,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { Observable } from 'rxjs';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 
 // enum MenuItems {
 //   RUBIC_MENU,
@@ -67,7 +68,7 @@ export class MobileMenuComponent {
   }
 
   public openProfile(): void {
-    this.modalService.openUserProfile().subscribe();
+    this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
   }
 
   public openWallet(): void {
