@@ -3,17 +3,21 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { UiRecentTrade } from '../../models/ui-recent-trade.interface';
-import { interval } from 'rxjs';
+import { interval, timer } from 'rxjs';
 import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { getStatusBadgeText, getStatusBadgeType } from '../../utils/recent-trades-utils';
+import {
+  getStatusBadgeText,
+  getStatusBadgeType
+} from '@core/recent-trades/utils/recent-trades-utils';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
@@ -27,20 +31,25 @@ import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.servi
 import {
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
+  ChangenowApiStatus,
   CROSS_CHAIN_TRADE_TYPE,
   TxStatus
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
+import { NAVIGATOR } from '@ng-web-apis/common';
+import { UiRecentTrade } from '@core/recent-trades/models/ui-recent-trade.interface';
+import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
 @Component({
   selector: '[trade-row]',
   templateUrl: './trade-row.component.html',
   styleUrls: ['./trade-row.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class TradeRowComponent implements OnInit, OnDestroy {
-  @Input() trade: RecentTrade;
+  @Input() trade: RecentTrade | ChangenowPostTrade;
 
   @Input() mode: 'mobile' | 'table-row';
 
@@ -52,15 +61,20 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public readonly CrossChainTxStatus = TxStatus;
 
-  public readonly getStatusBadgeType: (status: TxStatus) => string = getStatusBadgeType;
+  public readonly getStatusBadgeType: (status: TxStatus | ChangenowApiStatus) => string =
+    getStatusBadgeType;
 
-  public readonly getFromStatusBadgeText: (status: TxStatus) => string = getStatusBadgeText;
+  public readonly getFromStatusBadgeText: (status: TxStatus | ChangenowApiStatus) => string =
+    getStatusBadgeText;
 
   public readonly defaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
 
   public revertBtnLoading = false;
 
   public get isSymbiosisTrade(): boolean {
+    if (this.isChangenowTrade(this.trade)) {
+      return false;
+    }
     return (
       isCrossChainRecentTrade(this.trade) &&
       this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
@@ -75,10 +89,12 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public get isCbridgeTrade(): boolean {
-    return (
-      isCrossChainRecentTrade(this.trade) &&
-      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
-    );
+    if (!this.isChangenowTrade(this.trade)) {
+      return (
+        isCrossChainRecentTrade(this.trade) &&
+        this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
+      );
+    }
   }
 
   public get fromAssetTypeName(): string {
@@ -94,6 +110,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public readonly BLOCKCHAIN_LABEL = blockchainLabel;
 
   public get showToContinue(): boolean {
+    if (this.isChangenowTrade(this.trade)) {
+      return !this.uiTrade?.statusTo && this.uiTrade?.statusFrom === TxStatus.SUCCESS;
+    }
+
     return (
       isOnramperRecentTrade(this.trade) &&
       !this.uiTrade?.statusTo &&
@@ -101,14 +121,28 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get changenowId(): string | undefined {
+    if ('changenowId' in this.trade) {
+      return this.trade.changenowId;
+    }
+
+    if (this.isChangenowTrade(this.trade)) {
+      return this.trade.id;
+    }
+    return undefined;
+  }
+
+  public hintShown: boolean;
+
   constructor(
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly recentTradesService: RecentTradesService,
     private readonly tokensService: TokensService,
     private readonly onramperService: OnramperService,
-    private readonly swapFormQueryService: SwapFormQueryService
+    private readonly swapFormQueryService: SwapFormQueryService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {}
 
   ngOnInit(): void {
@@ -119,8 +153,16 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     this.saveTrades();
   }
 
-  public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
-    return await this.recentTradesService.getTradeData(trade);
+  public isChangenowTrade(trade: RecentTrade | ChangenowPostTrade): trade is ChangenowPostTrade {
+    return 'id' in trade;
+  }
+
+  public getTradeData(trade: RecentTrade | ChangenowPostTrade): Promise<UiRecentTrade> {
+    if (this.isChangenowTrade(trade)) {
+      return this.recentTradesService.getChangeNowTradeData(trade);
+    }
+
+    return this.recentTradesService.getTradeData(trade);
   }
 
   private initTradeDataPolling(): void {
@@ -130,7 +172,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         switchMap(() => this.getTradeData(this.trade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
-        takeWhile(uiTrade => uiTrade?.statusTo === TxStatus.PENDING),
+        takeWhile(
+          uiTrade =>
+            uiTrade?.statusTo === TxStatus.PENDING ||
+            uiTrade?.statusTo !== ChangenowApiStatus.FINISHED
+        ),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -146,7 +192,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getToStatusBadgeText(status: TxStatus): string {
+  public getToStatusBadgeText(status: TxStatus | ChangenowApiStatus): string {
+    if (this.isChangenowTrade(this.trade)) {
+      return getStatusBadgeText(status);
+    }
+
     if (isOnramperRecentTrade(this.trade)) {
       if (this.uiTrade?.statusFrom === TxStatus.PENDING) {
         return 'Waiting';
@@ -163,18 +213,24 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   private saveTrades(): void {
-    const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
-    this.recentTradesStoreService.updateTrade({
-      ...this.trade,
-      ...(isCrossChainFinished && {
-        calculatedStatusTo: this.uiTrade.statusTo,
-        calculatedStatusFrom: this.uiTrade.statusFrom
-      }),
-      dstTxHash: this.uiTrade.dstTxHash
-    });
+    if (!this.isChangenowTrade(this.trade)) {
+      const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
+
+      this.recentTradesStoreService.updateTrade({
+        ...this.trade,
+        ...(isCrossChainFinished && {
+          calculatedStatusTo: this.uiTrade.statusTo,
+          calculatedStatusFrom: this.uiTrade.statusFrom
+        }),
+        dstTxHash: this.uiTrade.dstTxHash
+      });
+    }
   }
 
   public async revertTrade(): Promise<void> {
+    if (this.isChangenowTrade(this.trade)) {
+      return;
+    }
     if (!isCrossChainRecentTrade(this.trade)) {
       return;
     }
@@ -211,6 +267,9 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public async continueOnramperTrade(): Promise<void> {
+    if (this.isChangenowTrade(this.trade)) {
+      return;
+    }
     if (!isOnramperRecentTrade(this.trade)) {
       return;
     }
@@ -221,5 +280,18 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
+  }
+
+  public copyToClipboard(): void {
+    this.showHint();
+    this.navigator.clipboard.writeText(this.changenowId);
+  }
+
+  private showHint(): void {
+    this.hintShown = true;
+    timer(2500).subscribe(() => {
+      this.hintShown = false;
+      this.cdr.markForCheck();
+    });
   }
 }

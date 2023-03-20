@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { blockchainRequiresAddress } from '@features/swaps/core/services/target-network-address-service/constants/blockchain-requires-address';
+import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
+import { BlockchainsInfo } from 'rubic-sdk';
 
 @Injectable()
 export class TargetNetworkAddressService {
@@ -17,7 +18,7 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
-  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(true);
+  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(false);
 
   public readonly isAddressValid$ = this._isAddressValid$.asObservable();
 
@@ -30,10 +31,16 @@ export class TargetNetworkAddressService {
       this.swapFormService.fromBlockchain$,
       this.swapFormService.toBlockchain$
     ]).subscribe(([from, to]) => {
+      let fromChainType: CHAIN_TYPE | undefined;
+      try {
+        fromChainType = BlockchainsInfo.getChainType(from);
+      } catch {}
+      let toChainType: CHAIN_TYPE | undefined;
+      try {
+        toChainType = BlockchainsInfo.getChainType(to);
+      } catch {}
       const isAddressRequired =
-        from &&
-        from !== to &&
-        blockchainRequiresAddress.some(blockchain => blockchain === from || blockchain === to);
+        from && to && from !== to && (!toChainType || fromChainType !== toChainType);
       this._isAddressRequired$.next(isAddressRequired);
     });
   }

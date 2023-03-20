@@ -6,11 +6,12 @@ export enum ROUTE_PATH {
   ABOUT = 'about',
   FAQ = 'faq',
   REVOKE_APPROVAL = 'revoke-approval',
+  CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
   REST = '**'
 }
 
 export enum EXTERNAL_LINKS {
-  LANDING = 'https://rubic.exchange/',
+  LANDING = 'https://rubic.exchange',
   LANDING_STAKING = 'https://rubic.exchange/staking',
   LANDING_SETUP_WIDGET = 'https://rubic.exchange/widget',
   LANDING_TEAM = 'https://rubic.exchange/team',

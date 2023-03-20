@@ -33,6 +33,8 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
 export class LimitOrdersService {
@@ -56,7 +58,8 @@ export class LimitOrdersService {
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly gasService: GasService
   ) {}
 
   public async updateOrders(): Promise<void> {
@@ -121,7 +124,14 @@ export class LimitOrdersService {
     };
 
     try {
-      await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, { onConfirm });
+      const gasPrice = shouldCalculateGas[blockchain]
+        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        : null;
+
+      await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
+        onConfirm,
+        ...(gasPrice && { gasPrice })
+      });
 
       subscription$.unsubscribe();
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {

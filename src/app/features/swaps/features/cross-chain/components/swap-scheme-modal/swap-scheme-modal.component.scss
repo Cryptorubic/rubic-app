@@ -264,7 +264,9 @@
     }
 
     &-name {
+
       @include font(18px, 21px, 500, #000);
+      text-align: center;
 
       @include dark {
         color: #fff;

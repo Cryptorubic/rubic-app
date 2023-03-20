@@ -81,7 +81,10 @@ export class RecentTradesStoreService {
       if (isCrossChainRecentTrade(localStorageTrade)) {
         return localStorageTrade;
       }
-      return trade.txId === localStorageTrade.txId ? trade : localStorageTrade;
+      if ('txId' in trade) {
+        return trade;
+      }
+      return localStorageTrade;
     });
 
     this.storeService.setItem('recentTrades', {

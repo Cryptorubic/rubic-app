@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/angular';
 import { BrowserTracing } from '@sentry/tracing';
 
 Sentry.init({
-  dsn: 'https://36d080c3f1b145c2a9604211cf2a7cc5@o4504179175981056.ingest.sentry.io/4504179177160704',
+  dsn: 'https://be105287a955499ca84ade87b6f02890@o4504752673062912.ingest.sentry.io/4504752674570240',
   integrations: [
     new BrowserTracing({
       tracePropagationTargets: [

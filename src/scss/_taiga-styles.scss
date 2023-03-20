@@ -41,6 +41,10 @@ tui-dialog {
 
     border: 7px solid transparent !important;
 
+    @include b($mobile-sm-middle) {
+      border: 0 !important;
+    }
+
     > .content {
       height: 100%;
       padding: 1.5em 1.5em 0 !important;
@@ -48,10 +52,7 @@ tui-dialog {
       @include b($mobile-sm-middle) {
         padding: 0 !important;
 
-        @include hide-unused-ui {
-          border: 0 !important;
-          border-radius: 20px 0 !important;
-        }
+        border-radius: 20px !important;
       }
 
       > section {
