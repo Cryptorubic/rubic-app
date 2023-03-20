@@ -6,6 +6,10 @@
   @include b($mobile-md-minus) {
     padding: 0;
   }
+
+  @include b($mobile-md) {
+    margin-bottom: 35px;
+  }
 }
 
 app-form {
