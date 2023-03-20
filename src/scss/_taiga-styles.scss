@@ -47,6 +47,11 @@ tui-dialog {
 
       @include b($mobile-sm-middle) {
         padding: 0 !important;
+
+        @include hide-unused-ui {
+          border: 0 !important;
+          border-radius: 20px;
+        }
       }
 
       > section {
