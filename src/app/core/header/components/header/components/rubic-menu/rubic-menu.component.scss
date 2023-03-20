@@ -132,6 +132,10 @@
         fill: var(--primary-text);
       }
     }
+
+    &_history {
+      height: 24px;
+    }
   }
 
   &__link {
@@ -248,7 +252,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 }
 
-@include b($laptop) {
+@include b($laptop-xl) {
   .rubic-menu {
     &__mobile {
       display: block;

@@ -1,3 +1,3 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 
-export const disabledFromBlockchains: BlockchainName[] = [BLOCKCHAIN_NAME.BITCOIN];
+export const disabledFromBlockchains: BlockchainName[] = [];

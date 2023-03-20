@@ -53,6 +53,11 @@ export class SwapButtonContainerComponent {
 
   @Input() isOnramper = false;
 
+  /**
+   * True, if user trades non-evm changenow and doesn't need to connect wallet.
+   */
+  @Input() nonEvmChangenow = false;
+
   @Output() readonly onApproveClick = new EventEmitter<void>();
 
   @Output() readonly onSwapClick = new EventEmitter<void>();

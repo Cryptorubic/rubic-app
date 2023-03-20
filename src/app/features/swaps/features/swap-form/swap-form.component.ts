@@ -10,7 +10,7 @@ import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { BlockchainName, BLOCKCHAIN_NAME, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -119,14 +119,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: SwapFormInput): void {
-    if (
-      (this.fromAssetType !== BLOCKCHAIN_NAME.SOLANA &&
-        form.fromAssetType === BLOCKCHAIN_NAME.SOLANA) ||
-      (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA && form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
-    ) {
-      this.notifyBeta();
-    }
-
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
   }

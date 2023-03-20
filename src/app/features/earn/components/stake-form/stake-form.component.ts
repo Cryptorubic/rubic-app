@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { Router } from '@angular/router';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
@@ -99,7 +93,7 @@ export class StakeFormComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.stakingService.getRbcAmountPrice().subscribe(price => (this.rbcUsdPrice = price));
   }

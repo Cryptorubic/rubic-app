@@ -29,7 +29,13 @@
             class="data-list__link"
           >
             <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              <div
+                class="data-list__option-image"
+                [ngClass]="{
+                  'data-list__option-image_history': item.link === 'changenow-recent-trades'
+                }"
+                [inlineSVG]="item.imagePath"
+              ></div>
               {{ item.translateKey | translate }}
             </button>
           </a>
@@ -59,6 +65,7 @@
           routerLink="/revoke-approval/"
           [class.data-list__link_active]="crossChainActive"
           class="data-list__link"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">Revoke Approval</button>
         </div>
@@ -94,6 +101,7 @@
           class="data-list__link data-list__link_modal"
           routerLink="history/limit-orders"
           queryParamsHandling="merge"
+          (click)="closeMenu()"
         >
           <button tuiOption class="data-list__option">Limit Orders</button>
         </a>

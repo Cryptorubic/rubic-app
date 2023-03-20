@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Self } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -17,7 +17,7 @@ export class CurrentLanguageComponent implements OnInit {
 
   constructor(
     private readonly translateService: TranslateService,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef
   ) {
     this.currentLanguage = this.getCurrentLanguage(this.translateService.currentLang);

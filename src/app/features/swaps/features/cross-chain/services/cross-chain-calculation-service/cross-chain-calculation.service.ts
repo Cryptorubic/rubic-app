@@ -12,7 +12,10 @@ import {
   UnnecessaryApproveError,
   ViaCrossChainTrade,
   Web3Pure,
-  WrappedCrossChainTrade
+  WrappedCrossChainTrade,
+  ChangenowCrossChainTrade,
+  Token as SdkToken,
+  ChangenowPaymentInfo
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -49,6 +52,7 @@ import { CrossChainApiService } from '@core/services/backend/cross-chain-routing
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
+import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -105,7 +109,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromAmount: BigNumber
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    // const receiverAddress = this.receiverAddress; todo return
+    const receiverAddress = this.receiverAddress;
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
@@ -125,12 +129,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timeout: this.defaultTimeout,
       disabledProviders,
       lifiDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI],
-      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO]
-      // ...(receiverAddress && { receiverAddress })
+      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
+      ...(receiverAddress && { receiverAddress }),
+      changenowFullyEnabled: true
     };
 
     return this.sdkService.crossChain
-      .calculateTradesReactively(fromToken, fromAmount, toToken, options)
+      .calculateTradesReactively(
+        new SdkToken(fromToken),
+        fromAmount,
+        new SdkToken(toToken),
+        options
+      )
       .pipe(
         switchMap(reactivelyCalculatedTradeData => {
           const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
@@ -181,6 +191,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toProvider: wrappedTrade.trade.onChainSubtype.to,
       bridgeProvider: wrappedTrade.tradeType
     };
+
+    if (this.queryParamsService.enabledProviders) {
+      return smartRouting;
+    }
 
     if (
       (wrappedTrade.trade instanceof LifiCrossChainTrade ||
@@ -252,6 +266,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
         calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
       const rangoRequestId =
         calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
+      const changenowId =
+        calculatedTrade.trade instanceof ChangenowCrossChainTrade && calculatedTrade.trade.id;
+
       const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
         fromToken,
@@ -262,7 +279,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
 
         ...(viaUuid && { viaUuid }),
-        ...(rangoRequestId && { rangoRequestId })
+        ...(rangoRequestId && { rangoRequestId }),
+        ...(changenowId && { changenowId })
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
@@ -355,20 +373,26 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const { trade, route } = calculatedTrade;
 
     const bridgeType = trade.bridgeType;
-    const bridgeProvider = TRADES_PROVIDERS[bridgeType];
+    let bridgeProvider = TRADES_PROVIDERS[bridgeType];
 
     const fromTradeProvider = route.fromProvider
       ? TRADES_PROVIDERS[route.fromProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider.name + ' Pool'
+          name: bridgeProvider.name
         };
     const toTradeProvider = route.toProvider
       ? TRADES_PROVIDERS[route.toProvider]
       : {
           ...bridgeProvider,
-          name: bridgeProvider.name + ' Pool'
+          name: bridgeProvider.name
         };
+    if (centralizedBridges.some(centralizedBridge => centralizedBridge === bridgeType)) {
+      bridgeProvider = {
+        ...bridgeProvider,
+        name: bridgeProvider.name + ' (Centralized)'
+      };
+    }
 
     const viaUuid =
       calculatedTrade.trade instanceof ViaCrossChainTrade ? calculatedTrade.trade.uuid : undefined;
@@ -377,6 +401,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.requestId
         : undefined;
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
+    const changenowId =
+      calculatedTrade.trade instanceof ChangenowCrossChainTrade
+        ? calculatedTrade.trade.id
+        : undefined;
 
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
@@ -392,7 +420,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
           viaUuid,
           rangoRequestId,
           timestamp,
-          amountOutMin
+          amountOutMin,
+          changenowId
         }
       })
       .subscribe();
@@ -404,5 +433,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
     tradeType: CrossChainTradeType
   ): void {
     this.crossChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+  }
+
+  public async getChangenowPaymentInfo(
+    trade: ChangenowCrossChainTrade
+  ): Promise<{ paymentInfo: ChangenowPaymentInfo; receiverAddress: string }> {
+    const receiverAddress = this.receiverAddress;
+    const paymentInfo = await trade.getChangenowPostTrade(receiverAddress);
+    return {
+      paymentInfo,
+      receiverAddress
+    };
   }
 }

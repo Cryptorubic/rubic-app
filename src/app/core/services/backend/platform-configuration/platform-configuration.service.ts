@@ -120,7 +120,7 @@ export class PlatformConfigurationService {
     [chain: string]: boolean;
   }): BlockchainName[] {
     return Object.entries(availableBlockchains)
-      .filter(([blockchain, availability]) => availability || blockchain === 'tron')
+      .filter(([_, availability]) => availability)
       .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
   }
 

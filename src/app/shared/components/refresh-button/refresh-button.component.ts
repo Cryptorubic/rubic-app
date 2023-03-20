@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -11,7 +12,7 @@ import {
 } from '@angular/core';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
 import { takeUntil, mergeMap, take, tap, pairwise } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-refresh-button',
@@ -32,7 +33,10 @@ export class RefreshButtonComponent implements OnInit {
   @ViewChild('refreshIcon', { static: true })
   refreshIconElement: ElementRef;
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
+  ) {}
 
   public ngOnInit(): void {
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe

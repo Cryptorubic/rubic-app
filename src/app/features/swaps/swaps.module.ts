@@ -7,6 +7,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiManualHintModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -44,6 +45,7 @@ import { TradeService } from '@features/swaps/core/services/trade-service/trade.
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
+import { ChangenowPostFormComponent } from './features/post-form/components/changenow-post-form/changenow-post-form.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import { FormNavigationComponent } from './features/swap-form/components/form-na
     FormHeaderComponent,
     IframeSettingsComponent,
     IframeSettingsButtonComponent,
-    FormNavigationComponent
+    FormNavigationComponent,
+    ChangenowPostFormComponent
   ],
   exports: [],
   imports: [
@@ -87,7 +90,8 @@ import { FormNavigationComponent } from './features/swap-form/components/form-na
     FormsModule,
     TuiLoaderModule,
     ClipboardModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiManualHintModule
   ],
   providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
 })
