@@ -185,7 +185,7 @@ export class InstantTradeService extends TradeCalculationService {
       this.authService.userAddress &&
       isAddressCorrectValue;
 
-    // const useProxy = this.platformConfigurationService.useOnChainProxy;
+    const useProxy = this.platformConfigurationService.useOnChainProxy;
 
     return this.sdkService.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,
@@ -194,7 +194,7 @@ export class InstantTradeService extends TradeCalculationService {
       slippageTolerance,
       disableMultihops,
       deadlineMinutes,
-      useProxy: true
+      useProxy
     });
   }
 
