@@ -11,6 +11,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -53,6 +54,10 @@ export class AssetTypesAsideComponent {
   public readonly fiatsDisabled = this.fiatsListService.isDisabled();
 
   public get showFiats(): boolean {
+    if (this.queryParamsService.hideUnusedUI) {
+      return false;
+    }
+
     return (
       this.formType === 'from' && this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
     );
@@ -65,6 +70,7 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
+    private queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 

@@ -15,6 +15,7 @@ import {
   BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 interface CrossChainProviderStatus {
   active: boolean;
@@ -91,7 +92,7 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private queryParamsService: QueryParamsService) {
     const availableBlockchains = Object.values(BLOCKCHAIN_NAME).filter(
       blockchain => !temporarelyDisabledBlockchains.includes(blockchain)
     );
@@ -113,6 +114,10 @@ export class PlatformConfigurationService {
   }
 
   public isAvailableBlockchain(blockchain: BlockchainName): boolean {
+    if (this.queryParamsService.hideUnusedUI && blockchain === BLOCKCHAIN_NAME.BITCOIN) {
+      return false;
+    }
+
     return this.availableBlockchains ? this.availableBlockchains.includes(blockchain) : true;
   }
 
