@@ -50,7 +50,7 @@ tui-dialog {
 
         @include hide-unused-ui {
           border: 0 !important;
-          border-radius: 20px;
+          border-radius: 20px 0 !important;
         }
       }
 
