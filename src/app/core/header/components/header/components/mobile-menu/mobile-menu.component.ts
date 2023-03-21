@@ -55,14 +55,17 @@ export class MobileMenuComponent {
   }
 
   public openNavigationMenu(): void {
+    LiveChatWidget.call('minimize');
     this.modalService.openMobileNavigationMenu().subscribe();
   }
 
   public openRubicMenu(): void {
+    LiveChatWidget.call('minimize');
     this.modalService.openRubicMenu().subscribe();
   }
 
   public openSettings(): void {
+    LiveChatWidget.call('minimize');
     this.modalService.openSettings().subscribe();
   }
 
@@ -72,10 +75,12 @@ export class MobileMenuComponent {
   }
 
   public openProfile(): void {
+    LiveChatWidget.call('minimize');
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
   }
 
   public openWallet(): void {
+    LiveChatWidget.call('minimize');
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 }
