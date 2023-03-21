@@ -6,6 +6,8 @@ import { WindowWidthService } from '@core/services/widnow-width-service/window-w
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { HeaderStore } from '@core/header/services/header.store';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 
 @Component({
   selector: 'polymorpheus-success-trx-notification',
@@ -32,7 +34,8 @@ export class SuccessTrxNotificationComponent {
       { type: SuccessTxModalType; withRecentTrades: boolean }
     >,
     private readonly modalService: ModalService,
-    private readonly windowWidthService: WindowWidthService
+    private readonly windowWidthService: WindowWidthService,
+    private readonly headerStore: HeaderStore
   ) {
     this.type = context.data.type;
     this.withRecentTrades = context.data.withRecentTrades;
@@ -43,10 +46,14 @@ export class SuccessTrxNotificationComponent {
     (this.context as RubicAny).closeHook();
 
     const isDesktop = this.windowWidthService.windowSize === WindowSize.DESKTOP;
-    this.modalService
-      .openRecentTradesModal({
-        size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
+    if (this.headerStore.isMobile) {
+      this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
+    } else {
+      this.modalService
+        .openRecentTradesModal({
+          size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
+        })
+        .subscribe();
+    }
   }
 }

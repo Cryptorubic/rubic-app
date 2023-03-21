@@ -21,12 +21,11 @@
   }
 
   @include b($tablet) {
-    max-width: 320px;
-    margin: 20px 20px 8px;
+    margin: 20px;
 
     font-size: 20px;
     line-height: 24px;
-    text-align: left;
+    text-align: center;
 
     @include hide-unused-ui {
       margin: 20px;
@@ -53,7 +52,7 @@
 
     font-size: 13px;
     line-height: 15px;
-    text-align: left;
+    text-align: center;
   }
 
   @include hide-unused-ui {
@@ -96,6 +95,7 @@
   &__to {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: calc(100% - 32px - 65px - 65px);
 
     @include b($tablet) {
@@ -114,14 +114,6 @@
         height: 38px;
       }
     }
-  }
-
-  &__from {
-    justify-content: flex-end;
-  }
-
-  &__to {
-    justify-content: flex-start;
   }
 
   &__symbol {
@@ -342,11 +334,11 @@
   }
 
   @include b($tablet) {
-    margin: 0 20px;
+    margin: 0 20px 20px;
 
     font-size: 11px;
     line-height: 15px;
-    text-align: left;
+    text-align: center;
   }
 
   a {

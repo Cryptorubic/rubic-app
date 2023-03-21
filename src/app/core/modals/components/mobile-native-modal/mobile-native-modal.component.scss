@@ -53,20 +53,19 @@
 
 .mobile-native {
   &__header {
+    position: relative;
+
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 20px;
 
     border-bottom: 1px solid var(--transparent-line);
-
-    &_centered {
-      justify-content: center;
-    }
   }
 
   &__back {
-    margin-right: 1rem;
+    position: absolute;
+    left: 15px;
   }
 
   &__title {

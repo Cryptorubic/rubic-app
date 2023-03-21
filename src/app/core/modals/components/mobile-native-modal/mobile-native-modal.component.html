@@ -4,11 +4,7 @@
     <div class="mobile-native-chevron-rectangle"></div>
   </div>
   <ng-container *ngIf="title && title !== 'Menu'">
-    <div
-      class="mobile-native__header"
-      [ngClass]="{ 'mobile-native__header_centered': !context.previousComponent }"
-      (tuiSwipe)="onSwipe($event)"
-    >
+    <div class="mobile-native__header" (tuiSwipe)="onSwipe($event)">
       <div class="mobile-native__back" *ngIf="context.previousComponent">
         <app-back-button (onClick)="close()"></app-back-button>
       </div>
