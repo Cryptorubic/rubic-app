@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .list {
   > div {
     margin-bottom: 16px;
@@ -17,5 +19,30 @@
 
   tui-scrollbar {
     height: calc(var(--tx-height) * 3 + 40px);
+  }
+}
+
+.no-orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 340px;
+  margin: auto;
+  padding: 64px 0;
+
+  &__title {
+    @include font(16px, 18px, 500, #8E8D91);
+    margin-bottom: 24px;
+
+    text-align: center;
+
+    @include dark {
+      color: #a2a1a5;
+    }
+  }
+
+  &__navigate {
+    width: 100%;
+    max-width: 218px;
   }
 }

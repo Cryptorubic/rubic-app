@@ -142,7 +142,7 @@
 
     <ng-container *ngIf="uiTrade?.fromAmount">
       <div style="margin-left: auto; font-size: 1rem">
-        <span>{{ '+' + uiTrade?.fromAmount }}</span>
+        <span>{{ '+' + uiTrade?.fromAmount.slice(0, 7) }}</span>
         <span style="color: #00ffa0; margin-left: 4px">{{ uiTrade?.toToken.symbol }}</span>
       </div>
     </ng-container>
