@@ -26,8 +26,6 @@ import { DOCUMENT } from '@angular/common';
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
   public title: string = this.context.title;
 
-  public tradesHistory = this.context.tradesHistory;
-
   public state: ModalStates;
 
   constructor(

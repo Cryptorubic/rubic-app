@@ -1,4 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 // declare var LiveChatWidget: any;
 
@@ -11,17 +12,15 @@ export class MobileLiveChatComponent {
   @ViewChild('liveChartPlaceholder', { static: true })
   liveChartPlaceholder: ElementRef<HTMLDivElement>;
 
-  // constructor(
-  // @Inject(DOCUMENT) private document: Document,) { }
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 
-  // ngOnInit() {
-  // }
+  // ngOnInit() {}
 
   // ngAfterViewInit(): void {
-  // console.log('this', this.liveChartPlaceholder)
-  // const liveChat = this.document.getElementById('chat-widget-container').cloneNode(true);
-  // const liveChat = this.document.getElementById('chat-widget-container');
-  // LiveChatWidget.call('maximize');
-  // this.liveChartPlaceholder.nativeElement.append(liveChat)
+  //   console.log('this', this.liveChartPlaceholder);
+  //   // const liveChat = this.document.getElementById('chat-widget-container').cloneNode(true);
+  //   const liveChat = this.document.getElementById('chat-widget-container');
+  //   LiveChatWidget.call('maximize');
+  //   this.liveChartPlaceholder.nativeElement.append(liveChat);
   // }
 }

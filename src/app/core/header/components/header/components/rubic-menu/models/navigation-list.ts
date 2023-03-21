@@ -56,22 +56,26 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Swap',
       type: 'internal',
-      link: ROUTE_PATH.NONE
+      link: ROUTE_PATH.NONE,
+      active: false
     },
     {
       translateKey: 'Limit Order',
       type: 'internal',
-      link: ROUTE_PATH.LIMIT_ORDER
+      link: ROUTE_PATH.LIMIT_ORDER,
+      active: false
     },
     {
       translateKey: 'Revoke Approval',
       type: 'internal',
-      link: ROUTE_PATH.REVOKE_APPROVAL
+      link: ROUTE_PATH.REVOKE_APPROVAL,
+      active: false
     },
     {
       translateKey: 'ChangeNow Tx',
       type: 'internal',
-      link: ROUTE_PATH.CHANGENOW_RECENT_TRADES
+      link: ROUTE_PATH.CHANGENOW_RECENT_TRADES,
+      active: false
     }
   ],
   ['More']: [

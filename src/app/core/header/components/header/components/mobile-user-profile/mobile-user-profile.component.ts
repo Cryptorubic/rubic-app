@@ -13,11 +13,14 @@ import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 
 import { Observable, combineLatest, from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { IMobileNativeOptions } from '@core/modals/models/mobile-native-options';
 
 export enum TradesHistory {
   CROSS_CHAIN,
   LIMIT_ORDER
+}
+
+interface ContextData {
+  tradesHistory: TradesHistory;
 }
 
 @Component({
@@ -26,7 +29,7 @@ export enum TradesHistory {
   styleUrls: ['./mobile-user-profile.component.scss']
 })
 export class MobileUserProfileComponent {
-  public menu: TradesHistory = this.context.data?.tradesHistory || TradesHistory.CROSS_CHAIN;
+  public menu: TradesHistory = this.context.data.tradesHistory;
 
   public readonly TradesHistory = TradesHistory;
 
@@ -44,7 +47,7 @@ export class MobileUserProfileComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, IMobileNativeOptions>,
+    private readonly context: TuiDialogContext<void, ContextData>,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokenService: TokensService,

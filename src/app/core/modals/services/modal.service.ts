@@ -125,7 +125,9 @@ export class ModalService {
     return this.showDialog(MobileUserProfileComponent, {
       title: 'Account',
       fitContent: true,
-      tradesHistory: tradesHistory
+      data: {
+        tradesHistory
+      }
     });
   }
 

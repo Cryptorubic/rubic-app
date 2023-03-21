@@ -4,4 +4,5 @@ export interface NavigationItem {
   link: string;
   imagePath?: string;
   target?: string;
+  active?: boolean;
 }

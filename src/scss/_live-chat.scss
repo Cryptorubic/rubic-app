@@ -14,9 +14,11 @@
   }
 
   @include b($mobile-md) {
-    display: none;
-
     transition-duration: 0s !important;
+
+    #chat-widget-minimized {
+      display: none !important;
+    }
 
     &.visible {
       display: block;
