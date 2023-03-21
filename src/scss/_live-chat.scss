@@ -14,6 +14,8 @@
   }
 
   @include b($mobile-md) {
+    z-index: -100 !important;
+
     transition-duration: 0s !important;
 
     #chat-widget-minimized {
