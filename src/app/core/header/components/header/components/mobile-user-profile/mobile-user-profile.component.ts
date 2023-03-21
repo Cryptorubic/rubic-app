@@ -26,7 +26,7 @@ export enum TradesHistory {
   styleUrls: ['./mobile-user-profile.component.scss']
 })
 export class MobileUserProfileComponent {
-  public menu: TradesHistory = TradesHistory.CROSS_CHAIN;
+  public menu: TradesHistory = this.context.data?.tradesHistory || TradesHistory.CROSS_CHAIN;
 
   public readonly TradesHistory = TradesHistory;
 
