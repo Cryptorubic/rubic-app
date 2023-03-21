@@ -10,11 +10,9 @@
   opacity: initial !important;
 
   @include b($mobile-md) {
-    max-height: 85vh !important;
-  }
+    bottom: 76px !important;
 
-  @include b($mobile-md) {
-    z-index: -100 !important;
+    max-height: 84vh !important;
 
     transition-duration: 0s !important;
 

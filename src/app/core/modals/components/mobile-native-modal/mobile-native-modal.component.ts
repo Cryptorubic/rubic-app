@@ -118,6 +118,9 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
       this.expand();
     } else if (swipe.direction === 'bottom') {
       this.close();
+    } else if (swipe.direction === 'right') {
+      this.hide();
+      animationTimeout(this.context.completeWith);
     }
   }
 

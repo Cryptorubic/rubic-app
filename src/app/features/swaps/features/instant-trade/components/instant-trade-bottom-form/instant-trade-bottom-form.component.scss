@@ -331,7 +331,18 @@ $green: rgb(74, 169, 86);
       }
     }
 
+    &__body-top {
+      position: relative;
+    }
+
+    app-tokens-rate {
+      position: absolute;
+      right: 20px;
+      bottom: 17px;
+    }
+
     &__token-amount {
+      height: 57px;
       margin-bottom: 0;
     }
   }
