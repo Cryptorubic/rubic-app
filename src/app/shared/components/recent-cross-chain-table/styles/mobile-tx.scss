@@ -7,6 +7,22 @@
   border-radius: 100%;
 }
 
+.asset {
+  display: flex;
+
+  &__symbol {
+    @include font(14px, 17px, 500, #37373D, 0.03em);
+
+    @include dark {
+      color: #fff;
+    }
+  }
+
+  &__asset-type {
+    @include font(13px, 16px, 500, #8E8D91, 0.03em);
+  }
+}
+
 .tx {
   position: relative;
 
@@ -49,10 +65,6 @@
     @include assetImage();
     width: 32px;
     height: 32px;
-
-    &:last-of-type {
-      margin-left: -8px;
-    }
   }
 
   &__asset-symbol {
@@ -76,6 +88,7 @@
     text-decoration: none;
 
     &::after {
+      margin-top: 2px;
       margin-left: 13px;
 
       content: url('/assets/images/icons/link-arrow.svg');
