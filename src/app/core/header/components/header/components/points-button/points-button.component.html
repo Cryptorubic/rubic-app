@@ -1,0 +1,9 @@
+<app-rubic-button
+  *noFrame
+  class="button_buy-token"
+  (click)="navigateToSwapAndEarn()"
+  appearance="secondary"
+>
+  <img class="image" src="assets/images/rbc-white.png" alt="" />
+  {{ points$ | async }}
+</app-rubic-button>

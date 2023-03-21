@@ -33,6 +33,7 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { PointsButtonComponent } from './components/header/components/points-button/points-button.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { AppReferralBannerComponent } from './components/header/components/refer
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    AppReferralBannerComponent
+    AppReferralBannerComponent,
+    PointsButtonComponent
   ],
   imports: [
     CommonModule,
