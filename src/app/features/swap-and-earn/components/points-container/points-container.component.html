@@ -1,0 +1,29 @@
+<div *ngLet="points.confirmed > 0 as showButtons" class="points">
+  <img
+    *ngIf="showButtons"
+    class="points__cover"
+    src="/assets/images/swap-and-earn/sad-mouse.svg"
+    alt="You are not participant"
+  />
+  <div [ngClass]="{ points__container_disabled: showButtons }" class="points__container">
+    <div class="points__pending">{{ points.pending }} in Pending</div>
+    <div class="points__confirmed">
+      <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />{{ points.confirmed }} RBC
+    </div>
+    <div class="points__about">?</div>
+  </div>
+  <ng-container *ngIf="isLoggedIn$ | async; else loginButton">
+    <button
+      *ngLet="points.confirmed >= 2500 as allowWithdraw"
+      [disabled]="!allowWithdraw"
+      [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
+      (click)="handleButtonClick()"
+      class="points__button"
+    >
+      Withdraw Points
+    </button>
+  </ng-container>
+  <ng-template #loginButton>
+    <app-login-button></app-login-button>
+  </ng-template>
+</div>

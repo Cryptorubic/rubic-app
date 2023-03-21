@@ -43,6 +43,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -92,7 +93,8 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('on-chain');
   }
@@ -286,6 +288,7 @@ export class InstantTradeService extends TradeCalculationService {
         this.showSuccessTrxNotification();
       }
 
+      this.swapAndEarnStateService.fetchPoints();
       await this.instantTradesApiService
         .notifyInstantTradesBot({
           provider: providerName,

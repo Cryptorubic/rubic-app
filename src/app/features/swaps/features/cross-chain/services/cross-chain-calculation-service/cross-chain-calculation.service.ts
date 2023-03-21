@@ -53,6 +53,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -80,7 +81,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
   }
@@ -288,6 +290,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
 
+      this.swapAndEarnStateService.fetchPoints();
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
 

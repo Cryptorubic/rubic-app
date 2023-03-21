@@ -1,0 +1,15 @@
+<div class="cards">
+  <h5 class="cards__title">How to join the Swap & Earn program:</h5>
+
+  <div class="cards__container">
+    <div *ngFor="let card of cards" class="cards__element">
+      <h6 class="cards__element-title">{{ card.title }}</h6>
+      <img
+        [ngStyle]="{ bottom: card.bottomDistance, right: card.rightDistance }"
+        class="cards__element-image"
+        [src]="card.image"
+        [alt]="card.title"
+      />
+    </div>
+  </div>
+</div>
