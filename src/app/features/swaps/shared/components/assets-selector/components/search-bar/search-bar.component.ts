@@ -3,6 +3,7 @@ import { SearchQueryService } from '@features/swaps/shared/components/assets-sel
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { map } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
+import { TuiSizeS } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-search-bar',
@@ -23,7 +24,7 @@ export class SearchBarComponent {
     )
   );
 
-  public readonly isMobile = this.headerStore.isMobile;
+  public searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
 
   constructor(
     private readonly searchQueryService: SearchQueryService,

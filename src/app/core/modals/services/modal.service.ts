@@ -29,7 +29,7 @@ import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/model
 import { TRADE_STATUS } from '@app/shared/models/swaps/trade-status';
 import { InstantTradeInfo } from '@app/features/swaps/features/instant-trade/models/instant-trade-info';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
-import { TuiDialogOptions } from '@taiga-ui/core';
+import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 
 @Injectable()
@@ -50,8 +50,8 @@ export class ModalService {
     const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
     return this.showDialog<AssetsSelectorComponent, Asset>(AssetsSelectorComponent, {
       title: 'Select token',
+      size,
       data: {
-        size,
         formType,
         idPrefix
       }
@@ -238,9 +238,9 @@ export class ModalService {
   /**
    * Show Recent Trades Modal dialog.
    */
-  public openRecentTradesModal(data: { size: string }): Observable<void> {
+  public openRecentTradesModal(data: { size: TuiDialogSize }): Observable<void> {
     return this.showDialog(RecentCrosschainTxComponent, {
-      data
+      size: data.size
     });
   }
 
