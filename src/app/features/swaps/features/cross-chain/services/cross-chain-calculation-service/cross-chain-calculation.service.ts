@@ -138,7 +138,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ],
       rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress }),
-      changenowFullyEnabled: true
+      changenowFullyEnabled: true,
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
 
     return this.sdkService.crossChain
@@ -307,7 +308,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
-      ...(gasPrice && { gasPrice })
+      ...(gasPrice && { gasPrice }),
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
     };
 
     try {

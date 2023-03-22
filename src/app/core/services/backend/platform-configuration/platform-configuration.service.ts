@@ -19,6 +19,7 @@ import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/c
 interface CrossChainProviderStatus {
   active: boolean;
   disabledProviders: string[];
+  useProxy: boolean;
 }
 
 interface PlatformConfig {
@@ -91,6 +92,16 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
+  private readonly _useCrossChainChainProxy$ = new BehaviorSubject<
+    Record<CrossChainTradeType, boolean>
+  >(undefined);
+
+  public readonly useCrossChainChainProxy$ = this._useOnChainProxy$.asObservable();
+
+  public get useCrossChainChainProxy(): Record<CrossChainTradeType, boolean> {
+    return this._useCrossChainChainProxy$.getValue();
+  }
+
   constructor(private httpClient: HttpClient) {
     const availableBlockchains = Object.values(BLOCKCHAIN_NAME).filter(
       blockchain => !temporarelyDisabledBlockchains.includes(blockchain)
@@ -105,6 +116,7 @@ export class PlatformConfigurationService {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
           this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
+          this.handleCrossChainProxyProviders(response.cross_chain_providers);
         }
       }),
       map(response => response.server_is_active),
@@ -122,6 +134,22 @@ export class PlatformConfigurationService {
     return Object.entries(availableBlockchains)
       .filter(([_, availability]) => availability)
       .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
+  }
+
+  private handleCrossChainProxyProviders(crossChainProviders: {
+    [key: string]: CrossChainProviderStatus;
+  }): void {
+    const crossChainProvidersEntries = Object.entries(crossChainProviders);
+    if (!crossChainProvidersEntries.length) {
+      return;
+    }
+    const providers = Object.fromEntries(
+      crossChainProvidersEntries.map(([provider, status]) => [
+        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
+        status.useProxy
+      ])
+    ) as Record<CrossChainTradeType, boolean>;
+    this._useCrossChainChainProxy$.next(providers);
   }
 
   private mapDisabledProviders(crossChainProviders: {

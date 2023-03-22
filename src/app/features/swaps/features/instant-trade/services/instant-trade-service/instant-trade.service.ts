@@ -243,7 +243,6 @@ export class InstantTradeService extends TradeCalculationService {
           toSymbol,
           fromAmount.multipliedBy(fromPrice)
         );
-        this.gtmService.checkGtm();
 
         subscription$ = this.notifyTradeInProgress(hash, blockchain);
 
