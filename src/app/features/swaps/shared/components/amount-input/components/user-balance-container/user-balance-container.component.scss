@@ -21,8 +21,8 @@
   @include b($mobile-md) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
+    margin-top: 5px;
   }
 
   &__balance {
@@ -32,6 +32,18 @@
     color: var(--secondary-text);
     font-size: 14px;
     line-height: 17px;
+
+    @include b($mobile-md) {
+      margin-right: 0;
+    }
+
+    &_amount {
+      @include b($mobile-md) {
+        margin-left: 5px;
+
+        color: #00ffa0;
+      }
+    }
   }
 
   &__max-button {
@@ -46,13 +58,7 @@
     background-color: transparent;
 
     @include b($mobile-md) {
-      padding: 4px 6px;
-
-      color: #00ffa0;
-      font-size: 14px;
-
-      background-color: #00e28e26;
-      border-radius: 4px;
+      display: none;
     }
 
     &_disabled {

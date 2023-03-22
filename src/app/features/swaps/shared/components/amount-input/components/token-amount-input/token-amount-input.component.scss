@@ -153,7 +153,7 @@
 
     height: auto;
     margin: 0;
-    padding: 20px 20px 30px;
+    padding: 30px 20px;
 
     background-color: var(--form-background);
     border: 1px solid var(--transparent-line);
@@ -166,6 +166,10 @@
 
     &_onramper {
       border: none;
+    }
+
+    &__input-label {
+      margin-bottom: 0;
     }
   }
 }

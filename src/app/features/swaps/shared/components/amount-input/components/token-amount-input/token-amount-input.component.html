@@ -50,18 +50,20 @@
     </ng-container>
   </div>
 
-  <ng-container *ngIf="formType === 'from'">
-    <app-user-balance-container
-      *noFrame
-      [token]="selectedToken"
-      (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
-    ></app-user-balance-container>
+  <ng-container *ngIf="selectedToken?.amount.gt(0)">
+    <ng-container *ngIf="formType === 'from'">
+      <app-user-balance-container
+        *noFrame
+        [token]="selectedToken"
+        (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
+      ></app-user-balance-container>
 
-    <app-user-balance-container
-      *onlyFrame="'horizontal'"
-      [token]="selectedToken"
-      hide="balance"
-      (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
-    ></app-user-balance-container>
+      <app-user-balance-container
+        *onlyFrame="'horizontal'"
+        [token]="selectedToken"
+        hide="balance"
+        (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
+      ></app-user-balance-container>
+    </ng-container>
   </ng-container>
 </div>
