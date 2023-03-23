@@ -15,7 +15,8 @@ import {
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
   Token as SdkToken,
-  ChangenowPaymentInfo
+  ChangenowPaymentInfo,
+  Token
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -142,48 +143,55 @@ export class CrossChainCalculationService extends TradeCalculationService {
       useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
 
-    return this.sdkService.crossChain
-      .calculateTradesReactively(
-        new SdkToken(fromToken),
-        fromAmount,
-        new SdkToken(toToken),
-        options
-      )
-      .pipe(
-        switchMap(reactivelyCalculatedTradeData => {
-          const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
+    return from(this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken))).pipe(
+      switchMap(tokenState => {
+        const disableProxyConfig = Object.fromEntries(
+          Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
+        ) as Record<CrossChainTradeType, boolean>;
+        return this.sdkService.crossChain
+          .calculateTradesReactively(
+            new SdkToken(fromToken),
+            fromAmount,
+            new SdkToken(toToken),
+            tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
+          )
+          .pipe(
+            switchMap(reactivelyCalculatedTradeData => {
+              const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
-          if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
-            this.saveNotWhitelistedProvider(
-              wrappedTrade.error,
-              fromToken.blockchain,
-              wrappedTrade.tradeType
-            );
-          }
+              if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
+                this.saveNotWhitelistedProvider(
+                  wrappedTrade.error,
+                  fromToken.blockchain,
+                  wrappedTrade.tradeType
+                );
+              }
 
-          const trade = wrappedTrade?.trade;
+              const trade = wrappedTrade?.trade;
 
-          const needApprove$ = from(
-            calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
-          );
+              const needApprove$ = from(
+                calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
+              );
 
-          return needApprove$.pipe(
-            map((needApprove): CrossChainCalculatedTradeData => {
-              return {
-                total: total,
-                calculated: calculated,
-                lastCalculatedTrade: wrappedTrade
-                  ? {
-                      ...wrappedTrade,
-                      needApprove,
-                      route: this.parseRoute(wrappedTrade)
-                    }
-                  : null
-              };
+              return needApprove$.pipe(
+                map((needApprove): CrossChainCalculatedTradeData => {
+                  return {
+                    total: total,
+                    calculated: calculated,
+                    lastCalculatedTrade: wrappedTrade
+                      ? {
+                          ...wrappedTrade,
+                          needApprove,
+                          route: this.parseRoute(wrappedTrade)
+                        }
+                      : null
+                  };
+                })
+              );
             })
           );
-        })
-      );
+      })
+    );
   }
 
   /**
@@ -313,7 +321,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     try {
-      await calculatedTrade.trade.swap(swapOptions);
+      const isDeflation = await this.sdkService.deflationTokenManager.isDeflationToken(
+        new Token(fromToken)
+      );
+      await calculatedTrade.trade.swap(
+        isDeflation ? { ...swapOptions, useProxy: false } : swapOptions
+      );
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
