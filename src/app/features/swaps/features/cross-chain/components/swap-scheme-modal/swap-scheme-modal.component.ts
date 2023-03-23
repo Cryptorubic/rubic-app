@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  Self
+} from '@angular/core';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -46,7 +53,7 @@ import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockch
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapSchemeModalComponent implements OnInit {
+export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
   public trade: SwapSchemeModalData;
 
   public srcProvider: ProviderInfo;
@@ -119,6 +126,12 @@ export class SwapSchemeModalComponent implements OnInit {
     this.initSrcTxStatusPolling();
     this.initTradeProcessingStatusPolling();
     this.initDstTxStatusPolling();
+  }
+
+  ngAfterViewInit() {
+    const overlay = document.querySelector('.overlay');
+
+    overlay.classList.add('overlay-ccr-confetti');
   }
 
   public initSrcTxStatusPolling(): void {

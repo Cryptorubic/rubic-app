@@ -4,6 +4,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
 import { Points } from '@features/swap-and-earn/models/points';
+import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -33,6 +34,19 @@ export class SwapAndEarnStateService {
       return of({ confirmed: 0, pending: 0 });
     }
     return this.httpService.get<Points>(`rewards?address=${address}`);
+  }
+
+  public async claimPoints(): Promise<void> {
+    const address = this.walletConnectorService.address;
+
+    if (address) {
+      await this.fetchPoints().pipe(
+        tap(points => {
+          console.log(points.confirmed);
+          // this.httpService.post('', points.confirmed);
+        })
+      );
+    }
   }
 
   private handleAddressChange(): void {

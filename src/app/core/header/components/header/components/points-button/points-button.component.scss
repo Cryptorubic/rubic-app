@@ -1,5 +1,10 @@
+@use 'src/scss/core' as *;
+
 :host {
   margin-right: 20px;
+
+  background-color: var(--tui-primary);
+  border-radius: 25px;
 }
 
 .image {

@@ -1,29 +1,41 @@
-<div *ngLet="points.confirmed > 0 as showButtons" class="points">
-  <img
-    *ngIf="showButtons"
-    class="points__cover"
-    src="/assets/images/swap-and-earn/sad-mouse.svg"
-    alt="You are not participant"
-  />
-  <div [ngClass]="{ points__container_disabled: showButtons }" class="points__container">
-    <div class="points__pending">{{ points.pending }} in Pending</div>
-    <div class="points__confirmed">
-      <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />{{ points.confirmed }} RBC
+<ng-container *ngLet="points$ | async as points">
+  <div *ngLet="points.pending === 0 as showButtons" class="points">
+    <div *ngIf="showButtons" class="points__cover">
+      <img src="/assets/images/swap-and-earn/sad-mouse.svg" alt="You are not participant" />
+      <p>You are not a member of Swap & Earn program:(</p>
     </div>
-    <div class="points__about">?</div>
+    <div [ngClass]="{ points__container_disabled: showButtons }" class="points__container">
+      <div class="points__pending">{{ points.pending }} in Pending</div>
+      <div class="points__confirmed">
+        <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />{{ points.confirmed }} RBC
+      </div>
+      <div class="points__about">
+        <img
+          src="assets/images/icons/exclamation-grey.svg"
+          alt="Hint"
+          tuiHint="The minimum amount to withdraw is 2,500 RBC."
+          tuiHintMode="onDark"
+        />
+      </div>
+    </div>
+    <ng-container *ngIf="isLoggedIn$ | async; else loginButton">
+      <div
+        *ngLet="points.confirmed >= 2500 as allowWithdraw"
+        [tuiHint]="!allowWithdraw ? 'The minimum amount to withdraw is 2,500 RBC.' : null"
+        tuiHintMode="onDark"
+      >
+        <button
+          [disabled]="!allowWithdraw"
+          [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
+          (click)="handleButtonClick()"
+          class="points__button"
+        >
+          {{ !allowWithdraw ? 'Not Enough Points' : 'Withdraw Points' }}
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #loginButton>
+      <app-login-button></app-login-button>
+    </ng-template>
   </div>
-  <ng-container *ngIf="isLoggedIn$ | async; else loginButton">
-    <button
-      *ngLet="points.confirmed >= 2500 as allowWithdraw"
-      [disabled]="!allowWithdraw"
-      [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
-      (click)="handleButtonClick()"
-      class="points__button"
-    >
-      Withdraw Points
-    </button>
-  </ng-container>
-  <ng-template #loginButton>
-    <app-login-button></app-login-button>
-  </ng-template>
-</div>
+</ng-container>

@@ -1,7 +1,6 @@
-<ng-container *ngLet="points$ | async as points">
+<ng-container>
   <ng-container *ngIf="workingStatus$ | async; else noCompany">
-    <app-points-container (handleClick)="handleWithdraw()" [points]="points"></app-points-container>
-    <p *ngIf="points.confirmed === 0 && points.pending === 0">You are not a member yet :(</p>
+    <app-points-container (handleClick)="handleWithdraw()"></app-points-container>
     <app-swap-and-earn-faq></app-swap-and-earn-faq>
   </ng-container>
   <ng-template #noCompany></ng-template>

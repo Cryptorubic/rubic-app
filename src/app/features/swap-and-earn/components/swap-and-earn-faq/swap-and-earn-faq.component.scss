@@ -8,7 +8,6 @@
 .cards {
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
 
   &__title {
@@ -18,7 +17,45 @@
     font-size: 16px;
   }
 
+  &__wrapper {
+    position: relative;
+  }
+
+  &__fullTerms {
+    position: absolute;
+    top: 50%;
+    right: -160px;
+
+    padding: 25px 23px 25px 228px;
+
+    text-decoration: none;
+
+    background: linear-gradient(90deg, rgba(1, 227, 142, 0) 47.44%, #01e38e 90.14%);
+    border-radius: 24px;
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    transition: all 0.1s ease-out;
+
+    &:hover {
+      transform: translateY(-50%) translateX(10px);
+
+      transition: all 0.1s ease-out;
+    }
+
+    &-text {
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 120%;
+      letter-spacing: 0.03em;
+    }
+  }
+
   &__container {
+    position: relative;
+    z-index: 1;
+
     display: flex;
     gap: 48px;
     justify-content: center;

@@ -131,6 +131,14 @@ tui-dialog-host {
     overflow: inherit !important;
 
     background: rgb(0 0 0 / 0%) !important;
+
+    &-it-confetti {
+      background-image: url('/assets/images/swap-and-earn/it-confetti.png') !important;
+    }
+
+    &-ccr-confetti {
+      background-image: url('/assets/images/swap-and-earn/ccr-confetti.png') !important;
+    }
   }
 
   .dialog {

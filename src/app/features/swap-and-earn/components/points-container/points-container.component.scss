@@ -32,7 +32,15 @@
 
     height: 100%;
 
+    font-weight: 400;
+
+    text-align: center;
+
     transform: translateX(-50%);
+
+    img {
+      height: 100%;
+    }
   }
 
   &__container {
@@ -136,6 +144,10 @@
     @include b($mobile-sm-middle) {
       width: 50px;
       margin-left: 0;
+    }
+
+    img {
+      width: 32px;
     }
   }
 

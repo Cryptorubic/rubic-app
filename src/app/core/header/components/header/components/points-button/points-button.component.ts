@@ -3,6 +3,7 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { map } from 'rxjs/operators';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-points-button',
@@ -15,8 +16,11 @@ export class PointsButtonComponent {
     map(points => points.pending + points.confirmed)
   );
 
+  public readonly isAuth$ = this.authServices.currentUser$;
+
   constructor(
     private readonly router: Router,
+    private readonly authServices: AuthService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {}
 
