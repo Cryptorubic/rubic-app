@@ -4,14 +4,20 @@
   display: flex;
   justify-content: center;
 
-  background: linear-gradient(90deg, rgb(79, 182, 163) 0%, rgb(52, 199, 215) 50%, rgb(115, 102, 196) 100%);
+  text-decoration: none;
 
-  @include dark {
-    background: linear-gradient(90deg, rgba(40, 92, 83, 1) 0%, rgba(0, 202, 226, 1) 50%, rgba(51, 48, 81, 1) 100%);
-  }
+  background: linear-gradient(274.9deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
 
   @include hide-unused-ui {
     display: none;
+  }
+
+  &:hover {
+    color: white;
+
+    img {
+      transform: translateX(5px) scale(1.1);
+    }
   }
 
   &__container {
@@ -19,6 +25,7 @@
     z-index: 1;
 
     display: flex;
+    gap: 24px;
     align-items: center;
     justify-content: center;
 
@@ -50,9 +57,12 @@
     gap: 12px;
     align-items: center;
 
-    white-space: nowrap;
+    color: white;
 
-    &_text {
+    white-space: nowrap;
+    text-decoration: none;
+
+    &-text {
       @include font(19px, 1, 400, var(--primary-text-invert));
 
       @include b($mobile-sm-plus) {
@@ -62,14 +72,6 @@
 
     img {
       transition: 100ms ease-in;
-    }
-
-    &:hover {
-      text-decoration: none;
-
-      img {
-        transform: translateX(3px);
-      }
     }
   }
 }
