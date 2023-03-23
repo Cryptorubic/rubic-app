@@ -8,6 +8,10 @@
 
   background: linear-gradient(274.9deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
 
+  @include b($mobile-md-minus) {
+    justify-content: left;
+  }
+
   @include hide-unused-ui {
     display: none;
   }
@@ -33,12 +37,8 @@
     padding: 7px 10px;
 
     @include b($mobile-sm-plus) {
-      flex-direction: column;
       gap: 5px;
-      align-items: flex-start;
-      justify-content: flex-start;
-
-      padding: 10px 20px;
+      padding: 10px;
     }
   }
 
@@ -46,25 +46,27 @@
     @include font(19px, 1, 300, white);
     margin: 0 25px 0 0;
 
+    @include b($mobile-md-minus) {
+      line-height: 1;
+    }
+
     @include b($mobile-sm-plus) {
       @include font(16px, 1, 300, white);
     }
   }
 
   &__link {
+
+    @include font(19px, 1, 300, white);
     display: flex;
 
     gap: 12px;
     align-items: center;
 
-    color: white;
-
     white-space: nowrap;
     text-decoration: none;
 
     &-text {
-      @include font(19px, 1, 400, var(--primary-text-invert));
-
       @include b($mobile-sm-plus) {
         @include font(16px, 1, 300, white);
       }
