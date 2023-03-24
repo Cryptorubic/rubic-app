@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Inject, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -16,7 +16,7 @@ import {
   styleUrls: ['./swap-and-earn-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapAndEarnModalComponent implements AfterViewInit {
+export class SwapAndEarnModalComponent {
   public idPrefix: string;
 
   public type: SuccessTxModalType;
@@ -51,11 +51,6 @@ export class SwapAndEarnModalComponent implements AfterViewInit {
     this.txHash = context.data.txHash;
     this.blockchain = context.data.blockchain;
     this.ccrProviderType = context.data.ccrProviderType;
-  }
-
-  ngAfterViewInit() {
-    const overlay = document.querySelector('.overlay');
-    overlay.classList.add('overlay-it-confetti');
   }
 
   public onConfirm(): void {

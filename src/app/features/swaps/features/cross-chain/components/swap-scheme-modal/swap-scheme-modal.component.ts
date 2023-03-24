@@ -45,6 +45,8 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
+import { ROUTE_PATH } from '@shared/constants/common/links';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -106,6 +108,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
 
   private changenowId: string;
 
+  public isSwapAndEarnSwap: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -117,7 +121,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly router: Router
   ) {
     this.setTradeData(this.context.data);
   }
@@ -313,6 +318,9 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
+    // this.isSwapAndEarnSwap = data.isSwapAndEarnData;
+    this.isSwapAndEarnSwap = true;
+
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;
 
@@ -337,5 +345,11 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
 
     this.amountOutMin = data.amountOutMin;
     this.changenowId = data.changenowId;
+  }
+
+  public async navigateToSwapAndEarn(): Promise<void> {
+    this.context.completeWith(false);
+
+    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
   }
 }

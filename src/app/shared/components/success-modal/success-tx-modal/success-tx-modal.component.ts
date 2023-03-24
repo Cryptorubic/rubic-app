@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, AfterViewInit } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -9,6 +9,8 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from 'rubic-sdk';
+import { ROUTE_PATH } from '@shared/constants/common/links';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -16,7 +18,9 @@ import {
   styleUrls: ['./success-tx-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SuccessTxModalComponent {
+export class SuccessTxModalComponent implements AfterViewInit {
+  public isSwapAndEarnSwap: boolean;
+
   public idPrefix: string;
 
   public type: SuccessTxModalType;
@@ -43,9 +47,13 @@ export class SuccessTxModalComponent {
         txHash: string;
         blockchain: BlockchainName;
         ccrProviderType: CrossChainTradeType;
+        isSwapAndEarnSwap?: boolean;
       }
-    >
+    >,
+    private readonly router: Router
   ) {
+    // this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
+    this.isSwapAndEarnSwap = true;
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
     this.txHash = context.data.txHash;
@@ -53,7 +61,18 @@ export class SuccessTxModalComponent {
     this.ccrProviderType = context.data.ccrProviderType;
   }
 
+  ngAfterViewInit() {
+    const overlay = document.querySelector('.overlay');
+    overlay.classList.add('overlay-it-confetti');
+  }
+
   public onConfirm(): void {
+    this.context.completeWith(null);
+  }
+
+  public async navigateToSwapAndEarn(): Promise<void> {
+    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
+
     this.context.completeWith(null);
   }
 }

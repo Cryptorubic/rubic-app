@@ -1,6 +1,7 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BlockchainName,
+  BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
@@ -85,6 +86,30 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
+  }
+
+  private inSwapAndEarnSwap(
+    calculatedTrade: CrossChainCalculatedTrade,
+    provider: CrossChainTradeType,
+    fromToken: TokenAmount,
+    toToken: TokenAmount
+  ): boolean {
+    const isEvmFromBlockchain = BlockchainsInfo.isEvmBlockchainName(fromToken.blockchain);
+    const isEvmToBlockchain = BlockchainsInfo.isEvmBlockchainName(toToken.blockchain);
+
+    if (provider === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+      return (
+        (isEvmFromBlockchain && !isEvmToBlockchain) ||
+        (!isEvmFromBlockchain && isEvmToBlockchain) ||
+        (isEvmFromBlockchain && isEvmToBlockchain)
+      );
+    }
+
+    if (calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)) {
+      return true;
+    }
+
+    return false;
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -409,23 +434,32 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
+    const defaultData = {
+      fromToken,
+      toToken,
+      srcProvider: fromTradeProvider,
+      dstProvider: toTradeProvider,
+      crossChainProvider: calculatedTrade.tradeType,
+      srcTxHash: txHash,
+      bridgeType: bridgeProvider,
+      viaUuid,
+      rangoRequestId,
+      timestamp,
+      amountOutMin,
+      changenowId
+    };
+
+    const swapAndEarnData = {
+      ...defaultData,
+      isSwapAndEarnData: true
+    };
+
     this.dialogService
       .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: {
-          fromToken,
-          toToken,
-          srcProvider: fromTradeProvider,
-          dstProvider: toTradeProvider,
-          crossChainProvider: calculatedTrade.tradeType,
-          srcTxHash: txHash,
-          bridgeType: bridgeProvider,
-          viaUuid,
-          rangoRequestId,
-          timestamp,
-          amountOutMin,
-          changenowId
-        }
+        data: this.inSwapAndEarnSwap(calculatedTrade, calculatedTrade.tradeType, fromToken, toToken)
+          ? swapAndEarnData
+          : defaultData
       })
       .subscribe();
   }

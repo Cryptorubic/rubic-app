@@ -138,6 +138,9 @@ tui-dialog-host {
 
     &-ccr-confetti {
       background-image: url('/assets/images/swap-and-earn/ccr-confetti.png') !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      background-size: cover !important;
     }
   }
 

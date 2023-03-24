@@ -43,6 +43,7 @@ export abstract class TradeCalculationService {
   protected notifyTradeInProgress(
     transactionHash: string,
     blockchain: BlockchainName,
+    isSwapAndEarnSwap: boolean,
     ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
   ): Subscription {
     return this.successTxModalService.open(
@@ -50,7 +51,8 @@ export abstract class TradeCalculationService {
       blockchain,
       this.successTxModalType,
       ccrProviderType,
-      this.showTrxInProgressTrxNotification
+      this.showTrxInProgressTrxNotification,
+      isSwapAndEarnSwap
     );
   }
 }

@@ -38,10 +38,20 @@
     </div>
 
     <div class="description">
-      {{ 'crossChainPage.swapSchemeModal.transactionCanBeTracked' | translate }}
-      <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">
-        {{ 'crossChainPage.swapSchemeModal.recentTrades' | translate }}</span
-      >
+      <div *ngIf="isSwapAndEarnSwap">
+        <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
+        <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
+      </div>
+      <div>
+        {{ 'crossChainPage.swapSchemeModal.transactionCanBeTracked' | translate }}
+        <span class="highlight_green" (click)="closeModalAndOpenMyTrades()">
+          {{ 'crossChainPage.swapSchemeModal.recentTrades' | translate }}
+        </span>
+      </div>
+    </div>
+
+    <div class="point">
+      <span class="point__amount">20 RBC</span>
     </div>
 
     <div class="pair">

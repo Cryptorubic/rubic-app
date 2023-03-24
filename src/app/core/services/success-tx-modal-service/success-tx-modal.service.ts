@@ -23,19 +23,28 @@ export class SuccessTxModalService {
    * @param type Type of modal, cross-chain or default.
    * @param ccrProviderType Cross Chain provider.
    * @param callback Callback to be called after modal is closed.
+   * @param isSwapAndEarnSwap Whether the transaction falls under the loyalty program rules
    */
   public open(
     transactionHash: string,
     blockchain: BlockchainName,
     type: SuccessTxModalType,
     ccrProviderType: CrossChainTradeType,
-    callback: () => Observable<void>
+    callback: () => Observable<void>,
+    isSwapAndEarnSwap: boolean = false
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
-        data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
+        data: {
+          idPrefix: '',
+          type,
+          txHash: transactionHash,
+          blockchain,
+          ccrProviderType,
+          isSwapAndEarnSwap
+        }
       })
       .subscribe();
     return callback().subscribe();

@@ -22,7 +22,8 @@ import {
   OnChainTradeError,
   TxStatus,
   BlockchainsInfo,
-  NotWhitelistedProviderError
+  NotWhitelistedProviderError,
+  EvmOnChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -228,6 +229,12 @@ export class InstantTradeService extends TradeCalculationService {
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     const receiverAddress = this.receiverAddress;
+
+    const isSwapAndEarnSwap =
+      trade instanceof EvmOnChainTrade
+        ? trade.proxyFeeInfo?.fixedFeeToken?.tokenAmount.gt(0)
+        : false;
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -247,7 +254,7 @@ export class InstantTradeService extends TradeCalculationService {
         );
         this.gtmService.checkGtm();
 
-        subscription$ = this.notifyTradeInProgress(hash, blockchain);
+        subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
 
         this.postTrade(hash, providerName, trade);
       },
