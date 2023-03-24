@@ -316,9 +316,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(gasPrice && { gasPrice }),
-      ...(this.platformConfigurationService.useCrossChainChainProxy?.[
-        calculatedTrade.tradeType
-      ] && {
+      ...(this.platformConfigurationService.useCrossChainChainProxy && {
         useProxy:
           this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
       })
