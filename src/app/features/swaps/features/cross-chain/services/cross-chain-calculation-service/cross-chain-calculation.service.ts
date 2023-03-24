@@ -316,15 +316,20 @@ export class CrossChainCalculationService extends TradeCalculationService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(gasPrice && { gasPrice }),
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
+      ...(this.platformConfigurationService.useCrossChainChainProxy?.[
+        calculatedTrade.tradeType
+      ] && {
+        useProxy:
+          this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
+      })
     };
 
     try {
-      const isDeflation = await this.sdkService.deflationTokenManager.isDeflationToken(
+      const deflationStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
         new Token(fromToken)
       );
       await calculatedTrade.trade.swap(
-        isDeflation ? { ...swapOptions, useProxy: false } : swapOptions
+        deflationStatus.isDeflation ? { ...swapOptions, useProxy: false } : swapOptions
       );
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
