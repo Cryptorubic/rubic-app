@@ -36,6 +36,10 @@
     margin: 0 auto;
   }
 
+  &__privacy-policy {
+    margin-bottom: 10px;
+  }
+
   &__content {
     @include iframe-horizontal {
       display: flex;
