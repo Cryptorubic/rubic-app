@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { map } from 'rxjs/operators';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-points-container',
@@ -18,9 +19,12 @@ export class PointsContainerComponent {
 
   public readonly isLoggedIn$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));
 
+  public readonly currentUser$ = this.authService.currentUser$;
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly swapAndEarnStateService: SwapAndEarnStateService,
+    private readonly authService: AuthService
   ) {}
 
   public handleButtonClick(): void {

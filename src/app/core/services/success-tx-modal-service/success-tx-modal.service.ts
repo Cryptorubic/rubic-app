@@ -6,7 +6,7 @@ import { SuccessTxModalType } from '@shared/components/success-trx-notification/
 import { Observable, Subscription } from 'rxjs';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { SuccessOrderModalComponent } from '@shared/components/success-modal/success-order-modal/success-order-modal.component';
-import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
+import { SuccessTxModalComponent } from '@shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -33,7 +33,7 @@ export class SuccessTxModalService {
   ): Subscription {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(SwapAndEarnModalComponent, this.injector), {
+      .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
         data: { idPrefix: '', type, txHash: transactionHash, blockchain, ccrProviderType }
       })

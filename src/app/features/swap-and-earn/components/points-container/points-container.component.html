@@ -1,6 +1,6 @@
 <ng-container *ngLet="points$ | async as points">
   <div *ngLet="points.pending === 0 as showButtons" class="points">
-    <div *ngIf="showButtons" class="points__cover">
+    <div *ngIf="showButtons && currentUser$ | async" class="points__cover">
       <img src="/assets/images/swap-and-earn/sad-mouse.svg" alt="You are not participant" />
       <p>You are not a member of Swap & Earn program:(</p>
     </div>
