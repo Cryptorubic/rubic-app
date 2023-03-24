@@ -13195,10 +13195,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.20.0-alpha-sd.39:
-  version "3.20.0-alpha-sd.39"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.20.0-alpha-sd.39.tgz#60bbc2e1ef09610c7e701c5a41d0fb0546063518"
-  integrity sha512-iLYccpE1zxlSjoF89Z8/1xF6AwlX5/YKd5x1WfyaVAl7o5h3R2FSV3sqcC6i/TdgQ1Vgq3H3H8kQhsZGXMUEeg==
+rubic-sdk@3.20.0-alpha-sd.40:
+  version "3.20.0-alpha-sd.40"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.20.0-alpha-sd.40.tgz#8d28c5fefaa406f90a8764207623c424db967c5c"
+  integrity sha512-1/iJs+oV7t7KcgJXwk0LrkhrJmR3/WX8h9+vOUqa/ywTQR02sxrZU6QpCsI1dEehrU5Tm+KAXz5rrvdhLDdd8A==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
