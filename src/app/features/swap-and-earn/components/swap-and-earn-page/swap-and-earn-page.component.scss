@@ -4,11 +4,3 @@
   display: block;
   max-width: 860px;
 }
-
-app-points-container {
-  margin-bottom: 100px;
-
-  @include b($mobile-sm-middle) {
-    margin-bottom: 30px;
-  }
-}

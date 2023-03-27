@@ -36,6 +36,12 @@ export class SwapAndEarnStateService {
     return this.httpService.get<Points>(`rewards?address=${address}`);
   }
 
+  public async updatePoints(): Promise<void> {
+    await this.fetchPoints().subscribe(points => {
+      this._points$.next(points);
+    });
+  }
+
   public async claimPoints(): Promise<void> {
     const address = this.walletConnectorService.address;
 
@@ -58,6 +64,8 @@ export class SwapAndEarnStateService {
           () => of({ confirmed: 0, pending: 0 })
         )
       )
-      .subscribe(points => this._points$.next(points));
+      .subscribe(points => {
+        this._points$.next(points);
+      });
   }
 }

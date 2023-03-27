@@ -10,6 +10,7 @@
 
   display: flex;
   flex-direction: column;
+  margin-bottom: 100px;
   padding: 30px 40px;
 
   font-weight: 700;
@@ -24,22 +25,56 @@
     padding: 15px;
   }
 
+  @include b($mobile-sm-middle) {
+    margin-bottom: 30px;
+
+    &_disabled {
+      margin-bottom: 100px;
+    }
+  }
+
+  &_disabled {
+    @include b($mobile-sm-middle) {
+      margin-bottom: 100px;
+    }
+  }
+
   &__cover {
     position: absolute;
-    bottom: 0;
+    bottom: 60px;
     left: 50%;
     z-index: 9999;
+
+    width: 100%;
 
     height: 100%;
 
     font-weight: 400;
-
+    font-size: 20px;
     text-align: center;
 
     transform: translateX(-50%);
 
+    @include b(900) {
+      bottom: 45px;
+    }
+
+    @include b($mobile-sm-middle) {
+      bottom: 0;
+    }
+
+    @include b(470) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     img {
-      height: 100%;
+      height: 125%;
+
+      @include b($mobile-sm-middle) {
+        height: 100%;
+      }
     }
   }
 
@@ -54,7 +89,29 @@
     }
 
     &_disabled {
-      filter: grayscale(1) opacity(0.5);
+      @include b(900) {
+        filter: grayscale(1) opacity(0.5);
+      }
+
+      .points__confirmed {
+        background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
+
+        @include b(900) {
+          background: var(--primary-color);
+        }
+
+        img {
+          filter: grayscale(1) opacity(0.5);
+        }
+      }
+
+      .points__pending {
+        background-image: url('/assets/images/swap-and-earn/pending_disabled.svg');
+
+        @include b(900) {
+          background: none;
+        }
+      }
     }
 
     > * {

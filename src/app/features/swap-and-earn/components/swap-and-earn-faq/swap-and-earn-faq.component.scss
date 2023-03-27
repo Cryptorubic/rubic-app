@@ -14,7 +14,9 @@
     margin: 0 0 13px;
 
     color: var(--primary-color);
+    font-weight: 400;
     font-size: 16px;
+    letter-spacing: 0.03rem;
   }
 
   &__wrapper {
@@ -88,8 +90,10 @@
 
     margin: 0;
 
-    font-weight: 700;
+    font-weight: 400;
+
     font-size: 12px;
+    letter-spacing: 0.03rem;
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 
     @include b($mobile-sm-middle) {

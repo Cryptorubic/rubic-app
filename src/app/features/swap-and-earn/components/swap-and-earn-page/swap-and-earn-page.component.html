@@ -1,6 +1,9 @@
 <ng-container>
   <ng-container *ngIf="workingStatus$ | async; else noCompany">
-    <app-points-container (handleClick)="handleWithdraw()"></app-points-container>
+    <app-points-container
+      (handleClick)="handleWithdraw()"
+      [points]="points$ | async"
+    ></app-points-container>
     <app-swap-and-earn-faq></app-swap-and-earn-faq>
   </ng-container>
   <ng-template #noCompany></ng-template>

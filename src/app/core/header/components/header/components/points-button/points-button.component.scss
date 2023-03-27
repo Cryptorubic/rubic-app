@@ -5,6 +5,12 @@
 
   background-color: var(--tui-primary);
   border-radius: 25px;
+
+  ::ng-deep app-rubic-button {
+    tui-wrapper {
+      padding: 0 1.4rem !important;
+    }
+  }
 }
 
 .image {
