@@ -15,27 +15,9 @@ import {
   BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
-
-interface CrossChainProviderStatus {
-  active: boolean;
-  disabledProviders: string[];
-  useProxy: boolean;
-}
-
-interface PlatformConfig {
-  server_is_active: boolean;
-  networks: {
-    [chain: string]: boolean;
-  };
-  cross_chain_providers: {
-    [provider: string]: CrossChainProviderStatus;
-  };
-  on_chain_providers: {
-    proxy: {
-      active: boolean;
-    };
-  };
-}
+import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
+import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
+import { defaultConfig } from '@core/services/backend/platform-configuration/default-config';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
@@ -111,6 +93,7 @@ export class PlatformConfigurationService {
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
+      catchError(() => of(defaultConfig)),
       tap(response => {
         if (response.server_is_active === true) {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
@@ -119,8 +102,7 @@ export class PlatformConfigurationService {
           this.handleCrossChainProxyProviders(response.cross_chain_providers);
         }
       }),
-      map(response => response.server_is_active),
-      catchError(() => of(true))
+      map(response => response.server_is_active)
     );
   }
 
