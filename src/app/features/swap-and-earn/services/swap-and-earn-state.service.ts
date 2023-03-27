@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
 import { Points } from '@features/swap-and-earn/models/points';
-import { tap } from 'rxjs/operators';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -18,7 +20,9 @@ export class SwapAndEarnStateService {
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.handleAddressChange();
     this.fetchWorkingStatus();
@@ -33,7 +37,7 @@ export class SwapAndEarnStateService {
     if (!address) {
       return of({ confirmed: 0, pending: 0 });
     }
-    return this.httpService.get<Points>(`rewards?address=${address}`);
+    return this.httpService.get<Points>(`rewards/?address=${address}`);
   }
 
   public async updatePoints(): Promise<void> {
@@ -42,16 +46,24 @@ export class SwapAndEarnStateService {
     });
   }
 
-  public async claimPoints(): Promise<void> {
+  public async claimPoints(points: number): Promise<void> {
     const address = this.walletConnectorService.address;
 
     if (address) {
-      await this.fetchPoints().pipe(
-        tap(points => {
-          console.log(points.confirmed);
-          // this.httpService.post('', points.confirmed);
-        })
-      );
+      await firstValueFrom(this.httpService.post(`rewards/withdraw/?address=${address}`));
+
+      this.dialogService
+        .open<SuccessWithdrawModalComponent>(
+          new PolymorpheusComponent(SuccessWithdrawModalComponent, this.injector),
+          {
+            data: {
+              points: points
+            }
+          }
+        )
+        .subscribe();
+
+      await this.updatePoints();
     }
   }
 

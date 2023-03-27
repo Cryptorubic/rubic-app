@@ -1,0 +1,20 @@
+@use 'src/scss/core' as *;
+@use '../styles';
+
+.modal {
+  &__point {
+    &-subtitle {
+      max-width: 100%;
+
+      line-height: 160%;
+
+      &_green {
+        color: $primary-color;
+      }
+    }
+  }
+
+  &__footer {
+    margin-bottom: 25px;
+  }
+}

@@ -1,0 +1,24 @@
+<div class="modal" [id]="'' + 'gtm-transaction-modal'" *noFrame>
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__success-image"
+        src="assets/images/swap-and-earn/it-mouse.svg"
+        alt="Mouse"
+      />
+      <ng-container>
+        <h3 class="modal__title-points">Yahoo!</h3>
+      </ng-container>
+      <span class="modal__point-subtitle"
+        ><span class="modal__point-subtitle_green">{{ points }} RBC</span> will be withdrawn. You
+        can get your RBC through the Airdrop Claim. The Claim Link can be found in your "Profile".
+        The Airdrop Claim is open twice a week.</span
+      >
+    </main>
+    <footer class="modal__footer">
+      <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </footer>
+  </div>
+</div>

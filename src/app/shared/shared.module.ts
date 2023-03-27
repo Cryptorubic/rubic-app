@@ -75,6 +75,7 @@ import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-pe
 import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cross-chain-table/recent-cross-chain-table.component';
 import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
+import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap
     RecentCrossChainTableTxComponent,
     TradeRowComponent,
     SwapAndEarnModalComponent,
+    SuccessWithdrawModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -205,7 +207,8 @@ import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap
     RecentCrossChainTableTxComponent,
     TradeRowComponent,
     CommaToPeriodDirective,
-    SwapAndEarnModalComponent
+    SwapAndEarnModalComponent,
+    SuccessWithdrawModalComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

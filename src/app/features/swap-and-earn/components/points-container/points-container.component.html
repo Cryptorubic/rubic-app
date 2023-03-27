@@ -1,12 +1,11 @@
 <ng-container *ngLet="currentUser$ | async as currentUser">
   <div
-    *ngLet="points.pending !== 0 as showButtons"
+    *ngLet="points.pending === 0 && points.confirmed === 0 as showButtons"
     class="points"
     [ngClass]="{ points_disabled: showButtons }"
   >
     <div *ngIf="showButtons && currentUser" class="points__cover">
       <img src="/assets/images/swap-and-earn/sad-mouse.svg" alt="You are not participant" />
-      <p>You are not a member of Swap & Earn program:(</p>
     </div>
     <div [ngClass]="{ points__container_disabled: showButtons }" class="points__container">
       <div class="points__pending">{{ points.pending }} in Pending</div>
@@ -31,7 +30,7 @@
         <button
           [disabled]="!allowWithdraw"
           [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
-          (click)="handleButtonClick()"
+          (click)="handleButtonClick(points.confirmed)"
           class="points__button"
         >
           {{ !allowWithdraw ? 'Not Enough Points' : 'Withdraw Points' }}

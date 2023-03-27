@@ -1,9 +1,15 @@
 <ng-container>
   <ng-container *ngIf="workingStatus$ | async; else noCompany">
     <app-points-container
-      (handleClick)="handleWithdraw()"
+      (handleClick)="handleWithdraw($event)"
       [points]="points$ | async"
     ></app-points-container>
+    <p
+      *ngIf="(points$ | async).pending === 0 && (points$ | async).confirmed === 0"
+      class="not-member"
+    >
+      You are not a member of Swap & Earn program:(
+    </p>
     <app-swap-and-earn-faq></app-swap-and-earn-faq>
   </ng-container>
   <ng-template #noCompany></ng-template>

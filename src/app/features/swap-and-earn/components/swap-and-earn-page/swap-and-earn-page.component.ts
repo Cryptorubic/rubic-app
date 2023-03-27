@@ -14,7 +14,7 @@ export class SwapAndEarnPageComponent {
 
   constructor(private readonly swapAndEarnStateService: SwapAndEarnStateService) {}
 
-  public async handleWithdraw(): Promise<void> {
-    await this.swapAndEarnStateService.claimPoints();
+  public async handleWithdraw(points: number): Promise<void> {
+    await this.swapAndEarnStateService.claimPoints(points);
   }
 }

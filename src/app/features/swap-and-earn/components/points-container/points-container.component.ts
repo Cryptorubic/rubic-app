@@ -14,7 +14,7 @@ import { Points } from '@features/swap-and-earn/models/points';
 export class PointsContainerComponent {
   @Input() public readonly points: Points;
 
-  @Output() public readonly handleClick = new EventEmitter<void>();
+  @Output() public readonly handleClick = new EventEmitter<number>();
 
   public readonly isLoggedIn$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));
 
@@ -28,7 +28,7 @@ export class PointsContainerComponent {
     console.log(this.points);
   }
 
-  public handleButtonClick(): void {
-    this.handleClick.emit();
+  public handleButtonClick(points: number): void {
+    this.handleClick.emit(points);
   }
 }
