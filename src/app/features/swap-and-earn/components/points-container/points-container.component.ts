@@ -24,11 +24,33 @@ export class PointsContainerComponent {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService
-  ) {
-    console.log(this.points);
-  }
+  ) {}
 
   public handleButtonClick(points: number): void {
     this.handleClick.emit(points);
+  }
+
+  public getButtonHint(): string {
+    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 2500)) {
+      return 'The withdrawal is already in progress. The minimum amount to withdraw is 2,500 RBC.';
+    }
+
+    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 2500)) {
+      return 'The minimum amount to withdraw is 2,500 RBC.';
+    }
+
+    return null;
+  }
+
+  public getButtonText(): string {
+    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 2500)) {
+      return 'Claimed';
+    }
+
+    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 2500)) {
+      return 'Not Enough Points';
+    }
+
+    return 'Withdraw Points';
   }
 }

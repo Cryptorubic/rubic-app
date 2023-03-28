@@ -11,7 +11,7 @@
   width: 100%;
 
   &__title {
-    margin: 0 0 13px;
+    margin: 0 20px 13px;
 
     color: var(--primary-color);
     font-weight: 400;
@@ -26,7 +26,7 @@
   &__fullTerms {
     position: absolute;
     top: 50%;
-    right: -160px;
+    right: -140px;
 
     padding: 25px 23px 25px 228px;
 
@@ -38,6 +38,21 @@
     cursor: pointer;
 
     transition: all 0.1s ease-out;
+
+    @include b(1150) {
+      position: initial;
+
+      display: block;
+      width: 100%;
+      max-width: 825px;
+      margin: 25px auto 0;
+      padding: 11px 0;
+
+      text-align: center;
+
+      background: #01e38e;
+      transform: translateY(0);
+    }
 
     &:hover {
       transform: translateY(-50%) translateX(10px);
@@ -62,6 +77,8 @@
     gap: 48px;
     justify-content: center;
     width: 100%;
+    max-width: 825px;
+    margin: 0 auto;
 
     @include b($mobile-sm-plus) {
       gap: 20px;
@@ -77,7 +94,7 @@
 
     width: 100%;
     height: 170px;
-    padding: 15px;
+    padding: 15px 12px;
     overflow: hidden;
 
     background: linear-gradient(90deg, #242424 -8.13%, #4f3e65 145.55%);

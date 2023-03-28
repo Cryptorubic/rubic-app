@@ -256,7 +256,9 @@ export class InstantTradeService extends TradeCalculationService {
 
         subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
 
-        this.postTrade(hash, providerName, trade);
+        this.postTrade(hash, providerName, trade).then(() =>
+          this.swapAndEarnStateService.updatePoints()
+        );
       },
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
@@ -295,7 +297,7 @@ export class InstantTradeService extends TradeCalculationService {
         this.showSuccessTrxNotification();
       }
 
-      await this.swapAndEarnStateService.updatePoints();
+      // await this.swapAndEarnStateService.updatePoints();
       // await this.instantTradesApiService
       //   .notifyInstantTradesBot({
       //     provider: providerName,

@@ -5,7 +5,12 @@
       [points]="points$ | async"
     ></app-points-container>
     <p
-      *ngIf="(points$ | async).pending === 0 && (points$ | async).confirmed === 0"
+      *ngIf="
+        (points$ | async).pending === 0 &&
+        (points$ | async).confirmed === 0 &&
+        (points$ | async).requested_to_withdraw === 0 &&
+        (currentUser$ | async)
+      "
       class="not-member"
     >
       You are not a member of Swap & Earn program:(
