@@ -185,7 +185,20 @@ export class InstantTradeService extends TradeCalculationService {
       this.authService.userAddress &&
       isAddressCorrectValue;
 
-    const useProxy = this.platformConfigurationService.useOnChainProxy;
+    const sdkFromToken = await Token.createToken(fromToken);
+    const deflationFromStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
+      sdkFromToken
+    );
+
+    const sdkToToken = await Token.createToken(toToken);
+    const deflationToStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
+      sdkToToken
+    );
+
+    const useProxy =
+      deflationFromStatus.isDeflation || deflationToStatus.isDeflation
+        ? false
+        : this.platformConfigurationService.useOnChainProxy;
 
     return this.sdkService.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
       timeout: 10000,

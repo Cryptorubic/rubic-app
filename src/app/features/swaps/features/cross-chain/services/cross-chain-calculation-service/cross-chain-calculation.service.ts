@@ -323,12 +323,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     try {
-      const deflationStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
-        new Token(fromToken)
-      );
-      await calculatedTrade.trade.swap(
-        deflationStatus.isDeflation ? { ...swapOptions, useProxy: false } : swapOptions
-      );
+      await calculatedTrade.trade.swap(swapOptions);
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {

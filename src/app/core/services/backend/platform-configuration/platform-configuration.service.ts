@@ -17,7 +17,7 @@ import {
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
-import { defaultConfig } from '@core/services/backend/platform-configuration/default-config';
+import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
