@@ -15,26 +15,9 @@ import {
   BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
-
-interface CrossChainProviderStatus {
-  active: boolean;
-  disabledProviders: string[];
-}
-
-interface PlatformConfig {
-  server_is_active: boolean;
-  networks: {
-    [chain: string]: boolean;
-  };
-  cross_chain_providers: {
-    [provider: string]: CrossChainProviderStatus;
-  };
-  on_chain_providers: {
-    proxy: {
-      active: boolean;
-    };
-  };
-}
+import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
+import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
+import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
@@ -91,6 +74,16 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
+  private readonly _useCrossChainChainProxy$ = new BehaviorSubject<
+    Record<CrossChainTradeType, boolean>
+  >(undefined);
+
+  public readonly useCrossChainChainProxy$ = this._useOnChainProxy$.asObservable();
+
+  public get useCrossChainChainProxy(): Record<CrossChainTradeType, boolean> {
+    return this._useCrossChainChainProxy$.getValue();
+  }
+
   constructor(private httpClient: HttpClient) {
     const availableBlockchains = Object.values(BLOCKCHAIN_NAME).filter(
       blockchain => !temporarelyDisabledBlockchains.includes(blockchain)
@@ -100,15 +93,16 @@ export class PlatformConfigurationService {
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
+      catchError(() => of(defaultConfig)),
       tap(response => {
         if (response.server_is_active === true) {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
           this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
+          this.handleCrossChainProxyProviders(response.cross_chain_providers);
         }
       }),
-      map(response => response.server_is_active),
-      catchError(() => of(true))
+      map(response => response.server_is_active)
     );
   }
 
@@ -122,6 +116,22 @@ export class PlatformConfigurationService {
     return Object.entries(availableBlockchains)
       .filter(([_, availability]) => availability)
       .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
+  }
+
+  private handleCrossChainProxyProviders(crossChainProviders: {
+    [key: string]: CrossChainProviderStatus;
+  }): void {
+    const crossChainProvidersEntries = Object.entries(crossChainProviders);
+    if (!crossChainProvidersEntries.length) {
+      return;
+    }
+    const providers = Object.fromEntries(
+      crossChainProvidersEntries.map(([provider, status]) => [
+        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
+        status.useProxy
+      ])
+    ) as Record<CrossChainTradeType, boolean>;
+    this._useCrossChainChainProxy$.next(providers);
   }
 
   private mapDisabledProviders(crossChainProviders: {

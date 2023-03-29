@@ -3,6 +3,7 @@ import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-provid
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
+import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 
 @Component({
   selector: 'app-cross-chain-route',
@@ -12,27 +13,33 @@ import { centralizedBridges } from '@features/swaps/shared/constants/trades-prov
 })
 export class CrossChainRouteComponent {
   @Input() set route(routing: CrossChainRoute) {
-    this.bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
-
-    const isCentralizedBridge = centralizedBridges.some(
-      centralizedBridge => centralizedBridge === routing.bridgeProvider
+    this.bridgeProvider = CrossChainRouteComponent.getRoute(
+      routing.bridgeProvider,
+      routing.bridgeProvider
     );
-    this.bridgeProvider = {
-      ...this.bridgeProvider,
-      name: this.bridgeProvider.name + (isCentralizedBridge ? ' (Centralized)' : '')
-    };
+    this.fromProvider = CrossChainRouteComponent.getRoute(
+      routing?.fromProvider,
+      routing.bridgeProvider
+    );
+    this.toProvider = CrossChainRouteComponent.getRoute(
+      routing?.toProvider,
+      routing.bridgeProvider
+    );
+  }
 
-    this.fromProvider = routing.fromProvider
-      ? TRADES_PROVIDERS[routing.fromProvider]
+  public static getRoute(provider: TradeProvider, bridgeProvider: TradeProvider): ProviderInfo {
+    const isCentralizedBridge = centralizedBridges.some(
+      centralizedBridge => centralizedBridge === bridgeProvider
+    );
+
+    return provider
+      ? {
+          ...TRADES_PROVIDERS[provider],
+          ...(isCentralizedBridge && { name: `${TRADES_PROVIDERS[provider].name} (Centralized)` })
+        }
       : {
-          ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name
-        };
-    this.toProvider = routing.toProvider
-      ? TRADES_PROVIDERS[routing.toProvider]
-      : {
-          ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name
+          ...TRADES_PROVIDERS[bridgeProvider],
+          name: TRADES_PROVIDERS[bridgeProvider].name + ' Pool'
         };
   }
 

@@ -46,7 +46,6 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -200,7 +199,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly iframeService: IframeService,
-    private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: ModalService,
@@ -492,7 +490,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.instantTradeInfoChange.emit(null);
-      this.swapInfoService.emitInfoCalculated();
       if (this.providersData.length === 1) {
         this.selectedProvider = null;
       }

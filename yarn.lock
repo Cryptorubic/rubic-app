@@ -2172,6 +2172,13 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@layerzerolabs/scan-client@^0.0.0-beta.6":
+  version "0.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@layerzerolabs/scan-client/-/scan-client-0.0.0-beta.6.tgz#079275514e2a386677fc8129ced52a3c3f0a1b9a"
+  integrity sha512-TjhEfMcmN5Q8Gtog45lj6in+y8OzGPoLzUzSF45cJO703Lrlwf5tAA85TQnnRWPGBiChw70KG2S6nzgmMRQWJg==
+  dependencies:
+    axios "^0.27.2"
+
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
@@ -4293,7 +4300,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@0.27.2:
+axios@0.27.2, axios@^0.27.2:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
   integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
@@ -13195,12 +13202,13 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@3.19.7:
-  version "3.19.7"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.19.7.tgz#40c70a57df2ba0e763b421e5ddc28223339757ac"
-  integrity sha512-ctkv0Ei22DtHCbnzxP2COf68sQ0k7fOHhSX1YgsLl2Nc/utQQr42KN7u7JGRNRmpr2Q2EyIE5cHoTXs5SbDNHg==
+rubic-sdk@3.20.0-alpha-sd.54:
+  version "3.20.0-alpha-sd.54"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-3.20.0-alpha-sd.54.tgz#ebabbcaa69ee0acc24218f2261f8bf128c403dbe"
+  integrity sha512-wtU62tTPXN0Tmu6S0eaiB9rbou2QdkkGHHavQvtu+zL30Z1x36KvaOFNtNL+YmYKP2Uz4l5hb9MSw5+nfCBXgA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
+    "@layerzerolabs/scan-client" "^0.0.0-beta.6"
     "@lifi/sdk" "^1.6.3"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
@@ -16326,7 +16334,7 @@ yargs-parser@^20.2.2, yargs-parser@^20.2.3:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.9.tgz#2eb7dc3b0289718fc295f362753845c41a0c94ee"
   integrity sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
 
-yargs@17.6.2, yargs@^17.0.0, yargs@^17.0.1, yargs@^17.2.1, yargs@^17.6.2:
+yargs@17.6.2, yargs@^17.0.0, yargs@^17.2.1, yargs@^17.6.2:
   version "17.6.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.6.2.tgz#2e23f2944e976339a1ee00f18c77fedee8332541"
   integrity sha512-1/9UrdHjDZc0eOU0HxOHoS78C69UD3JRMvzlJ7S79S2nTaWRA/whGCTV8o9e/N/1Va9YIV7Q4sOxD8VV4pCWOw==
@@ -16384,6 +16392,19 @@ yargs@^16.1.1:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yargs@^17.0.1:
+  version "17.7.1"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.1.tgz#34a77645201d1a8fc5213ace787c220eabbd0967"
+  integrity sha512-cwiTb08Xuv5fqF4AovYacTFNxk62th7LKJ6BL9IGUpTJrWoU7/7WdQGTP2SjKf1dUNBGzDd28p/Yfs/GI6JrLw==
+  dependencies:
+    cliui "^8.0.1"
+    escalade "^3.1.1"
+    get-caller-file "^2.0.5"
+    require-directory "^2.1.1"
+    string-width "^4.2.3"
+    y18n "^5.0.5"
+    yargs-parser "^21.1.1"
 
 yn@3.1.1:
   version "3.1.1"

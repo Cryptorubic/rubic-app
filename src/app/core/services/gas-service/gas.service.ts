@@ -194,11 +194,11 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchTelosGas(): Observable<number | null> {
-    return of(500);
+    return of(510);
   }
 
   /**
-   * Gets Fantom gas from gas station api.
+   * Gets Fantom gas from gas statнion api.
    * @return Observable<number> Average gas price in Gwei.
    */
   @Cacheable({

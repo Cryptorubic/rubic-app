@@ -1,10 +1,6 @@
 @use 'src/scss/core' as *;
 @import '../../styles/styles';
 
-.delimiter {
-  margin-top: 10px;
-}
-
 @include b($mobile-md) {
   .receive-address {
     flex-direction: column;
