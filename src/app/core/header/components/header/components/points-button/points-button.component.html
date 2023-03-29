@@ -6,10 +6,10 @@
 >
   <img class="image" src="assets/images/rbc-white.png" alt="" />
   <ng-container *ngIf="isAuth$ | async; else text">
-    <span>{{ points$ | async }}</span>
+    <span [style]="(isAuth$ | async) ? 'color: #ffffff' : ''">{{ points$ | async }}</span>
   </ng-container>
 </app-rubic-button>
 
 <ng-template #text>
-  <span>Swap & Earn</span>
+  <span [style]="(isAuth$ | async) ? '' : 'color: #000000'">Swap & Earn</span>
 </ng-template>
