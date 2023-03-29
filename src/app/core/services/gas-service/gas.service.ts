@@ -76,7 +76,7 @@ export class GasService {
       [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
       [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
-      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchOptimismGas.bind(this)
+      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -256,10 +256,7 @@ export class GasService {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
-        return new BigNumber(gasPriceInWei)
-          .dividedBy(10 ** 9)
-          .dividedBy(20)
-          .toNumber();
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })
     );
   }
