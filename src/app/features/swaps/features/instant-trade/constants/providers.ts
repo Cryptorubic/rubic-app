@@ -112,7 +112,11 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.DODO
     ]),
-    [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.CRONA_SWAP]),
+    [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.CRONA_SWAP,
+      ON_CHAIN_TRADE_TYPE.CRO_SWAP,
+      ON_CHAIN_TRADE_TYPE.CRO_DEX
+    ]),
     [BLOCKCHAIN_NAME.OKE_X_CHAIN]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.J_SWAP,
