@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   Self
 } from '@angular/core';
@@ -55,7 +56,7 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
+export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestroy {
   public trade: SwapSchemeModalData;
 
   public srcProvider: ProviderInfo;
@@ -137,6 +138,12 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit {
     const overlay = document.querySelector('.overlay');
 
     overlay.classList.add('overlay-ccr-confetti');
+  }
+
+  ngOnDestroy(): void {
+    const overlay = document.querySelector('.overlay');
+
+    overlay.classList.remove('overlay-ccr-confetti');
   }
 
   public initSrcTxStatusPolling(): void {

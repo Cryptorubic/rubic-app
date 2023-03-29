@@ -1,4 +1,10 @@
-import { Component, ChangeDetectionStrategy, Inject, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Inject,
+  AfterViewInit,
+  OnDestroy
+} from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -18,7 +24,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./success-tx-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SuccessTxModalComponent implements AfterViewInit {
+export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   public isSwapAndEarnSwap: boolean;
 
   public idPrefix: string;
@@ -64,6 +70,11 @@ export class SuccessTxModalComponent implements AfterViewInit {
   ngAfterViewInit() {
     const overlay = document.querySelector('.overlay');
     overlay.classList.add('overlay-it-confetti');
+  }
+
+  ngOnDestroy(): void {
+    const overlay = document.querySelector('.overlay');
+    overlay.classList.remove('overlay-it-confetti');
   }
 
   public onConfirm(): void {
