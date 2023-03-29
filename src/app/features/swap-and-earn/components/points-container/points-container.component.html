@@ -50,9 +50,10 @@
       ><br />
       <span>Confirmed: {{ points.confirmed }}</span
       ><br />
-      <span>Requested to withdraw: {{ points.requested_to_withdraw }}</span>
-      <br />
-      <span>Total withdraw: {{ points.withdrawn }}</span>
+      <span
+        >Requested to withdraw:
+        {{ points.requested_to_withdraw > 0 ? points.requested_to_withdraw : 0 }}</span
+      >
     </ng-template>
   </div>
 </ng-container>

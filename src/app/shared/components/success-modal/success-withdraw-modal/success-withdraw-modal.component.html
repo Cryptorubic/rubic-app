@@ -9,11 +9,16 @@
       <ng-container>
         <h3 class="modal__title-points">Yahoo!</h3>
       </ng-container>
-      <span class="modal__point-subtitle"
-        ><span class="modal__point-subtitle_green">{{ points }} RBC</span> will be withdrawn. You
-        can get your RBC through the Airdrop Claim. The Claim Link can be found in your "Profile".
-        The Airdrop Claim is open twice a week.</span
-      >
+
+      <span class="modal__point-subtitle">
+        <span class="modal__point-subtitle_green">{{ points }} RBC</span> are requested to
+        withdraw.<br /><br />
+        <span
+          >You can get your RBC through the Airdrop Claim twice a week. We’ll share the Claim Link
+          soon.</span
+        ><br /><br />
+        <span>Follow our socials to not miss out!</span>
+      </span>
     </main>
     <footer class="modal__footer">
       <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">

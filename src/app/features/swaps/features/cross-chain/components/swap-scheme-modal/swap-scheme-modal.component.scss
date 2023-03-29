@@ -69,17 +69,31 @@
   span {
     cursor: pointer;
   }
+
+  &_swapAndEarn {
+    margin-bottom: 53px;
+
+    text-align: center;
+
+    @include b($tablet) {
+      font-size: 13px;
+    }
+  }
 }
 
 .point {
   width: 100%;
-  margin: 53px 0;
+  margin: 53px 0 0;
 
   text-align: center;
 
   &__amount {
     font-weight: bold;
     font-size: 48px;
+
+    @include b($tablet) {
+      font-size: 48px;
+    }
   }
 }
 
