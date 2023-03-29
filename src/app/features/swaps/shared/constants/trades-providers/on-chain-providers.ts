@@ -81,6 +81,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}cremafinance.ico`,
     color: '#6AE2DC'
   },
+  [ON_CHAIN_TRADE_TYPE.CRO_SWAP]: {
+    name: 'CroSwap',
+    image: `${imageBasePath}croswap.svg`,
+    color: '#020426'
+  },
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: {
     name: 'CronaSwap',
     image: `${imageBasePath}cronaswap.webp`,
