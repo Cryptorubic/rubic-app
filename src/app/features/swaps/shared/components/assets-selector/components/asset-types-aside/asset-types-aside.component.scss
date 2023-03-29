@@ -140,16 +140,34 @@
 
 @include b($mobile-md) {
   .asset-types-aside {
+    display: flex;
     flex-direction: column;
+    align-items: unset;
+    justify-content: center;
     width: 100%;
-    padding-top: 0;
+
+    height: 100%;
+
+    padding: 0;
 
     background-color: unset;
 
+    border-radius: unset;
+
     &__list {
+      display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
+      align-items: center;
+
       padding-left: 0.5rem;
+
+      li:not(:last-child) {
+        @include iframe {
+          margin-right: 15px;
+          margin-bottom: unset;
+        }
+      }
     }
 
     &__blockchain-header {
@@ -174,31 +192,6 @@
     &__scroll {
       ::ng-deep tui-scroll-controls {
         display: none;
-      }
-    }
-  }
-}
-
-@include b($mobile-md-minus) {
-  .asset-types-aside {
-    display: flex;
-    align-items: unset;
-    justify-content: center;
-
-    height: 100%;
-    padding: 0;
-
-    border-radius: unset;
-
-    &__list {
-      display: flex;
-      align-items: center;
-
-      li:not(:last-child) {
-        @include iframe {
-          margin-right: 15px;
-          margin-bottom: unset;
-        }
       }
     }
   }

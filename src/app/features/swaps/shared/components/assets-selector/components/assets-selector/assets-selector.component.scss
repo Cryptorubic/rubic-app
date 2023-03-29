@@ -167,18 +167,22 @@ tui-loader {
 
 @include b($mobile-md) {
   .assets-selector {
-    padding-top: 0;
+    padding: 1rem 0 0;
 
     background-color: var(--form-background);
 
     &__row {
       order: 2;
       margin-top: 1rem;
-      padding-left: 10px;
+      padding: 0 16px;
     }
 
     &__content {
+      left: 0;
+
       flex-direction: column;
+      width: 100%;
+      max-height: 100%;
     }
 
     &__header {
@@ -231,7 +235,7 @@ tui-loader {
 
 @include b($mobile-sm-middle) {
   .assets-selector {
-    padding: 1rem 0 0 10px;
+    padding-left: 10px;
 
     &__row {
       padding-right: 10px;

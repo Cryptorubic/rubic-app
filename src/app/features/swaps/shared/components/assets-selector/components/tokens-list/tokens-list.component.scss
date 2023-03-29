@@ -199,8 +199,8 @@ tui-loader {
       width: 100%;
       padding: 0 0 5px 24px;
 
-      @include b($mobile-sm-middle) {
-        padding-left: 10px;
+      @include b($mobile-md) {
+        padding: 0 0 0 16px;
       }
     }
   }
