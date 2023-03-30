@@ -14,9 +14,9 @@ import {
   Web3Pure,
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
-  Token as SdkToken,
   ChangenowPaymentInfo,
-  Token
+  Token,
+  PriceToken
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -24,7 +24,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import { from, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
@@ -142,16 +142,28 @@ export class CrossChainCalculationService extends TradeCalculationService {
       useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
 
-    return from(this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken))).pipe(
-      switchMap(tokenState => {
+    return forkJoin([
+      this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
+      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+    ]).pipe(
+      switchMap(([tokenState, fromPrice, toPrice]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;
+        const fromSdkCompatibleToken = new PriceToken({
+          ...new Token(fromToken),
+          price: new BigNumber(fromPrice)
+        });
+        const toSdkCompatibleToken = new PriceToken({
+          ...new Token(toToken),
+          price: new BigNumber(toPrice)
+        });
         return this.sdkService.crossChain
           .calculateTradesReactively(
-            new SdkToken(fromToken),
+            fromSdkCompatibleToken,
             fromAmount,
-            new SdkToken(toToken),
+            toSdkCompatibleToken,
             tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
           )
           .pipe(
