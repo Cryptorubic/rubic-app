@@ -6,6 +6,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-best-trade-panel',
@@ -35,12 +36,15 @@ export class BestTradePanelComponent {
 
   public showTradesList = false;
 
+  public readonly theme$ = this.themeService.theme$;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly swapFormService: SwapFormService,
     @Inject(WINDOW) private readonly window: RubicWindow,
-    @Self() protected readonly destroy$: TuiDestroyService
+    @Self() protected readonly destroy$: TuiDestroyService,
+    private readonly themeService: ThemeService
   ) {
     this.formSubscribe();
   }
