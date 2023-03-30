@@ -47,6 +47,10 @@
 
       @include b($mobile-md) {
         margin: 0 auto 40px;
+
+        @include iframe {
+          margin: 0 auto;
+        }
       }
     }
   }

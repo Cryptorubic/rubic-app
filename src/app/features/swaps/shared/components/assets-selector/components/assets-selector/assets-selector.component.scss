@@ -248,3 +248,20 @@ tui-loader {
     }
   }
 }
+
+@include b($mobile-sm) {
+  .assets-selector {
+    &__content {
+      @include iframe-vertical {
+        padding: 0 15px 0 0;
+      }
+    }
+  }
+
+  .token-list {
+    &__header {
+      margin: 0 0 1rem;
+      padding: 0 1rem 0 0;
+    }
+  }
+}

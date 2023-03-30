@@ -51,7 +51,10 @@
 
       ::ng-deep app-icon-button {
         .image {
-          max-height: 20px;
+
+          width: 30px;
+          height: 30px;
+          max-height: 30px;
         }
       }
     }
@@ -162,9 +165,13 @@
 
       padding-left: 0.5rem;
 
+      @include iframe-vertical {
+        padding-left: 0;
+      }
+
       li:not(:last-child) {
         @include iframe {
-          margin-right: 15px;
+          margin-right: 10px;
           margin-bottom: unset;
         }
       }
@@ -176,6 +183,10 @@
       justify-content: space-between;
       margin-bottom: 1rem;
       padding: 0 1rem;
+
+      @include iframe-vertical {
+        padding: 0 1rem 0 0;
+      }
 
       &-label {
         font-weight: 400;
@@ -217,6 +228,10 @@
 
               @include iframe {
                 display: block;
+              }
+
+              @include iframe-vertical {
+                display: none;
               }
             }
           }

@@ -1,9 +1,5 @@
 @use '../../../../../../../../scss/core' as *;
 
-:host {
-  width: 100%;
-}
-
 .user-balance-container {
   margin-top: 10px;
 
@@ -59,6 +55,12 @@
 
     @include b($mobile-md) {
       display: none;
+    }
+
+    @include iframe {
+      @include b($mobile-md) {
+        display: block;
+      }
     }
 
     &_disabled {

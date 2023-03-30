@@ -292,6 +292,12 @@ app-analytics-link {
     background: unset;
     border: unset;
 
+    @include iframe {
+      background: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 19px;
+    }
+
     &_onramper {
       background: var(--form-background);
       border: 1px solid var(--transparent-line);
