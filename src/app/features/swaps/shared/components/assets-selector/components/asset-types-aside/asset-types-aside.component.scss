@@ -23,6 +23,10 @@
     box-shadow: unset;
   }
 
+  @include iframe-horizontal {
+    width: 94%;
+  }
+
   @include iframe-vertical {
     padding-bottom: 0;
   }

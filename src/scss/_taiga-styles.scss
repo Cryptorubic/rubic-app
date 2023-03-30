@@ -1,5 +1,14 @@
 @use 'src/scss/core' as *;
 
+html.iframe-horizontal {
+  tui-dialog {
+    width: 100% !important;
+    height: 100% !important;
+
+    border: 0 !important;
+  }
+}
+
 tui-dropdown-box {
   --tui-elevation-01: rgba(255, 255, 255, 0.03);
   --tui-radius-3: 19px;

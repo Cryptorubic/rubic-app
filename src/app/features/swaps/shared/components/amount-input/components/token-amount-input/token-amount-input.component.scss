@@ -21,6 +21,8 @@
   @include iframe-horizontal {
     position: relative;
 
+    flex-direction: row;
+
     width: $iframe-horizontal-input-width;
     height: 50px;
     min-height: 0;
@@ -55,6 +57,7 @@
     }
 
     @include iframe-horizontal {
+      align-items: center;
       justify-content: center;
 
       &:first-child {
@@ -94,7 +97,10 @@
   &__input-label {
     width: 100%;
     height: 35px;
-    margin-bottom: 5px;
+
+    @include iframe-horizontal {
+      margin-bottom: 0;
+    }
 
     ::placeholder {
       letter-spacing: 0.6px;

@@ -88,6 +88,12 @@
     }
   }
 
+  @include iframe-horizontal {
+    app-iframe-logout-button {
+      margin-left: 10px;
+    }
+  }
+
   @include hide-unused-ui {
     display: none;
   }
