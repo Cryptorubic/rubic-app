@@ -1,10 +1,11 @@
 <app-rubic-button
+  *ngLet="loading$ | async as loading"
   [class]="idPrefix + 'button-swap'"
   appearance="primary"
-  [loading]="loading$ | async"
+  [loading]="loading"
   [disabled]="disabled$ | async"
   (onClick)="onSwapClick()"
   (onHoveredChange)="onHoveredChange($event)"
 >
-  {{ buttonText }}
+  {{ loading ? '' : buttonText }}
 </app-rubic-button>
