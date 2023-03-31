@@ -4,6 +4,12 @@
   @include iframe-horizontal {
     display: flex;
   }
+
+  @include iframe-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
 }
 
 $green: rgb(74, 169, 86);
@@ -137,8 +143,12 @@ $green: rgb(74, 169, 86);
 
     @include iframe-vertical {
       flex-direction: column;
-      margin-bottom: 52px;
+      padding: 0;
       overflow: visible;
+
+      background-color: var(--form-background);
+      border: 0;
+      border-radius: 0;
     }
   }
 
@@ -260,6 +270,10 @@ $green: rgb(74, 169, 86);
       margin-top: 0;
       margin-left: 4px;
     }
+
+    @include iframe-vertical {
+      margin: 0 0 0 5px;
+    }
   }
 
   &__iframe-info {
@@ -269,6 +283,11 @@ $green: rgb(74, 169, 86);
 
     display: flex;
     align-items: center;
+
+    @include iframe-vertical {
+      justify-content: space-between;
+      width: 100%;
+    }
 
     > :first-child {
       margin-right: 15px;
@@ -339,6 +358,10 @@ $green: rgb(74, 169, 86);
       position: absolute;
       right: 20px;
       bottom: 17px;
+
+      @include iframe-vertical {
+        position: static;
+      }
     }
 
     &__token-amount {

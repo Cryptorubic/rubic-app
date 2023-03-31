@@ -74,6 +74,10 @@
           border-left-width: 0 !important;
         }
 
+        @include iframe-vertical {
+          border-right-width: 53px !important;
+        }
+
         @include b($mobile-md) {
           font-size: 16px;
 
