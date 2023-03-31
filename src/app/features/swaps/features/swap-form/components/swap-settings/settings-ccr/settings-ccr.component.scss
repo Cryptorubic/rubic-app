@@ -5,6 +5,8 @@
 
   display: flex;
   align-items: center;
+  width: 100px;
+  margin-left: auto;
   padding-right: 22px;
   padding-left: 12px;
 
@@ -20,10 +22,10 @@
 
     ~ span {
       position: absolute;
-      left: 0;
+      right: 0;
       z-index: -1;
 
-      width: 100%;
+      width: 100px;
       height: 100%;
 
       border: 1px solid var(--tui-base-03);
@@ -34,6 +36,10 @@
 
     &:focus ~ span {
       border: 2px solid var(--tui-primary);
+    }
+
+    &:focus {
+      font-size: 16px;
     }
   }
 }
