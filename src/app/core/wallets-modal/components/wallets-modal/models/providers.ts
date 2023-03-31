@@ -12,6 +12,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false,
+    supportsInIframe: false,
     disabled: false
   },
   {
@@ -24,6 +25,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false,
+    supportsInIframe: false,
     disabled: false
   },
   {
@@ -36,6 +38,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: false,
     disabled: false
   },
   {
@@ -48,6 +51,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
     disabled: false
   },
   {
@@ -60,6 +64,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
     disabled: false
   }
 ];

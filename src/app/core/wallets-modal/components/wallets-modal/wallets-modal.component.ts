@@ -26,6 +26,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -41,20 +42,18 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get providers(): ReadonlyArray<WalletProvider> {
-    // const deviceFiltered =
-    //   this.isMobile && !this.iframeService.isIframe
-    //     ? this.allProviders.filter(
-    //         provider => !provider.desktopOnly && provider.value !== WALLET_NAME.METAMASK
-    //       )
-    //     : this.allProviders.filter(provider => !provider.mobileOnly);
     const deviceFiltered =
       this.isMobile && !this.iframeService.isIframe
         ? this.allProviders.filter(provider => !provider.desktopOnly)
         : this.allProviders.filter(provider => !provider.mobileOnly);
 
-    return this.iframeService.isIframe && this.iframeService.device === 'mobile'
-      ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
-      : deviceFiltered;
+    if (this.queryParamsService.hideUnusedUI && !this.queryParamsService.isDesktop) {
+      return deviceFiltered.filter(provider => provider.supportsInIframe);
+    } else {
+      return this.iframeService.isIframe && this.iframeService.device === 'mobile'
+        ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
+        : deviceFiltered;
+    }
   }
 
   public get isMobile(): boolean {
@@ -86,7 +85,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   ngOnInit() {
