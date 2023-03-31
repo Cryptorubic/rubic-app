@@ -11,7 +11,7 @@ import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
-import { MOBILE_NATIVE_MODAL_PROVIDER } from './core/modals/mobile-native-modal-provider';
+import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 
 @NgModule({
   declarations: [AppComponent],

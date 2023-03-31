@@ -41,20 +41,16 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get providers(): ReadonlyArray<WalletProvider> {
-    const browserSupportedProviders = Boolean(this.window.chrome)
-      ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
-
     const deviceFiltered =
       this.isMobile && !this.iframeService.isIframe
-        ? browserSupportedProviders.filter(
-            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+        ? this.allProviders.filter(
+            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.METAMASK
           )
-        : browserSupportedProviders.filter(provider => !provider.mobileOnly);
+        : this.allProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
-      : deviceFiltered;
+      : deviceFiltered.reverse();
   }
 
   public get isMobile(): boolean {
