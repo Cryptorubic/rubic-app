@@ -41,11 +41,15 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get providers(): ReadonlyArray<WalletProvider> {
+    // const deviceFiltered =
+    //   this.isMobile && !this.iframeService.isIframe
+    //     ? this.allProviders.filter(
+    //         provider => !provider.desktopOnly && provider.value !== WALLET_NAME.METAMASK
+    //       )
+    //     : this.allProviders.filter(provider => !provider.mobileOnly);
     const deviceFiltered =
       this.isMobile && !this.iframeService.isIframe
-        ? this.allProviders.filter(
-            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.METAMASK
-          )
+        ? this.allProviders.filter(provider => !provider.desktopOnly)
         : this.allProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
@@ -111,7 +115,7 @@ export class WalletsModalComponent implements OnInit {
 
   private async redirectToMetamaskBrowser(): Promise<void> {
     const queryUrl = `${this.window.location.host}${this.window.location.search}`;
-    this.window.location.assign(`metamask://dapp/${queryUrl}`);
+    this.window.location.assign(`https://metamask.app.link/dapp/${queryUrl}`);
     await new Promise<void>(resolve => {
       setTimeout(() => {
         this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
