@@ -275,6 +275,7 @@ export class InstantTradeService extends TradeCalculationService {
 
         this.postTrade(hash, providerName, trade);
       },
+      ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       }),

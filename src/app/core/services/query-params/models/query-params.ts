@@ -41,6 +41,7 @@ interface AllQueryParams {
   tokenSearch: string;
   rubicLink: string;
   disabledLifiBridges: string[];
+  testMode: string;
 }
 
 export type QueryParams = {
