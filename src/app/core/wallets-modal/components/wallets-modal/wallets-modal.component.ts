@@ -54,7 +54,7 @@ export class WalletsModalComponent implements OnInit {
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
-      : deviceFiltered.reverse();
+      : deviceFiltered;
   }
 
   public get isMobile(): boolean {

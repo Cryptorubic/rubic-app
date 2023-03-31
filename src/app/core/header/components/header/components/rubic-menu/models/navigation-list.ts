@@ -7,17 +7,17 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.setupWidget',
-    type: 'external',
-    link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
-    imagePath: `${defaultSrc}widget.svg`
-  },
-  {
     translateKey: 'navigation.changeNowRecentTrades',
     type: 'internal',
     link: 'changenow-recent-trades',
     imagePath: `${defaultSrc}history.svg`,
     target: '_self'
+  },
+  {
+    translateKey: 'Token Claim',
+    type: 'external',
+    link: EXTERNAL_LINKS.AIRDROP,
+    imagePath: `assets/images/rbc.svg`
   },
   {
     translateKey: 'navigation.sdk',
@@ -26,10 +26,10 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}sdk.svg`
   },
   {
-    translateKey: 'navigation.team',
+    translateKey: 'navigation.setupWidget',
     type: 'external',
-    link: EXTERNAL_LINKS.LANDING_TEAM,
-    imagePath: `${defaultSrc}team.svg`
+    link: EXTERNAL_LINKS.LANDING_SETUP_WIDGET,
+    imagePath: `${defaultSrc}widget.svg`
   },
   {
     translateKey: 'navigation.faq',
@@ -38,10 +38,10 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}faq.svg`
   },
   {
-    translateKey: 'Token Claim',
+    translateKey: 'navigation.about',
     type: 'external',
-    link: EXTERNAL_LINKS.AIRDROP,
-    imagePath: `assets/images/rbc.svg`
+    link: EXTERNAL_LINKS.LANDING,
+    imagePath: `${defaultSrc}team.svg`
   }
   // {
   //   translateKey: 'Revoke Approval',
