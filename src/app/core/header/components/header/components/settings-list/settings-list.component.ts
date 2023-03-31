@@ -51,19 +51,6 @@ export class SettingsListComponent {
         action: this.switchToLanguageSettings.bind(this),
         arrow: true
       }
-      // {
-      //   title: 'settings.header.gasPrice.title',
-      //   description: 'settings.header.gasPrice.desc',
-      //   component: new PolymorpheusComponent(GasIndicatorComponent),
-      //   arrow: false
-      // },
-      // {
-      //   title: 'settings.header.tutorials.title',
-      //   description: 'settings.header.tutorials.desc',
-      //   component: new PolymorpheusComponent(TutorialsComponent),
-      //   action: this.navigateExternalLink.bind(null, ['https://www.youtube.com/c/RubicExchange']),
-      //   arrow: true
-      // }
     ];
   }
 

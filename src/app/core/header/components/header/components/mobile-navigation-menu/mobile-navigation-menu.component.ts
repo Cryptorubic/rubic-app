@@ -8,7 +8,9 @@ import { MOBILE_NAVIGATION_LIST } from '../rubic-menu/models/navigation-list';
   styleUrls: ['./mobile-navigation-menu.component.scss']
 })
 export class MobileNavigationMenuComponent {
-  public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST.Trade;
+  public readonly mobileNavigationList = MOBILE_NAVIGATION_LIST.Trade.filter(
+    listItem => listItem.translateKey !== 'ChangeNow Tx'
+  );
 
   public currentURL = '';
 

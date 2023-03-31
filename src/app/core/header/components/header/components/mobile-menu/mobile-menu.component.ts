@@ -6,6 +6,7 @@ import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/model
 import { Observable } from 'rxjs';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { DOCUMENT } from '@angular/common';
 
 declare var LiveChatWidget: RubicAny;
 
@@ -43,7 +44,8 @@ export class MobileMenuComponent {
     private readonly authService: AuthService,
     private readonly swapTypeService: SwapTypeService,
     private readonly modalService: ModalService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   public async navigateToSwaps(): Promise<void> {
@@ -70,6 +72,8 @@ export class MobileMenuComponent {
   }
 
   public openLiveChat(): void {
+    const liveChat = this.document.getElementById('chat-widget-container') as HTMLDivElement;
+    liveChat.classList.add('visible');
     LiveChatWidget.call('maximize');
     // this.modalService.openLiveChat().subscribe();
   }

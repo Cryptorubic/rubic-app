@@ -12,6 +12,9 @@
   @include b($mobile-md) {
     bottom: 76px !important;
 
+    width: 0 !important;
+    height: 0 !important;
+
     max-height: 84vh !important;
 
     transition-duration: 0s !important;
@@ -21,7 +24,8 @@
     }
 
     &.visible {
-      display: block;
+      width: 100% !important;
+      height: 100% !important;
     }
   }
 

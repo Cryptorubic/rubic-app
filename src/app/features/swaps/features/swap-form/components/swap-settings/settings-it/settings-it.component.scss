@@ -82,6 +82,14 @@
 
     cursor: pointer;
 
+    @include b($mobile-md) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      padding: 0;
+    }
+
     &_active {
       color: var(--primary-text-invert);
 

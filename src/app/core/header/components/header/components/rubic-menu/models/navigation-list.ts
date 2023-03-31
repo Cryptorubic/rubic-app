@@ -98,6 +98,11 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'About',
       type: 'external',
       link: EXTERNAL_LINKS.LANDING
+    },
+    {
+      translateKey: 'FAQ',
+      type: 'external',
+      link: ROUTE_PATH.FAQ
     }
   ],
   ['Social']: [

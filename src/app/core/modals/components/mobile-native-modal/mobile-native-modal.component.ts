@@ -108,7 +108,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     animationTimeout(this.context.completeWith);
   }
 
-  public onSwipe(swipe: TuiSwipe): void {
+  public onSwipe(swipe: TuiSwipe, title: string, place: string): void {
     if (
       swipe.direction === 'top' &&
       this.state === ModalStates.MEDIUM &&
@@ -117,12 +117,46 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
       this.state = ModalStates.FULL;
       this.expand();
     } else if (swipe.direction === 'bottom') {
+      if (
+        place === 'content' &&
+        (title === 'Select token' ||
+          title === 'Select Blockchain' ||
+          title === 'Account' ||
+          title === 'Menu')
+      ) {
+        return;
+      }
+
       this.close();
     } else if (swipe.direction === 'right') {
       this.hide();
       animationTimeout(this.context.completeWith);
     }
   }
+
+  // private swipe(swipe: TuiSwipe): void {
+  //   if (
+  //     swipe.direction === 'top' &&
+  //     this.state === ModalStates.MEDIUM &&
+  //     !this.context.fitContent
+  //   ) {
+  //     this.state = ModalStates.FULL;
+  //     this.expand();
+  //   } else if (swipe.direction === 'bottom') {
+  //     if (title === 'Select token') {
+  //       return;
+  //     }
+  //
+  //     if (title === 'Select Blockchain') {
+  //       return;
+  //     }
+  //
+  //     this.close();
+  //   } else if (swipe.direction === 'right') {
+  //     this.hide();
+  //     animationTimeout(this.context.completeWith);
+  //   }
+  // }
 
   private hide(): void {
     this.el.nativeElement.classList.add('hidden');

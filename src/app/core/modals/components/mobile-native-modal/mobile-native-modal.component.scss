@@ -19,7 +19,7 @@
     bottom: 0;
 
     height: fit-content;
-    padding-bottom: 50px;
+    //padding-bottom: 50px; возможно придётся вернуть!
 
     @include iframe-vertical {
       height: initial;
