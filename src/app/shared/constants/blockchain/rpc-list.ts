@@ -41,7 +41,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc1.us.telos.net/evm'
   ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
-    'https://rpc.ankr.com/optimism/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    'https://rpc.ankr.com/optimism/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://mainnet.optimism.io'
   ],
   [BLOCKCHAIN_NAME.CRONOS]: ['https://evm-cronos.crypto.org'],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
