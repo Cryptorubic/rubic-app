@@ -27,11 +27,6 @@ const formStepsInitial = {
   approve: false
 };
 
-interface GaObject {
-  loaded: boolean;
-  create: Function;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -257,19 +252,5 @@ export class GoogleTagManagerService {
    */
   public addGtmToDom(): void {
     this.angularGtmService.addGtmToDom();
-  }
-
-  /**
-   * Checks if Google Analytics is working for the user.
-   */
-  public checkGtm(): void {
-    // @ts-ignore
-    const gaObject = this.window[this.window['GoogleAnalyticsObject'] || 'ga'] as GaObject;
-    const isGaNotLoaded = !gaObject?.loaded || !gaObject?.create || typeof gaObject !== 'function';
-    this.httpService
-      .post<void>('total_values/stats/ga/users', {
-        googleAnalytics: !isGaNotLoaded
-      })
-      .subscribe();
   }
 }

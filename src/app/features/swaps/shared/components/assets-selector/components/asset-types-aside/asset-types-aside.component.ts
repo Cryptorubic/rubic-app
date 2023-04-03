@@ -11,6 +11,8 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -65,7 +67,8 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
   ) {}
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -89,7 +92,10 @@ export class AssetTypesAsideComponent {
       slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
     }
 
-    return slicedBlockchains;
+    return slicedBlockchains.map(blockchain => ({
+      ...blockchain,
+      label: blockchainShortLabel[blockchain.name]
+    }));
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {

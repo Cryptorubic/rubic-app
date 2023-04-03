@@ -18,6 +18,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: 'ClaimSwap',
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: 'CremaFinance',
+  [ON_CHAIN_TRADE_TYPE.CRO_SWAP]: 'CroSwap',
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'CronaSwap',
   [ON_CHAIN_TRADE_TYPE.CROPPER_FINANCE]: 'CropperFinance',
   [ON_CHAIN_TRADE_TYPE.CROW_FI]: 'CrowFi',

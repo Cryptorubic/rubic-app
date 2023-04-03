@@ -15,7 +15,11 @@
         [disabled]="loading"
         (onClick)="changeNetwork()"
       >
-        {{ 'common.switchTo' | translate : { networkName: (fromBlockchainLabel$ | async) } }}
+        {{
+          loading
+            ? ''
+            : ('common.switchTo' | translate : { networkName: (fromBlockchainLabel$ | async) })
+        }}
       </app-rubic-button>
     </ng-container>
 
