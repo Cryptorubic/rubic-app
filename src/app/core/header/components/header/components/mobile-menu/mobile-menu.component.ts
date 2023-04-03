@@ -48,6 +48,20 @@ export class MobileMenuComponent {
     @Inject(DOCUMENT) private document: Document
   ) {}
 
+  private toggleLiveChatContainerHeight(action: string): void {
+    const liveChat = this.document.getElementById('chat-widget-container') as HTMLDivElement;
+
+    if (action === 'hide') {
+      LiveChatWidget.call('minimize');
+      liveChat.classList.remove('visible');
+    }
+
+    if (action === 'show') {
+      LiveChatWidget.call('maximize');
+      liveChat.classList.add('visible');
+    }
+  }
+
   public async navigateToSwaps(): Promise<void> {
     await this.swapTypeService.navigateToSwaps();
   }
@@ -57,34 +71,32 @@ export class MobileMenuComponent {
   }
 
   public openNavigationMenu(): void {
-    LiveChatWidget.call('minimize');
+    this.toggleLiveChatContainerHeight('hide');
     this.modalService.openMobileNavigationMenu().subscribe();
   }
 
   public openRubicMenu(): void {
-    LiveChatWidget.call('minimize');
+    this.toggleLiveChatContainerHeight('hide');
     this.modalService.openRubicMenu().subscribe();
   }
 
   public openSettings(): void {
-    LiveChatWidget.call('minimize');
+    this.toggleLiveChatContainerHeight('hide');
     this.modalService.openSettings().subscribe();
   }
 
   public openLiveChat(): void {
-    const liveChat = this.document.getElementById('chat-widget-container') as HTMLDivElement;
-    liveChat.classList.add('visible');
-    LiveChatWidget.call('maximize');
+    this.toggleLiveChatContainerHeight('show');
     // this.modalService.openLiveChat().subscribe();
   }
 
   public openProfile(): void {
-    LiveChatWidget.call('minimize');
+    this.toggleLiveChatContainerHeight('hide');
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
   }
 
   public openWallet(): void {
-    LiveChatWidget.call('minimize');
+    this.toggleLiveChatContainerHeight('hide');
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 }
