@@ -87,7 +87,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     super('cross-chain-routing');
   }
 
-  private inSwapAndEarnSwap(
+  private static inSwapAndEarnSwap(
     calculatedTrade: CrossChainCalculatedTrade,
     provider: CrossChainTradeType,
     fromToken: TokenAmount,
@@ -98,17 +98,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     if (provider === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
       return (
-        (isEvmFromBlockchain && !isEvmToBlockchain) ||
+        (isEvmFromBlockchain && isEvmToBlockchain) ||
         (!isEvmFromBlockchain && isEvmToBlockchain) ||
-        (isEvmFromBlockchain && isEvmToBlockchain)
+        (isEvmFromBlockchain && !isEvmToBlockchain)
       );
     }
 
-    if (calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)) {
-      return true;
-    }
-
-    return false;
+    return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -489,7 +485,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: this.inSwapAndEarnSwap(calculatedTrade, calculatedTrade.tradeType, fromToken, toToken)
+        data: CrossChainCalculationService.inSwapAndEarnSwap(
+          calculatedTrade,
+          calculatedTrade.tradeType,
+          fromToken,
+          toToken
+        )
           ? swapAndEarnData
           : defaultData,
         fitContent: true

@@ -67,8 +67,10 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    const overlay = document.querySelector('.overlay');
-    overlay.classList.add('overlay-it-confetti');
+    if (this.isSwapAndEarnSwap) {
+      const overlay = document.querySelector('.overlay');
+      overlay.classList.add('overlay-it-confetti');
+    }
   }
 
   ngOnDestroy(): void {

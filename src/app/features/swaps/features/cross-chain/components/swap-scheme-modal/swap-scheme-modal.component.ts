@@ -134,15 +134,15 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     this.initDstTxStatusPolling();
   }
 
-  ngAfterViewInit() {
-    const overlay = document.querySelector('.overlay');
-
-    overlay.classList.add('overlay-ccr-confetti');
+  ngAfterViewInit(): void {
+    if (this.isSwapAndEarnSwap) {
+      const overlay = document.querySelector('.overlay');
+      overlay.classList.add('overlay-ccr-confetti');
+    }
   }
 
   ngOnDestroy(): void {
     const overlay = document.querySelector('.overlay');
-
     overlay.classList.remove('overlay-ccr-confetti');
   }
 

@@ -31,7 +31,7 @@
       <ng-container *ngIf="isSwapAndEarnSwap">
         <h3 *noFrame="'horizontal'" class="modal__title-points">Yahoo!</h3>
       </ng-container>
-      <span class="modal__point-subtitle"
+      <span class="modal__point-subtitle" *ngIf="isSwapAndEarnSwap"
         >You will be credited with 10 points when the transaction is successful</span
       >
     </main>
