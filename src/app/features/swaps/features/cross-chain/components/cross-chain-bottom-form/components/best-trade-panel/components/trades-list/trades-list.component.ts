@@ -12,6 +12,7 @@ import { CrossChainTradeType, MaxAmountError, MinAmountError } from 'rubic-sdk';
 import { fadeAnimation, listAnimation } from '@shared/utils/utils';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 import { PolymorpheusInput } from '@app/shared/decorators/polymorpheus-input';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
@@ -35,6 +36,8 @@ export class TradesListComponent {
 
   public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
+  public readonly theme$ = this.themeService.theme$;
+
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly toToken = this.crossChainFormService.inputValue.toToken.symbol;
@@ -45,6 +48,7 @@ export class TradesListComponent {
     private readonly context: TuiDialogContext<void, { taggedTrades: CrossChainTaggedTrade[] }>,
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
+    private readonly themeService: ThemeService,
     private readonly headerStore: HeaderStore
   ) {}
 

@@ -75,6 +75,8 @@
   }
 
   &__button-auto {
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
     height: 35px;
     margin-right: 10px;
@@ -118,7 +120,7 @@
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 
     &:last-child {
       margin-bottom: 0;

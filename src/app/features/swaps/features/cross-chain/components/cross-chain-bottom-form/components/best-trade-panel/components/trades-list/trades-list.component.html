@@ -1,4 +1,4 @@
-<ng-container>
+<ng-container *ngLet="theme$ | async as theme">
   <ul @listAnimation>
     <ng-container *ngFor="let taggedTrade of taggedTrades; let i = index; trackBy: trackByType">
       <li

@@ -4,6 +4,7 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cro
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
+import { Theme } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-cross-chain-route',
@@ -12,6 +13,16 @@ import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trad
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainRouteComponent {
+  public get leftColor(): string {
+    return this.handleThemeColor(this.fromProvider.color);
+  }
+
+  public get rightColor(): string {
+    return this.handleThemeColor(this.toProvider.color);
+  }
+
+  @Input() theme: Theme;
+
   @Input() set route(routing: CrossChainRoute) {
     this.bridgeProvider = CrossChainRouteComponent.getRoute(
       routing.bridgeProvider,
@@ -39,7 +50,9 @@ export class CrossChainRouteComponent {
         }
       : {
           ...TRADES_PROVIDERS[bridgeProvider],
-          name: TRADES_PROVIDERS[bridgeProvider].name + ' Pool'
+          name: isCentralizedBridge
+            ? TRADES_PROVIDERS[bridgeProvider].name
+            : `${TRADES_PROVIDERS[bridgeProvider].name} Pool`
         };
   }
 
@@ -50,4 +63,29 @@ export class CrossChainRouteComponent {
   public toProvider: ProviderInfo;
 
   constructor() {}
+
+  private isBlackColor(sourceColor: string): boolean {
+    const color = sourceColor.toLowerCase();
+    return color === '#000' || color === 'black' || color === '#000000';
+  }
+
+  private isWhiteColor(sourceColor: string): boolean {
+    const color = sourceColor.toLowerCase();
+    return color === '#fff' || color === 'white' || color === '#ffffff';
+  }
+
+  public handleThemeColor(color: string): string {
+    const isBlackLine = this.isBlackColor(color);
+    const isWhiteLine = this.isWhiteColor(color);
+
+    if (this.theme === 'dark' && isBlackLine) {
+      return 'white';
+    }
+
+    if (this.theme === 'light' && isWhiteLine) {
+      return 'black';
+    }
+
+    return color;
+  }
 }

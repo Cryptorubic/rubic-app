@@ -23,6 +23,8 @@ export class QueryParamsService {
 
   public readonly queryParams$ = this._queryParams$.asObservable();
 
+  public testMode: boolean = false;
+
   public get queryParams(): QueryParams | undefined {
     return this._queryParams$.value;
   }
@@ -75,6 +77,7 @@ export class QueryParamsService {
       return;
     }
 
+    this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
     this.isDesktop = queryParams.isDesktop === 'true';
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;

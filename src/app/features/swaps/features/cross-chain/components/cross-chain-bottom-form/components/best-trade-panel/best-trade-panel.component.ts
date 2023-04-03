@@ -13,6 +13,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { CrossChainTaggedTrade } from '../../../../models/cross-chain-tagged-trade';
@@ -50,6 +51,8 @@ export class BestTradePanelComponent {
 
   public showTradesList = false;
 
+  public readonly theme$ = this.themeService.theme$;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
@@ -58,7 +61,8 @@ export class BestTradePanelComponent {
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
-    @Self() protected readonly destroy$: TuiDestroyService
+    @Self() protected readonly destroy$: TuiDestroyService,
+    private readonly themeService: ThemeService
   ) {
     this.formSubscribe();
   }
