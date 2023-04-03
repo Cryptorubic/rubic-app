@@ -1,5 +1,14 @@
 @use 'src/scss/core' as *;
 
+.image {
+  display: flex;
+  align-items: center;
+
+  ::ng-deep svg path {
+    fill: var(--secondary-text);
+  }
+}
+
 .option {
   position: relative;
 
@@ -17,6 +26,12 @@
     letter-spacing: 0.5px;
   }
 
+  &__wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
   &__function {
     display: flex;
     align-items: center;
@@ -25,6 +40,10 @@
 
   &__component {
     flex-grow: 1;
+
+    @include b($mobile-md) {
+      flex-grow: initial;
+    }
   }
 
   &__desc {
@@ -49,7 +68,7 @@
     padding: 15px;
 
     &__function {
-      margin-bottom: 12px;
+      margin-bottom: 15px;
     }
 
     &__arrow-right {
@@ -58,6 +77,14 @@
       right: 15px;
 
       transform: translateY(-50%);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .option {
+    &__function {
+      margin-bottom: 0;
     }
   }
 }

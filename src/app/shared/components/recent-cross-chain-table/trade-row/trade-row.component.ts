@@ -3,11 +3,13 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewContainerRef,
+  Injector,
+  Inject,
   Self
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
@@ -31,15 +33,16 @@ import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.servi
 import {
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
-  ChangenowApiStatus,
   CROSS_CHAIN_TRADE_TYPE,
-  TxStatus
+  TxStatus,
+  ChangenowApiStatus
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { UiRecentTrade } from '@core/recent-trades/models/ui-recent-trade.interface';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: '[trade-row]',
@@ -142,7 +145,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly onramperService: OnramperService,
     private readonly swapFormQueryService: SwapFormQueryService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    private readonly viewContainerRef: ViewContainerRef,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   ngOnInit(): void {

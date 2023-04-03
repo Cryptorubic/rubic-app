@@ -10,7 +10,8 @@ import {
   WalletProviderCore,
   CHAIN_TYPE,
   CrossChainSymbiosisManager,
-  LimitOrderManager
+  LimitOrderManager,
+  DeflationTokenManager
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -38,6 +39,10 @@ export class SdkService {
 
   public get instantTrade(): OnChainManager {
     return this.SDK.onChainManager;
+  }
+
+  public get deflationTokenManager(): DeflationTokenManager {
+    return this.SDK.deflationTokenManager;
   }
 
   public get crossChain(): CrossChainManager {

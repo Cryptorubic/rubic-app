@@ -8,6 +8,8 @@ import {
   getFormattedHours,
   getFormattedMinutes
 } from '@features/swaps/features/limit-order/utils/get-formatted-time';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-expires-in',
@@ -21,7 +23,13 @@ export class ExpiresInComponent {
   public readonly expirationValue$: Observable<ExpirationValue> =
     this.orderExpirationService.expirationTime$.pipe(map(minutes => this.getDateValues(minutes)));
 
-  constructor(private readonly orderExpirationService: OrderExpirationService) {}
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private readonly orderExpirationService: OrderExpirationService,
+    private readonly modalService: ModalService
+  ) {}
 
   private getDateValues(minutes: number): {
     shortValue: string;
@@ -49,5 +57,9 @@ export class ExpiresInComponent {
 
   public onClose(): void {
     this.settingsOpen = false;
+  }
+
+  public openExpriationSettings(): void {
+    this.modalService.openExpirationalSettingsModal().subscribe();
   }
 }

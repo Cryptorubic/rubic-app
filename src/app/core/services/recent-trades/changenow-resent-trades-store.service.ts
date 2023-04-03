@@ -9,7 +9,7 @@ const MAX_LATEST_TRADES = 8;
 })
 export class ChangenowResentTradesStoreService {
   public get changenowRecentTrades(): ChangenowPostTrade[] {
-    return this.storeService.getItem('changenowRecentTrades');
+    return this.storeService.getItem('changenowRecentTrades') || [];
   }
 
   constructor(private readonly storeService: StoreService) {}

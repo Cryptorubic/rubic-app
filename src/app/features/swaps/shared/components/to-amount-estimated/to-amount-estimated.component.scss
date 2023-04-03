@@ -6,6 +6,10 @@
   @include iframe-horizontal {
     width: 100%;
   }
+
+  @include b($mobile-md) {
+    overflow: visible;
+  }
 }
 
 .bottom-amount {
@@ -51,6 +55,18 @@
   app-tokens-rate {
     display: block;
 
+    @include b($mobile-md) {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+
+      white-space: nowrap;
+
+      @include iframe-vertical {
+        position: static;
+      }
+    }
+
     @include iframe-horizontal {
       position: absolute;
       bottom: -33px;
@@ -77,8 +93,14 @@
 
     transition: opacity ease-in-out 0.3s;
 
-    @include b($mobile-sm) {
-      text-align: left;
+    @include b($mobile-md) {
+      position: relative;
+
+      overflow: visible;
+
+      font-size: 25px;
+
+      text-align: right;
     }
 
     @include iframe-horizontal {

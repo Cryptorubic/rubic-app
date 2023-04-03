@@ -14,7 +14,6 @@ import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/com
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { BitkeepWalletAdapter } from 'src/app/core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -110,10 +109,6 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.BITKEEP) {
-      return new BitkeepWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_LINK) {

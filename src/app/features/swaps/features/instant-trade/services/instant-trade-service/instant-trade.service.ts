@@ -23,6 +23,7 @@ import {
   TxStatus,
   BlockchainsInfo,
   NotWhitelistedProviderError,
+  PriceToken,
   EvmOnChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -44,6 +45,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
@@ -95,6 +97,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly tokensService: TokensService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('on-chain');
@@ -164,20 +167,17 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public async calculateTrades(
-    fromToken: {
-      address: string;
-      blockchain: BlockchainName;
-    },
+    fromToken: TokenAmount,
     fromAmount: string,
-    toToken: {
-      address: string;
-      blockchain: BlockchainName;
-    }
+    toToken: TokenAmount
   ): Promise<Array<OnChainTrade | OnChainTradeError>> {
     const settings = this.settingsService.instantTradeValue;
     const slippageTolerance = settings.slippageTolerance / 100;
     const disableMultihops = settings.disableMultihops;
     const deadlineMinutes = settings.deadline;
+
+    const fromTokenPrice = await this.tokensService.getAndUpdateTokenPrice(fromToken, true);
+    const toTokenPrice = await this.tokensService.getAndUpdateTokenPrice(toToken, true);
 
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const isAddressCorrectValue = await Web3Pure[chainType].isAddressCorrect(
@@ -188,17 +188,44 @@ export class InstantTradeService extends TradeCalculationService {
       this.authService.userAddress &&
       isAddressCorrectValue;
 
-    const useProxy = this.platformConfigurationService.useOnChainProxy;
+    const sdkFromToken = await Token.createToken(fromToken);
+    const deflationFromStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
+      sdkFromToken
+    );
 
-    return this.sdkService.instantTrade.calculateTrade(fromToken, fromAmount, toToken.address, {
-      timeout: 10000,
-      gasCalculation: calculateGas ? 'calculate' : 'disabled',
-      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
-      slippageTolerance,
-      disableMultihops,
-      deadlineMinutes,
-      useProxy
+    const sdkToToken = await Token.createToken(toToken);
+    const deflationToStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
+      sdkToToken
+    );
+
+    const fromSdkCompatibleToken = new PriceToken({
+      ...sdkFromToken,
+      price: new BigNumber(fromTokenPrice)
     });
+    const toSdkCompatibleToken = new PriceToken({
+      ...sdkToToken,
+      price: new BigNumber(toTokenPrice)
+    });
+
+    const useProxy =
+      deflationFromStatus.isDeflation || deflationToStatus.isDeflation
+        ? false
+        : this.platformConfigurationService.useOnChainProxy;
+
+    return this.sdkService.instantTrade.calculateTrade(
+      fromSdkCompatibleToken,
+      fromAmount,
+      toSdkCompatibleToken,
+      {
+        timeout: 10000,
+        gasCalculation: calculateGas ? 'calculate' : 'disabled',
+        zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
+        slippageTolerance,
+        disableMultihops,
+        deadlineMinutes,
+        useProxy
+      }
+    );
   }
 
   public async createTrade(
@@ -252,7 +279,6 @@ export class InstantTradeService extends TradeCalculationService {
           toSymbol,
           fromAmount.multipliedBy(fromPrice)
         );
-        this.gtmService.checkGtm();
 
         subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
 
@@ -260,6 +286,7 @@ export class InstantTradeService extends TradeCalculationService {
           this.swapAndEarnStateService.updatePoints()
         );
       },
+      ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && {
         gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
       }),
@@ -297,7 +324,6 @@ export class InstantTradeService extends TradeCalculationService {
         this.showSuccessTrxNotification();
       }
 
-      // await this.swapAndEarnStateService.updatePoints();
       // await this.instantTradesApiService
       //   .notifyInstantTradesBot({
       //     provider: providerName,

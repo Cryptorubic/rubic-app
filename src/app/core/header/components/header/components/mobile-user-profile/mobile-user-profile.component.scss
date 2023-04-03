@@ -1,0 +1,145 @@
+.mobile-user-profile {
+  padding: 1rem;
+
+  &__card {
+    padding: 1rem;
+
+    background-color: var(--mobile-user-profile-background);
+
+    background-image: url('/assets/images/rubic-account-card.png');
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 140px;
+    border: 1px solid var(--transparent-line);
+    border-radius: 20px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+
+      &-account {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      &-address {
+        margin-left: 0.5rem;
+
+        color: #aaa;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      &-buttons {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        > * {
+          margin-left: 1.5rem;
+
+          > button,
+          a {
+            img {
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+      }
+    }
+
+    &-body {
+      &-title {
+        margin-bottom: 8px;
+
+        color: #878787;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      &-balance {
+        min-height: 20px;
+
+        font-size: 24px;
+
+        &.tui-skeleton {
+          max-width: 150px;
+        }
+      }
+    }
+  }
+
+  &__icon {
+    ::ng-deep {
+      svg {
+        display: block;
+        width: 20px;
+        height: 20px;
+
+        path {
+          opacity: 0.7;
+
+          fill: white;
+        }
+
+        &:active,
+        &:hover {
+          path {
+            opacity: 1;
+
+            fill: #00e28e;
+          }
+        }
+      }
+    }
+  }
+
+  &__history-switcher {
+    position: relative;
+
+    display: flex;
+    margin: 1rem 0;
+
+    background-color: var(--transparent-line);
+    border-radius: 12px;
+
+    &-ink {
+      position: absolute;
+      left: 0;
+
+      width: 50%;
+      height: 100%;
+
+      background-color: #00e28e;
+      border-radius: 12px;
+
+      transition-duration: 0.3s;
+
+      &.right {
+        left: 50%;
+      }
+    }
+
+    &-item {
+      z-index: 2;
+
+      width: 100%;
+      padding: 13px;
+
+      color: #aaa;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 1px;
+
+      transition-duration: 0.3s;
+
+      &.active {
+        color: var(--form-background);
+      }
+    }
+  }
+}

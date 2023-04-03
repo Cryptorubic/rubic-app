@@ -34,12 +34,13 @@
   }
 
   &__label {
-    position: relative;
+    display: flex;
 
     flex: 1;
+    align-items: center;
     width: 100%;
     height: 50px;
-    padding-left: 16px;
+    padding: 0 16px;
 
     background-color: var(--primary-background);
 
@@ -70,12 +71,6 @@
         padding: 0 16px 0 0;
       }
     }
-  }
-
-  app-user-balance-container {
-    position: absolute;
-    top: 15px;
-    right: 15px;
   }
 }
 

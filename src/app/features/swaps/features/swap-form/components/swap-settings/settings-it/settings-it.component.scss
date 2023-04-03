@@ -4,11 +4,19 @@
   color: var(--primary-text);
 }
 
+.deadline {
+  ::ng-deep tui-input-number input:focus {
+    font-size: 16px !important;
+  }
+}
+
 .slippage-container {
   position: relative;
 
   display: flex;
   align-items: center;
+  width: 100px;
+  margin-left: auto;
   padding-right: 22px;
   padding-left: 12px;
 
@@ -24,10 +32,10 @@
 
     ~ span {
       position: absolute;
-      left: 0;
+      right: 0;
       z-index: -1;
 
-      width: 100%;
+      width: 100px;
       height: 100%;
 
       border: 1px solid var(--tui-base-03);
@@ -39,6 +47,10 @@
     &:focus ~ span {
       border: 2px solid var(--tui-primary);
     }
+
+    &:focus {
+      font-size: 16px;
+    }
   }
 }
 
@@ -46,6 +58,10 @@
   min-width: 265px;
   max-width: 320px;
   padding: 20px;
+
+  @include b($mobile-md) {
+    max-width: unset;
+  }
 
   &__form {
     display: flex;
@@ -65,6 +81,8 @@
   }
 
   &__button-auto {
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
     height: 35px;
     margin-right: 10px;
@@ -77,6 +95,14 @@
     border-radius: $border-radius-2;
 
     cursor: pointer;
+
+    @include b($mobile-md) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      padding: 0;
+    }
 
     &_active {
       color: var(--primary-text-invert);
@@ -98,7 +124,7 @@
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 
     &:last-child {
       margin-bottom: 0;
@@ -119,7 +145,7 @@
 
     &_small-input {
       ::ng-deep tui-wrapper[data-appearance='textfield'] {
-        width: 80px;
+        width: 60px;
       }
     }
   }

@@ -1,8 +1,6 @@
 @use 'src/scss/core' as *;
 
 .header-settings {
-  width: 686px;
-
   border-radius: $border-radius-2;
   backdrop-filter: $backdrop-blur-1;
 
@@ -55,8 +53,18 @@
     font-size: 18px;
     line-height: 21px;
 
+    @include b($mobile-md) {
+      display: none;
+    }
+
     &::first-letter {
       text-transform: uppercase;
+    }
+  }
+
+  &__close {
+    @include b($mobile-md) {
+      display: none;
     }
   }
 }

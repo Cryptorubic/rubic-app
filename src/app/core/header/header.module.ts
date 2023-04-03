@@ -15,7 +15,7 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule
 } from '@taiga-ui/core';
-import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
@@ -33,6 +33,18 @@ import { ExternalLinkBannerComponent } from './components/header/components/exte
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
+import { ModalsModule } from '../modals/modals.module';
+import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
+import { SettingsTogglerComponent } from './components/header/components/settings-toggler/settings-toggler.component';
+import { MobileLiveChatComponent } from './components/header/components/mobile-live-chat/mobile-live-chat.component';
+import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
+import { RecentTradesModule } from '../recent-trades/recent-trades.module';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { HistoryModule } from '@app/features/history/history.module';
+import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
+import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { PointsButtonComponent } from './components/header/components/points-button/points-button.component';
 
 @NgModule({
@@ -52,6 +64,12 @@ import { PointsButtonComponent } from './components/header/components/points-but
     ExternalLinkBannerComponent,
     BannerDirective,
     AppReferralBannerComponent,
+    MobileMenuComponent,
+    RubicMenuTogglerComponent,
+    SettingsTogglerComponent,
+    MobileLiveChatComponent,
+    MobileUserProfileComponent,
+    MobileNavigationMenuComponent,
     PointsButtonComponent
   ],
   imports: [
@@ -72,8 +90,16 @@ import { PointsButtonComponent } from './components/header/components/points-but
     TuiDropdownControllerModule,
     TuiToggleModule,
     FormsModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    ModalsModule,
+    RecentTradesModule,
+    ClipboardModule,
+    HistoryModule,
+    InstantTradeModule,
+    TuiAccordionModule
+    // TuiTouchableModule
   ],
+  providers: [TuiDestroyService],
   exports: [HeaderComponent]
 })
 export class HeaderModule {}

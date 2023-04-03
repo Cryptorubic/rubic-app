@@ -3,6 +3,8 @@ import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-provid
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
+import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
+import { Theme } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-cross-chain-route',
@@ -11,28 +13,46 @@ import { centralizedBridges } from '@features/swaps/shared/constants/trades-prov
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainRouteComponent {
+  public get leftColor(): string {
+    return this.handleThemeColor(this.fromProvider.color);
+  }
+
+  public get rightColor(): string {
+    return this.handleThemeColor(this.toProvider.color);
+  }
+
+  @Input() theme: Theme;
+
   @Input() set route(routing: CrossChainRoute) {
-    this.bridgeProvider = TRADES_PROVIDERS[routing.bridgeProvider];
-
-    const isCentralizedBridge = centralizedBridges.some(
-      centralizedBridge => centralizedBridge === routing.bridgeProvider
+    this.bridgeProvider = CrossChainRouteComponent.getRoute(
+      routing.bridgeProvider,
+      routing.bridgeProvider
     );
-    this.bridgeProvider = {
-      ...this.bridgeProvider,
-      name: this.bridgeProvider.name + (isCentralizedBridge ? ' (Centralized)' : '')
-    };
+    this.fromProvider = CrossChainRouteComponent.getRoute(
+      routing?.fromProvider,
+      routing.bridgeProvider
+    );
+    this.toProvider = CrossChainRouteComponent.getRoute(
+      routing?.toProvider,
+      routing.bridgeProvider
+    );
+  }
 
-    this.fromProvider = routing.fromProvider
-      ? TRADES_PROVIDERS[routing.fromProvider]
+  public static getRoute(provider: TradeProvider, bridgeProvider: TradeProvider): ProviderInfo {
+    const isCentralizedBridge = centralizedBridges.some(
+      centralizedBridge => centralizedBridge === bridgeProvider
+    );
+
+    return provider
+      ? {
+          ...TRADES_PROVIDERS[provider],
+          ...(isCentralizedBridge && { name: `${TRADES_PROVIDERS[provider].name} (Centralized)` })
+        }
       : {
-          ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name
-        };
-    this.toProvider = routing.toProvider
-      ? TRADES_PROVIDERS[routing.toProvider]
-      : {
-          ...TRADES_PROVIDERS[routing.bridgeProvider],
-          name: TRADES_PROVIDERS[routing.bridgeProvider].name
+          ...TRADES_PROVIDERS[bridgeProvider],
+          name: isCentralizedBridge
+            ? TRADES_PROVIDERS[bridgeProvider].name
+            : `${TRADES_PROVIDERS[bridgeProvider].name} Pool`
         };
   }
 
@@ -43,4 +63,29 @@ export class CrossChainRouteComponent {
   public toProvider: ProviderInfo;
 
   constructor() {}
+
+  private isBlackColor(sourceColor: string): boolean {
+    const color = sourceColor.toLowerCase();
+    return color === '#000' || color === 'black' || color === '#000000';
+  }
+
+  private isWhiteColor(sourceColor: string): boolean {
+    const color = sourceColor.toLowerCase();
+    return color === '#fff' || color === 'white' || color === '#ffffff';
+  }
+
+  public handleThemeColor(color: string): string {
+    const isBlackLine = this.isBlackColor(color);
+    const isWhiteLine = this.isWhiteColor(color);
+
+    if (this.theme === 'dark' && isBlackLine) {
+      return 'white';
+    }
+
+    if (this.theme === 'light' && isWhiteLine) {
+      return 'black';
+    }
+
+    return color;
+  }
 }

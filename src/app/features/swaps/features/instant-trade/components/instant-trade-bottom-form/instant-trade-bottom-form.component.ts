@@ -46,7 +46,6 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
-import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -57,12 +56,11 @@ import { TradeParser } from '@features/swaps/features/instant-trade/services/ins
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { TuiDialogService } from '@taiga-ui/core';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 import { compareTokens } from '@shared/utils/utils';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -201,10 +199,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly iframeService: IframeService,
-    private readonly swapInfoService: SwapInfoService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly refreshService: RefreshService,
     @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
@@ -493,7 +490,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.instantTradeInfoChange.emit(null);
-      this.swapInfoService.emitInfoCalculated();
       if (this.providersData.length === 1) {
         this.selectedProvider = null;
       }
@@ -840,9 +836,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
-      .open(new PolymorpheusComponent(AutoSlippageWarningModalComponent, this.injector), {
-        size
-      })
+      .showDialog(
+        AutoSlippageWarningModalComponent,
+        {
+          size,
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe();
     return false;
   }

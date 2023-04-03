@@ -1,12 +1,18 @@
 @use 'src/scss/core' as *;
 
 @keyframes jump {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.07); }
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.07);
+  }
 }
 
 .token-amount-input-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   min-height: 85px;
 
@@ -14,6 +20,8 @@
 
   @include iframe-horizontal {
     position: relative;
+
+    flex-direction: row;
 
     width: $iframe-horizontal-input-width;
     height: 50px;
@@ -37,9 +45,7 @@
 
   &__wrapper {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    max-width: 300px;
     height: 100%;
 
     @include hide-unused-ui {
@@ -51,6 +57,7 @@
     }
 
     @include iframe-horizontal {
+      align-items: center;
       justify-content: center;
 
       &:first-child {
@@ -78,13 +85,22 @@
     app-set-to-market-button {
       display: block;
       margin-top: 10px;
+
+      @include b($mobile-md) {
+        position: absolute;
+        right: 0;
+        bottom: 1rem;
+      }
     }
   }
 
   &__input-label {
     width: 100%;
     height: 35px;
-    margin-bottom: 5px;
+
+    @include iframe-horizontal {
+      margin-bottom: 0;
+    }
 
     ::placeholder {
       letter-spacing: 0.6px;
@@ -113,6 +129,14 @@
       font-size: 20px;
       text-align: left;
     }
+
+    @include b($mobile-md) {
+      font-size: 25px;
+
+      &::placeholder {
+        font-size: 20px;
+      }
+    }
   }
 
   &__iframe-info-cards {
@@ -135,7 +159,24 @@
 
     height: auto;
     margin: 0;
-    padding: 40px 20px 20px;
+    padding: 30px 20px;
+
+    background-color: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+
+    &__wrapper {
+      gap: 5px;
+    }
+
+    &_onramper {
+      border: none;
+    }
+
+    &__input-label {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -143,12 +184,9 @@
   .token-amount-input-container {
     flex-direction: column;
     gap: 10px;
-    align-items: flex-start;
 
     &__input {
       padding-left: 0;
-
-      text-align: left;
     }
 
     &__wrapper {

@@ -7,7 +7,6 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { AssetsSelectorModalService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-modal.service';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -22,6 +21,7 @@ import { Asset } from '@features/swaps/shared/models/form/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-select-asset-button-tokens',
@@ -49,7 +49,7 @@ export class SelectAssetButtonComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly assetsSelectorModalService: AssetsSelectorModalService,
+    private readonly modalService: ModalService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly gtmService: GoogleTagManagerService,
@@ -86,33 +86,31 @@ export class SelectAssetButtonComponent implements OnInit {
   public openTokensSelect(idPrefix: string): void {
     this.gtmService.reloadGtmSession();
 
-    this.assetsSelectorModalService
-      .showDialog(this.formType, idPrefix)
-      .subscribe((asset: Asset) => {
-        if (asset) {
-          this.selectedAsset = asset;
-          const inputElement = this.document.getElementById('token-amount-input-element');
-          const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
+    this.modalService.openAssetsSelector(this.formType, idPrefix).subscribe((asset: Asset) => {
+      if (asset) {
+        this.selectedAsset = asset;
+        const inputElement = this.document.getElementById('token-amount-input-element');
+        const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
 
-          if (inputElement && isFromAmountEmpty) {
-            setTimeout(() => {
-              inputElement.focus();
-            }, 0);
-          }
-
-          if (this.formType === 'from') {
-            this.swapFormService.inputControl.patchValue({
-              fromAssetType: isMinimalToken(asset) ? asset.blockchain : 'fiat',
-              fromAsset: asset
-            });
-          } else {
-            this.swapFormService.inputControl.patchValue({
-              toToken: asset as TokenAmount,
-              toBlockchain: (asset as TokenAmount).blockchain
-            });
-          }
+        if (inputElement && isFromAmountEmpty) {
+          setTimeout(() => {
+            inputElement.focus();
+          }, 0);
         }
-      });
+
+        if (this.formType === 'from') {
+          this.swapFormService.inputControl.patchValue({
+            fromAssetType: isMinimalToken(asset) ? asset.blockchain : 'fiat',
+            fromAsset: asset
+          });
+        } else {
+          this.swapFormService.inputControl.patchValue({
+            toToken: asset as TokenAmount,
+            toBlockchain: (asset as TokenAmount).blockchain
+          });
+        }
+      }
+    });
   }
 
   public onImageError($event: Event): void {

@@ -14,7 +14,7 @@ export abstract class TradeCalculationService {
   protected showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
-      autoClose: 15000,
+      autoClose: 10000,
       data: {
         type: this.successTxModalType,
         withRecentTrades: this.successTxModalType !== 'on-chain'

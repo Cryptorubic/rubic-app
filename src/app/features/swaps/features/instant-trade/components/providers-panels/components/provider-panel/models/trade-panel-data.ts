@@ -7,4 +7,7 @@ export interface TradePanelData {
   gasLimit?: string;
   gasFeeInUsd?: BigNumber;
   gasFeeInEth?: BigNumber;
+  showGas?: boolean;
+  image?: string;
+  hasError?: boolean;
 }

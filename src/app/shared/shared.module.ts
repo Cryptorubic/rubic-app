@@ -24,7 +24,8 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiManualHintModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiScrollbarModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
@@ -162,7 +163,8 @@ import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/
     TuiBadgeModule,
     TuiManualHintModule,
     TuiTagModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    TuiScrollbarModule
   ],
   exports: [
     BigNumberFormatPipe,

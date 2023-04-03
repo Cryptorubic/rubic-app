@@ -14,14 +14,32 @@
     margin-top: 0;
   }
 
-  &__balance {
+  @include b($mobile-md) {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+  }
 
+  &__balance {
     @include iframe-card;
     margin-right: 10px;
 
     color: var(--secondary-text);
     font-size: 14px;
     line-height: 17px;
+
+    @include b($mobile-md) {
+      margin-right: 0;
+    }
+
+    &_amount {
+      @include b($mobile-md) {
+        margin-left: 5px;
+
+        color: #00ffa0;
+      }
+    }
   }
 
   &__max-button {
@@ -35,8 +53,14 @@
 
     background-color: transparent;
 
-    @include b($mobile-sm) {
-      font-size: 18px;
+    @include b($mobile-md) {
+      display: none;
+    }
+
+    @include iframe {
+      @include b($mobile-md) {
+        display: block;
+      }
     }
 
     &_disabled {

@@ -31,5 +31,9 @@
 @include b($mobile-sm) {
   .tokens-rate {
     justify-content: start;
+
+    &__direction-button {
+      display: none;
+    }
   }
 }

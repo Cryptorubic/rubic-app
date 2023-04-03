@@ -3,20 +3,20 @@ import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName, TronWebProvider
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
-    'https://rpc.ankr.com/eth/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
-    'https://rpc.ankr.com/bsc/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
-    'https://rpc.ankr.com/polygon/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
-    'https://rpc.ankr.com/avalanche/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key=02530958-c8c4-4297-974c-66203e79800d',
     'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet'
   ],
@@ -25,7 +25,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.moonriver.moonbeam.network'
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
-    'https://rpc.ankr.com/fantom/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/fantom/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
@@ -41,19 +41,20 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc1.us.telos.net/evm'
   ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
-    'https://rpc.ankr.com/optimism/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    'https://rpc.ankr.com/optimism/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://mainnet.optimism.io'
   ],
   [BLOCKCHAIN_NAME.CRONOS]: ['https://evm-cronos.crypto.org'],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
   [BLOCKCHAIN_NAME.GNOSIS]: [
-    'https://rpc.ankr.com/gnosis/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],
   [BLOCKCHAIN_NAME.FUSE]: ['https://fuse-rpc.gateway.pokt.network/'],
   [BLOCKCHAIN_NAME.MOONBEAM]: [
-    'https://rpc.ankr.com/moonbeam/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],
   [BLOCKCHAIN_NAME.CELO]: [
-    'https://rpc.ankr.com/celo/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    'https://rpc.ankr.com/celo/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],
   [BLOCKCHAIN_NAME.BOBA]: [
     'https://mainnet.boba.network',
@@ -67,7 +68,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.TRON]: [
     {
       fullHost:
-        'https://rpc.ankr.com/premium-http/tron/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+        'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
     }
   ],
   /*
@@ -91,7 +92,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://avax-dfk.gateway.pokt.network/v1/lb/6244818c00b9f0003ad1b619/ext/bc/q2aTwKuyzgs8pynF7UXBZCU7DejbZbZ6EUyHr3JQzYgwNPUPi/rpc'
   ],
   [BLOCKCHAIN_NAME.KLAYTN]: [
-    'https://rpc.ankr.com/klaytn/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d',
+    'https://rpc.ankr.com/klaytn/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://public-node-api.klaytnapi.com/v1/cypress',
     'https://cypress.fandom.finance/archive',
     'https://klaytn01.fandom.finance',

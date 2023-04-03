@@ -17,9 +17,10 @@ import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { CommonModalService } from '@app/core/services/modal/common-modal.service';
 import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -36,7 +37,7 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly commonModalService: CommonModalService,
+    private readonly modalService: ModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
@@ -87,7 +88,7 @@ export class UserProfileComponent implements AfterViewInit {
   }
 
   public openRecentTradesModal(): void {
-    this.commonModalService
+    this.modalService
       .openRecentTradesModal({
         size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
@@ -95,4 +96,8 @@ export class UserProfileComponent implements AfterViewInit {
   }
 
   public openLimitOrdersModal(): void {}
+
+  public openProfileModal(): void {
+    this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
+  }
 }
