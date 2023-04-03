@@ -36,3 +36,9 @@
     }
   }
 }
+
+@include b($mobile-md) {
+  .settings-list {
+    padding: 18px 20px;
+  }
+}

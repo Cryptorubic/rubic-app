@@ -134,30 +134,6 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private swipe(swipe: TuiSwipe): void {
-  //   if (
-  //     swipe.direction === 'top' &&
-  //     this.state === ModalStates.MEDIUM &&
-  //     !this.context.fitContent
-  //   ) {
-  //     this.state = ModalStates.FULL;
-  //     this.expand();
-  //   } else if (swipe.direction === 'bottom') {
-  //     if (title === 'Select token') {
-  //       return;
-  //     }
-  //
-  //     if (title === 'Select Blockchain') {
-  //       return;
-  //     }
-  //
-  //     this.close();
-  //   } else if (swipe.direction === 'right') {
-  //     this.hide();
-  //     animationTimeout(this.context.completeWith);
-  //   }
-  // }
-
   private hide(): void {
     this.el.nativeElement.classList.add('hidden');
     this.el.nativeElement.classList.remove('opened');

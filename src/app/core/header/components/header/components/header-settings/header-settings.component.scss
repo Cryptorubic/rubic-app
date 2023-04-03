@@ -1,5 +1,13 @@
 @use 'src/scss/core' as *;
 
+:host {
+  @include b($mobile-md) {
+    position: absolute;
+    top: 35px;
+    left: 20px;
+  }
+}
+
 .header-settings {
   border-radius: $border-radius-2;
   backdrop-filter: $backdrop-blur-1;
@@ -53,34 +61,41 @@
     font-size: 18px;
     line-height: 21px;
 
-    @include b($mobile-md) {
-      display: none;
-    }
-
     &::first-letter {
       text-transform: uppercase;
     }
   }
+}
 
-  &__close {
-    @include b($mobile-md) {
-      display: none;
+@include b($tablet) {
+  .header-settings {
+
+    width: auto;
+    min-width: 250px;
+
+    &__icon {
+      width: 20px;
     }
   }
 }
 
-@include b($tablet) {
+@include b($mobile-md) {
   .header-settings {
-    min-width: 250px;
-  }
-}
+    &__header {
+      margin-bottom: 0;
+      padding: 0;
+    }
 
-@include b($tablet) {
-  .header-settings {
-    width: auto;
+    &__title {
+      @include b($mobile-md) {
+        display: none;
+      }
+    }
 
-    &__icon {
-      width: 20px;
+    &__close {
+      @include b($mobile-md) {
+        display: none;
+      }
     }
   }
 }
