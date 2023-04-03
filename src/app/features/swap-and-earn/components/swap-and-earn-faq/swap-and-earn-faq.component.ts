@@ -11,19 +11,19 @@ export class SwapAndEarnFaqComponent {
     {
       title: 'Make an on-chain or cross-chain swap',
       image: 'assets/images/swap-and-earn/first-card.svg',
-      bottomDistance: '-20px',
-      rightDistance: '-20px'
+      bottomDistance: '-25px',
+      rightDistance: '-40px'
     },
     {
       title: 'Check balance',
       image: 'assets/images/swap-and-earn/second-card.svg',
-      bottomDistance: '-20px',
+      bottomDistance: '-30px',
       rightDistance: '-10px'
     },
     {
       title: 'Request withdrawal',
       image: 'assets/images/swap-and-earn/third-card.svg',
-      bottomDistance: '-50px',
+      bottomDistance: '-80px',
       rightDistance: '-30px'
     }
   ];
