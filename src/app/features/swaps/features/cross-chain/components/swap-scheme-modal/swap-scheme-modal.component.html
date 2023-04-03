@@ -55,7 +55,7 @@
       <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
     </div>
 
-    <div class="pair">
+    <div class="pair" [ngClass]="{ pair__isSwapAndEarnSwap: isSwapAndEarnSwap }">
       <div class="pair__from">
         <img
           [src]="fromToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
