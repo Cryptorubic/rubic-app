@@ -4,8 +4,13 @@
   display: flex;
   align-items: center;
 
-  ::ng-deep svg path {
-    fill: var(--secondary-text);
+  ::ng-deep svg {
+    width: 32px;
+    height: 32px;
+
+    path {
+      fill: var(--secondary-text);
+    }
   }
 }
 
