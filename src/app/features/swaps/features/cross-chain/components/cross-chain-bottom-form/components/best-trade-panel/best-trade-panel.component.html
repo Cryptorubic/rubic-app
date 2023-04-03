@@ -38,7 +38,7 @@
       <ng-container *ngIf="isMobile$ | async; then routeMobile; else routeDesktop"></ng-container>
 
       <ng-template #routeDesktop>
-        <ng-container *ngIf="selectedTrade.route as route">
+        <ng-container *ngIf="selectedTrade?.route as route">
           <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
         </ng-container>
       </ng-template>

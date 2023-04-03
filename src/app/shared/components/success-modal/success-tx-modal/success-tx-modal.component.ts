@@ -58,8 +58,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     >,
     private readonly router: Router
   ) {
-    // this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
-    this.isSwapAndEarnSwap = true;
+    this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
     this.txHash = context.data.txHash;

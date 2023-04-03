@@ -32,7 +32,6 @@ import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -488,7 +487,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+      .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
         data: this.inSwapAndEarnSwap(calculatedTrade, calculatedTrade.tradeType, fromToken, toToken)
           ? swapAndEarnData

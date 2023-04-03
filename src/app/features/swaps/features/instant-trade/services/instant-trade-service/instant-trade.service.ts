@@ -258,9 +258,7 @@ export class InstantTradeService extends TradeCalculationService {
     const receiverAddress = this.receiverAddress;
 
     const isSwapAndEarnSwap =
-      trade instanceof EvmOnChainTrade
-        ? trade.proxyFeeInfo?.fixedFeeToken?.tokenAmount.gt(0)
-        : false;
+      trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {

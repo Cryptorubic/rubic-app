@@ -210,6 +210,10 @@
 }
 
 @include b($mobile-md) {
+  app-points-button {
+    display: none;
+  }
+
   .rubic-header {
     &-mobile {
       position: fixed;

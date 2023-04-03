@@ -29,6 +29,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import {
   BLOCKCHAIN_NAME,
   CbridgeCrossChainSupportedBlockchain,
@@ -45,8 +46,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
-import { ModalService } from '@app/core/modals/services/modal.service';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 
@@ -317,15 +316,12 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   public closeModalAndOpenMyTrades(): void {
     this.context.completeWith(false);
-    if (this.headerStore.isMobile) {
-      this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
-    } else {
-      this.modalService
-        .openRecentTradesModal({
-          size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
-        })
-        .subscribe();
-    }
+
+    this.modalService
+      .openRecentTradesModal({
+        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
+      })
+      .subscribe();
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
