@@ -110,6 +110,7 @@ export const blockchainsList = [
   // BLOCKCHAIN_NAME.ONTOLOGY,
   // BLOCKCHAIN_NAME.THETA,
   // BLOCKCHAIN_NAME.XDC
+  BLOCKCHAIN_NAME.ZK_SYNC,
   ...Object.values(notEvmChangeNowBlockchainsList)
 ];
 
