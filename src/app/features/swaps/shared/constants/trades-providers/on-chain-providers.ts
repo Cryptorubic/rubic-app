@@ -53,7 +53,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.BALANCER]: {
     name: 'Balancer',
     image: `${imageBasePath}balancer.svg`,
-    color: ''
+    color: 'white'
   },
   [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: {
     name: 'BeamSwap',
@@ -63,12 +63,12 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.BI_SWAP]: {
     name: 'BiSwap',
     image: `${imageBasePath}biswap.svg`,
-    color: ''
+    color: '#EE3652'
   },
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: {
     name: 'Bridgers',
     image: `${imageBasePath}../bridge/bridgers.png`,
-    color: ''
+    color: 'white'
   },
 
   [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: {
@@ -80,6 +80,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'CremaFinance',
     image: `${imageBasePath}cremafinance.ico`,
     color: '#6AE2DC'
+  },
+  [ON_CHAIN_TRADE_TYPE.CRO_SWAP]: {
+    name: 'CroSwap',
+    image: `${imageBasePath}croswap.svg`,
+    color: '#020426'
   },
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: {
     name: 'CronaSwap',
@@ -94,7 +99,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.CROW_FI]: {
     name: 'CrowFi',
     image: `${imageBasePath}crowfi.png`,
-    color: ''
+    color: '#0D3D49'
   },
   [ON_CHAIN_TRADE_TYPE.CRO_DEX]: {
     name: 'CroDex',
@@ -104,7 +109,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.CURVE]: {
     name: 'Curve',
     image: `${imageBasePath}curve.svg`,
-    color: ''
+    color: '#19E0CE'
   },
 
   [ON_CHAIN_TRADE_TYPE.ELK]: {
@@ -233,7 +238,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.ONE_SOL]: {
     name: '1sol',
     image: `${imageBasePath}onesol.png`,
-    color: ''
+    color: 'white'
   },
   [ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]: {
     name: 'OolongSwap',
@@ -305,7 +310,8 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: {
     name: 'Ref Finance',
-    image: `${imageBasePath}ref-finance.svg`
+    image: `${imageBasePath}ref-finance.svg`,
+    color: 'grey'
   },
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: {
     name: 'renBTC',

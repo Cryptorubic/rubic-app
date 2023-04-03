@@ -359,7 +359,7 @@ export class CrossChainFormService {
     let isExecutionCriticalError = false;
     if (lastCalculatedTrade?.error) {
       const parsedError = this.parseCalculationError(lastCalculatedTrade.error);
-      if (this.isExecutionCriticalError(parsedError)) {
+      if (this.isExecutionCriticalError(parsedError) || !lastCalculatedTrade?.trade) {
         isExecutionCriticalError = true;
         this.disableUnavailableTrade(lastCalculatedTrade.tradeType, false);
       }

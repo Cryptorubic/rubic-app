@@ -5,5 +5,5 @@
   [disabled]="switchLoading"
   size="s"
   (onClick)="changeNetwork()"
-  >Switch Network
+  >{{ switchLoading ? '' : 'Switch Network' }}
 </app-rubic-button>

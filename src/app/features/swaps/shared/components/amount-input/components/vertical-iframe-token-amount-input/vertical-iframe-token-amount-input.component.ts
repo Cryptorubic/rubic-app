@@ -13,7 +13,8 @@ import { isMinimalToken } from '@shared/utils/is-token';
   selector: 'app-vertical-iframe-token-amount-input',
   templateUrl: './vertical-iframe-token-amount-input.component.html',
   styleUrls: ['./vertical-iframe-token-amount-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class VerticalIframeTokenAmountInputComponent implements OnInit {
   public readonly placeholder$ = this.translateService.get('errors.noEnteredAmount');

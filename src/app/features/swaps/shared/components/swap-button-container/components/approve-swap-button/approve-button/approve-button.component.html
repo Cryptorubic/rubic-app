@@ -1,10 +1,11 @@
 <app-rubic-button
+  *ngLet="approveButtonLoading$ | async as loading"
   [id]="idPrefix + 'approve'"
   appearance="primary"
-  [loading]="approveButtonLoading$ | async"
+  [loading]="loading"
   [disabled]="approveButtonDisabled$ | async"
   (onClick)="onClick.emit()"
   (onHoveredChange)="onHoveredChange($event)"
 >
-  Approve
+  {{ loading ? '' : 'Approve' }}
 </app-rubic-button>

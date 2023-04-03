@@ -37,7 +37,11 @@
     </div>
 
     <ng-container *ngIf="selectedTrade?.route as route">
-      <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+      <app-cross-chain-route
+        *noFrame
+        [route]="route"
+        [theme]="theme$ | async"
+      ></app-cross-chain-route>
     </ng-container>
   </ng-container>
 </ng-container>
