@@ -307,7 +307,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
-      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
+      this.crossChainApiService
+        .createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade)
+        .then(() => this.swapAndEarnStateService.updatePoints());
 
       const timestamp = Date.now();
       const viaUuid =

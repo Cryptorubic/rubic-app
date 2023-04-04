@@ -387,6 +387,8 @@ app-rubic-button {
 .highlight {
   &_green {
     color: var(--primary-color);
+
+    cursor: pointer;
   }
 
   &_black-white {
