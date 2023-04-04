@@ -4,9 +4,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
 import { Points } from '@features/swap-and-earn/models/points';
-import { TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -21,7 +20,7 @@ export class SwapAndEarnStateService {
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.handleAddressChange();
@@ -53,14 +52,11 @@ export class SwapAndEarnStateService {
       await firstValueFrom(this.httpService.post(`rewards/withdraw/?address=${address}`));
 
       this.dialogService
-        .open<SuccessWithdrawModalComponent>(
-          new PolymorpheusComponent(SuccessWithdrawModalComponent, this.injector),
-          {
-            data: {
-              points: points
-            }
+        .showDialog(SuccessWithdrawModalComponent, {
+          data: {
+            points: points
           }
-        )
+        })
         .subscribe();
 
       await this.updatePoints();

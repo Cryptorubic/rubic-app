@@ -83,6 +83,7 @@
           <app-status-badge
             [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
             [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+            [cursor]="uiTrade?.dstTxLink ? 'pointer' : null"
           ></app-status-badge>
         </a>
 
@@ -141,6 +142,7 @@
           <app-status-badge
             [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
             [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
+            [cursor]="uiTrade?.srcTxLink ? 'pointer' : null"
           >
           </app-status-badge>
         </a>
@@ -181,6 +183,7 @@
           <app-status-badge
             [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
             [text]="getFromStatusBadgeText(uiTrade?.statusTo) | translate"
+            [cursor]="uiTrade?.dstTxLink ? 'pointer' : null"
           >
           </app-status-badge>
         </a>
