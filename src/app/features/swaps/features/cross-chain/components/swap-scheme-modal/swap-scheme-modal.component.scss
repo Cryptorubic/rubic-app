@@ -107,6 +107,10 @@
     margin: 0 20px 70px;
   }
 
+  @include b($mobile-md) {
+    max-width: 350px;
+  }
+
   @include iframe-horizontal {
     display: none;
   }

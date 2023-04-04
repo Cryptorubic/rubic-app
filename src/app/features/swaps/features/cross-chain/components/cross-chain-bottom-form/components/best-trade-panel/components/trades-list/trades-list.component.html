@@ -22,6 +22,7 @@
                 <div class="trade-provider__name">{{ provider.name }}</div>
                 <div class="trade-provider__rate">
                   <ng-container *ngTemplateOutlet="tokenAmount"></ng-container>
+                  <ng-container *ngTemplateOutlet="tokenSymbol"></ng-container>
                 </div>
               </div>
 
@@ -60,6 +61,11 @@
                   : 'toClosestValue'
                   : { minRound: 3, maxRound: 5, decimals: taggedTrade.trade?.to?.decimals }
             }}
+          </span>
+        </ng-template>
+        <ng-template #tokenSymbol>
+          <span>
+            {{ taggedTrade.trade?.to.symbol }}
           </span>
         </ng-template>
       </li>
