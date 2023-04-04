@@ -2,7 +2,7 @@
   <app-buy-native-button (onClick)="onBuyNativeClick.emit()"></app-buy-native-button>
 
   <app-swap-button
-    *ngIf="(isToTokenNative$ | async) === false"
+    *ngIf="isToTokenNative$ | async"
     [buttonText]="buttonText"
     (onClick)="onSwapClick.emit()"
   ></app-swap-button>
