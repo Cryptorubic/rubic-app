@@ -97,7 +97,6 @@ import { PointsButtonComponent } from './components/header/components/points-but
     HistoryModule,
     InstantTradeModule,
     TuiAccordionModule
-    // TuiTouchableModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

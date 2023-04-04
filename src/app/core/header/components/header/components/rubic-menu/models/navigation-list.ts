@@ -43,12 +43,6 @@ export const NAVIGATION_LIST = [
     link: EXTERNAL_LINKS.LANDING,
     imagePath: `${defaultSrc}team.svg`
   }
-  // {
-  //   translateKey: 'Revoke Approval',
-  //   type: 'internal',
-  //   link: ROUTE_PATH.REVOKE_APPROVAL,
-  //   imagePath: `${defaultSrc}revoke.svg`
-  // }
 ] as NavigationItem[];
 
 export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {

@@ -10,13 +10,6 @@ import { DOCUMENT } from '@angular/common';
 
 declare var LiveChatWidget: RubicAny;
 
-// enum MenuItems {
-//   RUBIC_MENU,
-//   LIVE_CHAT,
-//   SETTINGS,
-//   PROFILE
-// }
-
 @Component({
   selector: 'app-mobile-menu',
   templateUrl: './mobile-menu.component.html',
@@ -31,14 +24,6 @@ export class MobileMenuComponent {
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly currentUser$ = this.authService.currentUser$;
-  // public MenuItems = MenuItems;
-
-  // private readonly MenuComponents = {
-  //   [MenuItems.RUBIC_MENU]: RubicMenuComponent,
-  //   [MenuItems.LIVE_CHAT]: RubicMenuComponent,
-  //   [MenuItems.SETTINGS]: SettingsComponent,
-  //   [MenuItems.PROFILE]: RubicMenuComponent
-  // }
 
   constructor(
     private readonly authService: AuthService,
@@ -87,7 +72,6 @@ export class MobileMenuComponent {
 
   public openLiveChat(): void {
     this.toggleLiveChatContainerHeight('show');
-    // this.modalService.openLiveChat().subscribe();
   }
 
   public openProfile(): void {
