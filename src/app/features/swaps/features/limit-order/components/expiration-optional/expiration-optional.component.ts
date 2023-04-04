@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Output,
-  Inject,
-  Injector
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import {
   ExpirationOption,
@@ -28,8 +21,7 @@ export class ExpirationOptionalComponent {
 
   constructor(
     private readonly modalService: ModalService,
-    private readonly orderExpirationService: OrderExpirationService,
-    @Inject(Injector) private readonly injector: Injector
+    private readonly orderExpirationService: OrderExpirationService
   ) {
     const expirationTime = this.orderExpirationService.expirationTime;
     const index = this.options.findIndex(option => option.minutes === expirationTime);
@@ -43,6 +35,5 @@ export class ExpirationOptionalComponent {
 
   public onCustomClick(): void {
     this.orderExpirationService.openExpirationCustomModal().subscribe();
-    // this.modalService.openExpirationalCustomModal(this.injector);
   }
 }

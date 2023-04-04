@@ -46,7 +46,6 @@ export class AssetTypesAsideComponent {
         return 9 - showFiats;
       }
 
-      // const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
         return this.blockchainsAmount;
       }

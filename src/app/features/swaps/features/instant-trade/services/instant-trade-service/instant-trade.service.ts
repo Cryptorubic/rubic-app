@@ -292,7 +292,6 @@ export class InstantTradeService extends TradeCalculationService {
     };
 
     try {
-      // const userAddress = this.authService.userAddress;
       if (trade instanceof OnChainTrade) {
         await trade.swap(options);
       } else {
@@ -321,16 +320,6 @@ export class InstantTradeService extends TradeCalculationService {
         subscription$.unsubscribe();
         this.showSuccessTrxNotification();
       }
-
-      // await this.instantTradesApiService
-      //   .notifyInstantTradesBot({
-      //     provider: providerName,
-      //     blockchain,
-      //     walletAddress: userAddress,
-      //     trade,
-      //     txHash: transactionHash
-      //   })
-      //   .catch(_err => {});
 
       this.updateTrade(transactionHash, true);
     } catch (err) {

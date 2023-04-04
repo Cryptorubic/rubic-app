@@ -66,16 +66,26 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     this.ccrProviderType = context.data.ccrProviderType;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.isSwapAndEarnSwap) {
-      const overlay = document.querySelector('.overlay');
-      overlay.classList.add('overlay-it-confetti');
+      SuccessTxModalComponent.toggleConfettiBackground('show');
     }
   }
 
   ngOnDestroy(): void {
+    SuccessTxModalComponent.toggleConfettiBackground('remove');
+  }
+
+  private static toggleConfettiBackground(action: 'show' | 'remove'): void {
     const overlay = document.querySelector('.overlay');
-    overlay.classList.remove('overlay-it-confetti');
+
+    if (action === 'show') {
+      overlay.classList.add('overlay-it-confetti');
+    }
+
+    if (action === 'remove') {
+      overlay.classList.remove('overlay-it-confetti');
+    }
   }
 
   public onConfirm(): void {

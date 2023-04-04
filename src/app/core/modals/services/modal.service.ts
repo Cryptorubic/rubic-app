@@ -8,11 +8,7 @@ import { Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
-import { MobileLiveChatComponent } from '@app/core/header/components/header/components/mobile-live-chat/mobile-live-chat.component';
-import {
-  MobileUserProfileComponent,
-  TradesHistory
-} from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
+import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { BlockchainsListComponent } from '@app/features/swaps/shared/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { MobileNativeModalService } from './mobile-native-modal.service';
 import { InstantTradeProviderData } from '@app/features/swaps/features/instant-trade/models/providers-controller-data';
@@ -31,6 +27,7 @@ import { InstantTradeInfo } from '@app/features/swaps/features/instant-trade/mod
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 @Injectable()
 export class ModalService {
@@ -84,16 +81,6 @@ export class ModalService {
   public openMobileNavigationMenu(): Observable<void> {
     return this.showDialog<MobileNavigationMenuComponent, void>(MobileNavigationMenuComponent, {
       title: 'Main Menu',
-      fitContent: true
-    });
-  }
-
-  /**
-   * Show Chat dialog.
-   */
-  public openLiveChat(): Observable<void> {
-    return this.showDialog(MobileLiveChatComponent, {
-      title: 'Live Chat',
       fitContent: true
     });
   }

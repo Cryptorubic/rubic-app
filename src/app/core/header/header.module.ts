@@ -37,7 +37,6 @@ import { MobileMenuComponent } from './components/header/components/mobile-menu/
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { SettingsTogglerComponent } from './components/header/components/settings-toggler/settings-toggler.component';
-import { MobileLiveChatComponent } from './components/header/components/mobile-live-chat/mobile-live-chat.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -67,7 +66,6 @@ import { PointsButtonComponent } from './components/header/components/points-but
     MobileMenuComponent,
     RubicMenuTogglerComponent,
     SettingsTogglerComponent,
-    MobileLiveChatComponent,
     MobileUserProfileComponent,
     MobileNavigationMenuComponent,
     PointsButtonComponent

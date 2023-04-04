@@ -1,4 +1,4 @@
-import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
+import { NavigationItem } from '@core/header/components/header/components/rubic-menu/models/navigation-item';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
 const defaultSrc = 'assets/images/icons/navigation/';

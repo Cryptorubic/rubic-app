@@ -37,7 +37,7 @@
       @include b($mobile-md) {
         margin-left: 5px;
 
-        color: #00ffa0;
+        color: var(--primary-color);
       }
     }
   }

@@ -83,16 +83,14 @@ export class RecentTradesService {
     const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
     const toBlockchain = trade.toToken.blockchain;
 
-    const fromAmount = isCrossChainRecentTrade(trade)
-      ? trade.fromAmount
+    const fromAmount =
+      isCrossChainRecentTrade(trade) && trade.fromAmount
         ? Web3Pure.fromWei(trade.fromAmount, trade.fromToken.decimals).toString()
-        : ''
-      : '';
-    const toAmount = isCrossChainRecentTrade(trade)
-      ? trade.toAmount
+        : '';
+    const toAmount =
+      isCrossChainRecentTrade(trade) && trade.toAmount
         ? Web3Pure.fromWei(trade.toAmount, trade.toToken.decimals).toString()
-        : ''
-      : '';
+        : '';
 
     const srcBlockchain = isCrossChainRecentTrade(trade)
       ? trade.fromToken.blockchain

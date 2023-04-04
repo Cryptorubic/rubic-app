@@ -4,7 +4,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { Router } from '@angular/router';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 @Component({
   selector: 'app-success-order-modal',

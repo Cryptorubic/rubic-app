@@ -24,14 +24,24 @@ export class SuccessWithdrawModalComponent implements AfterViewInit, OnDestroy {
     this.points = context.data.points;
   }
 
-  ngAfterViewInit() {
-    const overlay = document.querySelector('.overlay');
-    overlay.classList.add('overlay-it-confetti');
+  ngAfterViewInit(): void {
+    SuccessWithdrawModalComponent.toggleConfettiBackground('show');
   }
 
   ngOnDestroy(): void {
+    SuccessWithdrawModalComponent.toggleConfettiBackground('remove');
+  }
+
+  private static toggleConfettiBackground(action: 'show' | 'remove'): void {
     const overlay = document.querySelector('.overlay');
-    overlay.classList.remove('overlay-it-confetti');
+
+    if (action === 'show') {
+      overlay.classList.add('overlay-it-confetti');
+    }
+
+    if (action === 'remove') {
+      overlay.classList.remove('overlay-it-confetti');
+    }
   }
 
   public onConfirm(): void {

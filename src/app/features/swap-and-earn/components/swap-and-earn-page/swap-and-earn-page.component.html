@@ -1,14 +1,14 @@
-<ng-container>
+<ng-container *ngLet="points$ | async as points">
   <ng-container *ngIf="workingStatus$ | async; else noCompany">
     <app-points-container
       (handleClick)="handleWithdraw($event)"
-      [points]="points$ | async"
+      [points]="points"
     ></app-points-container>
     <p
       *ngIf="
-        (points$ | async).pending === 0 &&
-        (points$ | async).confirmed === 0 &&
-        (points$ | async).requested_to_withdraw === 0 &&
+        points.pending === 0 &&
+        points.confirmed === 0 &&
+        points.requested_to_withdraw === 0 &&
         (currentUser$ | async)
       "
       class="not-member"

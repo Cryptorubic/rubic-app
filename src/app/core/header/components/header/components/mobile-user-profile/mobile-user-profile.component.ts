@@ -11,13 +11,9 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
 import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 
-import { Observable, combineLatest, from } from 'rxjs';
+import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-
-export enum TradesHistory {
-  CROSS_CHAIN,
-  LIMIT_ORDER
-}
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 interface ContextData {
   tradesHistory: TradesHistory;
@@ -71,18 +67,20 @@ export class MobileUserProfileComponent {
 
     this.currentBalance$ = this.walletConnectorService.networkChange$.pipe(
       switchMap(blockchain =>
-        from(
+        forkJoin([
           this.tokenService.getAndUpdateTokenBalance({
             address: NATIVE_TOKEN_ADDRESS,
             blockchain
-          })
-        ).pipe(
-          map(balance => ({
-            balance,
-            symbol: nativeTokensList[blockchain].symbol
-          }))
-        )
-      )
+          }),
+          of(blockchain)
+        ])
+      ),
+      map(([balance, blockchain]) => {
+        return {
+          balance,
+          symbol: nativeTokensList[blockchain].symbol
+        };
+      })
     );
   }
 

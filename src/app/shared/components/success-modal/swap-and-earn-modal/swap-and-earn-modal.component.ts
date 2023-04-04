@@ -17,15 +17,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapAndEarnModalComponent {
-  public idPrefix: string;
+  public readonly idPrefix: string;
 
-  public type: SuccessTxModalType;
+  public readonly type: SuccessTxModalType;
 
-  public ccrProviderType: CrossChainTradeType;
+  public readonly ccrProviderType: CrossChainTradeType;
 
-  public txHash: string;
+  public readonly txHash: string;
 
-  public blockchain: BlockchainName;
+  public readonly blockchain: BlockchainName;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 

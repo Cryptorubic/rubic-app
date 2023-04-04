@@ -19,7 +19,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import {
   NAVIGATION_LIST,
   MOBILE_NAVIGATION_LIST
-} from '@core/header/components/header/components/rubic-menu/models/navigation-list';
+} from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';

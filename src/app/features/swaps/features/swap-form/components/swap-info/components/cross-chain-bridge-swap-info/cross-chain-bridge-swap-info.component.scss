@@ -1,8 +1,0 @@
-@use 'src/scss/core' as *;
-@import '../../styles/styles';
-
-@include b($mobile-md) {
-  .receive-address {
-    flex-direction: column;
-  }
-}

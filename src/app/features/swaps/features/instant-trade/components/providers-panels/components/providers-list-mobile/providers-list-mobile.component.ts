@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TRADES_PROVIDERS } from '@app/features/swaps/shared/constants/trades-providers/trades-providers';
 import { INSTANT_TRADE_STATUS } from '../../../../models/instant-trades-trade-status';
 import { BLOCKCHAIN_NAME, EvmOnChainTrade } from 'rubic-sdk';
@@ -15,15 +15,13 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [InstantTradeService]
 })
-export class ProvidersListMobileComponent implements OnInit {
+export class ProvidersListMobileComponent {
   public providersData: (InstantTradeProviderData & TradePanelData)[];
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<InstantTradeProviderData, InstantTradeProviderData[]>
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.providersData = this.getProvidersData();
   }
 

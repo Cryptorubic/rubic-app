@@ -7,7 +7,7 @@ import { WindowSize } from '@core/services/widnow-width-service/models/window-si
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 @Component({
   selector: 'polymorpheus-success-trx-notification',

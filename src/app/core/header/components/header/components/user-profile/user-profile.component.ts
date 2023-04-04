@@ -20,7 +20,7 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 @Component({
   selector: 'app-user-profile',

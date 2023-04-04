@@ -4,9 +4,9 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { Observable } from 'rxjs';
-import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DOCUMENT } from '@angular/common';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 declare var LiveChatWidget: RubicAny;
 
@@ -30,7 +30,7 @@ export class MobileMenuComponent {
     private readonly swapTypeService: SwapTypeService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   private toggleLiveChatContainerHeight(action: string): void {

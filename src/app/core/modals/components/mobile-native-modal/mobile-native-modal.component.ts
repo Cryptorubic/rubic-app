@@ -50,42 +50,50 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
 
   private subscribeOnModal(): void {
     if (this.context.forceClose$) {
-      this.context.forceClose$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-        if (this.state === ModalStates.HIDDEN) {
-          this.state = ModalStates.FULL;
-          this.show();
-        } else {
-          this.hide();
-          animationTimeout(this.context.completeWith);
-        }
-      });
+      this.subscribeOnForceClose();
     }
 
     if (this.context.nextModal$) {
-      this.context.nextModal$
-        .pipe(takeUntil(this.destroy$))
-        .pipe(
-          tap(() => {
-            this.state = ModalStates.HIDDEN;
-            this.hide();
-          }),
-          delay(300),
-          switchMap(nextModal =>
-            this.modalService.openNextModal(
-              nextModal.component,
-              {
-                title: nextModal.title,
-                fitContent: nextModal.fitContent,
-                scrollableContent: nextModal.scrollableContent,
-                previousComponent: true
-              },
-              nextModal.injector
-            )
-          ),
-          tap(() => this.show())
-        )
-        .subscribe();
+      this.subscribeOnNextModal();
     }
+  }
+
+  private subscribeOnForceClose(): void {
+    this.context.forceClose$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.state === ModalStates.HIDDEN) {
+        this.state = ModalStates.FULL;
+        this.show();
+      } else {
+        this.hide();
+        animationTimeout(this.context.completeWith);
+      }
+    });
+  }
+
+  private subscribeOnNextModal(): void {
+    this.context.nextModal$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        tap(() => {
+          this.state = ModalStates.HIDDEN;
+          this.hide();
+        }),
+        delay(300),
+        switchMap(nextModal =>
+          this.modalService.openNextModal(
+            nextModal.component,
+            {
+              title: nextModal.title,
+              fitContent: nextModal.fitContent,
+              scrollableContent: nextModal.scrollableContent,
+              previousComponent: true
+            },
+            nextModal.injector
+          )
+        ),
+        tap(() => this.show())
+      )
+      .subscribe();
   }
 
   public toggle(): void {
