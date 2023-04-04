@@ -80,12 +80,13 @@ export class CrossChainApiService {
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
-          : this.window.document.location.href,
-      valid: isSwapAndEarnSwapTrade
+          : this.window.document.location.href
     };
 
     await firstValueFrom(
-      this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000))
+      this.httpService
+        .post<void>(`${this.apiEndpoint}?valid=${isSwapAndEarnSwapTrade}`, tradeInfo)
+        .pipe(delay(1000))
     );
   }
 

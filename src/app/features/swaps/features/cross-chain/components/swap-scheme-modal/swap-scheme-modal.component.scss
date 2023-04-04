@@ -100,7 +100,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 56px;
+  max-width: 500px;
+  margin: 56px auto;
 
   @include b($tablet) {
     margin: 0 20px 70px;
@@ -111,12 +112,11 @@
   }
 
   &__isSwapAndEarnSwap {
-    margin: 56px auto;
+    margin: 0 auto 56px;
   }
 
   &__arrow {
     width: 32px;
-    margin: 0 65px;
 
     @include b($tablet) {
       margin: 0 32px;

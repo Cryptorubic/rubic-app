@@ -1,6 +1,11 @@
 <!--<app-referral-banner href="https://rubic.exchange/rbc_boba_symb" *noFrame></app-referral-banner>-->
-<header class="rubic-header">
-  <a *noFrame class="rubic-header__logo" routerLink="/">
+<header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
+  <a
+    *noFrame
+    class="rubic-header__logo"
+    routerLink="/"
+    [ngClass]="{ 'rubic-header__logo_hide': currentUser }"
+  >
     <img
       [src]="
         (isDarkTheme$ | async)
@@ -57,7 +62,7 @@
     </div>
   </nav>
 
-  <app-points-button></app-points-button>
+  <app-points-button [ngClass]="{ 'point-button_show': currentUser$ | async }"></app-points-button>
 
   <!--  Old button, return when earn and swap company will be over -->
   <!--  <app-buy-token-->

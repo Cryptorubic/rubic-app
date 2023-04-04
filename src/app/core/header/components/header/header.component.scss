@@ -210,10 +210,6 @@
 }
 
 @include b($mobile-md) {
-  app-points-button {
-    display: none;
-  }
-
   .rubic-header {
     &-mobile {
       position: fixed;
@@ -242,6 +238,21 @@
     &__settings {
       display: none;
     }
+
+    &__logo_hide {
+      display: none;
+    }
+
+    app-points-button {
+      display: none;
+    }
+  }
+
+  .point-button_show {
+    display: block !important;
+    margin-left: 5px;
+
+    transform: scale(0.9);
   }
 }
 

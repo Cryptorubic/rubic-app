@@ -98,12 +98,13 @@ export class InstantTradesApiService {
       user: this.authService.userAddress,
       fee,
       promocode: promoCode,
-      hash,
-      valid: isSwapAndEarnSwap
+      hash
     };
 
     const url = instantTradesApiRoutes.createData(toBackendWallet);
-    return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
+    return this.httpService
+      .post<InstantTradesResponseApi>(`${url}?valid=${isSwapAndEarnSwap}`, tradeInfo)
+      .pipe(delay(1000));
   }
 
   /**
