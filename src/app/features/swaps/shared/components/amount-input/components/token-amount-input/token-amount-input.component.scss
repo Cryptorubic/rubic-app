@@ -151,6 +151,12 @@
       margin-right: 5px;
     }
   }
+
+  &__setToMarket-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 @include b($mobile-md) {

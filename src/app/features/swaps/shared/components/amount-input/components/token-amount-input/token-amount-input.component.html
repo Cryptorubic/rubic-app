@@ -5,13 +5,18 @@
   }"
 >
   <div class="token-amount-input-container__wrapper">
-    <app-select-asset-button-tokens
-      class="token-amount-input-container__token-button"
-      [ngClass]="{
-        'token-amount-input-container__token-button_attractive': !selectedAsset
-      }"
-      [formType]="formType"
-    ></app-select-asset-button-tokens>
+    <div class="token-amount-input-container__setToMarket-wrapper">
+      <app-select-asset-button-tokens
+        class="token-amount-input-container__token-button"
+        [ngClass]="{
+          'token-amount-input-container__token-button_attractive': !selectedAsset
+        }"
+        [formType]="formType"
+      ></app-select-asset-button-tokens>
+      <ng-container *ngIf="formType === 'to'">
+        <app-set-to-market-button *ngIf="isWithTokens"></app-set-to-market-button>
+      </ng-container>
+    </div>
 
     <app-user-balance-container
       *onlyFrame="'horizontal'"
@@ -51,10 +56,6 @@
         </div>
       </ng-container>
     </div>
-
-    <ng-container *ngIf="formType === 'to'">
-      <app-set-to-market-button *ngIf="isWithTokens"></app-set-to-market-button>
-    </ng-container>
   </div>
 
   <ng-container *ngIf="selectedToken?.amount.gt(0)">

@@ -325,8 +325,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    // this.isSwapAndEarnSwap = data.isSwapAndEarnData;
-    this.isSwapAndEarnSwap = false;
+    this.isSwapAndEarnSwap = data.isSwapAndEarnData;
 
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;

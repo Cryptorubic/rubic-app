@@ -12,8 +12,6 @@ import {
   expirationOptions
 } from '@features/swaps/features/limit-order/constants/expiration-options';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
-import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-expiration-optional',
@@ -29,8 +27,6 @@ export class ExpirationOptionalComponent {
   public readonly highlightedOption: number;
 
   constructor(
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, void>,
     private readonly modalService: ModalService,
     private readonly orderExpirationService: OrderExpirationService,
     @Inject(Injector) private readonly injector: Injector
@@ -43,13 +39,10 @@ export class ExpirationOptionalComponent {
   public onOptionsClick(option: ExpirationOption): void {
     this.orderExpirationService.updateExpirationTime(option.minutes);
     this.onClose.emit();
-    if (this.context) {
-      this.context.completeWith();
-    }
   }
 
   public onCustomClick(): void {
-    // this.orderExpirationService.openExpirationCustomModal().subscribe();
-    this.modalService.openExpirationalCustomModal(this.injector);
+    this.orderExpirationService.openExpirationCustomModal().subscribe();
+    // this.modalService.openExpirationalCustomModal(this.injector);
   }
 }

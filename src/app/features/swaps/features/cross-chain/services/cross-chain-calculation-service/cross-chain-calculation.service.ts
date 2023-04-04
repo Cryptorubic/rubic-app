@@ -87,16 +87,15 @@ export class CrossChainCalculationService extends TradeCalculationService {
     super('cross-chain-routing');
   }
 
-  private static inSwapAndEarnSwap(
-    calculatedTrade: CrossChainCalculatedTrade,
-    provider: CrossChainTradeType,
-    fromToken: TokenAmount,
-    toToken: TokenAmount
-  ): boolean {
-    const isEvmFromBlockchain = BlockchainsInfo.isEvmBlockchainName(fromToken.blockchain);
-    const isEvmToBlockchain = BlockchainsInfo.isEvmBlockchainName(toToken.blockchain);
+  private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
+    const isEvmFromBlockchain = BlockchainsInfo.isEvmBlockchainName(
+      calculatedTrade.trade.from.blockchain
+    );
+    const isEvmToBlockchain = BlockchainsInfo.isEvmBlockchainName(
+      calculatedTrade.trade.to.blockchain
+    );
 
-    if (provider === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
       return (
         (isEvmFromBlockchain && isEvmToBlockchain) ||
         (!isEvmFromBlockchain && isEvmToBlockchain) ||
@@ -293,6 +292,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
@@ -307,7 +307,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
-      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade);
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
 
       const timestamp = Date.now();
       const viaUuid =
@@ -485,14 +485,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: CrossChainCalculationService.inSwapAndEarnSwap(
-          calculatedTrade,
-          calculatedTrade.tradeType,
-          fromToken,
-          toToken
-        )
-          ? swapAndEarnData
-          : defaultData,
+        data: this.isSwapAndEarnSwap(calculatedTrade) ? swapAndEarnData : defaultData,
         fitContent: true
       })
       .subscribe();

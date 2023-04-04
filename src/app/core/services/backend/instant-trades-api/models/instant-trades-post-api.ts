@@ -2,6 +2,7 @@ interface InstantTradesUniswapAbstractApi {
   hash: string;
   provider: string;
   network: string;
+  valid: boolean;
 }
 
 interface InstantTradesOneInchApi {

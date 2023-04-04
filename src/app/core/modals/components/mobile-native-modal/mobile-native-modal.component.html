@@ -1,5 +1,9 @@
 <div class="mobile-native-backdrop" (click)="close()"></div>
-<div class="mobile-native-content" (tuiSwipe)="onSwipe($event, title, 'content')">
+<div
+  class="mobile-native-content"
+  (tuiSwipe)="onSwipe($event, title, 'content')"
+  (click)="title === 'Expires in' ? toggle() : null"
+>
   <div
     class="mobile-native-chevron"
     (click)="toggle()"

@@ -50,7 +50,11 @@ export class CrossChainApiService {
    * Sends request to add trade.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
+  public async createTrade(
+    hash: string,
+    trade: CrossChainTrade,
+    isSwapAndEarnSwapTrade: boolean
+  ): Promise<void> {
     const {
       fromBlockchain,
       toBlockchain,
@@ -76,7 +80,8 @@ export class CrossChainApiService {
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
-          : this.window.document.location.href
+          : this.window.document.location.href,
+      valid: isSwapAndEarnSwapTrade
     };
 
     await firstValueFrom(

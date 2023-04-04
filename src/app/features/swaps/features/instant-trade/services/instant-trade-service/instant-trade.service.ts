@@ -280,7 +280,7 @@ export class InstantTradeService extends TradeCalculationService {
 
         subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
 
-        this.postTrade(hash, providerName, trade).then(() =>
+        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap).then(() =>
           this.swapAndEarnStateService.updatePoints()
         );
       },
@@ -351,7 +351,8 @@ export class InstantTradeService extends TradeCalculationService {
   private async postTrade(
     transactionHash: string,
     providerName: OnChainTradeType,
-    trade: OnChainTrade | WrapTrade
+    trade: OnChainTrade | WrapTrade,
+    isSwapAndEarnSwap: boolean
   ): Promise<void> {
     let fee: number;
     let promoCode: string;
@@ -366,6 +367,7 @@ export class InstantTradeService extends TradeCalculationService {
             transactionHash,
             providerName,
             trade,
+            isSwapAndEarnSwap,
             fee,
             promoCode
           )
