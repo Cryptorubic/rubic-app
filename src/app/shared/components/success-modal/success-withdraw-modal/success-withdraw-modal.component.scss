@@ -1,6 +1,10 @@
 @use 'src/scss/core' as *;
 @use '../styles';
 
+::ng-deep .modal__content {
+  padding: 20px !important;
+}
+
 .modal {
   &__point {
     &-subtitle {
