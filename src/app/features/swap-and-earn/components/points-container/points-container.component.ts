@@ -31,11 +31,11 @@ export class PointsContainerComponent {
   }
 
   public getButtonHint(): string {
-    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 2500)) {
-      return 'The withdrawal is already in progress. The minimum amount to withdraw is 2,500 RBC.';
+    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 300)) {
+      return 'The withdrawal is already in progress. The minimum amount to withdraw is 300 RBC.';
     }
 
-    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 2500)) {
+    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 300)) {
       return 'The minimum amount to withdraw is 2,500 RBC.';
     }
 
@@ -43,11 +43,11 @@ export class PointsContainerComponent {
   }
 
   public getButtonText(): string {
-    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 2500)) {
+    if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 300)) {
       return 'Claimed';
     }
 
-    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 2500)) {
+    if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 300)) {
       return 'Not Enough Points';
     }
 

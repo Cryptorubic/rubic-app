@@ -28,7 +28,7 @@
     </div>
     <ng-container *ngIf="isLoggedIn$ | async; else loginButton">
       <div
-        *ngLet="points.confirmed >= 2500 as allowWithdraw"
+        *ngLet="points.confirmed >= 300 as allowWithdraw"
         [tuiHint]="getButtonHint()"
         tuiHintMode="onDark"
       >

@@ -29,14 +29,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+
+    width: 42px;
+    height: 35px;
 
     background: var(--secondary-background);
+    border-radius: 15px;
 
-    border-radius: 8px;
-
-    transform: rotate(180deg);
     cursor: pointer;
   }
 
