@@ -14,7 +14,9 @@
 
   display: block;
   width: 100%;
+  max-width: 1117px;
   min-height: 382px;
+  margin: 0 auto;
 
   @include b($mobile-md) {
     min-height: unset;
@@ -96,11 +98,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 340px;
+  max-width: 360px;
   margin: auto;
   padding: 64px 0;
 
   @include b($mobile-md) {
+    max-width: 340px;
     min-height: var(--tx-list-height);
     max-height: var(--tx-list-height);
   }
