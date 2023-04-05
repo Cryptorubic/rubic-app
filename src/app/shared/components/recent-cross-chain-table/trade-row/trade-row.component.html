@@ -119,9 +119,9 @@
           <a
             *ngIf="!showToContinue; else toContinue"
             class="tx__status-from"
+            [class.hide-arrow]="changenowId || !uiTrade?.srcTxLink"
             [href]="uiTrade?.srcTxLink"
             target="_blank"
-            [class.hide-arrow]="!uiTrade?.srcTxLink"
             style="align-items: center"
           >
             <app-status-badge
