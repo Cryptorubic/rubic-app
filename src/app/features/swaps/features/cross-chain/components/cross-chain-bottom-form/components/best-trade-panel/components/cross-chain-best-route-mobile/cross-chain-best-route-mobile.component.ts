@@ -22,9 +22,12 @@ export class CrossChainBestRouteMobileComponent {
 
     this.crossChainFormService.taggedTrades$.pipe().subscribe(trades => {
       if (trades.length > 0 && this.bridgeProvider) {
-        this.isBestTrade =
-          this.crossChainFormService.taggedTrades[0].trade.bridgeType ===
-          this.bridgeProvider.name.toLowerCase();
+        const provider =
+          this.crossChainFormService.taggedTrades[0].trade.bridgeType === 'changenow'
+            ? 'cn'
+            : this.crossChainFormService.taggedTrades[0].trade.bridgeType;
+
+        this.isBestTrade = provider === this.bridgeProvider.name.toLowerCase();
       }
     });
   }

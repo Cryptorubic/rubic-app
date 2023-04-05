@@ -109,3 +109,25 @@
     }
   }
 }
+
+.mobile-recent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-recent-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-recent-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

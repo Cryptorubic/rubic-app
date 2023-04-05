@@ -125,17 +125,14 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public get changenowId(): string | undefined {
-    console.log('trade: ', this.trade);
     if ('changenowId' in this.trade) {
-      console.log(1);
       return this.trade.changenowId;
     }
 
     if (this.isChangenowTrade(this.trade)) {
-      console.log(2);
       return this.trade.id;
     }
-    console.log(3);
+
     return undefined;
   }
 

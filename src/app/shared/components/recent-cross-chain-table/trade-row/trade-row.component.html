@@ -102,25 +102,9 @@
         (uiTrade?.timestamp | date : 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date : 'h:mm')
       }}
     </div>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 15px;
-        justify-content: space-between;
-      "
-    >
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          gap: 10px;
-          align-items: center;
-          width: 100%;
-        "
-      >
-        <div style="display: flex; gap: 10px; align-items: center">
+    <div class="mobile-recent">
+      <div class="mobile-recent-wrapper">
+        <div class="mobile-recent-container">
           <img
             class="tx__asset-image"
             [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
@@ -146,20 +130,21 @@
           >
           </app-status-badge>
         </a>
+        <img
+          *ngIf="changenowId"
+          class="status-from-copy-icon"
+          src="assets/images/icons/copy.svg"
+          alt="Copy"
+          (click)="copyToClipboard()"
+          [tuiManualHint]="template"
+          [tuiManualHintShow]="hintShown"
+        />
         <ng-template #toContinue>
           <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
         </ng-template>
       </div>
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          gap: 10px;
-          align-items: center;
-          width: 100%;
-        "
-      >
-        <div style="display: flex; gap: 10px; align-items: center">
+      <div class="mobile-recent-wrapper">
+        <div class="mobile-recent-container">
           <img
             class="tx__asset-image"
             [src]="uiTrade?.toToken?.image || defaultTokenImage"
@@ -187,6 +172,15 @@
           >
           </app-status-badge>
         </a>
+        <img
+          *ngIf="changenowId"
+          class="status-from-copy-icon"
+          src="assets/images/icons/copy.svg"
+          alt="Copy"
+          (click)="copyToClipboard()"
+          [tuiManualHint]="template"
+          [tuiManualHintShow]="hintShown"
+        />
         <ng-template #toContinue>
           <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
         </ng-template>
