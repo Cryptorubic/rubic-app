@@ -115,7 +115,7 @@
           <div class="asset__asset-type">{{ fromAssetTypeName }}</div>
         </div>
 
-        <div style="display: flex">
+        <div style="display: flex; position: relative">
           <a
             *ngIf="!showToContinue; else toContinue"
             class="tx__status-from"
@@ -133,7 +133,7 @@
           </a>
           <img
             *ngIf="changenowId"
-            class="status-from-copy-icon"
+            class="status-from-copy-icon-mobile"
             src="assets/images/icons/copy.svg"
             alt="Copy"
             (click)="copyToClipboard()"
