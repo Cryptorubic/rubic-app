@@ -36,7 +36,7 @@ export class PointsContainerComponent {
     }
 
     if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 300)) {
-      return 'The minimum amount to withdraw is 2,500 RBC.';
+      return 'The minimum amount to withdraw is 300 RBC.';
     }
 
     return null;
