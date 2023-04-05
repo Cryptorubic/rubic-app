@@ -105,10 +105,17 @@
     pointer-events: none;
 
     &::after {
-      display: none;
-      margin: 0;
+      visibility: hidden;
     }
   }
+}
+
+.status-from-copy-icon-mobile {
+  position: absolute;
+  top: 50%;
+  right: 0;
+
+  transform: translateY(-50%);
 }
 
 .mobile-recent {
