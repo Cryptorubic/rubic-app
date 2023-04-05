@@ -11,7 +11,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 @Component({
   selector: 'app-limit-orders-list',
   templateUrl: './limit-orders-list.component.html',
-  styleUrls: ['./limit-orders-list.component.scss']
+  styleUrls: ['./limit-orders-list.component.scss'],
+  providers: [TuiDestroyService]
 })
 export class LimitOrdersListComponent {
   public readonly orders$ = this.limitOrdersService.orders$;
