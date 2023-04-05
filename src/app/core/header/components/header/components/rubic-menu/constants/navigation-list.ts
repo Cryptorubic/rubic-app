@@ -54,15 +54,15 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       active: false
     },
     {
-      translateKey: 'Swap to Earn',
-      type: 'internal',
-      link: ROUTE_PATH.SWAP_AND_EARN,
-      active: false
-    },
-    {
       translateKey: 'Limit Order',
       type: 'internal',
       link: ROUTE_PATH.LIMIT_ORDER,
+      active: false
+    },
+    {
+      translateKey: 'Swap to Earn',
+      type: 'internal',
+      link: ROUTE_PATH.SWAP_AND_EARN,
       active: false
     },
     {
