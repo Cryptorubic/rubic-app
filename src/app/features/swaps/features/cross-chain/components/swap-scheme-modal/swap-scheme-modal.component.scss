@@ -21,12 +21,11 @@
   }
 
   @include b($tablet) {
-    max-width: 320px;
-    margin: 20px 20px 8px;
+    margin: 20px;
 
     font-size: 20px;
     line-height: 24px;
-    text-align: left;
+    text-align: center;
 
     @include hide-unused-ui {
       margin: 20px;
@@ -43,8 +42,10 @@
 }
 
 .description {
+
   @include font(16px, 19px, 500, #A2A1A5);
-  margin-bottom: 56px;
+  display: flex;
+  flex-direction: column-reverse;
 
   text-align: center;
 
@@ -53,7 +54,7 @@
 
     font-size: 13px;
     line-height: 15px;
-    text-align: left;
+    text-align: center;
   }
 
   @include hide-unused-ui {
@@ -67,25 +68,59 @@
   span {
     cursor: pointer;
   }
+
+  &_swapAndEarn {
+    margin-bottom: 53px;
+
+    text-align: center;
+
+    @include b($tablet) {
+      font-size: 13px;
+    }
+  }
+}
+
+.point {
+  width: 100%;
+  margin: 53px 0 0;
+
+  text-align: center;
+
+  &__amount {
+    font-weight: bold;
+    font-size: 48px;
+
+    @include b($tablet) {
+      font-size: 48px;
+    }
+  }
 }
 
 .pair {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 56px;
+  max-width: 500px;
+  margin: 56px auto;
 
   @include b($tablet) {
     margin: 0 20px 70px;
+  }
+
+  @include b($mobile-md) {
+    max-width: 350px;
   }
 
   @include iframe-horizontal {
     display: none;
   }
 
+  &__isSwapAndEarnSwap {
+    margin: 0 auto 56px;
+  }
+
   &__arrow {
     width: 32px;
-    margin: 0 65px;
 
     @include b($tablet) {
       margin: 0 32px;
@@ -96,6 +131,7 @@
   &__to {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: calc(100% - 32px - 65px - 65px);
 
     @include b($tablet) {
@@ -114,14 +150,6 @@
         height: 38px;
       }
     }
-  }
-
-  &__from {
-    justify-content: flex-end;
-  }
-
-  &__to {
-    justify-content: flex-start;
   }
 
   &__symbol {
@@ -342,11 +370,11 @@
   }
 
   @include b($tablet) {
-    margin: 0 20px;
+    margin: 0 20px 20px;
 
     font-size: 11px;
     line-height: 15px;
-    text-align: left;
+    text-align: center;
   }
 
   a {
@@ -363,6 +391,8 @@ app-rubic-button {
 .highlight {
   &_green {
     color: var(--primary-color);
+
+    cursor: pointer;
   }
 
   &_black-white {

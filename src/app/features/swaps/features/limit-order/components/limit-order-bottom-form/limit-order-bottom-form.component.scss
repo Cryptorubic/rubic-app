@@ -91,6 +91,14 @@
       min-height: auto;
     }
 
+    @include b($mobile-md) {
+      ::ng-deep app-token-amount-input {
+        > .token-amount-input-container {
+          border: none;
+        }
+      }
+    }
+
     @include b($mobile-sm) {
       flex-direction: column;
     }
@@ -99,7 +107,6 @@
       position: absolute;
       right: 0;
       bottom: 22px;
-
 
       @include b($mobile-sm) {
         position: unset;

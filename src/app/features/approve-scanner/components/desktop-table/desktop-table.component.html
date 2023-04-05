@@ -33,11 +33,13 @@
               approve.tokenAddress | scannerLink : selectedBlockchain : ADDRESS_TYPE.TOKEN
             "
           >
-            <img
-              [src]="approve?.token?.image || defaultTokenImage"
-              [alt]="approve?.token?.symbol || approve.tokenAddress"
-              (error)="onImageError($event)"
-            />
+            <div class="image-wrapper">
+              <img
+                [src]="approve?.token?.image || defaultTokenImage"
+                [alt]="approve?.token?.symbol || approve.tokenAddress"
+                (error)="onImageError($event)"
+              />
+            </div>
             <ng-container *ngIf="approve.token; else address">
               {{ approve.token.symbol }}
             </ng-container>

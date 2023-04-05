@@ -5,6 +5,7 @@ import { ChangenowPostTradeService } from '@features/swaps/core/services/changen
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ChangenowApiStatus } from 'rubic-sdk';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-changenow-recent-trades-crypto',
@@ -22,7 +23,8 @@ export class ChangenowRecentTradesComponent {
 
   constructor(
     private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService,
-    private readonly changenowPostTradeService: ChangenowPostTradeService
+    private readonly changenowPostTradeService: ChangenowPostTradeService,
+    private readonly router: Router
   ) {
     this.getChangenowRecentTrades();
   }
@@ -47,5 +49,9 @@ export class ChangenowRecentTradesComponent {
       .subscribe(trades => {
         this._changenowRecentTrades$.next(trades);
       });
+  }
+
+  public navigateToCrossChainSwaps(): void {
+    this.router.navigate(['/']);
   }
 }

@@ -47,6 +47,12 @@ const routes: Routes = [
     path: ROUTE_PATH.FAQ,
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
+
+  {
+    path: ROUTE_PATH.SWAP_AND_EARN,
+    loadChildren: () =>
+      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+  },
   {
     path: ROUTE_PATH.REST,
     redirectTo: '/'

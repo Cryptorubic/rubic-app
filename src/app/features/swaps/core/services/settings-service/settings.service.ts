@@ -1,5 +1,5 @@
 /* eslint-disable rxjs/finnish */
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -9,10 +9,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
-import { TuiDialogService } from '@taiga-ui/core';
 import {
   CcrSettingsForm,
   CcrSettingsFormControls,
@@ -23,6 +21,7 @@ import {
 } from '@features/swaps/core/services/settings-service/models/settings-form-controls';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class SettingsService {
@@ -69,7 +68,7 @@ export class SettingsService {
     private readonly authService: AuthService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly queryParamsService: QueryParamsService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService
+    private readonly dialogService: ModalService
   ) {
     this.defaultItSettings = this.getDefaultITSettings();
     this.defaultCcrSettings = this.getDefaultCCRSettings();
@@ -219,10 +218,14 @@ export class SettingsService {
 
     if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
       return firstValueFrom(
-        this.dialogService.open<boolean>(new PolymorpheusComponent(SettingsWarningModalComponent), {
-          data: settingsChecks,
-          size: 'l'
-        })
+        this.dialogService.showDialog<SettingsWarningModalComponent, boolean>(
+          SettingsWarningModalComponent,
+          {
+            data: settingsChecks,
+            size: 'l',
+            fitContent: true
+          }
+        )
       );
     }
 

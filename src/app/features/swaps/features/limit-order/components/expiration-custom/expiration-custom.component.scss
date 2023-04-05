@@ -6,6 +6,10 @@
   max-width: 360px;
   padding: 0;
 
+  @include b($mobile-md) {
+    padding: 2rem;
+  }
+
   &__header {
     margin-bottom: 23px;
 

@@ -2652,6 +2652,13 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
+"@taiga-ui/addon-mobile@^2.77.0":
+  version "2.77.0"
+  resolved "https://registry.yarnpkg.com/@taiga-ui/addon-mobile/-/addon-mobile-2.77.0.tgz#e35b3ee7104a709bc226b4fa59430521ddf4a36d"
+  integrity sha512-dW3iYoZCGKRwmfFX2ArNGCNMoIyaL0vn1UiAa7tJXFoKCmKNcqI33MTQPd1R+xwmXevjUdHFQ6nlVtnEDUa7WQ==
+  dependencies:
+    tslib "^1.10.0"
+
 "@taiga-ui/addon-table@~2.35.0":
   version "2.35.0"
   resolved "https://registry.yarnpkg.com/@taiga-ui/addon-table/-/addon-table-2.35.0.tgz#5c145285c21249802dbca354090eda9838f2301b"

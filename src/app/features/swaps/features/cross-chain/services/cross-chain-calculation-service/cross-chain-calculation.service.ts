@@ -1,6 +1,7 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BlockchainName,
+  BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
@@ -21,7 +22,7 @@ import {
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
@@ -29,11 +30,8 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
-import { TuiDialogService } from '@taiga-ui/core';
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -54,6 +52,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -73,7 +73,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly authService: AuthService,
@@ -81,9 +81,29 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
+  }
+
+  private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
+    const isEvmFromBlockchain = BlockchainsInfo.isEvmBlockchainName(
+      calculatedTrade.trade.from.blockchain
+    );
+    const isEvmToBlockchain = BlockchainsInfo.isEvmBlockchainName(
+      calculatedTrade.trade.to.blockchain
+    );
+
+    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+      return (
+        (isEvmFromBlockchain && isEvmToBlockchain) ||
+        (!isEvmFromBlockchain && isEvmToBlockchain) ||
+        (isEvmFromBlockchain && !isEvmToBlockchain)
+      );
+    }
+
+    return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -272,6 +292,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
@@ -286,7 +307,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
-      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade);
+      this.crossChainApiService
+        .createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade)
+        .then(() => this.swapAndEarnStateService.updatePoints());
 
       const timestamp = Date.now();
       const viaUuid =
@@ -304,6 +327,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         timestamp,
         bridgeType: calculatedTrade.trade.bridgeType,
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
+        fromAmount: calculatedTrade.trade.from.stringWeiAmount,
+        toAmount: calculatedTrade.trade.to.stringWeiAmount,
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId }),
@@ -315,6 +340,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
 
+      this.swapAndEarnStateService.fetchPoints();
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
 
@@ -438,23 +464,31 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
+    const defaultData = {
+      fromToken,
+      toToken,
+      srcProvider: fromTradeProvider,
+      dstProvider: toTradeProvider,
+      crossChainProvider: calculatedTrade.tradeType,
+      srcTxHash: txHash,
+      bridgeType: bridgeProvider,
+      viaUuid,
+      rangoRequestId,
+      timestamp,
+      amountOutMin,
+      changenowId
+    };
+
+    const swapAndEarnData = {
+      ...defaultData,
+      isSwapAndEarnData: true
+    };
+
     this.dialogService
-      .open<SwapSchemeModalData>(new PolymorpheusComponent(SwapSchemeModalComponent), {
+      .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: {
-          fromToken,
-          toToken,
-          srcProvider: fromTradeProvider,
-          dstProvider: toTradeProvider,
-          crossChainProvider: calculatedTrade.tradeType,
-          srcTxHash: txHash,
-          bridgeType: bridgeProvider,
-          viaUuid,
-          rangoRequestId,
-          timestamp,
-          amountOutMin,
-          changenowId
-        }
+        data: this.isSwapAndEarnSwap(calculatedTrade) ? swapAndEarnData : defaultData,
+        fitContent: true
       })
       .subscribe();
   }

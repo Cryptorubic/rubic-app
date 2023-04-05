@@ -34,9 +34,7 @@
       </ng-container>
 
       <ng-template #mobileRecentTrades>
-        <div class="list">
-          <div *ngFor="let order of orders" order-row [order]="order" mode="mobile"></div>
-        </div>
+        <app-limit-orders-list></app-limit-orders-list>
       </ng-template>
     </ng-container>
   </ng-container>

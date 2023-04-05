@@ -71,6 +71,7 @@ export class InstantTradesApiService {
     hash: string,
     provider: OnChainTradeType,
     trade: OnChainTrade | WrapTrade,
+    isSwapAndEarnSwap: boolean,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
@@ -101,7 +102,9 @@ export class InstantTradesApiService {
     };
 
     const url = instantTradesApiRoutes.createData(toBackendWallet);
-    return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
+    return this.httpService
+      .post<InstantTradesResponseApi>(`${url}?valid=${isSwapAndEarnSwap}`, tradeInfo)
+      .pipe(delay(1000));
   }
 
   /**

@@ -22,6 +22,8 @@ import { TradesListComponent } from 'src/app/features/swaps/features/cross-chain
 import { BestTradePanelComponent } from 'src/app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/best-trade-panel.component';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
+import { CrossChainBestRouteMobileComponent } from './components/cross-chain-bottom-form/components/best-trade-panel/components/cross-chain-best-route-mobile/cross-chain-best-route-mobile.component';
+import { ModalsModule } from '@app/core/modals/modals.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { CrossChainCalculationService } from '@features/swaps/features/cross-cha
     SwapSchemeModalComponent,
     TradesCounterComponent,
     TradesListComponent,
-    BestTradePanelComponent
+    BestTradePanelComponent,
+    CrossChainBestRouteMobileComponent
   ],
   imports: [
     SwapsSharedModule,
@@ -47,7 +50,8 @@ import { CrossChainCalculationService } from '@features/swaps/features/cross-cha
     TuiDropdownControllerModule,
     TuiLoaderModule,
     TuiAccordionModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    ModalsModule
   ],
   exports: [CrossChainBottomFormComponent],
   providers: [CrossChainFormService, CrossChainCalculationService]

@@ -22,7 +22,7 @@
       }
     }
 
-    &:not(:nth-child(2n+1)):last-child {
+    &:not(:nth-child(2n + 1)):last-child {
       width: 100%;
 
       ::ng-deep .provider-panel__body {
@@ -58,5 +58,104 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+@include b($mobile-md) {
+  .providers {
+    &-mobile {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 12px 16px;
+
+      text-align: unset;
+
+      &__header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        ::ng-deep {
+          svg {
+            display: block;
+            width: 18px;
+            height: 18px;
+            margin-left: 0.5rem;
+
+            path {
+              fill: #dadada;
+            }
+          }
+        }
+      }
+    }
+
+    &__item {
+      display: flex;
+      align-items: center;
+
+      &-logo-skeleton {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+
+        border-radius: 50%;
+      }
+
+      &-label-skeleton {
+        width: 80px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.providers-animation {
+  position: relative;
+  z-index: 0;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  &::before {
+    position: absolute;
+    top: -30%;
+    left: -10%;
+    z-index: -2;
+
+    width: 200%;
+    height: 100px;
+
+    background-color: var(--form-background);
+    background-image: conic-gradient(transparent, rgba(0, 226, 142, 1), transparent 30%);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+
+    animation: rotate 3s linear infinite;
+
+    content: '';
+  }
+
+  &::after {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: -1;
+
+    width: calc(100% - 3px);
+    height: calc(100% - 4px);
+
+    background: var(--form-background);
+    border-radius: 16px;
+
+    content: '';
   }
 }
