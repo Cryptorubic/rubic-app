@@ -115,30 +115,32 @@
           <div class="asset__asset-type">{{ fromAssetTypeName }}</div>
         </div>
 
-        <a
-          *ngIf="!showToContinue; else toContinue"
-          class="tx__status-from"
-          [href]="uiTrade?.srcTxLink"
-          target="_blank"
-          [class.hide-arrow]="!uiTrade?.srcTxLink"
-          style="align-items: center"
-        >
-          <app-status-badge
-            [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
-            [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
-            [cursor]="uiTrade?.srcTxLink ? 'pointer' : null"
+        <div>
+          <a
+            *ngIf="!showToContinue; else toContinue"
+            class="tx__status-from"
+            [href]="uiTrade?.srcTxLink"
+            target="_blank"
+            [class.hide-arrow]="!uiTrade?.srcTxLink"
+            style="align-items: center"
           >
-          </app-status-badge>
-        </a>
-        <img
-          *ngIf="changenowId"
-          class="status-from-copy-icon"
-          src="assets/images/icons/copy.svg"
-          alt="Copy"
-          (click)="copyToClipboard()"
-          [tuiManualHint]="template"
-          [tuiManualHintShow]="hintShown"
-        />
+            <app-status-badge
+              [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
+              [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
+              [cursor]="uiTrade?.srcTxLink ? 'pointer' : null"
+            >
+            </app-status-badge>
+          </a>
+          <img
+            *ngIf="changenowId"
+            class="status-from-copy-icon"
+            src="assets/images/icons/copy.svg"
+            alt="Copy"
+            (click)="copyToClipboard()"
+            [tuiManualHint]="template"
+            [tuiManualHintShow]="hintShown"
+          />
+        </div>
         <ng-template #toContinue>
           <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
         </ng-template>
@@ -172,15 +174,6 @@
           >
           </app-status-badge>
         </a>
-        <img
-          *ngIf="changenowId"
-          class="status-from-copy-icon"
-          src="assets/images/icons/copy.svg"
-          alt="Copy"
-          (click)="copyToClipboard()"
-          [tuiManualHint]="template"
-          [tuiManualHintShow]="hintShown"
-        />
         <ng-template #toContinue>
           <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
         </ng-template>
