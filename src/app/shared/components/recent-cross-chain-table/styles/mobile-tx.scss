@@ -105,7 +105,8 @@
     pointer-events: none;
 
     &::after {
-      visibility: hidden;
+      display: none;
+      margin: 0;
     }
   }
 }
