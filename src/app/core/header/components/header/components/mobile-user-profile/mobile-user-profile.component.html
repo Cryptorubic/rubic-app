@@ -1,0 +1,95 @@
+<div class="mobile-user-profile">
+  <div class="mobile-user-profile__card">
+    <div class="mobile-user-profile__card-header">
+      <div class="mobile-user-profile__card-header-account">
+        <ng-container *ngIf="currentUser$ | async as currentUser">
+          <img
+            [src]="currentUser.blockchainIcon"
+            [alt]="currentUser.blockchainName"
+            width="25"
+            height="25"
+          />
+          <span class="mobile-user-profile__card-header-address">{{
+            currentUser.address.length > 20
+              ? (currentUser.address | shortAddress : 6 : 6)
+              : currentUser.address
+          }}</span>
+
+          <div class="mobile-user-profile__card-header-buttons">
+            <button
+              [cdkCopyToClipboard]="currentUser.address"
+              (cdkCopyToClipboardCopied)="onWalletAddressCopied()"
+            >
+              <div
+                *ngIf="!isWalletCopied"
+                class="mobile-user-profile__icon"
+                [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+              ></div>
+              <div
+                *ngIf="isWalletCopied"
+                class="mobile-user-profile__icon"
+                [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+              ></div>
+            </button>
+            <a
+              [safetyLink]="
+                currentUser.address | scannerLink : currentUser.blockchainName : ADDRESS_TYPE.WALLET
+              "
+              ><div
+                class="mobile-user-profile__icon"
+                [inlineSVG]="'assets/images/icons/scanner.svg'"
+              ></div>
+            </a>
+            <button (click)="logout()">
+              <div
+                class="mobile-user-profile__icon"
+                [inlineSVG]="'assets/images/icons/header/logout.svg'"
+              ></div>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="mobile-user-profile__card-body">
+      <div class="mobile-user-profile__card-body-title">Balance</div>
+
+      <ng-container *ngLet="currentBalance$ | async as currentBalance">
+        <div class="mobile-user-profile__card-body-balance" [class.tui-skeleton]="!currentBalance">
+          {{ currentBalance?.balance | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+          {{ currentBalance?.symbol }}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="mobile-user-profile__history-switcher">
+    <div
+      class="mobile-user-profile__history-switcher-ink"
+      [class.right]="menu === TradesHistory.LIMIT_ORDER"
+    ></div>
+    <button
+      class="mobile-user-profile__history-switcher-item"
+      [class.active]="menu === TradesHistory.CROSS_CHAIN"
+      (click)="switchMenu(TradesHistory.CROSS_CHAIN)"
+    >
+      Recent Trades
+    </button>
+    <button
+      class="mobile-user-profile__history-switcher-item"
+      [class.active]="menu === TradesHistory.LIMIT_ORDER"
+      (click)="switchMenu(TradesHistory.LIMIT_ORDER)"
+    >
+      Limit Orders
+    </button>
+  </div>
+
+  <div [ngSwitch]="menu">
+    <div *ngSwitchCase="TradesHistory.CROSS_CHAIN">
+      <app-recent-crosschain-tx></app-recent-crosschain-tx>
+    </div>
+    <div *ngSwitchCase="TradesHistory.LIMIT_ORDER">
+      <app-limit-orders-list></app-limit-orders-list>
+    </div>
+  </div>
+</div>

@@ -70,6 +70,10 @@ export class TokenAmountInputComponent implements OnInit {
     return fromAsset && Boolean(toToken);
   }
 
+  public get isOnramper(): boolean {
+    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+  }
+
   constructor(
     public readonly swapFormService: SwapFormService,
     public readonly swapTypeService: SwapTypeService,

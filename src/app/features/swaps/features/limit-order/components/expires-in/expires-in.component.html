@@ -1,9 +1,23 @@
-<tui-hosted-dropdown
-  class="dropdown"
-  [(open)]="settingsOpen"
-  [content]="dropdown"
-  tuiDropdownDirection="bottom"
->
+<ng-container *ngIf="isMobile$ | async; then dropdownMobile; else dropdownDesktop"> </ng-container>
+
+<ng-template #dropdownDesktop>
+  <tui-hosted-dropdown
+    class="dropdown"
+    [(open)]="settingsOpen"
+    [content]="dropdown"
+    tuiDropdownDirection="bottom"
+  >
+    <ng-container *ngTemplateOutlet="expiresIn"></ng-container>
+  </tui-hosted-dropdown>
+</ng-template>
+
+<ng-template #dropdownMobile>
+  <button class="dropdown__button" (click)="openExpriationSettings()">
+    <ng-container *ngTemplateOutlet="expiresIn"></ng-container>
+  </button>
+</ng-template>
+
+<ng-template #expiresIn>
   <div class="dropdown__container">
     <div class="dropdown__header header">
       <span class="header__title">Expires in</span>
@@ -31,7 +45,7 @@
       </div>
     </ng-container>
   </div>
-</tui-hosted-dropdown>
+</ng-template>
 
 <ng-template #dropdown>
   <app-expiration-optional (onClose)="onClose()"></app-expiration-optional>

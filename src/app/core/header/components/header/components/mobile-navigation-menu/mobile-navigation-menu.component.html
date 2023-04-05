@@ -1,0 +1,11 @@
+<ul>
+  <li>
+    <a *ngFor="let item of mobileNavigationList">
+      <div>
+        <a class="mobile-navigation-list__link" (click)="mobileClose()" [routerLink]="item.link">
+          {{ item.translateKey | translate }}
+        </a>
+      </div>
+    </a>
+  </li>
+</ul>

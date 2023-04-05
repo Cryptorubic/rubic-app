@@ -66,6 +66,10 @@
 
     border-bottom: 0;
     border-radius: 19px 19px 0 0;
+
+    @include b($mobile-md) {
+      padding-bottom: 0 !important;
+    }
   }
 
   ~ *:not(:last-child) {
@@ -256,7 +260,6 @@ app-analytics-link {
   margin-bottom: 20px !important;
 }
 
-
 .close-widget-button {
   display: none;
 
@@ -270,24 +273,51 @@ app-analytics-link {
   }
 }
 
-@include b($tablet) {
+@include b($mobile-md) {
+  .swap-form-navigation {
+    display: none;
+  }
+
   .close-widget-button {
     display: block;
   }
-}
 
-@include b($mobile-md) {
   .swap-form {
     position: relative;
 
-    padding: 20px 0;
+    margin-bottom: 0;
+
+    padding: 0 0 20px;
+
+    background: unset;
+    border: unset;
+
+    @include iframe {
+      background: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 19px;
+    }
+
+    &_onramper {
+      background: var(--form-background);
+      border: 1px solid var(--transparent-line);
+    }
 
     &__content {
       margin-top: 0;
     }
 
     &__header {
-      padding: 0 20px;
+      margin-bottom: 8px;
+      padding: 10px 20px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 16px;
+
+      &_onramper {
+        border: none;
+      }
     }
 
     &__title {
@@ -295,9 +325,12 @@ app-analytics-link {
     }
 
     &__delimiter {
+      position: relative;
+      z-index: 2;
+
       &::before,
       &::after {
-        width: calc(50% - 37px);
+        width: calc(50% - 44px);
       }
 
       &::before {
@@ -326,6 +359,42 @@ app-form-navigation {
 
     @include iframe {
       display: none;
+    }
+  }
+}
+
+.swap-info-container {
+  &-mobile {
+    display: none;
+  }
+}
+
+@include b($mobile-md) {
+  .swap-info-container {
+    display: none !important;
+
+    &-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 1rem;
+
+      color: #aaa;
+      font-weight: 400;
+      font-size: 14px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 16px;
+
+      ::ng-deep {
+        svg {
+          path {
+            fill: #00e28e;
+          }
+        }
+      }
     }
   }
 }

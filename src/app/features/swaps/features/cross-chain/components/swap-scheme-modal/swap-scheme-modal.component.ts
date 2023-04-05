@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Self
+} from '@angular/core';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -21,7 +29,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { SwapSchemeModalData } from '../../models/swap-scheme-modal-data.interface';
-import { CommonModalService } from '@app/core/services/modal/common-modal.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import {
   BLOCKCHAIN_NAME,
   CbridgeCrossChainSupportedBlockchain,
@@ -38,6 +46,8 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
+import { ROUTE_PATH } from '@shared/constants/common/links';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -46,7 +56,7 @@ import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockch
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapSchemeModalComponent implements OnInit {
+export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestroy {
   public trade: SwapSchemeModalData;
 
   public srcProvider: ProviderInfo;
@@ -99,6 +109,8 @@ export class SwapSchemeModalComponent implements OnInit {
 
   private changenowId: string;
 
+  public isSwapAndEarnSwap: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -106,11 +118,12 @@ export class SwapSchemeModalComponent implements OnInit {
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly commonModalService: CommonModalService,
+    private readonly modalService: ModalService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly router: Router
   ) {
     this.setTradeData(this.context.data);
   }
@@ -119,6 +132,28 @@ export class SwapSchemeModalComponent implements OnInit {
     this.initSrcTxStatusPolling();
     this.initTradeProcessingStatusPolling();
     this.initDstTxStatusPolling();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isSwapAndEarnSwap) {
+      SwapSchemeModalComponent.toggleConfettiBackground('show');
+    }
+  }
+
+  ngOnDestroy(): void {
+    SwapSchemeModalComponent.toggleConfettiBackground('remove');
+  }
+
+  private static toggleConfettiBackground(action: 'show' | 'remove'): void {
+    const overlay = document.querySelector('.overlay');
+
+    if (action === 'show') {
+      overlay.classList.add('overlay-ccr-confetti');
+    }
+
+    if (action === 'remove') {
+      overlay.classList.remove('overlay-ccr-confetti');
+    }
   }
 
   public initSrcTxStatusPolling(): void {
@@ -292,7 +327,7 @@ export class SwapSchemeModalComponent implements OnInit {
   public closeModalAndOpenMyTrades(): void {
     this.context.completeWith(false);
 
-    this.commonModalService
+    this.modalService
       .openRecentTradesModal({
         size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
       })
@@ -300,6 +335,8 @@ export class SwapSchemeModalComponent implements OnInit {
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
+    this.isSwapAndEarnSwap = data.isSwapAndEarnData;
+
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;
 
@@ -324,5 +361,11 @@ export class SwapSchemeModalComponent implements OnInit {
 
     this.amountOutMin = data.amountOutMin;
     this.changenowId = data.changenowId;
+  }
+
+  public async navigateToSwapAndEarn(): Promise<void> {
+    this.context.completeWith(false);
+
+    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
   }
 }

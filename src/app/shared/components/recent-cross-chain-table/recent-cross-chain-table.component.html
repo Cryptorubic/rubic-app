@@ -24,9 +24,11 @@
   </ng-container>
 
   <ng-template #mobileRecentTrades>
-    <div class="list">
-      <div *ngFor="let trade of recentTrades" trade-row [trade]="trade" mode="mobile"></div>
-    </div>
+    <tui-scrollbar>
+      <div class="list">
+        <div *ngFor="let trade of recentTrades" trade-row [trade]="trade" mode="mobile"></div>
+      </div>
+    </tui-scrollbar>
   </ng-template>
 </ng-container>
 

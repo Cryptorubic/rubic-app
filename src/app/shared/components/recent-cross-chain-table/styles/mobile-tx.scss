@@ -7,30 +7,34 @@
   border-radius: 100%;
 }
 
+.asset {
+  display: flex;
+
+  &__symbol {
+    @include font(14px, 17px, 500, #37373D, 0.03em);
+
+    @include dark {
+      color: #fff;
+    }
+  }
+
+  &__asset-type {
+    @include font(13px, 16px, 500, #8E8D91, 0.03em);
+  }
+}
+
 .tx {
   position: relative;
 
-  padding: 18px 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 
-  &:last-child {
-    &__divider {
-      display: none;
-    }
-  }
+  padding: 12px 16px;
 
-  &__divider {
-    position: absolute;
-    bottom: 0;
-    left: -24px;
-
-    width: 100vw;
-
-    background: #e7e6ea;
-
-    @include dark {
-      background: #1f1f1f;
-    }
-  }
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
+  border-radius: 12px;
 
   &__row {
     display: flex;
@@ -38,7 +42,7 @@
     justify-content: space-between;
 
     &-label {
-      @include font(12px, 17px, 400, #7A797D);
+      @include font(12px, 17px, 400, #7a797d);
 
       @include dark {
         color: #8e8d91;
@@ -59,13 +63,12 @@
 
   &__asset-image {
     @include assetImage();
-    width: 26px;
-    height: 26px;
-    margin-right: 8px;
+    width: 32px;
+    height: 32px;
   }
 
   &__asset-symbol {
-    @include font(14px, 17px, 500, #37373D);
+    @include font(14px, 17px, 500, #37373d);
     margin-right: 8px;
 
     @include dark {
@@ -74,7 +77,7 @@
   }
 
   &__asset-type {
-    @include font(12px, 17px, 400, #8E8D91);
+    @include font(12px, 17px, 400, #8e8d91);
   }
 
   &__status-from,
@@ -85,9 +88,10 @@
     text-decoration: none;
 
     &::after {
+      margin-top: 2px;
       margin-left: 13px;
 
-      content: url('/assets/images/icons/arrow/link-arrow.svg');
+      content: url('/assets/images/icons/link-arrow.svg');
     }
   }
 
@@ -99,9 +103,31 @@
     cursor: default;
 
     pointer-events: none;
-    
+
     &::after {
       visibility: hidden;
     }
   }
+}
+
+.mobile-recent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-recent-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobile-recent-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }

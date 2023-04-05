@@ -4,7 +4,8 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  OnChanges
 } from '@angular/core';
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
@@ -12,7 +13,9 @@ import { TradePanelData } from '@features/swaps/features/instant-trade/component
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderPanelData } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
-import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
+import { TRADES_PROVIDERS } from '@app/features/swaps/shared/constants/trades-providers/trades-providers';
+import { NgChanges } from '@app/shared/models/utility-types/ng-changes';
 
 @Component({
   selector: 'app-provider-panel',
@@ -20,10 +23,19 @@ import { EvmOnChainTrade, OnChainTrade } from 'rubic-sdk';
   styleUrls: ['./provider-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderPanelComponent implements OnInit {
-  @Input() public providerData: InstantTradeProviderData;
+export class ProviderPanelComponent implements OnInit, OnChanges {
+  @Input() public isBestProvider: boolean;
 
-  @Input() public isBestProvider = false;
+  private _providerData: InstantTradeProviderData;
+
+  @Input() set providerData(providerData: InstantTradeProviderData) {
+    this._providerData = providerData;
+    this.setupProviderPanelData();
+  }
+
+  public get providerData(): InstantTradeProviderData {
+    return this._providerData;
+  }
 
   @Output() private onSelectProvider = new EventEmitter<void>();
 
@@ -37,6 +49,12 @@ export class ProviderPanelComponent implements OnInit {
     this.setupProviderPanelData();
   }
 
+  ngOnChanges(changes: NgChanges<ProviderPanelComponent>) {
+    if (changes.providerData) {
+      this.setupProviderPanelData();
+    }
+  }
+
   private setupProviderPanelData(): void {
     const data = this.providerData;
     const hasError = data.tradeStatus === INSTANT_TRADE_STATUS.ERROR;
@@ -47,7 +65,8 @@ export class ProviderPanelComponent implements OnInit {
       loading:
         data.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION ||
         data.tradeStatus === INSTANT_TRADE_STATUS.TX_IN_PROGRESS,
-      appearance: this.isBestProvider ? 'normal' : 'small'
+      appearance: this.isBestProvider ? 'normal' : 'small',
+      image: TRADES_PROVIDERS[data.name].image
     };
 
     if (hasError) {
@@ -70,7 +89,8 @@ export class ProviderPanelComponent implements OnInit {
     this.tradePanelData = {
       blockchain: trade.from.blockchain,
       amount: trade.to.tokenAmount,
-      ...gas
+      ...gas,
+      showGas: trade.from.blockchain === BLOCKCHAIN_NAME.ETHEREUM
     };
   }
 

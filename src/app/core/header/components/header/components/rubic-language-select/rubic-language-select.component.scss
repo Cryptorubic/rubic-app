@@ -55,3 +55,17 @@
     }
   }
 }
+
+@include b($mobile-md) {
+  .languages {
+    &__list {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 20px;
+    }
+
+    &__list-item {
+      border: 1px solid var(--transparent-line);
+    }
+  }
+}
