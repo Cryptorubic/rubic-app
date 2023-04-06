@@ -2,7 +2,6 @@ import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName } from 'rubic-sd
 
 const nonOnChainNetworks = [
   BLOCKCHAIN_NAME.BITGERT,
-  BLOCKCHAIN_NAME.ASTAR,
   BLOCKCHAIN_NAME.DFK,
   BLOCKCHAIN_NAME.BOBA_BSC,
   BLOCKCHAIN_NAME.BOBA_AVALANCHE,

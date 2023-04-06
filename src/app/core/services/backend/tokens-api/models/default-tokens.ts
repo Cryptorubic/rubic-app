@@ -623,11 +623,11 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.BOBA_BSC]: [],
   [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: [],
-  [BLOCKCHAIN_NAME.ASTAR]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.ASTAR], ...defaultTokenParams } as Token,
-    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ASTAR], ...defaultTokenParams } as Token,
+  [BLOCKCHAIN_NAME.ASTAR_EVM]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ASTAR_EVM], ...defaultTokenParams } as Token,
+    { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ASTAR_EVM], ...defaultTokenParams } as Token,
     {
-      blockchain: BLOCKCHAIN_NAME.ASTAR,
+      blockchain: BLOCKCHAIN_NAME.ASTAR_EVM,
       address: '0x6a2d262d56735dba19dd70682b39f6be9a931d98',
       name: 'USD Coin',
       symbol: 'USDC',
@@ -636,7 +636,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     },
     {
-      blockchain: BLOCKCHAIN_NAME.ASTAR,
+      blockchain: BLOCKCHAIN_NAME.ASTAR_EVM,
       address: '0x3795c36e7d12a8c252a20c5a7b455f7c57b60283',
       name: 'Tether USD',
       symbol: 'USDT',
