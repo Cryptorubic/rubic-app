@@ -63,9 +63,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BOBA_BSC]: ['https://bnb.boba.network'],
   [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: ['https://avax.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
-    'https://rpc.astar.network:8545',
-    'https://1rpc.io/astr',
-    'https://astar.public.blastapi.io'
+    'https://evm.astar.network/',
+    'https://astar-mainnet.g.alchemy.com/v2/gt3UANW8GWpUzyVztq5bEkjyrT5onv8Q',
+    'https://astar.public.blastapi.io',
+    'https://rpc.astar.network:8545'
   ],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
