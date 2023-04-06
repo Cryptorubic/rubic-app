@@ -95,12 +95,11 @@ export class TokensStoreService {
       if (!isIframe) {
         this.storageTokens = this.storeService.getItem('tokens') || [];
         if (this.storageTokens.length) {
-          this._tokens$.next(
-            this.getDefaultTokenAmounts(
-              List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
-              false
-            )
+          const tokens = this.getDefaultTokenAmounts(
+            List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
+            false
           );
+          this._tokens$.next(tokens);
         }
       }
     });
@@ -306,7 +305,10 @@ export class TokensStoreService {
         price: null,
         amount: amount || new BigNumber(NaN)
       })),
-      tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))
+      tap((token: TokenAmount) => {
+        const tokens = this.tokens.push(token);
+        this._tokens$.next(tokens);
+      })
     );
   }
 
@@ -316,7 +318,8 @@ export class TokensStoreService {
    */
   public addToken(token: TokenAmount): void {
     if (!this.tokens.find(t => compareTokens(t, token))) {
-      this._tokens$.next(this.tokens.push(token));
+      const tokens = this.tokens.push(token);
+      this._tokens$.next(tokens);
     }
   }
 
@@ -325,42 +328,14 @@ export class TokensStoreService {
    * @param token Token to patch.
    */
   public patchToken(token: TokenAmount): void {
-    this._tokens$.next(this.tokens.filter(t => !compareTokens(t, token)).push(token));
+    const tokens = this.tokens.filter(t => !compareTokens(t, token)).push(token);
+    this._tokens$.next(tokens);
   }
 
   public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
-    this._tokens$.next(
-      (this.tokens || List([]))
-        .map(token => {
-          const foundToken = newTokens?.find(tokenWithBalance =>
-            compareTokens(token, tokenWithBalance)
-          );
-          if (!foundToken) {
-            return token;
-          } else {
-            return {
-              ...token,
-              ...foundToken
-            };
-          }
-        })
-        .concat(
-          newTokens
-            .filter(newToken => !this.tokens?.find(token => compareTokens(newToken, token)))
-            .map(newToken => {
-              if (isTokenAmount(newToken)) {
-                return newToken;
-              }
-              return this.getDefaultTokenAmounts(List([newToken]), isFavorite).get(0);
-            })
-        )
-    );
-  }
-
-  public patchTokensBalances(tokensWithBalances: List<TokenAmount>): void {
-    this._tokens$.next(
-      (this.tokens || List([])).map(token => {
-        const foundToken = tokensWithBalances.find(tokenWithBalance =>
+    const tokens = (this.tokens || List([]))
+      .map(token => {
+        const foundToken = newTokens?.find(tokenWithBalance =>
           compareTokens(token, tokenWithBalance)
         );
         if (!foundToken) {
@@ -368,11 +343,38 @@ export class TokensStoreService {
         } else {
           return {
             ...token,
-            amount: foundToken.amount
+            ...foundToken
           };
         }
       })
-    );
+      .concat(
+        newTokens
+          .filter(newToken => !this.tokens?.find(token => compareTokens(newToken, token)))
+          .map(newToken => {
+            if (isTokenAmount(newToken)) {
+              return newToken;
+            }
+            return this.getDefaultTokenAmounts(List([newToken]), isFavorite).get(0);
+          })
+      );
+    this._tokens$.next(tokens);
+  }
+
+  public patchTokensBalances(tokensWithBalances: List<TokenAmount>): void {
+    const tokens = (this.tokens || List([])).map(token => {
+      const foundToken = tokensWithBalances.find(tokenWithBalance =>
+        compareTokens(token, tokenWithBalance)
+      );
+      if (!foundToken) {
+        return token;
+      } else {
+        return {
+          ...token,
+          amount: foundToken.amount
+        };
+      }
+    });
+    this._tokens$.next(tokens);
   }
 
   /**

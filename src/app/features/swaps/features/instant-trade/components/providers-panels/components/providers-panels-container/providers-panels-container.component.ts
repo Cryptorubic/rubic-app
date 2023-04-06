@@ -24,7 +24,7 @@ export class ProvidersPanelsContainerComponent {
   @Input() set providersData(providersData: InstantTradeProviderData[]) {
     this._providersData = providersData;
 
-    if (this.providersData[0].trade && this.selectedProvider) {
+    if (this.providersData?.[0]?.trade && this.selectedProvider) {
       this.isBestProvider = this.providersData[0].trade.type === this.selectedProvider.name;
     }
   }

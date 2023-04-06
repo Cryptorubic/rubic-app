@@ -259,8 +259,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
   private isSupportedOnChainNetwork(
     blockchain: BlockchainName
   ): blockchain is SupportedOnChainNetworks {
-    return Object.keys(INSTANT_TRADE_PROVIDERS).some(
-      supportedNetwork => supportedNetwork === blockchain
+    return Object.entries(INSTANT_TRADE_PROVIDERS).some(
+      ([supportedNetwork, providers]) => supportedNetwork === blockchain && providers.length > 0
     );
   }
 
@@ -474,7 +474,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.sortProviders();
     const bestProvider = this.providersData[0];
 
-    if (bestProvider.trade) {
+    if (bestProvider?.trade) {
       this.selectProviderAfterCalculation();
 
       this.tradeStatus = this.selectedProvider.needApprove
@@ -539,7 +539,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
 
       this.selectedProvider = this.providersData[currentSelectedProviderIndex];
-      if (!this.selectedProvider.trade) {
+      if (!this.selectedProvider?.trade) {
         this.selectedProvider = this.providersData[0];
         this.providersData[0].isSelected = true;
       } else {
