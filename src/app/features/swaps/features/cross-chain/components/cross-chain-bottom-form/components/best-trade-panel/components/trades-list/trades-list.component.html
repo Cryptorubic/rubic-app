@@ -27,6 +27,13 @@
               </div>
 
               <div class="trade-provider__best" *ngIf="i === 0">Best</div>
+              <tui-badge
+                *ngIf="
+                  i > 0 && (taggedTrade.tags.minAmountWarning || taggedTrade.tags.maxAmountWarning)
+                "
+                status="warning"
+                [value]="getMinMaxError(taggedTrade)"
+              ></tui-badge>
             </div>
             <app-cross-chain-route [route]="taggedTrade.route"></app-cross-chain-route>
           </ng-container>

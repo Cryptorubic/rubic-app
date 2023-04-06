@@ -48,6 +48,7 @@ import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calcu
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
+import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -327,11 +328,15 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   public closeModalAndOpenMyTrades(): void {
     this.context.completeWith(false);
 
-    this.modalService
-      .openRecentTradesModal({
-        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
+    if (this.headerStore.isMobile) {
+      this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
+    } else {
+      this.modalService
+        .openRecentTradesModal({
+          size: 'xl' as 'l' // hack for custom modal size
+        })
+        .subscribe();
+    }
   }
 
   private setTradeData(data: SwapSchemeModalData): void {

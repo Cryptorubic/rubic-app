@@ -115,13 +115,13 @@
           <div class="asset__asset-type">{{ fromAssetTypeName }}</div>
         </div>
 
-        <div>
+        <div style="display: flex; position: relative">
           <a
             *ngIf="!showToContinue; else toContinue"
             class="tx__status-from"
+            [class.hide-arrow]="changenowId || !uiTrade?.srcTxLink"
             [href]="uiTrade?.srcTxLink"
             target="_blank"
-            [class.hide-arrow]="!uiTrade?.srcTxLink"
             style="align-items: center"
           >
             <app-status-badge
@@ -133,7 +133,7 @@
           </a>
           <img
             *ngIf="changenowId"
-            class="status-from-copy-icon"
+            class="status-from-copy-icon-mobile"
             src="assets/images/icons/copy.svg"
             alt="Copy"
             (click)="copyToClipboard()"
