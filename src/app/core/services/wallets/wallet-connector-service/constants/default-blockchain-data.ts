@@ -104,6 +104,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.ASTAR_EVM]: {
     name: 'Astar EVM',
-    rpc: 'https://rpc.astar.network:8545'
+    rpc: 'https://evm.astar.network/'
   }
 };
