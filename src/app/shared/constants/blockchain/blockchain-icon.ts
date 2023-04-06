@@ -111,5 +111,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SYMBOL]: `${basePath}symbol.svg`,
   [BLOCKCHAIN_NAME.ZCASH]: `${basePath}zcash.svg`,
   [BLOCKCHAIN_NAME.HORIZEN]: `${basePath}horizen.svg`,
-  [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`
+  [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
+  [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.png`
 };

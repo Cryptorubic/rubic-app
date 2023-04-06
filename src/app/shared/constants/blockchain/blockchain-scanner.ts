@@ -881,5 +881,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: '',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.KAVA_COSMOS]: {
+    baseUrl: 'https://www.mintscan.io/kava/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'account/',
+    [ADDRESS_TYPE.TOKEN]: 'assets',
+    [ADDRESS_TYPE.TRANSACTION]: 'txs/',
+    [ADDRESS_TYPE.BLOCK]: 'blocks/'
   }
 };
