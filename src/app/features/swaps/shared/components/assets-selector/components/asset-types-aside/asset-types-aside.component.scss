@@ -23,6 +23,10 @@
     box-shadow: unset;
   }
 
+  @include iframe-horizontal {
+    width: 94%;
+  }
+
   @include iframe-vertical {
     padding-bottom: 0;
   }
@@ -51,7 +55,10 @@
 
       ::ng-deep app-icon-button {
         .image {
-          max-height: 20px;
+
+          width: 30px;
+          height: 30px;
+          max-height: 30px;
         }
       }
     }
@@ -82,6 +89,10 @@
         }
       }
     }
+  }
+
+  &__blockchain-header {
+    display: none;
   }
 
   ::ng-deep app-icon-button {
@@ -134,28 +145,68 @@
   }
 }
 
-@include b($mobile-md-minus) {
+@include b($mobile-md) {
   .asset-types-aside {
     display: flex;
+    flex-direction: column;
     align-items: unset;
     justify-content: center;
+    width: 100%;
 
-    width: 95px;
     height: 100%;
-    padding: 14px 0 0;
+
+    padding: 0;
+
+    background-color: unset;
 
     border-radius: unset;
 
     &__list {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: nowrap;
       align-items: center;
+
+      padding-left: 0.5rem;
+
+      @include iframe-vertical {
+        padding-left: 0;
+      }
 
       li:not(:last-child) {
         @include iframe {
-          margin-right: 15px;
+          margin-right: 10px;
           margin-bottom: unset;
         }
+      }
+    }
+
+    &__blockchain-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+
+      @include iframe-vertical {
+        padding: 0 1rem 0 0;
+      }
+
+      &-label {
+        font-weight: 400;
+        font-size: 16px;
+      }
+
+      &-expand {
+        color: var(--mobile-ccr-best-route-label-text);
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
+
+    &__scroll {
+      ::ng-deep tui-scroll-controls {
+        display: none;
       }
     }
   }
@@ -163,8 +214,6 @@
 
 @include b($mobile-sm-middle) {
   .asset-types-aside {
-    width: 76px;
-
     li {
       ::ng-deep app-icon-button {
         button {
@@ -183,6 +232,10 @@
 
               @include iframe {
                 display: block;
+              }
+
+              @include iframe-vertical {
+                display: none;
               }
             }
           }

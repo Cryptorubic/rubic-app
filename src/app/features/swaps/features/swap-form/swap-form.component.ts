@@ -31,6 +31,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-swap-form',
@@ -41,6 +43,8 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 })
 export class SwapFormComponent implements OnInit, OnDestroy {
   public tradeStatus: TRADE_STATUS;
+
+  public TradeStatus = TRADE_STATUS;
 
   public allowRefresh: boolean = true;
 
@@ -66,7 +70,15 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly fromAmountUpdated$ = this._fromAmountUpdated$.asObservable();
 
-  public readonly isRefreshRotating$ = this.refreshService.isRefreshRotating$;
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
+    map(status => status !== REFRESH_STATUS.STOPPED)
+  );
+
+  public readonly isRefreshRotating = () => {
+    return this.refreshService.status !== REFRESH_STATUS.STOPPED;
+  };
 
   public get isInstantTrade(): boolean {
     return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -97,6 +109,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly queryParamsService: QueryParamsService,
     private readonly onramperFormService: OnramperFormService,
     private readonly refreshService: RefreshService,
+    private readonly modalService: ModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -208,5 +221,15 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public onRefresh(): void {
     this.refreshService.onButtonClick();
+  }
+
+  public openSwapInfo(): void {
+    this.modalService
+      .openSwapInfoModal({
+        swapType: this.swapType,
+        currentInstantTradeInfo: this.currentInstantTradeInfo,
+        tradeStatus: this.tradeStatus
+      })
+      .subscribe();
   }
 }

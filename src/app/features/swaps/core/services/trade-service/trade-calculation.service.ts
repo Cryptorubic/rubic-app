@@ -14,7 +14,7 @@ export abstract class TradeCalculationService {
   protected showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
-      autoClose: 15000,
+      autoClose: 10000,
       data: {
         type: this.successTxModalType,
         withRecentTrades: this.successTxModalType !== 'on-chain'
@@ -43,6 +43,7 @@ export abstract class TradeCalculationService {
   protected notifyTradeInProgress(
     transactionHash: string,
     blockchain: BlockchainName,
+    isSwapAndEarnSwap: boolean,
     ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
   ): Subscription {
     return this.successTxModalService.open(
@@ -50,7 +51,8 @@ export abstract class TradeCalculationService {
       blockchain,
       this.successTxModalType,
       ccrProviderType,
-      this.showTrxInProgressTrxNotification
+      this.showTrxInProgressTrxNotification,
+      isSwapAndEarnSwap
     );
   }
 }

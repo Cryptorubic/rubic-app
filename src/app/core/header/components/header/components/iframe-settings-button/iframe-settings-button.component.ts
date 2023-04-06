@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, Injector, Inject } from '@angular/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IframeSettingsComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/iframe-settings/iframe-settings.component';
-import { TuiDialogService } from '@taiga-ui/core';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-iframe-settings-button',
@@ -11,15 +10,20 @@ import { TuiDialogService } from '@taiga-ui/core';
 })
 export class IframeSettingsButtonComponent {
   constructor(
-    private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public openSettings(): void {
     this.dialogService
-      .open<void>(new PolymorpheusComponent(IframeSettingsComponent, this.injector), {
-        size: 'fullscreen'
-      })
+      .showDialog<IframeSettingsComponent, void>(
+        IframeSettingsComponent,
+        {
+          size: 'fullscreen',
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe();
   }
 }

@@ -1,19 +1,18 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { CustomTokenWarningModalComponent } from '@features/swaps/shared/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { switchMap } from 'rxjs';
 import { Injector as RubicInjector } from 'rubic-sdk/lib/core/injector/injector';
 import { BlockchainsInfo, Web3PublicSupportedBlockchain, Web3Pure } from 'rubic-sdk';
-import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { AuthService } from '@core/services/auth/auth.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class CustomTokenService {
   constructor(
-    private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly authService: AuthService,
@@ -22,12 +21,17 @@ export class CustomTokenService {
 
   public openModal(customToken: AvailableTokenAmount): void {
     this.dialogService
-      .open<boolean>(new PolymorpheusComponent(CustomTokenWarningModalComponent, this.injector), {
-        data: { token: customToken },
-        dismissible: true,
-        label: this.translateService.instant('modals.confirmImportModal.title'),
-        size: 's'
-      })
+      .showDialog<CustomTokenWarningModalComponent, boolean>(
+        CustomTokenWarningModalComponent,
+        {
+          data: { token: customToken },
+          dismissible: true,
+          label: this.translateService.instant('modals.confirmImportModal.title'),
+          size: 's',
+          fitContent: true
+        },
+        this.injector
+      )
       .pipe(
         switchMap(async confirm => {
           if (confirm) {

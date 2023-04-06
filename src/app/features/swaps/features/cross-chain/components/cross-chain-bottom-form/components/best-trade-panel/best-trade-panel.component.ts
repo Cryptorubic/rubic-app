@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Injector,
+  Self
+} from '@angular/core';
 import { TUI_ANIMATIONS_DURATION } from '@taiga-ui/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
@@ -7,6 +14,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { ThemeService } from '@core/services/theme/theme.service';
+import { HeaderStore } from '@app/core/header/services/header.store';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { CrossChainTaggedTrade } from '../../../../models/cross-chain-tagged-trade';
 
 @Component({
   selector: 'app-best-trade-panel',
@@ -28,9 +38,14 @@ export class BestTradePanelComponent {
 
   public readonly selectedTrade$ = this.crossChainFormService.selectedTrade$;
 
-  public readonly fromAmount$ = this.swapFormService.inputValue$.pipe(
-    map(input => input.fromAmount)
+  public readonly isReady$ = this.swapFormService.inputValue$.pipe(
+    map(
+      input =>
+        Boolean(input.fromAmount?.isFinite()) && Boolean(input.toToken) && Boolean(input.fromAsset)
+    )
   );
+
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public expanded = false;
 
@@ -42,6 +57,9 @@ export class BestTradePanelComponent {
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly swapFormService: SwapFormService,
+    private readonly headerStore: HeaderStore,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Self() protected readonly destroy$: TuiDestroyService,
     private readonly themeService: ThemeService
@@ -72,5 +90,13 @@ export class BestTradePanelComponent {
       this.expanded = true;
       this.showTradesList = true;
     }
+  }
+
+  public openProvidersList(taggedTrades: CrossChainTaggedTrade[]): void {
+    this.modalService
+      .openCrossChainProvidersModal({
+        taggedTrades
+      })
+      .subscribe();
   }
 }

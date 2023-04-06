@@ -4,6 +4,12 @@
   @include iframe-horizontal {
     display: flex;
   }
+
+  @include iframe-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
 }
 
 $green: rgb(74, 169, 86);
@@ -79,6 +85,15 @@ $green: rgb(74, 169, 86);
   &__providers {
     display: block;
     margin-top: 50px;
+
+    @include b($mobile-md) {
+      width: 100%;
+      margin-top: 8px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-radius: 16px;
+    }
   }
 
   &__body {
@@ -112,15 +127,28 @@ $green: rgb(74, 169, 86);
       min-height: unset;
     }
 
+    @include b($mobile-md) {
+      padding: 36px 20px 20px;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+    }
+
     @include b($mobile-sm) {
-      flex-direction: column;
+      // flex-direction: column;
       align-items: flex-start;
     }
 
     @include iframe-vertical {
       flex-direction: column;
-      margin-bottom: 52px;
+      padding: 0;
       overflow: visible;
+
+      background-color: var(--form-background);
+      border: 0;
+      border-radius: 0;
     }
   }
 
@@ -242,6 +270,10 @@ $green: rgb(74, 169, 86);
       margin-top: 0;
       margin-left: 4px;
     }
+
+    @include iframe-vertical {
+      margin: 0 0 0 5px;
+    }
   }
 
   &__iframe-info {
@@ -251,6 +283,11 @@ $green: rgb(74, 169, 86);
 
     display: flex;
     align-items: center;
+
+    @include iframe-vertical {
+      justify-content: space-between;
+      width: 100%;
+    }
 
     > :first-child {
       margin-right: 15px;
@@ -270,6 +307,12 @@ $green: rgb(74, 169, 86);
         width: 100%;
 
         margin-top: 16px !important;
+      }
+    }
+
+    @include b($mobile-md) {
+      app-swap-button-container {
+        margin-top: 0 !important;
       }
     }
 
@@ -297,13 +340,32 @@ $green: rgb(74, 169, 86);
 
 @include b($mobile-md) {
   .instant-trade-bottom-form {
-    padding: 20px;
+    padding-top: 0;
 
     &__swap {
-      padding: 0 20px;
+      transition-duration: 0.2s;
+
+      &.loading-mobile {
+        margin-top: 1rem;
+      }
+    }
+
+    &__body-top {
+      position: relative;
+    }
+
+    app-tokens-rate {
+      position: absolute;
+      right: 20px;
+      bottom: 17px;
+
+      @include iframe-vertical {
+        position: static;
+      }
     }
 
     &__token-amount {
+      height: 57px;
       margin-bottom: 0;
     }
   }
@@ -312,7 +374,7 @@ $green: rgb(74, 169, 86);
 @include b($mobile-sm) {
   .instant-trade-bottom-form {
     &__token-amount {
-      text-align: left;
+      // text-align: left;
     }
 
     app-tokens-rate {

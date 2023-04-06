@@ -16,4 +16,7 @@ export interface CrossChainRecentTrade extends CommonRecentTrade {
   rangoRequestId?: string;
   amountOutMin?: string;
   changenowId?: string;
+
+  fromAmount: string;
+  toAmount: string;
 }

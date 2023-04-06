@@ -4,4 +4,6 @@ export interface ProviderPanelData {
   hasError: boolean;
   loading: boolean;
   appearance: 'small' | 'normal';
+  image?: string;
+  showGas?: boolean;
 }

@@ -1,0 +1,23 @@
+@use 'src/scss/core' as *;
+
+:host {
+  margin-right: 20px;
+
+  background-color: var(--tui-primary);
+  border-radius: 25px;
+
+  ::ng-deep app-rubic-button {
+    tui-wrapper {
+      padding: 0 1.4rem !important;
+
+      .content {
+        font-size: 16px !important;
+      }
+    }
+  }
+}
+
+.image {
+  height: 34px;
+  margin-right: 10px;
+}

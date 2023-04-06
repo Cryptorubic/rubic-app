@@ -1,0 +1,12 @@
+.settings-icon ::ng-deep {
+  display: flex;
+
+  svg {
+    width: 24px;
+    height: 24px;
+
+    path {
+      fill: var(--secondary-text);
+    }
+  }
+}

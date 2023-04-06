@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import {
   ExpirationOption,
   expirationOptions
@@ -18,7 +19,10 @@ export class ExpirationOptionalComponent {
 
   public readonly highlightedOption: number;
 
-  constructor(private readonly orderExpirationService: OrderExpirationService) {
+  constructor(
+    private readonly modalService: ModalService,
+    private readonly orderExpirationService: OrderExpirationService
+  ) {
     const expirationTime = this.orderExpirationService.expirationTime;
     const index = this.options.findIndex(option => option.minutes === expirationTime);
     this.highlightedOption = index !== -1 ? index : this.options.length;

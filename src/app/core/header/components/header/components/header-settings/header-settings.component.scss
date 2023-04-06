@@ -1,8 +1,14 @@
 @use 'src/scss/core' as *;
 
-.header-settings {
-  width: 686px;
+:host {
+  @include b($mobile-md) {
+    position: absolute;
+    top: 35px;
+    left: 20px;
+  }
+}
 
+.header-settings {
   border-radius: $border-radius-2;
   backdrop-filter: $backdrop-blur-1;
 
@@ -23,14 +29,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+
+    width: 42px;
+    height: 35px;
 
     background: var(--secondary-background);
+    border-radius: 15px;
 
-    border-radius: 8px;
-
-    transform: rotate(180deg);
     cursor: pointer;
   }
 
@@ -63,16 +68,33 @@
 
 @include b($tablet) {
   .header-settings {
-    min-width: 250px;
-  }
-}
 
-@include b($tablet) {
-  .header-settings {
     width: auto;
+    min-width: 250px;
 
     &__icon {
       width: 20px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .header-settings {
+    &__header {
+      margin-bottom: 0;
+      padding: 0;
+    }
+
+    &__title {
+      @include b($mobile-md) {
+        display: none;
+      }
+    }
+
+    &__close {
+      @include b($mobile-md) {
+        display: none;
+      }
     }
   }
 }

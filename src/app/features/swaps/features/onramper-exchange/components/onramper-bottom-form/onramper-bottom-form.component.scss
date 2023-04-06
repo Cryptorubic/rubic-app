@@ -45,13 +45,3 @@
     padding: 0 20px;
   }
 }
-
-@include b($mobile-sm) {
-  .bottom-form {
-    flex-direction: column;
-
-    &__output {
-      flex-direction: column;
-    }
-  }
-}

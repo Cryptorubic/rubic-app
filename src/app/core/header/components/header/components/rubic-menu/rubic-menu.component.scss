@@ -1,44 +1,24 @@
 @use 'src/scss/core' as *;
 
-.burger-menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 20px;
-  height: 14px;
-
-  &__line {
-    width: 100%;
-    height: 2px;
-
-    background-color: var(--primary-text);
-    border-radius: 5px;
-
-    transition: 0.3s ease-in-out;
-
-    transition-property: opacity, transform;
-  }
-
-  &_opened {
-    .burger-menu__line {
-      &:first-child {
-        transform: translateY(6px) rotate(45deg);
-      }
-
-      &:nth-child(2) {
-        opacity: 0;
-      }
-
-      &:last-child {
-        transform: translateY(-6px) rotate(-45deg);
-      }
-    }
-  }
-}
-
 .data-list {
   min-width: 230px;
   padding: 16px 0;
+
+  @include b($mobile-md) {
+    padding: 0;
+  }
+
+  &__title {
+    padding: 10px 28px;
+
+    font-size: 18px;
+
+    background-color: var(--form-background);
+
+    @include b($mobile-md) {
+      padding: 16px 28px;
+    }
+  }
 
   &__option {
     justify-content: flex-start;
@@ -54,6 +34,35 @@
 
     border: none;
     border-radius: 156px;
+
+    @include b($mobile-md) {
+      width: 100%;
+      height: unset;
+      padding: 15px 28px 15px 50px;
+
+      font-size: 16px;
+      text-align: left;
+
+      background-color: var(--form-background);
+      border-bottom: 1px solid var(--transparent-line);
+      border-radius: 0;
+
+      &:active {
+        color: var(--primary-color);
+
+        background-color: unset;
+
+        ::ng-deep svg {
+          path[fill='black'] {
+            fill: var(--primary-color);
+          }
+
+          rect[fill='black'] {
+            fill: var(--primary-color);
+          }
+        }
+      }
+    }
 
     &:hover {
       color: var(--primary-color);
@@ -73,6 +82,10 @@
       color: white;
 
       background-color: var(--primary-color);
+
+      @include b($mobile-md) {
+        background-color: transparent;
+      }
 
       a {
         color: white;
@@ -140,7 +153,15 @@
 
   &__link {
     text-decoration: none !important;
-    
+
+    @include b($mobile-md) {
+      border-bottom: 1px solid var(--transparent-line);
+
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+
     &_modal {
       position: relative;
       top: auto;
@@ -250,12 +271,52 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
       right: 8px;
     }
   }
+
+  tui-opt-group {
+    padding: 0;
+  }
+
+  ::ng-deep tui-accordion {
+    tui-accordion-item {
+      &:first-of-type {
+        .wrapper {
+          &::after {
+            border-top: none !important;
+          }
+        }
+      }
+    }
+  }
+
+  ::ng-deep tui-accordion-item {
+    --tui-base-01: var(--form-background);
+    --tui-base-04: var(--transparent-line);
+
+    .wrapper {
+      &::after {
+        border-right: none !important;
+        border-left: none !important;
+      }
+
+      .header {
+        padding: 0 1rem 0 0 !important;
+      }
+    }
+  }
+
+  ::ng-deep tui-expand {
+    .wrapper {
+      .content {
+        padding: 0;
+      }
+    }
+  }
 }
 
 @include b($laptop-xl) {
   .rubic-menu {
     &__mobile {
-      display: block;
+      display: none;
     }
 
     &__container {
