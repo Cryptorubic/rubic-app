@@ -110,6 +110,14 @@
   }
 }
 
+.status-from-copy-icon-mobile {
+  position: absolute;
+  top: 50%;
+  right: 0;
+
+  transform: translateY(-50%);
+}
+
 .mobile-recent {
   display: flex;
   flex-direction: column;
