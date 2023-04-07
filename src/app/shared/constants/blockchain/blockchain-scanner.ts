@@ -897,5 +897,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'assets',
     [ADDRESS_TYPE.TRANSACTION]: 'txs/',
     [ADDRESS_TYPE.BLOCK]: 'blocks/'
+  },
+  [BLOCKCHAIN_NAME.ZK_SYNC]: {
+    baseUrl: 'https://explorer.zksync.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
