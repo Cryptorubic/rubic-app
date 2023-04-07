@@ -95,7 +95,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
       calculatedTrade.trade.to.blockchain
     );
 
-    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+    const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
+      calculatedTrade.trade.from.tokenAmount
+    );
+
+    if (
+      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+      totalInputAmountInUSD.gt(100)
+    ) {
       return (
         (isEvmFromBlockchain && isEvmToBlockchain) ||
         (!isEvmFromBlockchain && isEvmToBlockchain) ||
