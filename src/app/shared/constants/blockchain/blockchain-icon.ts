@@ -23,6 +23,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA]: `${basePath}boba.svg`,
   [BLOCKCHAIN_NAME.BOBA_BSC]: `${basePath}boba-bsc.png`,
   [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: `${basePath}boba-avalanche.png`,
+  [BLOCKCHAIN_NAME.ASTAR_EVM]: `${basePath}astar.svg`,
   [BLOCKCHAIN_NAME.ASTAR]: `${basePath}astar.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: `${basePath}eth-pow.png`,
   [BLOCKCHAIN_NAME.KAVA]: `${basePath}kava.png`,
@@ -112,5 +113,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZCASH]: `${basePath}zcash.svg`,
   [BLOCKCHAIN_NAME.HORIZEN]: `${basePath}horizen.svg`,
   [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
+  [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.png`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.png`
 };
