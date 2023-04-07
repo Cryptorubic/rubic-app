@@ -883,11 +883,11 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
-    baseUrl: 'https://zkscan.io/explorer/',
+    baseUrl: 'https://explorer.zksync.io/',
     nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'accounts/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
-    [ADDRESS_TYPE.BLOCK]: 'blocks/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
