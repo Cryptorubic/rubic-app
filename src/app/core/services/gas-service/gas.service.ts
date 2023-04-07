@@ -16,7 +16,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.FANTOM,
   BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.OPTIMISM,
-  BLOCKCHAIN_NAME.ARBITRUM
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -65,7 +66,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -76,7 +78,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
       [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
-      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this)
+      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
+      [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -259,5 +262,16 @@ export class GasService {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })
     );
+  }
+
+  /**
+   * Gets ZkSync gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchZkSyncGas(): Observable<number> {
+    return of(0.25);
   }
 }

@@ -23,7 +23,7 @@
     grid-gap: 20px;
     align-items: center;
 
-    width: calc(33% - 15px);
+    min-width: calc(33% - 15px);
     padding: 5px 10px;
   }
 }
