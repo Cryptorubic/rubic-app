@@ -164,5 +164,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ASTRO_SWAP
     ]),
     [BLOCKCHAIN_NAME.SYSCOIN]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.PEGASYS]),
-    [BLOCKCHAIN_NAME.ASTAR_EVM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ARTH_SWAP])
+    [BLOCKCHAIN_NAME.ASTAR_EVM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ARTH_SWAP]),
+    [BLOCKCHAIN_NAME.ZK_SYNC]: []
   };
