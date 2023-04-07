@@ -96,7 +96,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
 
     const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
-      calculatedTrade.trade.from.tokenAmount.toNumber()
+      calculatedTrade.trade.from.tokenAmount
     );
 
     if (
