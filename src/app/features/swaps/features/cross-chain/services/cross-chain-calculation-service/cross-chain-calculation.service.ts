@@ -1,7 +1,6 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BlockchainName,
-  BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
@@ -88,26 +87,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
-    const isEvmFromBlockchain = BlockchainsInfo.isEvmBlockchainName(
-      calculatedTrade.trade.from.blockchain
-    );
-    const isEvmToBlockchain = BlockchainsInfo.isEvmBlockchainName(
-      calculatedTrade.trade.to.blockchain
-    );
-
-    const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
-      calculatedTrade.trade.from.tokenAmount
-    );
-
-    if (
-      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-      totalInputAmountInUSD.gt(100)
-    ) {
-      return (
-        (isEvmFromBlockchain && isEvmToBlockchain) ||
-        (!isEvmFromBlockchain && isEvmToBlockchain) ||
-        (isEvmFromBlockchain && !isEvmToBlockchain)
-      );
+    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+      return false;
     }
 
     return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
