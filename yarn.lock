@@ -13202,10 +13202,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.0-beta.9:
-  version "4.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.0-beta.9.tgz#e96918ab395a8110ff52f116d17c08cdb66d67df"
-  integrity sha512-wQ4xM5GCeAzMAwvOAX3a9oY+Uw+NhTvaCf4DawRaRdh+6ev61osZ7ghBE9zoV7FByYg5kAukRdtKqtYE6XDIvw==
+rubic-sdk@4.1222.0-alpha:
+  version "4.1222.0-alpha"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.1222.0-alpha.tgz#790aa3a9e8a07a2c13bcf839599cc6e79e210ed2"
+  integrity sha512-nUtUJTEcz+CecOR07B0abzMNndMRoWae5+QQSS2XoR8VEoRaV3J16FgEZJRVwS9MZ6VXFa46t222lLl+RqePMQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
@@ -13222,7 +13222,7 @@ rubic-sdk@4.0.0-beta.9:
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "^7.8.0"
-    symbiosis-js-sdk "^2.9.6"
+    symbiosis-js-sdk "^2.9.35"
     tronweb "^4.3.0"
     web3 "^1.8.1"
 
@@ -14434,10 +14434,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.9.6:
-  version "2.9.7"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.7.tgz#0609cf02c183946b5c3529feaf7eba7f2a2c1f13"
-  integrity sha512-LrM4WNoNRfv0exzL59mjleIbrIG81hLEbH+3OCrUM24n3WeEZaEH/eHeDTTn05hWz2/aFd3YSMLy5s+naOpZQg==
+symbiosis-js-sdk@^2.9.35:
+  version "2.9.35"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.35.tgz#b7b13b2fc671e79b761ad3c703b9c1846c5230a8"
+  integrity sha512-vI8PphWsGZQOTHACVJ5vN3CV5v/CX4j2j+OpjFmZ9Uk/9++psms9p8Moit50CteAmhATYZ9Sv5HuzpF3voWO4Q==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
