@@ -19,11 +19,16 @@ export class SdkLoaderService {
 
   public async initSdk(): Promise<void> {
     this.subscribeOnAddressChange();
-    await this.sdkService.initSDK(
-      new URLSearchParams(this.window.location.search).get('feeTarget') ||
-        new URLSearchParams(this.window.location.search).get('providerAddress')
-    );
-    this.loadUser();
+    const urlParams = new URLSearchParams(this.window.location.search);
+    const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
+    const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
+    const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+
+    await this.sdkService.initSDK({
+      crossChainIntegratorAddress: crossChainProvider,
+      onChainIntegratorAddress: onChainProvider
+    });
+    await this.loadUser();
   }
 
   private async loadUser(): Promise<void> {
