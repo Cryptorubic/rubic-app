@@ -335,6 +335,10 @@ app-analytics-link {
 
       &::before {
         left: 20px;
+
+        @include hide-unused-ui {
+          left: 0;
+        }
       }
 
       &::after {
