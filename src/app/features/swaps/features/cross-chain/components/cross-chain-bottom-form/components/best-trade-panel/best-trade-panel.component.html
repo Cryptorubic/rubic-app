@@ -35,7 +35,9 @@
         </div>
       </div>
 
-      <ng-container *ngIf="isMobile$ | async; then routeMobile; else routeDesktop"></ng-container>
+      <ng-container
+        *ngIf="(isMobile$ | async) && !hideUnusedUI; then routeMobile; else routeDesktop"
+      ></ng-container>
 
       <ng-template #routeDesktop>
         <ng-container *ngIf="selectedTrade?.route as route">

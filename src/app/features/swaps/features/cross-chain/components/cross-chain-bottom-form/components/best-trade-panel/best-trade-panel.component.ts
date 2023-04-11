@@ -17,6 +17,7 @@ import { ThemeService } from '@core/services/theme/theme.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { CrossChainTaggedTrade } from '../../../../models/cross-chain-tagged-trade';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-best-trade-panel',
@@ -53,6 +54,8 @@ export class BestTradePanelComponent {
 
   public readonly theme$ = this.themeService.theme$;
 
+  public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly crossChainFormService: CrossChainFormService,
@@ -62,7 +65,8 @@ export class BestTradePanelComponent {
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Self() protected readonly destroy$: TuiDestroyService,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.formSubscribe();
   }
