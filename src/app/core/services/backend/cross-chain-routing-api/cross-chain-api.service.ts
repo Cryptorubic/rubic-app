@@ -62,7 +62,11 @@ export class CrossChainApiService {
    * Sends request to add trade.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
+  public async createTrade(
+    hash: string,
+    trade: CrossChainTrade,
+    isSwapAndEarnSwapTrade: boolean
+  ): Promise<void> {
     const {
       fromBlockchain,
       toBlockchain,
@@ -89,7 +93,9 @@ export class CrossChainApiService {
     };
 
     await firstValueFrom(
-      this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000))
+      this.httpService
+        .post<void>(`${this.apiEndpoint}?valid=${isSwapAndEarnSwapTrade}`, tradeInfo)
+        .pipe(delay(1000))
     );
   }
 

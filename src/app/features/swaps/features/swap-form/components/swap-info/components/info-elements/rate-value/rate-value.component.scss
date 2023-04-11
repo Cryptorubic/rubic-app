@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  align-items: center;
+}
+
+.rate-switcher {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}

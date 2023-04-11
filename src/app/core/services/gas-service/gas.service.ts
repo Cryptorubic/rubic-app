@@ -15,7 +15,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.TELOS,
   BLOCKCHAIN_NAME.FANTOM,
   BLOCKCHAIN_NAME.ETHEREUM_POW,
-  BLOCKCHAIN_NAME.OPTIMISM
+  BLOCKCHAIN_NAME.OPTIMISM,
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -63,7 +65,9 @@ export class GasService {
       [BLOCKCHAIN_NAME.TELOS]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -73,7 +77,9 @@ export class GasService {
       [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
       [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
-      [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this)
+      [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
+      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
+      [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -194,11 +200,11 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchTelosGas(): Observable<number | null> {
-    return of(500);
+    return of(510);
   }
 
   /**
-   * Gets Fantom gas from gas station api.
+   * Gets Fantom gas from gas statнion api.
    * @return Observable<number> Average gas price in Gwei.
    */
   @Cacheable({
@@ -240,5 +246,32 @@ export class GasService {
   })
   private fetchOptimismGas(): Observable<number> {
     return of(500);
+  }
+
+  /**
+   * Gets Ethereum PoW gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchArbitrumGas(): Observable<number | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
+      })
+    );
+  }
+
+  /**
+   * Gets ZkSync gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchZkSyncGas(): Observable<number> {
+    return of(0.25);
   }
 }

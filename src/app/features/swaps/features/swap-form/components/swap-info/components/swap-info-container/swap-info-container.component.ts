@@ -2,17 +2,22 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
+  Optional,
   Self
 } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SwapInfoService } from '@features/swaps/features/swap-form/components/swap-info/services/swap-info.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
+import { PolymorpheusInput } from '@app/shared/decorators/polymorpheus-input';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-swap-info-container',
@@ -22,17 +27,23 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
   providers: [TuiDestroyService]
 })
 export class SwapInfoContainerComponent implements OnInit {
-  @Input() public swapType: SWAP_PROVIDER_TYPE;
+  @PolymorpheusInput()
+  @Input()
+  swapType: SWAP_PROVIDER_TYPE;
 
-  @Input() public currentInstantTradeInfo: InstantTradeInfo;
+  @PolymorpheusInput()
+  @Input()
+  currentInstantTradeInfo: InstantTradeInfo;
 
-  @Input() private set tradeStatus(status: TRADE_STATUS) {
+  @PolymorpheusInput()
+  @Input()
+  private set tradeStatus(status: TRADE_STATUS) {
     if (status === TRADE_STATUS.LOADING) {
       this.loading = true;
     }
   }
 
-  public loading: boolean;
+  public loading = false;
 
   public accordionOpened = false;
 
@@ -48,21 +59,35 @@ export class SwapInfoContainerComponent implements OnInit {
     );
   }
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<
+      void,
+      {
+        swapType: SWAP_PROVIDER_TYPE;
+        currentInstantTradeInfo: InstantTradeInfo;
+        tradeStatus: TRADE_STATUS;
+      }
+    >,
     private readonly cdr: ChangeDetectorRef,
-    private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
+    private readonly headerStore: HeaderStore,
     @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    this.loading = false;
-  }
+  ) {}
 
   ngOnInit() {
-    this.swapFormService.outputValue$.pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
+    this.handleLoading();
+  }
 
-    this.swapInfoService.onInfoCalculated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.loading = false;
-      this.cdr.detectChanges();
-    });
+  private handleLoading(): void {
+    this.swapFormService.outputValue$
+      .pipe(watch(this.cdr), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
   }
 }

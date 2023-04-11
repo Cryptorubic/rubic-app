@@ -124,7 +124,6 @@ tui-loader {
   @include font(14px, 120%, 600, var(--primary-text));
 
   display: flex;
-  grid-gap: 12px;
   align-items: center;
   justify-content: center;
   width: 100%;

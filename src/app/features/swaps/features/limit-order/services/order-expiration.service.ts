@@ -1,10 +1,9 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { ExpirationCustomComponent } from '@features/swaps/features/limit-order/components/expiration-custom/expiration-custom.component';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable()
 export class OrderExpirationService {
@@ -20,7 +19,7 @@ export class OrderExpirationService {
   }
 
   constructor(
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     private readonly windowWidthService: WindowWidthService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
@@ -30,11 +29,13 @@ export class OrderExpirationService {
   }
 
   public openExpirationCustomModal(): Observable<unknown> {
-    return this.dialogService.open(
-      new PolymorpheusComponent(ExpirationCustomComponent, this.injector),
+    return this.dialogService.showDialog(
+      ExpirationCustomComponent,
       {
-        size: this.windowWidthService.windowSize <= WindowSize.TABLET ? 'page' : 's'
-      }
+        size: this.windowWidthService.windowSize <= WindowSize.TABLET ? 'page' : 's',
+        fitContent: true
+      },
+      this.injector
     );
   }
 }

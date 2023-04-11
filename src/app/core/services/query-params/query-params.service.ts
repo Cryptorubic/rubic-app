@@ -13,6 +13,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
+import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class QueryParamsService {
   private readonly _queryParams$ = new BehaviorSubject<QueryParams>({});
 
   public readonly queryParams$ = this._queryParams$.asObservable();
+
+  public testMode: boolean = false;
 
   public get queryParams(): QueryParams | undefined {
     return this._queryParams$.value;
@@ -45,9 +48,13 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public isDesktop: boolean;
+
   public domain: string;
 
   public disabledProviders: CrossChainTradeType[] | undefined;
+
+  public disabledLifiBridges: LifiBridgeTypes[] | undefined;
 
   public enabledProviders: CrossChainTradeType[] | undefined;
 
@@ -72,7 +79,9 @@ export class QueryParamsService {
       return;
     }
 
+    this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
+    this.isDesktop = queryParams.isDesktop === 'true';
     this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setIframeInfo(queryParams);
@@ -81,6 +90,10 @@ export class QueryParamsService {
       this.setEnabledProviders(queryParams.enabledProviders);
       this.setDisabledProviders(queryParams.enabledProviders);
       this.enabledBlockchains = queryParams.enabledBlockchains;
+    }
+
+    if (queryParams.disabledLifiBridges) {
+      this.setDisabledLifiBridges(queryParams.disabledLifiBridges);
     }
 
     this.queryParams = queryParams;
@@ -95,6 +108,13 @@ export class QueryParamsService {
       queryParams: this.queryParams,
       queryParamsHandling: 'merge'
     });
+  }
+
+  private setDisabledLifiBridges(disabledBridges: string[]): void {
+    const bridges = Object.values(LifiBridgeTypes) || [];
+    this.disabledLifiBridges = bridges.filter(bridge =>
+      disabledBridges.includes(bridge.toLowerCase())
+    );
   }
 
   private setDisabledProviders(enabledProviders: string[]): void {
@@ -230,27 +250,5 @@ export class QueryParamsService {
     image.style.background = 'rgb(255, 255, 255)';
     image.style.background = stringToTest;
     return image.style.background !== 'rgb(255, 255, 255)';
-  }
-
-  /**
-   * Clears all near query params.
-   */
-  private clearNearParams(): void {
-    this.patchQueryParams({
-      errorCode: null,
-      errorMessage: null,
-      toAmount: null,
-      transactionHashes: null,
-      walletAddress: null,
-      swap_type: null,
-      nearLogin: null,
-      account_id: null,
-      all_keys: null,
-      public_key: null
-    });
-  }
-
-  public getUrlSearchParam(key: string): string {
-    return new URLSearchParams(this.window.location.search).get(key) || undefined;
   }
 }

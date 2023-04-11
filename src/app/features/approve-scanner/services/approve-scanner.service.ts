@@ -28,7 +28,7 @@ import {
 } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpClient } from '@angular/common/http';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { Cacheable } from 'ts-cacheable';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import BigNumber from 'bignumber.js';
@@ -186,7 +186,6 @@ export class ApproveScannerService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpClient,
     @Inject(INJECTOR) private readonly injector: AngularInjector,
-    private readonly dialogService: TuiDialogService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly notificationsService: NotificationsService,

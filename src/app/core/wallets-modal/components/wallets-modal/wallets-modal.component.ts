@@ -10,8 +10,8 @@ import { USER_AGENT } from '@ng-web-apis/common';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainId, BlockchainName } from 'rubic-sdk';
@@ -25,6 +25,8 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -40,20 +42,18 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get providers(): ReadonlyArray<WalletProvider> {
-    const browserSupportedProviders = Boolean(this.window.chrome)
-      ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
-
     const deviceFiltered =
       this.isMobile && !this.iframeService.isIframe
-        ? browserSupportedProviders.filter(
-            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-          )
-        : browserSupportedProviders.filter(provider => !provider.mobileOnly);
+        ? this.allProviders.filter(provider => !provider.desktopOnly)
+        : this.allProviders.filter(provider => !provider.mobileOnly);
 
-    return this.iframeService.isIframe && this.iframeService.device === 'mobile'
-      ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
-      : deviceFiltered;
+    if (this.queryParamsService.hideUnusedUI && !this.queryParamsService.isDesktop) {
+      return deviceFiltered.filter(provider => provider.supportsInIframe);
+    } else {
+      return this.iframeService.isIframe && this.iframeService.device === 'mobile'
+        ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
+        : deviceFiltered;
+    }
   }
 
   public get isMobile(): boolean {
@@ -75,7 +75,7 @@ export class WalletsModalComponent implements OnInit {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
@@ -85,7 +85,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   ngOnInit() {
@@ -114,7 +115,7 @@ export class WalletsModalComponent implements OnInit {
 
   private async redirectToMetamaskBrowser(): Promise<void> {
     const queryUrl = `${this.window.location.host}${this.window.location.search}`;
-    this.window.location.assign(`metamask://dapp/${queryUrl}`);
+    this.window.location.assign(`https://metamask.app.link/dapp/${queryUrl}`);
     await new Promise<void>(resolve => {
       setTimeout(() => {
         this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
@@ -155,13 +156,15 @@ export class WalletsModalComponent implements OnInit {
       provider === WALLET_NAME.WALLET_LINK
     ) {
       this.dialogService
-        .open<BlockchainName>(
-          new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
+        .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
+          CoinbaseConfirmModalComponent,
           {
             dismissible: true,
             label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
-            size: 'm'
-          }
+            size: 'm',
+            fitContent: true
+          },
+          this.injector
         )
         .subscribe({
           next: async blockchainName => {
@@ -194,9 +197,14 @@ export class WalletsModalComponent implements OnInit {
 
   private openIframeWarning(): void {
     this.dialogService
-      .open<boolean>(new PolymorpheusComponent(IframeWalletsWarningComponent, this.injector), {
-        size: 'fullscreen'
-      })
+      .showDialog<IframeWalletsWarningComponent, boolean>(
+        IframeWalletsWarningComponent,
+        {
+          size: 'fullscreen',
+          fitContent: true
+        },
+        this.injector
+      )
       .subscribe(confirm => {
         if (confirm) {
           this.connectProvider(WALLET_NAME.METAMASK);

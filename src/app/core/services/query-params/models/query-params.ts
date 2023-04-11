@@ -41,6 +41,8 @@ interface AllQueryParams {
   tokenSearch: string;
   rubicLink: string;
   domain: string;
+  disabledLifiBridges: string[];
+  testMode: string;
 
   // Near specific query params.
   // Transaction.

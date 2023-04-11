@@ -1,0 +1,24 @@
+@use 'src/scss/core' as *;
+@use '../styles';
+
+::ng-deep .modal__content {
+  padding: 20px !important;
+}
+
+.modal {
+  &__point {
+    &-subtitle {
+      max-width: 91%;
+
+      line-height: 160%;
+
+      &_green {
+        color: $primary-color;
+      }
+    }
+  }
+
+  &__footer {
+    margin-bottom: 25px;
+  }
+}

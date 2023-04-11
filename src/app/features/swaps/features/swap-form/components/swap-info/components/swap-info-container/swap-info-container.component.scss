@@ -58,6 +58,10 @@
       background: transparent !important;
       border-color: unset;
       border-radius: $border-radius-2;
+
+      @include b($mobile-md) {
+        background: var(--form-background);
+      }
     }
   }
 
@@ -73,6 +77,10 @@
 
 .swaps-info {
   color: var(--primary-text);
+
+  @include b($mobile-md) {
+    padding: 1rem 20px;
+  }
 
   &__title {
     margin: 0;

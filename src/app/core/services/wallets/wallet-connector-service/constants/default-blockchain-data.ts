@@ -5,6 +5,7 @@ interface DefaultBlockchainData {
   rpc: string;
 }
 
+// TODO: remove Partial
 export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlockchainData>> = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     name: 'Binance Smart Chain Mainnet',
@@ -101,5 +102,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SYSCOIN]: {
     name: 'Syscoin',
     rpc: 'https://rpc.syscoin.org'
+  },
+  [BLOCKCHAIN_NAME.ASTAR_EVM]: {
+    name: 'Astar EVM',
+    rpc: 'https://evm.astar.network/'
   }
 };

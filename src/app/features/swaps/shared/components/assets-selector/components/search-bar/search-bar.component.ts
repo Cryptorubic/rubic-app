@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { map } from 'rxjs/operators';
+import { HeaderStore } from '@core/header/services/header.store';
+import { TuiSizeS } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-search-bar',
@@ -22,9 +24,12 @@ export class SearchBarComponent {
     )
   );
 
+  public searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
+
   constructor(
     private readonly searchQueryService: SearchQueryService,
-    private readonly assetsSelectorService: AssetsSelectorService
+    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   /**

@@ -6,4 +6,5 @@ export interface OnramperRecentTrade extends CommonRecentTrade {
   nativeAmount?: string;
 
   txId: string;
+  amountOutMin?: string;
 }

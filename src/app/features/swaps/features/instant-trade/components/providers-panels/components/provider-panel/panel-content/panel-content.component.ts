@@ -13,6 +13,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-panel-content',
@@ -28,19 +29,25 @@ export class PanelContentComponent implements OnInit {
 
   @Input() public isBestProvider: boolean;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   public displayGas: boolean;
 
   private toToken: TokenAmount;
 
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly swapFormService: SwapFormService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
-    this.displayGas = this.tradePanelData?.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
+    this.initProviderInfo();
+  }
 
+  private initProviderInfo(): void {
+    this.displayGas = this.tradePanelData?.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
     this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       const { toToken } = form;
       if (this.toToken?.price !== toToken?.price) {

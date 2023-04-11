@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -14,7 +15,9 @@ export class UserBalanceContainerComponent {
 
   @Output() public maxButtonClickEvent: EventEmitter<void>;
 
-  constructor() {
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(private readonly headerStore: HeaderStore) {
     this.maxButtonClickEvent = new EventEmitter<void>();
   }
 

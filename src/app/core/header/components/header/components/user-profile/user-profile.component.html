@@ -1,9 +1,21 @@
-<app-dropdown-selector
-  *noFrame
-  (opened)="getDropdownStatus($event)"
-  [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownItems"
-></app-dropdown-selector>
+<ng-container *noFrame>
+  <ng-container *ngIf="isMobile$ | async; then profileMobile; else profileDesktop"></ng-container>
+</ng-container>
+
+<ng-template #profileDesktop>
+  <app-dropdown-selector
+    *noFrame
+    (opened)="getDropdownStatus($event)"
+    [dropdownButtonTemplate]="dropdownButtonTemplate"
+    [dropdownOptionsTemplates]="dropdownItems"
+  ></app-dropdown-selector>
+</ng-template>
+
+<ng-template #profileMobile>
+  <button (click)="openProfileModal()">
+    <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>
+  </button>
+</ng-template>
 
 <ng-template #dropdownButtonTemplate>
   <div class="user-profile">

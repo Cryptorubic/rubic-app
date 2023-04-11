@@ -8,6 +8,8 @@
 }
 
 :host {
+  --tx-height: 82px;
+  --tx-list-height: calc(var(--tx-height) * 3 + 1px);
   position: relative;
 
   display: block;
@@ -15,6 +17,10 @@
   max-width: 1117px;
   min-height: 382px;
   margin: 0 auto;
+
+  @include b($mobile-md) {
+    min-height: unset;
+  }
 }
 
 .title {
@@ -29,10 +35,14 @@
     font-size: 20px;
     line-height: 24px;
   }
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .description {
-  @include font(16px, 19px, 500, #A2A1A5);
+  @include font(16px, 19px, 500, #a2a1a5);
   margin-bottom: 32px;
 
   @include b($tablet) {
@@ -41,19 +51,25 @@
     font-size: 13px;
     line-height: 16px;
   }
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .table {
   width: 100%;
 
-  th { font-weight: normal; }
+  th {
+    font-weight: normal;
+  }
 
   &__tr_head {
     background: rgba(255, 255, 255, 0.1);
   }
 
   .table__th {
-    @include font(14px, 17px, 400, #A2A1A5);
+    @include font(14px, 17px, 400, #a2a1a5);
     padding: 16px;
 
     text-align: left;
@@ -66,8 +82,6 @@
       border-color: transparent;
       border-left-style: solid;
       border-top-left-radius: 10px;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
       border-bottom-left-radius: 10px;
     }
 
@@ -75,8 +89,6 @@
       border-color: transparent;
       border-left-style: solid;
       border-top-right-radius: 10px;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
       border-bottom-right-radius: 10px;
     }
   }
@@ -86,12 +98,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 340px;
+  max-width: 360px;
   margin: auto;
   padding: 64px 0;
 
+  @include b($mobile-md) {
+    max-width: 340px;
+    min-height: var(--tx-list-height);
+    max-height: var(--tx-list-height);
+  }
+
   &__title {
-    @include font(16px, 18px, 500, #8E8D91);
+    @include font(16px, 18px, 500, #8e8d91);
     margin-bottom: 24px;
 
     text-align: center;
@@ -104,5 +122,14 @@
   &__navigate {
     width: 100%;
     max-width: 218px;
+
+    @include b($mobile-md) {
+      max-width: unset;
+    }
   }
+}
+
+tui-scrollbar {
+  min-height: var(--tx-list-height);
+  max-height: var(--tx-list-height);
 }

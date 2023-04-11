@@ -67,21 +67,26 @@
     padding: 5px 10px !important;
 
     > * {
-      transform: scale(0.75);
-
       @include iframe {
         transform: unset;
       }
     }
   }
 
-  @include iframe {
+  @include b($mobile-md) {
+    .rubic-header-mobile {
+      transform: unset;
+    }
+  }
 
+  @include iframe {
     margin-right: 50px;
     padding: 0 !important;
+  }
 
+  @include iframe-horizontal {
     app-iframe-logout-button {
-      margin-left: 6px;
+      margin-left: 10px;
     }
   }
 
@@ -108,6 +113,12 @@
 
       &-user {
         margin-left: 6px;
+      }
+    }
+
+    @include iframe-vertical {
+      &-user {
+        margin-left: 0;
       }
     }
   }
@@ -149,6 +160,10 @@
     flex-shrink: 0;
     margin: 0 25px;
   }
+
+  &-mobile {
+    display: none;
+  }
 }
 
 .notification-counter {
@@ -172,7 +187,6 @@
     padding: 21px 20px 19px;
 
     &__profile-trades,
-    &__profile-user,
     &__login,
     &__nav {
       display: none;
@@ -198,19 +212,65 @@
 
 @include b($mobile-md) {
   .rubic-header {
+    &-mobile {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 99999;
+
+      display: flex;
+    }
+
+    &__profile-user {
+      display: block;
+
+      transform: scale(0.9);
+    }
+
+    &__login {
+      display: none;
+    }
+
+    &__menu {
+      display: none;
+    }
+
+    &__settings {
+      display: none;
+    }
+
+    &__logo_hide {
+      display: none;
+    }
+
+    app-points-button {
+      display: none;
+    }
+  }
+
+  .point-button_show {
+    display: block !important;
+    margin-left: 5px;
+
+    transform: scale(0.9);
+  }
+}
+
+@include b($mobile-md) {
+  .rubic-header {
     &__logo {
       img {
-        width: 95px;
+        margin-left: 3px;
       }
     }
 
     &__buy-token {
-      margin-right: 15px;
-      margin-left: 15px;
+      display: none;
     }
 
     ::ng-deep &__buy-token {
-      button[tuiButton][data-tui-host-size=l] {
+      button[tuiButton][data-tui-host-size='l'] {
         height: 40px;
 
         font-size: 14px;

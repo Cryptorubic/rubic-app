@@ -27,7 +27,7 @@ $token-card-height: 55px;
   }
 
   @include iframe-vertical {
-    height: 350px;
+    height: 210px;
   }
 
   @include iframe-horizontal {
@@ -59,6 +59,13 @@ tui-loader {
     border-radius: 15px;
 
     cursor: pointer;
+
+    @include b($mobile-md) {
+      padding: 0.5rem 1rem;
+
+      background-color: transparent;
+      border: 1px solid var(--transparent-line);
+    }
 
     &:not(:last-child) {
       margin-bottom: 15px;
@@ -154,7 +161,7 @@ tui-loader {
 
       border: 0;
       cursor: default;
-    
+
       &:hover {
         background-color: unset;
       }
@@ -192,8 +199,8 @@ tui-loader {
       width: 100%;
       padding: 0 0 5px 24px;
 
-      @include b($mobile-sm-middle) {
-        padding-left: 10px;
+      @include b($mobile-md) {
+        padding: 0 0 0 16px;
       }
     }
   }

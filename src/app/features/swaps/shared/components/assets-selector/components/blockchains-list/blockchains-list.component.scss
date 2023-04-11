@@ -2,31 +2,14 @@
 
 .list-container {
   display: flex;
-
   height: 100%;
+
+  &__search {
+    display: none;
+  }
 
   &__back-button {
     margin: 16px 0 0 23px;
-
-    @include b($mobile-md-minus) {
-      margin-top: 21px;
-    }
-
-    @include b($mobile-sm-middle) {
-      margin-left: 10px;
-    }
-  }
-}
-
-.scrollbar {
-  width: 100%;
-  height: calc(100% - 15px);
-  margin-top: 10px;
-  padding: 0 0 10px 15px;
-
-  @include b($mobile-md-minus) {
-    height: calc(100% - 20px);
-    margin-top: 15px;
   }
 }
 
@@ -40,16 +23,8 @@
     grid-gap: 20px;
     align-items: center;
 
-    width: calc(33% - 15px);
+    min-width: calc(33% - 15px);
     padding: 5px 10px;
-
-    @include b($tablet) {
-      width: calc(50% - 15px);
-    }
-
-    @include b($mobile-sm-plus) {
-      width: calc(100% - 15px);
-    }
   }
 }
 
@@ -82,5 +57,77 @@
   &__label {
     font-size: 16px;
     line-height: 20px;
+  }
+}
+
+.scrollbar {
+  width: 100%;
+  height: calc(100% - 15px);
+  margin-top: 10px;
+  padding: 0 0 10px 15px;
+}
+
+@include b($tablet) {
+  .list {
+    &__item {
+      width: calc(50% - 15px);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .list-container {
+    flex-direction: column;
+
+    &__search {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+
+      display: block;
+      padding: 1rem;
+
+      background: var(--form-background);
+    }
+
+    &__back-button {
+      display: none;
+    }
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    row-gap: 15px;
+
+    &__item {
+      padding: 0.5rem 1rem;
+
+      background-color: var(--form-background);
+      border: 1px solid var(--transparent-line);
+    }
+  }
+
+  .item {
+    width: calc(100% - 15px);
+  }
+}
+
+@include b($mobile-md-minus) {
+  .scrollbar {
+    height: calc(100% - 20px);
+    margin-top: 0;
+    padding: 0 0 40px 15px;
+  }
+}
+
+
+@include b($mobile-sm) {
+  .list {
+    &__item {
+      gap: 10px;
+      padding: 0.5rem;
+    }
   }
 }

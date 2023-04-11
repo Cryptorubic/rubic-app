@@ -1,6 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { OptionsComponent } from '@core/header/models/settings-component';
+import { HeaderStore } from '@core/header/services/header.store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-settings-element',
@@ -17,5 +21,14 @@ export class SettingsElementComponent {
 
   @Input() withAction: boolean;
 
-  constructor() {}
+  public readonly isMobile = this.headerStore.isMobile;
+
+  public readonly isDark$: Observable<boolean> = this.themeService.theme$.pipe(
+    map(theme => theme === 'dark')
+  );
+
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private readonly themeService: ThemeService
+  ) {}
 }
