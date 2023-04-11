@@ -6,4 +6,7 @@ export interface IframeParameters {
   providerAddress?: string;
   tokenSearch?: boolean;
   rubicLink?: boolean;
+
+  crossChainIntegratorAddress?: string;
+  onChainIntegratorAddress?: string;
 }
