@@ -82,10 +82,6 @@
   @include iframe {
     margin-right: 50px;
     padding: 0 !important;
-
-    app-iframe-logout-button {
-      margin-left: 6px;
-    }
   }
 
   @include iframe-horizontal {
@@ -117,6 +113,12 @@
 
       &-user {
         margin-left: 6px;
+      }
+    }
+
+    @include iframe-vertical {
+      &-user {
+        margin-left: 0;
       }
     }
   }
