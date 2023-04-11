@@ -43,6 +43,10 @@ export class AssetTypesAsideComponent {
 
       const showFiats = this.showFiats ? 1 : 0;
 
+      if (this.queryParamsService.hideUnusedUI && this.blockchainsAmount === 10) {
+        return 10;
+      }
+
       if (windowSize >= WindowSize.MOBILE_MD) {
         return 9 - showFiats;
       }
