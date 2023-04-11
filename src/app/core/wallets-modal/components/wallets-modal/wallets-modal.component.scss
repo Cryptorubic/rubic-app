@@ -39,6 +39,11 @@
 
   &__privacy-policy {
     margin-bottom: 10px;
+
+    @include hide-unused-ui {
+      max-width: 380px;
+      margin: 0 auto 10px;
+    }
   }
 
   &__content {
