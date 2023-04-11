@@ -60,9 +60,13 @@ export class BlockchainsListService {
       ? limitOrderSupportedBlockchains
       : blockchainsList;
     if (this.queryParamsService.enabledBlockchains) {
-      blockchains = blockchains.filter(blockchain =>
-        this.queryParamsService.enabledBlockchains.includes(blockchain)
-      );
+      blockchains = blockchains.filter(blockchain => {
+        if (this.queryParamsService.hideUnusedUI && blockchain === 'ASTAR') {
+          return false;
+        }
+
+        return this.queryParamsService.enabledBlockchains.includes(blockchain);
+      });
     }
 
     const { formType } = this.assetsSelectorService;

@@ -121,7 +121,13 @@
     <ng-template #swapInfoMobile>
       <button
         class="swap-info-container-mobile"
-        *ngIf="isFormFilled && !isOnramper && !isLimitOrder && tradeStatus !== TradeStatus.LOADING"
+        *ngIf="
+          isFormFilled &&
+          !isOnramper &&
+          !isLimitOrder &&
+          tradeStatus !== TradeStatus.LOADING &&
+          !hideUnusedUI
+        "
         (click)="openSwapInfo()"
       >
         <div>Transaction details</div>

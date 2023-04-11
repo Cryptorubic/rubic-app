@@ -54,6 +54,12 @@ tui-dialog {
       border: 0 !important;
     }
 
+    @include hide-unused-ui {
+      margin: 0 !important;
+
+      border: 0 !important;
+    }
+
     > .content {
       height: 100%;
       padding: 1.5em 1.5em 0 !important;
