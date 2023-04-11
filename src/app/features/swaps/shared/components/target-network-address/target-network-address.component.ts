@@ -18,9 +18,7 @@ import { combineLatestWith } from 'rxjs';
   providers: [TuiDestroyService]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address, {
-    asyncValidators: [getCorrectAddressValidator(this.swapFormService.inputValue)]
-  });
+  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address);
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 

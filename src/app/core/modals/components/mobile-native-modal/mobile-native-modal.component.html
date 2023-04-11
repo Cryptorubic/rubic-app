@@ -1,0 +1,25 @@
+<div class="mobile-native-backdrop" (click)="close()"></div>
+<div
+  class="mobile-native-content"
+  (tuiSwipe)="onSwipe($event, title, 'content')"
+  (click)="title === 'Expires in' ? toggle() : null"
+>
+  <div
+    class="mobile-native-chevron"
+    (click)="toggle()"
+    (tuiSwipe)="onSwipe($event, title, 'header')"
+  >
+    <div class="mobile-native-chevron-rectangle"></div>
+  </div>
+  <ng-container *ngIf="title">
+    <div class="mobile-native__header" (tuiSwipe)="onSwipe($event, title, 'header')">
+      <div class="mobile-native__back" *ngIf="context.previousComponent">
+        <app-back-button (onClick)="close()"></app-back-button>
+      </div>
+      <div class="mobile-native__title">{{ title }}</div>
+    </div>
+  </ng-container>
+  <div class="mobile-native-content__inner">
+    <div polymorpheus-outlet [content]="context.content" [context]="context"></div>
+  </div>
+</div>

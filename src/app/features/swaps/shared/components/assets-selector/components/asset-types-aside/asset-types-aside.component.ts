@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, Injector } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { AvailableBlockchain } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -11,6 +11,10 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
+import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
@@ -43,11 +47,10 @@ export class AssetTypesAsideComponent {
         return 9 - showFiats;
       }
 
-      const asideHeight = this.window.innerHeight - 135;
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return Math.floor(asideHeight / 82) - 1 - showFiats;
+        return this.blockchainsAmount;
       }
-      return Math.floor(asideHeight / 66) - 1 - showFiats;
+      return this.blockchainsAmount;
     })
   );
 
@@ -70,8 +73,12 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
-    private queryParamsService: QueryParamsService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly mobileNativeService: MobileNativeModalService,
+    private queryParamsService: QueryParamsService
   ) {}
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -95,7 +102,10 @@ export class AssetTypesAsideComponent {
       slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
     }
 
-    return slicedBlockchains;
+    return slicedBlockchains.map(blockchain => ({
+      ...blockchain,
+      label: blockchainShortLabel[blockchain.name]
+    }));
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {
@@ -116,5 +126,9 @@ export class AssetTypesAsideComponent {
 
   public openFiatsList(): void {
     this.assetsSelectorService.openFiatsList();
+  }
+
+  public toggleBlockchainList(): void {
+    this.modalService.openBlockchainList(this.injector);
   }
 }

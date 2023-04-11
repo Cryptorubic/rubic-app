@@ -186,8 +186,16 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.ASTAR]: {
+  [BLOCKCHAIN_NAME.ASTAR_EVM]: {
     baseUrl: 'https://blockscout.com/astar/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.ASTAR]: {
+    baseUrl: 'https://astar.subscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -879,6 +887,22 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: '',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.KAVA_COSMOS]: {
+    baseUrl: 'https://www.mintscan.io/kava/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'account/',
+    [ADDRESS_TYPE.TOKEN]: 'assets',
+    [ADDRESS_TYPE.TRANSACTION]: 'txs/',
+    [ADDRESS_TYPE.BLOCK]: 'blocks/'
+  },
+  [BLOCKCHAIN_NAME.ZK_SYNC]: {
+    baseUrl: 'https://explorer.zksync.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   }

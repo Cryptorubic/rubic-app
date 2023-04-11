@@ -14,7 +14,7 @@
     background: var(--secondary-background);
 
     border-radius: $border-radius-2;
-    
+
     &_pointer {
       cursor: pointer;
     }
@@ -34,5 +34,11 @@
         margin-bottom: 0;
       }
     }
+  }
+}
+
+@include b($mobile-md) {
+  .settings-list {
+    padding: 18px 20px;
   }
 }

@@ -1,0 +1,14 @@
+<div class="details-element">
+  <span class="details-element__title">{{ title }}</span>
+
+  <img
+    class="details-element__icon"
+    src="assets/images/swaps/swaps-info/question-icon.svg"
+    [alt]="title"
+    [tuiHint]="description"
+  />
+
+  <div class="details-element__value">
+    <ng-content></ng-content>
+  </div>
+</div>

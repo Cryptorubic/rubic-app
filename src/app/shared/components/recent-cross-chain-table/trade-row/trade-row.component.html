@@ -83,6 +83,7 @@
           <app-status-badge
             [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
             [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
+            [cursor]="uiTrade?.dstTxLink ? 'pointer' : null"
           ></app-status-badge>
         </a>
 
@@ -95,92 +96,89 @@
 </ng-container>
 
 <ng-template #mobile>
-  <div class="tx">
-    <div class="tx__row">
-      <div class="tx__row-label">{{ 'recentTrades.date' | translate }}</div>
-      <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        {{
-          (uiTrade?.timestamp | date : 'MMM dd, yyyy') +
-            ' at ' +
-            (uiTrade?.timestamp | date : 'h:mm')
-        }}
-      </div>
+  <div class="tx" style="flex-direction: column; gap: 10px; align-items: baseline">
+    <div style="width: 100%; text-align: left">
+      {{
+        (uiTrade?.timestamp | date : 'MMM dd, yyyy') + ' at ' + (uiTrade?.timestamp | date : 'h:mm')
+      }}
     </div>
+    <div class="mobile-recent">
+      <div class="mobile-recent-wrapper">
+        <div class="mobile-recent-container">
+          <img
+            class="tx__asset-image"
+            [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
+            [alt]="uiTrade?.fromAsset?.symbol"
+            (error)="onTokenImageError($event)"
+          />
+          <div class="asset__symbol">{{ uiTrade?.fromAsset?.symbol }}</div>
+          <div class="asset__asset-type">{{ fromAssetTypeName }}</div>
+        </div>
 
-    <div class="tx__row">
-      <div class="tx__row-label">{{ 'recentTrades.from' | translate }}</div>
-      <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <img
-          class="tx__asset-image"
-          [src]="uiTrade?.fromAsset?.image || defaultTokenImage"
-          [alt]="uiTrade?.fromAsset?.symbol"
-          (error)="onTokenImageError($event)"
-        />
-        <div class="tx__asset-symbol">{{ uiTrade?.fromAsset.symbol }}</div>
-        <div class="tx__asset-type">{{ fromAssetTypeName }}</div>
+        <div style="display: flex; position: relative">
+          <a
+            *ngIf="!showToContinue; else toContinue"
+            class="tx__status-from"
+            [class.hide-arrow]="changenowId || !uiTrade?.srcTxLink"
+            [href]="uiTrade?.srcTxLink"
+            target="_blank"
+            style="align-items: center"
+          >
+            <app-status-badge
+              [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
+              [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
+              [cursor]="uiTrade?.srcTxLink ? 'pointer' : null"
+            >
+            </app-status-badge>
+          </a>
+          <img
+            *ngIf="changenowId"
+            class="status-from-copy-icon-mobile"
+            src="assets/images/icons/copy.svg"
+            alt="Copy"
+            (click)="copyToClipboard()"
+            [tuiManualHint]="template"
+            [tuiManualHintShow]="hintShown"
+          />
+        </div>
+        <ng-template #toContinue>
+          <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
+        </ng-template>
       </div>
-    </div>
+      <div class="mobile-recent-wrapper">
+        <div class="mobile-recent-container">
+          <img
+            class="tx__asset-image"
+            [src]="uiTrade?.toToken?.image || defaultTokenImage"
+            [alt]="uiTrade?.toToken?.symbol"
+            (error)="onTokenImageError($event)"
+          />
+          <div class="asset__symbol">{{ uiTrade?.toToken?.symbol }}</div>
+          <div class="asset__asset-type">
+            {{ BLOCKCHAIN_LABEL?.[uiTrade?.toToken.blockchain] || uiTrade?.toToken.blockchain }}
+          </div>
+        </div>
 
-    <div class="tx__row">
-      <div class="tx__row-label">{{ 'recentTrades.statusFrom' | translate }}</div>
-      <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
         <a
+          *ngIf="!showToContinue; else toContinue"
           class="tx__status-from"
-          [href]="uiTrade?.srcTxLink"
+          [href]="uiTrade?.dstTxLink"
           target="_blank"
-          [class.hide-arrow]="!uiTrade?.srcTxLink"
+          [class.hide-arrow]="!uiTrade?.dstTxLink"
+          style="align-items: center"
         >
           <app-status-badge
-            [type]="uiTrade?.statusFrom | functionCall : getStatusBadgeType : this"
-            [text]="getFromStatusBadgeText(uiTrade?.statusFrom) | translate"
+            [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
+            [text]="getFromStatusBadgeText(uiTrade?.statusTo) | translate"
+            [cursor]="uiTrade?.dstTxLink ? 'pointer' : null"
           >
           </app-status-badge>
         </a>
+        <ng-template #toContinue>
+          <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
+        </ng-template>
       </div>
     </div>
-
-    <div class="tx__row">
-      <div class="tx__row-label">{{ 'recentTrades.to' | translate }}</div>
-      <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <img
-          class="tx__asset-image"
-          [src]="uiTrade?.toToken?.image || defaultTokenImage"
-          [alt]="uiTrade?.toToken?.symbol"
-          (error)="onTokenImageError($event)"
-        />
-        <div class="tx__asset-symbol">
-          {{ uiTrade?.toToken.symbol }}
-        </div>
-        <div class="tx__asset-type">
-          {{ uiTrade?.toBlockchain }}
-        </div>
-      </div>
-    </div>
-
-    <div class="tx__row">
-      <div class="tx__row-label">{{ 'recentTrades.statusTo' | translate }}</div>
-      <div class="tx__row-value" [class.tui-skeleton]="initialLoading">
-        <ng-container *ngIf="!showRevert; else revert">
-          <a
-            *ngIf="!showToContinue; else toContinue"
-            class="tx__status-to"
-            [href]="uiTrade?.dstTxLink"
-            target="_blank"
-            [class.hide-arrow]="!uiTrade?.dstTxHash"
-          >
-            <app-status-badge
-              [type]="uiTrade?.statusTo | functionCall : getStatusBadgeType : this"
-              [text]="getToStatusBadgeText(uiTrade?.statusTo) | translate"
-            ></app-status-badge>
-          </a>
-
-          <ng-template #toContinue>
-            <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>
-          </ng-template>
-        </ng-container>
-      </div>
-    </div>
-    <hr class="tx__divider" />
   </div>
 </ng-template>
 

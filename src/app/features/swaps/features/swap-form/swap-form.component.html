@@ -1,6 +1,6 @@
 <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
 
-<app-form-navigation *ngIf="!hideUnusedUI"></app-form-navigation>
+<app-form-navigation *ngIf="!hideUnusedUI" class="swap-form-navigation"></app-form-navigation>
 
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
   <ng-container *ngLet="onramperWidgetOpened$ | async as onramperWidgetOpened">
@@ -13,10 +13,17 @@
       [ngStyle]="{ 'background-color': backgroundColor }"
       [ngClass]="{
         'swap-form_extended': onramperWidgetOpened,
-        'swap-form_limit-order': isLimitOrder
+        'swap-form_limit-order': isLimitOrder,
+        'swap-form_onramper': isOnramper
       }"
     >
-      <header *noFrame class="swap-form__header">
+      <header
+        *noFrame
+        class="swap-form__header"
+        [ngClass]="{
+          'swap-form__header_onramper': isOnramper
+        }"
+      >
         <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
 
         <div class="swap-form__settings-wrapper">
@@ -96,11 +103,30 @@
   </ng-container>
 
   <ng-container *noFrame>
-    <app-swap-info-container
-      *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
-      [swapType]="swapType"
-      [currentInstantTradeInfo]="currentInstantTradeInfo"
-      [tradeStatus]="tradeStatus"
-    ></app-swap-info-container>
+    <ng-container
+      *ngIf="isMobile$ | async; then swapInfoMobile; else swapInfoDesktop"
+    ></ng-container>
+
+    <ng-template #swapInfoDesktop>
+      <div class="swap-info-container">
+        <app-swap-info-container
+          *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
+          [swapType]="swapType"
+          [currentInstantTradeInfo]="currentInstantTradeInfo"
+          [tradeStatus]="tradeStatus"
+        ></app-swap-info-container>
+      </div>
+    </ng-template>
+
+    <ng-template #swapInfoMobile>
+      <button
+        class="swap-info-container-mobile"
+        *ngIf="isFormFilled && !isOnramper && !isLimitOrder && tradeStatus !== TradeStatus.LOADING"
+        (click)="openSwapInfo()"
+      >
+        <div>Transaction details</div>
+        <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
+      </button>
+    </ng-template>
   </ng-container>
 </ng-container>

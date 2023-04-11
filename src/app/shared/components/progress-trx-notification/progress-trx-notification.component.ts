@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationContext } from '@shared/components/progress-trx-notification/models/progress-trx-notification-context';
-import { CommonModalService } from '@core/services/modal/common-modal.service';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'polymorpheus-progress-trx-notification',
@@ -16,7 +16,7 @@ export class ProgressTrxNotificationComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: ProgressTrxNotificationContext,
-    private readonly modalService: CommonModalService,
+    private readonly modalService: ModalService,
     private readonly windowWidthService: WindowWidthService
   ) {
     this.withRecentTrades = this.context.data?.withRecentTrades || false;

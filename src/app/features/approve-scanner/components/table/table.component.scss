@@ -25,7 +25,6 @@
 
     img {
       height: 16px;
-      margin-right: 10px;
     }
 
     a {
@@ -45,6 +44,12 @@
         filter: invert(1);
       }
     }
+  }
+
+  .image-wrapper {
+    display: flex;
+    width: 20px;
+    margin-right: 10px;
   }
 }
 

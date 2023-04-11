@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Injector, Inject } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiAppearance } from '@taiga-ui/core';
-import { WalletsModalService } from 'src/app/core/wallets-modal/services/wallets-modal.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-login-button',
@@ -16,10 +16,11 @@ export class LoginButtonComponent {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly walletsModalService: WalletsModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public showModal(): void {
-    this.walletsModalService.open$();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

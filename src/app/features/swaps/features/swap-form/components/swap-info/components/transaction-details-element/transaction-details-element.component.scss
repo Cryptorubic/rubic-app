@@ -1,0 +1,16 @@
+.details-element {
+  display: flex;
+  align-items: center;
+
+  font-size: 16px;
+
+  &__value {
+    margin-left: auto;
+  }
+
+  &__icon {
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+  }
+}

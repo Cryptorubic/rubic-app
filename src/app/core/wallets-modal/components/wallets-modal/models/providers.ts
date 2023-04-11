@@ -12,6 +12,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false,
+    supportsInIframe: false,
     disabled: false
   },
   {
@@ -24,19 +25,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false,
+    supportsInIframe: false,
     disabled: false
-  },
-  {
-    name: 'BitKeep',
-    value: WALLET_NAME.BITKEEP,
-    img: './assets/images/icons/wallets/bitkeep.svg',
-    desktopOnly: false,
-    mobileOnly: false,
-    display: true,
-    supportsInHorizontalIframe: true,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: false,
-    disabled: true
   },
   {
     name: 'Trust Wallet',
@@ -48,6 +38,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: false,
     disabled: false
   },
   {
@@ -60,6 +51,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: false,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
     disabled: false
   },
   {
@@ -72,6 +64,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
     disabled: false
   }
 ];

@@ -14,6 +14,7 @@ import { AssetsSelectorServices } from '@features/swaps/shared/components/assets
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'polymorpheus-assets-selector',
@@ -47,6 +48,8 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
 
   public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: AssetsSelectorComponentContext,
     private readonly tokensService: TokensService,
@@ -54,6 +57,7 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
     private readonly iframeService: IframeService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListTypeService: TokensListTypeService,
+    private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.initiateContextParams(context.data);

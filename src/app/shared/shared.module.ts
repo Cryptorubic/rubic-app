@@ -24,7 +24,8 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiManualHintModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiScrollbarModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
@@ -74,6 +75,8 @@ import { LoginButtonComponent } from '@core/header/components/header/components/
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
 import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cross-chain-table/recent-cross-chain-table.component';
 import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
+import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
+import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 
 @NgModule({
   declarations: [
@@ -112,6 +115,8 @@ import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/t
     SuccessOrderModalComponent,
     RecentCrossChainTableTxComponent,
     TradeRowComponent,
+    SwapAndEarnModalComponent,
+    SuccessWithdrawModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -158,7 +163,8 @@ import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/t
     TuiBadgeModule,
     TuiManualHintModule,
     TuiTagModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    TuiScrollbarModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -202,7 +208,9 @@ import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/t
     LoginButtonComponent,
     RecentCrossChainTableTxComponent,
     TradeRowComponent,
-    CommaToPeriodDirective
+    CommaToPeriodDirective,
+    SwapAndEarnModalComponent,
+    SuccessWithdrawModalComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

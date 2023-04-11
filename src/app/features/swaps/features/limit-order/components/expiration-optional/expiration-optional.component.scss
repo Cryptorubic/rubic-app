@@ -7,6 +7,10 @@
 
   background: var(--form-background);
 
+  @include b($mobile-md) {
+    width: 100%;
+  }
+
   &__option {
     display: flex;
     align-items: center;
@@ -17,6 +21,12 @@
     line-height: 120%;
 
     cursor: pointer;
+
+    @include b($mobile-md) {
+      padding: 2rem 1rem;
+
+      font-size: 1rem;
+    }
 
     &_highlighted {
       color: var(--primary-color);

@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, Injector } from '@angular/core';
 import { SwapButtonContainerService } from '@features/swaps/shared/components/swap-button-container/services/swap-button-container.service';
-import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-connect-wallet-button',
@@ -19,12 +19,13 @@ export class ConnectWalletButtonComponent {
 
   constructor(
     private readonly swapButtonContainerService: SwapButtonContainerService,
-    private readonly walletsModalService: WalletsModalService,
+    private readonly modalService: ModalService,
     private readonly authService: AuthService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public onLogin(): void {
-    this.walletsModalService.open().subscribe();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

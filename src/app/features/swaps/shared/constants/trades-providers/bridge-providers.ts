@@ -65,7 +65,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
 
   [BRIDGE_TYPE.CHANGENOW]: {
-    name: 'ChangeNow',
+    name: 'CN',
     image: `${imageBasePath}changenow.png`,
     color: '#8888bb'
   },
@@ -79,7 +79,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.MAKERS_WORMHOLE]: {
     name: `Maker's wormhole`,
     image: `${imageBasePath}wormhole.svg`,
-    color: ''
+    color: 'white'
   },
   [BRIDGE_TYPE.MULTICHAIN]: {
     name: 'Multichain',
@@ -151,7 +151,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.WORMHOLE]: {
     name: 'Wormhole',
     image: `${imageBasePath}wormhole.svg`,
-    color: ''
+    color: 'white'
   },
 
   [BRIDGE_TYPE.YPOOL]: {

@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { map, startWith } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
+import { HeaderStore } from '@core/header/services/header.store';
 import { BlockchainName, BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 
@@ -10,7 +12,8 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
   selector: 'app-cross-chain-bottom-form',
   templateUrl: './cross-chain-bottom-form.component.html',
   styleUrls: ['./cross-chain-bottom-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class CrossChainBottomFormComponent {
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
@@ -45,7 +48,10 @@ export class CrossChainBottomFormComponent {
     )
   );
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
+    private readonly headerStore: HeaderStore,
     private readonly settingsService: SettingsService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly swapFormService: SwapFormService
