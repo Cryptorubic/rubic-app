@@ -35,7 +35,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import {
   CrossChainCalculatedTrade,
@@ -205,6 +205,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
                         }
                       : null
                   };
+                }),
+                catchError(() => {
+                  return of({
+                    total,
+                    calculated,
+                    lastCalculatedTrade: null
+                  });
                 })
               );
             })

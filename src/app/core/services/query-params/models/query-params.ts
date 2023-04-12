@@ -42,6 +42,8 @@ interface AllQueryParams {
   rubicLink: string;
   disabledLifiBridges: string[];
   testMode: string;
+  crossChainIntegratorAddress: string;
+  onChainIntegratorAddress: string;
 }
 
 export type QueryParams = {
