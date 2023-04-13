@@ -1,0 +1,12 @@
+:host ::ng-deep {
+  [tuiButton] {
+    &._disabled {
+      tui-wrapper[data-appearance='accent'] {
+        color: white;
+
+        background-color: var(--tui-accent);
+      }
+    }
+  }
+
+}

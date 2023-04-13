@@ -1,0 +1,8 @@
+<app-rubic-button
+  *ngLet="buttonState$ | async as state"
+  [appearance]="state.isError ? 'accent' : 'primary'"
+  [loading]="loading$ | async"
+  [disabled]="state.isError"
+  (onClick)="handleClick(state.label)"
+  >{{ buttonStateNameMap[state.label] | translate }}
+</app-rubic-button>

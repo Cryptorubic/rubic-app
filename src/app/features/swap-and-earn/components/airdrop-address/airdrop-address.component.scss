@@ -1,0 +1,39 @@
+@use '../../../../../scss/core' as *;
+
+:host {
+  display: block;
+  width: 400px;
+
+  @include b($mobile-md-minus) {
+    width: 100%;
+  }
+}
+
+.description {
+  display: flex;
+  margin-top: 20px;
+  padding: 20px 30px;
+
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+
+  &__icon {
+    width: 22px;
+    margin-right: 30px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.copy-icon {
+  cursor: pointer;
+
+  pointer-events: all;
+}
