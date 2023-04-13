@@ -3,7 +3,7 @@
 :host {
   margin-right: 20px;
 
-  background-color: var(--tui-primary);
+  background-color: var(--primary-color);
   border-radius: 25px;
 
   ::ng-deep app-rubic-button {
@@ -13,6 +13,10 @@
       .content {
         font-size: 16px !important;
       }
+    }
+
+    tui-wrapper[data-appearance='secondary'] {
+      background-color: var(--primary-color) !important;
     }
   }
 }
