@@ -4,5 +4,5 @@
   [loading]="loading$ | async"
   [disabled]="state.isError"
   (onClick)="handleClick(state.label)"
-  >{{ buttonStateNameMap[state.label] | translate }}
+  >{{ state.translation | translate }}
 </app-rubic-button>

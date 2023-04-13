@@ -7,6 +7,6 @@ export const newRubicToken: Token = {
   decimals: 18,
   symbol: 'RBC',
   name: 'Rubic Token',
-  address: '0x3330BFb7332cA23cd071631837dC289B09C33333',
-  blockchain: BLOCKCHAIN_NAME.ETHEREUM
+  address: '0x780914dB0Ebe3c147C27F170b86D6D644cDD3f7A',
+  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
 };

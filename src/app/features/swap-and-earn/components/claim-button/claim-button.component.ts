@@ -17,6 +17,12 @@ type ButtonLabel =
   | 'claim'
   | 'incorrectAddressError';
 
+interface ButtonState {
+  label: ButtonLabel;
+  translation: string;
+  isError: boolean;
+}
+
 @Component({
   selector: 'app-claim-button',
   templateUrl: './claim-button.component.html',
@@ -33,13 +39,20 @@ export class ClaimButtonComponent {
     incorrectAddressError: 'airdrop.button.incorrectAddressError'
   };
 
-  public buttonState$: Observable<{ label: ButtonLabel; isError: boolean }> =
-    this.airdropService.isValid$.pipe(
-      combineLatestWith(this.authService.currentUser$, this.walletConnectorService.networkChange$),
-      map(([isValid, user, network]) => this.getButtonKey([isValid, user, network])),
-      map(buttonLabel => ({ label: buttonLabel, isError: this.getErrorState(buttonLabel) })),
-      startWith({ label: 'emptyError' as ButtonLabel, isError: false })
-    );
+  public buttonState$: Observable<ButtonState> = this.airdropService.isValid$.pipe(
+    combineLatestWith(this.authService.currentUser$, this.walletConnectorService.networkChange$),
+    map(([isValid, user, network]) => this.getButtonKey([isValid, user, network])),
+    map(buttonLabel => ({
+      label: buttonLabel,
+      translation: this.buttonStateNameMap[buttonLabel],
+      isError: this.getErrorState(buttonLabel)
+    })),
+    startWith({
+      label: 'emptyError' as ButtonLabel,
+      translation: this.buttonStateNameMap['emptyError'],
+      isError: false
+    })
+  );
 
   public readonly loading$ = this.airdropService.claimLoading$;
 
@@ -84,7 +97,7 @@ export class ClaimButtonComponent {
       return 'claim';
     }
 
-    const address = this.airdropService.airdropForm.controls.address.value;
+    const address = this.walletConnectorService.address;
     if (!Boolean(address)) {
       return 'emptyError';
     }

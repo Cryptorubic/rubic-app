@@ -14,7 +14,23 @@ interface SourceNode {
 
 @Injectable()
 export class AirdropMerkleService {
-  private readonly merkleTreeSource: { [Key: string]: SourceNode } = sourceAirdropMerkle;
+  private readonly claims: {
+    [Key: string]: {
+      index: number;
+      amount: string;
+      proof: string[];
+    };
+  } = sourceAirdropMerkle.claims;
+
+  private readonly correctMerkleTreeSource = Object.keys(this.claims).map(item => ({
+    item: {
+      index: this.claims[item].index,
+      balance: this.claims[item].amount
+    }
+  }));
+
+  private readonly merkleTreeSource: { [Key: string]: SourceNode } =
+    this.correctMerkleTreeSource[0];
 
   private readonly merkleTree = new BalanceTree(
     Object.entries(this.merkleTreeSource).map(([address, { balance }]) => ({

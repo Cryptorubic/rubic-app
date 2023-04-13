@@ -8,8 +8,6 @@ import { SwapAndEarnRoutingModule } from '@features/swap-and-earn/swap-and-earn-
 import { SwapAndEarnFaqComponent } from './components/swap-and-earn-faq/swap-and-earn-faq.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { AirdropPageComponent } from '@features/swap-and-earn/components/airdrop-page/airdrop-page.component';
-import { AirdropAddressComponent } from '@features/swap-and-earn/components/airdrop-address/airdrop-address.component';
 import { ClaimButtonComponent } from '@features/swap-and-earn/components/claim-button/claim-button.component';
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
@@ -25,8 +23,6 @@ import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/a
     SwapAndEarnPageComponent,
     SwapAndEarnFaqComponent,
     PointsContainerComponent,
-    AirdropPageComponent,
-    AirdropAddressComponent,
     ClaimButtonComponent,
     DifferentAddressesModalComponent,
     SuccessClaimModalComponent
