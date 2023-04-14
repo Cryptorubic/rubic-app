@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
+import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
+import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
-import { Observable } from 'rxjs';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
+import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
-import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
 
 type ButtonLabel =
   | 'login'
@@ -24,12 +25,14 @@ interface ButtonState {
 }
 
 @Component({
-  selector: 'app-claim-button',
-  templateUrl: './claim-button.component.html',
-  styleUrls: ['./claim-button.component.scss'],
+  selector: 'app-claim-contest-container',
+  templateUrl: './claim-contest-container.component.html',
+  styleUrls: ['./claim-contest-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClaimButtonComponent {
+export class ClaimContestContainerComponent {
+  public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
+
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
     claim: 'airdrop.button.claim',
@@ -58,6 +61,7 @@ export class ClaimButtonComponent {
 
   constructor(
     private readonly airdropService: AirdropFacadeService,
+    private readonly web3Service: AirdropWeb3Service,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly walletModalService: WalletsModalService

@@ -661,7 +661,7 @@
     "badAddress": "Sorry, this address is not eligible to claim any tokens",
     "button": {
       "login": "Connect Wallet",
-      "claim": "Claim Tokens",
+      "claim": "Claim",
       "wrongAddressError": "Enter another address",
       "emptyError": "Enter holder address",
       "changeNetwork": "Change Network to Ethereum",

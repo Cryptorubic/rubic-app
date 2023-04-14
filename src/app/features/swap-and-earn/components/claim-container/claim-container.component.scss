@@ -1,0 +1,28 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+::ng-deep tui-hints-host {
+  .t-tooltip {
+    font-size: 16px !important;
+  }
+}
+
+.claim {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 100px;
+  padding: 30px 23px;
+
+  font-weight: 700;
+  font-size: 16px;
+
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
+  border-radius: $border-radius-2;
+}

@@ -1,0 +1,37 @@
+<ng-container *ngLet="isAlreadyClaimed$ | async as isAlreadyClaimed">
+  <div class="contest">
+    <div class="contest__container">
+      <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
+        <span class="contest__round">Round #1</span>
+        <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
+          <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
+          250 RBC
+        </span>
+        <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
+          02.04.2023 - 12.05.2023
+        </div>
+      </div>
+
+      <div
+        class="contest__claim-button"
+        *ngLet="buttonState$ | async as state"
+        (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
+        [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
+      >
+        <span>{{ state.translation | translate }}</span>
+        <img
+          *ngIf="isAlreadyClaimed"
+          class="contest__claim-button-icon"
+          src="assets/images/icons/exclamation-grey.svg"
+          alt="Hint"
+          [tuiHint]="
+            isAlreadyClaimed
+              ? 'Your tokens have been already claimed, please check your wallet.'
+              : ''
+          "
+          tuiHintMode="onDark"
+        />
+      </div>
+    </div>
+  </div>
+</ng-container>

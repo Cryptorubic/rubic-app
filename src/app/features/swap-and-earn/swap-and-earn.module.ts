@@ -8,7 +8,6 @@ import { SwapAndEarnRoutingModule } from '@features/swap-and-earn/swap-and-earn-
 import { SwapAndEarnFaqComponent } from './components/swap-and-earn-faq/swap-and-earn-faq.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { ClaimButtonComponent } from '@features/swap-and-earn/components/claim-button/claim-button.component';
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
 import { TuiInputModule } from '@taiga-ui/kit';
@@ -17,13 +16,16 @@ import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/a
 import { AirdropPopupService } from '@features/swap-and-earn/services/airdrop/airdrop-popup.service';
 import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
 import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
+import { ClaimContainerComponent } from '@features/swap-and-earn/components/claim-container/claim-container.component';
+import { ClaimContestContainerComponent } from '@features/swap-and-earn/components/claim-contest/claim-contest-container.component';
 
 @NgModule({
   declarations: [
     SwapAndEarnPageComponent,
     SwapAndEarnFaqComponent,
     PointsContainerComponent,
-    ClaimButtonComponent,
+    ClaimContestContainerComponent,
+    ClaimContainerComponent,
     DifferentAddressesModalComponent,
     SuccessClaimModalComponent
   ],
