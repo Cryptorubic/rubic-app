@@ -5,8 +5,8 @@ type Token = Omit<BlockchainToken, 'blockchain'> & { blockchain: EvmBlockchainNa
 
 export const newRubicToken: Token = {
   decimals: 18,
-  symbol: 'RBC',
-  name: 'Rubic Token',
-  address: '0x780914dB0Ebe3c147C27F170b86D6D644cDD3f7A',
+  symbol: 'MintTKN',
+  name: 'Mintable Token',
+  address: '0xa1a139e9cb5fde073235407d3d8f69e8d7b1b20f',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
 };

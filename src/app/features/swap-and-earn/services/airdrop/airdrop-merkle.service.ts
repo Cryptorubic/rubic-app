@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tuiPure } from '@taiga-ui/cdk';
 import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
-import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-pure/evm-web3-pure/evm-web3-pure';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import BigNumber from 'bignumber.js';
 import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdrop-merkle-tree.json';
@@ -22,15 +21,23 @@ export class AirdropMerkleService {
     };
   } = sourceAirdropMerkle.claims;
 
-  private readonly correctMerkleTreeSource = Object.keys(this.claims).map(item => ({
-    item: {
-      index: this.claims[item].index,
-      balance: this.claims[item].amount
-    }
-  }));
+  private readonly correctMerkleTreeSource = Object.keys(this.claims).map(item => {
+    return {
+      [item]: {
+        index: this.claims[item].index,
+        balance: this.claims[item].amount
+      }
+    };
+  });
 
-  private readonly merkleTreeSource: { [Key: string]: SourceNode } =
-    this.correctMerkleTreeSource[0];
+  private readonly xxx = this.correctMerkleTreeSource.map(node => {
+    return [
+      Object.keys(node)[0].toLowerCase(),
+      { index: node[Object.keys(node)[0]].index, balance: node[Object.keys(node)[0]].balance }
+    ];
+  });
+
+  private readonly merkleTreeSource: { [Key: string]: SourceNode } = Object.fromEntries(this.xxx);
 
   private readonly merkleTree = new BalanceTree(
     Object.entries(this.merkleTreeSource).map(([address, { balance }]) => ({
@@ -61,7 +68,7 @@ export class AirdropMerkleService {
       return null;
     }
 
-    const node = this.merkleTreeSource?.[EvmWeb3Pure.toChecksumAddress(address)];
+    const node = this.merkleTreeSource[address.toLowerCase()];
     if (!node) {
       return null;
     }

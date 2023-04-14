@@ -30,7 +30,9 @@ export class AirdropFacadeService {
   );
 
   public readonly isValid$ = of(
-    Object.keys(this.claims).some(address => this.walletConnectorService.address === address)
+    Object.keys(this.claims).some(
+      address => this.walletConnectorService.address.toLowerCase() === address.toLowerCase()
+    )
   );
 
   constructor(
