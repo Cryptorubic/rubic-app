@@ -5,10 +5,10 @@
         <span class="contest__round">Round #1</span>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
           <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-          250 RBC
+          {{ claimAmount$ | async }} RBC
         </span>
         <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
-          02.04.2023 - 12.05.2023
+          {{ claimData }}
         </div>
       </div>
 

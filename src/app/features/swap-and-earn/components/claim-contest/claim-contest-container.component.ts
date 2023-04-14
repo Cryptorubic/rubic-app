@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
 import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
@@ -31,6 +31,10 @@ interface ButtonState {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimContestContainerComponent {
+  @Input() public readonly claimData: string = '';
+
+  public readonly claimAmount$ = this.airdropService.claimedTokens$;
+
   public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
 
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {

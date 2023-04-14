@@ -11,6 +11,7 @@ import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdr
 import { Web3Pure } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class AirdropFacadeService {
@@ -26,6 +27,10 @@ export class AirdropFacadeService {
 
   public readonly isAlreadyClaimed$ = this._isAlreadyClaimed$.asObservable();
 
+  private readonly _claimedTokens$ = new BehaviorSubject(new BigNumber(0));
+
+  public readonly claimedTokens$ = this._claimedTokens$.asObservable();
+
   private readonly claims: {
     [Key: string]: {
       index: number;
@@ -33,10 +38,6 @@ export class AirdropFacadeService {
       proof: string[];
     };
   } = sourceAirdropMerkle.claims;
-
-  public readonly claimedTokens$ = Web3Pure.fromWei(
-    this.merkleService.getAmountByAddress(this.walletConnectorService.address).toString()
-  );
 
   constructor(
     private readonly authService: AuthService,
@@ -55,6 +56,10 @@ export class AirdropFacadeService {
       }
 
       const userAddress = user.address.toLowerCase();
+
+      this._claimedTokens$.next(
+        Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
+      );
 
       this.isValidAddress(userAddress);
       this.isAlreadyClaimed(userAddress);

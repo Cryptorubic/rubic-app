@@ -5,19 +5,28 @@
   justify-content: center;
 }
 
-::ng-deep tui-hints-host {
-  .t-tooltip {
-    font-size: 16px !important;
+::ng-deep {
+  tui-hints-host {
+    .t-tooltip {
+      font-size: 16px !important;
+    }
+  }
+
+  tui-scrollbar .content {
+    margin-top: 20px;
+    margin-right: 18px;
   }
 }
+
 
 .claim {
   position: relative;
 
   display: flex;
   flex-direction: column;
+  max-height: 300px;
   margin-bottom: 100px;
-  padding: 30px 23px;
+  padding: 13px 5px 13px 23px;
 
   font-weight: 700;
   font-size: 16px;
