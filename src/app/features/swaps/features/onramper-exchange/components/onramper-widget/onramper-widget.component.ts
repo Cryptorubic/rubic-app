@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
-import { OnramperWidgetService } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/onramper-widget.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { fromEvent } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
+import { OnramperWidgetService } from '@features/swaps/features/onramper-exchange/services/onramper-widget.service';
 
 @Component({
   selector: 'app-onramper-widget',

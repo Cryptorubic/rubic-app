@@ -28,6 +28,7 @@ import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
+import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/interceprors/onramper-intercepror';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -41,6 +42,11 @@ import { ModalsModule } from './modals/modals.module';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RubicExchangeInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: OnramperIntercepror,
       multi: true
     },
     NG_EVENT_PLUGINS,

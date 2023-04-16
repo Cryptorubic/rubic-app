@@ -3,8 +3,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { webSocket } from 'rxjs/webSocket';
 import { switchMap, takeWhile } from 'rxjs/operators';
 import { interval, of, Subscription } from 'rxjs';
-import { OnramperTransactionInfo } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-info';
-import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
@@ -19,18 +17,20 @@ import {
 } from 'rubic-sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { OnramperService } from '@core/services/onramper/onramper.service';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import BigNumber from 'bignumber.js';
-import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-status';
+import { OnramperTransactionInfo } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-info';
 
 const websocketBaseUrl = ENVIRONMENT.websocketBaseUrl;
 

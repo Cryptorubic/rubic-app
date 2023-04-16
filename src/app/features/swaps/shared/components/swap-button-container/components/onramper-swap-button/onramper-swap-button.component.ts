@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { map } from 'rxjs/operators';
-import { EvmWeb3Pure } from 'rubic-sdk';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
 
 @Component({
   selector: 'app-onramper-swap-button',
@@ -10,15 +8,13 @@ import { EvmWeb3Pure } from 'rubic-sdk';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperSwapButtonComponent {
-  @Output() readonly onBuyNativeClick = new EventEmitter<void>();
+  @Output() readonly handleDirectBuy = new EventEmitter<void>();
 
   @Output() readonly onSwapClick = new EventEmitter<void>();
 
   @Input() buttonText: string;
 
-  public readonly isToTokenNative$ = this.swapFormService.toToken$.pipe(
-    map(toToken => EvmWeb3Pure.isNativeAddress(toToken.address))
-  );
+  public readonly isDirectBuy$ = this.onramperFormCalculationService.isDirectSwap$;
 
-  constructor(private readonly swapFormService: SwapFormService) {}
+  constructor(private readonly onramperFormCalculationService: OnramperFormCalculationService) {}
 }
