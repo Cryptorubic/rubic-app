@@ -9,6 +9,7 @@ import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiSwipeModule } from '@taiga-ui/cdk';
 import { SharedModule } from '@app/shared/shared.module';
+import { WINDOW } from '@ng-web-apis/common';
 
 @NgModule({
   imports: [CommonModule, SharedModule, PolymorpheusModule, InlineSVGModule, TuiSwipeModule],
@@ -18,7 +19,7 @@ import { SharedModule } from '@app/shared/shared.module';
     {
       provide: AbstractModalService,
       useFactory: modalServiceFactory,
-      deps: [WindowWidthService, Injector]
+      deps: [WindowWidthService, Injector, WINDOW]
     }
   ]
 })

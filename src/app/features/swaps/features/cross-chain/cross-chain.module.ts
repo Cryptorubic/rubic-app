@@ -23,7 +23,6 @@ import { BestTradePanelComponent } from 'src/app/features/swaps/features/cross-c
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { CrossChainBestRouteMobileComponent } from './components/cross-chain-bottom-form/components/best-trade-panel/components/cross-chain-best-route-mobile/cross-chain-best-route-mobile.component';
-import { ModalsModule } from '@app/core/modals/modals.module';
 
 @NgModule({
   declarations: [
@@ -50,8 +49,7 @@ import { ModalsModule } from '@app/core/modals/modals.module';
     TuiDropdownControllerModule,
     TuiLoaderModule,
     TuiAccordionModule,
-    TuiScrollbarModule,
-    ModalsModule
+    TuiScrollbarModule
   ],
   exports: [CrossChainBottomFormComponent],
   providers: [CrossChainFormService, CrossChainCalculationService]
