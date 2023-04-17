@@ -4,13 +4,13 @@ import { SupportedLanguages } from '@shared/models/languages/supported-languages
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 export type AdditionalTokens =
-  | 'eth_tokens'
-  | 'bsc_tokens'
-  | 'polygon_tokens'
-  | 'harmony_tokens'
-  | 'avalanche_tokens'
-  | 'fantom_tokens'
-  | 'moonriver_tokens';
+  | 'ethTokens'
+  | 'bscTokens'
+  | 'polygonTokens'
+  | 'harmonyTokens'
+  | 'avalancheTokens'
+  | 'fantomTokens'
+  | 'moonriverTokens';
 
 interface AllQueryParams {
   from: string;
