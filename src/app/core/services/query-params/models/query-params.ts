@@ -4,13 +4,13 @@ import { SupportedLanguages } from '@shared/models/languages/supported-languages
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 
 export type AdditionalTokens =
-  | 'ethTokens'
-  | 'bscTokens'
-  | 'polygonTokens'
-  | 'harmonyTokens'
-  | 'avalancheTokens'
-  | 'fantomTokens'
-  | 'moonriverTokens';
+  | 'eth_tokens'
+  | 'bsc_tokens'
+  | 'polygon_tokens'
+  | 'harmony_tokens'
+  | 'avalanche_tokens'
+  | 'fantom_tokens'
+  | 'moonriver_tokens';
 
 interface AllQueryParams {
   from: string;
@@ -43,20 +43,8 @@ interface AllQueryParams {
   domain: string;
   disabledLifiBridges: string[];
   testMode: string;
-
-  // Near specific query params.
-  // Transaction.
-  nearLogin: string;
-  toAmount: string;
-  transactionHashes: string;
-  walletAddress: string;
-  errorCode: string;
-  errorMessage: string;
-  swap_type: string;
-  // Login.
-  account_id: string;
-  public_key: string;
-  all_keys: string;
+  crossChainIntegratorAddress: string;
+  onChainIntegratorAddress: string;
 }
 
 export type QueryParams = {

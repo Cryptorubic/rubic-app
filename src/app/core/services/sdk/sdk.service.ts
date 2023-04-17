@@ -76,11 +76,17 @@ export class SdkService {
     this._SDK = null;
   }
 
-  public async initSDK(providerAddress?: string): Promise<void> {
+  public async initSDK(params: {
+    crossChainIntegratorAddress?: string;
+    onChainIntegratorAddress?: string;
+  }): Promise<void> {
     this.currentConfig = {
       ...this.defaultConfig,
       providerAddress: {
-        [CHAIN_TYPE.EVM]: providerAddress
+        [CHAIN_TYPE.EVM]: {
+          crossChain: params?.crossChainIntegratorAddress,
+          onChain: params?.onChainIntegratorAddress
+        }
       }
     };
     this.SDK = await SDK.createSDK(this.currentConfig);

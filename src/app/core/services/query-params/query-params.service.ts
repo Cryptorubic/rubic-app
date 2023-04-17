@@ -195,13 +195,13 @@ export class QueryParamsService {
     }
 
     const tokensFilterKeys: Readonly<Array<keyof QueryParams>> = [
-      'ethTokens',
-      'bscTokens',
-      'polygonTokens',
-      'harmonyTokens',
-      'avalancheTokens',
-      'fantomTokens',
-      'moonriverTokens'
+      'eth_tokens',
+      'bsc_tokens',
+      'polygon_tokens',
+      'harmony_tokens',
+      'avalanche_tokens',
+      'fantom_tokens',
+      'moonriver_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>
