@@ -8,9 +8,17 @@ import { MobileNativeModalService } from './services/mobile-native-modal.service
  * Modal Service Factory based on screen size
  * @param windowWidth Screen size
  * @param injector Injector
+ * @param window WINDOW
  * @returns Modal Dialog Service
  */
-export function modalServiceFactory(windowWidth: WindowWidthService, injector: Injector) {
+export function modalServiceFactory(
+  windowWidth: WindowWidthService,
+  injector: Injector,
+  window: Window
+) {
+  if (window.location.search.includes('iframe=horizontal')) {
+    return injector.get(TuiDialogService);
+  }
   if (windowWidth.windowSize <= WindowSize.MOBILE_MD) {
     return injector.get(MobileNativeModalService);
   }

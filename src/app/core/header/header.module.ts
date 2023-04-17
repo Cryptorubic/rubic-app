@@ -34,7 +34,6 @@ import { BannerDirective } from './components/header/directives/banner.directive
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
-import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { SettingsTogglerComponent } from './components/header/components/settings-toggler/settings-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -89,7 +88,6 @@ import { PointsButtonComponent } from './components/header/components/points-but
     TuiToggleModule,
     FormsModule,
     TuiLoaderModule,
-    ModalsModule,
     RecentTradesModule,
     ClipboardModule,
     HistoryModule,
