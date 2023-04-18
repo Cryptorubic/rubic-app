@@ -250,7 +250,7 @@ export class TokensApiService {
     return this.httpService
       .get<TokensBackendResponse>(
         ENDPOINTS.TOKENS,
-        { page: 1, pageSize: 100, networks: onePageBlockchains },
+        { networks: onePageBlockchains },
         this.tokensApiUrl
       )
       .pipe(

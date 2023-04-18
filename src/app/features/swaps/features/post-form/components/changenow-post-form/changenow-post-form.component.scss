@@ -111,6 +111,7 @@
 
 .row {
   display: flex;
+  gap: 20px;
   align-items: center;
   justify-content: space-between;
   margin-top: 40px;
@@ -155,6 +156,16 @@
 
     img {
       max-height: 24px;
+    }
+
+    &-memo {
+      max-width: 210px;
+
+      span {
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+      }
     }
   }
 }
