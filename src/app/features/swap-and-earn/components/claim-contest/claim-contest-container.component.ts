@@ -9,6 +9,7 @@ import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.
 import { UserInterface } from '@core/services/auth/models/user.interface';
 import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
+import { HeaderStore } from '@core/header/services/header.store';
 
 type ButtonLabel =
   | 'login'
@@ -38,8 +39,6 @@ export class ClaimContestContainerComponent {
 
   public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
 
-  // public readonly isAlreadyClaimed$ = false;
-
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
     claim: 'airdrop.button.claim',
@@ -49,6 +48,8 @@ export class ClaimContestContainerComponent {
     changeNetwork: 'airdrop.button.changeNetwork',
     incorrectAddressError: 'airdrop.button.incorrectAddressError'
   };
+
+  public readonly isMobile$ = this.headerService.isMobile;
 
   public buttonState$: Observable<ButtonState> = this.airdropService.isValid$.pipe(
     combineLatestWith(
@@ -78,7 +79,8 @@ export class ClaimContestContainerComponent {
     private readonly web3Service: AirdropWeb3Service,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly walletModalService: WalletsModalService
+    private readonly walletModalService: WalletsModalService,
+    private readonly headerService: HeaderStore
   ) {}
 
   public async handleClaim(): Promise<void> {

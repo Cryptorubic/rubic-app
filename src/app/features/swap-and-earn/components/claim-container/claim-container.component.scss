@@ -13,8 +13,20 @@
   }
 
   tui-scrollbar .content {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 30px;
     margin-top: 5px;
     margin-right: 18px;
+  }
+}
+
+@include b(900) {
+  ::ng-deep {
+    tui-scrollbar .content {
+      margin-top: 0;
+      margin-right: 0;
+    }
   }
 }
 
@@ -25,7 +37,7 @@
   display: flex;
   flex-direction: column;
   max-width: 826px;
-  max-height: 300px;
+  max-height: 280px;
   margin-bottom: 100px;
   padding: 13px 41px 13px 58px;
 
@@ -35,4 +47,14 @@
   background: var(--form-background);
   border: 1px solid var(--transparent-line);
   border-radius: $border-radius-2;
+
+  @include b(900) {
+    width: 100%;
+    max-height: 450px;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
 }

@@ -12,9 +12,27 @@
 }
 
 .contest {
+  &_mobile {
+    display: none;
+    width: 100%;
+
+    background: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-radius: $border-radius-2;
+
+    @include b(900) {
+      display: block;
+    }
+  }
+
+  &_desktop {
+    @include b(900) {
+      display: none;
+    }
+  }
+
   &__container {
     display: flex;
-    margin-bottom: 30px;
   }
 
   &__info {
@@ -30,6 +48,21 @@
     &_disabled {
       background: #484848;
     }
+
+    &_mobile {
+      flex-direction: column;
+      gap: 0;
+      align-items: flex-start;
+      width: 100%;
+      height: auto;
+      padding: 18px;
+
+      background-color: transparent;
+
+      &_disabled {
+        background: transparent;
+      }
+    }
   }
 
   &__left {
@@ -39,6 +72,7 @@
     gap: 30px;
     align-items: center;
     justify-content: center;
+    width: 350px;
 
     height: 100%;
 
@@ -51,6 +85,18 @@
 
     &_disabled {
       border: 1px solid var(--primary-color);
+    }
+
+    &_mobile {
+      flex-direction: column;
+      gap: 5px;
+      align-items: flex-start;
+      width: auto;
+      padding: 0;
+
+      background: transparent;
+      border: none;
+      border-radius: 0;
     }
   }
 
@@ -66,6 +112,29 @@
 
       img {
         filter: grayscale(1) opacity(0.5);
+      }
+    }
+
+    &_mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 9px 20px;
+
+      background-color: var(--primary-color);
+      border-radius: 15px;
+
+      &_disabled {
+        filter: grayscale(1) opacity(0.5);
+      }
+    }
+
+    &-wrapper {
+      &_mobile {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0 15px;
       }
     }
   }
@@ -112,6 +181,12 @@
         content: '';
       }
     }
+
+    &_mobile {
+      &::before {
+        display: none;
+      }
+    }
   }
 
   &__claim-button {
@@ -140,9 +215,49 @@
       cursor: default;
     }
 
+    &_mobile {
+      width: 100%;
+      margin: 0;
+      padding: 18px 0;
+
+      background: transparent;
+      border-radius: 15px;
+
+      &_disabled {
+        filter: grayscale(1) opacity(0.5);
+      }
+    }
+
     &-icon {
       width: 25px;
       margin-left: 5px;
+
+      &_mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+
+        background: var(--primary-color);
+        border-radius: 15px;
+
+        ::ng-deep svg {
+          width: 30px !important;
+          height: 30px !important;
+
+          path {
+            fill: white;
+          }
+        }
+
+        &_disabled {
+          background: #484848;
+
+          ::ng-deep svg path {
+            fill: #909090;
+          }
+        }
+      }
     }
   }
 }
