@@ -13202,10 +13202,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.5.tgz#a567cb4dac4f0ce70de1f5f8e5d7323ec27e1800"
-  integrity sha512-rKr20oT/72kvQiVDu0ZsqXBBkbzyk401KoZLTjpvBdB0LL6ecZwjd5B5h4PhSBVTKxMpZ4mDW7yyVMJYHKvgJQ==
+rubic-sdk@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.6.tgz#1d5c59a606f0923e732b48d74ca169c0e14372d7"
+  integrity sha512-jMuV45B9EqYh6dhuiQy5DJHbPDXZj7zDxaim1Fsrhw1W5ABiVWLYkCXu/6QN9Rh21pPT6vpa0WYOAh9DUNbN5g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
@@ -14435,9 +14435,9 @@ swarm-js@^0.1.40:
     xhr-request "^1.0.1"
 
 symbiosis-js-sdk@^2.9.37:
-  version "2.9.37"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.37.tgz#3f36666e06f7265720b4ecc87f0bdd22c02e3b83"
-  integrity sha512-ujxY6zUJj2ASP3s/G4pS2CRYTwqOXF40W0wGuvfeI2EGaxAHQasrXvdIfT/A+FePME6fhkghzYDEWR9nWt/24w==
+  version "2.9.40"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.40.tgz#7b8f61fb3775892ea586a365fddcfff32cedb24f"
+  integrity sha512-91hI8EhhHqACziFi2iFzfgo16VqpnC/vUY13oGN6cuyaq/mXMBRfuHq2LifhZrALwkz+umP+cXuNuIK2PTEoXA==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
