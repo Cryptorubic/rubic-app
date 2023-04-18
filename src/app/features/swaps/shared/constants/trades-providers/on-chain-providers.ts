@@ -213,6 +213,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}mojitoswap.svg`,
     color: '#0AC4DD'
   },
+  [ON_CHAIN_TRADE_TYPE.MUTE_SWAP]: {
+    name: 'MuteSwap',
+    image: `${imageBasePath}mojitoswap.svg`,
+    color: '#0AC4DD'
+  },
 
   [ON_CHAIN_TRADE_TYPE.NET_SWAP]: {
     name: 'NetSwap',
