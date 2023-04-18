@@ -91,6 +91,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
       return false;
     }
 
+    if (this.iframeService.isIframe) {
+      return false;
+    }
+
     return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
   }
 
