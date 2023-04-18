@@ -24,8 +24,8 @@ export class OnramperWidgetService {
    */
   public getWidgetUrl(): Observable<string> {
     return this.themeService.theme$.pipe(
-      map(theme => {
-        const darkMode = theme === 'dark';
+      map(currentTheme => {
+        const darkMode = currentTheme === 'dark';
 
         const defaultFiat = (this.swapFormService.inputValue.fromAsset as FiatAsset).symbol;
         // @TODO
@@ -41,15 +41,12 @@ export class OnramperWidgetService {
 
         return this.parseToWidgetUrl({
           ...defaultOnramperWidgetConfig,
-          darkMode,
+          themeName: darkMode ? 'dark' : 'light',
           defaultFiat,
           defaultCrypto,
           onlyCryptos,
           defaultAmount,
-          wallets,
-          partnerContext: {
-            walletAddress
-          }
+          wallets
         });
       })
     );
@@ -61,6 +58,6 @@ export class OnramperWidgetService {
         key !== 'partnerContext' ? value : encodeURIComponent(JSON.stringify(value));
       return `${acc}${acc ? '&' : ''}${key}=${encodedValue}`;
     }, '');
-    return `https://widget.onramper.com${queryParams ? '/?' : ''}${queryParams}`;
+    return `https://buy.onramper.com${queryParams ? '/?' : ''}${queryParams}`;
   }
 }

@@ -1,8 +1,8 @@
 export interface OnramperWidgetConfig {
   apiKey: string;
 
-  color: string;
-  darkMode?: boolean;
+  primaryColor: string;
+  themeName?: 'dark' | 'light' | 'bluey';
   supportSell?: boolean;
   supportSwap?: boolean;
 
@@ -13,7 +13,7 @@ export interface OnramperWidgetConfig {
   onlyCryptos?: string;
   isAddressEditable?: boolean;
 
-  partnerContext: {
-    walletAddress: string;
-  };
+  // partnerContext: {
+  //   walletAddress: string;
+  // };
 }
