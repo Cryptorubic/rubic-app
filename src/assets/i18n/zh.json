@@ -636,6 +636,7 @@
     "button": {
       "login": "Connect Wallet",
       "claim": "Claim",
+      "claimed": "Claimed",
       "wrongAddressError": "Enter another address",
       "emptyError": "Enter holder address",
       "changeNetwork": "Change Network to Ethereum",

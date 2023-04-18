@@ -2,14 +2,18 @@
   <div class="contest">
     <div class="contest__container">
       <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
-        <span class="contest__round">Round #1</span>
+        <div class="contest__left">
+          <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
+            >Round #1</span
+          >
+          <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
+            {{ claimData }}
+          </div>
+        </div>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
           <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
           {{ claimAmount$ | async }} RBC
         </span>
-        <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
-          {{ claimData }}
-        </div>
       </div>
 
       <div

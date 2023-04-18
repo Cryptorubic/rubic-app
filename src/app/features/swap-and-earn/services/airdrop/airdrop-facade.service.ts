@@ -100,6 +100,7 @@ export class AirdropFacadeService {
         claimInProgressNotification = this.popupService.showProgressNotification();
       });
       this.popupService.showSuccessNotification();
+      this.isAlreadyClaimed(address);
     } catch (err) {
       this.popupService.handleError(err);
     } finally {

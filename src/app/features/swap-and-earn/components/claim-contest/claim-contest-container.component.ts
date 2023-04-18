@@ -16,6 +16,7 @@ type ButtonLabel =
   | 'wrongAddressError'
   | 'changeNetwork'
   | 'claim'
+  | 'claimed'
   | 'incorrectAddressError';
 
 interface ButtonState {
@@ -37,9 +38,12 @@ export class ClaimContestContainerComponent {
 
   public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
 
+  // public readonly isAlreadyClaimed$ = false;
+
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
     claim: 'airdrop.button.claim',
+    claimed: 'airdrop.button.claimed',
     wrongAddressError: 'airdrop.button.wrongAddressError',
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
@@ -47,8 +51,14 @@ export class ClaimContestContainerComponent {
   };
 
   public buttonState$: Observable<ButtonState> = this.airdropService.isValid$.pipe(
-    combineLatestWith(this.authService.currentUser$, this.walletConnectorService.networkChange$),
-    map(([isValid, user, network]) => this.getButtonKey([isValid, user, network])),
+    combineLatestWith(
+      this.authService.currentUser$,
+      this.walletConnectorService.networkChange$,
+      this.airdropService.isAlreadyClaimed$
+    ),
+    map(([isValid, user, network, isAlreadyClaimed]) =>
+      this.getButtonKey([isValid, user, network, isAlreadyClaimed])
+    ),
     map(buttonLabel => ({
       label: buttonLabel,
       translation: this.buttonStateNameMap[buttonLabel],
@@ -90,16 +100,20 @@ export class ClaimContestContainerComponent {
     }
   }
 
-  private getButtonKey([isValid, user, network]: [
+  private getButtonKey([isValid, user, network, isAlreadyClaimed]: [
     boolean,
     UserInterface,
-    BlockchainName
+    BlockchainName,
+    boolean
   ]): ButtonLabel {
     if (!user?.address) {
       return 'login';
     }
     if (!network || network !== newRubicToken.blockchain) {
       return 'changeNetwork';
+    }
+    if (isAlreadyClaimed) {
+      return 'claimed';
     }
     if (isValid) {
       return 'claim';
