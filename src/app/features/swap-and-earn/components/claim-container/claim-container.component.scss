@@ -3,33 +3,32 @@
 :host {
   display: flex;
   justify-content: center;
-}
 
-::ng-deep {
-  tui-hints-host {
-    .t-tooltip {
-      font-size: 16px !important;
+  @include b(900) {
+    ::ng-deep {
+      tui-scrollbar .content {
+        margin-top: 0;
+        margin-right: 0;
+      }
     }
   }
 
-  tui-scrollbar .content {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 30px;
-    margin-top: 5px;
-    margin-right: 18px;
-  }
-}
-
-@include b(900) {
   ::ng-deep {
+    tui-hints-host {
+      .t-tooltip {
+        font-size: 16px !important;
+      }
+    }
+
     tui-scrollbar .content {
-      margin-top: 0;
-      margin-right: 0;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 30px;
+      margin-top: 5px;
+      margin-right: 18px;
     }
   }
 }
-
 
 .claim {
   position: relative;
