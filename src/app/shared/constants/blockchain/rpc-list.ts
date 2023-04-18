@@ -108,25 +108,16 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
   [BLOCKCHAIN_NAME.SYSCOIN]: ['https://rpc.syscoin.org', 'https://rpc.ankr.com/syscoin'],
-  [BLOCKCHAIN_NAME.EOS]: ['https://api.metahub.cash', 'https://api.eosargentina.io'],
   [BLOCKCHAIN_NAME.ETHEREUM_CLASSIC]: [
     'https://besu-at.etc-network.info',
     'https://geth-at.etc-network.info'
   ],
   [BLOCKCHAIN_NAME.FLARE]: ['https://flare-api.flare.network/ext/C/rpc'],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
-  [BLOCKCHAIN_NAME.ONTOLOGY]: ['https://dappnode1.ont.io:10339', 'https://dappnode2.ont.io:10339'],
   [BLOCKCHAIN_NAME.THETA]: ['https://eth-rpc-api.thetatoken.org/rpc'],
-  [BLOCKCHAIN_NAME.XDC]: ['https://erpc.xinfin.network', 'https://rpc.xdcrpc.com'],
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: [
     'https://smartbch.greyh.at',
     'https://smartbch.fountainhead.cash/mainnet'
   ],
-  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
-  [BLOCKCHAIN_NAME.FILECOIN]: [
-    'https://rpc.ankr.com/filecoin',
-    'https://filecoin.chainup.net/rpc/v1',
-    'https://api.node.glif.io',
-    'https://api.node.glif.io/rpc/v1'
-  ]
+  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io']
 };
