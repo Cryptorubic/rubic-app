@@ -257,8 +257,15 @@ export class InstantTradeService extends TradeCalculationService {
 
     const receiverAddress = this.receiverAddress;
 
-    const isSwapAndEarnSwap =
-      trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
+    const isSwapAndEarnSwap = (): boolean => {
+      if (this.iframeService.isIframe) {
+        return false;
+      }
+
+      return trade instanceof EvmOnChainTrade
+        ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0)
+        : false;
+    };
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
@@ -278,9 +285,9 @@ export class InstantTradeService extends TradeCalculationService {
           fromAmount.multipliedBy(fromPrice)
         );
 
-        subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
+        subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap());
 
-        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap).then(() =>
+        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap()).then(() =>
           this.swapAndEarnStateService.updatePoints()
         );
       },

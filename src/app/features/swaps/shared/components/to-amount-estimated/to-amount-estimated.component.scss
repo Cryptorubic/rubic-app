@@ -104,7 +104,6 @@
     }
 
     @include iframe-horizontal {
-      font-size: 16px;
       white-space: nowrap;
       text-align: left;
     }
@@ -115,7 +114,7 @@
       padding: 0 16px;
 
       color: var(--primary-text);
-      font-size: 18px;
+      font-size: 20px;
       line-height: 50px;
       text-align: start;
 
