@@ -115,11 +115,9 @@ export class AssetTypesAsideComponent {
     };
 
     if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
-      if (this.swapFormService.inputValue.fromAsset.blockchain === 'ZK_SYNC') {
-        return returnBlockchainsBasedOnFromType(false);
-      } else {
-        return returnBlockchainsBasedOnFromType(true);
-      }
+      return returnBlockchainsBasedOnFromType(
+        this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC'
+      );
     }
   }
 
