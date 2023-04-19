@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
 import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
@@ -10,6 +10,7 @@ import { UserInterface } from '@core/services/auth/models/user.interface';
 import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
 import { HeaderStore } from '@core/header/services/header.store';
+import { WINDOW } from '@ng-web-apis/common';
 
 type ButtonLabel =
   | 'login'
@@ -49,7 +50,7 @@ export class ClaimContestContainerComponent {
     incorrectAddressError: 'airdrop.button.incorrectAddressError'
   };
 
-  public readonly isMobile$ = this.headerService.isMobile;
+  public isMobile = false;
 
   public buttonState$: Observable<ButtonState> = this.airdropService.isValid$.pipe(
     combineLatestWith(
@@ -80,8 +81,13 @@ export class ClaimContestContainerComponent {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly walletModalService: WalletsModalService,
-    private readonly headerService: HeaderStore
-  ) {}
+    private readonly headerService: HeaderStore,
+    @Inject(WINDOW) private readonly window: Window
+  ) {
+    if (this.window.innerWidth <= 900) {
+      this.isMobile = true;
+    }
+  }
 
   public async handleClaim(): Promise<void> {
     await this.airdropService.claimTokens();

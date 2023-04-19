@@ -1,5 +1,5 @@
 <ng-container *ngLet="isAlreadyClaimed$ | async as isAlreadyClaimed">
-  <div class="contest contest_desktop">
+  <div class="contest contest_desktop" *ngIf="!isMobile">
     <div class="contest__container">
       <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
         <div class="contest__left">
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <div class="contest contest_mobile">
+  <div class="contest contest_mobile" *ngIf="isMobile">
     <div class="contest__container contest__container_mobile">
       <div
         class="contest__info contest__info_mobile"
