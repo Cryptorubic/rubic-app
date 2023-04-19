@@ -100,17 +100,13 @@ export class AssetTypesAsideComponent {
 
     const returnBlockchainsBasedOnFromType = (revert: boolean) => {
       if (revert) {
-        if (this.formType === 'from') {
-          return [...returnAllAvailableBlockchains()];
-        } else {
-          return [returnZkSyncBlockchain()];
-        }
+        return this.formType === 'from'
+          ? [...returnAllAvailableBlockchains()]
+          : [returnZkSyncBlockchain()];
       } else {
-        if (this.formType === 'from') {
-          return [returnZkSyncBlockchain()];
-        } else {
-          return [...returnAllAvailableBlockchains()];
-        }
+        return this.formType === 'from'
+          ? [returnZkSyncBlockchain()]
+          : [...returnAllAvailableBlockchains()];
       }
     };
 
