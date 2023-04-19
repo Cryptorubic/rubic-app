@@ -55,6 +55,7 @@
     "angular-google-tag-manager": "^1.6.1",
     "bignumber.js": "9.1.0",
     "date-and-time": "^0.14.2",
+    "ethereumjs-util": "^7.1.5",
     "ethers": "^5.6.7",
     "global": "^4.4.0",
     "immutable": "^4.1.0",

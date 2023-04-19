@@ -16,7 +16,7 @@
 
   display: flex;
   flex-direction: column;
-  margin-bottom: 100px;
+  margin-bottom: 40px;
   padding: 30px 23px;
 
   font-weight: 700;
@@ -79,7 +79,11 @@
       }
 
       .points__confirmed {
-        background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
+        filter: grayscale(1);
+
+        @include dark {
+          background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
+        }
 
         @include b(900) {
           background: var(--primary-color);
