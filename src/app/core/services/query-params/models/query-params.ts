@@ -24,6 +24,7 @@ interface AllQueryParams {
   // iframe
   iframe: IframeAppearance;
   device: 'mobile' | 'desktop';
+  domain: string;
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;
@@ -40,7 +41,6 @@ interface AllQueryParams {
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
-  domain: string;
   disabledLifiBridges: string[];
   testMode: string;
 

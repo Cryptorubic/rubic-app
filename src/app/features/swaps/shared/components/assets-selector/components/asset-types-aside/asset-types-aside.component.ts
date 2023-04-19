@@ -15,6 +15,7 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
@@ -77,19 +78,60 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
+    private readonly swapFormService: SwapFormService,
+    private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly mobileNativeService: MobileNativeModalService,
-    private queryParamsService: QueryParamsService
+    private readonly mobileNativeService: MobileNativeModalService
   ) {}
+
+  public getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
+    const returnZkSyncBlockchain = () => {
+      return this.blockchainsListService.availableBlockchains.find(
+        blockchain => blockchain.name === 'ZK_SYNC'
+      );
+    };
+
+    const returnAllAvailableBlockchains = () => {
+      return this.blockchainsListService.availableBlockchains;
+    };
+
+    const returnBlockchainsBasedOnFromType = (revert: boolean) => {
+      if (revert) {
+        if (this.formType === 'from') {
+          return [...returnAllAvailableBlockchains()];
+        } else {
+          return [returnZkSyncBlockchain()];
+        }
+      } else {
+        if (this.formType === 'from') {
+          return [returnZkSyncBlockchain()];
+        } else {
+          return [...returnAllAvailableBlockchains()];
+        }
+      }
+    };
+
+    if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
+      if (this.swapFormService.inputValue.fromAsset.blockchain === 'ZK_SYNC') {
+        return returnBlockchainsBasedOnFromType(false);
+      } else {
+        return returnBlockchainsBasedOnFromType(true);
+      }
+    }
+  }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
     const slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
       0,
       shownBlockchainsAmount
     );
+
+    if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
+      return this.getBlockchainsListForLandingIframe();
+    }
 
     const isSelectedBlockchainIncluded = slicedBlockchains.find(
       blockchain => blockchain.name === this.assetsSelectorService.assetType

@@ -133,15 +133,15 @@
       background: transparent;
     }
 
-    @include hide-unused-ui {
-      &::before {
-        width: 100%;
-      }
-
-      &::after {
-        width: 0;
-      }
-    }
+    //@include hide-unused-ui {
+    //  &::before {
+    //    width: 100%;
+    //  }
+    //
+    //  &::after {
+    //    width: 0;
+    //  }
+    //}
 
     > * {
       position: absolute;
