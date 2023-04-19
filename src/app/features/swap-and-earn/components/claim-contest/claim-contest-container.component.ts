@@ -58,14 +58,15 @@ export class ClaimContestContainerComponent {
       this.walletConnectorService.networkChange$,
       this.airdropService.isAlreadyClaimed$
     ),
-    map(([isValid, user, network, isAlreadyClaimed]) =>
-      this.getButtonKey([isValid, user, network, isAlreadyClaimed])
-    ),
-    map(buttonLabel => ({
-      label: buttonLabel,
-      translation: this.buttonStateNameMap[buttonLabel],
-      isError: this.getErrorState(buttonLabel)
-    })),
+    map(([isValid, user, network, isAlreadyClaimed]) => {
+      const buttonLabel = this.getButtonKey([isValid, user, network, isAlreadyClaimed]);
+
+      return {
+        label: buttonLabel,
+        translation: this.buttonStateNameMap[buttonLabel],
+        isError: this.getErrorState(buttonLabel)
+      };
+    }),
     startWith({
       label: 'emptyError' as ButtonLabel,
       translation: this.buttonStateNameMap['emptyError'],

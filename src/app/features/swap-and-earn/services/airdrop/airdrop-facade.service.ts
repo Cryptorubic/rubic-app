@@ -48,6 +48,10 @@ export class AirdropFacadeService {
     private readonly web3Service: AirdropWeb3Service,
     private readonly merkleService: AirdropMerkleService
   ) {
+    this.subscribeOnWalletChange();
+  }
+
+  private subscribeOnWalletChange(): void {
     this.authService.currentUser$?.subscribe(user => {
       if (!user || !user.address) {
         this._isAlreadyClaimed$.next(false);
