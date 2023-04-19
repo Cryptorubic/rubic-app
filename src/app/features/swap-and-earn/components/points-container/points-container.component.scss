@@ -81,6 +81,10 @@
       .points__confirmed {
         filter: grayscale(1);
 
+        @include dark {
+          background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
+        }
+
         @include b(900) {
           background: var(--primary-color);
         }
