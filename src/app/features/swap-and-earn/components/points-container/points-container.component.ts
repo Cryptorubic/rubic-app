@@ -44,13 +44,13 @@ export class PointsContainerComponent {
 
   public getButtonText(): string {
     if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 300)) {
-      return 'Claimed';
+      return 'Withdrawal has been requested';
     }
 
     if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 300)) {
       return 'Not Enough Points';
     }
 
-    return 'Withdraw Points';
+    return 'Request withdrawal';
   }
 }

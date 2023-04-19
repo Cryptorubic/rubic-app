@@ -16,7 +16,8 @@ import {
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   Token,
-  PriceToken
+  PriceToken,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -35,7 +36,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import {
   CrossChainCalculatedTrade,
@@ -92,6 +93,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
 
     if (this.iframeService.isIframe) {
+      return false;
+    }
+
+    if (calculatedTrade.trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
       return false;
     }
 
@@ -209,6 +214,13 @@ export class CrossChainCalculationService extends TradeCalculationService {
                         }
                       : null
                   };
+                }),
+                catchError(() => {
+                  return of({
+                    total,
+                    calculated,
+                    lastCalculatedTrade: null
+                  });
                 })
               );
             })

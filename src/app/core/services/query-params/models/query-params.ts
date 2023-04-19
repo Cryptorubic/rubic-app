@@ -43,20 +43,8 @@ interface AllQueryParams {
   rubicLink: string;
   disabledLifiBridges: string[];
   testMode: string;
-
-  // Near specific query params.
-  // Transaction.
-  nearLogin: string;
-  toAmount: string;
-  transactionHashes: string;
-  walletAddress: string;
-  errorCode: string;
-  errorMessage: string;
-  swap_type: string;
-  // Login.
-  account_id: string;
-  public_key: string;
-  all_keys: string;
+  crossChainIntegratorAddress: string;
+  onChainIntegratorAddress: string;
 }
 
 export type QueryParams = {

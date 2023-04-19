@@ -31,7 +31,8 @@
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"]
     },
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["rubic-sdk/*"]
 }
