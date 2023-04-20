@@ -9,10 +9,6 @@
 
   border-radius: 10px;
 
-  @include hide-unused-ui {
-    padding: 0 20px 20px;
-  }
-
   @include iframe-horizontal {
     position: absolute;
     top: 0;
