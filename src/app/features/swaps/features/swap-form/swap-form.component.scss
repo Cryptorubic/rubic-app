@@ -262,6 +262,10 @@ app-analytics-link {
   display: block;
 
   margin-bottom: 20px !important;
+
+  @include hide-unused-ui {
+    margin-bottom: 0 !important;
+  }
 }
 
 .close-widget-button {

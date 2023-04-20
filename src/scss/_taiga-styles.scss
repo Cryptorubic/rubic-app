@@ -18,6 +18,17 @@ tui-dropdown-box {
   backdrop-filter: blur(50px);
 }
 
+body.hide-unused-ui {
+  tui-dialog {
+    &[data-size='l'] {
+      > .content {
+        border-radius: 20px;
+      }
+    }
+  }
+
+}
+
 tui-dialog {
   overflow: hidden;
 
