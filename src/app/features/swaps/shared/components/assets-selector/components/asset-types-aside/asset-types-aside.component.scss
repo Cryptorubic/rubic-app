@@ -31,6 +31,10 @@
     padding-bottom: 0;
   }
 
+  @include hide-unused-ui {
+    align-items: flex-start;
+  }
+
   &__scroll {
     max-height: 100%;
 
