@@ -184,6 +184,9 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
             )
           );
         }),
+        catchError(() =>
+          of({ srcTxStatus: TxStatus.PENDING, dstTxStatus: TxStatus.PENDING, dstTxHash: null })
+        ),
         tap(crossChainStatus => this._srcTxStatus$.next(crossChainStatus.srcTxStatus)),
         takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === TxStatus.PENDING),
         takeUntil(this.destroy$)

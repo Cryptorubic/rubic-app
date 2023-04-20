@@ -79,8 +79,8 @@
     <div class="row" *ngIf="trade.extraField">
       <div class="row-item">
         <div class="row-item__header">{{ trade.extraField.name }}</div>
-        <div class="row-item__value">
-          {{ trade.extraField.value }}
+        <div class="row-item__value row-item__value-memo">
+          <span>{{ trade.extraField.value }}</span>
           <button
             [cdkCopyToClipboard]="trade.extraField.value"
             class="copy-icon copy-icon_green"
