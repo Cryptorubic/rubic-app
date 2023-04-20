@@ -98,7 +98,7 @@ export class AssetTypesAsideComponent {
       return this.blockchainsListService.availableBlockchains;
     };
 
-    const returnBlockchainsBasedOnFromType = (revert: boolean) => {
+    const returnBlockchainsBasedOnFormType = (revert: boolean) => {
       if (revert) {
         return this.formType === 'from'
           ? [...returnAllAvailableBlockchains()]
@@ -111,7 +111,7 @@ export class AssetTypesAsideComponent {
     };
 
     if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
-      return returnBlockchainsBasedOnFromType(
+      return returnBlockchainsBasedOnFormType(
         this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC'
       );
     }
