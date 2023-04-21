@@ -82,13 +82,12 @@ export class AssetTypesAsideComponent {
   ) {}
 
   public getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
-    const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
-      blockchain => blockchain.name === 'ZK_SYNC'
-    );
-
-    const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
-
     if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
+      const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
+      const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
+        blockchain => blockchain.name === 'ZK_SYNC'
+      );
+
       if (this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC') {
         return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
       } else {
