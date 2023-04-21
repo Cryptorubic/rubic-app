@@ -365,7 +365,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
               this.queryParamsService.enabledBlockchains;
 
           const instantTrades$ =
-            disableInstantTrade.length > 0
+            disableInstantTrade?.length > 0
               ? this.getFakeTrades()
               : this.instantTradeService.calculateTrades(
                   this.fromToken,
