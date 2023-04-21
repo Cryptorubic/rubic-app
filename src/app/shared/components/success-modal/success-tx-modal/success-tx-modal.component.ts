@@ -17,6 +17,7 @@ import {
 } from 'rubic-sdk';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -43,7 +44,10 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
+  public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
+
   constructor(
+    private readonly queryParamsService: QueryParamsService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
