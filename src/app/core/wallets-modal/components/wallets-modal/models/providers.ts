@@ -12,7 +12,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false,
-    supportsInIframe: false,
+    supportsInIframe: true,
     disabled: false
   },
   {

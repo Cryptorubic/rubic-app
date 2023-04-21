@@ -51,8 +51,6 @@
     @include hide-unused-ui {
       display: flex;
       gap: 10px;
-      justify-content: initial;
-      max-width: 300px;
       height: 100%;
     }
 

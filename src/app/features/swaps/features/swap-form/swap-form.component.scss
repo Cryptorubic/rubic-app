@@ -17,6 +17,10 @@
 
   @include hide-unused-ui {
     display: inline;
+
+    app-swap-info-container {
+      margin-top: 20px !important;
+    }
   }
 }
 
@@ -131,16 +135,6 @@
       padding: 0;
 
       background: transparent;
-    }
-
-    @include hide-unused-ui {
-      &::before {
-        width: 100%;
-      }
-
-      &::after {
-        width: 0;
-      }
     }
 
     > * {
@@ -258,6 +252,10 @@ app-analytics-link {
   display: block;
 
   margin-bottom: 20px !important;
+
+  @include hide-unused-ui {
+    margin-bottom: 0 !important;
+  }
 }
 
 .close-widget-button {

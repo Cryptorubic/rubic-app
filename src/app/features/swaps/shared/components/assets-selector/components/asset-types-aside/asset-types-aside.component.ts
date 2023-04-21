@@ -15,6 +15,8 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -57,7 +59,9 @@ export class AssetTypesAsideComponent {
 
   public get showFiats(): boolean {
     return (
-      this.formType === 'from' && this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
+      this.formType === 'from' &&
+      this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
+      !this.queryParamsService.hideUnusedUI
     );
   }
 
@@ -68,6 +72,8 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
+    private readonly swapFormService: SwapFormService,
+    private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
@@ -75,11 +81,30 @@ export class AssetTypesAsideComponent {
     private readonly mobileNativeService: MobileNativeModalService
   ) {}
 
+  public getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
+    if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
+      const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
+      const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
+        blockchain => blockchain.name === 'ZK_SYNC'
+      );
+
+      if (this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC') {
+        return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
+      } else {
+        return this.formType === 'from' ? [zkSyncBlockchain] : [...allAvailableBlockchains];
+      }
+    }
+  }
+
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
     const slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
       0,
       shownBlockchainsAmount
     );
+
+    if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
+      return this.getBlockchainsListForLandingIframe();
+    }
 
     const isSelectedBlockchainIncluded = slicedBlockchains.find(
       blockchain => blockchain.name === this.assetsSelectorService.assetType
