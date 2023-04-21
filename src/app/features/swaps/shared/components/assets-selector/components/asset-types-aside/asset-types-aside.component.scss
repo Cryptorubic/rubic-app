@@ -31,6 +31,10 @@
     padding-bottom: 0;
   }
 
+  @include hide-unused-ui {
+    align-items: flex-start;
+  }
+
   &__scroll {
     max-height: 100%;
 
@@ -142,6 +146,10 @@
 @include b($tablet) {
   .asset-types-aside {
     border-radius: 0 10px 0 0;
+
+    @include hide-unused-ui {
+      border-radius: 0 10px 0 20px;
+    }
   }
 }
 
