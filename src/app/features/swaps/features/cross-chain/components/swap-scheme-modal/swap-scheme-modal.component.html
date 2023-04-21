@@ -52,7 +52,16 @@
 
     <div class="description_swapAndEarn" *ngIf="isSwapAndEarnSwap">
       <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
-      <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
+      <a
+        href="https://app.rubic.exchange/swap-and-earn"
+        target="_blank"
+        rel="noreferrer"
+        *ngIf="hideUnusedUI"
+        >here</a
+      >
+      <span class="highlight_green" *ngIf="!hideUnusedUI" (click)="navigateToSwapAndEarn()"
+        >here</span
+      >
     </div>
 
     <div class="pair" [ngClass]="{ pair__isSwapAndEarnSwap: isSwapAndEarnSwap }">
