@@ -358,16 +358,20 @@ export class InstantTradeBottomFormComponent implements OnInit {
           this.setProvidersStateCalculating();
           this.refreshService.setRefreshing();
 
-          const disableInstantTrade =
-            this.queryParamsService.disabledProviders && this.queryParamsService.enabledBlockchains;
+          // @TODO change the variable creation logic
+          const disableInstantTrade = this.queryParamsService.hideUnusedUI
+            ? []
+            : this.queryParamsService.disabledProviders &&
+              this.queryParamsService.enabledBlockchains;
 
-          const instantTrades$ = disableInstantTrade
-            ? this.getFakeTrades()
-            : this.instantTradeService.calculateTrades(
-                this.fromToken,
-                this.fromAmount.toFixed(),
-                this.toToken
-              );
+          const instantTrades$ =
+            disableInstantTrade.length > 0
+              ? this.getFakeTrades()
+              : this.instantTradeService.calculateTrades(
+                  this.fromToken,
+                  this.fromAmount.toFixed(),
+                  this.toToken
+                );
 
           const tokenBalance$ = this.tokensService.getAndUpdateTokenBalance(this.fromToken);
 
