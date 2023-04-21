@@ -59,7 +59,9 @@ export class AssetTypesAsideComponent {
 
   public get showFiats(): boolean {
     return (
-      this.formType === 'from' && this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
+      this.formType === 'from' &&
+      this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
+      !this.queryParamsService.hideUnusedUI
     );
   }
 
