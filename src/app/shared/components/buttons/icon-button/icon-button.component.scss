@@ -66,13 +66,6 @@
       }
     }
   }
-
-  @include hide-unused-ui {
-    .image {
-      width: 15px;
-      height: 15px;
-    }
-  }
 }
 
 .bordered {

@@ -50,6 +50,8 @@ export class QueryParamsService {
 
   public isDesktop: boolean;
 
+  public domain: string;
+
   public disabledProviders: CrossChainTradeType[] | undefined;
 
   public disabledLifiBridges: LifiBridgeTypes[] | undefined;
@@ -80,6 +82,7 @@ export class QueryParamsService {
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
     this.isDesktop = queryParams.isDesktop === 'true';
+    this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setIframeInfo(queryParams);
 

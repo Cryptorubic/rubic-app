@@ -24,6 +24,7 @@ interface AllQueryParams {
   // iframe
   iframe: IframeAppearance;
   device: 'mobile' | 'desktop';
+  domain: string;
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;

@@ -9,6 +9,16 @@ html.iframe-horizontal {
   }
 }
 
+body.hide-unused-ui {
+  tui-dialog {
+    &[data-size='l'] {
+      > .content {
+        border-radius: 20px;
+      }
+    }
+  }
+}
+
 tui-dropdown-box {
   --tui-elevation-01: rgba(255, 255, 255, 0.03);
   --tui-radius-3: 19px;
