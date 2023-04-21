@@ -17,6 +17,10 @@
 
   @include hide-unused-ui {
     display: inline;
+
+    app-swap-info-container {
+      margin-top: 20px !important;
+    }
   }
 }
 
@@ -133,16 +137,6 @@
       background: transparent;
     }
 
-    //@include hide-unused-ui {
-    //  &::before {
-    //    width: 100%;
-    //  }
-    //
-    //  &::after {
-    //    width: 0;
-    //  }
-    //}
-
     > * {
       position: absolute;
       left: 50%;
@@ -258,6 +252,10 @@ app-analytics-link {
   display: block;
 
   margin-bottom: 20px !important;
+
+  @include hide-unused-ui {
+    margin-bottom: 0 !important;
+  }
 }
 
 .close-widget-button {
@@ -335,10 +333,6 @@ app-analytics-link {
 
       &::before {
         left: 20px;
-
-        @include hide-unused-ui {
-          left: 0;
-        }
       }
 
       &::after {

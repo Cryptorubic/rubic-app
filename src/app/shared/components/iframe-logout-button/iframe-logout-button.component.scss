@@ -17,6 +17,13 @@
       }
     }
   }
+
+  ::ng-deep tui-wrapper {
+    .image {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
 }
 
 app-icon-button ::ng-deep button {

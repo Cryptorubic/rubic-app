@@ -1,11 +1,5 @@
 @use 'src/scss/core' as *;
 
-:host {
-  //@include hide-unused-ui {
-  //  display: none;
-  //}
-}
-
 .switcher {
   z-index: 999;
 

@@ -10,10 +10,12 @@ html.iframe-horizontal {
 }
 
 body.hide-unused-ui {
-  tui-dialog[data-size='l'] {
-    margin: 0 !important;
-
-    border: 0 !important;
+  tui-dialog {
+    &[data-size='l'] {
+      > .content {
+        border-radius: 20px;
+      }
+    }
   }
 }
 

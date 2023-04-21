@@ -88,32 +88,17 @@ export class AssetTypesAsideComponent {
   ) {}
 
   public getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
-    const returnZkSyncBlockchain = () => {
-      return this.blockchainsListService.availableBlockchains.find(
+    if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
+      const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
+      const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
         blockchain => blockchain.name === 'ZK_SYNC'
       );
-    };
 
-    const returnAllAvailableBlockchains = () => {
-      return this.blockchainsListService.availableBlockchains;
-    };
-
-    const returnBlockchainsBasedOnFormType = (revert: boolean) => {
-      if (revert) {
-        return this.formType === 'from'
-          ? [...returnAllAvailableBlockchains()]
-          : [returnZkSyncBlockchain()];
+      if (this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC') {
+        return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
       } else {
-        return this.formType === 'from'
-          ? [returnZkSyncBlockchain()]
-          : [...returnAllAvailableBlockchains()];
+        return this.formType === 'from' ? [zkSyncBlockchain] : [...allAvailableBlockchains];
       }
-    };
-
-    if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
-      return returnBlockchainsBasedOnFormType(
-        this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC'
-      );
     }
   }
 
