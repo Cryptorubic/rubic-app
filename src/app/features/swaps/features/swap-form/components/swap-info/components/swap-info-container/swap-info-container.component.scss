@@ -1,12 +1,6 @@
 @use 'src/scss/core' as *;
 @use '../../styles/styles' as *;
 
-//:host {
-//  @include hide-unused-ui {
-//    display: none;
-//  }
-//}
-
 .transaction-info {
   &__header {
     display: flex;
