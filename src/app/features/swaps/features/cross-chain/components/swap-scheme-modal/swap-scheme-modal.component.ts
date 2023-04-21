@@ -49,6 +49,7 @@ import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockch
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -112,6 +113,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   public isSwapAndEarnSwap: boolean;
 
+  public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -120,6 +123,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly modalService: ModalService,
+    private readonly queryParamsService: QueryParamsService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, SwapSchemeModalData>,
     @Self() private readonly destroy$: TuiDestroyService,

@@ -54,7 +54,16 @@
           </ng-container>
           <div class="modal__point-link" *ngIf="isSwapAndEarnSwap">
             <span>Points can be seen </span>
-            <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
+            <a
+              href="https://app.rubic.exchange/swap-and-earn"
+              target="_blank"
+              rel="noreferrer"
+              *ngIf="hideUnusedUI"
+              >here</a
+            >
+            <span *ngIf="!hideUnusedUI" class="highlight_green" (click)="navigateToSwapAndEarn()"
+              >here</span
+            >
           </div>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
             <div *noFrame class="modal__footer-text && modal__footer-text_warning">
