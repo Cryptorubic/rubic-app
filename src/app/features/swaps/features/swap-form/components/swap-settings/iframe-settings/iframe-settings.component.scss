@@ -36,11 +36,9 @@
   &__column {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     height: 100%;
 
     @include iframe-vertical {
-      align-items: initial;
       width: 100%;
     }
 

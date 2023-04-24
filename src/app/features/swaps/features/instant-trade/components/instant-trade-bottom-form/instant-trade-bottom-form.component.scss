@@ -335,6 +335,10 @@ $green: rgb(74, 169, 86);
     @include iframe-vertical {
       margin-top: 15px;
     }
+
+    @include iframe-horizontal {
+      margin-top: 20px;
+    }
   }
 }
 
