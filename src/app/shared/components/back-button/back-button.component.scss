@@ -1,5 +1,11 @@
 @use 'src/scss/core' as *;
 
+::ng-deep {
+  tui-wrapper[data-appearance='secondary'] {
+    background: transparent;
+  }
+}
+
 .back-button {
   app-rubic-button {
     ::ng-deep button {
@@ -10,6 +16,8 @@
   &__arrow {
     width: 16px;
     height: 15px;
+
+    transform: rotate(90deg);
 
     ::ng-deep svg {
       width: 100%;

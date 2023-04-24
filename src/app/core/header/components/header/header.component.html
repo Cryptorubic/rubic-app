@@ -62,7 +62,12 @@
     </div>
   </nav>
 
-  <app-points-button [ngClass]="{ 'point-button_show': currentUser$ | async }"></app-points-button>
+  <ng-container *noFrame>
+    <app-points-button
+      class="rubic-header__point-button"
+      *ngIf="currentUser$ | async"
+    ></app-points-button>
+  </ng-container>
 
   <!--  Old button, return when earn and swap company will be over -->
   <!--  <app-buy-token-->

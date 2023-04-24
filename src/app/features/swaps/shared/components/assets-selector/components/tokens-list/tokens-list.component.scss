@@ -13,7 +13,7 @@ $token-card-height: 55px;
   margin-top: 10px;
 
   @include b($mobile-md-minus) {
-    height: calc(100% - 20px);
+    height: calc(100% - 70px);
     margin-top: 15px;
   }
 
