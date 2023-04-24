@@ -38,7 +38,20 @@
     <footer class="modal__footer">
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
         <ng-container *ngIf="ccrProviderType !== CROSS_CHAIN_PROVIDER.SYMBIOSIS">
-          <ng-container *ngIf="!isSwapAndEarnSwap">
+          <ng-container>
+            <div class="modal__point-link" *ngIf="isSwapAndEarnSwap">
+              <span>Points can be seen </span>
+              <a
+                href="https://app.rubic.exchange/swap-and-earn"
+                target="_blank"
+                rel="noreferrer"
+                *ngIf="hideUnusedUI"
+                >here</a
+              >
+              <span *ngIf="!hideUnusedUI" class="highlight_green" (click)="navigateToSwapAndEarn()"
+                >here</span
+              >
+            </div>
             <div
               *noFrame
               class="modal__footer-text"
@@ -52,19 +65,6 @@
               "
             ></div>
           </ng-container>
-          <div class="modal__point-link" *ngIf="isSwapAndEarnSwap">
-            <span>Points can be seen </span>
-            <a
-              href="https://app.rubic.exchange/swap-and-earn"
-              target="_blank"
-              rel="noreferrer"
-              *ngIf="hideUnusedUI"
-              >here</a
-            >
-            <span *ngIf="!hideUnusedUI" class="highlight_green" (click)="navigateToSwapAndEarn()"
-              >here</span
-            >
-          </div>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
             <div *noFrame class="modal__footer-text && modal__footer-text_warning">
               Transaction can take up to 5 minutes.

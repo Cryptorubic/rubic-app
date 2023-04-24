@@ -13,7 +13,7 @@ $token-card-height: 55px;
   margin-top: 10px;
 
   @include b($mobile-md-minus) {
-    height: calc(100% - 20px);
+    height: calc(100% - 130px);
     margin-top: 15px;
   }
 
@@ -42,6 +42,10 @@ $token-card-height: 55px;
 
   ::ng-deep .content {
     height: 100%;
+
+    @include b($mobile-md-minus) {
+      height: calc(100% - 10px);
+    }
   }
 }
 
