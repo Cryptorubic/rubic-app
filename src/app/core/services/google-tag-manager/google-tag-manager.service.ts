@@ -219,7 +219,7 @@ export class GoogleTagManagerService {
     this.angularGtmService.pushTag({
       event: 'GAevent',
       ecategory: ecategory,
-      eaction: eaction.split(' ').join('_'),
+      eaction: eaction.toLowerCase().split(' ').join('_'),
       elabel: undefined
     });
   }
