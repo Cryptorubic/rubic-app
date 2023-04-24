@@ -1,11 +1,5 @@
 @use 'src/scss/core' as *;
 
-::ng-deep {
-  tui-wrapper[data-appearance='secondary'] {
-    background: transparent;
-  }
-}
-
 .back-button {
   app-rubic-button {
     ::ng-deep button {
@@ -27,5 +21,9 @@
         fill: var(--primary-text);
       }
     }
+  }
+
+  ::ng-deep tui-wrapper[data-appearance='secondary'] {
+    background: transparent !important;
   }
 }
