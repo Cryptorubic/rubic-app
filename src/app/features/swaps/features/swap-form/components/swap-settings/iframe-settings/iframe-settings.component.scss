@@ -8,6 +8,10 @@
   height: 100vh;
   margin: 0 auto;
 
+  @include iframe-vertical {
+    height: auto;
+  }
+
   &__container {
     display: flex;
     align-items: center;
@@ -22,7 +26,6 @@
       width: $iframe-vertical-width;
       height: 250px;
       margin: 0 auto;
-      padding-left: 55px;
 
       > div:first-child {
         margin-bottom: 15px;
@@ -33,8 +36,11 @@
   &__column {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     height: 100%;
+
+    @include iframe-vertical {
+      width: 100%;
+    }
 
     &:not(:last-child) {
       margin-right: 40px;
@@ -63,9 +69,7 @@
 
     @include iframe-vertical {
       display: flex;
-      flex-direction: column;
-      justify-content: start;
-      margin-left: 3px;
+      align-items: center;
     }
 
     @include iframe {
@@ -86,6 +90,10 @@
 
   tui-input-number {
     width: 80px;
+
+    @include iframe-vertical {
+      width: 70px;
+    }
   }
 
   ::ng-deep tui-input-number input {

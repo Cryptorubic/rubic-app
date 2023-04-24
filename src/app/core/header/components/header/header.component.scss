@@ -170,6 +170,13 @@
   &-mobile {
     display: none;
   }
+
+  &__point-button {
+    display: block;
+    margin-left: 5px;
+
+    transform: scale(0.9);
+  }
 }
 
 .notification-counter {
@@ -249,17 +256,6 @@
     &__logo_hide {
       display: none;
     }
-
-    app-points-button {
-      display: none;
-    }
-  }
-
-  .point-button_show {
-    display: block !important;
-    margin-left: 5px;
-
-    transform: scale(0.9);
   }
 }
 
