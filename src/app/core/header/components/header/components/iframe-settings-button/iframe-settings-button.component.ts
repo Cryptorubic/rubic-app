@@ -20,7 +20,8 @@ export class IframeSettingsButtonComponent {
         IframeSettingsComponent,
         {
           size: 'fullscreen',
-          fitContent: true
+          fitContent: true,
+          title: 'Settings'
         },
         this.injector
       )
