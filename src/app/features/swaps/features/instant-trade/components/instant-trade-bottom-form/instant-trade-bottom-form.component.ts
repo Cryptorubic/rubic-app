@@ -707,6 +707,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
     } catch (err) {
       this.errorService.catch(err);
+      this.gtmService.fireTransactionError('approve-on-chain-trade', err.message);
 
       this.setProviderState(
         provider.name,
@@ -783,6 +784,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
     } catch (err) {
       this.errorService.catch(err);
+      this.gtmService.fireTransactionError('on-chain-trade', err.message);
 
       this.setProviderState(
         providerName,
