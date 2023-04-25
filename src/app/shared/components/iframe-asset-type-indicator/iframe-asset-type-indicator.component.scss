@@ -23,7 +23,7 @@
     max-width: 24px;
     max-height: 24px;
 
-    @include iframe-horizontal {
+    @include iframe {
       width: 100%;
       height: 100%;
     }
