@@ -746,7 +746,7 @@ export class CrossChainFormService {
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
 
-      if (error.message !== '') {
+      if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError('approve-cross-chain-swap-error', error.message);
       }
 
@@ -814,8 +814,9 @@ export class CrossChainFormService {
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
     } catch (error) {
       this.handleSwapError(error, currentSelectedTrade.tradeType);
+      const parsedError = RubicSdkErrorParser.parseError(error);
 
-      if (error.message !== '') {
+      if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError('cross-chain-swap-error', error.message);
       }
     }
@@ -842,8 +843,9 @@ export class CrossChainFormService {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     } catch (error) {
       this.handleSwapError(error, CROSS_CHAIN_TRADE_TYPE.CHANGENOW);
+      const parsedError = RubicSdkErrorParser.parseError(error);
 
-      if (error.message !== '') {
+      if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError('changenow-cross-chain-swap-error', error.message);
       }
     }

@@ -61,6 +61,7 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 import { compareTokens } from '@shared/utils/utils';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -707,8 +708,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
     } catch (err) {
       this.errorService.catch(err);
+      const parsedError = RubicSdkErrorParser.parseError(err);
 
-      if (err.message !== '') {
+      if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError('approve-on-chain-wap-error', err.message);
       }
 
@@ -787,8 +789,9 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
     } catch (err) {
       this.errorService.catch(err);
+      const parsedError = RubicSdkErrorParser.parseError(err);
 
-      if (err.message !== '') {
+      if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError('on-chain-swap-error', err.message);
       }
 
