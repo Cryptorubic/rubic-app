@@ -746,12 +746,10 @@ export class CrossChainFormService {
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
 
-      if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError('approve-cross-chain-swap-error', error.message);
-      }
-
       if (parsedError instanceof UserRejectError) {
         this.isSwapStarted = SWAP_PROCESS.NONE;
+      } else {
+        this.gtmService.fireTransactionError('approve-cross-chain-swap-error', error.message);
       }
 
       this.errorsService.catch(parsedError);

@@ -80,7 +80,7 @@ export class IframeSettingsComponent {
     this.cdr.detectChanges();
   }
 
-  public disablingToggleReceiverAddress(): void {
+  private disablingToggleReceiverAddress(): void {
     this.targetNetworkAddressService.isAddressRequired$
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAddressRequired => {

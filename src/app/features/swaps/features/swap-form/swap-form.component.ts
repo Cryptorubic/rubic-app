@@ -117,14 +117,9 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.swapFormService.toBlockchain$.subscribe(blockchainName => {
-      const notEvmChangeNowBlockchains = Object.values(
-        notEvmChangeNowBlockchainsList
-      ) as BlockchainName[];
-
-      this.isIframeDstChainNotEvm =
-        this.iframeService.isIframe && notEvmChangeNowBlockchains.includes(blockchainName);
-    });
+    if (this.iframeService.isIframe) {
+      this.hideFormSwitcherForIframe();
+    }
   }
 
   ngOnInit(): void {
@@ -148,6 +143,16 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   private setFormValues(form: SwapFormInput): void {
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
+  }
+
+  private hideFormSwitcherForIframe(): void {
+    this.swapFormService.toBlockchain$.subscribe(blockchainName => {
+      const notEvmChangeNowBlockchains = Object.values(
+        notEvmChangeNowBlockchainsList
+      ) as BlockchainName[];
+
+      this.isIframeDstChainNotEvm = notEvmChangeNowBlockchains.includes(blockchainName);
+    });
   }
 
   public async revert(): Promise<void> {
