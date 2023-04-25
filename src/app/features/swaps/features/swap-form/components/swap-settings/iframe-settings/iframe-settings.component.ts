@@ -13,13 +13,14 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-iframe-settings',
   templateUrl: './iframe-settings.component.html',
   styleUrls: ['./iframe-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService, TargetNetworkAddressService]
 })
 export class IframeSettingsComponent {
   private readonly settingsService = this.context.content.injector.get(SettingsService);
@@ -45,7 +46,8 @@ export class IframeSettingsComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) readonly context: { content: { injector: Injector } },
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.form.controls.slippageTolerance.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -56,6 +58,8 @@ export class IframeSettingsComponent {
           });
         }
       });
+
+    this.disablingToggleReceiverAddress();
   }
 
   public toggleAutoSlippageTolerance(): void {
@@ -74,5 +78,17 @@ export class IframeSettingsComponent {
       });
     }
     this.cdr.detectChanges();
+  }
+
+  public disablingToggleReceiverAddress(): void {
+    this.targetNetworkAddressService.isAddressRequired$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAddressRequired => {
+        if (isAddressRequired) {
+          this.crossChainForm.controls.showReceiverAddress.disable({ emitEvent: false });
+        } else {
+          this.crossChainForm.controls.showReceiverAddress.enable({ emitEvent: false });
+        }
+      });
   }
 }
