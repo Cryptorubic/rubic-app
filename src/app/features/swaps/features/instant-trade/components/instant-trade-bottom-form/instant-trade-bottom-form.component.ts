@@ -61,6 +61,8 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 import { compareTokens } from '@shared/utils/utils';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -707,6 +709,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
       await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
     } catch (err) {
       this.errorService.catch(err);
+      const parsedError = RubicSdkErrorParser.parseError(err);
+
+      if (!(parsedError instanceof UserRejectError)) {
+        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.APPROVE_ON_CHAIN_SWAP, err.message);
+      }
 
       this.setProviderState(
         provider.name,
@@ -783,6 +790,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
     } catch (err) {
       this.errorService.catch(err);
+      const parsedError = RubicSdkErrorParser.parseError(err);
+
+      if (!(parsedError instanceof UserRejectError)) {
+        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.ON_CHAIN_SWAP, err.message);
+      }
 
       this.setProviderState(
         providerName,

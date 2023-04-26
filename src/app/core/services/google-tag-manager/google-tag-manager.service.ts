@@ -213,6 +213,18 @@ export class GoogleTagManagerService {
   }
 
   /**
+   * Fires GTM event on transaction error.
+   */
+  public fireTransactionError(ecategory: string, eaction: string): void {
+    this.angularGtmService.pushTag({
+      event: 'GAevent',
+      ecategory: ecategory,
+      eaction: eaction.toLowerCase().split(' ').join('_'),
+      elabel: undefined
+    });
+  }
+
+  /**
    * Fetches passed form steps from local storage.
    */
   public fetchPassedFormSteps(): void {

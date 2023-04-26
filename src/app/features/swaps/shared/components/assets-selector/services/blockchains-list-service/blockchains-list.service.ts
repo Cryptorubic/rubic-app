@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { AvailableBlockchain } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { blockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
-import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import {
+  blockchainsList,
+  notEvmChangeNowBlockchainsList
+} from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -17,6 +19,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 
 @Injectable()
 export class BlockchainsListService {
@@ -46,6 +50,7 @@ export class BlockchainsListService {
     private readonly searchQueryService: SearchQueryService,
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
+    private readonly iframeService: IframeService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
@@ -77,7 +82,11 @@ export class BlockchainsListService {
     this._availableBlockchains = blockchains.map(blockchainName => {
       const disabledConfiguration =
         !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
-      const disabledFrom = disabledFromBlockchains.includes(blockchainName);
+      const disabledFrom = !this.iframeService.isIframe
+        ? disabledFromBlockchains.includes(blockchainName)
+        : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
+            blockchainName
+          );
       const disabledLimitOrder = selectedBlockchain && blockchainName !== selectedBlockchain;
 
       return {
