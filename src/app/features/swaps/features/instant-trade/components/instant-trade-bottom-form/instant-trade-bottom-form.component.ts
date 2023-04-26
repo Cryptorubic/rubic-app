@@ -62,6 +62,7 @@ import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade
 import { compareTokens } from '@shared/utils/utils';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -711,7 +712,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       const parsedError = RubicSdkErrorParser.parseError(err);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError('approve-on-chain-wap-error', err.message);
+        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.APPROVE_ON_CHAIN_SWAP, err.message);
       }
 
       this.setProviderState(
@@ -792,7 +793,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       const parsedError = RubicSdkErrorParser.parseError(err);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError('on-chain-swap-error', err.message);
+        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.ON_CHAIN_SWAP, err.message);
       }
 
       this.setProviderState(
