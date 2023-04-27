@@ -14,5 +14,6 @@ export enum BUTTON_ERROR_TYPE {
   SOL_SWAP = 'Wrap SOL firstly',
   SOLANA_UNAVAILABLE = 'Solana in unavailable',
 
-  NO_SELECTED_TOKEN = 'Select token'
+  NO_SELECTED_TOKEN = 'Select token',
+  ARGENT_WITHOUT_RECEIVER = 'Receiver address is required for swaps Argent wallet'
 }
