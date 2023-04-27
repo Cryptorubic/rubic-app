@@ -66,5 +66,18 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInVerticalMobileIframe: true,
     supportsInIframe: true,
     disabled: false
+  },
+  {
+    name: 'Argent',
+    value: WALLET_NAME.ARGENT,
+    img: './assets/images/icons/wallets/argent.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: false,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
+    disabled: false
   }
 ];
