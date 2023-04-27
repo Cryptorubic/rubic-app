@@ -11,6 +11,8 @@
     width: 16px;
     height: 15px;
 
+    transform: rotate(90deg);
+
     ::ng-deep svg {
       width: 100%;
       height: 100%;
@@ -19,5 +21,9 @@
         fill: var(--primary-text);
       }
     }
+  }
+
+  ::ng-deep tui-wrapper[data-appearance='secondary'] {
+    background: transparent !important;
   }
 }

@@ -65,6 +65,7 @@ import {
   notEvmChangeNowBlockchainsList
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 @Injectable()
 export class CrossChainFormService {
@@ -745,8 +746,14 @@ export class CrossChainFormService {
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
+
       if (parsedError instanceof UserRejectError) {
         this.isSwapStarted = SWAP_PROCESS.NONE;
+      } else {
+        this.gtmService.fireTransactionError(
+          GA_ERRORS_CATEGORY.APPROVE_CROSS_CHAIN_SWAP,
+          error.message
+        );
       }
 
       this.errorsService.catch(parsedError);
@@ -809,6 +816,11 @@ export class CrossChainFormService {
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
     } catch (error) {
       this.handleSwapError(error, currentSelectedTrade.tradeType);
+      const parsedError = RubicSdkErrorParser.parseError(error);
+
+      if (!(parsedError instanceof UserRejectError)) {
+        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP, error.message);
+      }
     }
   }
 
@@ -833,6 +845,14 @@ export class CrossChainFormService {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     } catch (error) {
       this.handleSwapError(error, CROSS_CHAIN_TRADE_TYPE.CHANGENOW);
+      const parsedError = RubicSdkErrorParser.parseError(error);
+
+      if (!(parsedError instanceof UserRejectError)) {
+        this.gtmService.fireTransactionError(
+          GA_ERRORS_CATEGORY.CHANGENOW_CROSS_CHAIN_SWAP,
+          error.message
+        );
+      }
     }
   }
 
