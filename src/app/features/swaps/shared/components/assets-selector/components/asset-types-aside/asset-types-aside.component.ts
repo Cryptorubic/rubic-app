@@ -157,7 +157,7 @@ export class AssetTypesAsideComponent {
         slicedBlockchains,
         this.swapFormService.inputValue.fromAsset.blockchain
       );
-    } else {
+    } else if (this.swapFormService.inputValue.toToken) {
       this.getLastSelectedToBlockchain(slicedBlockchains);
     }
 
