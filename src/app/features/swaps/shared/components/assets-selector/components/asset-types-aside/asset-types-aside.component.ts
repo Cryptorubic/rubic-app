@@ -149,8 +149,6 @@ export class AssetTypesAsideComponent {
       } else {
         this.getLastSelectedToBlockchain(slicedBlockchains);
       }
-    } else if (this.swapFormService.inputValue.toToken) {
-      this.getLastSelectedToBlockchain(slicedBlockchains);
     } else if (
       this.swapFormService.inputValue.fromAsset &&
       'blockchain' in this.swapFormService.inputValue.fromAsset
@@ -159,6 +157,8 @@ export class AssetTypesAsideComponent {
         slicedBlockchains,
         this.swapFormService.inputValue.fromAsset.blockchain
       );
+    } else {
+      this.getLastSelectedToBlockchain(slicedBlockchains);
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
