@@ -32,6 +32,7 @@ import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/co
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
+import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -98,6 +99,10 @@ export class WalletConnectorService {
       this.zone,
       this.window
     ] as const;
+
+    if (walletName === WALLET_NAME.ARGENT) {
+      return new ArgentWalletAdapter(...defaultConstructorParameters);
+    }
 
     if (walletName === WALLET_NAME.TRUST_WALLET) {
       return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);

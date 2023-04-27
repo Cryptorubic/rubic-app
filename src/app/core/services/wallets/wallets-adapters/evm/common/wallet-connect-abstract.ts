@@ -14,8 +14,9 @@ import {
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
-export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter {
+export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<WalletConnectProvider> {
   protected constructor(
     providerConfig: IWalletConnectProviderOptions,
     accountChange$: BehaviorSubject<string>,
