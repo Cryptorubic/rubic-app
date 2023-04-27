@@ -34,25 +34,24 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
     this.setArgentStyle(1000);
 
     try {
-      let address: string | null;
       const result = await Promise.race([
         this.wallet.enable(),
         new Promise<void>(resolve => setTimeout(() => resolve(null), 10_000))
       ]);
       if (result !== null) {
-        [address] = await this.wallet.enable();
+        const [address] = await this.wallet.enable();
+
+        this.isEnabled = true;
+        this.selectedAddress = address;
+        this.selectedChain =
+          (BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) as EvmBlockchainName) ?? null;
+        this.onAddressChanges$.next(address);
+        this.onNetworkChanges$.next(this.selectedChain);
+
+        this.initSubscriptionsOnChanges();
       } else {
         this.window.location.reload();
       }
-
-      this.isEnabled = true;
-      this.selectedAddress = address;
-      this.selectedChain =
-        (BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) as EvmBlockchainName) ?? null;
-      this.onAddressChanges$.next(address);
-      this.onNetworkChanges$.next(this.selectedChain);
-
-      this.initSubscriptionsOnChanges();
     } catch (error) {
       throw new WalletlinkError();
     }
