@@ -29,17 +29,19 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
 
   public async activate(): Promise<void> {
     setTimeout(() => {
-      const walletConnectorWrapper = this.window.document.querySelector('#walletconnect-wrapper');
-      const header = walletConnectorWrapper.querySelector('.walletconnect-modal__header');
+      try {
+        const walletConnectorWrapper = this.window.document.querySelector('#walletconnect-wrapper');
+        const header = walletConnectorWrapper.querySelector('.walletconnect-modal__header');
 
-      const title = header.querySelector('p');
-      title.innerHTML = 'Connenct Argent Wallet';
+        const title = header.querySelector('p');
+        title.innerHTML = 'Connect the Argent Wallet';
 
-      const image = header.querySelector('img') as HTMLImageElement;
-      image.src = `${this.window.origin}/assets/images/icons/wallets/argent.svg`;
+        const image = header.querySelector('img') as HTMLImageElement;
+        image.src = `${this.window.origin}/assets/images/icons/wallets/argent.svg`;
 
-      const description = walletConnectorWrapper.querySelector('#walletconnect-qrcode-text');
-      description.innerHTML = 'Scan QR code with a Argent wallet';
+        const description = walletConnectorWrapper.querySelector('#walletconnect-qrcode-text');
+        description.innerHTML = 'Scan QR code with the Argent wallet';
+      } catch {}
     }, 300);
 
     await super.activate();
