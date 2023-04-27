@@ -2,9 +2,10 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
+import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;
@@ -28,13 +29,47 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   }
 
   public async activate(): Promise<void> {
+    this.setArgentStyle(10);
+    this.setArgentStyle(300);
+    this.setArgentStyle(1000);
+
+    try {
+      let address: string | null;
+      const result = await Promise.race([
+        this.wallet.enable(),
+        new Promise<void>(resolve => setTimeout(() => resolve(null), 10_000))
+      ]);
+      if (result !== null) {
+        [address] = await this.wallet.enable();
+      } else {
+        this.window.location.reload();
+      }
+
+      this.isEnabled = true;
+      this.selectedAddress = address;
+      this.selectedChain =
+        (BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) as EvmBlockchainName) ?? null;
+      this.onAddressChanges$.next(address);
+      this.onNetworkChanges$.next(this.selectedChain);
+
+      this.initSubscriptionsOnChanges();
+    } catch (error) {
+      throw new WalletlinkError();
+    }
+  }
+
+  private setArgentStyle(timeout: number): void {
     setTimeout(() => {
       try {
         const walletConnectorWrapper = this.window.document.querySelector('#walletconnect-wrapper');
         const header = walletConnectorWrapper.querySelector('.walletconnect-modal__header');
 
         const title = header.querySelector('p');
-        title.innerHTML = 'Connect the Argent Wallet';
+        if (title.innerHTML !== 'Connect the Argent Wallet') {
+          title.innerHTML = 'Connect the Argent Wallet';
+        } else {
+          return;
+        }
 
         const image = header.querySelector('img') as HTMLImageElement;
         image.src = `${this.window.origin}/assets/images/icons/wallets/argent.svg`;
@@ -42,8 +77,6 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
         const description = walletConnectorWrapper.querySelector('#walletconnect-qrcode-text');
         description.innerHTML = 'Scan QR code with the Argent wallet';
       } catch {}
-    }, 300);
-
-    await super.activate();
+    }, timeout);
   }
 }

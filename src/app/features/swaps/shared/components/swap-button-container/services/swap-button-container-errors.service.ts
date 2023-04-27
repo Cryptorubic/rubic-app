@@ -4,11 +4,11 @@ import { BUTTON_ERROR_TYPE } from '@features/swaps/shared/components/swap-button
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import BigNumber from 'bignumber.js';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import { BlockchainsInfo, CHAIN_TYPE, compareAddresses, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -24,6 +24,7 @@ import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { isMinimalToken, isTokenAmount } from '@shared/utils/is-token';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Injectable()
 export class SwapButtonContainerErrorsService {
@@ -89,6 +90,7 @@ export class SwapButtonContainerErrorsService {
     this.subscribeOnWalletNetwork();
     this.subscribeOnAuth();
     this.subscribeOnTargetNetworkAddress();
+    this.subscribeOnReceiverAndWallet();
   }
 
   private subscribeOnSwapForm(): void {
@@ -285,6 +287,11 @@ export class SwapButtonContainerErrorsService {
       : 'EVM';
 
     switch (true) {
+      case err[BUTTON_ERROR_TYPE.ARGENT_WITHOUT_RECEIVER]: {
+        type = BUTTON_ERROR_TYPE.ARGENT_WITHOUT_RECEIVER;
+        translateParams = { key: 'Receiver address is required for swaps Argent wallet' };
+        break;
+      }
       case err[BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK]: {
         type = BUTTON_ERROR_TYPE.WRONG_SOURCE_NETWORK;
         translateParams = {
@@ -464,5 +471,21 @@ export class SwapButtonContainerErrorsService {
     } else if (error instanceof MaxAmountError) {
       this.setMaxAmountError({ amount: error.amount, symbol: error.tokenSymbol });
     }
+  }
+
+  private subscribeOnReceiverAndWallet(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        map(() => this.walletConnectorService.provider.walletName),
+        combineLatestWith(this.targetNetworkAddressService.address$, this.swapTypeService.swapMode$)
+      )
+      .subscribe(([wallet, receiver, swapMode]) => {
+        const isWalletAddress =
+          receiver === null || compareAddresses(receiver, this.walletConnectorService.address);
+        this.errorType[BUTTON_ERROR_TYPE.ARGENT_WITHOUT_RECEIVER] =
+          wallet === WALLET_NAME.ARGENT &&
+          isWalletAddress &&
+          swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+      });
   }
 }
