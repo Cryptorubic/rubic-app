@@ -103,27 +103,11 @@ export class AssetTypesAsideComponent {
       );
   }
 
-  private setLastSelectedHiddenFromBlockchain(
+  private isSelectedBlockchainIncluded(
     slicedBlockchains: AvailableBlockchain[],
     selectedBlockchain: BlockchainName
-  ): void {
-    const isSelectedBlockchainIncluded = slicedBlockchains.find(
-      blockchain => blockchain.name === selectedBlockchain
-    );
-
-    if (!isSelectedBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(selectedBlockchain);
-    }
-  }
-
-  private setLastSelectedHiddenToBlockchain(slicedBlockchains: AvailableBlockchain[]): void {
-    const isSelectedBlockchainIncluded = slicedBlockchains.find(
-      blockchain => blockchain.name === this.swapFormService.inputValue.toToken.blockchain
-    );
-
-    if (!isSelectedBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(this.swapFormService.inputValue.toToken.blockchain);
-    }
+  ): AvailableBlockchain {
+    return slicedBlockchains.find(blockchain => blockchain.name === selectedBlockchain);
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -144,14 +128,22 @@ export class AssetTypesAsideComponent {
 
     if (toBlockchain && fromBlockchain) {
       if (this.formType === 'from') {
-        this.setLastSelectedHiddenFromBlockchain(slicedBlockchains, fromBlockchain);
+        if (!this.isSelectedBlockchainIncluded(slicedBlockchains, fromBlockchain)) {
+          this.setLastSelectedHiddenBlockchain(fromBlockchain);
+        }
       } else {
-        this.setLastSelectedHiddenToBlockchain(slicedBlockchains);
+        if (!this.isSelectedBlockchainIncluded(slicedBlockchains, toBlockchain)) {
+          this.setLastSelectedHiddenBlockchain(toBlockchain);
+        }
       }
     } else if (fromBlockchain) {
-      this.setLastSelectedHiddenFromBlockchain(slicedBlockchains, fromBlockchain);
+      if (!this.isSelectedBlockchainIncluded(slicedBlockchains, fromBlockchain)) {
+        this.setLastSelectedHiddenBlockchain(fromBlockchain);
+      }
     } else if (toBlockchain) {
-      this.setLastSelectedHiddenToBlockchain(slicedBlockchains);
+      if (!this.isSelectedBlockchainIncluded(slicedBlockchains, toBlockchain)) {
+        this.setLastSelectedHiddenBlockchain(toBlockchain);
+      }
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
