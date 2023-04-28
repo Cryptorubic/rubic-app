@@ -116,34 +116,34 @@ export class AssetTypesAsideComponent {
       shownBlockchainsAmount
     );
     const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
+    const isSelectedToBlockchainIncluded = this.isSelectedBlockchainIncluded(
+      slicedBlockchains,
+      toBlockchain
+    );
     const fromBlockchain =
       this.swapFormService.inputValue.fromAsset &&
       'blockchain' in this.swapFormService.inputValue.fromAsset
         ? this.swapFormService.inputValue.fromAsset.blockchain
         : null;
+    const isSelectedFromBlockchainIncluded = this.isSelectedBlockchainIncluded(
+      slicedBlockchains,
+      fromBlockchain
+    );
 
     if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
       return this.getBlockchainsListForLandingIframe();
     }
 
     if (toBlockchain && fromBlockchain) {
-      if (this.formType === 'from') {
-        if (!this.isSelectedBlockchainIncluded(slicedBlockchains, fromBlockchain)) {
-          this.setLastSelectedHiddenBlockchain(fromBlockchain);
-        }
-      } else {
-        if (!this.isSelectedBlockchainIncluded(slicedBlockchains, toBlockchain)) {
-          this.setLastSelectedHiddenBlockchain(toBlockchain);
-        }
-      }
-    } else if (fromBlockchain) {
-      if (!this.isSelectedBlockchainIncluded(slicedBlockchains, fromBlockchain)) {
+      if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(fromBlockchain);
-      }
-    } else if (toBlockchain) {
-      if (!this.isSelectedBlockchainIncluded(slicedBlockchains, toBlockchain)) {
+      } else if (!isSelectedToBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(toBlockchain);
       }
+    } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(fromBlockchain);
+    } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(toBlockchain);
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
