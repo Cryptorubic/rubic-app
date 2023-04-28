@@ -27,6 +27,8 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { firstValueFrom, from, of } from 'rxjs';
+import { catchError, switchMap, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -166,23 +168,33 @@ export class WalletsModalComponent implements OnInit {
           },
           this.injector
         )
-        .subscribe({
-          next: async blockchainName => {
+        .pipe(
+          switchMap(blockchainName => {
             if (blockchainName) {
-              await this.authService.connectWallet({
+              this.close();
+              return this.authService.connectWallet({
                 walletName: provider,
                 chainId: blockchainId[blockchainName]
               });
-              this.close();
             }
-          },
-          complete: () => this.headerStore.setWalletsLoadingStatus(false)
-        });
+            return of(null);
+          }),
+          catchError(() => {
+            return of(null);
+          })
+        )
+        .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
       return;
     }
 
     try {
-      await this.authService.connectWallet({ walletName: provider });
+      const connectionTime = 15_000;
+      await firstValueFrom(
+        from(this.authService.connectWallet({ walletName: provider })).pipe(
+          timeout(connectionTime),
+          catchError(() => of(`Request timed out after: ${connectionTime}`))
+        )
+      );
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }

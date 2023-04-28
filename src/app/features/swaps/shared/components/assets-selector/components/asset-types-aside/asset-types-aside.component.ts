@@ -87,7 +87,7 @@ export class AssetTypesAsideComponent {
     private readonly mobileNativeService: MobileNativeModalService
   ) {}
 
-  public getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
+  private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
     if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
       const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
       const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
@@ -102,24 +102,54 @@ export class AssetTypesAsideComponent {
     }
   }
 
+  private setLastSelectedHiddenBlockchain(selectedBlockchain: BlockchainName): void {
+    this.blockchainsListService.lastSelectedHiddenBlockchain =
+      this.blockchainsListService.availableBlockchains.find(
+        blockchain => blockchain.name === selectedBlockchain
+      );
+  }
+
+  private isSelectedBlockchainIncluded(
+    slicedBlockchains: AvailableBlockchain[],
+    selectedBlockchain: BlockchainName
+  ): AvailableBlockchain {
+    return slicedBlockchains.find(blockchain => blockchain.name === selectedBlockchain);
+  }
+
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
     const slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
       0,
       shownBlockchainsAmount
+    );
+    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
+    const isSelectedToBlockchainIncluded = this.isSelectedBlockchainIncluded(
+      slicedBlockchains,
+      toBlockchain
+    );
+    const fromBlockchain =
+      this.swapFormService.inputValue.fromAsset &&
+      'blockchain' in this.swapFormService.inputValue.fromAsset
+        ? this.swapFormService.inputValue.fromAsset.blockchain
+        : null;
+    const isSelectedFromBlockchainIncluded = this.isSelectedBlockchainIncluded(
+      slicedBlockchains,
+      fromBlockchain
     );
 
     if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
       return this.getBlockchainsListForLandingIframe();
     }
 
-    const isSelectedBlockchainIncluded = slicedBlockchains.find(
-      blockchain => blockchain.name === this.assetsSelectorService.assetType
-    );
-    if (!isSelectedBlockchainIncluded) {
-      this.blockchainsListService.lastSelectedHiddenBlockchain =
-        this.blockchainsListService.availableBlockchains.find(
-          blockchain => blockchain.name === this.assetsSelectorService.assetType
-        );
+    if (toBlockchain && fromBlockchain) {
+      if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
+        this.setLastSelectedHiddenBlockchain(fromBlockchain);
+      } else if (!isSelectedToBlockchainIncluded) {
+        this.setLastSelectedHiddenBlockchain(toBlockchain);
+      }
+    } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(fromBlockchain);
+    } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(toBlockchain);
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;

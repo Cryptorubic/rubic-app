@@ -43,7 +43,7 @@ export class BuyTokenComponent {
 
   public readonly theme$ = this.themeService.theme$;
 
-  public rubicIcon = {
+  public readonly rubicIcon = {
     light: 'assets/images/icons/header/rubic.svg',
     dark: 'assets/images/icons/header/rubic-light.svg'
   };
