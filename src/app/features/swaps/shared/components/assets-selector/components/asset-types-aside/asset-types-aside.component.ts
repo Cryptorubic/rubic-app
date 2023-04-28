@@ -96,19 +96,14 @@ export class AssetTypesAsideComponent {
     }
   }
 
-  private getLastSelectedBlockchain(
-    isSelectedBlockchainIncluded: AvailableBlockchain,
-    selectedBlockchain: BlockchainName
-  ): void {
-    if (!isSelectedBlockchainIncluded) {
-      this.blockchainsListService.lastSelectedHiddenBlockchain =
-        this.blockchainsListService.availableBlockchains.find(
-          blockchain => blockchain.name === selectedBlockchain
-        );
-    }
+  private setLastSelectedHiddenBlockchain(selectedBlockchain: BlockchainName): void {
+    this.blockchainsListService.lastSelectedHiddenBlockchain =
+      this.blockchainsListService.availableBlockchains.find(
+        blockchain => blockchain.name === selectedBlockchain
+      );
   }
 
-  private getLastSelectedFromBlockchain(
+  private setLastSelectedHiddenFromBlockchain(
     slicedBlockchains: AvailableBlockchain[],
     selectedBlockchain: BlockchainName
   ): void {
@@ -116,18 +111,19 @@ export class AssetTypesAsideComponent {
       blockchain => blockchain.name === selectedBlockchain
     );
 
-    this.getLastSelectedBlockchain(isSelectedBlockchainIncluded, selectedBlockchain);
+    if (!isSelectedBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(selectedBlockchain);
+    }
   }
 
-  private getLastSelectedToBlockchain(slicedBlockchains: AvailableBlockchain[]): void {
+  private setLastSelectedHiddenToBlockchain(slicedBlockchains: AvailableBlockchain[]): void {
     const isSelectedBlockchainIncluded = slicedBlockchains.find(
       blockchain => blockchain.name === this.swapFormService.inputValue.toToken.blockchain
     );
 
-    this.getLastSelectedBlockchain(
-      isSelectedBlockchainIncluded,
-      this.swapFormService.inputValue.toToken.blockchain
-    );
+    if (!isSelectedBlockchainIncluded) {
+      this.setLastSelectedHiddenBlockchain(this.swapFormService.inputValue.toToken.blockchain);
+    }
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -135,30 +131,27 @@ export class AssetTypesAsideComponent {
       0,
       shownBlockchainsAmount
     );
+    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
+    const fromBlockchain =
+      this.swapFormService.inputValue.fromAsset &&
+      'blockchain' in this.swapFormService.inputValue.fromAsset
+        ? this.swapFormService.inputValue.fromAsset.blockchain
+        : null;
 
     if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
       return this.getBlockchainsListForLandingIframe();
     }
 
-    if (this.swapFormService.inputValue.toToken && this.swapFormService.inputValue.fromAsset) {
-      if (this.formType === 'from' && 'blockchain' in this.swapFormService.inputValue.fromAsset) {
-        this.getLastSelectedFromBlockchain(
-          slicedBlockchains,
-          this.swapFormService.inputValue.fromAsset.blockchain
-        );
+    if (toBlockchain && fromBlockchain) {
+      if (this.formType === 'from') {
+        this.setLastSelectedHiddenFromBlockchain(slicedBlockchains, fromBlockchain);
       } else {
-        this.getLastSelectedToBlockchain(slicedBlockchains);
+        this.setLastSelectedHiddenToBlockchain(slicedBlockchains);
       }
-    } else if (
-      this.swapFormService.inputValue.fromAsset &&
-      'blockchain' in this.swapFormService.inputValue.fromAsset
-    ) {
-      this.getLastSelectedFromBlockchain(
-        slicedBlockchains,
-        this.swapFormService.inputValue.fromAsset.blockchain
-      );
-    } else if (this.swapFormService.inputValue.toToken) {
-      this.getLastSelectedToBlockchain(slicedBlockchains);
+    } else if (fromBlockchain) {
+      this.setLastSelectedHiddenFromBlockchain(slicedBlockchains, fromBlockchain);
+    } else if (toBlockchain) {
+      this.setLastSelectedHiddenToBlockchain(slicedBlockchains);
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
