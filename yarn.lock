@@ -13202,10 +13202,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.12-alpha-upd-debridge-api.4:
-  version "4.0.12-alpha-upd-debridge-api.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.12-alpha-upd-debridge-api.4.tgz#a5dbe93673c8a1edaa13230dfd8dc5e55f66bbe3"
-  integrity sha512-Qw+Ef60yrB4ill03GZjDhldrTqATUBoGh84XRkHwGkRpY8Ps5jXi6GI2f4xNoKCgCuKKrtM9uZDvIAZlBb/n/A==
+rubic-sdk@4.0.12-alpha-upd-debridge-api.5:
+  version "4.0.12-alpha-upd-debridge-api.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.12-alpha-upd-debridge-api.5.tgz#19c3e3d04c43cea9b454c1ac6f808e5d6a43a468"
+  integrity sha512-MU6rCU2ViXgYCcFr++W4OyYa9QvTfZDsMzS6ckgATRYqFlA6/ACYEuxEC5e2ZfcFSl8ev33zblob6oJSpspn8A==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
