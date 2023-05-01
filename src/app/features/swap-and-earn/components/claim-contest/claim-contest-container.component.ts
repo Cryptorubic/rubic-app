@@ -36,9 +36,15 @@ interface ButtonState {
 export class ClaimContestContainerComponent {
   @Input() public readonly claimData: string = '';
 
-  public readonly claimAmount$ = this.airdropService.claimedTokens$;
+  @Input() public readonly round: string = '1';
 
-  public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
+  @Input() public readonly disabled: boolean = undefined;
+
+  @Input() public readonly isAlreadyClaimed: boolean;
+
+  @Input() public readonly isClosed: boolean;
+
+  public readonly claimAmount$ = this.airdropService.claimedTokens$;
 
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',

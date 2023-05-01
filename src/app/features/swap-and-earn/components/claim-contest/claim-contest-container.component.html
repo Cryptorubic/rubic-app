@@ -1,10 +1,10 @@
-<ng-container *ngLet="isAlreadyClaimed$ | async as isAlreadyClaimed">
+<ng-container *ngLet="isAlreadyClaimed as isAlreadyClaimed">
   <div class="contest contest_desktop" *ngIf="!isMobile">
     <div class="contest__container">
       <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
         <div class="contest__left">
           <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
-            >Round #1</span
+            >Round #{{ round }}</span
           >
           <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
             {{ claimData }}
@@ -22,9 +22,9 @@
         (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
         [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
       >
-        <span>{{ state.translation | translate }}</span>
+        <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
         <img
-          *ngIf="isAlreadyClaimed"
+          *ngIf="isAlreadyClaimed && !isClosed"
           class="contest__claim-button-icon"
           src="assets/images/icons/exclamation-grey.svg"
           alt="Hint"
