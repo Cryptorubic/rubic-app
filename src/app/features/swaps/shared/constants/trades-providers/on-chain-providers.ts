@@ -389,6 +389,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}sushiswap.svg`,
     color: '#E05DAA'
   },
+  [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: {
+    name: 'Symbiosis Dex',
+    image: 'assets/images/icons/providers/bridge/symbiosis.png',
+    color: '#79d778'
+  },
 
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
