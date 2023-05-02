@@ -47,7 +47,9 @@
     </div>
 
     <div class="point" *ngIf="isSwapAndEarnSwap">
-      <span class="point__amount">100 RBC</span>
+      <ng-container *ngLet="points$ | async as points">
+        <span class="point__amount">{{ points.participant ? '50' : '100' }} RBC</span>
+      </ng-container>
     </div>
 
     <div class="description_swapAndEarn" *ngIf="isSwapAndEarnSwap">

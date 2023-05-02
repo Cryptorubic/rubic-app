@@ -18,6 +18,7 @@ import {
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -46,6 +47,8 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
+  public readonly points$ = this.swapAndEarnStateService.points$;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -60,7 +63,8 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
         isSwapAndEarnSwap?: boolean;
       }
     >,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;
