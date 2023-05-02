@@ -12,7 +12,7 @@
         </div>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
           <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-          {{ claimAmount$ | async }} RBC
+          {{ isClosed ? '0' : (claimAmount$ | async) }} RBC
         </span>
       </div>
 
