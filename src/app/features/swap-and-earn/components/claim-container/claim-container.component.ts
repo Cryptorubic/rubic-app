@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
 
 @Component({
   selector: 'app-claim-container',
@@ -7,5 +8,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimContainerComponent {
-  constructor() {}
+  public readonly isAlreadyClaimed$ = this.airdropService.isAlreadyClaimed$;
+
+  constructor(private readonly airdropService: AirdropFacadeService) {}
 }

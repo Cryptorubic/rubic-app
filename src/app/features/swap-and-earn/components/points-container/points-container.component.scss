@@ -79,10 +79,12 @@
 
         @include dark {
           background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
+          filter: none;
         }
 
         @include b(900) {
           background: var(--primary-color);
+          background-image: none !important;
         }
 
         img {
