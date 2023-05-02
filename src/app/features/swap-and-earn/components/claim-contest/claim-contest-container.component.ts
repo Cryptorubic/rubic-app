@@ -38,7 +38,7 @@ export class ClaimContestContainerComponent {
 
   @Input() public readonly round: string = '1';
 
-  @Input() public readonly disabled: boolean = undefined;
+  @Input() public readonly disabled: boolean = false;
 
   @Input() public readonly isAlreadyClaimed: boolean;
 
