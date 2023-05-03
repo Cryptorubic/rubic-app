@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
+  blockchainId,
   BlockchainName,
   compareAddresses,
   EvmWeb3Pure,
@@ -141,9 +142,11 @@ export class OnramperCalculationService {
   }
 
   private async checkForDirectSwap(toToken: TokenAmount): Promise<string | null> {
+    const toTokenChainId = blockchainId[toToken.blockchain];
     const supportedTokens = await firstValueFrom(this.onramperApiService.fetchSupportedCrypto());
-    const supportedToToken = supportedTokens.message.crypto.find(crypto =>
-      compareAddresses(crypto.address, toToken.address)
+    const supportedToToken = supportedTokens.message.crypto.find(
+      crypto =>
+        compareAddresses(crypto.address, toToken.address) && toTokenChainId === crypto.chainId
     );
     return supportedToToken ? supportedToToken.id : null;
   }
