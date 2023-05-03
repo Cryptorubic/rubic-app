@@ -90,6 +90,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SURFDEX]: 'Surfdex',
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'SushiSwap',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
+  [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: 'Symbiosis DEX',
 
   [ON_CHAIN_TRADE_TYPE.TRADER]: 'TheTrader',
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: 'Trisolaris',

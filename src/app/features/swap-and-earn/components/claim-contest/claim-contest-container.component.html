@@ -1,10 +1,10 @@
-<ng-container *ngLet="isAlreadyClaimed$ | async as isAlreadyClaimed">
+<ng-container *ngLet="isAlreadyClaimed as isAlreadyClaimed">
   <div class="contest contest_desktop" *ngIf="!isMobile">
     <div class="contest__container">
       <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
         <div class="contest__left">
           <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
-            >Round #1</span
+            >Round #{{ round }}</span
           >
           <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
             {{ claimData }}
@@ -12,7 +12,7 @@
         </div>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
           <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-          {{ claimAmount$ | async }} RBC
+          {{ isClosed ? '0' : (claimAmount$ | async) }} RBC
         </span>
       </div>
 
@@ -22,9 +22,9 @@
         (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
         [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
       >
-        <span>{{ state.translation | translate }}</span>
+        <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
         <img
-          *ngIf="isAlreadyClaimed"
+          *ngIf="isAlreadyClaimed && !isClosed"
           class="contest__claim-button-icon"
           src="assets/images/icons/exclamation-grey.svg"
           alt="Hint"
@@ -49,7 +49,7 @@
           <span
             class="contest__round contest__round_mobile"
             [ngClass]="{ contest__round_mobile_disabled: isAlreadyClaimed }"
-            >Round #1</span
+            >Round #{{ round }}</span
           >
           <div
             class="contest__date contest__date_mobile"
@@ -65,9 +65,10 @@
               [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
             >
               <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-              {{ claimAmount$ | async }} RBC
+              {{ isClosed ? '0' : (claimAmount$ | async) }} RBC
             </span>
             <div
+              *ngIf="!isClosed"
               class="contest__claim-button-icon_mobile"
               [ngClass]="{ 'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed }"
               [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
@@ -85,7 +86,7 @@
             (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
             [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
           >
-            <span>{{ state.translation | translate }}</span>
+            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
           </div>
         </div>
       </div>
