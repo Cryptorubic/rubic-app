@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { map } from 'rxjs/operators';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
-import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { defaultOnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/constants/default-onramper-widget-config';
@@ -28,16 +27,13 @@ export class OnramperWidgetService {
         const darkMode = currentTheme === 'dark';
 
         const defaultFiat = (this.swapFormService.inputValue.fromAsset as FiatAsset).symbol;
-        // @TODO
         const defaultCrypto = this.onramperFormCalculationService.buyingTokenCode;
 
-        const nativeCode =
-          cryptoCode[this.swapFormService.inputValue.toBlockchain as keyof typeof cryptoCode];
         const onlyCryptos = defaultCrypto;
         const defaultAmount = this.swapFormService.inputValue.fromAmount.toFixed();
 
         const walletAddress = this.authService.userAddress;
-        const wallets = `${nativeCode}:${walletAddress}`;
+        const wallets = `${defaultCrypto}:${walletAddress}`;
 
         return this.parseToWidgetUrl({
           ...defaultOnramperWidgetConfig,

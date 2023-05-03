@@ -1,9 +1,12 @@
 <app-rubic-button
+  *ngLet="loading$ | async as loading"
   appearance="primary"
-  [loading]="loading$ | async"
+  [loading]="loading"
   [disabled]="disabled$ | async"
   (onClick)="onClick.emit()"
   (onHoveredChange)="onHoveredChange($event)"
 >
-  Buy {{ buyingTokenSymbol$ | async }}
+  <ng-container *ngIf="loading; else buyText"></ng-container>
 </app-rubic-button>
+
+<ng-template #buyText> Buy {{ buyingTokenSymbol$ | async }} </ng-template>

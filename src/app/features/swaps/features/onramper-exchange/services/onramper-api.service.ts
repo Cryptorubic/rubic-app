@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { OnramperSupportedResponse } from '@features/swaps/features/onramper-exchange/models/onramper-supported-response';
 import { OnramperRateResponse } from '@features/swaps/features/onramper-exchange/models/onramper-rate-response';
 import { HttpClient } from '@angular/common/http';
+import { Cacheable } from 'ts-cacheable';
 
 @Injectable()
 export class OnramperApiService {
@@ -10,6 +11,9 @@ export class OnramperApiService {
 
   constructor(private readonly httpClient: HttpClient) {}
 
+  @Cacheable({
+    maxAge: 15_000
+  })
   public fetchSupportedCrypto(): Observable<OnramperSupportedResponse> {
     const url = `${OnramperApiService.mainApi}supported`;
     return this.httpClient.get<OnramperSupportedResponse>(url);
@@ -20,7 +24,7 @@ export class OnramperApiService {
     toCrypto: string,
     fromAmount: string
   ): Observable<OnramperRateResponse> {
-    const url = `${OnramperApiService.mainApi}quotes/${fromFiat}/${toCrypto}?amount=${fromAmount}&paymentMethod=creditcard`;
+    const url = `${OnramperApiService.mainApi}quotes/${fromFiat}/${toCrypto}?amount=${fromAmount}&paymentMethod=creditcard&paymentMethod=applepay`;
     return this.httpClient.get<OnramperRateResponse>(url);
   }
 }

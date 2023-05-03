@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Subject } from 'rxjs';
+import { BehaviorSubject, from, of, Subject } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -117,7 +117,7 @@ export class OnramperFormCalculationService {
         }),
         switchMap(calculateData => {
           if (calculateData.stop) {
-            return null;
+            return of(null);
           }
 
           if (calculateData.isForced) {

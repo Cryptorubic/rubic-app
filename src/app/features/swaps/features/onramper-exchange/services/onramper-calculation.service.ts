@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
+  BLOCKCHAIN_NAME,
   blockchainId,
   BlockchainName,
   compareAddresses,
@@ -13,7 +14,6 @@ import {
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { cryptoCode as nativeCoinCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
 import {
   OnramperSupportedBlockchain,
@@ -27,7 +27,9 @@ import {
   OnramperRate
 } from '@features/swaps/features/onramper-exchange/models/onramper-rate-response';
 import { OnramperApiService } from '@features/swaps/features/onramper-exchange/services/onramper-api.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { OnramperSupportedResponse } from '@features/swaps/features/onramper-exchange/models/onramper-supported-response';
+import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 @Injectable()
 export class OnramperCalculationService {
@@ -51,21 +53,22 @@ export class OnramperCalculationService {
   public async getOutputAmount(
     input: SwapFormInputFiats
   ): Promise<{ amount: BigNumber; direct: boolean; code: string } | null> {
-    const cryptoCode = await this.checkForDirectSwap(input.toToken);
     const fromFiat = input.fromFiat.symbol;
     const fromAmount = input.fromAmount.toFixed();
+    const supportedTokens = await firstValueFrom(this.onramperApiService.fetchSupportedCrypto());
+    const cryptoCode = this.checkForDirectSwap(input.toToken, supportedTokens);
+
     if (cryptoCode) {
       try {
         const amount = await this.getOutputTokenAmount(fromFiat, fromAmount, cryptoCode);
         return { amount, direct: true, code: cryptoCode };
-      } catch (err) {
-        if (!err?.message?.includes('Not supported destination currency')) {
-          throw err;
-        }
-      }
+      } catch {}
     }
 
-    const nativeCode = nativeCoinCode[input.toToken.blockchain as OnramperSupportedBlockchain];
+    const nativeCode = this.checkForDirectSwap(
+      nativeTokensList[input.toToken.blockchain],
+      supportedTokens
+    );
     const receivedNativeAmount = await this.getOutputTokenAmount(fromFiat, fromAmount, nativeCode);
     // const fromFee = await this.onramperService.getFromFees(input.toBlockchain as EvmBlockchainName);
     const useProxy = this.platformConfigurationService.useOnChainProxy;
@@ -141,12 +144,21 @@ export class OnramperCalculationService {
     }
   }
 
-  private async checkForDirectSwap(toToken: TokenAmount): Promise<string | null> {
+  public checkForDirectSwap(
+    toToken: MinimalToken,
+    supportedTokens: OnramperSupportedResponse
+  ): string | null {
     const toTokenChainId = blockchainId[toToken.blockchain];
-    const supportedTokens = await firstValueFrom(this.onramperApiService.fetchSupportedCrypto());
+    const isPolygonTrade =
+      toToken.address === EvmWeb3Pure.EMPTY_ADDRESS &&
+      toToken.blockchain === BLOCKCHAIN_NAME.POLYGON;
+
     const supportedToToken = supportedTokens.message.crypto.find(
       crypto =>
-        compareAddresses(crypto.address, toToken.address) && toTokenChainId === crypto.chainId
+        (compareAddresses(crypto.address, toToken.address) ||
+          (isPolygonTrade &&
+            compareAddresses(crypto.address, '0x0000000000000000000000000000000000001010'))) &&
+        toTokenChainId === crypto.chainId
     );
     return supportedToToken ? supportedToToken.id : null;
   }
