@@ -12,12 +12,14 @@ import {
   CrossChainTradeType,
   LifiBridgeTypes,
   RangoBridgeTypes,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  TestnetEvmBlockchain
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
+import { testnetBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
@@ -107,6 +109,9 @@ export class PlatformConfigurationService {
   }
 
   public isAvailableBlockchain(blockchain: BlockchainName): boolean {
+    if (testnetBlockchainsList.includes(blockchain as TestnetEvmBlockchain)) {
+      return true;
+    }
     return this.availableBlockchains ? this.availableBlockchains.includes(blockchain) : true;
   }
 

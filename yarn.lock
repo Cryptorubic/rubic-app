@@ -13873,10 +13873,30 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.15:
-  version "4.0.15"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.15.tgz#b63312d8ed27040f42c4390b3e9dc8468838ffdd"
-  integrity sha512-EE1npjI6zjnVm+JnbuBm5sjMps5qqjs+/m70WIKFAD+X5MOTAv0S3GdkoZsfs8vf3T/ZlLEOGIxP+P/ddG7mhA==
+"rubic-sdk@file:../rubic-sdk":
+  version "4.0.15-q"
+  dependencies:
+    "@1inch/limit-order-protocol-utils" "^3.0.0"
+    "@layerzerolabs/scan-client" "^0.0.0-beta.6"
+    "@lifi/sdk" "^1.6.3"
+    "@viaprotocol/router-sdk" "^1.0.7"
+    assert "^2.0.0"
+    axios "^0.26.1"
+    bignumber.js "9.1.0"
+    bitcoin-address-validation "2.2.1"
+    cbridge-revert-manager "1.1.0"
+    crc32 "^0.2.2"
+    ethers "^5.6.8"
+    grpc-web "^1.4.2"
+    lodash.clonedeep "^4.5.0"
+    rango-sdk-basic "^0.0.7"
+    rxjs "^7.8.0"
+    symbiosis-js-sdk "2.9.40"
+    tronweb "^4.3.0"
+    web3 "^1.8.1"
+
+"rubic-sdk@file:../rubic-sdk/":
+  version "4.0.15-q"
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"

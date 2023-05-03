@@ -112,5 +112,9 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HORIZEN]: 'Horizen',
   [BLOCKCHAIN_NAME.ZILLIQA]: 'Zilliqa',
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: 'Kava Cosmos',
-  [BLOCKCHAIN_NAME.ZK_SYNC]: 'zkSync Era'
+  [BLOCKCHAIN_NAME.ZK_SYNC]: 'zkSync Era',
+  [BLOCKCHAIN_NAME.GOERLI]: 'Goerli Testnet',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'BNB Chain Testnet',
+  [BLOCKCHAIN_NAME.MUMBAI]: 'Mumbai Testnet',
+  [BLOCKCHAIN_NAME.FUJI]: 'Fuji Testnet'
 };

@@ -38,6 +38,11 @@ export interface Store {
   targetAddress: string;
 
   /**
+   * Enable testnets on the app or not.
+   */
+  enableTestnet: boolean;
+
+  /**
    * Passed form steps for instant-trade swap.
    */
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormSteps;

@@ -7,7 +7,7 @@ import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { BlockchainsInfo, CHAIN_TYPE, compareAddresses, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -476,7 +476,8 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnReceiverAndWallet(): void {
     this.walletConnectorService.addressChange$
       .pipe(
-        map(() => this.walletConnectorService.provider.walletName),
+        map(() => this.walletConnectorService.provider?.walletName),
+        filter(wallet => !isNil(wallet)),
         combineLatestWith(this.targetNetworkAddressService.address$, this.swapTypeService.swapMode$)
       )
       .subscribe(([wallet, receiver, swapMode]) => {

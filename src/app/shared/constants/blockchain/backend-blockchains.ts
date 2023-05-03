@@ -112,7 +112,11 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HORIZEN]: 'horizen',
   [BLOCKCHAIN_NAME.ZILLIQA]: 'zilliqa',
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: 'kava_cosmos',
-  [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync'
+  [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
+  [BLOCKCHAIN_NAME.MUMBAI]: 'mumbai',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'binance-smart-chain-testnet',
+  [BLOCKCHAIN_NAME.GOERLI]: 'goerli',
+  [BLOCKCHAIN_NAME.FUJI]: 'fuji'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

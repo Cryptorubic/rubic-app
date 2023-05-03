@@ -165,5 +165,15 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.SYSCOIN]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.PEGASYS]),
     [BLOCKCHAIN_NAME.ASTAR_EVM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ARTH_SWAP]),
-    [BLOCKCHAIN_NAME.ZK_SYNC]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.MUTE_SWAP])
+    [BLOCKCHAIN_NAME.ZK_SYNC]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.MUTE_SWAP]),
+    [BLOCKCHAIN_NAME.FUJI]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.JOE,
+      ON_CHAIN_TRADE_TYPE.PANGOLIN
+    ]),
+    [BLOCKCHAIN_NAME.GOERLI]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.UNISWAP_V2]),
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP,
+      ON_CHAIN_TRADE_TYPE.JOE
+    ]),
+    [BLOCKCHAIN_NAME.MUMBAI]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.QUICK_SWAP])
   };

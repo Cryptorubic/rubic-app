@@ -25,10 +25,13 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
+import {
+  blockchainsToFetch,
+  blockchainsWithOnePage,
+  iframeBlockchainsToFetch
+} from './constants/fetch-blockchains';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -141,82 +144,13 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    const backendNetworks: BlockchainName[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.AVALANCHE,
-      BLOCKCHAIN_NAME.FANTOM,
-      BLOCKCHAIN_NAME.ARBITRUM,
-      BLOCKCHAIN_NAME.AURORA,
-      BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.TELOS,
-      BLOCKCHAIN_NAME.HARMONY,
-      BLOCKCHAIN_NAME.TRON,
-      BLOCKCHAIN_NAME.CELO,
-      BLOCKCHAIN_NAME.OKE_X_CHAIN,
-      BLOCKCHAIN_NAME.OPTIMISM,
-      BLOCKCHAIN_NAME.MOONBEAM,
-      BLOCKCHAIN_NAME.CRONOS,
-      BLOCKCHAIN_NAME.GNOSIS,
-      BLOCKCHAIN_NAME.BOBA,
-      BLOCKCHAIN_NAME.BOBA_AVALANCHE,
-      BLOCKCHAIN_NAME.BOBA_BSC,
-      BLOCKCHAIN_NAME.FUSE,
-      BLOCKCHAIN_NAME.ETHEREUM_POW,
-      BLOCKCHAIN_NAME.KAVA,
-      BLOCKCHAIN_NAME.BITGERT,
-      BLOCKCHAIN_NAME.OASIS,
-      BLOCKCHAIN_NAME.METIS,
-      BLOCKCHAIN_NAME.DFK,
-      BLOCKCHAIN_NAME.KLAYTN,
-      BLOCKCHAIN_NAME.VELAS,
-      BLOCKCHAIN_NAME.SYSCOIN,
-      BLOCKCHAIN_NAME.SOLANA,
-      BLOCKCHAIN_NAME.NEAR,
-      BLOCKCHAIN_NAME.ASTAR_EVM,
-      BLOCKCHAIN_NAME.ASTAR,
-      BLOCKCHAIN_NAME.BITCOIN,
-      BLOCKCHAIN_NAME.EOS,
-      BLOCKCHAIN_NAME.FILECOIN,
-      BLOCKCHAIN_NAME.XDC,
-      BLOCKCHAIN_NAME.ICP,
-      BLOCKCHAIN_NAME.CARDANO,
-      BLOCKCHAIN_NAME.ALGORAND,
-      BLOCKCHAIN_NAME.COSMOS,
-      BLOCKCHAIN_NAME.DASH,
-      BLOCKCHAIN_NAME.DOGECOIN,
-      BLOCKCHAIN_NAME.POLKADOT,
-      BLOCKCHAIN_NAME.FLOW,
-      BLOCKCHAIN_NAME.HEDERA,
-      BLOCKCHAIN_NAME.IOTA,
-      BLOCKCHAIN_NAME.KUSAMA,
-      BLOCKCHAIN_NAME.LITECOIN,
-      BLOCKCHAIN_NAME.MINA_PROTOCOL,
-      BLOCKCHAIN_NAME.NEO,
-      BLOCKCHAIN_NAME.OSMOSIS,
-      BLOCKCHAIN_NAME.SIA,
-      BLOCKCHAIN_NAME.SECRET,
-      BLOCKCHAIN_NAME.TON,
-      BLOCKCHAIN_NAME.WAVES,
-      BLOCKCHAIN_NAME.WAX,
-      BLOCKCHAIN_NAME.STELLAR,
-      BLOCKCHAIN_NAME.MONERO,
-      BLOCKCHAIN_NAME.RIPPLE,
-      BLOCKCHAIN_NAME.TEZOS,
-      BLOCKCHAIN_NAME.ZILLIQA,
-      BLOCKCHAIN_NAME.KAVA_COSMOS,
-      BLOCKCHAIN_NAME.ZK_SYNC,
-      BLOCKCHAIN_NAME.ONTOLOGY,
-      BLOCKCHAIN_NAME.APTOS
-    ];
     return this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
       .pipe(
         map(backendTokens =>
           backendTokens.filter(token => {
             const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
-            return backendNetworks.includes(network);
+            return iframeBlockchainsToFetch.includes(network);
           })
         ),
         map(backendTokens => TokensApiService.prepareTokens(backendTokens))
