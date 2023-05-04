@@ -152,12 +152,19 @@ export class OnramperCalculationService {
     const isPolygonTrade =
       toToken.address === EvmWeb3Pure.EMPTY_ADDRESS &&
       toToken.blockchain === BLOCKCHAIN_NAME.POLYGON;
+    const isFantomTrade =
+      toToken.address === EvmWeb3Pure.EMPTY_ADDRESS &&
+      toToken.blockchain === BLOCKCHAIN_NAME.FANTOM;
 
     const supportedToToken = supportedTokens.message.crypto.find(
       crypto =>
         (compareAddresses(crypto.address, toToken.address) ||
           (isPolygonTrade &&
-            compareAddresses(crypto.address, '0x0000000000000000000000000000000000001010'))) &&
+            compareAddresses(crypto.address, '0x0000000000000000000000000000000000001010')) ||
+          (isFantomTrade &&
+            EvmWeb3Pure.isNativeAddress(toToken.address) &&
+            crypto.code === 'FTM' &&
+            crypto.symbol === 'ftm')) &&
         toTokenChainId === crypto.chainId
     );
     return supportedToToken ? supportedToToken.id : null;

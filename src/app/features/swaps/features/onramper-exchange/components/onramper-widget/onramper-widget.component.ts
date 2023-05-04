@@ -24,7 +24,7 @@ export class OnramperWidgetComponent {
 
   public readonly iframeSize = {
     width: '350px',
-    height: '500px'
+    height: '525px'
   };
 
   constructor(
