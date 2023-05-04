@@ -28,7 +28,7 @@ export class OnramperWidgetComponent {
   public readonly isIframe = this.iframeService.isIframe;
 
   public readonly iframeSize = {
-    width: '350px',
+    width: '372px',
     height: '525px'
   };
 
