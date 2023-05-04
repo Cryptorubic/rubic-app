@@ -81,6 +81,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.swapAndEarnStateService.fetchPoints();
     SuccessTxModalComponent.toggleConfettiBackground('remove');
   }
 
