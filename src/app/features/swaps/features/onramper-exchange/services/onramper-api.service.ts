@@ -24,7 +24,7 @@ export class OnramperApiService {
     toCrypto: string,
     fromAmount: string
   ): Observable<OnramperRateResponse> {
-    const url = `${OnramperApiService.mainApi}quotes/${fromFiat}/${toCrypto}?amount=${fromAmount}&paymentMethod=creditcard&paymentMethod=applepay`;
+    const url = `${OnramperApiService.mainApi}quotes/${fromFiat}/${toCrypto}?amount=${fromAmount}&paymentMethod=creditcard`;
     return this.httpClient.get<OnramperRateResponse>(url);
   }
 }
