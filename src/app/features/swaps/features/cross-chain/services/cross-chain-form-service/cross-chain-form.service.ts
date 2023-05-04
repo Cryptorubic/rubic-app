@@ -22,7 +22,6 @@ import {
   MinAmountError,
   NotSupportedTokensError,
   RubicSdkError,
-  TooLowAmountError,
   UnsupportedReceiverAddressError,
   ChangenowCrossChainTrade
 } from 'rubic-sdk';
@@ -65,6 +64,7 @@ import {
   notEvmChangeNowBlockchainsList
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 
 @Injectable()
 export class CrossChainFormService {
@@ -867,6 +867,13 @@ export class CrossChainFormService {
       this.unsetTradeSelectedByUser();
 
       this.errorsService.catch(new CrossChainSwapUnavailableWarning());
+
+      this.disableUnavailableTrade(tradeType, true);
+    } else if (parsedError instanceof TooLowAmountError) {
+      this.isSwapStarted = SWAP_PROCESS.NONE;
+      this.unsetTradeSelectedByUser();
+
+      this.errorsService.catch(new TooLowAmountError());
 
       this.disableUnavailableTrade(tradeType, true);
     } else {
