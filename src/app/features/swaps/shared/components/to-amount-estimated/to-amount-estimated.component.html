@@ -28,7 +28,9 @@
         </ng-container>
 
         <ng-container *ngIf="errorText">
-          {{ 'errors.tradingIsNotAvailable' | translate }}
+          <ng-container *noFrame>
+            {{ 'errors.tradingIsNotAvailable' | translate }}
+          </ng-container>
 
           <div
             tuiHintMode="error"
