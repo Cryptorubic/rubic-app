@@ -335,7 +335,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
 
-      this.swapAndEarnStateService.fetchPoints();
+      // this.swapAndEarnStateService.fetchPoints();
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
 

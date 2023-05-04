@@ -97,6 +97,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
+    this.swapAndEarnStateService.fetchPoints();
     this.context.completeWith(null);
   }
 
