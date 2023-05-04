@@ -111,7 +111,7 @@ export class AssetTypesAsideComponent {
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
-    const slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
+    let slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
       0,
       shownBlockchainsAmount
     );
@@ -149,6 +149,13 @@ export class AssetTypesAsideComponent {
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
     if (hiddenBlockchain) {
       slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
+    }
+
+    if (this.iframeService.isIframe) {
+      slicedBlockchains = [
+        ...slicedBlockchains.filter(blockchain => !this.isBlockchainDisabled(blockchain)),
+        ...slicedBlockchains.filter(blockchain => this.isBlockchainDisabled(blockchain))
+      ];
     }
 
     return slicedBlockchains.map(blockchain => ({
