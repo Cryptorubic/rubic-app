@@ -13,7 +13,7 @@ import { OnramperWidgetService } from '@features/swaps/features/onramper-exchang
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnramperWidgetComponent {
-  public readonly showBackButton$ = timer(1000).pipe(
+  public readonly showBackButton$ = timer(2500).pipe(
     map(() => true),
     startWith(false)
   );
@@ -29,7 +29,7 @@ export class OnramperWidgetComponent {
 
   public readonly iframeSize = {
     width: '372px',
-    height: '525px'
+    height: '530px'
   };
 
   constructor(
