@@ -287,9 +287,7 @@ export class InstantTradeService extends TradeCalculationService {
 
         subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap());
 
-        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap()).then(() =>
-          this.swapAndEarnStateService.updatePoints()
-        );
+        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap());
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && {
