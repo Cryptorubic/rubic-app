@@ -33,6 +33,8 @@ import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 @Component({
   selector: 'app-swap-form',
@@ -55,6 +57,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   public swapType: SWAP_PROVIDER_TYPE;
 
   public currentInstantTradeInfo: InstantTradeInfo;
+
+  public isIframeDstChainNotEvm: boolean = false;
 
   public readonly backgroundColor = this.queryParamsService.backgroundColor;
 
@@ -110,8 +114,13 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly onramperFormService: OnramperFormService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
+    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
-  ) {}
+  ) {
+    if (this.iframeService.isIframe) {
+      this.hideFormSwitcherForIframe();
+    }
+  }
 
   ngOnInit(): void {
     this.swapTypeService.swapMode$
@@ -134,6 +143,16 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   private setFormValues(form: SwapFormInput): void {
     this.fromAssetType = form.fromAssetType;
     this.toBlockchain = form.toBlockchain;
+  }
+
+  private hideFormSwitcherForIframe(): void {
+    this.swapFormService.toBlockchain$.subscribe(blockchainName => {
+      const notEvmChangeNowBlockchains = Object.values(
+        notEvmChangeNowBlockchainsList
+      ) as BlockchainName[];
+
+      this.isIframeDstChainNotEvm = notEvmChangeNowBlockchains.includes(blockchainName);
+    });
   }
 
   public async revert(): Promise<void> {
