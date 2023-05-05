@@ -302,9 +302,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
-      this.crossChainApiService
-        .createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade)
-        .then(() => this.swapAndEarnStateService.updatePoints());
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
 
       const timestamp = Date.now();
       const viaUuid =
@@ -335,7 +333,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
 
-      this.swapAndEarnStateService.fetchPoints();
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
 
