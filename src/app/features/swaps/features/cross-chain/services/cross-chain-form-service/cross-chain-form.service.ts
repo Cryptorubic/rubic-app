@@ -893,7 +893,7 @@ export class CrossChainFormService {
       this.isSwapStarted = SWAP_PROCESS.NONE;
       this.unsetTradeSelectedByUser();
 
-      this.errorsService.catch(new TooLowAmountError());
+      this.errorsService.catch(parsedError);
 
       this.disableUnavailableTrade(tradeType, true);
     } else {
