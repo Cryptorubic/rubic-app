@@ -9,7 +9,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
-import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import {
   CcrSettingsForm,
@@ -204,12 +203,7 @@ export class SettingsService {
       await trade.to.getAndUpdateTokenPrice();
     }
 
-    const priceImpact = PriceImpactService.calculatePriceImpact(
-      trade.from.price.toNumber(),
-      trade.to.price.toNumber(),
-      trade.from.tokenAmount,
-      trade.to.tokenAmount
-    );
+    const priceImpact = trade.getTradeInfo().priceImpact;
 
     const settingsChecks = {
       highSlippage: slippage > 5 && slippage,
