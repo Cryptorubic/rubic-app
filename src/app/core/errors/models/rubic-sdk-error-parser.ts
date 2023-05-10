@@ -14,6 +14,7 @@ import {
   DeflationTokenError as SdkDeflationTokenError,
   MinAmountError as SdkMinAmountError,
   MaxAmountError as SdkMaxAmountError,
+  TooLowAmountError as SdkTooLowAmountError,
   UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
   InsufficientFundsGasPriceValueError
 } from 'rubic-sdk';
@@ -35,6 +36,7 @@ import MaxAmountError from '@core/errors/models/common/max-amount-error';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
+import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -42,6 +44,9 @@ export class RubicSdkErrorParser {
   ): RubicError<ERROR_TYPE> {
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
+    }
+    if (err instanceof SdkTooLowAmountError) {
+      return new TooLowAmountError();
     }
     if (err instanceof SdkFailedToCheckForTransactionReceiptError) {
       return new FailedToCheckForTransactionReceiptError();
