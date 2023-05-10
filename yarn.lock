@@ -13873,10 +13873,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.15:
-  version "4.0.15"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.15.tgz#b63312d8ed27040f42c4390b3e9dc8468838ffdd"
-  integrity sha512-EE1npjI6zjnVm+JnbuBm5sjMps5qqjs+/m70WIKFAD+X5MOTAv0S3GdkoZsfs8vf3T/ZlLEOGIxP+P/ddG7mhA==
+rubic-sdk@4.0.17:
+  version "4.0.17"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.17.tgz#7006d2efd78c0ad75eaf676dedbefeb46c8c4137"
+  integrity sha512-6uJZx00YGDSTrAsYvJBB1DZazznr8DIV8/UddEDspihn/7cvpBcNkRS20D4TkAjQowU2L6rmcliX/GGuol4VYw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
