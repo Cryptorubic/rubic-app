@@ -75,8 +75,6 @@ export class CrossChainApiService {
       to_amount: Web3Pure.toWei(toAmount, toDecimals),
       user: this.authService.userAddress,
       tx_hash: hash,
-      wallet_name: this.walletConnectorService.provider.detailedWalletName,
-      device_type: this.isMobile ? 'mobile' : 'desktop',
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
