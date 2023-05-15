@@ -396,7 +396,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: {
     name: 'Sync Swap',
-    image: 'assets/images/icons/providers/bridge/symbiosis.png',
+    image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
   },
 
