@@ -23,7 +23,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.DFK,
   BLOCKCHAIN_NAME.KLAYTN,
   BLOCKCHAIN_NAME.VELAS,
-  BLOCKCHAIN_NAME.SYSCOIN
+  BLOCKCHAIN_NAME.SYSCOIN,
+  BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -57,7 +58,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
-      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+      [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync'
     };
 
     this.tokenBlockchainId = {
@@ -78,7 +80,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
-      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+      [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync'
     };
   }
 
