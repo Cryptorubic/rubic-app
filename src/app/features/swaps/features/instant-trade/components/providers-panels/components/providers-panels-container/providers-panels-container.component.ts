@@ -22,7 +22,10 @@ export class ProvidersPanelsContainerComponent {
   private _providersData: InstantTradeProviderData[];
 
   @Input() set providersData(providersData: InstantTradeProviderData[]) {
-    this._providersData = providersData;
+    this._providersData = providersData.map((data, index) => ({
+      ...data,
+      fullSize: index === providersData.length - 1 && (providersData.length - 1) % 2 !== 0
+    }));
 
     if (this.providersData?.[0]?.trade && this.selectedProvider) {
       this.isBestProvider = this.providersData[0].trade.type === this.selectedProvider.name;
