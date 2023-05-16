@@ -8,6 +8,7 @@ export enum ROUTE_PATH {
   REVOKE_APPROVAL = 'revoke-approval',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
   SWAP_AND_EARN = 'swap-and-earn',
+  STAKING = 'staking',
   REST = '**'
 }
 

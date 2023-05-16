@@ -39,7 +39,7 @@ import {
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
-const STAKING_END_TIMESTAMP = 1691020800000; // Thu Aug 03 2023 03:00:00 GMT+03
+const STAKING_END_TIMESTAMP = 90991020800000; // Thu Aug 03 2023 03:00:00 GMT+03
 
 @Injectable()
 export class StakingService {
@@ -83,7 +83,7 @@ export class StakingService {
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
     filter(Boolean),
-    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.ARBITRUM)
   );
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(
@@ -132,8 +132,8 @@ export class StakingService {
     return from(
       this.tokensService.getAndUpdateTokenPrice(
         {
-          address: '0x8e3bcc334657560253b83f08331d85267316e08a',
-          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+          address: '0x3330bfb7332ca23cd071631837dc289b09c33333',
+          blockchain: BLOCKCHAIN_NAME.ETHEREUM
         },
         true
       )
@@ -400,7 +400,7 @@ export class StakingService {
   }
 
   public async switchNetwork(): Promise<boolean> {
-    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.ARBITRUM);
   }
 
   public async getNftVotingPower(nftId: string): Promise<string> {

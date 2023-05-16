@@ -15,33 +15,6 @@
   </a>
 </div>
 
-<div class="past-campaings">
-  <tui-accordion class="accordion">
-    <tui-accordion-item [borders]="null" [showArrow]="true" (click)="toggleAccordion()">
-      {{ 'staking.stake.pastStaking' | translate }}
-      <ng-template tuiAccordionItemContent>
-        <app-lp-card
-          class="past-campaings__card"
-          [round]="1"
-          [statuses]="[RoundStatus.CLOSED]"
-        ></app-lp-card>
-        <app-staking-card
-          class="past-campaings__card"
-          [round]="1"
-          [statuses]="[RoundStatus.CLOSED]"
-        >
-        </app-staking-card>
-        <app-staking-card
-          class="past-campaings__card"
-          [round]="2"
-          [statuses]="[RoundStatus.CLOSED]"
-        >
-        </app-staking-card>
-      </ng-template>
-    </tui-accordion-item>
-  </tui-accordion>
-</div>
-
 <ng-template #connectWallet>
   <app-rubic-button class="connect-wallet" appearance="secondary" (onClick)="login()"
     >Connect Wallet

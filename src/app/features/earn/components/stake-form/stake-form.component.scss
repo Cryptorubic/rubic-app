@@ -112,7 +112,7 @@
     align-items: center;
     width: fit-content;
     margin-right: 12px;
-    padding: 8px 12px;
+    padding: 8px 12px 8px 0;
 
     background: var(--form-background);
     border-radius: 100px;
@@ -172,7 +172,7 @@
   height: 1px;
   margin-bottom: 34px;
 
-  background: #3e413f;
+  background: var(--transparent-line);
 
   @include b($tablet) {
     margin-bottom: 40px;
@@ -181,12 +181,12 @@
 
 .duration {
   display: flex;
-  align-items: center;
-  margin-bottom: 36px;
+  flex-direction: column;
+  align-items: flex-start;
 
   &__title {
     @include font(18px, 22px, 500, var(--primary-text));
-    margin-right: 12px;
+    white-space: nowrap;
 
     @include b($tablet) {
       margin-right: 8px;
@@ -196,38 +196,24 @@
     }
   }
 
-  &__current-value {
-    @include font(20px, 24px, 500, var(--primary-text));
-    margin-right: 21px;
-    padding: 8px 12px;
-
-    background: var(--form-background);
-    border-radius: 100px;
-    cursor: default;
-
-    @include b($tablet) {
-      margin-right: 0;
-      padding: 7px;
-
-      font-size: 14px;
-      line-height: 17px;
-    }
-  }
-
   &__common {
     display: flex;
     flex-grow: 1;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    margin: 20px 0;
 
     &-chip {
       @include clearbtn();
       @include font(16px, 19px, 500, var(--primary-text));
       padding: 8px 12px;
 
-      border: 1px solid transparent;
-      border-radius: 100px;
+      border: 1px solid var(--transparent-line);
+      border-radius: 10px;
       cursor: pointer;
+
+      transition: all 0.1s ease-in-out;
 
       @include b($tablet) {
         padding: 8px;
@@ -236,7 +222,38 @@
         line-height: 14px;
       }
 
+      &:hover {
+        color: var(--primary-color);
+
+        border: 1px solid var(--primary-color);
+        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+        transform: translateY(-5px) scale(1.05);
+
+        transition: all 0.1s ease-in-out;
+      }
+
+      &:active {
+        box-shadow: 0 1px 7px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px) scale(1.02);
+
+        transition: all 0.1s ease-in-out;
+      }
+
+      &-label,
+      &-earn {
+        display: block;
+
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      &-label {
+        margin-bottom: 5px;
+      }
+
       &_selected {
+        color: var(--primary-color);
+
         border: 1px solid var(--primary-color);
       }
 
@@ -245,20 +262,6 @@
 
         border: 1px solid transparent;
       }
-    }
-  }
-}
-
-.duration-slider {
-  margin-bottom: 43px;
-
-  @include b($tablet) {
-    margin-bottom: 39px;
-  }
-
-  ::ng-deep {
-    .wrapper {
-      height: 6px;
     }
   }
 }

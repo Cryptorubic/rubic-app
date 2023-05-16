@@ -9,8 +9,8 @@
   <div class="token">
     <div class="token__data-and-amount">
       <div class="token__data">
-        <img src="assets/images/rbc-util-icon.png" class="token__data-icon" alt="" />
-        BRBC
+        <img src="/assets/favicon/logo.svg" class="token__data-icon" alt="" />
+        RBC
       </div>
       <input
         autocomplete="off"
@@ -45,7 +45,6 @@
 
   <div class="duration">
     <div class="duration__title">Choose the Duration</div>
-    <div class="duration__current-value">{{ durationSliderCtrl.value }}M</div>
     <div class="duration__common">
       <ng-container *ngFor="let duration of DURATIONS">
         <button
@@ -54,20 +53,11 @@
           [disabled]="duration.value > MAX_LOCK_TIME"
           (click)="setDuration(duration.value)"
         >
-          {{ duration.label }}
+          <span class="duration__common-chip-label">{{ duration.label }}</span>
+          <span class="duration__common-chip-earn">Earn {{ duration.earn }}%</span>
         </button>
       </ng-container>
     </div>
-  </div>
-
-  <div class="duration-slider">
-    <tui-slider
-      [formControl]="durationSliderCtrl"
-      [max]="12"
-      [min]="1"
-      [steps]="11"
-      (ngModelChange)="handleDurationError($event)"
-    ></tui-slider>
   </div>
 
   <div class="hint">
@@ -76,7 +66,7 @@
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      BRBC locked expires in {{ selectedDuration }} months. <br />
+      RBC locked expires in {{ selectedDuration }} months. <br />
       Locked until {{ unlockDate | date : 'mediumDate' }}
     </div>
   </div>
@@ -97,7 +87,7 @@
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
       >
-        Switch to BSC network
+        Switch to ARB network
       </app-rubic-button>
 
       <app-stake-button
