@@ -30,12 +30,7 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import {
-  MILLISECONDS_IN_MONTH,
-  MILLISECONDS_IN_WEEK,
-  SECONDS_IN_MONTH,
-  WEEKS_IN_YEAR
-} from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
@@ -219,7 +214,7 @@ export class StakingService {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
-      .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'create_lock', [
+      .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'enterStaking', [
         Web3Pure.toWei(amount, 18),
         String(durationInSeconds)
       ]);
@@ -306,11 +301,19 @@ export class StakingService {
             return forkJoin(
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);
-                const nftRewards = await this.getNftRewardsInfo(id);
-                const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
-                  .dividedBy(MILLISECONDS_IN_WEEK)
-                  .dividedBy(WEEKS_IN_YEAR)
-                  .multipliedBy(this.statisticsService.currentStakingApr);
+                const nftRewards = {
+                  totalNftRewards: new BigNumber(10),
+                  rewardIntervals: {
+                    startEpoch: Date.now().toString(),
+                    endEpoch: Date.now().toString(),
+                    reward: '100'
+                  }
+                };
+                // const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
+                //   .dividedBy(MILLISECONDS_IN_WEEK)
+                //   .dividedBy(WEEKS_IN_YEAR)
+                //   .multipliedBy(this.statisticsService.currentStakingApr);
+                const tokenApr = new BigNumber(10);
 
                 return {
                   ...nftInfo,
@@ -359,17 +362,24 @@ export class StakingService {
     return this.web3Public.callContractMethod(
       this.NFT_CONTRACT_ADDRESS,
       NFT_CONTRACT_ABI,
-      'viewTokensByOwner',
+      'tokensOfOwner',
       [walletAddress]
     );
   }
 
-  public async getNftInfo(nftId: string): Promise<{ amount: BigNumber; endTimestamp: number }> {
-    const { amount, end } = await this.web3Public.callContractMethod<{
+  public async getNftInfo(
+    nftId: string
+  ): Promise<{ amount: BigNumber; endTimestamp: number; lockTime: string }> {
+    const {
+      lockTime,
+      amount,
+      lockStartTime: end
+    } = await this.web3Public.callContractMethod<{
+      lockTime: string;
+      lockStartTime: string;
       amount: string;
-      end: string;
-    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'locked', [nftId]);
-    return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000 };
+    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'stakes', [nftId]);
+    return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000, lockTime };
   }
 
   public async getNftRewardsInfo(
@@ -413,11 +423,12 @@ export class StakingService {
   }
 
   public async getIsStakingFinished(): Promise<boolean> {
-    return await this.web3Public.callContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
-      'finishedStaking'
-    );
+    return false;
+    // return await this.web3Public.callContractMethod(
+    //   this.NFT_CONTRACT_ADDRESS,
+    //   NFT_CONTRACT_ABI,
+    //   'finishedStaking'
+    // );
   }
 
   public parseAmountToBn(value: string): BigNumber {
