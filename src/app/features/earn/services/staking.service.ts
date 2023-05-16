@@ -83,7 +83,7 @@ export class StakingService {
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
     filter(Boolean),
-    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.ARBITRUM)
+    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
   );
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(

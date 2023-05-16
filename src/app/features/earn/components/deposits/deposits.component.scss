@@ -103,6 +103,8 @@
   justify-content: center;
   margin-bottom: 20px;
 
+  color: white;
+
   @include b($tablet) {
     flex-direction: column;
     margin-bottom: 16px;
@@ -118,6 +120,10 @@
       ::ng-deep button[data-size='l'] {
         height: 44px;
       }
+    }
+
+    ::ng-deep tui-wrapper[data-appearance='primary'] {
+      color: white;
     }
 
     svg {

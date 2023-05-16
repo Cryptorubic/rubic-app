@@ -2,7 +2,7 @@
   [disabled]="
     (amountError !== errors.NULL && amountError !== errors.NEED_APPROVE) || lockTimeExceededError
   "
-  appearance="secondary"
+  [appearance]="errors.NULL || errors.NEED_APPROVE ? 'primary' : 'secondary'"
   (onClick)="handleClick()"
   [loading]="stakeLoading || approveLoading"
 >

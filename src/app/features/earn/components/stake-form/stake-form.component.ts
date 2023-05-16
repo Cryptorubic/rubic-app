@@ -47,7 +47,7 @@ export class StakeFormComponent implements OnInit {
 
   public readonly rbcTokenBalance$ = this.stakingService.rbcTokenBalance$;
 
-  public readonly durationSliderCtrl = new FormControl(this.MAX_LOCK_TIME);
+  public readonly durationCtrl = new FormControl(this.MAX_LOCK_TIME);
 
   public readonly rbcAmountCtrl = new FormControl(null);
 
@@ -148,7 +148,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public setDuration(duration: number): void {
-    this.durationSliderCtrl.patchValue(duration);
+    this.durationCtrl.patchValue(duration);
   }
 
   public login(): void {
@@ -174,7 +174,7 @@ export class StakeFormComponent implements OnInit {
       typeof this.rbcAmountCtrl.value !== 'string'
         ? this.rbcAmountCtrl.value
         : new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
-    const duration = this.durationSliderCtrl.value;
+    const duration = this.durationCtrl.value;
 
     this.stakingModalService
       .showDepositModal(amount, duration, this.unlockDate)
@@ -205,9 +205,9 @@ export class StakeFormComponent implements OnInit {
   }
 
   private handleStakeDurationChange(): void {
-    this.durationSliderCtrl.valueChanges
+    this.durationCtrl.valueChanges
       .pipe(
-        startWith(this.durationSliderCtrl.value),
+        startWith(this.durationCtrl.value),
         switchMap(duration => {
           return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
         }),
