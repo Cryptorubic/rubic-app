@@ -23,14 +23,18 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
 import { REWARDS_CONTRACT_ABI } from '../constants/REWARDS_CONTRACT_ABI';
-import { IntervalReward } from '../models/interval-rewards.interface';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import {
+  MILLISECONDS_IN_MONTH,
+  MILLISECONDS_IN_WEEK,
+  SECONDS_IN_MONTH,
+  WEEKS_IN_YEAR
+} from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
@@ -301,19 +305,11 @@ export class StakingService {
             return forkJoin(
               nftIds.map(async id => {
                 const nftInfo = await this.getNftInfo(id);
-                const nftRewards = {
-                  totalNftRewards: new BigNumber(10),
-                  rewardIntervals: {
-                    startEpoch: Date.now().toString(),
-                    endEpoch: Date.now().toString(),
-                    reward: '100'
-                  }
-                };
-                // const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
-                //   .dividedBy(MILLISECONDS_IN_WEEK)
-                //   .dividedBy(WEEKS_IN_YEAR)
-                //   .multipliedBy(this.statisticsService.currentStakingApr);
-                const tokenApr = new BigNumber(10);
+                const nftRewards = await this.getNftRewardsInfo(id);
+                const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
+                  .dividedBy(MILLISECONDS_IN_WEEK)
+                  .dividedBy(WEEKS_IN_YEAR)
+                  .multipliedBy(this.statisticsService.currentStakingApr);
 
                 return {
                   ...nftInfo,
@@ -382,30 +378,35 @@ export class StakingService {
     return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000, lockTime };
   }
 
-  public async getNftRewardsInfo(
-    nftId: string
-  ): Promise<{ totalNftRewards: BigNumber; rewardIntervals: IntervalReward[] }> {
+  public async getNftRewardsInfo(nftId: string): Promise<{ totalNftRewards: BigNumber }> {
     try {
-      const currentEpoch = await this.web3Public.callContractMethod(
+      const calculatedRewards = await this.web3Public.callContractMethod(
         this.REWARDS_CONTRACT_ADDRESS,
         REWARDS_CONTRACT_ABI,
-        'getCurrentEpochId'
+        'calculateRewards',
+        [nftId]
       );
-      const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
-        this.REWARDS_CONTRACT_ADDRESS,
-        REWARDS_CONTRACT_ABI,
-        'pendingReward',
-        [nftId, 0, currentEpoch]
-      );
-      const totalNftRewards = rewardIntervals
-        .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
-        .reduce((prev: BigNumber, curr: BigNumber) => {
-          return prev.plus(curr);
-        }, new BigNumber(0));
+      // const currentEpoch = await this.web3Public.callContractMethod(
+      //   this.REWARDS_CONTRACT_ADDRESS,
+      //   REWARDS_CONTRACT_ABI,
+      //   'getCurrentEpochId'
+      // );
+      // const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
+      //   this.REWARDS_CONTRACT_ADDRESS,
+      //   REWARDS_CONTRACT_ABI,
+      //   'pendingReward',
+      //   [nftId, 0, currentEpoch]
+      // );
+      // const totalNftRewards = rewardIntervals
+      //   .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
+      //   .reduce((prev: BigNumber, curr: BigNumber) => {
+      //     return prev.plus(curr);
+      //   }, new BigNumber(0));
 
-      return { totalNftRewards, rewardIntervals };
+      // return { totalNftRewards, rewardIntervals };
+      return { totalNftRewards: Web3Pure.fromWei(calculatedRewards) };
     } catch (error) {
-      return { totalNftRewards: new BigNumber(0), rewardIntervals: [] };
+      return { totalNftRewards: new BigNumber(0) };
     }
   }
 
