@@ -32,7 +32,6 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import {
   MILLISECONDS_IN_MONTH,
   MILLISECONDS_IN_WEEK,
-  SECONDS_IN_MONTH,
   WEEKS_IN_YEAR
 } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
@@ -215,7 +214,8 @@ export class StakingService {
   }
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
-    const durationInSeconds = duration * SECONDS_IN_MONTH;
+    // const durationInSeconds = duration * SECONDS_IN_MONTH;
+    const durationInSeconds = duration * 60;
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'enterStaking', [
@@ -363,19 +363,18 @@ export class StakingService {
     );
   }
 
-  public async getNftInfo(
-    nftId: string
-  ): Promise<{ amount: BigNumber; endTimestamp: number; lockTime: string }> {
-    const {
-      lockTime,
-      amount,
-      lockStartTime: end
-    } = await this.web3Public.callContractMethod<{
+  public async getNftInfo(nftId: string): Promise<{ amount: BigNumber; endTimestamp: number }> {
+    const { lockTime, amount, lockStartTime } = await this.web3Public.callContractMethod<{
       lockTime: string;
       lockStartTime: string;
       amount: string;
     }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'stakes', [nftId]);
-    return { amount: Web3Pure.fromWei(amount), endTimestamp: Number(end) * 1000, lockTime };
+    const endTimestamp = Number(lockStartTime) + Number(lockTime);
+
+    return {
+      amount: Web3Pure.fromWei(amount),
+      endTimestamp: endTimestamp * 1000
+    };
   }
 
   public async getNftRewardsInfo(nftId: string): Promise<{ totalNftRewards: BigNumber }> {

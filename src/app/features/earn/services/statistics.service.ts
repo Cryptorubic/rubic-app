@@ -95,7 +95,7 @@ export class StatisticsService {
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
-        'supply'
+        'totalSupply'
       )
     ).pipe(
       map(value => {
@@ -110,7 +110,7 @@ export class StatisticsService {
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
-        'supply'
+        'totalSupply'
       )
     ).subscribe((value: string) => {
       this._lockedRBC$.next(Web3Pure.fromWei(value));
@@ -140,8 +140,8 @@ export class StatisticsService {
 
   public getRBCPrice(): Observable<number> {
     return this.coingeckoApiService.getCommonTokenPrice(
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      '0x8e3bcc334657560253b83f08331d85267316e08a'
+      BLOCKCHAIN_NAME.ETHEREUM,
+      '0x3330bfb7332ca23cd071631837dc289b09c33333'
     );
   }
 
