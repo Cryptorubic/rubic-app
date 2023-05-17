@@ -47,9 +47,9 @@
         <td class="tui-table__td">
           {{
             deposit.tokenApr && deposit.tokenApr.gte(0)
-              ? (deposit.tokenApr | bigNumberFormat : 2)
+              ? (deposit.tokenApr | bigNumberFormat : 2) + '%'
               : '-'
-          }}%
+          }}
         </td>
         <td class="tui-table__td">{{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}</td>
         <td class="tui-table__td">
