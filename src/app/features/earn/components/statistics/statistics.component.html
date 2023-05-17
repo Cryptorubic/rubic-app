@@ -71,13 +71,28 @@
     </div>
     <div class="statistics__col">
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">% {{ 'staking.circRBCLocked' | translate }}</div>
+        <div class="statistics__param-label">
+          % {{ 'staking.circRBCLocked' | translate }}
+          <img
+            class="statistics__param-label-hint"
+            *ngLet="circRBCLocked$ | async as circRBCLocked"
+            [tuiHint]="
+              circRBCLocked?.isFinite()
+                ? (circRBCLocked | bigNumberFormat : 9 : true) + ' %'
+                : '--.--'
+            "
+            [tuiHintDirection]="'top-left'"
+            tuiHintMode="onDark"
+            src="assets/images/icons/exclamation-grey.svg"
+            alt="hint"
+          />
+        </div>
         <div
           class="statistics__param-value"
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 9 : true) : '--.--' }}
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
           %
         </div>
       </div>
