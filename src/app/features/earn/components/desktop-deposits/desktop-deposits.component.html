@@ -2,7 +2,7 @@
   <thead>
     <tr class="tui-table__tr">
       <th class="tui-table__th">NFT ID</th>
-      <th class="tui-table__th">BRBC</th>
+      <th class="tui-table__th">RBC</th>
       <th class="tui-table__th">Rewards</th>
       <th class="tui-table__th">APR</th>
       <th class="tui-table__th">End Date</th>
@@ -62,7 +62,7 @@
               >Claim Rewards</app-rubic-button
             >
             <app-rubic-button
-              [appearance]="deposit.canWithdraw ? 'secondary' : 'primary'"
+              [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
               (onClick)="onWithdraw.emit(deposit)"
               [loading]="withdrawingId === deposit.id"
             >

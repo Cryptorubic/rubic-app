@@ -17,7 +17,7 @@ export class StatisticsComponent implements OnInit {
 
   public readonly circRBCLocked$ = this.statisticsService.circRBCLocked$;
 
-  public readonly rewardPerSecond$ = this.statisticsService.rewardPerSecond$;
+  public readonly rewardPerWeek$ = this.statisticsService.rewardPerWeek$;
 
   public readonly apr$ = this.statisticsService.apr$;
 
@@ -54,5 +54,6 @@ export class StatisticsComponent implements OnInit {
 
   private getStatisticsData(): void {
     this.statisticsService.getLockedRBC();
+    this.statisticsService.getRewardPerSecond();
   }
 }

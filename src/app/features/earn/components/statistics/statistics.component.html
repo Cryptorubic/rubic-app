@@ -49,8 +49,8 @@
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
-        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
+        <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
+          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 0) : '--.--' }}
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
@@ -77,21 +77,23 @@
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
+          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 9 : true) : '--.--' }}
           %
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
-        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
+        <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
+          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 0) : '--.--' }}
         </div>
       </div>
       <div class="statistics__param">
         <div class="statistics__param-label statistics__param-label_btn">
           {{ 'staking.apr' | translate }}
         </div>
-        <div class="statistics__param-value" *ngLet="apr$ | async as apr">32 %</div>
+        <div class="statistics__param-value" *ngLet="apr$ | async as apr">
+          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '--.--' }}%
+        </div>
       </div>
     </div>
   </div>

@@ -22,7 +22,6 @@ import {
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
-import { REWARDS_CONTRACT_ABI } from '../constants/REWARDS_CONTRACT_ABI';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
@@ -44,8 +43,6 @@ export class StakingService {
   public readonly RBC_TOKEN_ADDRESS = ENVIRONMENT.staking.rbcToken;
 
   public readonly NFT_CONTRACT_ADDRESS = ENVIRONMENT.staking.nftContractAddress;
-
-  public readonly REWARDS_CONTRACT_ADDRESS = ENVIRONMENT.staking.rewardsContractAddress;
 
   public readonly MIN_STAKE_AMOUNT = 1;
 
@@ -228,15 +225,10 @@ export class StakingService {
     try {
       const receipt = await Injector.web3PrivateService
         .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(
-          this.REWARDS_CONTRACT_ADDRESS,
-          REWARDS_CONTRACT_ABI,
-          'claimReward',
-          [
-            deposit.id,
-            deposit.rewardIntervals.map(interval => [interval.startEpoch, interval.endEpoch])
-          ]
-        );
+        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'claimRewards', [
+          deposit.id,
+          deposit.rewardIntervals.map(interval => [interval.startEpoch, interval.endEpoch])
+        ]);
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
@@ -267,7 +259,7 @@ export class StakingService {
     try {
       const receipt = await Injector.web3PrivateService
         .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'withdraw', [
+        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'unstake', [
           deposit.id
         ]);
       if (receipt.status) {
@@ -380,29 +372,11 @@ export class StakingService {
   public async getNftRewardsInfo(nftId: string): Promise<{ totalNftRewards: BigNumber }> {
     try {
       const calculatedRewards = await this.web3Public.callContractMethod(
-        this.REWARDS_CONTRACT_ADDRESS,
-        REWARDS_CONTRACT_ABI,
+        this.NFT_CONTRACT_ADDRESS,
+        NFT_CONTRACT_ABI,
         'calculateRewards',
         [nftId]
       );
-      // const currentEpoch = await this.web3Public.callContractMethod(
-      //   this.REWARDS_CONTRACT_ADDRESS,
-      //   REWARDS_CONTRACT_ABI,
-      //   'getCurrentEpochId'
-      // );
-      // const rewardIntervals = await this.web3Public.callContractMethod<IntervalReward[]>(
-      //   this.REWARDS_CONTRACT_ADDRESS,
-      //   REWARDS_CONTRACT_ABI,
-      //   'pendingReward',
-      //   [nftId, 0, currentEpoch]
-      // );
-      // const totalNftRewards = rewardIntervals
-      //   .map((interval: IntervalReward) => Web3Pure.fromWei(interval.reward))
-      //   .reduce((prev: BigNumber, curr: BigNumber) => {
-      //     return prev.plus(curr);
-      //   }, new BigNumber(0));
-
-      // return { totalNftRewards, rewardIntervals };
       return { totalNftRewards: Web3Pure.fromWei(calculatedRewards) };
     } catch (error) {
       return { totalNftRewards: new BigNumber(0) };

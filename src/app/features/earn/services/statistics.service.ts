@@ -1,19 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME, Web3Pure, Injector, EvmWeb3Public } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
-import { WEEKS_IN_YEAR } from '@app/shared/constants/time/time';
-
-type EpochInfo = {
-  startTime: string;
-  endTime: string;
-  rewardPerSecond: string;
-  totalPower: string;
-  startBlock: string;
-};
+import { RBC_CONTRACT_ABI } from '@features/earn/constants/RBC_CONTRACT_ABI';
 
 @Injectable()
 export class StatisticsService {
@@ -42,6 +34,8 @@ export class StatisticsService {
 
   private readonly numberOfSecondsPerWeek = 604_800;
 
+  private readonly numberOfSecondsPerYear = 31_104_000;
+
   private readonly numberOfWeekPerYear = 52;
 
   private readonly reward_multiplier = new BigNumber(10_000_000);
@@ -50,27 +44,21 @@ export class StatisticsService {
 
   private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
-  public readonly rewardPerSecond$ = this.updateStatistics$.pipe(
-    switchMap(() =>
-      StatisticsService.getCurrentEpochId().pipe(
-        switchMap(currentEpochId => this.getCurrentEpochInfo(currentEpochId)),
-        map(epochInfo =>
-          Web3Pure.fromWei(epochInfo.rewardPerSecond)
-            .multipliedBy(this.numberOfSecondsPerWeek)
-            .dividedBy(this.reward_multiplier)
-        ),
-        tap(rewardPerSecond => this._rewardPerSecond$.next(rewardPerSecond))
-      )
-    )
+  public readonly rewardPerSecond$ = this._rewardPerSecond$.asObservable();
+
+  public readonly rewardPerWeek$ = this.rewardPerSecond$.pipe(
+    tap(rewardPerWeek => rewardPerWeek.multipliedBy(this.numberOfSecondsPerWeek))
   );
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.rewardPerSecond$, of(this.currentActiveTokens)]).pipe(
-        map(([rewardPerSecond, currentActiveTokens]) => {
-          const rewardPerYear: BigNumber = rewardPerSecond.multipliedBy(WEEKS_IN_YEAR);
-          this.currentStakingApr = rewardPerYear.dividedBy(currentActiveTokens).multipliedBy(100);
-          return this.currentStakingApr;
+      combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerSecond$]).pipe(
+        map(([lockedRbcInDollars, ethPrice, rewardPerSecond]) => {
+          const rewardPerYear = rewardPerSecond.multipliedBy(this.numberOfSecondsPerYear);
+          const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
+          const apr = rewardPerYear.dividedBy(lockedRBCinETH).multipliedBy(100);
+          this.currentStakingApr = apr;
+          return apr;
         })
       )
     )
@@ -93,8 +81,8 @@ export class StatisticsService {
   public getTotalSupply(): Observable<BigNumber> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
-        STAKING_ROUND_THREE.NFT.address,
-        STAKING_ROUND_THREE.NFT.abi,
+        '0x3330bfb7332ca23cd071631837dc289b09c33333',
+        RBC_CONTRACT_ABI,
         'totalSupply'
       )
     ).pipe(
@@ -105,37 +93,29 @@ export class StatisticsService {
     );
   }
 
-  public getLockedRBC(): void {
+  public getRewardPerSecond(): void {
     from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
-        'totalSupply'
+        'rewardRate'
+      )
+    ).subscribe((value: string) => {
+      this._rewardPerSecond$.next(Web3Pure.fromWei(value));
+    });
+  }
+
+  public getLockedRBC(): void {
+    from(
+      StatisticsService.blockchainAdapter.callContractMethod<string>(
+        STAKING_ROUND_THREE.TOKEN.address,
+        STAKING_ROUND_THREE.TOKEN.abi,
+        'balanceOf',
+        [STAKING_ROUND_THREE.NFT.address]
       )
     ).subscribe((value: string) => {
       this._lockedRBC$.next(Web3Pure.fromWei(value));
     });
-  }
-
-  public getCurrentEpochInfo(currentEpochId: string): Observable<EpochInfo> {
-    return from(
-      StatisticsService.blockchainAdapter.callContractMethod<EpochInfo>(
-        STAKING_ROUND_THREE.REWARDS.address,
-        STAKING_ROUND_THREE.REWARDS.abi,
-        'epochInfo',
-        [currentEpochId]
-      ) as Promise<EpochInfo>
-    );
-  }
-
-  private static getCurrentEpochId(): Observable<string> {
-    return from(
-      StatisticsService.blockchainAdapter.callContractMethod<string>(
-        STAKING_ROUND_THREE.REWARDS.address,
-        STAKING_ROUND_THREE.REWARDS.abi,
-        'getCurrentEpochId'
-      )
-    );
   }
 
   public getRBCPrice(): Observable<number> {
@@ -143,6 +123,10 @@ export class StatisticsService {
       BLOCKCHAIN_NAME.ETHEREUM,
       '0x3330bfb7332ca23cd071631837dc289b09c33333'
     );
+  }
+
+  public getETHPrice(): Observable<number> {
+    return this.coingeckoApiService.getNativeCoinPrice(BLOCKCHAIN_NAME.ETHEREUM);
   }
 
   public updateStatistics(): void {
