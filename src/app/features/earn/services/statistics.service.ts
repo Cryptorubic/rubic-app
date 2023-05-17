@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME, Web3Pure, Injector, EvmWeb3Public } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
@@ -32,9 +32,9 @@ export class StatisticsService {
   // @TODO: remove after implementation of apr calculations on BE
   private readonly currentActiveTokens = 16841697.321;
 
-  private readonly numberOfSecondsPerWeek = 604_800;
-
   private readonly numberOfSecondsPerYear = 31_104_000;
+
+  private readonly numberOfSecondsPerWeek = 604_800;
 
   private readonly numberOfWeekPerYear = 52;
 
@@ -42,19 +42,17 @@ export class StatisticsService {
 
   public currentStakingApr = new BigNumber(0);
 
-  private readonly _rewardPerSecond$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
+  private readonly _rewardPerWeek$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
 
-  public readonly rewardPerSecond$ = this._rewardPerSecond$.asObservable();
-
-  public readonly rewardPerWeek$ = this.rewardPerSecond$.pipe(
-    tap(rewardPerWeek => rewardPerWeek.multipliedBy(this.numberOfSecondsPerWeek))
-  );
+  public readonly rewardPerWeek$ = this._rewardPerWeek$.asObservable();
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerSecond$]).pipe(
-        map(([lockedRbcInDollars, ethPrice, rewardPerSecond]) => {
-          const rewardPerYear = rewardPerSecond.multipliedBy(this.numberOfSecondsPerYear);
+      combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerWeek$]).pipe(
+        map(([lockedRbcInDollars, ethPrice, rewardPerWeek]) => {
+          const rewardPerYear = rewardPerWeek
+            .dividedBy(this.numberOfSecondsPerWeek)
+            .multipliedBy(this.numberOfSecondsPerYear);
           const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
           const apr = rewardPerYear.dividedBy(lockedRBCinETH).multipliedBy(100);
           this.currentStakingApr = apr;
@@ -93,7 +91,7 @@ export class StatisticsService {
     );
   }
 
-  public getRewardPerSecond(): void {
+  public getRewardPerWeek(): void {
     from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
@@ -101,7 +99,7 @@ export class StatisticsService {
         'rewardRate'
       )
     ).subscribe((value: string) => {
-      this._rewardPerSecond$.next(Web3Pure.fromWei(value));
+      this._rewardPerWeek$.next(Web3Pure.fromWei(value).multipliedBy(this.numberOfSecondsPerWeek));
     });
   }
 

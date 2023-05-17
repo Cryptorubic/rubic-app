@@ -46,6 +46,7 @@ export class StatisticsComponent implements OnInit {
     this.loading = true;
     this._currentTimestamp$.next(Date.now());
     this.statisticsService.updateStatistics();
+    this.getStatisticsData();
     setTimeout(() => {
       this.loading = false;
       this.cdr.detectChanges();
@@ -54,6 +55,6 @@ export class StatisticsComponent implements OnInit {
 
   private getStatisticsData(): void {
     this.statisticsService.getLockedRBC();
-    this.statisticsService.getRewardPerSecond();
+    this.statisticsService.getRewardPerWeek();
   }
 }
