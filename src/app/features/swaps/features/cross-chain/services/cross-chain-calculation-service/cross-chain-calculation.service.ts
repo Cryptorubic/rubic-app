@@ -257,16 +257,27 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this.checkDeviceAndShowNotification();
 
     const blockchain = wrappedTrade.trade.from.blockchain;
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
 
     let approveInProgressSubscription$: Subscription;
     const swapOptions: BasicTransactionOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
       },
-      ...(gasPrice && { gasPrice })
+      ...(shouldCalculateGasPrice && { ...gasDetails })
     };
 
     try {
@@ -337,15 +348,26 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     const blockchain = calculatedTrade.trade.from.blockchain;
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
 
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
-      ...(gasPrice && { gasPrice }),
+      ...(shouldCalculateGasPrice && { ...gasDetails }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(this.platformConfigurationService.useCrossChainChainProxy && {
         useProxy:

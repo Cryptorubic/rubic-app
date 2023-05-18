@@ -292,15 +292,26 @@ export class LimitOrderFormService {
 
     try {
       const fromToken = fromAsset as TokenBaseStruct<EvmBlockchainName>;
-      const gasPrice = shouldCalculateGas[fromToken.blockchain]
-        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromToken.blockchain))
-        : null;
+
+      const shouldCalculateGasPrice = shouldCalculateGas[fromToken.blockchain];
+
+      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+        await this.gasService.getGasPriceInEthUnits(fromToken.blockchain);
+
+      const gasDetails = Boolean(maxPriorityFeePerGas)
+        ? {
+            maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+            maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+          }
+        : {
+            gasPrice: Web3Pure.toWei(gasPrice)
+          };
 
       const options: BasicTransactionOptions = {
         onTransactionHash: () => {
           approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
         },
-        ...(gasPrice && { gasPrice })
+        ...(shouldCalculateGasPrice && { ...gasDetails })
       };
 
       await this.sdkService.limitOrderManager.approve(fromToken, fromAmount, options);

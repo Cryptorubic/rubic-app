@@ -85,9 +85,19 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -99,7 +109,7 @@ export class EthWethSwapProviderService {
         {
           value: fromAmountAbsolute,
           onTransactionHash: options.onConfirm,
-          gasPrice
+          ...(shouldCalculateGasPrice && { ...gasDetails })
         }
       );
   }
@@ -109,9 +119,19 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -122,7 +142,7 @@ export class EthWethSwapProviderService {
         [fromAmountAbsolute],
         {
           onTransactionHash: options.onConfirm,
-          gasPrice
+          ...(shouldCalculateGasPrice && { ...gasDetails })
         }
       );
   }

@@ -124,13 +124,23 @@ export class LimitOrdersService {
     };
 
     try {
-      const gasPrice = shouldCalculateGas[blockchain]
-        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-        : null;
+      const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+        await this.gasService.getGasPriceInEthUnits(blockchain);
+
+      const gasDetails = Boolean(maxPriorityFeePerGas)
+        ? {
+            maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+            maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+          }
+        : {
+            gasPrice: Web3Pure.toWei(gasPrice)
+          };
 
       await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
         onConfirm,
-        ...(gasPrice && { gasPrice })
+        ...(shouldCalculateGasPrice && { ...gasDetails })
       });
 
       subscription$.unsubscribe();

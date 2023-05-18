@@ -243,9 +243,19 @@ export class ApproveScannerService {
     }
 
     try {
-      const gasPrice = shouldCalculateGas[blockchain]
-        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-        : null;
+      const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+      const { gasPrice, maxPriorityFeePerGas } = await this.gasService.getGasPriceInEthUnits(
+        blockchain
+      );
+
+      const gasDetails = Boolean(maxPriorityFeePerGas)
+        ? {
+            maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas)
+          }
+        : {
+            gasPrice: Web3Pure.toWei(gasPrice)
+          };
 
       await Injector.web3PrivateService
         .getWeb3PrivateByBlockchain(blockchain)
@@ -253,7 +263,7 @@ export class ApproveScannerService {
           onTransactionHash: _hash => {
             revokeProgressNotification = this.showProgressNotification();
           },
-          ...(gasPrice && { gasPrice })
+          ...(shouldCalculateGasPrice && { ...gasDetails })
         });
       this.showSuccessNotification();
       this._refreshTable$.next(tokenAddress);

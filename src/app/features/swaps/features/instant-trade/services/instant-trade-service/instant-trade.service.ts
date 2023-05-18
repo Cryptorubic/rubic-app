@@ -119,12 +119,24 @@ export class InstantTradeService extends TradeCalculationService {
     const { blockchain } = TradeParser.getItSwapParams(trade);
     const useRubicGasPrice = shouldCalculateGas[blockchain];
 
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
+
     const transactionOptions = {
       onTransactionHash: () => {
         subscription$ = this.notificationsService.showApproveInProgress();
       },
       ...(useRubicGasPrice && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
+        ...gasDetails
       })
     };
 
@@ -260,6 +272,18 @@ export class InstantTradeService extends TradeCalculationService {
     const isSwapAndEarnSwap =
       trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
 
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
+      await this.gasService.getGasPriceInEthUnits(blockchain);
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -283,9 +307,7 @@ export class InstantTradeService extends TradeCalculationService {
         this.postTrade(hash, providerName, trade, isSwapAndEarnSwap);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(shouldCalculateGasPrice && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      }),
+      ...(shouldCalculateGasPrice && { ...gasDetails }),
       ...(receiverAddress && { receiverAddress })
     };
 
