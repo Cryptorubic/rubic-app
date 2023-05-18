@@ -40,6 +40,13 @@
       height: 20px;
       margin-right: 6px;
     }
+
+    &-apr {
+      max-width: 70%;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
   }
 
   &__row:not(:last-child) > &__cell {

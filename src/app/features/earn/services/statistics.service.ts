@@ -50,11 +50,16 @@ export class StatisticsService {
     switchMap(() =>
       combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerWeek$]).pipe(
         map(([lockedRbcInDollars, ethPrice, rewardPerWeek]) => {
-          const rewardPerYear = rewardPerWeek
-            .dividedBy(this.numberOfSecondsPerWeek)
-            .multipliedBy(this.numberOfSecondsPerYear);
-          const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
-          const apr = rewardPerYear.dividedBy(lockedRBCinETH).multipliedBy(100);
+          console.log(ethPrice, rewardPerWeek);
+          lockedRbcInDollars = new BigNumber(500_000);
+          // @TODO: return on PROD
+          // const rewardPerYear = rewardPerWeek
+          //   .dividedBy(this.numberOfSecondsPerWeek)
+          //   .multipliedBy(this.numberOfSecondsPerYear);
+          const rewardPerYear = new BigNumber(12_000).multipliedBy(12);
+          // @TODO: return on PROD
+          // const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
+          const apr = rewardPerYear.dividedBy(lockedRbcInDollars).multipliedBy(100);
           this.currentStakingApr = apr;
           return apr;
         })

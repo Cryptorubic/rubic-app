@@ -118,8 +118,7 @@
           {{ 'staking.apr' | translate }}
         </div>
         <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          <!--          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '&#45;&#45;.&#45;&#45;' }}%-->
-          32%
+          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '--.--' }}%
         </div>
       </div>
     </div>

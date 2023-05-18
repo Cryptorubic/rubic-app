@@ -9,6 +9,7 @@ import {
   catchError,
   combineLatest,
   filter,
+  firstValueFrom,
   forkJoin,
   from,
   map,
@@ -28,12 +29,7 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import {
-  MILLISECONDS_IN_MONTH,
-  MILLISECONDS_IN_WEEK,
-  SECONDS_IN_MONTH,
-  WEEKS_IN_YEAR
-} from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
@@ -183,6 +179,15 @@ export class StakingService {
     );
   }
 
+  private estimatedAnnualRewardsByTokenId(tokenID: string): Promise<string> {
+    return this.web3Public.callContractMethod(
+      this.NFT_CONTRACT_ADDRESS,
+      NFT_CONTRACT_ABI,
+      'estimatedAnnualRewardsByTokenId',
+      [tokenID]
+    );
+  }
+
   public pollRbcTokens(): Observable<BigNumber> {
     const pollInterval = 15_000;
     return timer(0, pollInterval).pipe(switchMap(() => this.getRbcTokenBalance()));
@@ -297,12 +302,25 @@ export class StakingService {
 
             return forkJoin(
               nftIds.map(async id => {
+                const estimatedAnnualRewardsWithDecimals =
+                  await this.estimatedAnnualRewardsByTokenId(id);
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
-                const tokenApr = new BigNumber(nftInfo.endTimestamp - Date.now())
-                  .dividedBy(MILLISECONDS_IN_WEEK)
-                  .dividedBy(WEEKS_IN_YEAR)
-                  .multipliedBy(this.statisticsService.currentStakingApr);
+
+                const RBCPrice = await firstValueFrom(this.statisticsService.getRBCPrice());
+                const ethPrice = await firstValueFrom(this.statisticsService.getETHPrice());
+                const amountInDollars = nftInfo.amount.multipliedBy(RBCPrice);
+                const amountInETH = amountInDollars.dividedBy(ethPrice);
+                const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH
+                const tokenApr = estimatedAnnualRewards.dividedBy(amountInETH).multipliedBy(100);
+                console.log('==================');
+                console.log('Цена за 1 RBC: ', RBCPrice);
+                console.log('Цена за 1 ETH: ', ethPrice);
+                console.log('Locked amount в долларах: ', amountInDollars.toFixed());
+                console.log('Locked amount в ETH: ', amountInETH.toFixed());
+                console.log('Ожидаемые реварды за год: ', estimatedAnnualRewards.toFixed());
+                console.log('APR: ', tokenApr.toFixed());
+                console.log('==================');
 
                 return {
                   ...nftInfo,

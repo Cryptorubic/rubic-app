@@ -41,13 +41,20 @@
           : '0.00'
       }}
     </div>
-    <div class="mobile-table__cell">
-      <!--      {{-->
-      <!--        deposit.tokenApr && deposit.tokenApr.gte(0)-->
-      <!--          ? (deposit.tokenApr | bigNumberFormat : 2)-->
-      <!--          : '-'-->
-      <!--      }}%-->
-      32%
+    <div
+      class="mobile-table__cell"
+      [tuiHint]="
+        deposit.tokenApr && deposit.tokenApr.gte(0)
+          ? (deposit.tokenApr | bigNumberFormat : 2) + ' %'
+          : '-'
+      "
+      [tuiHintDirection]="'top-right'"
+      tuiHintMode="onDark"
+    >
+      <span class="mobile-table__cell-apr">{{
+        deposit.tokenApr && deposit.tokenApr.gte(0) ? (deposit.tokenApr | bigNumberFormat : 2) : '-'
+      }}</span
+      >%
     </div>
     <div class="mobile-table__cell">
       {{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}
