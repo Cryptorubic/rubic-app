@@ -33,7 +33,7 @@ import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/t
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
-const STAKING_END_TIMESTAMP = 90991020800000; // Thu Aug 03 2023 03:00:00 GMT+03
+const STAKING_END_TIMESTAMP = new Date(2024, 4, 18).getTime();
 
 @Injectable()
 export class StakingService {
