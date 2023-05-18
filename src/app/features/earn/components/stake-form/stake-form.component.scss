@@ -234,7 +234,7 @@
 
       &:active {
         box-shadow: 0 1px 7px rgba(0, 0, 0, 0.1);
-        transform: translateY(-3px) scale(1.02);
+        transform: translateY(0) scale(1);
 
         transition: all 0.1s ease-in-out;
       }
@@ -255,6 +255,14 @@
         color: var(--primary-color);
 
         border: 1px solid var(--primary-color);
+
+        &:hover,
+        &:active {
+          box-shadow: none;
+          transform: none;
+
+          transition: none;
+        }
       }
 
       &[disabled] {
