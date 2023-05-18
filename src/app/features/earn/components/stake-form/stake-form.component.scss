@@ -68,7 +68,7 @@
 }
 
 .token {
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 
   @include b($tablet) {
     margin-bottom: 32px;
@@ -170,7 +170,7 @@
 
 .divider {
   height: 1px;
-  margin-bottom: 34px;
+  margin-bottom: 20px;
 
   background: var(--transparent-line);
 

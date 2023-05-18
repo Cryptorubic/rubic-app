@@ -17,7 +17,7 @@
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">9</div>
+        <div class="statistics__param-value">9 <span>month</span></div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
@@ -43,7 +43,7 @@
         >
           $
           {{
-            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 0) : '--.--'
+            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 2) : '--.--'
           }}
         </div>
       </div>
@@ -64,8 +64,19 @@
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
-          %
+          <span
+            [tuiHint]="
+              circRBCLocked?.isFinite()
+                ? (circRBCLocked | bigNumberFormat : 9 : true) + ' %'
+                : '--.--'
+            "
+            [tuiHintDirection]="'top-left'"
+            tuiHintMode="onDark"
+            >{{
+              circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--'
+            }}
+            %</span
+          >
         </div>
       </div>
     </div>
@@ -107,7 +118,8 @@
           {{ 'staking.apr' | translate }}
         </div>
         <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '--.--' }}%
+          <!--          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '&#45;&#45;.&#45;&#45;' }}%-->
+          32%
         </div>
       </div>
     </div>

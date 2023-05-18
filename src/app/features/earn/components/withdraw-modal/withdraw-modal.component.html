@@ -9,17 +9,13 @@
   {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} BRBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else withdraw">
-  <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
+  <app-rubic-button appearance="primary" class="action-btn" (onClick)="switchNetwork()"
     >Switch to BSC network
   </app-rubic-button>
 </ng-container>
 
 <ng-template #withdraw>
-  <app-rubic-button
-    appearance="secondary"
-    class="action-btn"
-    (onClick)="context.completeWith(true)"
-  >
+  <app-rubic-button appearance="primary" class="action-btn" (onClick)="context.completeWith(true)">
     Withdraw
   </app-rubic-button>
 </ng-template>

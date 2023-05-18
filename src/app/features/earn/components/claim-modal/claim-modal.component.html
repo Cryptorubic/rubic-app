@@ -15,20 +15,16 @@
       ? '< 0.0001'
       : (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
   }}
-  BRBC
+  RBC
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">
-  <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
+  <app-rubic-button appearance="primary" class="action-btn" (onClick)="switchNetwork()"
     >Switch to BSC network</app-rubic-button
   >
 </ng-container>
 
 <ng-template #claim>
-  <app-rubic-button
-    appearance="secondary"
-    class="action-btn"
-    (onClick)="context.completeWith(true)"
-  >
+  <app-rubic-button appearance="primary" class="action-btn" (onClick)="context.completeWith(true)">
     Claim
   </app-rubic-button>
 </ng-template>

@@ -8,13 +8,29 @@
   </div>
   <div class="mobile-table__row" *ngFor="let deposit of deposits; let i = index; trackBy: trackBy">
     <div class="mobile-table__cell">
-      <img src="assets/images/rbc-util-icon.png" alt="" />
+      <img src="assets/images/rbc.png" alt="" />
       {{ deposit.id }}
     </div>
     <div class="mobile-table__cell">
       {{ deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 0 } }}
     </div>
-    <div class="mobile-table__cell">
+    <div
+      class="mobile-table__cell"
+      [tuiHint]="
+        deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
+          ? (deposit.totalNftRewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
+          : '< 0.0001'
+      "
+      [tuiManualHint]="
+        deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
+          ? (deposit.totalNftRewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
+          : '< 0.0001'
+      "
+      [tuiManualHintShow]="false"
+      [tuiHintDirection]="'top-left'"
+      [tuiHintShowDelay]="50"
+      tuiHintMode="onDark"
+    >
       {{
         !deposit.totalNftRewards.isZero()
           ? deposit.totalNftRewards.lt(0.01)
@@ -26,18 +42,19 @@
       }}
     </div>
     <div class="mobile-table__cell">
-      {{
-        deposit.tokenApr && deposit.tokenApr.gte(0)
-          ? (deposit.tokenApr | bigNumberFormat : 2)
-          : '-'
-      }}%
+      <!--      {{-->
+      <!--        deposit.tokenApr && deposit.tokenApr.gte(0)-->
+      <!--          ? (deposit.tokenApr | bigNumberFormat : 2)-->
+      <!--          : '-'-->
+      <!--      }}%-->
+      32%
     </div>
     <div class="mobile-table__cell">
       {{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}
     </div>
     <div class="mobile-table__cell">
       <app-rubic-button
-        appearance="secondary"
+        [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
         (onClick)="onClaim.emit(deposit)"
         [disabled]="deposit.totalNftRewards.isZero()"
         [loading]="claimingId === deposit.id"
@@ -45,7 +62,7 @@
         Claim Rewards</app-rubic-button
       >
       <app-rubic-button
-        [appearance]="deposit.canWithdraw ? 'secondary' : 'primary'"
+        [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
         (onClick)="onWithdraw.emit(deposit)"
         [loading]="withdrawingId === deposit.id"
       >
@@ -62,7 +79,12 @@
           : '0'
       }}
     </div>
-    <div class="mobile-table__cell">
+    <div
+      class="mobile-table__cell"
+      [tuiHint]="total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }"
+      [tuiHintDirection]="'top-right'"
+      tuiHintMode="onDark"
+    >
       {{
         !total.rewards.isZero()
           ? total.rewards.lt(0.01)

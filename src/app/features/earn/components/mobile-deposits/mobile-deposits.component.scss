@@ -17,7 +17,7 @@
   &__row {
     display: flex;
     flex-wrap: wrap;
-    padding: 14px;
+    padding: 14px 14px 0;
 
     &:not(:last-child) {
       background: var(--form-background);
@@ -55,7 +55,7 @@
         button {
           height: 27px;
 
-          font-size: 12px;
+          font-size: 14px;
           line-height: 14px;
 
           .t-loader[data-tui-element-size='m'] {

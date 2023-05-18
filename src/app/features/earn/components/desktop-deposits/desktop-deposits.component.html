@@ -14,7 +14,7 @@
       <tr class="tui-table__tr data-row">
         <td class="tui-table__td">
           <div class="tui-table__td-id">
-            <img src="assets/images/rbc-util-icon.png" alt="" />
+            <img src="assets/images/rbc.png" alt="" />
             {{ deposit.id }}
           </div>
         </td>
@@ -40,6 +40,7 @@
             [tuiManualHintShow]="false"
             [tuiHintDirection]="'top-left'"
             [tuiHintShowDelay]="50"
+            tuiHintMode="onDark"
           >
             {{ id | functionCall : getTotalNftRewards : this }}
           </span>
@@ -55,7 +56,7 @@
         <td class="tui-table__td">
           <div class="tui-table__td-actions">
             <app-rubic-button
-              appearance="secondary"
+              [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
               (onClick)="onClaim.emit(deposit)"
               [disabled]="deposit.totalNftRewards.isZero()"
               [loading]="claimingId === deposit.id"
@@ -67,6 +68,7 @@
               [loading]="withdrawingId === deposit.id"
             >
               <img
+                [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
                 [src]="
                   isDarkTheme
                     ? 'assets/images/icons/leave-white.svg'
@@ -89,7 +91,12 @@
             : '0'
         }}
       </td>
-      <td class="tui-table__td">
+      <td
+        class="tui-table__td"
+        [tuiHint]="total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }"
+        [tuiHintDirection]="'top-right'"
+        tuiHintMode="onDark"
+      >
         {{
           !total.rewards.isZero()
             ? total.rewards.lt(0.01)
