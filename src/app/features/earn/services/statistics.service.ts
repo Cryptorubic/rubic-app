@@ -50,17 +50,22 @@ export class StatisticsService {
     switchMap(() =>
       combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerWeek$]).pipe(
         map(([lockedRbcInDollars, ethPrice, rewardPerWeek]) => {
-          console.log(ethPrice, rewardPerWeek);
-          lockedRbcInDollars = new BigNumber(500_000);
-          // @TODO: return on PROD
-          // const rewardPerYear = rewardPerWeek
-          //   .dividedBy(this.numberOfSecondsPerWeek)
-          //   .multipliedBy(this.numberOfSecondsPerYear);
-          const rewardPerYear = new BigNumber(12_000).multipliedBy(12);
-          // @TODO: return on PROD
-          // const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
-          const apr = rewardPerYear.dividedBy(lockedRbcInDollars).multipliedBy(100);
+          const rewardPerYear = rewardPerWeek
+            .dividedBy(this.numberOfSecondsPerWeek)
+            .multipliedBy(this.numberOfSecondsPerYear);
+          const lockedRBCinETH = lockedRbcInDollars.dividedBy(ethPrice);
+          const apr = rewardPerYear.dividedBy(lockedRBCinETH).multipliedBy(100);
           this.currentStakingApr = apr;
+
+          console.log('==================');
+          console.log('APR для Overview');
+          console.log('Цена за 1 ETH в $: ', ethPrice);
+          console.log('Locked amount в $: ', lockedRbcInDollars.toFixed());
+          console.log('Locked amount в ETH: ', lockedRBCinETH.toFixed());
+          console.log('Реварды за год: ', rewardPerYear.toFixed());
+          console.log('APR (Реварды за год / Locked amount в ETH) * 100: ', apr.toFixed());
+          console.log('==================');
+
           return apr;
         })
       )

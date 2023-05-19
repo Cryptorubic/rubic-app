@@ -314,11 +314,12 @@ export class StakingService {
                 const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH
                 const tokenApr = estimatedAnnualRewards.dividedBy(amountInETH).multipliedBy(100);
                 console.log('==================');
+                console.log('APR для токена');
                 console.log('ID депозита: ', id);
-                console.log('Цена за 1 RBC: ', RBCPrice);
-                console.log('Цена за 1 ETH: ', ethPrice);
+                console.log('Цена за 1 RBC в $: ', RBCPrice);
+                console.log('Цена за 1 ETH в $: ', ethPrice);
                 console.log('Locked amount: ', nftInfo.amount.toFixed());
-                console.log('Locked amount в долларах: ', amountInDollars.toFixed());
+                console.log('Locked amount в $: ', amountInDollars.toFixed());
                 console.log('Locked amount в ETH: ', amountInETH.toFixed());
                 console.log('Ожидаемые реварды за год: ', estimatedAnnualRewards.toFixed());
                 console.log('APR: ', tokenApr.toFixed());
