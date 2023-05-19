@@ -31,8 +31,8 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
   ) {
     this.endpoints = [
       {
-        route: 'api/crosschain_trades/trade',
-        methods: new Set(['POST', 'PATCH'])
+        route: '/api/crosschain_trades',
+        methods: new Set(['POST'])
       },
       {
         route: '/api/instant_trades/',
