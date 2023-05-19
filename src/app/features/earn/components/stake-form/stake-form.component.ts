@@ -74,7 +74,7 @@ export class StakeFormComponent implements OnInit {
 
   public unlockDate: number;
 
-  public selectedDuration: number = 6;
+  public selectedDuration: number = 12;
 
   public selectedAmount: string;
 
