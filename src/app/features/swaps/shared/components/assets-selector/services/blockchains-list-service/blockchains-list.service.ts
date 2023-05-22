@@ -3,7 +3,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { AvailableBlockchain } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import {
-  blockchainsList,
+  firstAvailableBlockchains,
   notEvmChangeNowBlockchainsList
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -63,7 +63,7 @@ export class BlockchainsListService {
     const isLimitOrder = this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
     let blockchains: readonly BlockchainName[] = isLimitOrder
       ? limitOrderSupportedBlockchains
-      : blockchainsList;
+      : firstAvailableBlockchains;
     if (this.queryParamsService.enabledBlockchains) {
       blockchains = blockchains.filter(blockchain =>
         this.queryParamsService.enabledBlockchains.includes(blockchain)

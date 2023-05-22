@@ -120,5 +120,17 @@ export const blockchainsList = [
   ...Object.values(notEvmChangeNowBlockchainsList)
 ];
 
+export const firstAvailableBlockchains = [
+  BLOCKCHAIN_NAME.ETHEREUM,
+  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  BLOCKCHAIN_NAME.POLYGON,
+  BLOCKCHAIN_NAME.AVALANCHE,
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.LITECOIN,
+  BLOCKCHAIN_NAME.ZK_SYNC,
+  BLOCKCHAIN_NAME.BOBA_BSC
+];
+
 export type NotEvmChangeNowBlockchainsList =
   typeof notEvmChangeNowBlockchainsList[keyof typeof notEvmChangeNowBlockchainsList];
