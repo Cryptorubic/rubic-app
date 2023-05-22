@@ -175,7 +175,7 @@ export class GasService {
       map(response => ({
         baseFee: response.baseFee,
         maxFeePerGas: response.high.maxFeePerGas,
-        maxPriorityFeePerGas: response.high.maxPriorityFee
+        maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
       })),
       catchError(() => {
         const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
