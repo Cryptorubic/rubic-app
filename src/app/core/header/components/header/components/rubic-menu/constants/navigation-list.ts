@@ -54,6 +54,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       active: false
     },
     {
+      translateKey: 'Staking',
+      type: 'internal',
+      link: ROUTE_PATH.STAKING,
+      active: false
+    },
+    {
       translateKey: 'Limit Order',
       type: 'internal',
       link: ROUTE_PATH.LIMIT_ORDER,

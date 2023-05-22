@@ -406,7 +406,8 @@ export class StakingService {
   }
 
   public async switchNetwork(): Promise<boolean> {
-    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.ARBITRUM);
+    // @TODO change to Arbitrum for prod release
+    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
   public async getNftVotingPower(nftId: string): Promise<string> {

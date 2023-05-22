@@ -80,12 +80,12 @@
         needLogin: needLogin$ | async
       } as data"
     >
-      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin">
+      <app-rubic-button appearance="primary" (onClick)="login()" *ngIf="data.needLogin">
         Connect Wallet
       </app-rubic-button>
 
       <app-rubic-button
-        appearance="secondary"
+        appearance="primary"
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
       >

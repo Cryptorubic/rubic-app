@@ -35,10 +35,10 @@ import { FormControl } from '@angular/forms';
 })
 export class StakeFormComponent implements OnInit {
   public readonly DURATIONS = [
-    { value: 3, label: '3 month', earn: 100 },
-    { value: 6, label: '6 month', earn: 120 },
-    { value: 9, label: '9 month', earn: 150 },
-    { value: 12, label: '12 month', earn: 200 }
+    { value: 3, label: '3 months', earn: 100 },
+    { value: 6, label: '6 months', earn: 120 },
+    { value: 9, label: '9 months', earn: 150 },
+    { value: 12, label: '12 months', earn: 200 }
   ];
 
   public readonly MAX_LOCK_TIME = this.stakingService.MAX_LOCK_TIME;
