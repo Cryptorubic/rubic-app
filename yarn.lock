@@ -2218,7 +2218,7 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lifi/sdk@^1.6.3":
+"@lifi/sdk@^1.7.2":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@lifi/sdk/-/sdk-1.7.2.tgz#a3cda45ca67c747cf13ab593b572e14a2d3a41cb"
   integrity sha512-FOkPDOPF9EcNv13FpCEDmrzFz2aDqqsOcgOEsRbiF59QfdUU2jNMhI19D9xGthdda4amx0cXHANykPRYLWtkQA==
@@ -13873,14 +13873,14 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.0.23:
-  version "4.0.23"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.23.tgz#d678a237e7de674f7df495fed652a778c478ff77"
-  integrity sha512-4/deVMWPedlWi0saXy2bZHhV8rVbzxm95kX79qo16UhKL3B693y3xczV6HoRXJ1Ta6hGdnt61jC0jXvSizzbyQ==
+rubic-sdk@4.0.25-alpha.5:
+  version "4.0.25-alpha.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.0.25-alpha.5.tgz#1790ed4cf6e058bffa43d150ce1af74d21038467"
+  integrity sha512-xjXliOnFhnoKwOGkPG0aYu1k5Ccf9CkbtSy+Wu5arAkgoRofiyOkDHD+MHug0i1uwy686O5hYgP0PZ4xfuCJJg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
-    "@lifi/sdk" "^1.6.3"
+    "@lifi/sdk" "^1.7.2"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
     axios "^0.26.1"

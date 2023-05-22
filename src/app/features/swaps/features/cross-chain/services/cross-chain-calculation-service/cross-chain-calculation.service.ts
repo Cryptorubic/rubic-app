@@ -11,7 +11,6 @@ import {
   SwapTransactionOptions,
   UnnecessaryApproveError,
   ViaCrossChainTrade,
-  Web3Pure,
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
@@ -32,7 +31,6 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -258,19 +256,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const blockchain = wrappedTrade.trade.from.blockchain;
 
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     let approveInProgressSubscription$: Subscription;
     const swapOptions: BasicTransactionOptions = {
@@ -349,19 +335,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const blockchain = calculatedTrade.trade.from.blockchain;
 
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {

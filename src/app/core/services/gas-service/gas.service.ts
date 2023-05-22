@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-// @ts-expect-error
-import { BlockchainName, BLOCKCHAIN_NAME, Injector, GasPrice } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME, Injector, GasPrice, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
 import { formatEIP1559Gas } from '@app/shared/utils/utils';
+import { OneInchGasResponse } from './models/1inch-gas-response';
+import { shouldCalculateGas } from '@app/shared/models/blockchain/should-calculate-gas';
+import { GasInfo } from './models/gas-info';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -119,6 +121,29 @@ export class GasService {
   }
 
   /**
+   * Provides gas info for a given blockchain
+   * @param blockchain Blockchain to get gas info.
+   */
+  public async getGasInfo(blockchain: BlockchainName): Promise<GasInfo> {
+    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
+
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = await this.getGasPriceInEthUnits(
+      blockchain
+    );
+
+    const gasDetails = Boolean(maxPriorityFeePerGas)
+      ? {
+          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
+          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
+        }
+      : {
+          gasPrice: Web3Pure.toWei(gasPrice)
+        };
+
+    return { shouldCalculateGasPrice, gasDetails };
+  }
+
+  /**
    * Updates gas price in interval.
    */
   private setIntervalOnGasPriceRefreshing(): void {
@@ -145,34 +170,20 @@ export class GasService {
   })
   private fetchEthGas(): Observable<GasPrice | null> {
     const requestTimeout = 2000;
-    return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
+    return this.httpClient.get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1').pipe(
       timeout(requestTimeout),
-      map(
-        (response: {
-          baseFee: string;
-          high: { maxPriorityFee: string; maxFeePerGas: string };
-        }) => ({
-          baseFee: response.baseFee,
-          maxFeePerGas: response.high.maxFeePerGas,
-          maxPriorityFee: response.high.maxPriorityFee
-        })
-      ),
-      map(formatEIP1559Gas),
+      map(response => ({
+        baseFee: response.baseFee,
+        maxFeePerGas: response.high.maxFeePerGas,
+        maxPriorityFeePerGas: response.high.maxPriorityFee
+      })),
       catchError(() => {
         const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
           BLOCKCHAIN_NAME.ETHEREUM
         );
-        // @ts-expect-error
-        return from(blockchainAdapter.getPriorityFeeGas()).pipe(map(formatEIP1559Gas));
+        return from(blockchainAdapter.getPriorityFeeGas());
       }),
-      catchError(() =>
-        this.httpClient.get('https://ethgasstation.info/api/ethgasAPI.json').pipe(
-          timeout(requestTimeout),
-          map((response: { average: number }) => ({
-            gasPrice: new BigNumber(response.average).dividedBy(10).toFixed()
-          }))
-        )
-      ),
+      map(formatEIP1559Gas),
       catchError(() => of(null))
     );
   }
@@ -186,7 +197,7 @@ export class GasService {
   })
   private fetchBscGas(): Observable<GasPrice> {
     return of({
-      gasPrice: 5
+      gasPrice: new BigNumber(5).dividedBy(10 ** 9).toFixed()
     });
   }
 
@@ -199,13 +210,12 @@ export class GasService {
   })
   private fetchPolygonGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.POLYGON);
-    // @ts-expect-error
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => {
         return this.httpClient.get('https://gasstation-mainnet.matic.network/').pipe(
           map((el: PolygonGasResponse) => ({
-            gasPrice: Math.floor(el.standard)
+            gasPrice: Math.floor(el.standard).toFixed()
           }))
         );
       }),
@@ -222,7 +232,6 @@ export class GasService {
   })
   private fetchAvalancheGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.AVALANCHE);
-    // @ts-expect-error
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -238,7 +247,7 @@ export class GasService {
   })
   private fetchTelosGas(): Observable<GasPrice | null> {
     return of({
-      gasPrice: 510
+      gasPrice: new BigNumber(510).dividedBy(10 ** 9).toFixed()
     });
   }
 
@@ -251,7 +260,6 @@ export class GasService {
   })
   private fetchFantomGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FANTOM);
-    // @ts-expect-error
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -272,7 +280,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber()
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
         };
       })
     );
@@ -287,7 +295,7 @@ export class GasService {
   })
   private fetchOptimismGas(): Observable<GasPrice> {
     return of({
-      gasPrice: 500
+      gasPrice: new BigNumber(500).dividedBy(10 ** 9).toFixed()
     });
   }
 
@@ -300,7 +308,6 @@ export class GasService {
   })
   private fetchArbitrumGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
-    // @ts-expect-error
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
@@ -316,7 +323,7 @@ export class GasService {
   })
   private fetchZkSyncGas(): Observable<GasPrice> {
     return of({
-      gasPrice: 0.25
+      gasPrice: new BigNumber(0.25).dividedBy(10 ** 9).toFixed()
     });
   }
 }

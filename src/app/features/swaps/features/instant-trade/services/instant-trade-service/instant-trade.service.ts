@@ -117,25 +117,14 @@ export class InstantTradeService extends TradeCalculationService {
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
-    const useRubicGasPrice = shouldCalculateGas[blockchain];
 
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     const transactionOptions = {
       onTransactionHash: () => {
         subscription$ = this.notificationsService.showApproveInProgress();
       },
-      ...(useRubicGasPrice && {
+      ...(shouldCalculateGasPrice && {
         ...gasDetails
       })
     };
@@ -265,24 +254,12 @@ export class InstantTradeService extends TradeCalculationService {
     let transactionHash: string;
     let subscription$: Subscription;
 
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
     const receiverAddress = this.receiverAddress;
 
     const isSwapAndEarnSwap =
       trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
 
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {

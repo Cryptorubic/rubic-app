@@ -3,7 +3,6 @@ import { map, switchMap } from 'rxjs/operators';
 import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-// @ts-expect-error
 import { EIP1559Gas, GasPrice } from 'rubic-sdk/lib';
 
 /**

@@ -33,7 +33,6 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
@@ -124,19 +123,7 @@ export class LimitOrdersService {
     };
 
     try {
-      const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
-      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-        await this.gasService.getGasPriceInEthUnits(blockchain);
-
-      const gasDetails = Boolean(maxPriorityFeePerGas)
-        ? {
-            maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-            maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-          }
-        : {
-            gasPrice: Web3Pure.toWei(gasPrice)
-          };
+      const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
       await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
         onConfirm,

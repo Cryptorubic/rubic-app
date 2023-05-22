@@ -20,7 +20,6 @@ import { compareAddresses } from '@shared/utils/utils';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable({
@@ -85,19 +84,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -119,19 +106,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } =
-      await this.gasService.getGasPriceInEthUnits(blockchain);
-
-    const gasDetails = Boolean(maxPriorityFeePerGas)
-      ? {
-          maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
-          maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
-        }
-      : {
-          gasPrice: Web3Pure.toWei(gasPrice)
-        };
+    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
