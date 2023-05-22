@@ -118,7 +118,7 @@
     border-radius: 100px;
 
     @include b($tablet) {
-      padding: 7px 12px;
+      padding: 7px 12px 7px 0;
 
       font-size: 14px;
       line-height: 16px;
