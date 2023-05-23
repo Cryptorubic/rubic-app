@@ -498,8 +498,8 @@
   },
   "staking": {
     "lockedRBC": "Locked RBC",
-    "$lockedRBC": "$ Locked RBC",
-    "circRBCLocked": "Circ. RBC Locked",
+    "$lockedRBC": "Locked RBC in $",
+    "circRBCLocked": "Percent of Locked RBC",
     "estYieldPerWeek": "Est. Yield Per Week",
     "avgLockTime": "Avg. Lock Time",
     "apr": "APR",

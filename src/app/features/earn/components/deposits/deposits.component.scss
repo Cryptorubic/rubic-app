@@ -103,7 +103,7 @@
   justify-content: center;
   margin-bottom: 20px;
 
-  color: white;
+  color: black;
 
   @include b($tablet) {
     flex-direction: column;
@@ -123,11 +123,19 @@
     }
 
     ::ng-deep tui-wrapper[data-appearance='primary'] {
-      color: white;
+      color: black;
     }
 
     svg {
       margin-right: 8px;
+
+      rect {
+        stroke: black;
+      }
+
+      path {
+        fill: black;
+      }
     }
   }
 }

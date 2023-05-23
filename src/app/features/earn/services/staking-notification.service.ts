@@ -12,7 +12,7 @@ export class StakingNotificationService {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   public showSuccessDepositNotification(): void {
-    this.notificationsService.show('RBC have been deposited', SUCCESS_NOTIFICATION_OPTIONS);
+    this.notificationsService.show('RBC has been deposited', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showSuccessClaimNotification(): void {
