@@ -14,7 +14,10 @@ import { map } from 'rxjs';
 })
 export class BlockchainsListComponent implements OnInit, OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    map(blockchains => blockchains.sort((a, b) => a.name.localeCompare(b.name)))
+    map(blockchains => [
+      ...blockchains.slice(0, 8),
+      ...blockchains.slice(8, blockchains.length - 1).sort((a, b) => a.name.localeCompare(b.name))
+    ])
   );
 
   constructor(
