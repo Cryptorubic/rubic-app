@@ -16,7 +16,8 @@ import {
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   Token,
-  PriceToken
+  PriceToken,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -87,7 +88,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
-    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+    if (
+      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW ||
+      calculatedTrade.trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC
+    ) {
       return false;
     }
 
