@@ -12,8 +12,8 @@ interface EndpointData {
 }
 
 interface WalletInfo {
-  walletName: string;
-  deviceType: 'mobile' | 'desktop';
+  wallet_name: string;
+  device_type: 'mobile' | 'desktop';
 }
 
 /**
@@ -78,8 +78,8 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
    */
   private addWalletInfoToRequest(request: HttpRequest<object>): HttpRequest<object> {
     const walletsInfo: WalletInfo = {
-      walletName: this.walletConnectorService.provider.detailedWalletName,
-      deviceType: this.isMobile ? 'mobile' : 'desktop'
+      wallet_name: this.walletConnectorService.provider.detailedWalletName,
+      device_type: this.isMobile ? 'mobile' : 'desktop'
     };
     return request.clone({
       body: { ...request.body, ...walletsInfo }
