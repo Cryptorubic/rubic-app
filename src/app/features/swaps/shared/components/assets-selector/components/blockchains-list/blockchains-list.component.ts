@@ -4,6 +4,7 @@ import { AvailableBlockchain } from '@features/swaps/shared/components/assets-se
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -12,7 +13,9 @@ import { MobileNativeModalService } from '@app/core/modals/services/mobile-nativ
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsListComponent implements OnInit, OnDestroy {
-  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$;
+  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
+    map(blockchains => blockchains.sort((a, b) => a.name.localeCompare(b.name)))
+  );
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
