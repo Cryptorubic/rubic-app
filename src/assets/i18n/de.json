@@ -128,6 +128,18 @@
         "answer": "Rubic ist ein dezentrales DeFi-Ökosystem, dass Dir Blockchain und Blockchainübergreifende Transaktionen auf einzigartige Weise ermöglicht. Dafür ag­gre­gie­ren wir kontinuierlich die Kurse führender DEX-Protokolle, vergleichen diese miteinander und stellen Dir die bestmöglichen Konditionen für Deine individuelle Transaktion bereit. Das alles - und weit mehr - mit nur einem Klick!"
       },
       {
+        "title": "What is the Rubic Cross-Chain Tools?",
+        "answer": "Rubic’s Cross-Chain Tools enable your platform to act as a gateway to buy your project’s token. An easy-to-install Widget and a battle-tested SDK let your users swap from any of 15,500+ tokens across 60+ blockchains to your custom token!<br/><br/>Explore more: <a href='https://tools.rubic.exchange/' target='_blank' rel='noopener noreferrer'>https://tools.rubic.exchange/</a>"
+      },
+      {
+        "title": "What is BTCB?",
+        "answer": "BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC) that represents Bitcoin (BTC) in a 1:1 ratio. It is a wrapped version of BTC that allows users to access BTC's value and features on the Binance Smart Chain network. BTCB provides liquidity and interoperability between the BSC and BTC, enabling users to trade or use BTC in decentralized applications on BSC."
+      },
+      {
+        "title": "Can I send BTCB to a BTC wallet address?",
+        "answer": "No, BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC), and it cannot be sent directly to a BTC (Bitcoin) wallet address. BTCB operates on a different blockchain and requires a compatible BSC wallet for sending and receiving transactions."
+      },
+      {
         "title": "Wer kann die Plattform nutzen?",
         "answer": "Rubic steht jedem zur freien Verfügung, der Blockchain und Blockchainübergreifende Transaktionen durchführen möchte. KYC-Prozesse sind dabei nicht erforderlich. Wir bieten zudem Lösungen für externe Projekte, wie die Entwicklung individueller Bridges oder auch unser Rubic Relay Widget. Dieses kann bspw. unkompliziert auf jeder Internetseite eingebunden werden und ermöglicht es dem Endnutzer direkte Transaktionen abzuwickeln."
       },

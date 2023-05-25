@@ -16,5 +16,9 @@
     margin-bottom: 15px !important;
 
     border-radius: 14px;
+
+    ::ng-deep .wrapper {
+      background: var(--form-background) !important;
+    }
   }
 }
