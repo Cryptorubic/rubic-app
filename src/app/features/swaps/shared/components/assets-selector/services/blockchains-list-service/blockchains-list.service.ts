@@ -29,7 +29,7 @@ export class BlockchainsListService {
   private _availableBlockchains: AvailableBlockchain[];
 
   public get availableBlockchains(): AvailableBlockchain[] {
-    return this._availableBlockchains.sort((a, b) => b.rank - a.rank);
+    return this._availableBlockchains;
   }
 
   private readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
@@ -83,27 +83,29 @@ export class BlockchainsListService {
     const selectedBlockchain =
       isLimitOrder && formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
 
-    this._availableBlockchains = blockchains.map(blockchain => {
-      const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
-        blockchain.name
-      );
-      const disabledFrom = !this.iframeService.isIframe
-        ? disabledFromBlockchains.includes(blockchain.name)
-        : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
-            blockchain.name
-          );
-      const disabledLimitOrder = selectedBlockchain && blockchain.name !== selectedBlockchain;
+    this._availableBlockchains = blockchains
+      .map(blockchain => {
+        const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
+          blockchain.name
+        );
+        const disabledFrom = !this.iframeService.isIframe
+          ? disabledFromBlockchains.includes(blockchain.name)
+          : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
+              blockchain.name
+            );
+        const disabledLimitOrder = selectedBlockchain && blockchain.name !== selectedBlockchain;
 
-      return {
-        name: blockchain.name,
-        rank: blockchain.rank,
-        icon: blockchainIcon[blockchain.name],
-        label: blockchainLabel[blockchain.name],
-        disabledConfiguration,
-        disabledFrom,
-        disabledLimitOrder
-      };
-    });
+        return {
+          name: blockchain.name,
+          rank: blockchain.rank,
+          icon: blockchainIcon[blockchain.name],
+          label: blockchainLabel[blockchain.name],
+          disabledConfiguration,
+          disabledFrom,
+          disabledLimitOrder
+        };
+      })
+      .sort((a, b) => b.rank - a.rank);
   }
 
   private subscribeOnSearchQuery(): void {
