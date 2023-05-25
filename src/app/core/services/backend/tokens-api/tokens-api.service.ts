@@ -32,6 +32,8 @@ import {
   blockchainsWithOnePage,
   iframeBlockchainsToFetch
 } from './constants/fetch-blockchains';
+import { TestnetService } from '@core/services/testnet/testnet.service';
+import { testnetBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -47,7 +49,8 @@ export class TokensApiService {
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly testnetService: TestnetService
   ) {}
 
   /**
@@ -164,7 +167,9 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
+    const blockchains = [...blockchainsToFetch, ...testnetBlockchainsList].map(
+      bF => TO_BACKEND_BLOCKCHAINS[bF]
+    );
 
     const requests$ = blockchains.map((network: BackendBlockchain) =>
       this.httpService
@@ -192,6 +197,12 @@ export class TokensApiService {
 
     return forkJoin(requests$).pipe(
       map(results => {
+        // @TODO Tesntes
+        // const blockchain = blockchains[index];
+        // const patchedToken = results.map(blockchainTokens => {
+        //     return blockchainTokens.count === 0 ? defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]] : blockchainTokens.results;
+        // });
+
         if (results.every(el => el === null)) {
           this.needRefetchTokens = true;
           return List(

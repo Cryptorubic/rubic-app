@@ -935,5 +935,26 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ICP]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ICP], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.GOERLI]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.GOERLI],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.GOERLI],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token,
+    {
+      blockchain: BLOCKCHAIN_NAME.GOERLI,
+      address: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+      name: 'USDC',
+      symbol: 'USDC',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
+      ...defaultTokenParams
+    }
   ]
 };
