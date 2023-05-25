@@ -131,7 +131,7 @@ export class GasService {
       blockchain
     );
 
-    const gasDetails = Boolean(maxPriorityFeePerGas)
+    const gasPriceOptions = Boolean(maxPriorityFeePerGas)
       ? {
           maxPriorityFeePerGas: Web3Pure.toWei(maxPriorityFeePerGas, 9),
           maxFeePerGas: Web3Pure.toWei(maxFeePerGas, 9)
@@ -140,7 +140,7 @@ export class GasService {
           gasPrice: Web3Pure.toWei(gasPrice)
         };
 
-    return { shouldCalculateGasPrice, gasDetails };
+    return { shouldCalculateGasPrice, gasPriceOptions };
   }
 
   /**
@@ -169,19 +169,20 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchEthGas(): Observable<GasPrice | null> {
-    const requestTimeout = 2000;
-    return this.httpClient.get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1').pipe(
-      timeout(requestTimeout),
-      map(response => ({
-        baseFee: response.baseFee,
-        maxFeePerGas: response.high.maxFeePerGas,
-        maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
-      })),
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       catchError(() => {
-        const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
-          BLOCKCHAIN_NAME.ETHEREUM
-        );
-        return from(blockchainAdapter.getPriorityFeeGas());
+        const requestTimeout = 2000;
+        return this.httpClient
+          .get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1')
+          .pipe(
+            timeout(requestTimeout),
+            map(response => ({
+              baseFee: response.baseFee,
+              maxFeePerGas: response.high.maxFeePerGas,
+              maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
+            }))
+          );
       }),
       map(formatEIP1559Gas),
       catchError(() => of(null))

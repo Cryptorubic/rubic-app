@@ -256,14 +256,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const blockchain = wrappedTrade.trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     let approveInProgressSubscription$: Subscription;
     const swapOptions: BasicTransactionOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
       },
-      ...(shouldCalculateGasPrice && { ...gasDetails })
+      ...(shouldCalculateGasPrice && { gasPriceOptions })
     };
 
     try {
@@ -335,13 +337,15 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     const blockchain = calculatedTrade.trade.from.blockchain;
 
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
-      ...(shouldCalculateGasPrice && { ...gasDetails }),
+      ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(this.platformConfigurationService.useCrossChainChainProxy && {
         useProxy:

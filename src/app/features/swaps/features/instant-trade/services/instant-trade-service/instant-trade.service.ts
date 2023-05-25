@@ -118,15 +118,15 @@ export class InstantTradeService extends TradeCalculationService {
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const transactionOptions = {
       onTransactionHash: () => {
         subscription$ = this.notificationsService.showApproveInProgress();
       },
-      ...(shouldCalculateGasPrice && {
-        ...gasDetails
-      })
+      ...(shouldCalculateGasPrice && { gasPriceOptions })
     };
 
     try {
@@ -259,7 +259,9 @@ export class InstantTradeService extends TradeCalculationService {
     const isSwapAndEarnSwap =
       trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
 
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
@@ -284,7 +286,7 @@ export class InstantTradeService extends TradeCalculationService {
         this.postTrade(hash, providerName, trade, isSwapAndEarnSwap);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(shouldCalculateGasPrice && { ...gasDetails }),
+      ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress })
     };
 

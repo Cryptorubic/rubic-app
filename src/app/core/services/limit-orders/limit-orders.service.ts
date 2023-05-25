@@ -123,11 +123,13 @@ export class LimitOrdersService {
     };
 
     try {
-      const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
 
       await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
         onConfirm,
-        ...(shouldCalculateGasPrice && { ...gasDetails })
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
       });
 
       subscription$.unsubscribe();

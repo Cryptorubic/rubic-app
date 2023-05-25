@@ -84,7 +84,9 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -96,7 +98,7 @@ export class EthWethSwapProviderService {
         {
           value: fromAmountAbsolute,
           onTransactionHash: options.onConfirm,
-          ...(shouldCalculateGasPrice && { ...gasDetails })
+          ...(shouldCalculateGasPrice && { gasPriceOptions })
         }
       );
   }
@@ -106,7 +108,9 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const { shouldCalculateGasPrice, gasDetails } = await this.gasService.getGasInfo(blockchain);
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -117,7 +121,7 @@ export class EthWethSwapProviderService {
         [fromAmountAbsolute],
         {
           onTransactionHash: options.onConfirm,
-          ...(shouldCalculateGasPrice && { ...gasDetails })
+          ...(shouldCalculateGasPrice && { gasPriceOptions })
         }
       );
   }
