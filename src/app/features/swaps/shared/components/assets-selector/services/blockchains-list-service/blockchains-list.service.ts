@@ -66,7 +66,8 @@ export class BlockchainsListService {
     const formattedLimitOrderSupportedBlockchains: RankedBlockchain[] =
       limitOrderSupportedBlockchains.map(blockchain => ({
         name: blockchain,
-        rank: topRankedBlockchains.includes(blockchain) ? 1 : 0
+        rank: topRankedBlockchains.includes(blockchain) ? 1 : 0,
+        tags: []
       }));
 
     let blockchains: readonly RankedBlockchain[] = isLimitOrder
@@ -100,6 +101,7 @@ export class BlockchainsListService {
           rank: blockchain.rank,
           icon: blockchainIcon[blockchain.name],
           label: blockchainLabel[blockchain.name],
+          tags: blockchain.tags,
           disabledConfiguration,
           disabledFrom,
           disabledLimitOrder
@@ -116,9 +118,13 @@ export class BlockchainsListService {
         takeUntil(this.destroy$)
       )
       .subscribe(query => {
-        this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>
-          blockchain.name.toLowerCase().includes(query.toLowerCase())
-        );
+        this.blockchainsToShow = this.availableBlockchains.filter(blockchain => {
+          return (
+            blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
+            (blockchain.tags.length &&
+              blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
+          );
+        });
       });
   }
 

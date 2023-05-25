@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 export interface RankedBlockchain {
   name: BlockchainName;
   rank: number;
+  tags: string[];
 }
 
 export const notEvmChangeNowBlockchainsList = {
@@ -89,39 +90,40 @@ export const notEvmChangeNowBlockchainsList = {
 const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlockchainsList).map(
   blockchain => ({
     name: blockchain,
-    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN ? 0.5 : 0
+    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN ? 0.5 : 0,
+    tags: blockchain === BLOCKCHAIN_NAME.LITECOIN ? ['LTC'] : []
   })
 );
 
 export const blockchainsList: RankedBlockchain[] = [
-  { name: BLOCKCHAIN_NAME.ETHEREUM, rank: 1 },
-  { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 1 },
-  { name: BLOCKCHAIN_NAME.POLYGON, rank: 1 },
-  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1 },
-  { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1 },
-  { name: BLOCKCHAIN_NAME.FANTOM, rank: 1 },
-  { name: BLOCKCHAIN_NAME.BOBA, rank: 0 },
-  { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1 },
-  { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0 },
-  { name: BLOCKCHAIN_NAME.BOBA_AVALANCHE, rank: 0 },
-  { name: BLOCKCHAIN_NAME.TELOS, rank: 0 },
-  { name: BLOCKCHAIN_NAME.KAVA, rank: 0 },
-  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0 },
-  { name: BLOCKCHAIN_NAME.AURORA, rank: 0 },
-  { name: BLOCKCHAIN_NAME.OASIS, rank: 0 },
-  { name: BLOCKCHAIN_NAME.METIS, rank: 0 },
-  { name: BLOCKCHAIN_NAME.KLAYTN, rank: 0 },
-  { name: BLOCKCHAIN_NAME.VELAS, rank: 0 },
-  { name: BLOCKCHAIN_NAME.SYSCOIN, rank: 0 },
-  { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0 },
-  { name: BLOCKCHAIN_NAME.TRON, rank: 0 },
-  { name: BLOCKCHAIN_NAME.ASTAR_EVM, rank: 0 },
-  { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0 },
-  { name: BLOCKCHAIN_NAME.FUSE, rank: 0 },
-  { name: BLOCKCHAIN_NAME.CELO, rank: 0 },
-  { name: BLOCKCHAIN_NAME.OKE_X_CHAIN, rank: 0 },
-  { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0 },
-  { name: BLOCKCHAIN_NAME.CRONOS, rank: 0 },
+  { name: BLOCKCHAIN_NAME.ETHEREUM, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.POLYGON, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.FANTOM, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.BOBA, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.BOBA_AVALANCHE, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.TELOS, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.KAVA, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.AURORA, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.OASIS, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.METIS, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.KLAYTN, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.VELAS, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.SYSCOIN, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.TRON, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.ASTAR_EVM, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.FUSE, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.CELO, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.OKE_X_CHAIN, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: [] },
+  { name: BLOCKCHAIN_NAME.CRONOS, rank: 0, tags: [] },
   // BLOCKCHAIN_NAME.BITGERT,
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,

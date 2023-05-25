@@ -6,6 +6,7 @@ export interface AvailableBlockchain {
   name: BlockchainName;
   icon: string;
   label: string;
+  tags: string[];
 
   disabledConfiguration: boolean;
   disabledFrom: boolean;
