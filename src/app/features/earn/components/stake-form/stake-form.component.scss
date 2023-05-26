@@ -197,27 +197,20 @@
   }
 
   &__common {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
     width: 100%;
     margin: 20px 0;
 
-    @include b($tablet) {
-      gap: 10px;
-    }
-
-    @include b(450) {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-
     &-chip {
       @include clearbtn();
-      @include font(16px, 19px, 500, var(--primary-text));
+      @include font(16px, 19px, 500, var(--secondary-text));
+      width: 100%;
       padding: 8px 12px;
+
+      background-color: var(--staking-form-duration-background);
 
       border: 1px solid var(--transparent-line);
       border-radius: 10px;
@@ -233,14 +226,10 @@
         line-height: 14px;
       }
 
-      @include b(450) {
-        width: 100%;
-
-        &:last-child {
-          display: grid;
-          grid-column-start: 1;
-          grid-column-end: 4;
-        }
+      &:last-child {
+        display: grid;
+        grid-column-start: 1;
+        grid-column-end: 4;
       }
 
       &:hover {
@@ -268,14 +257,37 @@
         white-space: nowrap;
       }
 
+      &-earn {
+        &-end {
+          @include font(16px, 20px, 500, var(--primary-color));
+
+          &-hint {
+            @include font(16px, 20px, 400, var(--secondary-text));
+            letter-spacing: 0.03em;
+            text-align: center;
+          }
+        }
+      }
+
       &-label {
         margin-bottom: 5px;
       }
 
       &_selected {
-        color: var(--primary-color);
+        @include font(16px, 19px, 500, var(--staking-form-selected-duration));
+        background-color: var(--primary-color);
 
-        border: 1px solid var(--primary-color);
+        border: 1px solid var(--primary-text);
+
+        .duration__common-chip-earn-end {
+          color: var(--staking-form-selected-duration);
+        }
+
+        .duration__common-chip-earn-end-hint {
+          color: var(--staking-form-selected-duration);
+
+          opacity: 0.6;
+        }
 
         &:hover,
         &:active {
@@ -284,12 +296,29 @@
 
           transition: none;
         }
+
+        &:hover {
+          color: var(--staking-form-selected-duration);
+
+          border: 1px solid var(--primary-text);
+        }
       }
 
       &[disabled] {
         color: rgba(144, 144, 144, 0.7);
 
-        border: 1px solid transparent;
+        background-color: transparent;
+
+        .duration__common-chip-earn-end {
+          color: rgba(144, 144, 144, 0.7);
+        }
+
+        &:hover {
+          border: 1px solid var(--transparent-line);
+          box-shadow: none;
+          transform: translateY(0) scale(1);
+          cursor: default;
+        }
       }
     }
   }
