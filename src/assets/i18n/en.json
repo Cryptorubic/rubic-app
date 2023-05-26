@@ -125,11 +125,23 @@
     "questions": [
       {
         "title": "What is Rubic?",
-        "answer": "Rubic is a multichain DeFi ecosystem, which features multi-chain swaps, on-chain swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete multi-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as our unique multi-chain feature which gives the opportunity to swap all supported tokens on 1 click!"
+        "answer": "Rubic is a Cross-Chain Tech Aggregator for users & dApps. Rubic aggregates 60+ chains, 90+ DEXs & bridges, and enables swapping of 15,500+ assets in 1 click."
+      },
+      {
+        "title": "What is the Rubic Cross-Chain Tools?",
+        "answer": "Rubic’s Cross-Chain Tools enable your platform to act as a gateway to buy your project’s token. An easy-to-install Widget and a battle-tested SDK let your users swap from any of 15,500+ tokens across 60+ blockchains to your custom token!<br/><br/>Explore more: <a href='https://tools.rubic.exchange/' target='_blank' rel='noopener noreferrer'>https://tools.rubic.exchange/</a>"
+      },
+      {
+        "title": "What is BTCB?",
+        "answer": "BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC) that represents Bitcoin (BTC) in a 1:1 ratio. It is a wrapped version of BTC that allows users to access BTC's value and features on the Binance Smart Chain network. BTCB provides liquidity and interoperability between the BSC and BTC, enabling users to trade or use BTC in decentralized applications on BSC."
+      },
+      {
+        "title": "Can I send BTCB to a BTC wallet address?",
+        "answer": "No, BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC), and it cannot be sent directly to a BTC (Bitcoin) wallet address. BTCB operates on a different blockchain and requires a compatible BSC wallet for sending and receiving transactions."
       },
       {
         "title": "Who can use our service?",
-        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete multi-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at app.rubic.exchange"
+        "answer": "Rubic is a cross-chain solution aggregator for users and dApps.<br/><br/><strong>Rubic’s B2B Features</strong>: Rubic’s Cross-Chain tools will help developers easily make their Web3 dApps cross-chain, aggregating the best cross-chain tech.<br/><br/><strong>Rubic’s B2C Features</strong>: Exchange 15,500+tokens across 60+ blockchains (both EVM and non-EVM, targeting 100+ chains by the end of 2023) with the best transaction speeds - in one click, with fiat on-ramps and limit orders for advanced trading."
       },
       {
         "title": "How does Rubic unite different DEX platforms? ",

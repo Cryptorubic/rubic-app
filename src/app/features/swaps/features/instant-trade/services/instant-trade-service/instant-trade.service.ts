@@ -257,7 +257,9 @@ export class InstantTradeService extends TradeCalculationService {
     const receiverAddress = this.receiverAddress;
 
     const isSwapAndEarnSwap =
-      trade instanceof EvmOnChainTrade ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0) : false;
+      trade instanceof EvmOnChainTrade && trade.from.blockchain !== BLOCKCHAIN_NAME.ZK_SYNC
+        ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0)
+        : false;
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
