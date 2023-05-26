@@ -1,4 +1,5 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
+import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
@@ -17,7 +18,8 @@ import {
   ChangenowPaymentInfo,
   Token,
   PriceToken,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  BlockchainsInfo
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -25,7 +27,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { firstValueFrom, forkJoin, from, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
@@ -53,7 +55,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -82,7 +83,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly httpService: HttpService
   ) {
     super('cross-chain-routing');
   }
@@ -96,6 +97,35 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
 
     return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
+  }
+
+  private async getTonPromoInfo(): Promise<{ status: string; balance: BigNumber }> {
+    return firstValueFrom(this.httpService.get<{ status: string; balance: BigNumber }>('SOME_URL'));
+  }
+
+  private async isTonPromoSwap(calculatedTrade: CrossChainCalculatedTrade): Promise<boolean> {
+    const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
+      calculatedTrade.trade.from.tokenAmount
+    );
+
+    if (
+      !BlockchainsInfo.isEvmBlockchainName(calculatedTrade.trade.from.blockchain) ||
+      totalInputAmountInUSD.lt(20)
+    ) {
+      return false;
+    }
+
+    try {
+      const { status, balance } = await this.getTonPromoInfo();
+
+      if (!status || !balance) {
+        return false;
+      }
+
+      return balance.lt(10_000) && status === 'open';
+    } catch (error) {
+      return false;
+    }
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
@@ -339,6 +369,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
+
+    const isTonPromoTrade = await this.isTonPromoSwap(calculatedTrade);
+    console.log(isTonPromoTrade);
 
     const blockchain = calculatedTrade.trade.from.blockchain;
     const gasPrice = shouldCalculateGas[blockchain]
