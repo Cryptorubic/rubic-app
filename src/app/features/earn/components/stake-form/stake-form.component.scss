@@ -31,6 +31,11 @@
 
   margin-bottom: 36px;
 
+
+  @include b($tablet) {
+    margin-bottom: 25px;
+  }
+
   &__back {
     @include clearbtn();
     position: absolute;
@@ -39,6 +44,8 @@
     cursor: pointer;
 
     @include b($tablet) {
+      top: 3px;
+
       margin-bottom: 32px;
 
       ::ng-deep div svg {
@@ -59,11 +66,6 @@
   &__text {
     @include font(18px, 22px, 500, var(--primary-text));
     text-align: center;
-
-    @include b($tablet) {
-      font-size: 16px;
-      line-height: 19px;
-    }
   }
 }
 
@@ -83,17 +85,12 @@
     
   &__data-and-amount {
     margin-bottom: 12px;
-
-    @include b($tablet) {
-      margin-bottom: 14px;
-    }
   }
 
   &__balance-and-price {
     @include font(15px, 18px, 500, var(--secondary-text));
 
     @include b($tablet) {
-      font-size: 12px;
       line-height: 14px;
     }
   }
@@ -120,7 +117,7 @@
     @include b($tablet) {
       padding: 7px 12px 7px 0;
 
-      font-size: 14px;
+      font-size: 16px;
       line-height: 16px;
     }
     
@@ -187,13 +184,6 @@
   &__title {
     @include font(18px, 22px, 500, var(--primary-text));
     white-space: nowrap;
-
-    @include b($tablet) {
-      margin-right: 8px;
-
-      font-size: 13px;
-      line-height: 16px;
-    }
   }
 
   &__common {
@@ -259,12 +249,20 @@
 
       &-earn {
         &-end {
-          @include font(16px, 20px, 500, var(--primary-color));
+          @include font(16px, 19px, 500, var(--primary-color));
+
+          @include b($tablet) {
+            @include font(14px, 14px, 500, var(--primary-color));
+          }
 
           &-hint {
-            @include font(16px, 20px, 400, var(--secondary-text));
+            @include font(16px, 19px, 400, var(--secondary-text));
             letter-spacing: 0.03em;
             text-align: center;
+
+            @include b($tablet) {
+              @include font(14px, 14px, 400, var(--secondary-text));
+            }
           }
         }
       }
@@ -275,9 +273,17 @@
 
       &_selected {
         @include font(16px, 19px, 500, var(--staking-form-selected-duration));
+
         background-color: var(--primary-color);
 
         border: 1px solid var(--primary-text);
+
+        @include b($tablet) {
+
+          @include font(14px, 14px, 500, var(--staking-form-selected-duration));
+          width: 100%;
+          padding: 8px;
+        }
 
         .duration__common-chip-earn-end {
           color: var(--staking-form-selected-duration);
@@ -338,7 +344,6 @@
   @include b($tablet) {
     margin-bottom: 16px;
 
-    font-size: 12px;
     line-height: 14px;
 
     border-radius: 14px;
