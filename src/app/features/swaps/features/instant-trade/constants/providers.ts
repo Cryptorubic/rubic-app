@@ -166,7 +166,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.SYSCOIN]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.PEGASYS]),
     [BLOCKCHAIN_NAME.ASTAR_EVM]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ARTH_SWAP]),
     [BLOCKCHAIN_NAME.ZK_SYNC]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.MUTE_SWAP,
+      // @TODO Remove comments after syncSwap promo ending
+      // ON_CHAIN_TRADE_TYPE.MUTE_SWAP,
       ON_CHAIN_TRADE_TYPE.SYNC_SWAP
       // ON_CHAIN_TRADE_TYPE.ONE_INCH
     ])

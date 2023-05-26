@@ -128,6 +128,18 @@
         "answer": "Rubic es un ecosistema descentralizado multicadena, que cuenta con intercambios de múltiples cadenas, intercambios de una sola cadena y mucho más. Nuestro objetivo es ofrecer una plataforma de comercio descentralizada integral completa. La plataforma Rubic es un lugar donde los usuarios pueden completar intercambios de múltiples cadenas utilizando diferentes soluciones, donde los usuarios obtendrán las mejores tarifas de todos los protocolos de intercambio líderes (gracias a una implementación de agregador DEX), así como nuestra característica única de múltiples cadenas que brinda la oportunidad de intercambiar todos los tokens compatibles en 1 clic."
       },
       {
+        "title": "What is the Rubic Cross-Chain Tools?",
+        "answer": "Rubic’s Cross-Chain Tools enable your platform to act as a gateway to buy your project’s token. An easy-to-install Widget and a battle-tested SDK let your users swap from any of 15,500+ tokens across 60+ blockchains to your custom token!<br/><br/>Explore more: <a href='https://tools.rubic.exchange/' target='_blank' rel='noopener noreferrer'>https://tools.rubic.exchange/</a>"
+      },
+      {
+        "title": "What is BTCB?",
+        "answer": "BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC) that represents Bitcoin (BTC) in a 1:1 ratio. It is a wrapped version of BTC that allows users to access BTC's value and features on the Binance Smart Chain network. BTCB provides liquidity and interoperability between the BSC and BTC, enabling users to trade or use BTC in decentralized applications on BSC."
+      },
+      {
+        "title": "Can I send BTCB to a BTC wallet address?",
+        "answer": "No, BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC), and it cannot be sent directly to a BTC (Bitcoin) wallet address. BTCB operates on a different blockchain and requires a compatible BSC wallet for sending and receiving transactions."
+      },
+      {
         "title": "¿Quién puede utilizar nuestro servicio?",
         "answer": "Nuestro servicio puede ser utilizado en cualquier parte del mundo por usuarios de las criptomonedas que deseen completar operaciones en diferentes redes y completar intercambios de múltiples cadenas entre ellos. Nuestras funciones también incluyen servicios para otros proyectos: creación de puentes personalizados e integración del widget de Rubic, que permite a los usuarios completar operaciones directamente en el sitio web del servicio utilizando Rubic. \tKYC no es necesario para ninguna operación en la app.rubic.exchange"
       },

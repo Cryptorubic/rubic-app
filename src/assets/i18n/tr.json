@@ -301,6 +301,18 @@
         "answer": "Rubic, çok zincirli takaslar, zincir üstü takaslar ve çok daha fazlasını içeren çok zincirli bir DeFi ekosistemidir. Amacımız, eksiksiz bir ONE-STOP merkezi olmayan ticaret platformu sunmaktır. Rubic platformu, kullanıcıların farklı çözümler kullanarak çok zincirli takasları tamamlayabilecekleri, kullanıcıların önde gelen tüm takas protokollerinden (DEX toplayıcı uygulaması sayesinde) en iyi oranları alacağı ve aynı zamanda benzersiz çoklu zincir özelliğimizden yararlanabilecekleri bir yerdir. Desteklenen tüm jetonları 1 tıklamayla değiştirme fırsatı verir!!"
       },
       {
+        "title": "What is the Rubic Cross-Chain Tools?",
+        "answer": "Rubic’s Cross-Chain Tools enable your platform to act as a gateway to buy your project’s token. An easy-to-install Widget and a battle-tested SDK let your users swap from any of 15,500+ tokens across 60+ blockchains to your custom token!<br/><br/>Explore more: <a href='https://tools.rubic.exchange/' target='_blank' rel='noopener noreferrer'>https://tools.rubic.exchange/</a>"
+      },
+      {
+        "title": "What is BTCB?",
+        "answer": "BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC) that represents Bitcoin (BTC) in a 1:1 ratio. It is a wrapped version of BTC that allows users to access BTC's value and features on the Binance Smart Chain network. BTCB provides liquidity and interoperability between the BSC and BTC, enabling users to trade or use BTC in decentralized applications on BSC."
+      },
+      {
+        "title": "Can I send BTCB to a BTC wallet address?",
+        "answer": "No, BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC), and it cannot be sent directly to a BTC (Bitcoin) wallet address. BTCB operates on a different blockchain and requires a compatible BSC wallet for sending and receiving transactions."
+      },
+      {
         "title": "Hizmetimizi kimler kullanabilir?",
         "answer": "Hizmetimiz, dünyanın herhangi bir yerinde, farklı ağlarda alım satım yapmak ve aralarındaki çok zincirli takasları tamamlamak isteyen kripto kullanıcıları tarafından kullanılabilir. Özelliklerimiz ayrıca diğer projeler için hizmetleri de içerir: özel köprülerin oluşturulması ve kullanıcıların Rubic kullanarak doğrudan hizmet web sitesinde alım satımları tamamlamasına olanak tanıyan Rubic Relay widget'ının entegrasyonu. app.rubic.exchange'te herhangi bir işlem için \tKYC gerekli değildir"
       },
