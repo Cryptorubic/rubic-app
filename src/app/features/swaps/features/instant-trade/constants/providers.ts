@@ -109,7 +109,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.ZRX,
       ON_CHAIN_TRADE_TYPE.CURVE,
-      ON_CHAIN_TRADE_TYPE.ONE_INCH
+      ON_CHAIN_TRADE_TYPE.ONE_INCH,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.DODO
     ]),
     [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
