@@ -67,7 +67,7 @@ export class TonPromoService {
       const { is_active, confirmed_rewards_amount, confirmed_trades } =
         await this.fetchTonPromoInfo(userWalletAddress);
 
-      if (!is_active || confirmed_rewards_amount > 300 || confirmed_trades === 3) {
+      if (!is_active || confirmed_rewards_amount >= 5_000 || confirmed_trades === 3) {
         return emptyTonPromoInfo;
       }
 
