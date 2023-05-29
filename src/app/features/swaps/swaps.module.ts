@@ -49,6 +49,7 @@ import { ProviderFeeValueComponent } from '@features/swaps/features/swap-form/co
 import { PriceImpactValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/price-impact-value/price-impact-value.component';
 import { RateValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/rate-value/rate-value.component';
 import { ReceiverValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/receiver-value/receiver-value.component';
+import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,12 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     TuiAccordionModule,
     TuiManualHintModule
   ],
-  providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
+  providers: [
+    SettingsService,
+    RefreshService,
+    TradeService,
+    TargetNetworkAddressService,
+    TonPromoService
+  ]
 })
 export class SwapsModule {}

@@ -118,9 +118,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
-
-  public tonPoints: number = 0;
+  public points: number = 0;
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -155,6 +153,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy(): void {
     this.swapAndEarnStateService.updatePoints();
+    this.swapAndEarnStateService.setSwapAndEarnPointsAmount();
     SwapSchemeModalComponent.toggleConfettiBackground('remove');
   }
 
@@ -355,26 +354,10 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  private setGivenPoints(totalUserConfirmedTrades: number): void {
-    switch (totalUserConfirmedTrades) {
-      case 0:
-        this.tonPoints = 200;
-        break;
-      case 1:
-      case 2:
-        this.tonPoints = 100;
-        break;
-
-      default:
-        this.tonPoints = 0;
-        break;
-    }
-  }
-
   private setTradeData(data: SwapSchemeModalData): void {
     this.isSwapAndEarnSwap = data.isSwapAndEarnData;
     this.isTonPromoTrade = data.tonPromoTrade.isTonPromoTrade;
-    this.setGivenPoints(data.tonPromoTrade.totalUserConfirmedTrades);
+    this.points = data.points;
 
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;

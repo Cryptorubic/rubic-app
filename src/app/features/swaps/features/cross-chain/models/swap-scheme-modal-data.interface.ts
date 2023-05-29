@@ -1,6 +1,7 @@
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { CrossChainTradeType } from 'rubic-sdk';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
+import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
 
 export interface SwapSchemeModalData {
   srcProvider: ProviderInfo;
@@ -16,5 +17,6 @@ export interface SwapSchemeModalData {
   amountOutMin?: string;
   changenowId?: string;
   isSwapAndEarnData?: boolean;
-  tonPromoTrade?: { isTonPromoTrade: boolean; totalUserConfirmedTrades: number };
+  tonPromoTrade?: ShortTonPromoInfo;
+  points?: number;
 }
