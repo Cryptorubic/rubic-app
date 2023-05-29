@@ -46,13 +46,16 @@
       </div>
     </div>
 
-    <div class="point" *ngIf="isSwapAndEarnSwap">
+    <div class="point" *ngIf="isSwapAndEarnSwap || isTonPromoTrade">
       <ng-container *ngLet="points$ | async as points">
-        <span class="point__amount">{{ points.participant ? '50' : '100' }} RBC</span>
+        <span *ngIf="isSwapAndEarnSwap" class="point__amount"
+          >{{ points.participant ? '50' : '100' }} RBC</span
+        >
+        <span *ngIf="isTonPromoTrade" class="point__amount">{{ tonPoints }} RBC</span>
       </ng-container>
     </div>
 
-    <div class="description_swapAndEarn" *ngIf="isSwapAndEarnSwap">
+    <div class="description_swapAndEarn" *ngIf="isSwapAndEarnSwap || isTonPromoTrade">
       <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
       <a
         href="https://app.rubic.exchange/swap-and-earn"

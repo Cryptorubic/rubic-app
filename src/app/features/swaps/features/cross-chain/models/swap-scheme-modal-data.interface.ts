@@ -16,4 +16,5 @@ export interface SwapSchemeModalData {
   amountOutMin?: string;
   changenowId?: string;
   isSwapAndEarnData?: boolean;
+  tonPromoTrade?: { isTonPromoTrade: boolean; totalUserConfirmedTrades: number };
 }
