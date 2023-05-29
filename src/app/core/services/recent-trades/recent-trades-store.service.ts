@@ -85,8 +85,8 @@ export class RecentTradesStoreService {
       if (isCrossChainRecentTrade(localStorageTrade)) {
         return localStorageTrade;
       }
-      if ('rubicId' in trade) {
-        return trade;
+      if ('txId' in trade) {
+        return trade.rubicId === localStorageTrade.rubicId ? trade : localStorageTrade;
       }
       return localStorageTrade;
     });

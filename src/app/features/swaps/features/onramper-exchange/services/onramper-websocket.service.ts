@@ -154,10 +154,7 @@ export class OnramperWebsocketService {
     };
 
     if (!this.iframeService.isIframe) {
-      this.recentTradesStoreService.updateOnramperTargetTrade(
-        updatedRecentTrade.rubicId,
-        txInfo.tx_hash
-      );
+      this.recentTradesStoreService.updateTrade(updatedRecentTrade);
     }
 
     this.currentRecentTrade = updatedRecentTrade;
@@ -244,10 +241,7 @@ export class OnramperWebsocketService {
     const { id } = JSON.parse(txInfo.additional_info);
     const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(id);
     if (!this.iframeService.isIframe) {
-      this.recentTradesStoreService.updateTrade({
-        ...recentTrade,
-        calculatedStatusFrom: TxStatus.FAIL
-      });
+      this.recentTradesStoreService.updateTrade(recentTrade);
     }
 
     this.progressNotificationSubscription$?.unsubscribe();
