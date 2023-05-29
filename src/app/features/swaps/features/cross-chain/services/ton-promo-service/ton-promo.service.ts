@@ -13,11 +13,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TonPromoService {
-  private readonly emptyTonPromoInfo: ShortTonPromoInfo = {
-    isTonPromoTrade: false,
-    totalUserConfirmedTrades: 0
-  };
-
   constructor(private readonly httpService: HttpService) {}
 
   private async fetchTonPromoInfo(userWalletAddress: string): Promise<TonPromoInfo> {
@@ -42,6 +37,10 @@ export class TonPromoService {
     calculatedTrade: CrossChainCalculatedTrade,
     userWalletAddress: string
   ): Promise<ShortTonPromoInfo> {
+    const emptyTonPromoInfo: ShortTonPromoInfo = {
+      isTonPromoTrade: false,
+      totalUserConfirmedTrades: 0
+    };
     const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
       calculatedTrade.trade.from.tokenAmount
     );
@@ -51,16 +50,7 @@ export class TonPromoService {
       !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
       totalInputAmountInUSD.lt(20)
     ) {
-      console.log(
-        'Not evm network: ',
-        !BlockchainsInfo.isEvmBlockchainName(calculatedTrade.trade.from.blockchain)
-      );
-      console.log(
-        'Not ChangeNow provider: ',
-        !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW)
-      );
-      console.log('Amount less then 20$: ', totalInputAmountInUSD.lt(20));
-      return this.emptyTonPromoInfo;
+      return emptyTonPromoInfo;
     }
 
     try {
@@ -68,10 +58,7 @@ export class TonPromoService {
         await this.fetchTonPromoInfo(userWalletAddress);
 
       if (!is_active || !confirmed_rewards_amount || confirmed_trades === 3) {
-        console.log('Promo not active: ', is_active);
-        console.log('Confirmed amount great then 300: ', confirmed_rewards_amount > 300);
-        console.log('Confirmed user trades great then 3: ', confirmed_trades >= 3);
-        return this.emptyTonPromoInfo;
+        return emptyTonPromoInfo;
       }
 
       return {
@@ -79,8 +66,7 @@ export class TonPromoService {
         totalUserConfirmedTrades: confirmed_trades
       };
     } catch (error) {
-      console.log('Fetch error: ', error);
-      return this.emptyTonPromoInfo;
+      return emptyTonPromoInfo;
     }
   }
 
