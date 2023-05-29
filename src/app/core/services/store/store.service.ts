@@ -1,22 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { Store } from 'src/app/core/services/store/models/store';
+import { Store, storeRecord } from 'src/app/core/services/store/models/store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  private readonly storageSubject$: BehaviorSubject<Store>;
-
-  /**
-   * Key to store data.
-   */
-  private readonly storageKey = 'rubicData';
-
   /**
    * Is current app placed in iframe (In iframe localStorage using is not allow)
    */
@@ -29,9 +21,7 @@ export class StoreService {
     @Inject(DOCUMENT) private document: Document,
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private readonly iframeService: IframeService
-  ) {
-    this.storageSubject$ = new BehaviorSubject<Store>(this.fetchData());
-  }
+  ) {}
 
   /**
    * Set some store data by key.
@@ -39,22 +29,14 @@ export class StoreService {
    * @param value Value to store.
    */
   public setItem<T extends keyof Store>(key: T, value: Store[T]): void {
-    const newData = {
-      ...this.storageSubject$.value,
-      [key]: value
-    };
     try {
-      const jsonData = JSON.stringify(newData);
-
       if (!this.isIframe) {
-        this.localStorage?.setItem(this.storageKey, jsonData);
+        this.localStorage?.setItem(key, JSON.stringify(value));
       } else {
-        this.document.cookie = `${this.storageKey}=${jsonData}`;
+        this.document.cookie = `${key}=${JSON.stringify(value)}`;
       }
     } catch (err: unknown) {
       console.debug(err);
-    } finally {
-      this.storageSubject$.next(newData);
     }
   }
 
@@ -63,7 +45,13 @@ export class StoreService {
    * @param key Store key.
    */
   public getItem<T extends keyof Store>(key: T): Store[T] {
-    return this.storageSubject$.value?.[key];
+    try {
+      const data = this.fetchData();
+      return data?.[key];
+    } catch {
+      console.debug(`Can not get key: ${key}`);
+      return undefined;
+    }
   }
 
   /**
@@ -71,12 +59,19 @@ export class StoreService {
    */
   public fetchData(): Store {
     try {
-      const data = this.isIframe
-        ? this.cookieService.get(this.storageKey)
-        : this.localStorage?.getItem(this.storageKey);
-
-      const parsedData = JSON.parse(data);
-      return parsedData || {};
+      if (this.isIframe) {
+        Object.entries(this.cookieService.getAll()).map(([key, value]) => {
+          console.log(key, value);
+        });
+      } else {
+        const storage = { ...this.localStorage };
+        const storeObject = Object.entries(storeRecord);
+        const rubicStoreFields = storeObject
+          .map(([key]) => [key, storage?.[key] ? JSON.parse(storage[key]) : null])
+          .filter(([, value]) => Boolean(value));
+        const rubicStorage = Object.fromEntries(rubicStoreFields);
+        return rubicStorage as unknown as Store;
+      }
     } catch (err: unknown) {
       console.debug(err);
       return {} as Store;
@@ -88,21 +83,14 @@ export class StoreService {
    * @param key Store key.
    */
   public deleteItem(key: keyof Store): void {
-    const newData: Store = {
-      ...this.storageSubject$.value,
-      [key]: undefined
-    };
     try {
-      const jsonData = JSON.stringify(newData);
       if (!this.isIframe) {
-        this.localStorage?.setItem(this.storageKey, jsonData);
+        this.localStorage?.removeItem(key);
       } else {
-        this.cookieService.set(this.storageKey, jsonData);
+        this.cookieService.delete(key);
       }
     } catch (err: unknown) {
       console.debug(err);
-    } finally {
-      this.storageSubject$.next(newData);
     }
   }
 }

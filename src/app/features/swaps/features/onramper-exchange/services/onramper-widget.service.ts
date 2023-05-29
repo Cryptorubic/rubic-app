@@ -8,6 +8,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { defaultOnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/constants/default-onramper-widget-config';
 import { OnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/models/onramper-widget-config';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
+import { EvmWeb3Pure } from 'rubic-sdk';
 
 @Injectable()
 export class OnramperWidgetService {
@@ -35,6 +36,8 @@ export class OnramperWidgetService {
         const walletAddress = this.authService.userAddress;
         const wallets = `${defaultCrypto}:${walletAddress}`;
 
+        const isDirect = this.onramperFormCalculationService.isDirectSwap;
+
         return this.parseToWidgetUrl({
           ...defaultOnramperWidgetConfig,
           themeName: darkMode ? 'dark' : 'light',
@@ -42,7 +45,11 @@ export class OnramperWidgetService {
           defaultCrypto,
           onlyCryptos,
           defaultAmount,
-          wallets
+          wallets,
+          partnerContext: {
+            isDirect,
+            id: EvmWeb3Pure.randomHex(16)
+          }
         });
       })
     );

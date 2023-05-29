@@ -13,7 +13,7 @@ import { Token } from '@app/shared/models/tokens/token';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
 import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { ChangenowResentTradesStoreService } from '@core/services/recent-trades/changenow-resent-trades-store.service';
+import { ChangenowRecentTradesStoreService } from '@core/services/recent-trades/changenow-recent-trades-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class ChangenowPostTradeService {
 
   constructor(
     private readonly storeService: StoreService,
-    private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService,
+    private readonly changenowResentTradesStoreService: ChangenowRecentTradesStoreService,
     private readonly swapFormService: SwapFormService,
     private readonly httpClient: HttpClient
   ) {}

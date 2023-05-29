@@ -39,6 +39,10 @@ export class OnramperFormCalculationService {
 
   public readonly isDirectSwap$ = this._isDirectSwap$.asObservable();
 
+  public get isDirectSwap(): boolean {
+    return this._isDirectSwap$.getValue();
+  }
+
   public get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus$.getValue();
   }

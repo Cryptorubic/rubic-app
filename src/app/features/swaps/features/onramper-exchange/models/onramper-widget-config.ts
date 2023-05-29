@@ -13,7 +13,9 @@ export interface OnramperWidgetConfig {
   onlyCryptos?: string;
   isAddressEditable?: boolean;
 
-  // partnerContext: {
-  //   walletAddress: string;
-  // };
+  partnerContext: {
+    walletAddress?: string;
+    id: string;
+    isDirect: boolean;
+  };
 }

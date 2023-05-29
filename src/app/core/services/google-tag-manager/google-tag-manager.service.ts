@@ -231,8 +231,14 @@ export class GoogleTagManagerService {
     if (!this._localStorageDataFetched$.value && this.isGtmSessionActive) {
       const data = this.storeService.fetchData();
       Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
-        if (data[key]) {
-          this.forms[key].next(data[key]);
+        if (key === SWAP_PROVIDER_TYPE.INSTANT_TRADE && data?.['RUBIC_TRADES_INSTANT_TRADE']) {
+          this.forms[key].next(data?.['RUBIC_TRADES_INSTANT_TRADE']);
+        }
+        if (
+          key === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
+          data?.['RUBIC_TRADES_CROSS_CHAIN_ROUTING']
+        ) {
+          this.forms[key].next(data?.['RUBIC_TRADES_CROSS_CHAIN_ROUTING']);
         }
       });
       this._localStorageDataFetched$.next(true);
@@ -245,7 +251,12 @@ export class GoogleTagManagerService {
   public savePassedFormSteps(): void {
     Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
       const formSteps = this.forms[key].getValue();
-      this.storeService.setItem(key, formSteps);
+      if (key === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.storeService.setItem('RUBIC_TRADES_INSTANT_TRADE', formSteps);
+      }
+      if (key === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+        this.storeService.setItem('RUBIC_TRADES_CROSS_CHAIN_ROUTING', formSteps);
+      }
     });
   }
 
@@ -255,7 +266,13 @@ export class GoogleTagManagerService {
   public clearPassedFormSteps(): void {
     Object.keys(this.forms).forEach((key: SupportedSwapProviderType) => {
       this.forms[key].next(formStepsInitial);
-      this.storeService.deleteItem(key);
+
+      if (key === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.storeService.deleteItem('RUBIC_TRADES_INSTANT_TRADE');
+      }
+      if (key === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+        this.storeService.deleteItem('RUBIC_TRADES_CROSS_CHAIN_ROUTING');
+      }
     });
   }
 

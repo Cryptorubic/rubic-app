@@ -5,6 +5,7 @@ export interface OnramperRecentTrade extends CommonRecentTrade {
   fromFiat: FiatAsset;
   nativeAmount?: string;
 
-  txId: string;
   amountOutMin?: string;
+  isDirect: boolean;
+  txId: string;
 }

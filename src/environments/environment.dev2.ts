@@ -11,5 +11,5 @@ export const ENVIRONMENT = {
   staking: STAKING_CONFIG_DEVELOP,
 
   zrxAffiliateAddress: undefined as string,
-  onramperApiKey: 'pk_prod_01GYYB6KDFQCKYG23MHZ8QK5GC'
+  onramperApiKey: 'pk_prod_01H03RG3KT4TEKY80D82R1N4ZS'
 };
