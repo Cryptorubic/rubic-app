@@ -142,7 +142,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit(): void {
-    if (this.points !== 0) {
+    if (this.points && this.points > 0) {
       SwapSchemeModalComponent.toggleConfettiBackground('show');
     }
   }
@@ -350,7 +350,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    console.log('SwapSchemeModalData points: ', data.points);
     this.points = data.points;
 
     this.srcProvider = data.srcProvider;

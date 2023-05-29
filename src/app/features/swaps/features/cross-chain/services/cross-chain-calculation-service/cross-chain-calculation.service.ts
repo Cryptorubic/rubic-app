@@ -502,12 +502,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       })
     };
 
-    console.log(
-      tonPromoTrade.isTonPromoTrade && {
-        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
-      }
-    );
-
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',

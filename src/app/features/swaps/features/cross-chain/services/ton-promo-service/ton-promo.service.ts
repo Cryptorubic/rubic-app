@@ -15,10 +15,14 @@ import {
 import { HttpService } from '@core/services/http/http.service';
 import { getSignature } from '@shared/utils/get-signature';
 import { Injectable } from '@angular/core';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class TonPromoService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
+  ) {}
 
   private async fetchTonPromoInfo(userWalletAddress: string): Promise<TonPromoInfo> {
     const [fetchedTonPromoInfo, fetchedTonPromoUserInfo] = await Promise.all([
@@ -81,7 +85,6 @@ export class TonPromoService {
     fromAddress: string,
     transactionHash: string
   ): Promise<void> {
-    console.log('Signature: ', getSignature(fromAddress, transactionHash));
     try {
       await firstValueFrom(
         this.httpService.post(
@@ -99,6 +102,8 @@ export class TonPromoService {
           }
         )
       );
+
+      await this.swapAndEarnStateService.updatePoints();
     } catch (error) {
       console.log(error);
     }
