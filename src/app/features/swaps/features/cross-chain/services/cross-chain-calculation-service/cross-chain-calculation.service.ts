@@ -480,47 +480,31 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
-    const getData = async (): Promise<SwapSchemeModalData> => {
-      const defaultData = {
-        fromToken,
-        toToken,
-        srcProvider: fromTradeProvider,
-        dstProvider: toTradeProvider,
-        crossChainProvider: calculatedTrade.tradeType,
-        srcTxHash: txHash,
-        bridgeType: bridgeProvider,
-        viaUuid,
-        rangoRequestId,
-        timestamp,
-        amountOutMin,
-        changenowId
-      };
-
-      if (tonPromoTrade.isTonPromoTrade) {
-        return {
-          ...defaultData,
-          isTonPromoTrade: tonPromoTrade.isTonPromoTrade,
-          points: this.tonPromoService.getTonPromoPointsAmount(
-            tonPromoTrade.totalUserConfirmedTrades
-          )
-        };
-      }
-
-      if (this.isSwapAndEarnSwap(calculatedTrade)) {
-        return {
-          ...defaultData,
-          isSwapAndEarnData: true,
-          points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
-        };
-      }
-
-      return defaultData;
+    const defaultData: SwapSchemeModalData = {
+      fromToken,
+      toToken,
+      srcProvider: fromTradeProvider,
+      dstProvider: toTradeProvider,
+      crossChainProvider: calculatedTrade.tradeType,
+      srcTxHash: txHash,
+      bridgeType: bridgeProvider,
+      viaUuid,
+      rangoRequestId,
+      timestamp,
+      amountOutMin,
+      changenowId,
+      ...(tonPromoTrade.isTonPromoTrade && {
+        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
+      }),
+      ...(this.isSwapAndEarnSwap(calculatedTrade) && {
+        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+      })
     };
 
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: await getData(),
+        data: defaultData,
         fitContent: true
       })
       .subscribe();

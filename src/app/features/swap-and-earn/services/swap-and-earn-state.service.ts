@@ -50,9 +50,9 @@ export class SwapAndEarnStateService {
       map(points => {
         if (points.participant) {
           return 50;
-        } else {
-          return 100;
         }
+
+        return 100;
       })
     );
   }

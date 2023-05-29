@@ -13,23 +13,28 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TonPromoService {
+  private readonly emptyTonPromoInfo: ShortTonPromoInfo = {
+    isTonPromoTrade: false,
+    totalUserConfirmedTrades: 0
+  };
+
   constructor(private readonly httpService: HttpService) {}
 
   private async fetchTonPromoInfo(userWalletAddress: string): Promise<TonPromoInfo> {
-    const { is_active, confirmed_rewards_amount } = await firstValueFrom(
-      this.httpService.get<FetchedTonPromoInfo>('promo_campaigns/ton_crosschain_promo')
-    );
-
-    const { confirmed_trades } = await firstValueFrom(
+    const [fetchedTonPromoInfo, fetchedTonPromoUserInfo] = await Promise.all([
+      this.httpService.get<FetchedTonPromoInfo>('promo_campaigns/ton_crosschain_promo'),
       this.httpService.get<TonPromoUserInfo>(
         `promo_validations/user_validations?address=${userWalletAddress}`
       )
-    );
+    ]);
+
+    const tonPromoInfo = await firstValueFrom(fetchedTonPromoInfo);
+    const tonPromoUserInfo = await firstValueFrom(fetchedTonPromoUserInfo);
 
     return {
-      is_active,
-      confirmed_rewards_amount,
-      confirmed_trades
+      is_active: tonPromoInfo.is_active,
+      confirmed_rewards_amount: tonPromoInfo.confirmed_rewards_amount,
+      confirmed_trades: tonPromoUserInfo.confirmed_trades
     };
   }
 
@@ -46,7 +51,7 @@ export class TonPromoService {
       !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
       totalInputAmountInUSD.lt(20)
     ) {
-      return { isTonPromoTrade: false, totalUserConfirmedTrades: 0 };
+      return this.emptyTonPromoInfo;
     }
 
     try {
@@ -54,15 +59,15 @@ export class TonPromoService {
         await this.fetchTonPromoInfo(userWalletAddress);
 
       if (!is_active || !confirmed_rewards_amount || confirmed_trades === 3) {
-        return { isTonPromoTrade: false, totalUserConfirmedTrades: 0 };
+        return this.emptyTonPromoInfo;
       }
 
       return {
-        isTonPromoTrade: confirmed_rewards_amount < 10_000 && is_active,
+        isTonPromoTrade: confirmed_rewards_amount < 300 && is_active,
         totalUserConfirmedTrades: confirmed_trades
       };
     } catch (error) {
-      return { isTonPromoTrade: false, totalUserConfirmedTrades: 0 };
+      return this.emptyTonPromoInfo;
     }
   }
 
@@ -92,10 +97,12 @@ export class TonPromoService {
   public getTonPromoPointsAmount(totalUserConfirmedTrades: number): number {
     if (totalUserConfirmedTrades === 0) {
       return 200;
-    } else if (totalUserConfirmedTrades === 1 || totalUserConfirmedTrades === 2) {
-      return 100;
-    } else {
-      return 0;
     }
+
+    if (totalUserConfirmedTrades === 1 || totalUserConfirmedTrades === 2) {
+      return 100;
+    }
+
+    return 0;
   }
 }

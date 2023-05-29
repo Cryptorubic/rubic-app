@@ -112,10 +112,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   private changenowId: string;
 
-  public isSwapAndEarnSwap: boolean;
-
-  public isTonPromoTrade: boolean;
-
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
   public points: number = 0;
@@ -146,7 +142,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit(): void {
-    if (this.isSwapAndEarnSwap || this.isTonPromoTrade) {
+    if (this.points !== 0) {
       SwapSchemeModalComponent.toggleConfettiBackground('show');
     }
   }
@@ -354,8 +350,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.isSwapAndEarnSwap = data.isSwapAndEarnData;
-    this.isTonPromoTrade = data.isTonPromoTrade;
     this.points = data.points;
 
     this.srcProvider = data.srcProvider;
