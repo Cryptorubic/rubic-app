@@ -117,15 +117,16 @@ export class InstantTradeService extends TradeCalculationService {
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
-    const useRubicGasPrice = shouldCalculateGas[blockchain];
+
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const transactionOptions = {
       onTransactionHash: () => {
         subscription$ = this.notificationsService.showApproveInProgress();
       },
-      ...(useRubicGasPrice && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      })
+      ...(shouldCalculateGasPrice && { gasPriceOptions })
     };
 
     try {
@@ -253,14 +254,16 @@ export class InstantTradeService extends TradeCalculationService {
     let transactionHash: string;
     let subscription$: Subscription;
 
-    const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
-
     const receiverAddress = this.receiverAddress;
 
     const isSwapAndEarnSwap =
       trade instanceof EvmOnChainTrade && trade.from.blockchain !== BLOCKCHAIN_NAME.ZK_SYNC
         ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0)
         : false;
+
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
@@ -285,9 +288,7 @@ export class InstantTradeService extends TradeCalculationService {
         this.postTrade(hash, providerName, trade, isSwapAndEarnSwap);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(shouldCalculateGasPrice && {
-        gasPrice: Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      }),
+      ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress })
     };
 
