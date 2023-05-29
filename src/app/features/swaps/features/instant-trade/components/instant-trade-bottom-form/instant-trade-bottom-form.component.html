@@ -91,7 +91,6 @@
     [withApproveButton]="withApproveButton"
     [status]="tradeStatus"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
-    [isOnramper]="isOnramper$ | async"
     (onSwapClick)="createTrade()"
     (onApproveClick)="approveTrade()"
     (onUpdateRateClick)="onSetHiddenData()"
