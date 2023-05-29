@@ -369,6 +369,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     if (tonPromoInfo.isTonPromoTrade) {
+      console.log('Консоль в блоке с POST-запросом');
       await this.tonPromoService.postTonPromoTradeInfo(
         calculatedTrade.trade as ChangenowCrossChainTrade,
         fromAddress,

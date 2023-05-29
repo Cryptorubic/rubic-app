@@ -1,6 +1,11 @@
 import { firstValueFrom } from 'rxjs';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
-import { BlockchainsInfo, ChangenowCrossChainTrade, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainsInfo,
+  ChangenowCrossChainTrade,
+  CROSS_CHAIN_TRADE_TYPE
+} from 'rubic-sdk';
 import {
   FetchedTonPromoInfo,
   ShortTonPromoInfo,
@@ -47,6 +52,7 @@ export class TonPromoService {
 
     if (
       !BlockchainsInfo.isEvmBlockchainName(calculatedTrade.trade.from.blockchain) ||
+      !(calculatedTrade.trade.to.blockchain === BLOCKCHAIN_NAME.TON) ||
       !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
       totalInputAmountInUSD.lt(20)
     ) {
@@ -60,6 +66,13 @@ export class TonPromoService {
       if (!is_active || !confirmed_rewards_amount || confirmed_trades === 3) {
         return emptyTonPromoInfo;
       }
+
+      console.log('confirmed_rewards_amount: ', confirmed_rewards_amount);
+      console.log('confirmed_rewards_amount < 300: ', confirmed_rewards_amount < 300);
+      console.log(
+        'confirmed_rewards_amount < 300 && is_active: ',
+        confirmed_rewards_amount < 300 && is_active
+      );
 
       return {
         isTonPromoTrade: confirmed_rewards_amount < 300 && is_active,
@@ -75,22 +88,27 @@ export class TonPromoService {
     fromAddress: string,
     transactionHash: string
   ): Promise<void> {
-    await firstValueFrom(
-      this.httpService.post(
-        `promo_validations/create_validation`,
-        {
-          address: fromAddress,
-          tx_hash: transactionHash,
-          change_now_tx_id: (trade as ChangenowCrossChainTrade).id
-        },
-        '',
-        {
-          headers: {
-            Signature: getSignature(fromAddress, transactionHash)
+    console.log('Signature: ', getSignature(fromAddress, transactionHash));
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          `promo_validations/create_validation`,
+          {
+            address: fromAddress,
+            tx_hash: transactionHash,
+            change_now_tx_id: (trade as ChangenowCrossChainTrade).id
+          },
+          '',
+          {
+            headers: {
+              Signature: getSignature(fromAddress, transactionHash)
+            }
           }
-        }
-      )
-    );
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public getTonPromoPointsAmount(totalUserConfirmedTrades: number): number {
