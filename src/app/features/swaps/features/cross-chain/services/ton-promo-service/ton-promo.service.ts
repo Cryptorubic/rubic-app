@@ -51,6 +51,15 @@ export class TonPromoService {
       !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
       totalInputAmountInUSD.lt(20)
     ) {
+      console.log(
+        'Not evm network: ',
+        !BlockchainsInfo.isEvmBlockchainName(calculatedTrade.trade.from.blockchain)
+      );
+      console.log(
+        'Not ChangeNow provider: ',
+        !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW)
+      );
+      console.log('Amount less then 20$: ', totalInputAmountInUSD.lt(20));
       return this.emptyTonPromoInfo;
     }
 
@@ -59,6 +68,9 @@ export class TonPromoService {
         await this.fetchTonPromoInfo(userWalletAddress);
 
       if (!is_active || !confirmed_rewards_amount || confirmed_trades === 3) {
+        console.log('Promo not active: ', is_active);
+        console.log('Confirmed amount great then 300: ', confirmed_rewards_amount > 300);
+        console.log('Confirmed user trades great then 3: ', confirmed_trades >= 3);
         return this.emptyTonPromoInfo;
       }
 
@@ -67,6 +79,7 @@ export class TonPromoService {
         totalUserConfirmedTrades: confirmed_trades
       };
     } catch (error) {
+      console.log('Fetch error: ', error);
       return this.emptyTonPromoInfo;
     }
   }
