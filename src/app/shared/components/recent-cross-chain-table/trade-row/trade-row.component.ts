@@ -281,7 +281,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.onramperService.updateSwapFormByRecentTrade(this.trade.txId);
+    await this.onramperService.updateSwapFormByRecentTrade(this.trade.rubicId);
     this.onClose.emit();
   }
 
