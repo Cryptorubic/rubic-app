@@ -368,17 +368,17 @@ export class CrossChainCalculationService extends TradeCalculationService {
       })
     };
 
-    if (tonPromoInfo.isTonPromoTrade) {
-      console.log('Консоль в блоке с POST-запросом');
-      await this.tonPromoService.postTonPromoTradeInfo(
-        calculatedTrade.trade as ChangenowCrossChainTrade,
-        fromAddress,
-        transactionHash
-      );
-    }
-
     try {
       await calculatedTrade.trade.swap(swapOptions);
+
+      if (tonPromoInfo.isTonPromoTrade) {
+        await this.tonPromoService.postTonPromoTradeInfo(
+          calculatedTrade.trade as ChangenowCrossChainTrade,
+          fromAddress,
+          transactionHash
+        );
+      }
+
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
@@ -501,6 +501,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
         points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
       })
     };
+
+    console.log(
+      tonPromoTrade.isTonPromoTrade && {
+        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
+      }
+    );
 
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {

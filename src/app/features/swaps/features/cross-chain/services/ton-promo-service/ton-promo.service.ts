@@ -63,19 +63,12 @@ export class TonPromoService {
       const { is_active, confirmed_rewards_amount, confirmed_trades } =
         await this.fetchTonPromoInfo(userWalletAddress);
 
-      if (!is_active || !confirmed_rewards_amount || confirmed_trades === 3) {
+      if (!is_active || confirmed_rewards_amount > 300 || confirmed_trades === 3) {
         return emptyTonPromoInfo;
       }
 
-      console.log('confirmed_rewards_amount: ', confirmed_rewards_amount);
-      console.log('confirmed_rewards_amount < 300: ', confirmed_rewards_amount < 300);
-      console.log(
-        'confirmed_rewards_amount < 300 && is_active: ',
-        confirmed_rewards_amount < 300 && is_active
-      );
-
       return {
-        isTonPromoTrade: confirmed_rewards_amount < 300 && is_active,
+        isTonPromoTrade: is_active,
         totalUserConfirmedTrades: confirmed_trades
       };
     } catch (error) {
