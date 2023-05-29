@@ -56,6 +56,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
+import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -479,7 +480,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
-    const getData = async () => {
+    const getData = async (): Promise<SwapSchemeModalData> => {
       const defaultData = {
         fromToken,
         toToken,
