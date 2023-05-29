@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -16,10 +16,6 @@ export class SwapAndEarnStateService {
   private readonly _points$ = new BehaviorSubject<Points>({ confirmed: 0, pending: 0 });
 
   public readonly points$ = this._points$.asObservable();
-
-  private readonly _swapAndEarnPointsAmount$ = new BehaviorSubject<number>(0);
-
-  public readonly swapAndEarnPointsAmount$ = this._swapAndEarnPointsAmount$.asObservable();
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
@@ -49,25 +45,16 @@ export class SwapAndEarnStateService {
     });
   }
 
-  public setSwapAndEarnPointsAmount(): void {
-    this.points$
-      .pipe(
-        tap(points => {
-          switch (points.participant) {
-            case true:
-              this._swapAndEarnPointsAmount$.next(50);
-              break;
-            case false:
-              this._swapAndEarnPointsAmount$.next(100);
-              break;
-
-            default:
-              this._swapAndEarnPointsAmount$.next(0);
-              break;
-          }
-        })
-      )
-      .subscribe();
+  public getSwapAndEarnPointsAmount(): Observable<number> {
+    return this.points$.pipe(
+      map(points => {
+        if (points.participant) {
+          return 50;
+        } else {
+          return 100;
+        }
+      })
+    );
   }
 
   public async claimPoints(points: number): Promise<void> {

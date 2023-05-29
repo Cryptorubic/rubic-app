@@ -499,7 +499,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
         return {
           ...defaultData,
           isTonPromoTrade: tonPromoTrade.isTonPromoTrade,
-          points: await firstValueFrom(this.tonPromoService.tonPromoPointsAmount$)
+          points: this.tonPromoService.getTonPromoPointsAmount(
+            tonPromoTrade.totalUserConfirmedTrades
+          )
         };
       }
 
@@ -507,7 +509,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         return {
           ...defaultData,
           isSwapAndEarnData: true,
-          points: await firstValueFrom(this.swapAndEarnStateService.swapAndEarnPointsAmount$)
+          points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
         };
       }
 

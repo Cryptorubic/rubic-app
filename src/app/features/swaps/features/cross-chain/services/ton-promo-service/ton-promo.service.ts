@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { BlockchainsInfo, ChangenowCrossChainTrade, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import {
@@ -13,10 +13,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TonPromoService {
-  private readonly _tonPromoPointsAmount$ = new BehaviorSubject<number>(0);
-
-  public readonly tonPromoPointsAmount$ = this._tonPromoPointsAmount$.asObservable();
-
   constructor(private readonly httpService: HttpService) {}
 
   private async fetchTonPromoInfo(userWalletAddress: string): Promise<TonPromoInfo> {
@@ -61,8 +57,6 @@ export class TonPromoService {
         return { isTonPromoTrade: false, totalUserConfirmedTrades: 0 };
       }
 
-      this.setTonPromoPointsAmount(confirmed_trades);
-
       return {
         isTonPromoTrade: confirmed_rewards_amount < 10_000 && is_active,
         totalUserConfirmedTrades: confirmed_trades
@@ -95,19 +89,13 @@ export class TonPromoService {
     );
   }
 
-  public setTonPromoPointsAmount(totalUserConfirmedTrades: number): void {
-    switch (totalUserConfirmedTrades) {
-      case 0:
-        this._tonPromoPointsAmount$.next(200);
-        break;
-      case 1:
-      case 2:
-        this._tonPromoPointsAmount$.next(100);
-        break;
-
-      default:
-        this._tonPromoPointsAmount$.next(0);
-        break;
+  public getTonPromoPointsAmount(totalUserConfirmedTrades: number): number {
+    if (totalUserConfirmedTrades === 0) {
+      return 200;
+    } else if (totalUserConfirmedTrades === 1 || totalUserConfirmedTrades === 2) {
+      return 100;
+    } else {
+      return 0;
     }
   }
 }

@@ -153,7 +153,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy(): void {
     this.swapAndEarnStateService.updatePoints();
-    this.swapAndEarnStateService.setSwapAndEarnPointsAmount();
     SwapSchemeModalComponent.toggleConfettiBackground('remove');
   }
 
