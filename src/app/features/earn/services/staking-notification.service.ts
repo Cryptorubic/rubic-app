@@ -27,6 +27,13 @@ export class StakingNotificationService {
     this.notificationsService.show('Successful RBC approve', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
+  public showStakingIsStoppedNotification(): void {
+    this.notificationsService.show('Staking is stopped', {
+      status: TuiNotification.Error,
+      autoClose: 5000
+    });
+  }
+
   public showNftLockedError(lockedUntil: string): void {
     this.notificationsService.show(`Nft is locked until ${lockedUntil}`, {
       autoClose: 5000,

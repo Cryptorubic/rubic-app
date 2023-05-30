@@ -84,6 +84,8 @@ export class StakeFormComponent implements OnInit {
 
   public lockTimeExceededError = false;
 
+  public stakingIsClosed = false;
+
   public readonly errors = StakeButtonError;
 
   constructor(
@@ -101,6 +103,7 @@ export class StakeFormComponent implements OnInit {
 
   public ngOnInit(): void {
     this.handleStakeDurationChange();
+    this.handleDurationError();
     this.stakingService.pollRbcTokens().pipe(takeUntil(this.destroy$)).subscribe();
   }
 
@@ -110,8 +113,19 @@ export class StakeFormComponent implements OnInit {
       : this.stakingService.parseAmountToBn(amount).multipliedBy(this.rbcUsdPrice).toFixed(2);
   }
 
-  public handleErrors(rbcAmount: string): void {
+  public async handleErrors(rbcAmount: string): Promise<void> {
     this.selectedAmount = rbcAmount;
+    try {
+      const isStakingStopped = await this.stakingService.isEmergencyStopped();
+
+      if (isStakingStopped) {
+        this.amountError = StakeButtonError.STAKING_CLOSED;
+        this.stakingIsClosed = true;
+        return;
+      }
+    } catch (error) {
+      return;
+    }
 
     if (rbcAmount === '') {
       this.amountError = StakeButtonError.EMPTY_AMOUNT;
@@ -139,8 +153,8 @@ export class StakeFormComponent implements OnInit {
     this.amountError = StakeButtonError.NULL;
   }
 
-  public handleDurationError(duration: number): void {
-    this.lockTimeExceededError = duration > this.MAX_LOCK_TIME;
+  public handleDurationError(): void {
+    this.lockTimeExceededError = this.MAX_LOCK_TIME < 3;
   }
 
   public setMaxAmount(amount: BigNumber): void {

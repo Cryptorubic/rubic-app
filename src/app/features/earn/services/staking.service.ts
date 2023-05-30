@@ -29,7 +29,7 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
@@ -81,6 +81,8 @@ export class StakingService {
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   );
+
+  private readonly web3Private = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
 
   private readonly _deposits$ = new BehaviorSubject<Deposit[]>(undefined);
 
@@ -200,9 +202,11 @@ export class StakingService {
 
   public async approveRbc(): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .approveTokens(this.RBC_TOKEN_ADDRESS, this.NFT_CONTRACT_ADDRESS, 'infinity');
+      const receipt = await this.web3Private.approveTokens(
+        this.RBC_TOKEN_ADDRESS,
+        this.NFT_CONTRACT_ADDRESS,
+        'infinity'
+      );
 
       if (receipt && receipt.status) {
         this.stakingNotificationService.showSuccessApproveNotification();
@@ -217,23 +221,24 @@ export class StakingService {
   }
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
-    const durationInSeconds = duration * SECONDS_IN_MONTH;
-    // const durationInSeconds = duration * 60;
-    return Injector.web3PrivateService
-      .getWeb3Private(CHAIN_TYPE.EVM)
-      .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'enterStaking', [
-        Web3Pure.toWei(amount, 18),
-        String(durationInSeconds)
-      ]);
+    // const durationInSeconds = duration * SECONDS_IN_MONTH;
+    const durationInSeconds = duration * 60;
+    return this.web3Private.tryExecuteContractMethod(
+      this.NFT_CONTRACT_ADDRESS,
+      NFT_CONTRACT_ABI,
+      'enterStaking',
+      [Web3Pure.toWei(amount, 18), String(durationInSeconds)]
+    );
   }
 
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'claimRewards', [
-          deposit.id
-        ]);
+      const receipt = await this.web3Private.tryExecuteContractMethod(
+        this.NFT_CONTRACT_ADDRESS,
+        NFT_CONTRACT_ABI,
+        'claimRewards',
+        [deposit.id]
+      );
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
@@ -262,11 +267,12 @@ export class StakingService {
 
   public async withdraw(deposit: Deposit): Promise<TransactionReceipt> {
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'unstake', [
-          deposit.id
-        ]);
+      const receipt = await this.web3Private.tryExecuteContractMethod(
+        this.NFT_CONTRACT_ADDRESS,
+        NFT_CONTRACT_ABI,
+        'unstake',
+        [deposit.id]
+      );
 
       if (receipt.status) {
         this.stakingNotificationService.showSuccessWithdrawNotification();

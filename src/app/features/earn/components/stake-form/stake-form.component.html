@@ -50,9 +50,10 @@
         <button
           class="duration__common-chip"
           [class.duration__common-chip_selected]="
-            durationCtrl.value === duration.value || duration.value === selectedDuration
+            (durationCtrl.value === duration.value || duration.value === selectedDuration) &&
+            !stakingIsClosed
           "
-          [disabled]="duration.value > MAX_LOCK_TIME"
+          [disabled]="duration.value > MAX_LOCK_TIME || stakingIsClosed"
           (click)="setDuration(duration.value)"
         >
           <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-label">{{

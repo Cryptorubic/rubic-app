@@ -7,10 +7,11 @@
   [loading]="stakeLoading || approveLoading"
 >
   <ng-container *ngIf="lockTimeExceededError; else amountValidation">
-    Max lock time is {{ maxLockTime }} months
+    Entry is closed
   </ng-container>
   <ng-template #amountValidation>
     <ng-container [ngSwitch]="amountError">
+      <ng-container *ngSwitchCase="errors.STAKING_CLOSED"> Staking stopped </ng-container>
       <ng-container *ngSwitchCase="errors.NEED_APPROVE"> Approve </ng-container>
       <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_RBC">
         Insufficient balance
