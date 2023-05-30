@@ -311,6 +311,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
       confirmCallback?.();
       this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
 
+      if (tonPromoInfo.isTonPromoTrade) {
+        this.tonPromoService.postTonPromoTradeInfo(
+          calculatedTrade.trade as ChangenowCrossChainTrade,
+          fromAddress,
+          transactionHash
+        );
+      }
+
       const timestamp = Date.now();
       const viaUuid =
         calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
@@ -370,14 +378,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     try {
       await calculatedTrade.trade.swap(swapOptions);
-
-      if (tonPromoInfo.isTonPromoTrade) {
-        await this.tonPromoService.postTonPromoTradeInfo(
-          calculatedTrade.trade as ChangenowCrossChainTrade,
-          fromAddress,
-          transactionHash
-        );
-      }
 
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
