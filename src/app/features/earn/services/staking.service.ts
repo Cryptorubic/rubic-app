@@ -29,11 +29,11 @@ import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 
-const STAKING_END_TIMESTAMP = new Date(2024, 5, 18).getTime();
+const STAKING_END_TIMESTAMP = new Date(2025, 5, 18).getTime();
 
 @Injectable()
 export class StakingService {
@@ -217,8 +217,8 @@ export class StakingService {
   }
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
-    const durationInSeconds = duration * SECONDS_IN_MONTH;
-    // const durationInSeconds = duration * 60;
+    // const durationInSeconds = duration * SECONDS_IN_MONTH;
+    const durationInSeconds = duration * 60;
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'enterStaking', [
