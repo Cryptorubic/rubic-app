@@ -232,8 +232,7 @@ export class StakingService {
       const receipt = await Injector.web3PrivateService
         .getWeb3Private(CHAIN_TYPE.EVM)
         .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'claimRewards', [
-          deposit.id,
-          deposit.rewardIntervals.map(interval => [interval.startEpoch, interval.endEpoch])
+          deposit.id
         ]);
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();

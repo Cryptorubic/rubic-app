@@ -17,7 +17,7 @@
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">0 <span>months</span></div>
+        <div class="statistics__param-value">9 <span>months</span></div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
@@ -97,7 +97,13 @@
           [tuiHintDirection]="'top-right'"
           tuiHintMode="onDark"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
+          {{
+            circRBCLocked?.isFinite()
+              ? circRBCLocked?.lt(0.01)
+                ? '< 0.01'
+                : (circRBCLocked | bigNumberFormat : 2 : true)
+              : '--.--'
+          }}
           %
         </div>
       </div>
