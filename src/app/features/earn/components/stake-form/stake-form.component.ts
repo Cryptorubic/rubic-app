@@ -4,7 +4,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
-import { MILLISECONDS_IN_MONTH, MILLISECONDS_IN_WEEK } from '@app/shared/constants/time/time';
+import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
@@ -240,10 +240,6 @@ export class StakeFormComponent implements OnInit {
   }
 
   private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {
-    return (
-      Math.trunc(
-        (blockTimestamp * 1000 + duration * MILLISECONDS_IN_MONTH) / MILLISECONDS_IN_WEEK
-      ) * MILLISECONDS_IN_WEEK
-    );
+    return Math.trunc(blockTimestamp * 1000 + duration * MILLISECONDS_IN_MONTH);
   }
 }
