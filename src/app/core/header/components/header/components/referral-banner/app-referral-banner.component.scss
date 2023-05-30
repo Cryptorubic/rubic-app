@@ -1,27 +1,17 @@
 @use 'src/scss/core' as *;
 
 .banner {
+  position: relative;
+
   display: flex;
   justify-content: center;
 
   text-decoration: none;
 
-  background: linear-gradient(274.9deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
-
-  @include b($mobile-md-minus) {
-    justify-content: left;
-  }
+  background: linear-gradient(66.49deg, #00e28d 5.16%, #008dba 83.74%);
 
   @include hide-unused-ui {
     display: none;
-  }
-
-  &:hover {
-    color: white;
-
-    img {
-      transform: translateX(5px) scale(1.1);
-    }
   }
 
   &__container {
@@ -29,51 +19,156 @@
     z-index: 1;
 
     display: flex;
-    gap: 24px;
+    gap: 40px;
     align-items: center;
     justify-content: center;
 
     width: fit-content;
-    padding: 7px 10px;
-
-    @include b($mobile-sm-plus) {
-      gap: 5px;
-      padding: 10px;
-    }
+    padding: 16px 82px 16px 60px;
   }
 
   &__text {
-    @include font(19px, 1, 300, white);
-    margin: 0 25px 0 0;
+    @include font(24px, 1, 400, white);
+    margin: 0;
 
-    @include b($mobile-md-minus) {
-      line-height: 1;
-    }
+    white-space: nowrap;
 
-    @include b($mobile-sm-plus) {
-      @include font(16px, 1, 300, white);
+    &_br {
+      display: none;
     }
   }
 
   &__link {
-
-    @include font(19px, 1, 300, white);
+    @include font(24px, 1, 400, white);
     display: flex;
 
     gap: 12px;
     align-items: center;
+    padding: 10px 22px;
 
     white-space: nowrap;
     text-decoration: none;
 
-    &-text {
-      @include b($mobile-sm-plus) {
-        @include font(16px, 1, 300, white);
+    border: 1px solid white;
+    border-radius: 50px;
+
+    &:hover {
+      img {
+        transform: translateX(5px) scale(1.1);
       }
     }
 
     img {
+      width: 10px;
+      height: 15px;
+
       transition: 100ms ease-in;
+    }
+  }
+
+  &__background-img_mobile {
+    display: none;
+  }
+}
+
+@include b($laptop-xl) {
+  .banner {
+    &__container {
+      padding: 16px 62px 16px 40px;
+    }
+
+    &__text {
+      @include font(20px, 1, 400, white);
+    }
+
+    &__link {
+      @include font(20px, 1, 400, white);
+    }
+  }
+}
+
+@include b($tablet) {
+  .banner {
+    &__container {
+      padding: 16px 42px 16px 20px;
+    }
+
+    &__text {
+      @include font(18px, 1, 400, white);
+    }
+
+    &__link {
+      @include font(18px, 1, 400, white);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .banner {
+    justify-content: left;
+
+    &__background-img_left {
+      display: none;
+    }
+
+    &__background-img_right {
+      position: absolute;
+      right: -110px;
+      bottom: 0;
+    }
+
+    &__container {
+      width: 100%;
+      padding: 16px 32px 16px 10px;
+
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 58.16%, rgba(0, 0, 0, 0.3098039216) 87.74%);
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .banner {
+    &__container {
+      gap: 20px;
+      padding: 16px 10px;
+    }
+  }
+}
+
+@include b(480) {
+  .banner {
+    &__container {
+      justify-content: space-between;
+
+      background: transparent;
+    }
+
+    &__text {
+      @include font(16px, 21px, 400, white);
+      text-align: left;
+
+      &_br {
+        display: block;
+      }
+    }
+
+    &__link {
+      @include font(16px, 1, 400, white);
+    }
+
+    &__background-img_right {
+      display: none;
+    }
+
+    &__background-img_mobile {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+
+      display: block;
+      height: 100%;
+
+      transform: translateX(-50%);
     }
   }
 }

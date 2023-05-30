@@ -1,13 +1,3 @@
-<svg width="46" height="29" viewBox="0 0 46 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_f_70_45)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M28.4741 6.33333L33.3926 11L35.3426 12.8501L4 12.8501V16.1499L35.3426 16.1499L28.4741 22.6667L30.9334 25L40.7704 15.6667L42 14.5L40.7704 13.3333L35.8519 8.66667L30.9334 4L28.4741 6.33333Z" fill="white"/>
-</g>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M27.4741 6.33333L32.3926 11L34.3426 12.8501L3 12.8501V16.1499L34.3426 16.1499L27.4741 22.6667L29.9334 25L39.7704 15.6667L41 14.5L39.7704 13.3333L34.8519 8.66667L29.9334 4L27.4741 6.33333Z" fill="white"/>
-<defs>
-<filter id="filter0_f_70_45" x="0" y="0" width="46" height="29" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="2" result="effect1_foregroundBlur_70_45"/>
-</filter>
-</defs>
+<svg width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.37866 1L6.34311 5.96445C7.12416 6.7455 7.12416 8.01183 6.34311 8.79288L1.37866 13.7573" stroke="white" stroke-linecap="round"/>
 </svg>
