@@ -3,6 +3,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { EIP1559Gas, GasPrice } from 'rubic-sdk/lib';
 
 /**
  * Compares two objects for equality.
@@ -158,3 +159,16 @@ export const listAnimation = trigger('listAnimation', [
     query(':leave', animate('100ms', style({ opacity: 0 })), { optional: true })
   ])
 ]);
+
+/**
+ * Format EIP-1559 gas values.
+ */
+export const formatEIP1559Gas = ({
+  baseFee,
+  maxFeePerGas,
+  maxPriorityFeePerGas
+}: EIP1559Gas): GasPrice => ({
+  baseFee: new BigNumber(baseFee).dividedBy(10 ** 9).toFixed(),
+  maxFeePerGas: new BigNumber(maxFeePerGas).dividedBy(10 ** 9).toFixed(),
+  maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas).dividedBy(10 ** 9).toFixed()
+});
