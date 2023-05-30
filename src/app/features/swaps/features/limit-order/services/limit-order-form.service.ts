@@ -11,8 +11,7 @@ import {
   EvmWeb3Pure,
   limitOrderSupportedBlockchains,
   TokenAmount as SdkTokenAmount,
-  TokenBaseStruct,
-  Web3Pure
+  TokenBaseStruct
 } from 'rubic-sdk';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens, switchIif, switchTap } from '@shared/utils/utils';
@@ -35,7 +34,6 @@ import { UserRejectSigningError } from '@core/errors/models/provider/user-reject
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 import { LimitOrdersApiService } from '@core/services/backend/limit-orders-api/limit-orders-api.service';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
@@ -292,15 +290,16 @@ export class LimitOrderFormService {
 
     try {
       const fromToken = fromAsset as TokenBaseStruct<EvmBlockchainName>;
-      const gasPrice = shouldCalculateGas[fromToken.blockchain]
-        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(fromToken.blockchain))
-        : null;
+
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        fromToken.blockchain
+      );
 
       const options: BasicTransactionOptions = {
         onTransactionHash: () => {
           approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
         },
-        ...(gasPrice && { gasPrice })
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
       };
 
       await this.sdkService.limitOrderManager.approve(fromToken, fromAmount, options);
