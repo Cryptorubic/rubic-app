@@ -99,7 +99,7 @@
         >
           {{
             circRBCLocked?.isFinite()
-              ? circRBCLocked?.lt(0.01)
+              ? circRBCLocked?.lt(0.01) && circRBCLocked?.toNumber() !== 0
                 ? '< 0.01'
                 : (circRBCLocked | bigNumberFormat : 2 : true)
               : '--.--'

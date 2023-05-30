@@ -77,13 +77,12 @@ export class DepositsComponent implements OnInit {
   }
 
   public async startWithdraw(deposit: Deposit): Promise<void> {
-    const isStakingFinished = await this.stakingService.getIsStakingFinished();
-    if (Date.now() < deposit.endTimestamp && !isStakingFinished) {
+    if (Date.now() > deposit.endTimestamp || (await this.stakingService.isEmergencyStopped())) {
+      this.withdraw(deposit);
+    } else {
       this.stakingNotificationService.showNftLockedError(
         new DatePipe('en-US').transform(deposit.endTimestamp, 'mediumDate')
       );
-    } else {
-      this.withdraw(deposit);
     }
   }
 

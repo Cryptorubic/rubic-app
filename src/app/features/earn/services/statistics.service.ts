@@ -57,17 +57,6 @@ export class StatisticsService {
           const apr = rewardPerYear.dividedBy(lockedRBCinETH).multipliedBy(100);
           this.currentStakingApr = apr;
 
-          if (apr.isFinite()) {
-            console.log('==================');
-            console.log('APR для Overview');
-            console.log('Цена за 1 ETH в $: ', ethPrice);
-            console.log('Locked amount в $: ', lockedRbcInDollars.toFixed());
-            console.log('Locked amount в ETH: ', lockedRBCinETH.toFixed());
-            console.log('Реварды за год: ', rewardPerYear.toFixed());
-            console.log('APR (Реварды за год / Locked amount в ETH) * 100: ', apr.toFixed());
-            console.log('==================');
-          }
-
           return apr;
         })
       )

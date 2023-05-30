@@ -267,6 +267,7 @@ export class StakingService {
         .tryExecuteContractMethod(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'unstake', [
           deposit.id
         ]);
+
       if (receipt.status) {
         this.stakingNotificationService.showSuccessWithdrawNotification();
         const updatedDeposits = this.deposits.filter(item => item.id !== deposit.id);
@@ -284,11 +285,22 @@ export class StakingService {
     }
   }
 
+  public async isEmergencyStopped(): Promise<boolean> {
+    try {
+      return await this.web3Public.callContractMethod(
+        this.NFT_CONTRACT_ADDRESS,
+        NFT_CONTRACT_ABI,
+        'emergencyStop'
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public loadDeposits(): Observable<Deposit[]> {
     return this.user$.pipe(
       tap(() => this.setDepositsLoading(true)),
-      switchMap(() => from(this.getIsStakingFinished())),
-      switchMap(isStakingFinished => {
+      switchMap(() => {
         if (!this.authService?.user?.address) {
           return of([]);
         }
@@ -312,24 +324,14 @@ export class StakingService {
                 const amountInETH = amountInDollars.dividedBy(ethPrice);
                 const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH
                 const tokenApr = estimatedAnnualRewards.dividedBy(amountInETH).multipliedBy(100);
-                console.log('==================');
-                console.log('APR для токена');
-                console.log('ID депозита: ', id);
-                console.log('Цена за 1 RBC в $: ', RBCPrice);
-                console.log('Цена за 1 ETH в $: ', ethPrice);
-                console.log('Locked amount: ', nftInfo.amount.toFixed());
-                console.log('Locked amount в $: ', amountInDollars.toFixed());
-                console.log('Locked amount в ETH: ', amountInETH.toFixed());
-                console.log('Ожидаемые реварды за год: ', estimatedAnnualRewards.toFixed());
-                console.log('APR: ', tokenApr.toFixed());
-                console.log('==================');
 
                 return {
                   ...nftInfo,
                   ...nftRewards,
                   id,
                   tokenApr,
-                  canWithdraw: isStakingFinished || Date.now() > nftInfo.endTimestamp
+                  canWithdraw:
+                    Date.now() > nftInfo.endTimestamp || (await this.isEmergencyStopped())
                 };
               })
             );
