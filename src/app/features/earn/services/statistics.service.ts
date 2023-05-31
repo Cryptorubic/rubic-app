@@ -29,8 +29,6 @@ export class StatisticsService {
 
   public readonly totalSupply$ = this._totalSupply$.asObservable();
 
-  private readonly supply = new BigNumber(124_000_000);
-
   // @TODO: remove after implementation of apr calculations on BE
   private readonly currentActiveTokens = 16841697.321;
 
@@ -67,8 +65,8 @@ export class StatisticsService {
 
   public readonly circRBCLocked$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      this.lockedRBC$.pipe(
-        map(lockedRBCAmount => lockedRBCAmount.dividedBy(this.supply).multipliedBy(100))
+      combineLatest([this.lockedRBC$, this.totalSupply$]).pipe(
+        map(([lockedRBC, totalSupply]) => lockedRBC.dividedBy(totalSupply).multipliedBy(100))
       )
     )
   );
@@ -79,19 +77,16 @@ export class StatisticsService {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
-  public getTotalSupply(): Observable<BigNumber> {
-    return from(
+  public getTotalSupply(): void {
+    from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
-        '0x11887ee906de64daa8b905b419bfeb6debafbf34',
+        STAKING_ROUND_THREE.TOKEN.address,
         TOKEN_CONTRACT_ABI,
         'totalSupply'
       )
-    ).pipe(
-      map(value => {
-        this._totalSupply$.next(Web3Pure.fromWei(value));
-        return Web3Pure.fromWei(value);
-      })
-    );
+    ).subscribe(value => {
+      this._totalSupply$.next(Web3Pure.fromWei(value));
+    });
   }
 
   public getRewardPerWeek(): void {

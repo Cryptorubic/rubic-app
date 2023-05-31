@@ -56,5 +56,6 @@ export class StatisticsComponent implements OnInit {
   private getStatisticsData(): void {
     this.statisticsService.getLockedRBC();
     this.statisticsService.getRewardPerWeek();
+    this.statisticsService.getTotalSupply();
   }
 }
