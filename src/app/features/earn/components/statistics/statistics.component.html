@@ -17,7 +17,8 @@
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">9 <span>months</span></div>
+        <!--        <div class="statistics__param-value">9 <span>months</span></div>-->
+        <div class="statistics__param-value">0</div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
@@ -118,7 +119,7 @@
           {{ 'staking.apr' | translate }}
         </div>
         <div class="statistics__param-value" *ngLet="apr$ | async as apr">
-          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) : '--.--' }}%
+          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) + ' %' : '--.--' }}
         </div>
       </div>
     </div>
