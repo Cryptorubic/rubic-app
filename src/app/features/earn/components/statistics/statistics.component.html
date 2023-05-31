@@ -51,7 +51,7 @@
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
-          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 0) : '--.--' }}
+          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 2) : '--.--' }}
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">

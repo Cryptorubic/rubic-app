@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
-import { RBC_CONTRACT_ABI } from '@features/earn/constants/RBC_CONTRACT_ABI';
+import { TOKEN_CONTRACT_ABI } from '@features/earn/constants/TOKEN_CONTRACT_ABI';
 
 @Injectable()
 export class StatisticsService {
@@ -26,6 +26,8 @@ export class StatisticsService {
   );
 
   private readonly _totalSupply$ = new BehaviorSubject<BigNumber>(new BigNumber(NaN));
+
+  public readonly totalSupply$ = this._totalSupply$.asObservable();
 
   private readonly supply = new BigNumber(124_000_000);
 
@@ -80,8 +82,8 @@ export class StatisticsService {
   public getTotalSupply(): Observable<BigNumber> {
     return from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
-        '0x3330bfb7332ca23cd071631837dc289b09c33333',
-        RBC_CONTRACT_ABI,
+        '0x11887ee906de64daa8b905b419bfeb6debafbf34',
+        TOKEN_CONTRACT_ABI,
         'totalSupply'
       )
     ).pipe(
