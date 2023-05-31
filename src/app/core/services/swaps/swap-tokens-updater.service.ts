@@ -59,7 +59,7 @@ export class SwapTokensUpdaterService {
         this.tokensService.getAndUpdateTokenPrice(form.fromAsset);
       }
       if (form.toToken) {
-        this.tokensService.getAndUpdateTokenPrice(form.toToken);
+        this.tokensService.getAndUpdateTokenPrice(form.toToken, true);
       }
     };
 
