@@ -15,5 +15,5 @@ export interface SwapSchemeModalData {
   rangoRequestId?: string;
   amountOutMin?: string;
   changenowId?: string;
-  isSwapAndEarnData?: boolean;
+  points?: number;
 }
