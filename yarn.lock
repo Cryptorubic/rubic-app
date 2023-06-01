@@ -378,6 +378,16 @@
   dependencies:
     tslib "^2.3.0"
 
+"@arbitrum/sdk@^3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-3.1.3.tgz#75236043717a450b569faaa087687c51d525b0c3"
+  integrity sha512-Dn1or7/Guc3dItuiiWaoYQ37aCDwiWTZGPIrg4yBJW27BgiDGbo0mjPDAhKTh4p5NDOWyE8bZ0vZai86COZIUA==
+  dependencies:
+    "@ethersproject/address" "^5.0.8"
+    "@ethersproject/bignumber" "^5.1.1"
+    "@ethersproject/bytes" "^5.0.8"
+    ethers "^5.1.0"
+
 "@argent/login@^0.1.0-beta.4":
   version "0.1.0-beta.4"
   resolved "https://registry.yarnpkg.com/@argent/login/-/login-0.1.0-beta.4.tgz#4225a7cee309b39f83c03bcd56070e25a2dabac1"
@@ -1742,7 +1752,7 @@
     "@ethersproject/logger" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
 
-"@ethersproject/address@5.7.0", "@ethersproject/address@^5.7.0":
+"@ethersproject/address@5.7.0", "@ethersproject/address@^5.0.8", "@ethersproject/address@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/address/-/address-5.7.0.tgz#19b56c4d74a3b0a46bfdbb6cfcc0a153fc697f37"
   integrity sha512-9wYhYt7aghVGo758POM5nqcOMaE168Q6aRLJZwUmiqSrAungkG74gSSeKEIR7ukixesdRZGPgVqme6vmxs1fkA==
@@ -1777,7 +1787,7 @@
     "@ethersproject/logger" "^5.7.0"
     bn.js "^5.2.1"
 
-"@ethersproject/bytes@5.7.0", "@ethersproject/bytes@^5.7.0":
+"@ethersproject/bytes@5.7.0", "@ethersproject/bytes@^5.0.8", "@ethersproject/bytes@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/bytes/-/bytes-5.7.0.tgz#a00f6ea8d7e7534d6d87f47188af1148d71f155d"
   integrity sha512-nsbxwgFXWh9NyYWo+U8atvmMsSdKJprTcICAkvbBffT75qDocbuggBU0SJiVK2MuTrp0q+xvLkTnGMPK1+uA9A==
@@ -7906,7 +7916,7 @@ ethereumjs-vm@^2.3.4:
     rustbn.js "~0.2.0"
     safe-buffer "^5.1.1"
 
-ethers@5.7.2, ethers@^5.4.4, ethers@^5.6.7, ethers@^5.6.8, ethers@^5.7.2:
+ethers@5.7.2, ethers@^5.1.0, ethers@^5.4.4, ethers@^5.6.7, ethers@^5.6.8, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -13873,12 +13883,13 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.2.4.tgz#f4024a43a13483b449cd4e1629515e98102d4683"
-  integrity sha512-Xx0TfgakXcUIzuZqKpk4NZVkgS6ZuhdUazU5vhfo6Y6Rt6f+dT3yw0aN6DQ0rKRijZ6Q15SrGoOSs4tumiRYkQ==
+rubic-sdk@4.4.0-alpha-arb-rbc.1:
+  version "4.4.0-alpha-arb-rbc.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.4.0-alpha-arb-rbc.1.tgz#f710157aa29ced2b3a095d0d5e90c62dc91e3a2e"
+  integrity sha512-nAM+4G36bNt0Zj1gRHSu22EM1K6Mf5Gbixa+uR0raJ6FjV8UZYKqweqRl6EHddRWpV3Y8Bp615iI+f1d3wW+uQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
+    "@arbitrum/sdk" "^3.1.3"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
     "@lifi/sdk" "^1.7.2"
     "@viaprotocol/router-sdk" "^1.0.7"

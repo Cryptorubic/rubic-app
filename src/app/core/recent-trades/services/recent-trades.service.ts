@@ -12,6 +12,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import {
+  ArbitrumRbcBridgeTrade,
+  BLOCKCHAIN_NAME,
   BlockchainName,
   CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
@@ -255,6 +257,50 @@ export class RecentTradesService {
     }
 
     return uiTrade;
+  }
+
+  public async claimArbitrumBridgeTokens(srcTxHash: string): Promise<TransactionReceipt> {
+    let tradeInProgressSubscription$: Subscription;
+    let transactionReceipt: TransactionReceipt;
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
+        onConfirm: onTransactionHash
+      });
+
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      this.recentTradesStoreService.updateTrade({
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(
+          srcTxHash,
+          BLOCKCHAIN_NAME.ETHEREUM
+        ),
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
+      });
+    } catch (error) {
+      console.debug('[ArbitrumBridge] Transaction claim error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
   }
 
   public async revertSymbiosis(

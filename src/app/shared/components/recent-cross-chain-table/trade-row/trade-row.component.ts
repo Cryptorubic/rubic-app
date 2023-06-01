@@ -84,6 +84,25 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get isArbitrumBridgeTrade(): boolean {
+    if (this.isChangenowTrade(this.trade)) {
+      return false;
+    }
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
+  }
+
+  public get showAction(): boolean {
+    return (
+      ((this.isSymbiosisTrade || this.isCbridgeTrade) &&
+        this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT) ||
+      (this.isArbitrumBridgeTrade &&
+        this.uiTrade?.statusTo === this.CrossChainTxStatus.READY_TO_CLAIM)
+    );
+  }
+
   public get showRevert(): boolean {
     return (
       (this.isSymbiosisTrade || this.isCbridgeTrade) &&
@@ -300,5 +319,42 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       this.hintShown = false;
       this.cdr.markForCheck();
     });
+  }
+
+  public async claimTokens(): Promise<void> {
+    this.revertBtnLoading = true;
+
+    if (this.isChangenowTrade(this.trade)) {
+      return;
+    }
+    if (!isCrossChainRecentTrade(this.trade)) {
+      return;
+    }
+
+    let revertTxReceipt: TransactionReceipt;
+
+    if (this.isArbitrumBridgeTrade) {
+      try {
+        revertTxReceipt = await this.recentTradesService.claimArbitrumBridgeTokens(
+          this.trade.srcTxHash
+        );
+        if (revertTxReceipt.status) {
+          this.uiTrade.statusTo = TxStatus.SUCCESS;
+          this.revertBtnLoading = false;
+          this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
+          this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+            revertTxReceipt.transactionHash,
+            this.trade.fromToken.blockchain,
+            ADDRESS_TYPE.TRANSACTION
+          );
+          this.cdr.detectChanges();
+        }
+      } catch (err) {
+        console.debug(err);
+      }
+    }
+
+    this.revertBtnLoading = false;
+    this.cdr.detectChanges();
   }
 }
