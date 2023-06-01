@@ -88,7 +88,11 @@ export class DepositsComponent implements OnInit {
 
   private withdraw(deposit: Deposit): void {
     this.stakingModalService
-      .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+      .showWithdrawModal(
+        deposit.amount,
+        this.stakingService.needSwitchNetwork$,
+        deposit?.totalNftRewards
+      )
       .pipe(
         filter(Boolean),
         switchMap(() => {

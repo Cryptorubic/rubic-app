@@ -9,8 +9,8 @@
 
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0 !important;
+  right: 5px !important;
 
   width: 12px;
   height: 12px;
@@ -38,6 +38,10 @@
   margin: 0 auto 48px;
 
   text-align: center;
+
+  &__amount {
+    color: var(--primary-color);
+  }
 }
 
 .action-btn {

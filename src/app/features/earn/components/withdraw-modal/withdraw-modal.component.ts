@@ -15,6 +15,8 @@ import { Observable } from 'rxjs';
 export class WithdrawModalComponent {
   public readonly amount = this.context.data.amount;
 
+  public readonly totalNftRewards = this.context.data.totalNftRewards;
+
   public readonly needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
 
   constructor(
@@ -22,7 +24,7 @@ export class WithdrawModalComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     public readonly context: TuiDialogContext<
       boolean,
-      { amount: BigNumber; needSwitchNetwork$: Observable<boolean> }
+      { amount: BigNumber; needSwitchNetwork$: Observable<boolean>; totalNftRewards?: BigNumber }
     >
   ) {}
 

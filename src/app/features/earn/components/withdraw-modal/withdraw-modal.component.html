@@ -5,8 +5,19 @@
 ></div>
 <div class="title">WITHDRAWAL</div>
 <div class="text">
-  Please proceed to close your position and receive
-  {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} RBC
+  Close your position. You will receive
+  <span class="text__amount"
+    >{{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} RBC</span
+  >
+  back
+  <span class="text" *ngIf="totalNftRewards?.isFinite && totalNftRewards?.toNumber() > 0"
+    ><br />
+    and
+    <span class="text__amount">
+      {{ totalNftRewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }} ETH</span
+    >
+    in rewards.
+  </span>
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else withdraw">
   <app-rubic-button appearance="primary" class="action-btn" (onClick)="switchNetwork()"

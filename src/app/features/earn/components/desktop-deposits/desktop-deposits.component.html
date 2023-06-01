@@ -66,14 +66,13 @@
               [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
               (onClick)="onWithdraw.emit(deposit)"
               [loading]="withdrawingId === deposit.id"
+              [tuiHint]="'Withdraw'"
+              [tuiHintDirection]="'top-right'"
+              tuiHintMode="onDark"
             >
               <img
                 [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
-                [src]="
-                  isDarkTheme
-                    ? 'assets/images/icons/leave-white.svg'
-                    : 'assets/images/icons/leave-black.svg'
-                "
+                [src]="'assets/images/icons/leave-black.svg'"
                 alt=""
               />
             </app-rubic-button>

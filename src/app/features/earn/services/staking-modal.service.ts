@@ -37,13 +37,15 @@ export class StakingModalService {
 
   public showWithdrawModal(
     amount: BigNumber,
-    needSwitchNetwork$: Observable<boolean>
+    needSwitchNetwork$: Observable<boolean>,
+    totalNftRewards?: BigNumber
   ): Observable<boolean> {
     return this.dialogService.showDialog<WithdrawModalComponent, boolean>(WithdrawModalComponent, {
       ...STAKING_MODAL_OPTIONS,
       data: {
         amount,
-        needSwitchNetwork$
+        needSwitchNetwork$,
+        totalNftRewards
       },
       fitContent: true
     });

@@ -18,7 +18,7 @@
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
         <!--        <div class="statistics__param-value">9 <span>months</span></div>-->
-        <div class="statistics__param-value">0</div>
+        <div class="statistics__param-value">--.--</div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
@@ -52,11 +52,13 @@
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
           {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 2) : '--.--' }}
+          <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">9</div>
+        <!--        <div class="statistics__param-value">9 <span>months</span></div>-->
+        <div class="statistics__param-value">--.--</div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.circRBCLocked' | translate }}</div>
@@ -112,6 +114,7 @@
         <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
         <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
           {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 0) : '--.--' }}
+          <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
         </div>
       </div>
       <div class="statistics__param">

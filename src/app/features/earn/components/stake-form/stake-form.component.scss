@@ -200,9 +200,7 @@
       width: 100%;
       padding: 8px 12px;
 
-      background-color: var(--staking-form-duration-background);
-
-      border: 1px solid var(--transparent-line);
+      border: 1px solid var(--primary-color);
       border-radius: 10px;
       cursor: pointer;
 
@@ -256,12 +254,12 @@
           }
 
           &-hint {
-            @include font(16px, 19px, 400, var(--secondary-text));
+            @include font(16px, 19px, 400, #f3ba2f);
             letter-spacing: 0.03em;
             text-align: center;
 
             @include b($tablet) {
-              @include font(14px, 14px, 400, var(--secondary-text));
+              @include font(14px, 14px, 400, #f3ba2f);
             }
           }
         }
@@ -275,8 +273,6 @@
         @include font(16px, 19px, 500, var(--staking-form-selected-duration));
 
         background-color: var(--primary-color);
-
-        border: 1px solid var(--primary-text);
 
         @include b($tablet) {
 
@@ -305,8 +301,6 @@
 
         &:hover {
           color: var(--staking-form-selected-duration);
-
-          border: 1px solid var(--primary-text);
         }
       }
 
@@ -314,13 +308,14 @@
         color: rgba(144, 144, 144, 0.7);
 
         background-color: transparent;
+        border: 1px solid var(--transparent-line);
 
-        .duration__common-chip-earn-end {
+        .duration__common-chip-earn-end,
+        .duration__common-chip-earn-end-hint {
           color: rgba(144, 144, 144, 0.7);
         }
 
         &:hover {
-          border: 1px solid var(--transparent-line);
           box-shadow: none;
           transform: translateY(0) scale(1);
           cursor: default;
