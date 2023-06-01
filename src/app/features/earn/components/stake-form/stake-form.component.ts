@@ -41,10 +41,10 @@ export class StakeFormComponent implements OnInit {
   //   { value: 20, label: '20 minutes', earn: 200 }
   // ];
   public readonly DURATIONS = [
-    { value: 3, label: '3 months', earn: 100 },
-    { value: 6, label: '6 months', earn: 120 },
-    { value: 9, label: '9 months', earn: 150 },
-    { value: 12, label: '12 months', earn: 200 }
+    { value: 3, label: '3 months', rewardRate: '1.0' },
+    { value: 6, label: '6 months', rewardRate: '1.2' },
+    { value: 9, label: '9 months', rewardRate: '1.5' },
+    { value: 12, label: '12 months', rewardRate: '2.0' }
   ];
 
   public readonly MAX_LOCK_TIME = this.stakingService.MAX_LOCK_TIME;

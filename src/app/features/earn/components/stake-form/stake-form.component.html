@@ -60,12 +60,12 @@
             duration.label
           }}</span>
           <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-earn"
-            >Earn {{ duration.earn }}%</span
+            >Rewards x{{ duration.rewardRate }}</span
           >
           <span
             *ngIf="i === DURATIONS.length - 1"
             class="duration__common-chip-earn duration__common-chip-earn-end"
-            >Earn {{ duration.earn }}% for {{ duration.label }}</span
+            >Rewards x{{ duration.rewardRate }} for {{ duration.label }}</span
           >
           <span *ngIf="i === DURATIONS.length - 1" class="duration__common-chip-earn-end-hint"
             >Offer valid until 06/18</span

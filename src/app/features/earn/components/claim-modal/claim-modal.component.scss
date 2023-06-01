@@ -37,6 +37,8 @@
   @include font(24px, 29px, 600,var(--secondary-text));
   margin: 0 auto 48px;
 
+  color: var(--primary-color);
+
   text-align: center;
 
   &__warn {

@@ -24,18 +24,14 @@
         <td class="tui-table__td">
           <span
             [tuiHint]="
-              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
-                ? (deposit.totalNftRewards
-                  | bigNumberFormat
-                  | withRound : 'fixedValue' : { decimals: 4 })
-                : '< 0.0001'
+              (deposit.totalNftRewards
+                | bigNumberFormat
+                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
             [tuiManualHint]="
-              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
-                ? (deposit.totalNftRewards
-                  | bigNumberFormat
-                  | withRound : 'fixedValue' : { decimals: 4 })
-                : '< 0.0001'
+              (deposit.totalNftRewards
+                | bigNumberFormat
+                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
             [tuiManualHintShow]="false"
             [tuiHintDirection]="'top-left'"
@@ -92,7 +88,9 @@
       </td>
       <td
         class="tui-table__td"
-        [tuiHint]="total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }"
+        [tuiHint]="
+          (total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
+        "
         [tuiHintDirection]="'top-right'"
         tuiHintMode="onDark"
       >
