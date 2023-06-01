@@ -53,12 +53,11 @@ export class StakingModalService {
 
   public showClaimModal(
     rewards: BigNumber,
-    needSwitchNetwork$: Observable<boolean>,
-    beforeWithdraw = false
+    needSwitchNetwork$: Observable<boolean>
   ): Observable<boolean> {
     return this.dialogService.showDialog<ClaimModalComponent, boolean>(ClaimModalComponent, {
       ...STAKING_MODAL_OPTIONS,
-      data: { rewards, needSwitchNetwork$, beforeWithdraw },
+      data: { rewards, needSwitchNetwork$ },
       fitContent: true
     });
   }

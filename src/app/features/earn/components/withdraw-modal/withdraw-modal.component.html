@@ -3,31 +3,31 @@
   inlineSVG="assets/images/icons/crosshair.svg"
   (click)="context.completeWith(false)"
 ></div>
-<div class="title">WITHDRAWAL</div>
+<div class="title">{{ 'staking.withdrawModal.title' | translate }}</div>
 <div class="text">
-  Close your position. You will receive
+  {{ 'staking.withdrawModal.text_1' | translate }}
   <span class="text__amount"
     >{{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} RBC</span
   >
-  back
+  {{ 'staking.withdrawModal.text_2' | translate }}
   <span class="text" *ngIf="totalNftRewards?.isFinite && totalNftRewards?.toNumber() > 0"
     ><br />
-    and
+    {{ 'staking.withdrawModal.text_3' | translate }}
     <span class="text__amount">
       {{ totalNftRewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 10 } }}
       ETH</span
     >
-    in rewards.
+    {{ 'staking.withdrawModal.text_4' | translate }}
   </span>
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else withdraw">
   <app-rubic-button appearance="primary" class="action-btn" (onClick)="switchNetwork()"
-    >Switch to BSC network
+    >{{ 'staking.common.switchNetworkToArbitrum' | translate }}
   </app-rubic-button>
 </ng-container>
 
 <ng-template #withdraw>
   <app-rubic-button appearance="primary" class="action-btn" (onClick)="context.completeWith(true)">
-    Withdraw
+    {{ 'staking.withdrawModal.withdraw' | translate }}
   </app-rubic-button>
 </ng-template>

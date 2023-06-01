@@ -4,12 +4,9 @@
   (click)="context.completeWith(false)"
 ></div>
 <div class="title">
-  <ng-container *ngIf="beforeWithdraw; else claimTitle"> WITHDRAWAL </ng-container>
+  {{ 'staking.claimRewardsModal.title' | translate }}
 </div>
 <div class="text">
-  <div class="text__warn" *ngIf="beforeWithdraw">
-    Please claim your rewards before proceeding to the withdrawal
-  </div>
   {{
     rewards.gt(0.0001)
       ? (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
@@ -25,8 +22,6 @@
 
 <ng-template #claim>
   <app-rubic-button appearance="primary" class="action-btn" (onClick)="context.completeWith(true)">
-    Claim
+    {{ 'staking.claimRewardsModal.claim' | translate }}
   </app-rubic-button>
 </ng-template>
-
-<ng-template #claimTitle>CLAIM REWARDS</ng-template>

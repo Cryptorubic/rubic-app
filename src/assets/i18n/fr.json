@@ -581,57 +581,73 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
-    "lockedRBC": "Locked RBC",
-    "$lockedRBC": "Locked RBC in $",
-    "circRBCLocked": "Percent of Locked RBC",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time",
-    "apr": "APR",
-    "stake": {
-      "stake": "Stake",
-      "withdraw": "Retrait",
-      "balance": "Vous avez {{amount}}",
-      "unstakeBalance": "Disponible au retrait {{amount}}",
-      "confirmStake": "Confirmer le dépôt",
-      "confirmStakeViaWhitelist": "Confirmer le dépôt avec liste blanche",
-      "unstake": "Retirer",
-      "overLimit": "Limite par dépôt de {{min}} - {{max}} BRBC",
-      "globalUpdate": "Mise à jour globale",
-      "globalUpdateHint": "À propos de la mise à jour globale",
-      "getBrbc": "Récupérer les RBC",
-      "calculateProfitability": "Calculer le profit",
-      "refillTime": "{{hours}} heures {{minutes}} minutes",
-      "addXbrbc": "Ajouter le jeton xBRBC",
-      "canUnstake": "{{amount}} peuvent être retiré\n",
-      "buyBRBC": "BUY RBC",
-      "stakeBRBC": "STAKE RBC",
+    "common": {
+      "months": "months",
       "rules": "Complete Staking Rules",
-      "pastStaking": "Past Staking Campaigns"
+      "connectWallet": "Connect Wallet",
+      "switchNetworkToArbitrum": "Switch to BSC network"
     },
-    "stats": {
-      "profitTime": "APR d'hier",
-      "calc": "Calculer",
-      "balance": "Balance",
-      "canReceive": "Montant avec récompenses",
-      "rewards": "récompenses gagnées",
-      "apr": "APR",
-      "usersTotal": "Vous avez déposé au total",
-      "total": "Total déposé",
-      "connectWallet": "Veuillez connecter votre portefeuille"
+    "overview": {
+      "title": "Overview",
+      "lockedRBC": "Locked RBC",
+      "$lockedRBC": "Locked RBC in $",
+      "circRBCLocked": "Percent of Locked RBC",
+      "avgLockTime": "Avg. Lock Time",
+      "estYieldPerWeek": "Est. Yield Per Week",
+      "apr": "APR"
     },
-    "features": {
-      "highApr": "APR élevé",
-      "minimumApr": "L'APR prévu est de 80% ou plus sur une période de deux mois, en se basant sur le taux du RBC/USDT et du volume multi-chaînes",
-      "brbcRewards": "Récompenses en BRBC",
-      "stakeTokens": "Déposez 1000 - 100'000 RBC/BRBC/wRBC pour être récompensé en BRBC",
-      "teamBuybacks": "Rachats de l'équipe",
-      "chainFeeUsage": "0.5% de nos 0.6% de frais multi-chaînes seront utilisés pour les rachats de RBC à destination des pools de récompenses\n"
+    "withdrawModal": {
+      "title": "WITHDRAWAL",
+      "text_1": "Close your position. You will receive",
+      "text_2": "back",
+      "text_3": "and",
+      "text_4": "in rewards.",
+      "fullText": "Close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
+      "withdraw": "Withdraw"
+    },
+    "newPositionModal": {
+      "title": "NEW POSITION",
+      "buttonText": "Ok, I agree"
+    },
+    "claimRewardsModal": {
+      "title": "CLAIM REWARDS",
+      "claim": "Claim"
+    },
+    "stakeForm": {
+      "title": "New Position",
+      "youHave": "You have",
+      "max": "MAX",
+      "duration": {
+        "title": "Choose the Duration",
+        "rewards": "Rewards",
+        "for": "for",
+        "months": "months",
+        "fullText": "Rewards x1.0 for 12 months",
+        "durationEndData": "Offer valid until"
+      },
+      "hint": {
+        "lockedRBCExpiresIn": "locked RBC expires in",
+        "lockedUntil": "Locked until",
+        "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
+      },
+      "button": {
+        "entryIsClosed": "Entry is closed",
+        "stakingStopped": "Staking stopped",
+        "approve": "Approve",
+        "insufficientBalance": "Insufficient balance",
+        "enterAnAmount": "Enter an Amount",
+        "minAmount": "Minimum amount is",
+        "stake": "Stake"
+      }
     },
     "deposits": {
-      "yourDeposits": "Your Deposits",
+      "title": "Your Deposits",
       "newPosition": "+ New Position",
+      "rewards": "Rewards",
+      "endDate": "End Date",
       "claimRewards": "Claim Rewards",
-      "manage": "Manage"
+      "total": "TOTAL",
+      "withdraw": "Withdraw"
     }
   },
   "maintenance": {

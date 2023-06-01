@@ -17,20 +17,18 @@ export class ClaimModalComponent {
 
   public readonly needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
 
-  public readonly beforeWithdraw = this.context.data.beforeWithdraw;
-
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
     @Inject(POLYMORPHEUS_CONTEXT)
     public readonly context: TuiDialogContext<
       boolean,
-      { rewards: BigNumber; needSwitchNetwork$: Observable<boolean>; beforeWithdraw: boolean }
+      { rewards: BigNumber; needSwitchNetwork$: Observable<boolean> }
     >
   ) {}
 
   public async switchNetwork(): Promise<void> {
-    this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
     this.cdr.detectChanges();
   }
 }

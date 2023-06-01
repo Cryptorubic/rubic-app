@@ -2,9 +2,9 @@
   <div class="mobile-table__head">
     <div class="mobile-table__cell">NFT ID</div>
     <div class="mobile-table__cell">RBC</div>
-    <div class="mobile-table__cell">Rewards</div>
+    <div class="mobile-table__cell">{{ 'staking.deposits.rewards' | translate }}</div>
     <div class="mobile-table__cell">APR</div>
-    <div class="mobile-table__cell">End Date</div>
+    <div class="mobile-table__cell">{{ 'staking.deposits.endDate' | translate }}</div>
   </div>
   <div class="mobile-table__row" *ngFor="let deposit of deposits; let i = index; trackBy: trackBy">
     <div class="mobile-table__cell">
@@ -66,19 +66,19 @@
         [disabled]="deposit.totalNftRewards.isZero()"
         [loading]="claimingId === deposit.id"
       >
-        Claim Rewards</app-rubic-button
+        {{ 'staking.deposits.claimRewards' | translate }}</app-rubic-button
       >
       <app-rubic-button
         [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
         (onClick)="onWithdraw.emit(deposit)"
         [loading]="withdrawingId === deposit.id"
       >
-        Withdraw
+        {{ 'staking.deposits.withdraw' | translate }}
       </app-rubic-button>
     </div>
   </div>
   <div class="mobile-table__row">
-    <div class="mobile-table__cell">TOTAL</div>
+    <div class="mobile-table__cell">{{ 'staking.deposits.total' | translate }}</div>
     <div class="mobile-table__cell">
       {{
         total.balance

@@ -5,9 +5,7 @@
         <div class="deposits__wrapper fade-in">
           <div class="deposits__head">
             <div class="deposits__title">
-              <span class="deposits__title-text"
-                >{{ 'staking.deposits.yourDeposits' | translate }}
-              </span>
+              <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
               <app-rotating-icon
                 [rotating]="depositsLoading$ | async"
                 (iconClick)="refreshDeposits()"
@@ -18,7 +16,7 @@
               appearance="primary"
               (onClick)="navigateToStakeForm()"
             >
-              + New Position
+              {{ 'staking.deposits.newPosition' | translate }}
             </app-rubic-button>
           </div>
           <div class="deposits__body" *ngIf="deposits.length">

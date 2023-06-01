@@ -3,9 +3,9 @@
     <tr class="tui-table__tr">
       <th class="tui-table__th">NFT ID</th>
       <th class="tui-table__th">RBC</th>
-      <th class="tui-table__th">Rewards</th>
+      <th class="tui-table__th">{{ 'staking.deposits.rewards' | translate }}</th>
       <th class="tui-table__th">APR</th>
-      <th class="tui-table__th">End Date</th>
+      <th class="tui-table__th">{{ 'staking.deposits.endDate' | translate }}</th>
       <th class="tui-table__th">&nbsp;</th>
     </tr>
   </thead>
@@ -56,7 +56,7 @@
               (onClick)="onClaim.emit(deposit)"
               [disabled]="deposit.totalNftRewards.isZero()"
               [loading]="claimingId === deposit.id"
-              >Claim Rewards</app-rubic-button
+              >{{ 'staking.deposits.claimRewards' | translate }}</app-rubic-button
             >
             <app-rubic-button
               [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
@@ -78,7 +78,7 @@
       <tr style="height: 12px"></tr>
     </ng-container>
     <tr class="tui-table__tr">
-      <td class="tui-table__td">TOTAL</td>
+      <td class="tui-table__td">{{ 'staking.deposits.total' | translate }}</td>
       <td class="tui-table__td">
         {{
           total.balance

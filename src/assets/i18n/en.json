@@ -405,57 +405,73 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
-    "lockedRBC": "Locked RBC",
-    "$lockedRBC": "Locked RBC in $",
-    "circRBCLocked": "Percent of Locked RBC",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time",
-    "apr": "APR",
-    "stake": {
-      "stake": "Stake",
-      "withdraw": "Withdraw",
-      "balance": "You have {{amount}}",
-      "unstakeBalance": "Available to unstake {{amount}}",
-      "confirmStake": "Confirm stake",
-      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
-      "unstake": "Unstake",
-      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
-      "globalUpdate": "Global Update",
-      "globalUpdateHint": "about global update",
-      "getBrbc": "Get RBC",
-      "calculateProfitability": "Calculate profitability",
-      "refillTime": "{{hours}} hours {{minutes}} minutes",
-      "addXbrbc": "Add xBRBC",
-      "canUnstake": "Can unstake {{amount}}",
-      "buyBRBC": "BUY RBC",
-      "stakeBRBC": "STAKE RBC",
+    "common": {
+      "months": "months",
       "rules": "Complete Staking Rules",
-      "pastStaking": "Past Staking Campaigns"
+      "connectWallet": "Connect Wallet",
+      "switchNetworkToArbitrum": "Switch to BSC network"
     },
-    "stats": {
-      "profitTime": "Yesterday's APR",
-      "calc": "Calculate",
-      "balance": "Balance",
-      "canReceive": "Amount with Rewards",
-      "rewards": "Earned Rewards",
-      "apr": "APR",
-      "usersTotal": "You Total Staked",
-      "total": "Total Staked",
-      "connectWallet": "Connect Wallet to Receive Info"
+    "overview": {
+      "title": "Overview",
+      "lockedRBC": "Locked RBC",
+      "$lockedRBC": "Locked RBC in $",
+      "circRBCLocked": "Percent of Locked RBC",
+      "avgLockTime": "Avg. Lock Time",
+      "estYieldPerWeek": "Est. Yield Per Week",
+      "apr": "APR"
     },
-    "features": {
-      "highApr": "High APR",
-      "minimumApr": "Predicted APR is 80% or more for the period of 2 months, based on the RBC/USDT price and Multi-Chain volume\n",
-      "brbcRewards": "BRBC rewards",
-      "stakeTokens": "Stake 1,000 - 100,000 RBC/BRBC/wRBC to get rewards in BRBC",
-      "teamBuybacks": "Team Buybacks",
-      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool"
+    "withdrawModal": {
+      "title": "WITHDRAWAL",
+      "text_1": "Close your position. You will receive",
+      "text_2": "back",
+      "text_3": "and",
+      "text_4": "in rewards.",
+      "fullText": "Close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
+      "withdraw": "Withdraw"
+    },
+    "newPositionModal": {
+      "title": "NEW POSITION",
+      "buttonText": "Ok, I agree"
+    },
+    "claimRewardsModal": {
+      "title": "CLAIM REWARDS",
+      "claim": "Claim"
+    },
+    "stakeForm": {
+      "title": "New Position",
+      "youHave": "You have",
+      "max": "MAX",
+      "duration": {
+        "title": "Choose the Duration",
+        "rewards": "Rewards",
+        "for": "for",
+        "months": "months",
+        "fullText": "Rewards x1.0 for 12 months",
+        "durationEndData": "Offer valid until"
+      },
+      "hint": {
+        "lockedRBCExpiresIn": "locked RBC expires in",
+        "lockedUntil": "Locked until",
+        "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
+      },
+      "button": {
+        "entryIsClosed": "Entry is closed",
+        "stakingStopped": "Staking stopped",
+        "approve": "Approve",
+        "insufficientBalance": "Insufficient balance",
+        "enterAnAmount": "Enter an Amount",
+        "minAmount": "Minimum amount is",
+        "stake": "Stake"
+      }
     },
     "deposits": {
-      "yourDeposits": "Your Deposits",
+      "title": "Your Deposits",
       "newPosition": "+ New Position",
+      "rewards": "Rewards",
+      "endDate": "End Date",
       "claimRewards": "Claim Rewards",
-      "manage": "Manage"
+      "total": "TOTAL",
+      "withdraw": "Withdraw"
     }
   },
   "maintenance": {

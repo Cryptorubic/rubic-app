@@ -7,20 +7,28 @@
   [loading]="stakeLoading || approveLoading"
 >
   <ng-container *ngIf="lockTimeExceededError; else amountValidation">
-    Entry is closed
+    {{ 'staking.stakeForm.button.entryIsClosed' | translate }}
   </ng-container>
   <ng-template #amountValidation>
     <ng-container [ngSwitch]="amountError">
-      <ng-container *ngSwitchCase="errors.STAKING_CLOSED"> Staking stopped </ng-container>
-      <ng-container *ngSwitchCase="errors.NEED_APPROVE"> Approve </ng-container>
+      <ng-container *ngSwitchCase="errors.STAKING_CLOSED">
+        {{ 'staking.stakeForm.button.stakingStopped' | translate }}
+      </ng-container>
+      <ng-container *ngSwitchCase="errors.NEED_APPROVE"
+        >{{ 'staking.stakeForm.button.approve' | translate }}
+      </ng-container>
       <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE_RBC">
-        Insufficient balance
+        {{ 'staking.stakeForm.button.insufficientBalance' | translate }}
       </ng-container>
-      <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT">Enter an Amount</ng-container>
+      <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT"
+        >{{ 'staking.stakeForm.button.enterAnAmount' | translate }}
+      </ng-container>
       <ng-container *ngSwitchCase="errors.LESS_THEN_MINIMUM">
-        Minimum amount is {{ minStakeAmount }} BRBC
+        {{ 'staking.stakeForm.button.minAmount' | translate }} {{ minStakeAmount }} RBC
       </ng-container>
-      <ng-container *ngSwitchCase="errors.NULL"> Stake </ng-container>
+      <ng-container *ngSwitchCase="errors.NULL"
+        >{{ 'staking.stakeForm.button.stake' | translate }}
+      </ng-container>
     </ng-container>
   </ng-template>
 </app-rubic-button>

@@ -3,7 +3,7 @@
     <button class="title__back" (click)="back()">
       <div inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"></div>
     </button>
-    <div class="title__text">New Position</div>
+    <div class="title__text">{{ 'staking.stakeForm.title' | translate }}</div>
   </div>
 
   <div class="token">
@@ -27,13 +27,15 @@
 
     <div class="token__balance-and-price">
       <div class="token__balance" *ngLet="rbcTokenBalance$ | async as rbcTokenBalance">
-        You have
+        {{ 'staking.stakeForm.youHave' | translate }}
         {{
           rbcTokenBalance
             ? (rbcTokenBalance | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 })
             : '--.--'
         }}
-        <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
+        <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">{{
+          'staking.stakeForm.max' | translate
+        }}</span>
       </div>
       <div class="token__price">
         $ {{ selectedAmount | functionCall : calculateUsdPrice : this }}
@@ -44,7 +46,7 @@
   <hr class="divider" />
 
   <div class="duration">
-    <div class="duration__title">Choose the Duration</div>
+    <div class="duration__title">{{ 'staking.stakeForm.duration.title' | translate }}</div>
     <div class="duration__common">
       <ng-container *ngFor="let duration of DURATIONS; let i = index">
         <button
@@ -56,19 +58,21 @@
           [disabled]="duration.value > MAX_LOCK_TIME || stakingIsClosed"
           (click)="setDuration(duration.value)"
         >
-          <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-label">{{
-            duration.label
-          }}</span>
+          <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-label"
+            >{{ duration.label }} {{ 'staking.common.months' | translate }}</span
+          >
           <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-earn"
-            >Rewards x{{ duration.rewardRate }}</span
+            >{{ 'staking.stakeForm.duration.rewards' | translate }} x{{ duration.rewardRate }}</span
           >
           <span
             *ngIf="i === DURATIONS.length - 1"
             class="duration__common-chip-earn duration__common-chip-earn-end"
-            >Rewards x{{ duration.rewardRate }} for {{ duration.label }}</span
+            >{{ 'staking.stakeForm.duration.rewards' | translate }} x{{ duration.rewardRate }}
+            {{ 'staking.stakeForm.duration.for' | translate }} {{ duration.label }}
+            {{ 'staking.common.months' | translate }}</span
           >
           <span *ngIf="i === DURATIONS.length - 1" class="duration__common-chip-earn-end-hint"
-            >Offer valid until 06/18</span
+            >{{ 'staking.stakeForm.duration.durationEndData' | translate }} 06/18</span
           >
         </button>
       </ng-container>
@@ -81,8 +85,9 @@
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      locked RBC expires in {{ selectedDuration }} months. <br />
-      Locked until {{ unlockDate | date : 'mediumDate' }}
+      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ selectedDuration }}
+      {{ 'staking.common.months' | translate }}. <br />
+      {{ 'staking.stakeForm.hint.lockedUntil' | translate }} {{ unlockDate | date : 'mediumDate' }}
     </div>
   </div>
 
@@ -94,7 +99,7 @@
       } as data"
     >
       <app-rubic-button appearance="primary" (onClick)="login()" *ngIf="data.needLogin">
-        Connect Wallet
+        {{ 'staking.common.connectWallet' | translate }}
       </app-rubic-button>
 
       <app-rubic-button
@@ -102,7 +107,7 @@
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
       >
-        Switch to BNB network
+        {{ 'staking.common.switchNetworkToArbitrum' | translate }}
       </app-rubic-button>
 
       <app-stake-button
@@ -126,7 +131,7 @@
     href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
     target="_blank"
   >
-    {{ 'staking.stake.rules' | translate }}
+    {{ 'staking.common.rules' | translate }}
     <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
   </a>
 </div>

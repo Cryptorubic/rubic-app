@@ -547,57 +547,73 @@
     "liquidityTime": "Liquidity time"
   },
   "staking": {
-    "lockedRBC": "Locked RBC",
-    "$lockedRBC": "Locked RBC in $",
-    "circRBCLocked": "Percent of Locked RBC",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time",
-    "apr": "APR",
-    "stake": {
-      "stake": "Stake",
-      "withdraw": "Çekmek",
-      "balance": "Sahipsin {{amount}}",
-      "unstakeBalance": "Kaldırılabilir {{amount}}",
-      "confirmStake": "stake onayla",
-      "confirmStakeViaWhitelist": "Whitelist ile stake işlemini onaylayın",
-      "unstake": "Unstake",
-      "overLimit": "Bir stake limiti {{min}} - {{max}} BRBC",
-      "globalUpdate": "Küresel Güncelleme",
-      "globalUpdateHint": "genel güncelleme hakkında",
-      "getBrbc": "Get RBC",
-      "calculateProfitability": "Karlılığı hesaplayın",
-      "refillTime": "{{hours}} hours {{minutes}} minutes",
-      "addXbrbc": "Add xBRBC",
-      "canUnstake": "Kaldırılabilir stake {{amount}}",
-      "buyBRBC": "BUY RBC",
-      "stakeBRBC": "STAKE RBC",
+    "common": {
+      "months": "months",
       "rules": "Complete Staking Rules",
-      "pastStaking": "Past Staking Campaigns"
+      "connectWallet": "Connect Wallet",
+      "switchNetworkToArbitrum": "Switch to BSC network"
     },
-    "stats": {
-      "profitTime": "Dünün APR",
-      "calc": "Hesaplamak",
-      "balance": "Hesap",
-      "canReceive": "Ödüllü tutar",
-      "rewards": "kazanılan Ödüller",
-      "apr": "APR",
-      "usersTotal": "Toplam stake miktarı",
-      "total": "Toplam stake",
-      "connectWallet": "Bilgi almak için cüzdanı bağlayın"
+    "overview": {
+      "title": "Overview",
+      "lockedRBC": "Locked RBC",
+      "$lockedRBC": "Locked RBC in $",
+      "circRBCLocked": "Percent of Locked RBC",
+      "avgLockTime": "Avg. Lock Time",
+      "estYieldPerWeek": "Est. Yield Per Week",
+      "apr": "APR"
     },
-    "features": {
-      "highApr": "High APR",
-      "minimumApr": "RBC/USDT fiyatına ve Çoklu Zincir hacmine bağlı olarak 2 aylık dönem için tahmini APR %80 veya daha fazladır\n",
-      "brbcRewards": "BRBC rewards",
-      "stakeTokens": "BRBC'de ödüller almak için 1.000 - 100.000 RBC/BRBC/wRBC yatırın",
-      "teamBuybacks": "Team Buybacks",
-      "chainFeeUsage": "%0,6 Çoklu Zincir ücretimizin %0,5'i RBC'yi geri almak ve ödül havuzuna dağıtmak için kullanılacak"
+    "withdrawModal": {
+      "title": "WITHDRAWAL",
+      "text_1": "Close your position. You will receive",
+      "text_2": "back",
+      "text_3": "and",
+      "text_4": "in rewards.",
+      "fullText": "Close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
+      "withdraw": "Withdraw"
+    },
+    "newPositionModal": {
+      "title": "NEW POSITION",
+      "buttonText": "Ok, I agree"
+    },
+    "claimRewardsModal": {
+      "title": "CLAIM REWARDS",
+      "claim": "Claim"
+    },
+    "stakeForm": {
+      "title": "New Position",
+      "youHave": "You have",
+      "max": "MAX",
+      "duration": {
+        "title": "Choose the Duration",
+        "rewards": "Rewards",
+        "for": "for",
+        "months": "months",
+        "fullText": "Rewards x1.0 for 12 months",
+        "durationEndData": "Offer valid until"
+      },
+      "hint": {
+        "lockedRBCExpiresIn": "locked RBC expires in",
+        "lockedUntil": "Locked until",
+        "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
+      },
+      "button": {
+        "entryIsClosed": "Entry is closed",
+        "stakingStopped": "Staking stopped",
+        "approve": "Approve",
+        "insufficientBalance": "Insufficient balance",
+        "enterAnAmount": "Enter an Amount",
+        "minAmount": "Minimum amount is",
+        "stake": "Stake"
+      }
     },
     "deposits": {
-      "yourDeposits": "Your Deposits",
+      "title": "Your Deposits",
       "newPosition": "+ New Position",
+      "rewards": "Rewards",
+      "endDate": "End Date",
       "claimRewards": "Claim Rewards",
-      "manage": "Manage"
+      "total": "TOTAL",
+      "withdraw": "Withdraw"
     }
   },
   "maintenance": {

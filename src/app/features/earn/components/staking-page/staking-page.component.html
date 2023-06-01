@@ -10,13 +10,13 @@
     href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
     target="_blank"
   >
-    {{ 'staking.stake.rules' | translate }}
+    {{ 'staking.common.rules' | translate }}
     <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
   </a>
 </div>
 
 <ng-template #connectWallet>
   <app-rubic-button class="connect-wallet" appearance="primary" (onClick)="login()"
-    >Connect Wallet
+    >{{ 'staking.common.connectWallet' | translate }}
   </app-rubic-button>
 </ng-template>
