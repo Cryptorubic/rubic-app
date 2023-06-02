@@ -19,9 +19,9 @@ const routes: Routes = [
     canActivate: [TimeGuard],
     data: {
       // redirectPath: EXTERNAL_LINKS.LANDING_STAKING,
-      // expiredDate: 1686733200000 // release date
+      // expiredDate: 1686744000 // release date
       redirectPath: 'https://dev.rubic.exchange/staking',
-      expiredDate: 1683017959000
+      expiredDate: 1684065600
     }
   },
   {

@@ -31,6 +31,7 @@ import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/t
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
+import { GasService } from '@core/services/gas-service/gas.service';
 
 const STAKING_END_TIMESTAMP = new Date(2024, 5, 18).getTime();
 
@@ -110,7 +111,8 @@ export class StakingService {
     private readonly errorService: ErrorsService,
     private readonly ngZone: NgZone,
     private readonly stakingNotificationService: StakingNotificationService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly gasService: GasService
   ) {
     this.watchUserBalanceAndAllowance();
   }
@@ -195,10 +197,15 @@ export class StakingService {
 
   public async approveRbc(): Promise<TransactionReceipt> {
     try {
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        BLOCKCHAIN_NAME.ARBITRUM
+      );
+
       const receipt = await this.web3Private.approveTokens(
         STAKING_ROUND_THREE.TOKEN.address,
         STAKING_ROUND_THREE.NFT.address,
-        'infinity'
+        'infinity',
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
       );
 
       if (receipt && receipt.status) {
