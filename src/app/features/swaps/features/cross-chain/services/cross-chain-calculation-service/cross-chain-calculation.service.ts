@@ -24,7 +24,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
@@ -34,7 +34,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import {
   CrossChainCalculatedTrade,
@@ -177,7 +177,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
             tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
           )
           .pipe(
-            switchMap(reactivelyCalculatedTradeData => {
+            mergeMap(data => {
+              const approve$ =
+                calculateNeedApprove && data?.wrappedTrade?.trade
+                  ? data.wrappedTrade.trade.needApprove()
+                  : of(false);
+              return forkJoin([of(data), approve$]);
+            }),
+            map(([reactivelyCalculatedTradeData, needApprove]) => {
               const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
               if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
@@ -188,34 +195,17 @@ export class CrossChainCalculationService extends TradeCalculationService {
                 );
               }
 
-              const trade = wrappedTrade?.trade;
-
-              const needApprove$ = from(
-                calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
-              );
-
-              return needApprove$.pipe(
-                map((needApprove): CrossChainCalculatedTradeData => {
-                  return {
-                    total: total,
-                    calculated: calculated,
-                    lastCalculatedTrade: wrappedTrade
-                      ? {
-                          ...wrappedTrade,
-                          needApprove,
-                          route: this.parseRoute(wrappedTrade)
-                        }
-                      : null
-                  };
-                }),
-                catchError(() => {
-                  return of({
-                    total,
-                    calculated,
-                    lastCalculatedTrade: null
-                  });
-                })
-              );
+              return {
+                total: total,
+                calculated: calculated,
+                lastCalculatedTrade: wrappedTrade
+                  ? {
+                      ...wrappedTrade,
+                      needApprove,
+                      route: this.parseRoute(wrappedTrade)
+                    }
+                  : null
+              };
             })
           );
       })
