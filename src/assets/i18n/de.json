@@ -454,8 +454,8 @@
         "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
       },
       "button": {
-        "entryIsClosed": "Entry is closed",
-        "stakingStopped": "Staking stopped",
+        "entryIsClosed": "Entry is Closed",
+        "stakingStopped": "Staking has Stopped",
         "approve": "Approve",
         "insufficientBalance": "Insufficient balance",
         "enterAnAmount": "Enter an Amount",
@@ -470,6 +470,8 @@
       "endDate": "End Date",
       "claimRewards": "Claim Rewards",
       "total": "TOTAL",
+      "totalRBC": "TOTAL RBC:",
+      "totalRewards": "TOTAL REWARDS:",
       "withdraw": "Withdraw"
     }
   },

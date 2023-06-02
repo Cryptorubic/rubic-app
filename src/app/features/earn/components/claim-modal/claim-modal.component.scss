@@ -17,6 +17,10 @@
 
   cursor: pointer;
 
+  @include b($mobile-md) {
+    display: none;
+  }
+
   ::ng-deep svg path {
     stroke: #000;
 

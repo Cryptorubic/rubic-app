@@ -157,3 +157,24 @@
     opacity: 1;
   }
 }
+
+@include b($mobile-md) {
+  .deposits {
+    &__wrapper {
+      position: relative;
+
+      padding: 26px 0;
+
+      background: transparent;
+      border-radius: 0;
+    }
+
+    &__head {
+      margin-bottom: 0;
+      padding: 10px 14px 0;
+
+      background: var(--form-background);
+      border-radius: 10px 10px 0 0;
+    }
+  }
+}
