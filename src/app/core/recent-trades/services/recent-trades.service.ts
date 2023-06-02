@@ -399,6 +399,55 @@ export class RecentTradesService {
     return transactionReceipt;
   }
 
+  public async redeemArbitrum(
+    srcTxHash: string,
+    fromBlockchain: CbridgeCrossChainSupportedBlockchain
+  ): Promise<TransactionReceipt> {
+    let tradeInProgressSubscription$: Subscription;
+    let transactionReceipt: TransactionReceipt;
+
+    const trade = this.recentTradesStoreService.getSpecificCrossChainTrade(
+      srcTxHash,
+      fromBlockchain
+    );
+
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      transactionReceipt = await ArbitrumRbcBridgeTrade.redeemTokens(srcTxHash, {
+        onConfirm: onTransactionHash
+      });
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
+      });
+    } catch (error) {
+      console.debug('[Cbridge] Transaction revert error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
+  }
+
   public readAllTrades(): void {
     setTimeout(() => this.recentTradesStoreService.updateUnreadTrades(true), 0);
   }

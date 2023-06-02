@@ -195,7 +195,7 @@
   </app-rubic-button>
 
   <app-rubic-button
-    *ngIf="isArbitrumBridgeTrade"
+    *ngIf="!showRevert && isArbitrumBridgeTrade"
     appearance="primary"
     class="revert"
     (onClick)="claimTokens()"

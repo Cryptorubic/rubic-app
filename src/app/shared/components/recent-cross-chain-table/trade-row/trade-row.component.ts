@@ -35,7 +35,8 @@ import {
   CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
   TxStatus,
-  ChangenowApiStatus
+  ChangenowApiStatus,
+  ArbitrumRbcBridgeSupportedBlockchain
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
@@ -96,7 +97,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public get showAction(): boolean {
     return (
-      ((this.isSymbiosisTrade || this.isCbridgeTrade) &&
+      ((this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
         this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT) ||
       (this.isArbitrumBridgeTrade &&
         this.uiTrade?.statusTo === this.CrossChainTxStatus.READY_TO_CLAIM)
@@ -105,7 +106,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public get showRevert(): boolean {
     return (
-      (this.isSymbiosisTrade || this.isCbridgeTrade) &&
+      (this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
       this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT
     );
   }
@@ -276,6 +277,13 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       revertTxReceipt = await this.recentTradesService.revertCbridge(
         this.trade.srcTxHash,
         this.trade.fromToken.blockchain as CbridgeCrossChainSupportedBlockchain
+      );
+    }
+
+    if (this.isArbitrumBridgeTrade) {
+      revertTxReceipt = await this.recentTradesService.redeemArbitrum(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain as ArbitrumRbcBridgeSupportedBlockchain
       );
     }
 
