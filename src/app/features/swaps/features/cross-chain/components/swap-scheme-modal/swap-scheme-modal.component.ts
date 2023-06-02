@@ -251,7 +251,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
         filter(tradeProcessingStatus => tradeProcessingStatus === TxStatus.SUCCESS),
         tap(() => this._dstTxStatus$.next(TxStatus.PENDING)),
         switchMap(() => {
-          return interval(10000).pipe(
+          return interval(30_000).pipe(
             startWith(-1),
             switchMap(() =>
               from(
