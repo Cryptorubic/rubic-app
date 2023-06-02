@@ -1,7 +1,7 @@
 import { RoundContract } from '../models/round-contract.interface';
 import { NFT_CONTRACT_ABI } from './NFT_CONTRACT_ABI';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { TOKEN_CONTRACT_ABI } from '@features/earn/constants/TOKEN_CONTRACT_ABI';
+import { RBC_CONTRACT_ABI } from '@features/earn/constants/RBC_CONTRACT_ABI';
 
 export const STAKING_ROUND_THREE: {
   TOKEN: RoundContract;
@@ -9,7 +9,7 @@ export const STAKING_ROUND_THREE: {
 } = {
   TOKEN: {
     address: ENVIRONMENT.staking.rbcToken,
-    abi: TOKEN_CONTRACT_ABI
+    abi: RBC_CONTRACT_ABI
   },
   NFT: {
     address: ENVIRONMENT.staking.nftContractAddress,

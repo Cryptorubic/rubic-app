@@ -28,7 +28,7 @@ export class ClaimModalComponent {
   ) {}
 
   public async switchNetwork(): Promise<void> {
-    await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.ARBITRUM);
     this.cdr.detectChanges();
   }
 }

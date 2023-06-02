@@ -21,7 +21,7 @@ const routes: Routes = [
       // redirectPath: EXTERNAL_LINKS.LANDING_STAKING,
       // expiredDate: 1686733200000 // release date
       redirectPath: 'https://dev.rubic.exchange/staking',
-      expiredDate: 1685610000000
+      expiredDate: 1683017959000
     }
   },
   {

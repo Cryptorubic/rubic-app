@@ -22,25 +22,20 @@ import {
   timer
 } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
-import { NFT_CONTRACT_ABI } from '../constants/NFT_CONTRACT_ABI';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
+import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 
 const STAKING_END_TIMESTAMP = new Date(2024, 5, 18).getTime();
 
 @Injectable()
 export class StakingService {
-  public readonly RBC_TOKEN_ADDRESS = ENVIRONMENT.staking.rbcToken;
-
-  public readonly NFT_CONTRACT_ADDRESS = ENVIRONMENT.staking.nftContractAddress;
-
   public readonly MIN_STAKE_AMOUNT = 1;
 
   public readonly MAX_LOCK_TIME = Math.trunc(
@@ -75,12 +70,10 @@ export class StakingService {
 
   public readonly needSwitchNetwork$ = this.walletConnectorService.networkChange$.pipe(
     filter(Boolean),
-    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+    map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.ARBITRUM)
   );
 
-  private readonly web3Public = Injector.web3PublicService.getWeb3Public(
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-  );
+  private readonly web3Public = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
 
   private readonly web3Private = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
 
@@ -153,9 +146,9 @@ export class StakingService {
   public getAllowance(): Observable<BigNumber> {
     return from(
       this.web3Public.getAllowance(
-        this.RBC_TOKEN_ADDRESS,
+        STAKING_ROUND_THREE.TOKEN.address,
         this.walletAddress,
-        this.NFT_CONTRACT_ADDRESS
+        STAKING_ROUND_THREE.NFT.address
       )
     ).pipe(
       map((allowance: BigNumber) => Web3Pure.fromWei(allowance)),
@@ -173,7 +166,7 @@ export class StakingService {
 
   public getRbcTokenBalance(): Observable<BigNumber> {
     const amount$: Observable<BigNumber> = this.walletAddress
-      ? from(this.web3Public.getTokenBalance(this.walletAddress, this.RBC_TOKEN_ADDRESS))
+      ? from(this.web3Public.getTokenBalance(this.walletAddress, STAKING_ROUND_THREE.TOKEN.address))
       : of(new BigNumber(0));
     return amount$.pipe(
       map(balance => Web3Pure.fromWei(balance)),
@@ -183,8 +176,8 @@ export class StakingService {
 
   private estimatedAnnualRewardsByTokenId(tokenID: string): Promise<string> {
     return this.web3Public.callContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
+      STAKING_ROUND_THREE.NFT.address,
+      STAKING_ROUND_THREE.NFT.abi,
       'estimatedAnnualRewardsByTokenId',
       [tokenID]
     );
@@ -203,8 +196,8 @@ export class StakingService {
   public async approveRbc(): Promise<TransactionReceipt> {
     try {
       const receipt = await this.web3Private.approveTokens(
-        this.RBC_TOKEN_ADDRESS,
-        this.NFT_CONTRACT_ADDRESS,
+        STAKING_ROUND_THREE.TOKEN.address,
+        STAKING_ROUND_THREE.NFT.address,
         'infinity'
       );
 
@@ -224,8 +217,8 @@ export class StakingService {
     const durationInSeconds = duration * SECONDS_IN_MONTH;
     // const durationInSeconds = duration * 60;
     return this.web3Private.tryExecuteContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
+      STAKING_ROUND_THREE.NFT.address,
+      STAKING_ROUND_THREE.NFT.abi,
       'enterStaking',
       [Web3Pure.toWei(amount, 18), String(durationInSeconds)]
     );
@@ -234,8 +227,8 @@ export class StakingService {
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
     try {
       const receipt = await this.web3Private.tryExecuteContractMethod(
-        this.NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
         'claimRewards',
         [deposit.id]
       );
@@ -268,8 +261,8 @@ export class StakingService {
   public async withdraw(deposit: Deposit): Promise<TransactionReceipt> {
     try {
       const receipt = await this.web3Private.tryExecuteContractMethod(
-        this.NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
         'unstake',
         [deposit.id]
       );
@@ -294,8 +287,8 @@ export class StakingService {
   public async isEmergencyStopped(): Promise<boolean> {
     try {
       return await this.web3Public.callContractMethod(
-        this.NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
         'emergencyStop'
       );
     } catch (error) {
@@ -377,8 +370,8 @@ export class StakingService {
 
   public async getTokensByOwner(walletAddress: string): Promise<string[]> {
     return this.web3Public.callContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
+      STAKING_ROUND_THREE.NFT.address,
+      STAKING_ROUND_THREE.NFT.abi,
       'tokensOfOwner',
       [walletAddress]
     );
@@ -389,7 +382,7 @@ export class StakingService {
       lockTime: string;
       lockStartTime: string;
       amount: string;
-    }>(this.NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, 'stakes', [nftId]);
+    }>(STAKING_ROUND_THREE.NFT.address, STAKING_ROUND_THREE.NFT.abi, 'stakes', [nftId]);
     const endTimestamp = Number(lockStartTime) + Number(lockTime);
 
     return {
@@ -401,8 +394,8 @@ export class StakingService {
   public async getNftRewardsInfo(nftId: string): Promise<{ totalNftRewards: BigNumber }> {
     try {
       const calculatedRewards = await this.web3Public.callContractMethod(
-        this.NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
         'calculateRewards',
         [nftId]
       );
@@ -413,26 +406,16 @@ export class StakingService {
   }
 
   public async switchNetwork(): Promise<boolean> {
-    // @TODO change to Arbitrum for prod release
-    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    return this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.ARBITRUM);
   }
 
   public async getNftVotingPower(nftId: string): Promise<string> {
     return await this.web3Public.callContractMethod(
-      this.NFT_CONTRACT_ADDRESS,
-      NFT_CONTRACT_ABI,
+      STAKING_ROUND_THREE.NFT.address,
+      STAKING_ROUND_THREE.NFT.abi,
       'balanceOfNFT',
       [nftId]
     );
-  }
-
-  public async getIsStakingFinished(): Promise<boolean> {
-    return false;
-    // return await this.web3Public.callContractMethod(
-    //   this.NFT_CONTRACT_ADDRESS,
-    //   NFT_CONTRACT_ABI,
-    //   'finishedStaking'
-    // );
   }
 
   public parseAmountToBn(value: string): BigNumber {

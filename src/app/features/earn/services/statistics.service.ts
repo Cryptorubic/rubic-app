@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
-import { TOKEN_CONTRACT_ABI } from '@features/earn/constants/TOKEN_CONTRACT_ABI';
 
 @Injectable()
 export class StatisticsService {
@@ -29,16 +28,9 @@ export class StatisticsService {
 
   public readonly totalSupply$ = this._totalSupply$.asObservable();
 
-  // @TODO: remove after implementation of apr calculations on BE
-  private readonly currentActiveTokens = 16841697.321;
-
   private readonly numberOfSecondsPerYear = 31_104_000;
 
   private readonly numberOfSecondsPerWeek = 604_800;
-
-  private readonly numberOfWeekPerYear = 52;
-
-  private readonly reward_multiplier = new BigNumber(10_000_000);
 
   public currentStakingApr = new BigNumber(0);
 
@@ -74,14 +66,14 @@ export class StatisticsService {
   constructor(private readonly coingeckoApiService: CoingeckoApiService) {}
 
   private static get blockchainAdapter(): EvmWeb3Public {
-    return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
   }
 
   public getTotalSupply(): void {
     from(
       StatisticsService.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.TOKEN.address,
-        TOKEN_CONTRACT_ABI,
+        STAKING_ROUND_THREE.TOKEN.abi,
         'totalSupply'
       )
     ).subscribe(value => {
