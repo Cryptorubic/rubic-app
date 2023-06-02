@@ -13,7 +13,7 @@ export class TimeGuard implements CanActivate {
   ) {}
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const { redirectPath, expiredDateInSeconds, expiredDateInMilliseconds } = route.data;
+    const { redirectPath, expiredDateInSeconds } = route.data;
     const currentDate = Date.now();
 
     return this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
@@ -26,7 +26,7 @@ export class TimeGuard implements CanActivate {
         }
       }),
       catchError(() => {
-        if (currentDate < expiredDateInMilliseconds) {
+        if (currentDate < expiredDateInSeconds * 1000) {
           this.window.location.href = redirectPath;
           return of(false);
         } else {

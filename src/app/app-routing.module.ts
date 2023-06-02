@@ -20,10 +20,8 @@ const routes: Routes = [
     data: {
       // redirectPath: EXTERNAL_LINKS.LANDING_STAKING,
       // expiredDateInSeconds: 1686733200 // release date
-      // expiredDateInMilliseconds: 1686733200000 // release date
       redirectPath: 'https://dev.rubic.exchange/staking',
-      expiredDateInSeconds: 1685718000,
-      expiredDateInMilliseconds: 1685718000000
+      expiredDateInSeconds: 1685718000
     }
   },
   {
