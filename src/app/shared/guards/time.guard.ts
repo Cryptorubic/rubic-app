@@ -18,13 +18,14 @@ export class TimeGuard implements CanActivate {
 
     return this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
       map(response => {
-        console.log(response.current_timestamp < expiredDate);
-        if (response.current_timestamp > expiredDate) {
-          this.window.location.href = redirectPath;
-          return false;
-        } else {
-          return true;
-        }
+        console.log(response, redirectPath, expiredDate);
+        return true;
+        // if (response.current_timestamp > expiredDate) {
+        //   this.window.location.href = redirectPath;
+        //   return false;
+        // } else {
+        //   return true;
+        // }
       })
     );
   }
