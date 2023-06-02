@@ -25,6 +25,7 @@ import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { StakingService } from '../../services/staking.service';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-stake-form',
@@ -102,9 +103,11 @@ export class StakeFormComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
+    private readonly authService: AuthService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.stakingService.getRbcAmountPrice().subscribe(price => (this.rbcUsdPrice = price));
+    this.authService.currentUser$.subscribe(() => this.rbcAmountCtrl.patchValue(''));
   }
 
   public ngOnInit(): void {
@@ -176,7 +179,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public async switchNetwork(): Promise<void> {
-    this.stakingService.switchNetwork();
+    await this.stakingService.switchNetwork();
   }
 
   public approve(): void {

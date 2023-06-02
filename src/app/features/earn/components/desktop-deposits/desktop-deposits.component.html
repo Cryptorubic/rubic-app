@@ -19,7 +19,17 @@
           </div>
         </td>
         <td class="tui-table__td">
-          {{ deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 0 } }}
+          <span
+            [tuiHint]="
+              deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }
+            "
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{
+              deposit.amount | bigNumberFormat | withRound : 'toClosestValue' : { decimals: 0 }
+            }}</span
+          >
         </td>
         <td class="tui-table__td">
           <span

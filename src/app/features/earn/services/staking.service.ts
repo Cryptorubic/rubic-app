@@ -32,6 +32,7 @@ import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { GasInfo } from '@core/services/gas-service/models/gas-info';
 
 const STAKING_END_TIMESTAMP = new Date(2024, 5, 18).getTime();
 
@@ -195,12 +196,18 @@ export class StakingService {
     return Number(currentBlock.timestamp);
   }
 
-  public async approveRbc(): Promise<TransactionReceipt> {
-    try {
-      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
-        BLOCKCHAIN_NAME.ARBITRUM
-      );
+  public async getGasInfo(): Promise<GasInfo> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
 
+    return { shouldCalculateGasPrice, gasPriceOptions };
+  }
+
+  public async approveRbc(): Promise<TransactionReceipt> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
+
+    try {
       const receipt = await this.web3Private.approveTokens(
         STAKING_ROUND_THREE.TOKEN.address,
         STAKING_ROUND_THREE.NFT.address,
@@ -221,23 +228,29 @@ export class StakingService {
   }
 
   public async stake(amount: BigNumber, duration: number): Promise<TransactionReceipt> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
+
     const durationInSeconds = duration * SECONDS_IN_MONTH;
     // const durationInSeconds = duration * 60;
     return this.web3Private.tryExecuteContractMethod(
       STAKING_ROUND_THREE.NFT.address,
       STAKING_ROUND_THREE.NFT.abi,
       'enterStaking',
-      [Web3Pure.toWei(amount, 18), String(durationInSeconds)]
+      [Web3Pure.toWei(amount, 18), String(durationInSeconds)],
+      { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
     );
   }
 
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
+
     try {
       const receipt = await this.web3Private.tryExecuteContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'claimRewards',
-        [deposit.id]
+        [deposit.id],
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
       );
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
@@ -266,12 +279,15 @@ export class StakingService {
   }
 
   public async withdraw(deposit: Deposit): Promise<TransactionReceipt> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
+
     try {
       const receipt = await this.web3Private.tryExecuteContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'unstake',
-        [deposit.id]
+        [deposit.id],
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
       );
 
       if (receipt.status) {

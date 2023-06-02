@@ -12,7 +12,13 @@
       <div class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.overview.lockedRBC' | translate }}</div>
         <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
-          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
+          <span
+            [tuiHint]="lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 6 : true) : '--.--'"
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
+          </span>
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
@@ -53,8 +59,20 @@
           {{ 'staking.overview.estYieldPerWeek' | translate }}
         </div>
         <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
-          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 2) : '--.--' }}
-          <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
+          <span
+            [tuiHint]="rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 6) : '--.--'"
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{
+              rewardPerWeek?.isFinite()
+                ? rewardPerWeek?.lt(0.01) && rewardPerWeek?.toNumber() !== 0
+                  ? '< 0.01'
+                  : (rewardPerWeek | bigNumberFormat : 2 : true)
+                : '--.--'
+            }}
+            <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
+          </span>
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
