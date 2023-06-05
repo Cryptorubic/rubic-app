@@ -52,7 +52,10 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
+import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -81,6 +84,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
+    private readonly tonPromoService: TonPromoService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
@@ -281,7 +285,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
+    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(calculatedTrade, fromAddress);
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
@@ -289,17 +295,21 @@ export class CrossChainCalculationService extends TradeCalculationService {
       this.tokensService.findToken(calculatedTrade.trade.from),
       this.tokensService.findToken(calculatedTrade.trade.to)
     ]);
-
-    const fromAddress = this.authService.userAddress;
-
     await this.handlePreSwapModal(calculatedTrade);
-
     let transactionHash: string;
 
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
       this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
+
+      if (tonPromoInfo.isTonPromoTrade) {
+        this.tonPromoService.postTonPromoTradeInfo(
+          calculatedTrade.trade as ChangenowCrossChainTrade,
+          fromAddress,
+          transactionHash
+        );
+      }
 
       const timestamp = Date.now();
       const viaUuid =
@@ -325,7 +335,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ...(changenowId && { changenowId })
       };
 
-      this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
+      this.openSwapSchemeModal(
+        calculatedTrade,
+        txHash,
+        timestamp,
+        fromToken,
+        toToken,
+        tonPromoInfo
+      );
       try {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
@@ -353,6 +370,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
     try {
       await calculatedTrade.trade.swap(swapOptions);
+
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
@@ -411,13 +429,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
   }
 
-  public openSwapSchemeModal(
+  public async openSwapSchemeModal(
     calculatedTrade: CrossChainCalculatedTrade,
     txHash: string,
     timestamp: number,
     fromToken: TokenAmount,
-    toToken: TokenAmount
-  ): void {
+    toToken: TokenAmount,
+    tonPromoTrade: ShortTonPromoInfo
+  ): Promise<void> {
     const { trade, route } = calculatedTrade;
 
     const bridgeType = trade.bridgeType;
@@ -454,7 +473,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
-    const defaultData = {
+    const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
       srcProvider: fromTradeProvider,
@@ -466,18 +485,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
       rangoRequestId,
       timestamp,
       amountOutMin,
-      changenowId
-    };
-
-    const swapAndEarnData = {
-      ...defaultData,
-      isSwapAndEarnData: true
+      changenowId,
+      ...(tonPromoTrade.isTonPromoTrade && {
+        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
+      }),
+      ...(this.isSwapAndEarnSwap(calculatedTrade) && {
+        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+      })
     };
 
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: this.isSwapAndEarnSwap(calculatedTrade) ? swapAndEarnData : defaultData,
+        data: defaultData,
         fitContent: true
       })
       .subscribe();

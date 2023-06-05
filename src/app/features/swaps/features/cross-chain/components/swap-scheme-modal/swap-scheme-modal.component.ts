@@ -112,11 +112,9 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   private changenowId: string;
 
-  public isSwapAndEarnSwap: boolean;
-
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
+  public points: number = 0;
 
   public get isArbitrumBridge(): boolean {
     return (
@@ -152,7 +150,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit(): void {
-    if (this.isSwapAndEarnSwap) {
+    if (this.points && this.points > 0) {
       SwapSchemeModalComponent.toggleConfettiBackground('show');
     }
   }
@@ -371,7 +369,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.isSwapAndEarnSwap = data.isSwapAndEarnData;
+    this.points = data.points;
 
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;

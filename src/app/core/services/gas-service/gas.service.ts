@@ -127,6 +127,10 @@ export class GasService {
   public async getGasInfo(blockchain: BlockchainName): Promise<GasInfo> {
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
+    if (!shouldCalculateGasPrice) {
+      return { shouldCalculateGasPrice, gasPriceOptions: {} };
+    }
+
     const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = await this.getGasPriceInEthUnits(
       blockchain
     );
