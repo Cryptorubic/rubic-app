@@ -667,7 +667,10 @@ export class CrossChainFormService {
           return;
         }
         if (this.refreshServiceCallsCounter >= 4) {
-          this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+          if (this.selectedTrade?.tradeType !== CROSS_CHAIN_TRADE_TYPE.ARBITRUM) {
+            this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+          }
+
           return;
         }
 

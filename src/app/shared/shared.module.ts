@@ -77,6 +77,7 @@ import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cros
 import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
+import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/
     TradeRowComponent,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
+    ArbitrumBridgeWarningModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
