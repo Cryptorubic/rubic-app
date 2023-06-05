@@ -14,13 +14,13 @@ import { ThemeService } from '@app/core/services/theme/theme.service';
 import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import {
   BehaviorSubject,
+  delay,
+  forkJoin,
   from,
   interval,
-  delay,
-  Subscription,
   of,
-  takeUntil,
-  forkJoin
+  Subscription,
+  takeUntil
 } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TranslateService } from '@ngx-translate/core';
@@ -118,6 +118,14 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   public readonly points$ = this.swapAndEarnStateService.points$;
 
+  public get isArbitrumBridge(): boolean {
+    return (
+      this.fromBlockchain.key === BLOCKCHAIN_NAME.ARBITRUM &&
+      this.toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM &&
+      this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
+  }
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly errorService: ErrorsService,
@@ -192,7 +200,18 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
         catchError(() =>
           of({ srcTxStatus: TxStatus.PENDING, dstTxStatus: TxStatus.PENDING, dstTxHash: null })
         ),
-        tap(crossChainStatus => this._srcTxStatus$.next(crossChainStatus.srcTxStatus)),
+        tap(crossChainStatus => {
+          const storageData = this.recentTradesStoreService.getSpecificCrossChainTrade(
+            this.srcTxHash,
+            this.fromBlockchain.key
+          );
+          const status =
+            storageData?.calculatedStatusFrom === TxStatus.SUCCESS
+              ? TxStatus.SUCCESS
+              : crossChainStatus.srcTxStatus;
+
+          this._srcTxStatus$.next(status);
+        }),
         takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === TxStatus.PENDING),
         takeUntil(this.destroy$)
       )
