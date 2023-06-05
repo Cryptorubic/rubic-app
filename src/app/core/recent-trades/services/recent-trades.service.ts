@@ -143,6 +143,11 @@ export class RecentTradesService {
       console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
     }
 
+    const storageData = this.recentTradesStoreService.getSpecificCrossChainTrade(
+      trade.srcTxHash,
+      trade.fromToken.blockchain
+    );
+
     const { srcTxStatus, dstTxStatus, dstTxHash } =
       await this.sdkService.crossChainStatusManager.getCrossChainStatus(
         {
@@ -159,7 +164,8 @@ export class RecentTradesService {
         trade.crossChainTradeType
       );
 
-    uiTrade.statusFrom = srcTxStatus;
+    uiTrade.statusFrom =
+      storageData?.calculatedStatusFrom === TxStatus.SUCCESS ? TxStatus.SUCCESS : srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
