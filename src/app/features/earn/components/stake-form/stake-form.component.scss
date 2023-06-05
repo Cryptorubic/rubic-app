@@ -204,7 +204,7 @@
       border-radius: 10px;
       cursor: pointer;
 
-      transition: all 0.1s ease-in-out;
+      transition: transform 0.1s ease-in-out;
 
       @include b($tablet) {
         width: 100%;
@@ -227,14 +227,12 @@
         box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
         transform: translateY(-5px) scale(1.05);
 
-        transition: all 0.1s ease-in-out;
+        transition: transform 0.1s ease-in-out;
       }
 
       &:active {
         box-shadow: 0 1px 7px rgba(0, 0, 0, 0.1);
         transform: translateY(0) scale(1);
-
-        transition: all 0.1s ease-in-out;
       }
 
       &-label,
