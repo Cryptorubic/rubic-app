@@ -52,7 +52,7 @@ export class CrossChainRouteComponent {
           ...TRADES_PROVIDERS[bridgeProvider],
           name: isCentralizedBridge
             ? TRADES_PROVIDERS[bridgeProvider].name
-            : `${TRADES_PROVIDERS[bridgeProvider].name} Pool`
+            : `${TRADES_PROVIDERS[bridgeProvider].name}`
         };
   }
 
