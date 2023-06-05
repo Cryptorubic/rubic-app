@@ -123,6 +123,11 @@ export class StakeFormComponent implements OnInit {
   }
 
   public async handleErrors(rbcAmount: string): Promise<void> {
+    await this.setErrors(rbcAmount);
+    this.cdr.detectChanges();
+  }
+
+  public async setErrors(rbcAmount: string): Promise<void> {
     this.selectedAmount = rbcAmount;
     try {
       const isStakingStopped = await this.stakingService.isEmergencyStopped();
