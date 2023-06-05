@@ -77,8 +77,6 @@ export class StakingService {
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
 
-  private readonly web3Private = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
-
   private readonly _deposits$ = new BehaviorSubject<Deposit[]>(undefined);
 
   public readonly deposits$ = this._deposits$.asObservable();
@@ -208,12 +206,14 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await this.web3Private.approveTokens(
-        STAKING_ROUND_THREE.TOKEN.address,
-        STAKING_ROUND_THREE.NFT.address,
-        'infinity',
-        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .approveTokens(
+          STAKING_ROUND_THREE.TOKEN.address,
+          STAKING_ROUND_THREE.NFT.address,
+          'infinity',
+          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+        );
 
       if (receipt && receipt.status) {
         this.stakingNotificationService.showSuccessApproveNotification();
@@ -232,26 +232,30 @@ export class StakingService {
 
     const durationInSeconds = duration * SECONDS_IN_MONTH;
     // const durationInSeconds = duration * 60;
-    return this.web3Private.tryExecuteContractMethod(
-      STAKING_ROUND_THREE.NFT.address,
-      STAKING_ROUND_THREE.NFT.abi,
-      'enterStaking',
-      [Web3Pure.toWei(amount, 18), String(durationInSeconds)],
-      { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-    );
+    return Injector.web3PrivateService
+      .getWeb3Private(CHAIN_TYPE.EVM)
+      .tryExecuteContractMethod(
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
+        'enterStaking',
+        [Web3Pure.toWei(amount, 18), String(durationInSeconds)],
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+      );
   }
 
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await this.web3Private.tryExecuteContractMethod(
-        STAKING_ROUND_THREE.NFT.address,
-        STAKING_ROUND_THREE.NFT.abi,
-        'claimRewards',
-        [deposit.id],
-        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .tryExecuteContractMethod(
+          STAKING_ROUND_THREE.NFT.address,
+          STAKING_ROUND_THREE.NFT.abi,
+          'claimRewards',
+          [deposit.id],
+          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+        );
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
@@ -282,13 +286,15 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await this.web3Private.tryExecuteContractMethod(
-        STAKING_ROUND_THREE.NFT.address,
-        STAKING_ROUND_THREE.NFT.abi,
-        'unstake',
-        [deposit.id],
-        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-      );
+      const receipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .tryExecuteContractMethod(
+          STAKING_ROUND_THREE.NFT.address,
+          STAKING_ROUND_THREE.NFT.abi,
+          'unstake',
+          [deposit.id],
+          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+        );
 
       if (receipt.status) {
         this.stakingNotificationService.showSuccessWithdrawNotification();
