@@ -28,6 +28,7 @@ import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/
 import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 
 @Injectable()
 export class ModalService {
@@ -266,5 +267,12 @@ export class ModalService {
       currentComponent: component,
       ...options
     });
+  }
+
+  /**
+   * Show Wallet Modal dialog.
+   */
+  public openArbitrumWarningModal(): Observable<void> {
+    return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
   }
 }

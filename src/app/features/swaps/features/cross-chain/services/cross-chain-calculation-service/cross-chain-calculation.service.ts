@@ -16,7 +16,8 @@ import {
   ChangenowPaymentInfo,
   Token,
   PriceToken,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  UserRejectError
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -24,7 +25,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
@@ -290,6 +291,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     ]);
 
     const fromAddress = this.authService.userAddress;
+
+    await this.handlePreSwapModal(calculatedTrade);
+
     let transactionHash: string;
 
     const onTransactionHash = (txHash: string) => {
@@ -496,5 +500,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
       paymentInfo,
       receiverAddress
     };
+  }
+
+  private async handlePreSwapModal(trade: CrossChainCalculatedTrade): Promise<void> {
+    if (
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
+      trade.trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
+    ) {
+      try {
+        await firstValueFrom(this.dialogService.openArbitrumWarningModal());
+      } catch {
+        throw new UserRejectError();
+      }
+    }
   }
 }
