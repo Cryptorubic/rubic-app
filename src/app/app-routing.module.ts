@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
-import { TimeGuard } from '@shared/guards/time.guard';
 
 const routes: Routes = [
   {
@@ -15,15 +14,15 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.STAKING,
-    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule),
-    canLoad: [TimeGuard],
-    canActivate: [TimeGuard],
-    data: {
-      // redirectPath: EXTERNAL_LINKS.LANDING_STAKING,
-      // expiredDateInSeconds: 1686733200 // release date
-      redirectPath: 'https://dev.rubic.exchange/staking',
-      expiredDateInSeconds: 1685718000
-    }
+    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
+    // canLoad: [TimeGuard],
+    // canActivate: [TimeGuard],
+    // data: {
+    //   // redirectPath: EXTERNAL_LINKS.LANDING_STAKING,
+    //   // expiredDateInSeconds: 1686733200 // release date
+    //   redirectPath: 'https://dev.rubic.exchange/staking',
+    //   expiredDateInSeconds: 1685718000
+    // }
   },
   {
     path: ROUTE_PATH.HISTORY,
