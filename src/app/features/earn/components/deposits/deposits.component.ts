@@ -114,7 +114,7 @@ export class DepositsComponent implements OnInit {
           from: 'RBC',
           to: 'RBC',
           fromChain: 'ETH',
-          toChain: 'ARB',
+          toChain: 'ARBITRUM',
           amount: 50000
         }
       })

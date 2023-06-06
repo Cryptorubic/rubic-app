@@ -51,10 +51,7 @@
       <ng-container *ngFor="let duration of DURATIONS; let i = index">
         <button
           class="duration__common-chip"
-          [class.duration__common-chip_selected]="
-            (durationCtrl.value === duration.value || duration.value === selectedDuration) &&
-            !stakingIsClosed
-          "
+          [class.duration__common-chip_selected]="handleSelectedChip(duration.value)"
           [disabled]="duration.value > MAX_LOCK_TIME || stakingIsClosed"
           (click)="setDuration(duration.value)"
         >
@@ -106,8 +103,13 @@
         appearance="primary"
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
+        [disabled]="isMobile"
       >
-        {{ 'staking.common.switchNetworkToArbitrum' | translate }}
+        {{
+          isMobile
+            ? 'Choose Arbitrum network in your wallet'
+            : ('staking.common.switchNetworkToArbitrum' | translate)
+        }}
       </app-rubic-button>
 
       <app-stake-button

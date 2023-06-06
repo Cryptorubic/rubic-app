@@ -35,6 +35,10 @@
   margin-bottom: 26px;
 
   text-align: center;
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .text {

@@ -25,6 +25,7 @@ export class StakingModalService {
       NewPositionModalComponent,
       {
         ...STAKING_MODAL_OPTIONS,
+        title: 'New Position',
         data: {
           amount,
           duration,
@@ -42,6 +43,7 @@ export class StakingModalService {
   ): Observable<boolean> {
     return this.dialogService.showDialog<WithdrawModalComponent, boolean>(WithdrawModalComponent, {
       ...STAKING_MODAL_OPTIONS,
+      title: 'Withdraw',
       data: {
         amount,
         needSwitchNetwork$,
@@ -57,6 +59,7 @@ export class StakingModalService {
   ): Observable<boolean> {
     return this.dialogService.showDialog<ClaimModalComponent, boolean>(ClaimModalComponent, {
       ...STAKING_MODAL_OPTIONS,
+      title: 'Claim',
       data: { rewards, needSwitchNetwork$ },
       fitContent: true
     });

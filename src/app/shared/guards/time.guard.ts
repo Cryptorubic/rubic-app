@@ -4,6 +4,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { catchError, map, Observable, of } from 'rxjs';
 import { HttpService } from '@core/services/http/http.service';
+import { LoadResult } from '@shared/guards/models/types';
 
 @Injectable()
 export class TimeGuard implements CanActivate {
@@ -11,6 +12,10 @@ export class TimeGuard implements CanActivate {
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly httpService: HttpService
   ) {}
+
+  canLoad(route: ActivatedRouteSnapshot): LoadResult {
+    return this.canActivate(route);
+  }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const { redirectPath, expiredDateInSeconds } = route.data;

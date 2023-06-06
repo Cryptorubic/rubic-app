@@ -26,6 +26,7 @@ import { StakingNotificationService } from '../../services/staking-notification.
 import { StakingService } from '../../services/staking.service';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '@core/services/auth/auth.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-stake-form',
@@ -95,10 +96,13 @@ export class StakeFormComponent implements OnInit {
 
   public readonly errors = StakeButtonError;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly stakingService: StakingService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
+    private readonly headerStore: HeaderStore,
     private readonly errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly stakingModalService: StakingModalService,
@@ -158,7 +162,7 @@ export class StakeFormComponent implements OnInit {
 
     if (
       this.stakingService.rbcAllowance.isFinite() &&
-      this.stakingService.rbcAllowance.lt(10000000)
+      this.stakingService.rbcAllowance.lt(this.rbcAmountCtrl.value)
     ) {
       this.amountError = StakeButtonError.NEED_APPROVE;
       return;
@@ -177,6 +181,13 @@ export class StakeFormComponent implements OnInit {
 
   public setDuration(duration: number): void {
     this.durationCtrl.patchValue(duration);
+  }
+
+  public handleSelectedChip(value: number): boolean {
+    return (
+      (this.durationCtrl.value === value || value === this.selectedDuration) &&
+      !this.stakingIsClosed
+    );
   }
 
   public login(): void {

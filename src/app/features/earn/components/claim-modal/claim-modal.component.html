@@ -6,7 +6,7 @@
 <div class="title">
   {{ 'staking.claimRewardsModal.title' | translate }}
 </div>
-<div class="text">
+<div class="text" [class.tui-skeleton]="!rewards">
   {{
     rewards.gt(0.0001)
       ? (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })

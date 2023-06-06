@@ -147,6 +147,8 @@
     border: none;
     
     @include b($tablet) {
+      padding-right: 0;
+
       font-size: 20px;
       line-height: 24px;
     }
@@ -193,6 +195,10 @@
     gap: 12px;
     width: 100%;
     margin: 20px 0;
+
+    @include b($mobile-md) {
+      gap: 7px;
+    }
 
     &-chip {
       @include clearbtn();

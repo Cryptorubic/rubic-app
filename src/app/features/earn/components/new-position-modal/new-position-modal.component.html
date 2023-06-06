@@ -5,7 +5,9 @@
 ></div>
 <div class="title">{{ 'staking.newPositionModal.title' | translate }}</div>
 <div class="text">
-  {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }}
+  <span [class.tui-skeleton]="!amount">
+    {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }}</span
+  >
   {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ duration }}
   {{ 'staking.common.months' | translate }}. <br />{{
     'staking.stakeForm.hint.lockedUntil' | translate
