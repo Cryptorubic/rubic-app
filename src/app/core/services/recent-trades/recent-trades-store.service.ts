@@ -16,12 +16,15 @@ const MAX_LATEST_TRADES = 5;
 })
 export class RecentTradesStoreService {
   private get recentTrades(): { [address: string]: RecentTrade[] } {
-    return this.storeService.fetchData().recentTrades;
+    const data = this.storeService.fetchData();
+    return data?.['RUBIC_RECENT_TRADES'];
   }
 
   public get currentUserRecentTrades(): RecentTrade[] {
+    const data = this.storeService.fetchData();
+    const trades = data['RUBIC_RECENT_TRADES'];
     return (
-      this.storeService.fetchData().recentTrades?.[this.userAddress]?.map(recentTrade => {
+      trades?.[this.userAddress]?.map(recentTrade => {
         if ('crossChainProviderType' in recentTrade) {
           return {
             ...recentTrade,
@@ -39,7 +42,8 @@ export class RecentTradesStoreService {
   }
 
   private get unreadTrades(): { [address: string]: number } {
-    return this.storeService.fetchData().unreadTrades;
+    const data = this.storeService.fetchData();
+    return data?.['RUBIC_UNREAD_TRADES'];
   }
 
   private readonly _unreadTrades$ = new BehaviorSubject<{ [address: string]: number }>(
@@ -65,7 +69,7 @@ export class RecentTradesStoreService {
 
     const updatedTrades = { ...this.recentTrades, [address]: currentUsersTrades };
 
-    this.storeService.setItem('recentTrades', updatedTrades);
+    this.storeService.setItem('RUBIC_RECENT_TRADES', updatedTrades);
     this.updateUnreadTrades();
   }
 
@@ -82,12 +86,12 @@ export class RecentTradesStoreService {
         return localStorageTrade;
       }
       if ('txId' in trade) {
-        return trade;
+        return trade.rubicId === localStorageTrade.rubicId ? trade : localStorageTrade;
       }
       return localStorageTrade;
     });
 
-    this.storeService.setItem('recentTrades', {
+    this.storeService.setItem('RUBIC_RECENT_TRADES', {
       ...this.recentTrades,
       [this.userAddress]: updatedUserTrades
     });
@@ -105,14 +109,14 @@ export class RecentTradesStoreService {
     ) as CrossChainRecentTrade;
   }
 
-  public getSpecificOnramperTrade(txId: string): OnramperRecentTrade {
+  public getSpecificOnramperTrade(rubicId: string): OnramperRecentTrade {
     return this.currentUserRecentTrades.find(
-      trade => isOnramperRecentTrade(trade) && trade.txId === txId
+      trade => isOnramperRecentTrade(trade) && trade.rubicId === rubicId
     ) as OnramperRecentTrade;
   }
 
-  public updateOnramperTargetTrade(txId: string, dstTxHash: string): void {
-    const trade = this.getSpecificOnramperTrade(txId);
+  public updateOnramperTargetTrade(rubicId: string, dstTxHash: string): void {
+    const trade = this.getSpecificOnramperTrade(rubicId);
     this.updateTrade({
       ...trade,
       dstTxHash
@@ -123,7 +127,10 @@ export class RecentTradesStoreService {
     const currentUsersUnreadTrades = this.unreadTrades?.[this.userAddress] || 0;
 
     if (readAll) {
-      this.storeService.setItem('unreadTrades', { ...this.unreadTrades, [this.userAddress]: 0 });
+      this.storeService.setItem('RUBIC_UNREAD_TRADES', {
+        ...this.unreadTrades,
+        [this.userAddress]: 0
+      });
       this._unreadTrades$.next({ ...this.unreadTrades, [this.userAddress]: 0 });
       return;
     }
@@ -132,7 +139,7 @@ export class RecentTradesStoreService {
       return;
     }
 
-    this.storeService.setItem('unreadTrades', {
+    this.storeService.setItem('RUBIC_UNREAD_TRADES', {
       ...this.unreadTrades,
       [this.userAddress]: currentUsersUnreadTrades + 1
     });

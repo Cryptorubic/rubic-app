@@ -14,7 +14,6 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -23,6 +22,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 
 @Injectable()
 export class BlockchainsListService {

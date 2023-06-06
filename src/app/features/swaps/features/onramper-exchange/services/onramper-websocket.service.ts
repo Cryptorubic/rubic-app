@@ -1,36 +1,29 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '@core/services/auth/auth.service';
 import { webSocket } from 'rxjs/webSocket';
-import { switchMap, takeWhile } from 'rxjs/operators';
-import { interval, of, Subscription } from 'rxjs';
-import { OnramperTransactionInfo } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-info';
-import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
+import { catchError, debounceTime, switchMap } from 'rxjs/operators';
+import { from, of, Subscription } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
-import {
-  BlockchainName,
-  EvmBlockchainName,
-  EvmWeb3Pure,
-  Injector,
-  TxStatus,
-  Web3Pure
-} from 'rubic-sdk';
+import { EvmWeb3Pure, TxStatus } from 'rubic-sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { OnramperService } from '@core/services/onramper/onramper.service';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
-import BigNumber from 'bignumber.js';
-import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-status';
+import { OnramperTransactionInfo } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-info';
+import { switchTap } from '@shared/utils/utils';
 
 const websocketBaseUrl = ENVIRONMENT.websocketBaseUrl;
 
@@ -50,8 +43,6 @@ export class OnramperWebsocketService {
   private inputForm: SwapFormInputFiats;
 
   private currentRecentTrade: OnramperRecentTrade;
-
-  private intervalSubscription$: Subscription;
 
   constructor(
     private readonly authService: AuthService,
@@ -74,62 +65,57 @@ export class OnramperWebsocketService {
       return;
     }
 
-    const onramperPendingTrade = this.recentTradesStoreService.currentUserRecentTrades.find(
+    const pendingTrades = this.recentTradesStoreService.currentUserRecentTrades.filter(
       trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
-    ) as OnramperRecentTrade;
-    if (onramperPendingTrade) {
-      const tradeApiData = await this.onramperApiService.getTradeData(
-        this.authService.userAddress,
-        onramperPendingTrade.txId
-      );
+    ) as OnramperRecentTrade[];
 
-      if (
-        tradeApiData.status === OnramperTransactionStatus.COMPLETED ||
-        tradeApiData.status === OnramperTransactionStatus.FAILED
-      ) {
-        this.recentTradesStoreService.updateTrade({
-          ...onramperPendingTrade,
-          calculatedStatusFrom:
-            tradeApiData.status === OnramperTransactionStatus.COMPLETED
-              ? TxStatus.SUCCESS
-              : TxStatus.FAIL,
-          nativeAmount: tradeApiData.out_amount
+    const promises = pendingTrades.map(trade => {
+      return this.onramperApiService
+        .getTradeData(this.authService.userAddress, trade.txId)
+        .then(tradeApiData => {
+          if (
+            tradeApiData.status === OnramperTransactionStatus.COMPLETED ||
+            tradeApiData.status === OnramperTransactionStatus.FAILED
+          ) {
+            this.recentTradesStoreService.updateTrade({
+              ...trade,
+              calculatedStatusFrom:
+                tradeApiData.status === OnramperTransactionStatus.COMPLETED
+                  ? TxStatus.SUCCESS
+                  : TxStatus.FAIL,
+              nativeAmount: tradeApiData.out_amount
+            });
+          }
         });
-      } else {
-        this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
-        this.notifyProgress();
-
-        await this.setupBalanceCheckTimer(
-          onramperPendingTrade.txId,
-          onramperPendingTrade.toToken.blockchain,
-          onramperPendingTrade.nativeAmount
-        );
-      }
-    }
+    });
+    await Promise.all(promises);
   }
 
   private subscribeOnUserChange(): void {
     this.authService.currentUser$
       .pipe(
+        switchTap(() => from(this.checkTradeStatus()).pipe(catchError(() => of(null)))),
         switchMap(user => {
-          this.intervalSubscription$?.unsubscribe();
-
           if (!user?.address) {
             return of(null);
           }
-
-          this.checkTradeStatus();
           return webSocket<{ message: string }>(
             `${websocketBaseUrl}/onramp/transactions_receiver/${user.address}`
           );
         }),
-        switchMap(async event => {
+        debounceTime(5_000),
+        switchMap(event => {
           if (event && 'message' in event) {
             const txInfo: OnramperTransactionInfo = JSON.parse(event.message);
             if (txInfo?.status) {
-              await this.parseTransactionInfo(txInfo);
+              return this.parseTransactionInfo(txInfo);
             }
           }
+          return of(null);
+        }),
+        catchError(err => {
+          console.debug(err);
+          return of(null);
         })
       )
       .subscribe();
@@ -137,109 +123,41 @@ export class OnramperWebsocketService {
 
   private async parseTransactionInfo(txInfo: OnramperTransactionInfo): Promise<void> {
     if (txInfo?.status === OnramperTransactionStatus.PENDING) {
-      if (this.inputForm) {
-        this.notifyProgress();
-
-        this.onramperFormService.widgetOpened = false;
-        this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
-
-        this.currentRecentTrade = {
-          fromFiat: this.inputForm.fromFiat,
-          toToken: this.inputForm.toToken,
-
-          nativeAmount: txInfo.out_amount,
-          txId: txInfo.transaction_id,
-
-          timestamp: Date.now(),
-          calculatedStatusFrom: TxStatus.PENDING
-        };
-        if (!this.iframeService.isIframe) {
-          this.recentTradesStoreService.saveTrade(
-            this.authService.userAddress,
-            this.currentRecentTrade
-          );
-        }
-
-        await this.setupBalanceCheckTimer(
-          txInfo.transaction_id,
-          this.inputForm.toToken.blockchain,
-          txInfo.out_amount
-        );
-      }
+      await this.handlePendingTrade(txInfo);
     } else if (txInfo?.status === OnramperTransactionStatus.COMPLETED) {
-      await this.handleSuccessfulTrade(txInfo.transaction_id, txInfo.out_amount);
+      await this.handleSuccessfulTrade(txInfo);
     } else if (txInfo?.status === OnramperTransactionStatus.FAILED) {
-      const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(
-        txInfo.transaction_id
-      );
-      if (!this.iframeService.isIframe) {
-        this.recentTradesStoreService.updateTrade({
-          ...recentTrade,
-          calculatedStatusFrom: TxStatus.FAIL
-        });
-      }
-
-      this.progressNotificationSubscription$?.unsubscribe();
-
-      this.onramperFormCalculationService.stopBuyNativeInProgress();
-      this.onramperFormCalculationService.updateRate();
+      this.handleErrorTrade(txInfo);
     }
   }
 
-  private async setupBalanceCheckTimer(
-    txId: string,
-    blockchain: BlockchainName,
-    outAmount: string
-  ): Promise<void> {
-    const userAddress = this.authService.userAddress;
-    const minDiffAmount = new BigNumber(outAmount).multipliedBy(0.98);
-
-    const getBalance = Injector.web3PublicService.getWeb3Public(
-      blockchain as EvmBlockchainName
-    ).getBalance;
-    let balance = await getBalance(userAddress);
-
-    this.intervalSubscription$ = interval(20_000)
-      .pipe(
-        switchMap(async () => {
-          const updatedBalance = await getBalance(userAddress);
-          const balanceDiff = Web3Pure.fromWei(updatedBalance.minus(balance));
-
-          if (minDiffAmount.lte(balanceDiff)) {
-            await this.handleSuccessfulTrade(txId, balanceDiff.toFixed());
-            return true;
-          }
-          balance = updatedBalance;
-          return false;
-        }),
-        takeWhile(stop => !stop)
-      )
-      .subscribe();
-  }
-
-  private async handleSuccessfulTrade(txId: string, nativeAmount: string): Promise<void> {
+  private async handleSuccessfulTrade(txInfo: OnramperTransactionInfo): Promise<void> {
+    const { out_amount: nativeAmount, additional_info } = txInfo;
+    const { isDirect, id } = JSON.parse(additional_info) as { isDirect: boolean; id: string };
     const recentTrade = !this.iframeService.isIframe
-      ? this.recentTradesStoreService.getSpecificOnramperTrade(txId)
+      ? this.recentTradesStoreService.getSpecificOnramperTrade(id)
       : this.currentRecentTrade;
+
     if (
       !recentTrade ||
-      recentTrade.txId !== txId ||
+      recentTrade.rubicId !== id ||
       recentTrade.calculatedStatusFrom === TxStatus.SUCCESS
     ) {
       return;
     }
 
-    const updatedRecentTrade = {
+    const updatedRecentTrade: OnramperRecentTrade = {
       ...recentTrade,
       calculatedStatusFrom: TxStatus.SUCCESS,
-      nativeAmount: nativeAmount
+      nativeAmount: nativeAmount,
+      ...(isDirect && { calculatedStatusTo: TxStatus.SUCCESS })
     };
+
     if (!this.iframeService.isIframe) {
       this.recentTradesStoreService.updateTrade(updatedRecentTrade);
-    } else {
-      this.currentRecentTrade = updatedRecentTrade;
     }
 
+    this.currentRecentTrade = updatedRecentTrade;
     this.progressNotificationSubscription$?.unsubscribe();
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
@@ -254,7 +172,7 @@ export class OnramperWebsocketService {
       (this.iframeService.isIframe || this.relocateToOnChain) &&
       !EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)
     ) {
-      await this.onramperService.updateSwapFormByRecentTrade(txId);
+      await this.onramperService.updateSwapFormByRecentTrade(id);
     }
   }
 
@@ -282,5 +200,53 @@ export class OnramperWebsocketService {
         this.inputForm = this.onramperFormCalculationService.inputValue;
       }
     });
+  }
+
+  private async handlePendingTrade(txInfo: OnramperTransactionInfo): Promise<void> {
+    const { additional_info } = txInfo;
+    const { id, isDirect } = JSON.parse(additional_info) as { isDirect: boolean; id: string };
+
+    const recentTrade = this.iframeService.isIframe
+      ? null
+      : this.recentTradesStoreService.getSpecificOnramperTrade(id);
+
+    if (this.inputForm && !recentTrade) {
+      this.notifyProgress();
+
+      this.onramperFormService.widgetOpened = false;
+      this.onramperFormCalculationService.tradeStatus = TRADE_STATUS.BUY_NATIVE_IN_PROGRESS;
+
+      this.currentRecentTrade = {
+        fromFiat: this.inputForm.fromFiat,
+        toToken: this.inputForm.toToken,
+
+        nativeAmount: txInfo.out_amount,
+        rubicId: id,
+        txId: txInfo.transaction_id,
+
+        timestamp: Date.now(),
+        calculatedStatusFrom: TxStatus.PENDING,
+        isDirect
+      };
+      if (!this.iframeService.isIframe) {
+        this.recentTradesStoreService.saveTrade(
+          this.authService.userAddress,
+          this.currentRecentTrade
+        );
+      }
+    }
+  }
+
+  private handleErrorTrade(txInfo: OnramperTransactionInfo): void {
+    const { id } = JSON.parse(txInfo.additional_info);
+    const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(id);
+    if (!this.iframeService.isIframe) {
+      this.recentTradesStoreService.updateTrade(recentTrade);
+    }
+
+    this.progressNotificationSubscription$?.unsubscribe();
+
+    this.onramperFormCalculationService.stopBuyNativeInProgress();
+    this.onramperFormCalculationService.updateRate();
   }
 }

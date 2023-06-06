@@ -17,7 +17,8 @@ import {
   Token,
   PriceToken,
   BLOCKCHAIN_NAME,
-  UserRejectError
+  UserRejectError,
+  EvmWeb3Pure
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -52,8 +53,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
 import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
 
@@ -329,6 +330,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
         fromAmount: calculatedTrade.trade.from.stringWeiAmount,
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
+        rubicId: EvmWeb3Pure.randomHex(16),
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId }),

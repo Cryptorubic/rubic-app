@@ -1,9 +1,0 @@
-<app-rubic-button
-  appearance="primary"
-  [loading]="loading$ | async"
-  [disabled]="disabled$ | async"
-  (onClick)="onClick.emit()"
-  (onHoveredChange)="onHoveredChange($event)"
->
-  Buy {{ nativeSymbol$ | async }}
-</app-rubic-button>

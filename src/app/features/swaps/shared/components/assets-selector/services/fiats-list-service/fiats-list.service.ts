@@ -4,10 +4,10 @@ import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { BlockchainName } from 'rubic-sdk';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 
 @Injectable()
 export class FiatsListService {
