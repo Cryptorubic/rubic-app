@@ -77,7 +77,7 @@ export class StakingService {
 
   private readonly web3Public = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
 
-  private readonly _deposits$ = new BehaviorSubject<Deposit[]>(undefined);
+  private readonly _deposits$ = new BehaviorSubject<Deposit[]>([]);
 
   public readonly deposits$ = this._deposits$.asObservable();
 

@@ -1,49 +1,62 @@
 <ng-container *ngLet="isDarkTheme$ | async as isDarkTheme">
   <ng-container *ngLet="deposits$ | async as deposits">
-    <ng-container *ngIf="deposits !== undefined">
-      <ng-container *ngIf="deposits && deposits?.length; else actions">
-        <div class="deposits__wrapper fade-in">
-          <div class="deposits__head">
-            <div class="deposits__title">
-              <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
-              <app-rotating-icon
-                [rotating]="depositsLoading$ | async"
-                (iconClick)="refreshDeposits()"
-              ></app-rotating-icon>
-            </div>
-            <app-rubic-button
-              class="deposits__head-btn"
-              appearance="primary"
-              (onClick)="navigateToStakeForm()"
-            >
-              {{ 'staking.deposits.newPosition' | translate }}
-            </app-rubic-button>
-          </div>
-          <div class="deposits__body" *ngIf="deposits.length">
-            <app-desktop-deposits
-              *ngIf="!isMobile; else mobileTable"
-              [deposits]="deposits"
-              [total]="total$ | async"
-              [claimingId]="claimingId$ | async"
-              [withdrawingId]="withdrawingId$ | async"
-              [isDarkTheme]="isDarkTheme"
-              (onClaim)="startClaim($event)"
-              (onWithdraw)="startWithdraw($event)"
-            ></app-desktop-deposits>
-          </div>
-        </div>
+    <ng-container *ngLet="depositsLoading$ | async as depositsLoading">
+      <ng-container *ngIf="deposits !== undefined">
+        <tui-loader
+          class="inline-flex"
+          [showLoader]="depositsLoading"
+          [inheritColor]="true"
+          [overlay]="true"
+        >
+          <ng-container *ngIf="!depositsLoading">
+            <ng-container *ngIf="deposits && deposits?.length; else actions">
+              <div class="deposits__wrapper fade-in">
+                <div class="deposits__head">
+                  <div class="deposits__title">
+                    <span class="deposits__title-text">{{
+                      'staking.deposits.title' | translate
+                    }}</span>
+                    <app-rotating-icon
+                      [rotating]="depositsLoading"
+                      (iconClick)="refreshDeposits()"
+                    ></app-rotating-icon>
+                  </div>
+                  <app-rubic-button
+                    class="deposits__head-btn"
+                    appearance="primary"
+                    (onClick)="navigateToStakeForm()"
+                  >
+                    {{ 'staking.deposits.newPosition' | translate }}
+                  </app-rubic-button>
+                </div>
+                <div class="deposits__body" *ngIf="deposits.length">
+                  <app-desktop-deposits
+                    *ngIf="!isMobile; else mobileTable"
+                    [deposits]="deposits"
+                    [total]="total$ | async"
+                    [claimingId]="claimingId$ | async"
+                    [withdrawingId]="withdrawingId$ | async"
+                    [isDarkTheme]="isDarkTheme"
+                    (onClaim)="startClaim($event)"
+                    (onWithdraw)="startWithdraw($event)"
+                  ></app-desktop-deposits>
+                </div>
+              </div>
 
-        <ng-template #mobileTable>
-          <app-mobile-deposits
-            [deposits]="deposits"
-            [total]="total$ | async"
-            [claimingId]="claimingId$ | async"
-            [withdrawingId]="withdrawingId$ | async"
-            [isDarkTheme]="isDarkTheme"
-            (onClaim)="startClaim($event)"
-            (onWithdraw)="startWithdraw($event)"
-          ></app-mobile-deposits>
-        </ng-template>
+              <ng-template #mobileTable>
+                <app-mobile-deposits
+                  [deposits]="deposits"
+                  [total]="total$ | async"
+                  [claimingId]="claimingId$ | async"
+                  [withdrawingId]="withdrawingId$ | async"
+                  [isDarkTheme]="isDarkTheme"
+                  (onClaim)="startClaim($event)"
+                  (onWithdraw)="startWithdraw($event)"
+                ></app-mobile-deposits>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </tui-loader>
       </ng-container>
     </ng-container>
   </ng-container>
