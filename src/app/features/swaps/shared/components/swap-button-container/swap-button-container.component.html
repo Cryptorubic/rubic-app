@@ -13,7 +13,7 @@
         <app-onramper-swap-button
           *ngIf="isOnramper"
           [buttonText]="buttonText"
-          (onBuyNativeClick)="onBuyNativeClick.emit()"
+          (handleDirectBuy)="handleDirectBuy.emit()"
           (onSwapClick)="onSwapClick.emit()"
         ></app-onramper-swap-button>
 

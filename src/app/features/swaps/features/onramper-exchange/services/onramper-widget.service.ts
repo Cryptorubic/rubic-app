@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { OnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/models/onramper-widget-config';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { map } from 'rxjs/operators';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
-import { cryptoCode } from '@features/swaps/features/onramper-exchange/constants/crypto-code';
-import { defaultOnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/services/onramper-widget-service/constants/default-onramper-widget-config';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { defaultOnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/constants/default-onramper-widget-config';
+import { OnramperWidgetConfig } from '@features/swaps/features/onramper-exchange/models/onramper-widget-config';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
+import { EvmWeb3Pure } from 'rubic-sdk';
 
 @Injectable()
 export class OnramperWidgetService {
   constructor(
     private readonly themeService: ThemeService,
     private readonly swapFormService: SwapFormService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly onramperFormCalculationService: OnramperFormCalculationService
   ) {}
 
   /**
@@ -22,28 +24,31 @@ export class OnramperWidgetService {
    */
   public getWidgetUrl(): Observable<string> {
     return this.themeService.theme$.pipe(
-      map(theme => {
-        const darkMode = theme === 'dark';
+      map(currentTheme => {
+        const darkMode = currentTheme === 'dark';
 
         const defaultFiat = (this.swapFormService.inputValue.fromAsset as FiatAsset).symbol;
-        const defaultCrypto =
-          cryptoCode[this.swapFormService.inputValue.toBlockchain as keyof typeof cryptoCode];
+        const defaultCrypto = this.onramperFormCalculationService.buyingTokenCode;
+
         const onlyCryptos = defaultCrypto;
         const defaultAmount = this.swapFormService.inputValue.fromAmount.toFixed();
 
         const walletAddress = this.authService.userAddress;
         const wallets = `${defaultCrypto}:${walletAddress}`;
 
+        const isDirect = this.onramperFormCalculationService.isDirectSwap;
+
         return this.parseToWidgetUrl({
           ...defaultOnramperWidgetConfig,
-          darkMode,
+          themeName: darkMode ? 'dark' : 'light',
           defaultFiat,
           defaultCrypto,
           onlyCryptos,
           defaultAmount,
           wallets,
           partnerContext: {
-            walletAddress
+            isDirect,
+            id: EvmWeb3Pure.randomHex(16)
           }
         });
       })
@@ -56,6 +61,6 @@ export class OnramperWidgetService {
         key !== 'partnerContext' ? value : encodeURIComponent(JSON.stringify(value));
       return `${acc}${acc ? '&' : ''}${key}=${encodedValue}`;
     }, '');
-    return `https://widget.onramper.com${queryParams ? '/?' : ''}${queryParams}`;
+    return `https://buy.onramper.com${queryParams ? '/?' : ''}${queryParams}`;
   }
 }

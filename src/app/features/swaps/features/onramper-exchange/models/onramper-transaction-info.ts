@@ -1,14 +1,10 @@
 import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-status';
 
-export interface OnramperTradeApi {
-  user: string;
+export interface OnramperTransactionInfo {
   status: OnramperTransactionStatus;
   transaction_id: string;
-  tx_hash: string;
-  out_currency: string;
+  user: string;
   out_amount: string;
-}
-
-export interface OnramperTradeApiResponse {
-  results: OnramperTradeApi[];
+  additional_info: string; // JSON object { id: string; isDirect: boolean }
+  tx_hash?: string;
 }
