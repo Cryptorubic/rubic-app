@@ -51,7 +51,7 @@
       <ng-container *ngFor="let duration of DURATIONS; let i = index">
         <button
           class="duration__common-chip"
-          [class.duration__common-chip_selected]="handleSelectedChip(duration.value)"
+          [class.duration__common-chip_selected]="handleSelectedDuration(duration.value)"
           [disabled]="duration.value > MAX_LOCK_TIME || stakingIsClosed"
           (click)="setDuration(duration.value)"
         >
@@ -82,7 +82,7 @@
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ selectedDuration }}
+      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ durationCtrl.value }}
       {{ 'staking.common.months' | translate }}. <br />
       {{ 'staking.stakeForm.hint.lockedUntil' | translate }} {{ unlockDate | date : 'mediumDate' }}
     </div>

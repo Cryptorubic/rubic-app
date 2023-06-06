@@ -82,8 +82,6 @@ export class StakeFormComponent implements OnInit {
 
   public unlockDate: number;
 
-  public selectedDuration: number = 12;
-
   public selectedAmount: string;
 
   public rbcUsdPrice: number;
@@ -183,11 +181,8 @@ export class StakeFormComponent implements OnInit {
     this.durationCtrl.patchValue(duration);
   }
 
-  public handleSelectedChip(value: number): boolean {
-    return (
-      (this.durationCtrl.value === value || value === this.selectedDuration) &&
-      !this.stakingIsClosed
-    );
+  public handleSelectedDuration(durationValue: number): boolean {
+    return this.durationCtrl.value === durationValue;
   }
 
   public login(): void {
@@ -251,7 +246,6 @@ export class StakeFormComponent implements OnInit {
           return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
         }),
         tap(([duration, blockTimestamp]) => {
-          this.selectedDuration = duration;
           this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
         }),
         watch(this.cdr),
