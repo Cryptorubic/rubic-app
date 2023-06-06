@@ -68,7 +68,7 @@ export class CrossChainApiService {
     const tradeInfo = {
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
-      provider: trade.type,
+      provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],
       from_token: fromAddress,
       to_token: toAddress,
       from_amount: Web3Pure.toWei(fromAmount, fromDecimals),

@@ -60,7 +60,7 @@ export class OnramperService {
 
   public async getFromFees(blockchain: EvmBlockchainName): Promise<BigNumber> {
     const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
-    const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
+    const gasFee = new BigNumber(gasPrice.gasPrice).multipliedBy(onChainProxyMaxGasLimit);
 
     if (this.platformConfigurationService.useOnChainProxy === false) {
       return gasFee;

@@ -46,27 +46,27 @@
       </div>
     </div>
 
-    <div class="point" *ngIf="isSwapAndEarnSwap">
-      <ng-container *ngLet="points$ | async as points">
-        <span class="point__amount">{{ points.participant ? '50' : '100' }} RBC</span>
-      </ng-container>
-    </div>
+    <ng-container *ngIf="points > 0">
+      <div class="point">
+        <span class="point__amount">{{ points }} RBC</span>
+      </div>
 
-    <div class="description_swapAndEarn" *ngIf="isSwapAndEarnSwap">
-      <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
-      <a
-        href="https://app.rubic.exchange/swap-and-earn"
-        target="_blank"
-        rel="noreferrer"
-        *ngIf="hideUnusedUI"
-        >here</a
-      >
-      <span class="highlight_green" *ngIf="!hideUnusedUI" (click)="navigateToSwapAndEarn()"
-        >here</span
-      >
-    </div>
+      <div class="description_promo">
+        <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
+        <a
+          href="https://app.rubic.exchange/swap-and-earn"
+          target="_blank"
+          rel="noreferrer"
+          *ngIf="hideUnusedUI"
+          >here</a
+        >
+        <span class="highlight_green" *ngIf="!hideUnusedUI" (click)="navigateToSwapAndEarn()"
+          >here</span
+        >
+      </div>
+    </ng-container>
 
-    <div class="pair" [ngClass]="{ pair__isSwapAndEarnSwap: isSwapAndEarnSwap }">
+    <div class="pair" [ngClass]="{ pair__isSwapAndEarnSwap: points > 0 }">
       <div class="pair__from">
         <img
           [src]="fromToken.image || 'assets/images/icons/coins/default-token-ico.svg'"
@@ -228,10 +228,17 @@
     </div>
 
     <div class="caption">
-      {{ 'crossChainPage.swapSchemeModal.ifTransactionNotCompleted' | translate }}
-      <a class="highlight_black-white" href="mailto:support@rubic.exchange">
-        support@rubic.exchange</a
-      >.
+      <ng-container *ngIf="isArbitrumBridge; else defaultBlock">
+        {{
+          'Be careful, the bridge from Arbitrum to Ethereum takes one week, after which you need to claim tokens'
+        }}
+      </ng-container>
+      <ng-template #defaultBlock>
+        {{ 'crossChainPage.swapSchemeModal.ifTransactionNotCompleted' | translate }}
+        <a class="highlight_black-white" href="mailto:support@rubic.exchange">
+          support@rubic.exchange</a
+        >
+      </ng-template>
     </div>
     <app-rubic-button
       *ngIf="tradeData.dstStatus === CrossChainTxStatus.REVERT"

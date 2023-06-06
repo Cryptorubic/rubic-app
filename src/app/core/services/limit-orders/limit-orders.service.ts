@@ -33,7 +33,6 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable()
@@ -124,13 +123,13 @@ export class LimitOrdersService {
     };
 
     try {
-      const gasPrice = shouldCalculateGas[blockchain]
-        ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-        : null;
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
 
       await this.sdkService.limitOrderManager.cancelOrder(blockchain, orderHash, {
         onConfirm,
-        ...(gasPrice && { gasPrice })
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
       });
 
       subscription$.unsubscribe();
