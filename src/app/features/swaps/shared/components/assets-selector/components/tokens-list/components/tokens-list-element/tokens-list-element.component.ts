@@ -15,7 +15,10 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokenSecurityStatus } from '@shared/models/tokens/token-security';
-import { PLATFORM_TOKEN_ADDRESS } from '@shared/constants/blockchain/platform-token-address';
+import {
+  ARBITRUM_PLATFORM_TOKEN_ADDRESS,
+  ETHEREUM_PLATFORM_TOKEN_ADDRESS
+} from '@shared/constants/blockchain/platform-token-address';
 import { GO_PLUS_AVAILABLE_NETWORKS } from '@features/swaps/shared/components/assets-selector/constants/go-plus-available-networks';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
@@ -26,7 +29,8 @@ import {
   blockchainId,
   BLOCKCHAIN_NAME,
   wrappedNativeTokensList,
-  EvmBlockchainName
+  EvmBlockchainName,
+  compareAddresses
 } from 'rubic-sdk';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
@@ -148,7 +152,10 @@ export class TokensListElementComponent implements OnInit {
    * Returns true if token is platform token.
    */
   public get isPlatformToken(): boolean {
-    return this.token.address === PLATFORM_TOKEN_ADDRESS;
+    return (
+      compareAddresses(this.token.address, ETHEREUM_PLATFORM_TOKEN_ADDRESS) ||
+      compareAddresses(this.token.address, ARBITRUM_PLATFORM_TOKEN_ADDRESS)
+    );
   }
 
   /**

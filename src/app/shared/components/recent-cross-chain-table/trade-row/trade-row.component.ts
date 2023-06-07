@@ -35,7 +35,8 @@ import {
   CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
   TxStatus,
-  ChangenowApiStatus
+  ChangenowApiStatus,
+  ArbitrumRbcBridgeSupportedBlockchain
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
@@ -84,9 +85,28 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get isArbitrumBridgeTrade(): boolean {
+    if (this.isChangenowTrade(this.trade)) {
+      return false;
+    }
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
+  }
+
+  public get showAction(): boolean {
+    return (
+      ((this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
+        this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT) ||
+      (this.isArbitrumBridgeTrade &&
+        this.uiTrade?.statusTo === this.CrossChainTxStatus.READY_TO_CLAIM)
+    );
+  }
+
   public get showRevert(): boolean {
     return (
-      (this.isSymbiosisTrade || this.isCbridgeTrade) &&
+      (this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
       this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT
     );
   }
@@ -260,6 +280,13 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       );
     }
 
+    if (this.isArbitrumBridgeTrade) {
+      revertTxReceipt = await this.recentTradesService.redeemArbitrum(
+        this.trade.srcTxHash,
+        this.trade.fromToken.blockchain as ArbitrumRbcBridgeSupportedBlockchain
+      );
+    }
+
     if (revertTxReceipt.status) {
       this.uiTrade.statusTo = TxStatus.FALLBACK;
       this.revertBtnLoading = false;
@@ -281,7 +308,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.onramperService.updateSwapFormByRecentTrade(this.trade.txId);
+    await this.onramperService.updateSwapFormByRecentTrade(this.trade.rubicId);
     this.onClose.emit();
   }
 
@@ -300,5 +327,42 @@ export class TradeRowComponent implements OnInit, OnDestroy {
       this.hintShown = false;
       this.cdr.markForCheck();
     });
+  }
+
+  public async claimTokens(): Promise<void> {
+    this.revertBtnLoading = true;
+
+    if (this.isChangenowTrade(this.trade)) {
+      return;
+    }
+    if (!isCrossChainRecentTrade(this.trade)) {
+      return;
+    }
+
+    let revertTxReceipt: TransactionReceipt;
+
+    if (this.isArbitrumBridgeTrade) {
+      try {
+        revertTxReceipt = await this.recentTradesService.claimArbitrumBridgeTokens(
+          this.trade.srcTxHash
+        );
+        if (revertTxReceipt.status) {
+          this.uiTrade.statusTo = TxStatus.SUCCESS;
+          this.revertBtnLoading = false;
+          this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
+          this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+            revertTxReceipt.transactionHash,
+            this.trade.fromToken.blockchain,
+            ADDRESS_TYPE.TRANSACTION
+          );
+          this.cdr.detectChanges();
+        }
+      } catch (err) {
+        console.debug(err);
+      }
+    }
+
+    this.revertBtnLoading = false;
+    this.cdr.detectChanges();
   }
 }

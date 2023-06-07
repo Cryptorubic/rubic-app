@@ -62,7 +62,7 @@ export class SwapButtonContainerComponent {
 
   @Output() readonly onSwapClick = new EventEmitter<void>();
 
-  @Output() readonly onBuyNativeClick = new EventEmitter<void>();
+  @Output() readonly handleDirectBuy = new EventEmitter<void>();
 
   @Output() readonly onUpdateRateClick = new EventEmitter<void>();
 

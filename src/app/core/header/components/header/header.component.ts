@@ -15,7 +15,6 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
@@ -91,7 +90,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly storeService: StoreService,
     private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,

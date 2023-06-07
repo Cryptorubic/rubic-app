@@ -1,14 +1,17 @@
 <div class="widget-container">
-  <div class="widget-container__back-button" *ngIf="!isIframe">
+  <div *ngIf="showBackButton$ | async" class="widget-container__back-button">
     <app-back-button (onClick)="closeWidget()"></app-back-button>
   </div>
 
-  <iframe
-    [src]="widgetUrl$ | async | safeSanitizer : 'resourceUrl'"
-    [height]="!isIframe ? '660px' : iframeSize.height"
-    [width]="!isIframe ? (widgetWidth$ | async) : iframeSize.width"
-    title="Onramper widget"
-    allow="accelerometer; autoplay; camera; gyroscope; payment"
-  >
-  </iframe>
+  <ng-container *ngIf="widgetUrl$ | async as url; else loading">
+    <iframe
+      [src]="url | safeSanitizer : 'resourceUrl'"
+      [height]="!isIframe ? '660px' : iframeSize.height"
+      [width]="!isIframe ? (widgetWidth$ | async) : iframeSize.width"
+      title="Onramper widget"
+      allow="accelerometer; autoplay; camera; gyroscope; payment"
+    >
+    </iframe>
+  </ng-container>
+  <ng-template #loading>Loading</ng-template>
 </div>

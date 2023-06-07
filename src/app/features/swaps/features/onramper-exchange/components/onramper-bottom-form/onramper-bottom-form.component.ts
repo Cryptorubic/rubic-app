@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
-import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form-calculation.service';
 import { debounceTime } from 'rxjs/operators';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
 
 @Component({
   selector: 'app-onramper-bottom-form',
@@ -25,7 +25,7 @@ export class OnramperBottomFormComponent {
     this.onramperFormCalculationService.updateRate();
   }
 
-  public onBuyNative(): void {
+  public handleDirectBuy(): void {
     this.onramperFormService.widgetOpened = true;
   }
 }

@@ -12,6 +12,8 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import { TranslateService } from '@ngx-translate/core';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import {
+  ArbitrumRbcBridgeTrade,
+  BLOCKCHAIN_NAME,
   BlockchainName,
   CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
@@ -29,9 +31,9 @@ import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-ch
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
-import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/services/onramper-websocket-service/models/onramper-transaction-status';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
+import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-status';
 
 @Injectable()
 export class RecentTradesService {
@@ -141,6 +143,11 @@ export class RecentTradesService {
       console.debug('Field amountOutMin should be provided for BRIDGERS provider.');
     }
 
+    const storageData = this.recentTradesStoreService.getSpecificCrossChainTrade(
+      trade.srcTxHash,
+      trade.fromToken.blockchain
+    );
+
     const { srcTxStatus, dstTxStatus, dstTxHash } =
       await this.sdkService.crossChainStatusManager.getCrossChainStatus(
         {
@@ -157,7 +164,8 @@ export class RecentTradesService {
         trade.crossChainTradeType
       );
 
-    uiTrade.statusFrom = srcTxStatus;
+    uiTrade.statusFrom =
+      storageData?.calculatedStatusFrom === TxStatus.SUCCESS ? TxStatus.SUCCESS : srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
@@ -257,6 +265,50 @@ export class RecentTradesService {
     return uiTrade;
   }
 
+  public async claimArbitrumBridgeTokens(srcTxHash: string): Promise<TransactionReceipt> {
+    let tradeInProgressSubscription$: Subscription;
+    let transactionReceipt: TransactionReceipt;
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
+        onConfirm: onTransactionHash
+      });
+
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      this.recentTradesStoreService.updateTrade({
+        ...this.recentTradesStoreService.getSpecificCrossChainTrade(
+          srcTxHash,
+          BLOCKCHAIN_NAME.ETHEREUM
+        ),
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
+      });
+    } catch (error) {
+      console.debug('[ArbitrumBridge] Transaction claim error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
+  }
+
   public async revertSymbiosis(
     srcTxHash: string,
     fromBlockchain: BlockchainName
@@ -331,6 +383,55 @@ export class RecentTradesService {
         trade.amountOutMin,
         onTransactionHash
       );
+      tradeInProgressSubscription$.unsubscribe();
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
+
+      this.recentTradesStoreService.updateTrade({
+        ...trade,
+        calculatedStatusFrom: TxStatus.SUCCESS,
+        calculatedStatusTo: TxStatus.FALLBACK
+      });
+    } catch (error) {
+      console.debug('[Cbridge] Transaction revert error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
+  }
+
+  public async redeemArbitrum(
+    srcTxHash: string,
+    fromBlockchain: CbridgeCrossChainSupportedBlockchain
+  ): Promise<TransactionReceipt> {
+    let tradeInProgressSubscription$: Subscription;
+    let transactionReceipt: TransactionReceipt;
+
+    const trade = this.recentTradesStoreService.getSpecificCrossChainTrade(
+      srcTxHash,
+      fromBlockchain
+    );
+
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+    };
+
+    try {
+      transactionReceipt = await ArbitrumRbcBridgeTrade.redeemTokens(srcTxHash, {
+        onConfirm: onTransactionHash
+      });
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),

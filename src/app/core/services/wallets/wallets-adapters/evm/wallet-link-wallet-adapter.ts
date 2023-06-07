@@ -30,7 +30,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorService, zone, window);
 
-    chainId = chainId ?? this.storeService.getItem('chainId');
+    chainId = chainId ?? this.storeService.getItem('RUBIC_CHAIN_ID');
     this.wallet = this.getWallet(chainId);
   }
 
@@ -80,7 +80,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
         this.onAddressChanges$.next(address);
         this.onNetworkChanges$.next(this.selectedChain);
       });
-      this.storeService.setItem('chainId', Number(chainId));
+      this.storeService.setItem('RUBIC_CHAIN_ID', Number(chainId));
     } catch (error) {
       if (error instanceof RubicError) {
         throw error;
@@ -91,7 +91,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
 
   public async deactivate(): Promise<void> {
     this.wallet.close();
-    this.storeService.deleteItem('chainId');
+    this.storeService.deleteItem('RUBIC_CHAIN_ID');
     super.deactivate();
   }
 }

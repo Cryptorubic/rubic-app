@@ -93,7 +93,7 @@ export class TokensStoreService {
   public setupStorageTokens(): void {
     this.iframeService.isIframe$.pipe(first(v => v !== undefined)).subscribe(isIframe => {
       if (!isIframe) {
-        this.storageTokens = this.storeService.getItem('tokens') || [];
+        this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
         if (this.storageTokens.length) {
           const tokens = this.getDefaultTokenAmounts(
             List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
@@ -259,7 +259,7 @@ export class TokensStoreService {
       return !foundStorageToken || !compareObjects(updatedToken, foundStorageToken);
     });
     if (shouldUpdateList) {
-      this.storeService.setItem('tokens', updatedTokens);
+      this.storeService.setItem('RUBIC_TOKENS', updatedTokens);
     }
   }
 

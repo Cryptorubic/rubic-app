@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, from, of, Subject } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SwapFormInputFiats } from '@core/services/swaps/models/swap-form-fiats';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -14,6 +13,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 
 @Injectable()
 export class OnramperFormCalculationService {
@@ -26,6 +26,22 @@ export class OnramperFormCalculationService {
   private readonly _tradeStatus$ = new BehaviorSubject<TRADE_STATUS>(TRADE_STATUS.DISABLED);
 
   public readonly tradeStatus$ = this._tradeStatus$.asObservable();
+
+  private readonly _isDirectSwap$ = new BehaviorSubject<boolean>(true);
+
+  private readonly _buyingTokenCode$ = new BehaviorSubject<string | null>(null);
+
+  public readonly buyingTokenCode$ = this._buyingTokenCode$.asObservable();
+
+  public get buyingTokenCode(): string {
+    return this._buyingTokenCode$.getValue();
+  }
+
+  public readonly isDirectSwap$ = this._isDirectSwap$.asObservable();
+
+  public get isDirectSwap(): boolean {
+    return this._isDirectSwap$.getValue();
+  }
 
   public get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus$.getValue();
@@ -103,9 +119,9 @@ export class OnramperFormCalculationService {
           }
           return { ...calculateData, stop: false };
         }),
-        switchMap(async calculateData => {
+        switchMap(calculateData => {
           if (calculateData.stop) {
-            return null;
+            return of(null);
           }
 
           if (calculateData.isForced) {
@@ -120,16 +136,19 @@ export class OnramperFormCalculationService {
           }
           this.refreshService.setRefreshing();
 
-          const outputTokenAmount = await this.onramperCalculationService.getOutputTokenAmount(
-            this.inputValue
+          return from(this.onramperCalculationService.getOutputAmount(this.inputValue)).pipe(
+            tap(result => {
+              const outputTokenAmount = result?.amount;
+              this._isDirectSwap$.next(result.direct);
+              this._buyingTokenCode$.next(result.code || null);
+              this.tradeStatus = outputTokenAmount?.isFinite()
+                ? TRADE_STATUS.READY_TO_BUY_NATIVE
+                : TRADE_STATUS.DISABLED;
+              this.refreshService.setStopped();
+
+              this.swapFormService.outputControl.patchValue({ toAmount: outputTokenAmount });
+            })
           );
-
-          this.tradeStatus = outputTokenAmount?.isFinite()
-            ? TRADE_STATUS.READY_TO_BUY_NATIVE
-            : TRADE_STATUS.DISABLED;
-          this.refreshService.setStopped();
-
-          this.swapFormService.outputControl.patchValue({ toAmount: outputTokenAmount });
         }),
         catchError((err, caught$) => {
           this.tradeStatus = TRADE_STATUS.DISABLED;
