@@ -5,6 +5,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { Observable } from 'rxjs';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-claim-modal',
@@ -17,9 +18,12 @@ export class ClaimModalComponent {
 
   public readonly needSwitchNetwork$ = this.context.data.needSwitchNetwork$;
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly headerStore: HeaderStore,
     @Inject(POLYMORPHEUS_CONTEXT)
     public readonly context: TuiDialogContext<
       boolean,

@@ -15,9 +15,18 @@
   ETH
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">
-  <app-rubic-button appearance="primary" class="action-btn" (onClick)="switchNetwork()">{{
-    'staking.common.switchNetworkToArbitrum' | translate
-  }}</app-rubic-button>
+  <app-rubic-button
+    appearance="primary"
+    class="action-btn"
+    (onClick)="switchNetwork()"
+    [disabled]="isMobile"
+  >
+    {{
+      isMobile
+        ? 'Choose Arbitrum network in your wallet'
+        : ('staking.common.switchNetworkToArbitrum' | translate)
+    }}
+  </app-rubic-button>
 </ng-container>
 
 <ng-template #claim>
