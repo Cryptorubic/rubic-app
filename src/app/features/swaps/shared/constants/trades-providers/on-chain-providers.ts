@@ -494,5 +494,16 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'YuzuSwap',
     image: `${imageBasePath}yuzuswap.png`,
     color: '#EE5466'
+  },
+
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
+    name: 'PulseX V1',
+    image: `${imageBasePath}pulsex.png`,
+    color: '#00ff73'
+  },
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: {
+    name: 'PulseX V2',
+    image: `${imageBasePath}pulsex.png`,
+    color: '#ff0006'
   }
 };
