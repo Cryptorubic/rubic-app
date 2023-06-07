@@ -423,11 +423,11 @@
     },
     "withdrawModal": {
       "title": "WITHDRAWAL",
-      "text_1": "Close your position. You will receive",
+      "text_1": "Please proceed to close your position. You will receive",
       "text_2": "back",
       "text_3": "and",
       "text_4": "in rewards.",
-      "fullText": "Close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
+      "fullText": "Please proceed to close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
       "withdraw": "Withdraw"
     },
     "newPositionModal": {
