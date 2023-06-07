@@ -32,7 +32,7 @@ import { ThemeSwitcherComponent } from './components/header/components/theme-swi
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
-import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { BannerComponent } from './components/header/components/banner/app-banner.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
@@ -62,7 +62,7 @@ import { PointsButtonComponent } from './components/header/components/points-but
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    AppReferralBannerComponent,
+    BannerComponent,
     MobileMenuComponent,
     RubicMenuTogglerComponent,
     SettingsTogglerComponent,

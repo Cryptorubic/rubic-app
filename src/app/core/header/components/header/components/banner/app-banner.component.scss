@@ -1,0 +1,153 @@
+@use 'src/scss/core' as *;
+
+.banner {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+
+  text-decoration: none;
+
+  background: linear-gradient(55.97deg, #00e28d -11.1%, #9618d1 122.36%);
+
+  @include hide-unused-ui {
+    display: none;
+  }
+
+  &__container {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+    padding: 8px;
+  }
+
+  &__text {
+    @include font(24px, 1, 300, white);
+    margin: 0;
+
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+    &_bold {
+      font-weight: bold;
+    }
+  }
+
+  &__link {
+    @include font(24px, 1, 400, white);
+    display: flex;
+
+    gap: 12px;
+    align-items: center;
+    padding: 10px 22px;
+
+    white-space: nowrap;
+    text-decoration: none;
+
+    border: 1px solid white;
+    border-radius: 50px;
+
+    &:hover {
+      img {
+        transform: translateX(5px) scale(1.1);
+      }
+    }
+
+    img {
+      width: 10px;
+      height: 15px;
+
+      transition: 100ms ease-in;
+    }
+  }
+
+  &__background-img_left {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 100%;
+  }
+
+  &__background-img_right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 100%;
+  }
+}
+
+@include b($laptop-xl) {
+  .banner {
+    &__text {
+      @include font(20px, 1, 300, white);
+    }
+
+    &__link {
+      @include font(20px, 1, 300, white);
+    }
+  }
+}
+
+@include b(1000) {
+  .banner {
+    &__background-img_left,
+    &__background-img_right {
+      display: none;
+    }
+  }
+}
+
+@include b($tablet) {
+  .banner {
+    &__text {
+      @include font(18px, 1, 300, white);
+    }
+
+    &__link {
+      @include font(18px, 1, 300, white);
+      padding: 5px 15px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .banner {
+    justify-content: left;
+
+    &__container {
+      gap: 10px;
+      width: 100%;
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .banner {
+    &__text {
+      @include font(12px, 1, 300, white);
+      text-align: left;
+    }
+
+    &__link {
+      @include font(12px, 1, 300, white);
+      gap: 5px;
+
+      img {
+        width: 5px;
+        height: 10px;
+
+        transition: 100ms ease-in;
+      }
+    }
+  }
+}
