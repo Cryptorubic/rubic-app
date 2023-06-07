@@ -42,7 +42,7 @@ jobs:
         run: yarn run build
         
       - name: Upload to storage
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: Build
           path: dist/
