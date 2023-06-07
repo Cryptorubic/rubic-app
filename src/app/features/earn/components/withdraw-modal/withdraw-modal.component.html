@@ -4,8 +4,9 @@
   (click)="context.completeWith(false)"
 ></div>
 <div class="title">{{ 'staking.withdrawModal.title' | translate }}</div>
-<div class="text">
-  {{ 'staking.withdrawModal.text_1' | translate }}
+<div class="text text__wrapper">
+  {{ 'staking.withdrawModal.text_1' | translate }}<br />
+  {{ 'staking.withdrawModal.text_1-1' | translate }}
   <span class="text__amount" [class.tui-skeleton]="!amount"
     >{{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }} RBC</span
   >

@@ -564,7 +564,8 @@
     },
     "withdrawModal": {
       "title": "WITHDRAWAL",
-      "text_1": "Please proceed to close your position. You will receive",
+      "text_1": "Please proceed to close your position.",
+      "text_1-1": " You will receive",
       "text_2": "back",
       "text_3": "and",
       "text_4": "in rewards.",

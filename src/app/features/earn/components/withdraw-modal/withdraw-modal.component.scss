@@ -47,6 +47,10 @@
 
   text-align: center;
 
+  &__wrapper {
+    padding: 0 5px;
+  }
+
   &__amount {
     color: var(--primary-color);
   }
