@@ -18,7 +18,8 @@ import {
   PriceToken,
   BLOCKCHAIN_NAME,
   UserRejectError,
-  EvmWeb3Pure
+  EvmWeb3Pure,
+  UnapprovedContractError
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -384,7 +385,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         await this.crossChainApiService.patchTrade(transactionHash, false);
       }
 
-      if (err instanceof NotWhitelistedProviderError) {
+      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
         this.saveNotWhitelistedProvider(
           err,
           calculatedTrade.trade.from.blockchain,
@@ -506,11 +507,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
+    error: NotWhitelistedProviderError | UnapprovedContractError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
-    this.crossChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    if (error instanceof NotWhitelistedProviderError) {
+      this.crossChainApiService
+        .saveNotWhitelistedProvider(error, blockchain, tradeType)
+        .subscribe();
+    } else {
+      this.crossChainApiService
+        .saveNotWhitelistedCcrProvider(error, blockchain, tradeType)
+        .subscribe();
+    }
   }
 
   public async getChangenowPaymentInfo(
