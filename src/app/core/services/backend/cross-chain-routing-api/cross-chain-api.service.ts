@@ -6,6 +6,7 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  UnapprovedContractError,
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
@@ -43,6 +44,20 @@ export class CrossChainApiService {
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
       cause: error.cause
+    });
+  }
+
+  public saveNotWhitelistedCcrProvider(
+    error: UnapprovedContractError,
+    blockchain: BlockchainName,
+    tradeType: CrossChainTradeType
+  ): Observable<void> {
+    return this.httpService.post(`info/new_provider`, {
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
+      title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
+      address: error.contract,
+      cause: error.cause,
+      selector: error.method
     });
   }
 
