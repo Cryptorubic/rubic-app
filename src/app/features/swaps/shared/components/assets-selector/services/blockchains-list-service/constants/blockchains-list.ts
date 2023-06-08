@@ -90,7 +90,7 @@ export const notEvmChangeNowBlockchainsList = {
 const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlockchainsList).map(
   blockchain => ({
     name: blockchain,
-    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN || blockchain === BLOCKCHAIN_NAME.TON ? 0.5 : 0,
+    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN ? 0.5 : 0,
     tags: blockchain === BLOCKCHAIN_NAME.LITECOIN ? ['LTC'] : []
   })
 );
