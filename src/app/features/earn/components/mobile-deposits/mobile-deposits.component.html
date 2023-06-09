@@ -108,7 +108,6 @@
           [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
           (onClick)="onWithdraw.emit(deposit)"
           [loading]="withdrawingId === deposit.id"
-          [disabled]="!deposit.canWithdraw"
         >
           {{ 'staking.deposits.withdraw' | translate }}
         </app-rubic-button>
