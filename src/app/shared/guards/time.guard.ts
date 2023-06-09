@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { catchError, firstValueFrom, from, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { HttpService } from '@core/services/http/http.service';
 import { LoadResult } from '@shared/guards/models/types';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -42,20 +42,16 @@ export class TimeGuard implements CanActivate, CanLoad {
       return this.defaultTimeGuard(redirectPath, expiredDateInSeconds);
     }
 
-    return from(
-      firstValueFrom(
-        this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
-          map(response => {
-            if (response.current_timestamp < expiredDateInSeconds) {
-              this.window.location.href = redirectPath;
-              return false;
-            } else {
-              return true;
-            }
-          }),
-          catchError(() => this.defaultTimeGuard(redirectPath, expiredDateInSeconds))
-        )
-      )
+    return this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
+      map(response => {
+        if (response.current_timestamp < expiredDateInSeconds) {
+          this.window.location.href = redirectPath;
+          return false;
+        } else {
+          return true;
+        }
+      }),
+      catchError(() => this.defaultTimeGuard(redirectPath, expiredDateInSeconds))
     );
   }
 }
