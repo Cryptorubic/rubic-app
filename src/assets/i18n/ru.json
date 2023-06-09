@@ -419,7 +419,7 @@
       "circRBCLocked": "Percent of Locked RBC",
       "avgLockTime": "Avg. Lock Time",
       "estYieldPerWeek": "Est. Yield Per Week",
-      "apr": "APR"
+      "apr": "AVERAGE APR"
     },
     "withdrawModal": {
       "title": "WITHDRAWAL",
