@@ -79,7 +79,10 @@ export class RecentTradesService {
     };
   }
 
-  public async getTradeData(trade: RecentTrade): Promise<UiRecentTrade> {
+  public async getTradeData(
+    trade: RecentTrade,
+    sourceUiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
     const { srcTxHash, toToken, timestamp, dstTxHash: calculatedDstTxHash } = trade;
     const fromAssetType = isCrossChainRecentTrade(trade) ? trade.fromToken.blockchain : 'fiat';
     const fromAsset = isCrossChainRecentTrade(trade) ? trade.fromToken : trade.fromFiat;
@@ -127,6 +130,11 @@ export class RecentTradesService {
       uiTrade.statusFrom = trade.calculatedStatusFrom;
 
       return uiTrade;
+    }
+
+    if (sourceUiTrade.dstTxHash) {
+      uiTrade.dstTxHash = sourceUiTrade.dstTxHash;
+      uiTrade.dstTxLink = sourceUiTrade.dstTxLink;
     }
 
     if (isCrossChainRecentTrade(trade)) {
