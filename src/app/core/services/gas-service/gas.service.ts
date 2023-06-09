@@ -174,22 +174,16 @@ export class GasService {
   })
   private fetchEthGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      catchError(() => {
-        const requestTimeout = 2000;
-        return this.httpClient
-          .get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1')
-          .pipe(
-            timeout(requestTimeout),
-            map(response => ({
-              baseFee: response.baseFee,
-              maxFeePerGas: response.high.maxFeePerGas,
-              maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
-            }))
-          );
-      }),
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    const requestTimeout = 2000;
+    return this.httpClient.get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1').pipe(
+      timeout(requestTimeout),
+      map(response => ({
+        baseFee: response.baseFee,
+        maxFeePerGas: new BigNumber(response.high.maxFeePerGas).multipliedBy(1.5).toFixed(),
+        maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
+      })),
+      catchError(() => blockchainAdapter.getPriorityFeeGas()),
+      map(formatEIP1559Gas)
     );
   }
 

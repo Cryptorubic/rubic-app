@@ -3,14 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  ViewContainerRef,
-  Injector,
-  Inject,
-  Self
+  Self,
+  ViewContainerRef
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -31,12 +31,12 @@ import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-te
 import { OnramperService } from '@core/services/onramper/onramper.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 import {
+  ArbitrumRbcBridgeSupportedBlockchain,
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
-  CROSS_CHAIN_TRADE_TYPE,
-  TxStatus,
   ChangenowApiStatus,
-  ArbitrumRbcBridgeSupportedBlockchain
+  CROSS_CHAIN_TRADE_TYPE,
+  TxStatus
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
@@ -184,19 +184,22 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     return 'id' in trade;
   }
 
-  public getTradeData(trade: RecentTrade | ChangenowPostTrade): Promise<UiRecentTrade> {
+  public getTradeData(
+    trade: RecentTrade | ChangenowPostTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
     if (this.isChangenowTrade(trade)) {
       return this.recentTradesService.getChangeNowTradeData(trade);
     }
 
-    return this.recentTradesService.getTradeData(trade);
+    return this.recentTradesService.getTradeData(trade, uiTrade);
   }
 
   private initTradeDataPolling(): void {
     interval(30000)
       .pipe(
         startWith(-1),
-        switchMap(() => this.getTradeData(this.trade)),
+        switchMap(() => this.getTradeData(this.trade, this.uiTrade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
         takeWhile(
@@ -210,7 +213,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   protected setUiTrade(uiTrade: UiRecentTrade): void {
-    this.uiTrade = uiTrade;
+    this.uiTrade = {
+      ...uiTrade,
+      dstTxLink: this.uiTrade.dstTxLink ?? uiTrade.dstTxLink,
+      dstTxHash: this.uiTrade.dstTxHash ?? uiTrade.dstTxHash
+    };
     if (this.initialLoading) {
       this.swapFormQueryService.initialLoading$.pipe(first(loading => !loading)).subscribe(() => {
         this.initialLoading = false;
@@ -296,6 +303,13 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         this.trade.fromToken.blockchain,
         ADDRESS_TYPE.TRANSACTION
       );
+      if (this.isArbitrumBridgeTrade) {
+        this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+          revertTxReceipt.transactionHash,
+          this.trade.toToken.blockchain,
+          ADDRESS_TYPE.TRANSACTION
+        );
+      }
       this.cdr.detectChanges();
     }
   }
@@ -352,9 +366,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
           this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
           this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
             revertTxReceipt.transactionHash,
-            this.trade.fromToken.blockchain,
+            this.trade.toToken.blockchain,
             ADDRESS_TYPE.TRANSACTION
           );
+          this.trade.calculatedStatusFrom = TxStatus.SUCCESS;
+          this.trade.calculatedStatusTo = TxStatus.SUCCESS;
           this.cdr.detectChanges();
         }
       } catch (err) {
