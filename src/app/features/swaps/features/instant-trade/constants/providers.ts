@@ -170,5 +170,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.MUTE_SWAP,
       ON_CHAIN_TRADE_TYPE.SYNC_SWAP,
       ON_CHAIN_TRADE_TYPE.ONE_INCH
+    ]),
+    [BLOCKCHAIN_NAME.PULSECHAIN]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.PULSEX_V1,
+      ON_CHAIN_TRADE_TYPE.PULSEX_V2
     ])
   };

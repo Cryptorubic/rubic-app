@@ -120,5 +120,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://smartbch.greyh.at',
     'https://smartbch.fountainhead.cash/mainnet'
   ],
-  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io']
+  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com']
 };
