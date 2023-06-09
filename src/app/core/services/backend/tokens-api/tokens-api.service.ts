@@ -208,7 +208,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.KAVA_COSMOS,
       BLOCKCHAIN_NAME.ZK_SYNC,
       BLOCKCHAIN_NAME.ONTOLOGY,
-      BLOCKCHAIN_NAME.APTOS
+      BLOCKCHAIN_NAME.APTOS,
+      BLOCKCHAIN_NAME.PULSECHAIN
     ];
     return this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)

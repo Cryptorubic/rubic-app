@@ -115,5 +115,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'ZipSwap',
   [ON_CHAIN_TRADE_TYPE.ZRX]: '0x',
 
-  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap'
+  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap',
+
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'PulseX V1',
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2'
 };
