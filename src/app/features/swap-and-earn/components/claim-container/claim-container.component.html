@@ -1,10 +1,16 @@
 <div class="claim">
   <tui-scrollbar>
     <app-claim-contest-container
-      round="4"
-      claimData="05.04.2023 - 31.05.2023"
+      round="5"
+      claimData="05.04.2023 - 09.09.2023"
       [isAlreadyClaimed]="isAlreadyClaimed$ | async"
       [isClosed]="false"
+    ></app-claim-contest-container>
+    <app-claim-contest-container
+      round="4"
+      claimData="05.04.2023 - 31.05.2023"
+      [isAlreadyClaimed]="true"
+      [isClosed]="true"
     ></app-claim-contest-container>
     <app-claim-contest-container
       round="3"
