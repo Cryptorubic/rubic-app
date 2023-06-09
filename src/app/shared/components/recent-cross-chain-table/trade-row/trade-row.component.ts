@@ -3,14 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  ViewContainerRef,
-  Injector,
-  Inject,
-  Self
+  Self,
+  ViewContainerRef
 } from '@angular/core';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -31,12 +31,12 @@ import { STATUS_BADGE_TEXT } from '@core/recent-trades/constants/status-badge-te
 import { OnramperService } from '@core/services/onramper/onramper.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 import {
+  ArbitrumRbcBridgeSupportedBlockchain,
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
-  CROSS_CHAIN_TRADE_TYPE,
-  TxStatus,
   ChangenowApiStatus,
-  ArbitrumRbcBridgeSupportedBlockchain
+  CROSS_CHAIN_TRADE_TYPE,
+  TxStatus
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
@@ -296,6 +296,13 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         this.trade.fromToken.blockchain,
         ADDRESS_TYPE.TRANSACTION
       );
+      if (this.isArbitrumBridgeTrade) {
+        this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
+          revertTxReceipt.transactionHash,
+          this.trade.toToken.blockchain,
+          ADDRESS_TYPE.TRANSACTION
+        );
+      }
       this.cdr.detectChanges();
     }
   }
@@ -352,9 +359,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
           this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
           this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
             revertTxReceipt.transactionHash,
-            this.trade.fromToken.blockchain,
+            this.trade.toToken.blockchain,
             ADDRESS_TYPE.TRANSACTION
           );
+          this.trade.calculatedStatusFrom = TxStatus.SUCCESS;
+          this.trade.calculatedStatusTo = TxStatus.SUCCESS;
           this.cdr.detectChanges();
         }
       } catch (err) {
