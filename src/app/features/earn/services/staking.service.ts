@@ -231,7 +231,6 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    // const durationInSeconds = duration * 60;
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
       .tryExecuteContractMethod(

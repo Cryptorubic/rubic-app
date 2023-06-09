@@ -36,12 +36,6 @@ import { HeaderStore } from '@core/header/services/header.store';
   providers: [TuiDestroyService]
 })
 export class StakeFormComponent implements OnInit {
-  // public readonly DURATIONS = [
-  //   { value: 5, label: '5', earn: 100 },
-  //   { value: 10, label: '10', earn: 120 },
-  //   { value: 15, label: '15', earn: 150 },
-  //   { value: 20, label: '20', earn: 200 }
-  // ];
   public readonly DURATIONS = [
     { value: 3, label: '3', rewardRate: '1.0' },
     { value: 6, label: '6', rewardRate: '1.2' },
