@@ -71,11 +71,13 @@ export class StatisticsService {
 
   public getTotalSupply(): void {
     from(
-      StatisticsService.blockchainAdapter.callContractMethod<string>(
-        STAKING_ROUND_THREE.TOKEN.address,
-        STAKING_ROUND_THREE.TOKEN.abi,
-        'totalSupply'
-      )
+      Injector.web3PublicService
+        .getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM)
+        .callContractMethod<string>(
+          '0x3330BFb7332cA23cd071631837dC289B09C33333',
+          STAKING_ROUND_THREE.TOKEN.abi,
+          'totalSupply'
+        )
     ).subscribe(value => {
       this._totalSupply$.next(Web3Pure.fromWei(value));
     });
