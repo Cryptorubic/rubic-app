@@ -184,19 +184,22 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     return 'id' in trade;
   }
 
-  public getTradeData(trade: RecentTrade | ChangenowPostTrade): Promise<UiRecentTrade> {
+  public getTradeData(
+    trade: RecentTrade | ChangenowPostTrade,
+    uiTrade: UiRecentTrade
+  ): Promise<UiRecentTrade> {
     if (this.isChangenowTrade(trade)) {
       return this.recentTradesService.getChangeNowTradeData(trade);
     }
 
-    return this.recentTradesService.getTradeData(trade);
+    return this.recentTradesService.getTradeData(trade, uiTrade);
   }
 
   private initTradeDataPolling(): void {
     interval(30000)
       .pipe(
         startWith(-1),
-        switchMap(() => this.getTradeData(this.trade)),
+        switchMap(() => this.getTradeData(this.trade, this.uiTrade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
         watch(this.cdr),
         takeWhile(
