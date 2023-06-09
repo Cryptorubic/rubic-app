@@ -17,11 +17,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },
   {
-    path: ROUTE_PATH.BYT_CRYPTO,
-    loadChildren: () =>
-      import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)
-  },
-  {
     path: ROUTE_PATH.REVOKE_APPROVAL,
     loadChildren: () =>
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
