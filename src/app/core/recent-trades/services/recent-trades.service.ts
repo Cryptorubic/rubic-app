@@ -132,9 +132,9 @@ export class RecentTradesService {
       return uiTrade;
     }
 
-    if (sourceUiTrade.dstTxHash) {
-      uiTrade.dstTxHash = sourceUiTrade.dstTxHash;
-      uiTrade.dstTxLink = sourceUiTrade.dstTxLink;
+    if (sourceUiTrade?.dstTxHash) {
+      uiTrade.dstTxHash = sourceUiTrade?.dstTxHash;
+      uiTrade.dstTxLink = sourceUiTrade?.dstTxLink;
     }
 
     if (isCrossChainRecentTrade(trade)) {
