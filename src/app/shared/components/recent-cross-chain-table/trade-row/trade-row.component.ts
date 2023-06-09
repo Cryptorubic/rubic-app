@@ -213,7 +213,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   protected setUiTrade(uiTrade: UiRecentTrade): void {
-    this.uiTrade = uiTrade;
+    this.uiTrade = {
+      ...uiTrade,
+      dstTxLink: this.uiTrade.dstTxLink ?? uiTrade.dstTxLink,
+      dstTxHash: this.uiTrade.dstTxHash ?? uiTrade.dstTxHash
+    };
     if (this.initialLoading) {
       this.swapFormQueryService.initialLoading$.pipe(first(loading => !loading)).subscribe(() => {
         this.initialLoading = false;
