@@ -40,22 +40,22 @@ export class TimeGuard implements CanActivate, CanLoad {
 
     if (this.isMobile) {
       return this.defaultTimeGuard(redirectPath, expiredDateInSeconds);
-    } else {
-      return from(
-        firstValueFrom(
-          this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
-            map(response => {
-              if (response.current_timestamp < expiredDateInSeconds) {
-                this.window.location.href = redirectPath;
-                return false;
-              } else {
-                return true;
-              }
-            }),
-            catchError(() => this.defaultTimeGuard(redirectPath, expiredDateInSeconds))
-          )
-        )
-      );
     }
+
+    return from(
+      firstValueFrom(
+        this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
+          map(response => {
+            if (response.current_timestamp < expiredDateInSeconds) {
+              this.window.location.href = redirectPath;
+              return false;
+            } else {
+              return true;
+            }
+          }),
+          catchError(() => this.defaultTimeGuard(redirectPath, expiredDateInSeconds))
+        )
+      )
+    );
   }
 }
