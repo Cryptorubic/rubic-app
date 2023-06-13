@@ -290,6 +290,10 @@ export class InstantTradeService extends TradeCalculationService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress })
+      // ...(trade instanceof EvmOnChainTrade &&
+      //   trade.gasFeeInfo.gasLimit && {
+      //     gasLimit: trade.gasFeeInfo.gasLimit.toFixed()
+      //   })
     };
 
     try {
