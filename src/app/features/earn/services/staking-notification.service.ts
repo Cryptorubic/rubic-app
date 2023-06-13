@@ -12,7 +12,7 @@ export class StakingNotificationService {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   public showSuccessDepositNotification(): void {
-    this.notificationsService.show('BRBC have been deposited', SUCCESS_NOTIFICATION_OPTIONS);
+    this.notificationsService.show('RBC has been deposited', SUCCESS_NOTIFICATION_OPTIONS);
   }
 
   public showSuccessClaimNotification(): void {
@@ -24,7 +24,14 @@ export class StakingNotificationService {
   }
 
   public showSuccessApproveNotification(): void {
-    this.notificationsService.show('Successful BRBC approve', SUCCESS_NOTIFICATION_OPTIONS);
+    this.notificationsService.show('Successful RBC approve', SUCCESS_NOTIFICATION_OPTIONS);
+  }
+
+  public showStakingIsStoppedNotification(): void {
+    this.notificationsService.show('Staking is stopped', {
+      status: TuiNotification.Error,
+      autoClose: 5000
+    });
   }
 
   public showNftLockedError(lockedUntil: string): void {

@@ -2,10 +2,10 @@
   <thead>
     <tr class="tui-table__tr">
       <th class="tui-table__th">NFT ID</th>
-      <th class="tui-table__th">BRBC</th>
-      <th class="tui-table__th">Rewards</th>
+      <th class="tui-table__th">RBC</th>
+      <th class="tui-table__th">{{ 'staking.deposits.rewards' | translate }}</th>
       <th class="tui-table__th">APR</th>
-      <th class="tui-table__th">End Date</th>
+      <th class="tui-table__th">{{ 'staking.deposits.endDate' | translate }}</th>
       <th class="tui-table__th">&nbsp;</th>
     </tr>
   </thead>
@@ -14,32 +14,39 @@
       <tr class="tui-table__tr data-row">
         <td class="tui-table__td">
           <div class="tui-table__td-id">
-            <img src="assets/images/rbc-util-icon.png" alt="" />
+            <img src="assets/images/rbc.png" alt="" />
             {{ deposit.id }}
           </div>
         </td>
         <td class="tui-table__td">
-          {{ deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 0 } }}
+          <span
+            [tuiHint]="
+              deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }
+            "
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{
+              deposit.amount | bigNumberFormat | withRound : 'toClosestValue' : { decimals: 0 }
+            }}</span
+          >
         </td>
         <td class="tui-table__td">
           <span
             [tuiHint]="
-              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
-                ? (deposit.totalNftRewards
-                  | bigNumberFormat
-                  | withRound : 'fixedValue' : { decimals: 4 })
-                : '< 0.0001'
+              (deposit.totalNftRewards
+                | bigNumberFormat
+                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
             [tuiManualHint]="
-              deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
-                ? (deposit.totalNftRewards
-                  | bigNumberFormat
-                  | withRound : 'fixedValue' : { decimals: 4 })
-                : '< 0.0001'
+              (deposit.totalNftRewards
+                | bigNumberFormat
+                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
             [tuiManualHintShow]="false"
             [tuiHintDirection]="'top-left'"
             [tuiHintShowDelay]="50"
+            tuiHintMode="onDark"
           >
             {{ id | functionCall : getTotalNftRewards : this }}
           </span>
@@ -47,31 +54,31 @@
         <td class="tui-table__td">
           {{
             deposit.tokenApr && deposit.tokenApr.gte(0)
-              ? (deposit.tokenApr | bigNumberFormat : 2)
+              ? (deposit.tokenApr | bigNumberFormat : 2) + '%'
               : '-'
-          }}%
+          }}
         </td>
         <td class="tui-table__td">{{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}</td>
         <td class="tui-table__td">
           <div class="tui-table__td-actions">
             <app-rubic-button
-              appearance="secondary"
+              [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
               (onClick)="onClaim.emit(deposit)"
               [disabled]="deposit.totalNftRewards.isZero()"
               [loading]="claimingId === deposit.id"
-              >Claim Rewards</app-rubic-button
+              >{{ 'staking.deposits.claimRewards' | translate }}</app-rubic-button
             >
             <app-rubic-button
-              [appearance]="deposit.canWithdraw ? 'secondary' : 'primary'"
+              [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
               (onClick)="onWithdraw.emit(deposit)"
               [loading]="withdrawingId === deposit.id"
+              [tuiHint]="'Withdraw'"
+              [tuiHintDirection]="'top-right'"
+              tuiHintMode="onDark"
             >
               <img
-                [src]="
-                  isDarkTheme
-                    ? 'assets/images/icons/leave-white.svg'
-                    : 'assets/images/icons/leave-black.svg'
-                "
+                [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
+                [src]="'assets/images/icons/leave-black.svg'"
                 alt=""
               />
             </app-rubic-button>
@@ -81,7 +88,7 @@
       <tr style="height: 12px"></tr>
     </ng-container>
     <tr class="tui-table__tr">
-      <td class="tui-table__td">TOTAL</td>
+      <td class="tui-table__td">{{ 'staking.deposits.total' | translate }}</td>
       <td class="tui-table__td">
         {{
           total.balance
@@ -89,7 +96,14 @@
             : '0'
         }}
       </td>
-      <td class="tui-table__td">
+      <td
+        class="tui-table__td"
+        [tuiHint]="
+          (total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
+        "
+        [tuiHintDirection]="'top-right'"
+        tuiHintMode="onDark"
+      >
         {{
           !total.rewards.isZero()
             ? total.rewards.lt(0.01)

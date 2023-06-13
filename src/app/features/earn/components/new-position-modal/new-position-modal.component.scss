@@ -4,18 +4,22 @@
   position: relative;
 
   display: block;
-  padding: 40px 0 36px;
+  padding: 40px 0 10px;
 }
 
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0 !important;
+  right: 5px !important;
 
   width: 12px;
   height: 12px;
 
   cursor: pointer;
+
+  @include b($mobile-md) {
+    display: none;
+  }
 
   ::ng-deep svg path {
     stroke: #000;
@@ -31,6 +35,10 @@
   margin-bottom: 26px;
 
   text-align: center;
+
+  @include b($mobile-md) {
+    display: none;
+  }
 }
 
 .text {

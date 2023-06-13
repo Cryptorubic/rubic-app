@@ -22,7 +22,6 @@ app-statistics {
 
 app-deposits {
   display: block;
-  margin-bottom: 20px;
 
   @include b($tablet) {
     margin-bottom: 16px;
@@ -50,6 +49,8 @@ app-deposits {
 }
 
 .rules {
+  margin-top: 20px;
+
   &__link {
     @include font(16px, 19px, 400, var(--primary-color));
     display: flex;
@@ -58,7 +59,6 @@ app-deposits {
     justify-content: center;
     width: fit-content;
     margin: 0 auto 30px;
-    margin-bottom: 30px;
     text-decoration-line: underline;
   }
 

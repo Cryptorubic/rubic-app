@@ -16,7 +16,7 @@ export class WalletsModalService {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService.showDialog(
       WalletsModalComponent,
-      { size, fitContent: true },
+      { title: 'Connect Wallet', size, fitContent: true },
       this.injector
     );
   }
