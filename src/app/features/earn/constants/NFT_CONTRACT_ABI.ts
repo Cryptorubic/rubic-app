@@ -2,9 +2,15 @@ import { AbiItem } from 'web3-utils';
 
 export const NFT_CONTRACT_ABI = [
   {
-    inputs: [{ internalType: 'address', name: 'token_addr', type: 'address' }],
+    inputs: [{ internalType: 'address', name: '_RBC', type: 'address' }],
     stateMutability: 'nonpayable',
     type: 'constructor'
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: 'uint256', name: 'amount', type: 'uint256' }],
+    name: 'AddRewards',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -29,23 +35,51 @@ export const NFT_CONTRACT_ABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: 'address', name: 'provider', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'value', type: 'uint256' },
-      { indexed: true, internalType: 'uint256', name: 'locktime', type: 'uint256' },
-      { indexed: false, internalType: 'enum ve.DepositType', name: 'deposit_type', type: 'uint8' },
-      { indexed: false, internalType: 'uint256', name: 'ts', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
-    name: 'Deposit',
+    name: 'Claim',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: 'bool', name: 'isStopped', type: 'bool' }],
+    name: 'EmergencyStop',
     type: 'event'
   },
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: 'uint256', name: 'prevSupply', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'supply', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { indexed: false, internalType: 'uint128', name: 'lockTime', type: 'uint128' },
+      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
-    name: 'Supply',
+    name: 'Enter',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { indexed: false, internalType: 'uint128', name: 'lockTime', type: 'uint128' },
+      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
+    ],
+    name: 'Migrate',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'address', name: 'previousOwner', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'newOwner', type: 'address' }
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: 'uint256', name: 'rate', type: 'uint256' }],
+    name: 'Rate',
     type: 'event'
   },
   {
@@ -61,25 +95,24 @@ export const NFT_CONTRACT_ABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: 'address', name: 'provider', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'value', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'ts', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
-    name: 'Withdraw',
+    name: 'Unstake',
     type: 'event'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'abstain',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    inputs: [],
+    name: 'RBC',
+    outputs: [{ internalType: 'contract IERC20Minimal', name: '', type: 'address' }],
+    stateMutability: 'view',
     type: 'function'
   },
+  { inputs: [], name: 'addRewards', outputs: [], stateMutability: 'payable', type: 'function' },
   {
     inputs: [
-      { internalType: 'address', name: '_approved', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
     name: 'approve',
     outputs: [],
@@ -87,206 +120,65 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'attach',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'attachments',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_owner', type: 'address' }],
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_block', type: 'uint256' }
-    ],
-    name: 'balanceOfAtNFT',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
+    name: 'calculateRewards',
+    outputs: [{ internalType: 'uint256', name: 'rewards', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'balanceOfNFT',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_t', type: 'uint256' }
-    ],
-    name: 'balanceOfNFTAt',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'block_number',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  { inputs: [], name: 'checkpoint', outputs: [], stateMutability: 'nonpayable', type: 'function' },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_value', type: 'uint256' },
-      { internalType: 'uint256', name: '_lock_duration', type: 'uint256' }
-    ],
-    name: 'create_lock',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_value', type: 'uint256' },
-      { internalType: 'uint256', name: '_lock_duration', type: 'uint256' },
-      { internalType: 'address', name: '_to', type: 'address' }
-    ],
-    name: 'create_lock_for',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
+    name: 'claimRewards',
+    outputs: [{ internalType: 'uint256', name: 'rewards', type: 'uint256' }],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [],
-    name: 'decimals',
-    outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_value', type: 'uint256' }
-    ],
-    name: 'deposit_for',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'detach',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'epoch',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'finishStaking',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'finishedStaking',
+    name: 'emergencyStop',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
+    inputs: [
+      { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      { internalType: 'uint128', name: '_lockTime', type: 'uint128' }
+    ],
+    name: 'enterStaking',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
+    name: 'estimatedAnnualRewardsByTokenId',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
     name: 'getApproved',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'get_last_user_slope',
-    outputs: [{ internalType: 'int128', name: '', type: 'int128' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_value', type: 'uint256' }
-    ],
-    name: 'increase_amount',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_lock_duration', type: 'uint256' }
-    ],
-    name: 'increase_unlock_time',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_owner', type: 'address' },
-      { internalType: 'address', name: '_operator', type: 'address' }
+      { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'address', name: 'operator', type: 'address' }
     ],
     name: 'isApprovedForAll',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_spender', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
-    ],
-    name: 'isApprovedOrOwner',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'locked',
-    outputs: [
-      { internalType: 'int128', name: 'amount', type: 'int128' },
-      { internalType: 'uint256', name: 'end', type: 'uint256' }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'locked__end',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_from', type: 'uint256' },
-      { internalType: 'uint256', name: '_to', type: 'uint256' }
-    ],
-    name: 'merge',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -298,42 +190,58 @@ export const NFT_CONTRACT_ABI = [
   },
   {
     inputs: [],
-    name: 'nftSupply',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'owner',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
     name: 'ownerOf',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'ownership_change',
+    inputs: [],
+    name: 'prevTimestamp',
+    outputs: [{ internalType: 'uint128', name: '', type: 'uint128' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'rewardGrowth',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'point_history',
-    outputs: [
-      { internalType: 'int128', name: 'bias', type: 'int128' },
-      { internalType: 'int128', name: 'slope', type: 'int128' },
-      { internalType: 'uint256', name: 'ts', type: 'uint256' },
-      { internalType: 'uint256', name: 'blk', type: 'uint256' }
-    ],
+    inputs: [],
+    name: 'rewardRate',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'rewardReserve',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      { internalType: 'address', name: '_from', type: 'address' },
-      { internalType: 'address', name: '_to', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
     name: 'safeTransferFrom',
     outputs: [],
@@ -342,10 +250,10 @@ export const NFT_CONTRACT_ABI = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_from', type: 'address' },
-      { internalType: 'address', name: '_to', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'bytes', name: '_data', type: 'bytes' }
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' }
     ],
     name: 'safeTransferFrom',
     outputs: [],
@@ -354,8 +262,8 @@ export const NFT_CONTRACT_ABI = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_operator', type: 'address' },
-      { internalType: 'bool', name: '_approved', type: 'bool' }
+      { internalType: 'address', name: 'operator', type: 'address' },
+      { internalType: 'bool', name: 'approved', type: 'bool' }
     ],
     name: 'setApprovalForAll',
     outputs: [],
@@ -363,28 +271,33 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'address', name: '_voter', type: 'address' }],
-    name: 'setVoter',
+    inputs: [{ internalType: 'bool', name: '_emergencyStop', type: 'bool' }],
+    name: 'setEmergencyStop',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'rate', type: 'uint256' }],
+    name: 'setRate',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'slope_changes',
-    outputs: [{ internalType: 'int128', name: '', type: 'int128' }],
+    name: 'stakes',
+    outputs: [
+      { internalType: 'uint128', name: 'lockTime', type: 'uint128' },
+      { internalType: 'uint128', name: 'lockStartTime', type: 'uint128' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'lastRewardGrowth', type: 'uint256' }
+    ],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'supply',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'bytes4', name: '_interfaceID', type: 'bytes4' }],
+    inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
     name: 'supportsInterface',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
@@ -392,7 +305,8 @@ export const NFT_CONTRACT_ABI = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'address', name: '_asset', type: 'address' },
+      { internalType: 'address', name: '_to', type: 'address' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' }
     ],
     name: 'sweepTokens',
@@ -408,16 +322,16 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'token',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
+    name: 'tokenByIndex',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      { internalType: 'address', name: '_owner', type: 'address' },
-      { internalType: 'uint256', name: '_tokenIndex', type: 'uint256' }
+      { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'uint256', name: 'index', type: 'uint256' }
     ],
     name: 'tokenOfOwnerByIndex',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -425,16 +339,16 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
     name: 'tokenURI',
     outputs: [{ internalType: 'string', name: '', type: 'string' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'totalNFTSupply',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'tokensOfOwner',
+    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
     stateMutability: 'view',
     type: 'function'
   },
@@ -446,24 +360,10 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_block', type: 'uint256' }],
-    name: 'totalSupplyAt',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: 't', type: 'uint256' }],
-    name: 'totalSupplyAtT',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     inputs: [
-      { internalType: 'address', name: '_from', type: 'address' },
-      { internalType: 'address', name: '_to', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
     name: 'transferFrom',
     outputs: [],
@@ -471,77 +371,24 @@ export const NFT_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'user_point_epoch',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '', type: 'uint256' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
-    ],
-    name: 'user_point_history',
-    outputs: [
-      { internalType: 'int128', name: 'bias', type: 'int128' },
-      { internalType: 'int128', name: 'slope', type: 'int128' },
-      { internalType: 'uint256', name: 'ts', type: 'uint256' },
-      { internalType: 'uint256', name: 'blk', type: 'uint256' }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: '_idx', type: 'uint256' }
-    ],
-    name: 'user_point_history__ts',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'version',
-    outputs: [{ internalType: 'string', name: '', type: 'string' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
-    name: 'viewTokensByOwner',
-    outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'voted',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'voter',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'voting',
+    inputs: [{ internalType: 'address', name: 'newOwner', type: 'address' }],
+    name: 'transferOwnership',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'withdraw',
+    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
+    name: 'unstake',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'virtualRBCBalance',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
     type: 'function'
   }
 ] as AbiItem[];

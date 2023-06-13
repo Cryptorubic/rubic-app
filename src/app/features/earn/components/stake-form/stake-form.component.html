@@ -3,14 +3,14 @@
     <button class="title__back" (click)="back()">
       <div inlineSVG="assets/images/icons/arrow/long-arrow-left.svg"></div>
     </button>
-    <div class="title__text">New Position</div>
+    <div class="title__text">{{ 'staking.stakeForm.title' | translate }}</div>
   </div>
 
   <div class="token">
     <div class="token__data-and-amount">
       <div class="token__data">
-        <img src="assets/images/rbc-util-icon.png" class="token__data-icon" alt="" />
-        BRBC
+        <img src="/assets/favicon/logo.svg" class="token__data-icon" alt="" />
+        RBC
       </div>
       <input
         autocomplete="off"
@@ -27,13 +27,15 @@
 
     <div class="token__balance-and-price">
       <div class="token__balance" *ngLet="rbcTokenBalance$ | async as rbcTokenBalance">
-        You have
+        {{ 'staking.stakeForm.youHave' | translate }}
         {{
           rbcTokenBalance
             ? (rbcTokenBalance | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 })
             : '--.--'
         }}
-        <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">MAX</span>
+        <span class="token__max" (click)="setMaxAmount(rbcTokenBalance)">{{
+          'staking.stakeForm.max' | translate
+        }}</span>
       </div>
       <div class="token__price">
         $ {{ selectedAmount | functionCall : calculateUsdPrice : this }}
@@ -44,40 +46,45 @@
   <hr class="divider" />
 
   <div class="duration">
-    <div class="duration__title">Choose the Duration</div>
-    <div class="duration__current-value">{{ durationSliderCtrl.value }}M</div>
+    <div class="duration__title">{{ 'staking.stakeForm.duration.title' | translate }}</div>
     <div class="duration__common">
-      <ng-container *ngFor="let duration of DURATIONS">
+      <ng-container *ngFor="let duration of DURATIONS; let i = index">
         <button
           class="duration__common-chip"
-          [class.duration__common-chip_selected]="durationSliderCtrl.value === duration.value"
-          [disabled]="duration.value > MAX_LOCK_TIME"
+          [class.duration__common-chip_selected]="handleSelectedDuration(duration.value)"
+          [disabled]="duration.value > MAX_LOCK_TIME || stakingIsClosed"
           (click)="setDuration(duration.value)"
         >
-          {{ duration.label }}
+          <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-label"
+            >{{ duration.label }} {{ 'staking.common.months' | translate }}</span
+          >
+          <span *ngIf="i !== DURATIONS.length - 1" class="duration__common-chip-earn"
+            >{{ 'staking.stakeForm.duration.rewards' | translate }} x{{ duration.rewardRate }}</span
+          >
+          <span
+            *ngIf="i === DURATIONS.length - 1"
+            class="duration__common-chip-earn duration__common-chip-earn-end"
+            >{{ 'staking.stakeForm.duration.rewards' | translate }} x{{ duration.rewardRate }}
+            {{ 'staking.stakeForm.duration.for' | translate }} {{ duration.label }}
+            {{ 'staking.common.months' | translate }}</span
+          >
+          <span *ngIf="i === DURATIONS.length - 1" class="duration__common-chip-earn-end-hint"
+            >{{ 'staking.stakeForm.duration.durationEndData' | translate }} 07/14</span
+          >
         </button>
       </ng-container>
     </div>
   </div>
 
-  <div class="duration-slider">
-    <tui-slider
-      [formControl]="durationSliderCtrl"
-      [max]="12"
-      [min]="1"
-      [steps]="11"
-      (ngModelChange)="handleDurationError($event)"
-    ></tui-slider>
-  </div>
-
-  <div class="hint">
+  <div class="hint" *ngIf="!stakingIsClosed">
     <div class="hint__icon">
       <img src="assets/images/icons/info-warning.svg" alt="" />
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      BRBC locked expires in {{ selectedDuration }} months. <br />
-      Locked until {{ unlockDate | date : 'mediumDate' }}
+      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ durationCtrl.value }}
+      {{ 'staking.common.months' | translate }}. <br />
+      {{ 'staking.stakeForm.hint.lockedUntil' | translate }} {{ unlockDate | date : 'mediumDate' }}
     </div>
   </div>
 
@@ -88,16 +95,21 @@
         needLogin: needLogin$ | async
       } as data"
     >
-      <app-rubic-button appearance="secondary" (onClick)="login()" *ngIf="data.needLogin">
-        Connect Wallet
+      <app-rubic-button appearance="primary" (onClick)="login()" *ngIf="data.needLogin">
+        {{ 'staking.common.connectWallet' | translate }}
       </app-rubic-button>
 
       <app-rubic-button
-        appearance="secondary"
+        appearance="primary"
         (onClick)="switchNetwork()"
         *ngIf="!data.needLogin && data.needSwitchNetwork"
+        [disabled]="isMobile"
       >
-        Switch to BSC network
+        {{
+          isMobile
+            ? 'Choose Arbitrum network in your wallet'
+            : ('staking.common.switchNetworkToArbitrum' | translate)
+        }}
       </app-rubic-button>
 
       <app-stake-button
@@ -118,10 +130,10 @@
 <div class="rules">
   <a
     class="rules__link"
-    href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
+    href="https://cryptorubic.medium.com/dear-rubicans-ffcf7b611b42"
     target="_blank"
   >
-    {{ 'staking.stake.rules' | translate }}
+    {{ 'staking.common.rules' | translate }}
     <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
   </a>
 </div>

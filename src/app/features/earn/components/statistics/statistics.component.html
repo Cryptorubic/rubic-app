@@ -1,6 +1,6 @@
 <div class="statistics">
   <div class="statistics__head">
-    <span class="statistics__title">Overview</span>
+    <span class="statistics__title">{{ 'staking.overview.title' | translate }}</span>
     <app-rotating-icon
       class="statistics__refresh"
       (iconClick)="refreshStatistics()"
@@ -10,21 +10,30 @@
   <div class="statistics__info">
     <div class="statistics__col">
       <div class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.lockedRBC' | translate }}</div>
+        <div class="statistics__param-label">{{ 'staking.overview.lockedRBC' | translate }}</div>
         <div class="statistics__param-value" *ngLet="lockedRBC$ | async as lockedRBC">
-          {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
+          <span
+            [class.tui-skeleton]="!lockedRBC"
+            [tuiHint]="lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 6 : true) : '--.--'"
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
+          </span>
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">9</div>
+        <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
+        <!--                <div class="statistics__param-value">9 <span>{{ 'staking.common.months' | translate }}</span></div>-->
+        <div class="statistics__param-value">--.--</div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
+        <div class="statistics__param-label">{{ 'staking.overview.$lockedRBC' | translate }}</div>
         <div
           class="statistics__param-value"
           *ngLet="lockedRBCInDollars$ | async as lockedRBCInDollars"
           [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
+          [class.tui-skeleton]="!lockedRBCInDollars"
         >
           $
           {{
@@ -35,63 +44,124 @@
     </div>
     <div class="statistics__col">
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.$lockedRBC' | translate }}</div>
+        <div class="statistics__param-label">{{ 'staking.overview.$lockedRBC' | translate }}</div>
         <div
           class="statistics__param-value"
           *ngLet="lockedRBCInDollars$ | async as lockedRBCInDollars"
           [class.statistics__param-value_loading]="!lockedRBCInDollars?.isFinite()"
+          [class.tui-skeleton]="!lockedRBCInDollars"
         >
           $
           {{
-            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 0) : '--.--'
+            lockedRBCInDollars?.isFinite() ? (lockedRBCInDollars | bigNumberFormat : 2) : '--.--'
           }}
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
-        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
+        <div class="statistics__param-label">
+          {{ 'staking.overview.estYieldPerWeek' | translate }}
+        </div>
+        <div class="statistics__param-value" *ngLet="rewardPerWeek$ | async as rewardPerWeek">
+          <span
+            [class.tui-skeleton]="!rewardPerWeek"
+            [tuiHint]="rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 6) : '--.--'"
+            [tuiHintDirection]="'top-right'"
+            tuiHintMode="onDark"
+          >
+            {{
+              rewardPerWeek?.isFinite()
+                ? rewardPerWeek?.lt(0.01) && rewardPerWeek?.toNumber() !== 0
+                  ? '< 0.01'
+                  : (rewardPerWeek | bigNumberFormat : 2 : true)
+                : '--.--'
+            }}
+            <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
+          </span>
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.avgLockTime' | translate }}</div>
-        <div class="statistics__param-value">9</div>
+        <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
+        <!--        <div class="statistics__param-value">9 <span>months</span></div>-->
+        <div class="statistics__param-value">--.--</div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
-        <div class="statistics__param-label">% {{ 'staking.circRBCLocked' | translate }}</div>
+        <div class="statistics__param-label">
+          {{ 'staking.overview.circRBCLocked' | translate }}
+        </div>
         <div
           class="statistics__param-value"
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
+          [class.tui-skeleton]="!circRBCLocked"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
-          %
+          <span
+            [tuiHint]="
+              circRBCLocked?.isFinite()
+                ? (circRBCLocked | bigNumberFormat : 9 : true) + ' %'
+                : '--.--'
+            "
+            [tuiHintDirection]="'top-left'"
+            tuiHintMode="onDark"
+            >{{
+              circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--'
+            }}
+            %</span
+          >
         </div>
       </div>
     </div>
     <div class="statistics__col">
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">% {{ 'staking.circRBCLocked' | translate }}</div>
+        <div class="statistics__param-label">
+          {{ 'staking.overview.circRBCLocked' | translate }}
+        </div>
         <div
           class="statistics__param-value"
           *ngLet="circRBCLocked$ | async as circRBCLocked"
           [class.statistics__param-value_loading]="!circRBCLocked?.isFinite()"
+          [class.tui-skeleton]="!circRBCLocked"
+          [tuiHint]="
+            circRBCLocked?.isFinite()
+              ? (circRBCLocked | bigNumberFormat : 9 : true) + ' %'
+              : '--.--'
+          "
+          [tuiHintDirection]="'top-right'"
+          tuiHintMode="onDark"
         >
-          {{ circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--' }}
+          {{
+            circRBCLocked?.isFinite()
+              ? circRBCLocked?.lt(0.01) && circRBCLocked?.toNumber() !== 0
+                ? '< 0.01'
+                : (circRBCLocked | bigNumberFormat : 2 : true)
+              : '--.--'
+          }}
           %
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.estYieldPerWeek' | translate }}</div>
-        <div class="statistics__param-value" *ngLet="rewardPerSecond$ | async as rewardPerSecond">
-          {{ rewardPerSecond?.isFinite() ? (rewardPerSecond | bigNumberFormat : 0) : '--.--' }}
+        <div class="statistics__param-label">
+          {{ 'staking.overview.estYieldPerWeek' | translate }}
+        </div>
+        <div
+          class="statistics__param-value"
+          *ngLet="rewardPerWeek$ | async as rewardPerWeek"
+          [class.tui-skeleton]="!rewardPerWeek"
+        >
+          {{ rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 0) : '--.--' }}
+          <span *ngIf="rewardPerWeek?.isFinite()">ETH</span>
         </div>
       </div>
       <div class="statistics__param">
         <div class="statistics__param-label statistics__param-label_btn">
-          {{ 'staking.apr' | translate }}
+          {{ 'staking.overview.apr' | translate }}
         </div>
-        <div class="statistics__param-value" *ngLet="apr$ | async as apr">32 %</div>
+        <div
+          class="statistics__param-value"
+          *ngLet="apr$ | async as apr"
+          [class.tui-skeleton]="!apr"
+        >
+          {{ apr?.isFinite() ? (apr | bigNumberFormat : 2 : true) + ' %' : '--.--' }}
+        </div>
       </div>
     </div>
   </div>

@@ -4,33 +4,33 @@
   (click)="context.completeWith(false)"
 ></div>
 <div class="title">
-  <ng-container *ngIf="beforeWithdraw; else claimTitle"> WITHDRAWAL </ng-container>
+  {{ 'staking.claimRewardsModal.title' | translate }}
 </div>
-<div class="text">
-  <div class="text__warn" *ngIf="beforeWithdraw">
-    Please claim your rewards before proceeding to the withdrawal
-  </div>
+<div class="text" [class.tui-skeleton]="!rewards">
   {{
-    rewards.lt(0.0001)
-      ? '< 0.0001'
-      : (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
+    rewards.gt(0.0001)
+      ? (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 4 })
+      : (rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 10 })
   }}
-  BRBC
+  ETH
 </div>
 <ng-container *ngIf="needSwitchNetwork$ | async; else claim">
-  <app-rubic-button appearance="secondary" class="action-btn" (onClick)="switchNetwork()"
-    >Switch to BSC network</app-rubic-button
+  <app-rubic-button
+    appearance="primary"
+    class="action-btn"
+    (onClick)="switchNetwork()"
+    [disabled]="isMobile"
   >
+    {{
+      isMobile
+        ? 'Choose Arbitrum network in your wallet'
+        : ('staking.common.switchNetworkToArbitrum' | translate)
+    }}
+  </app-rubic-button>
 </ng-container>
 
 <ng-template #claim>
-  <app-rubic-button
-    appearance="secondary"
-    class="action-btn"
-    (onClick)="context.completeWith(true)"
-  >
-    Claim
+  <app-rubic-button appearance="primary" class="action-btn" (onClick)="context.completeWith(true)">
+    {{ 'staking.claimRewardsModal.claim' | translate }}
   </app-rubic-button>
 </ng-template>
-
-<ng-template #claimTitle>CLAIM REWARDS</ng-template>

@@ -17,7 +17,7 @@
   }
 
   .tui-table__tr.data-row {
-    background: var(--form-background);
+    background: var(--secondary-background);
     border-bottom: none;
 
     .tui-table__td:first-child {
@@ -56,6 +56,10 @@
           height: 27px;
         }
 
+        tui-wrapper[data-appearance='secondary'] {
+          background: var(--tui-secondary);
+        }
+
         .t-loader[data-tui-element-size='m'] {
           font-size: unset;
         }
@@ -66,4 +70,8 @@
       }
     }
   }
+}
+
+::ng-deep app-rubic-button .leave-btn_disabled {
+  opacity: 0.4;
 }
