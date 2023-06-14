@@ -24,8 +24,9 @@
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
-        <!--                <div class="statistics__param-value">9 <span>{{ 'staking.common.months' | translate }}</span></div>-->
-        <div class="statistics__param-value">--.--</div>
+        <div class="statistics__param-value">
+          9 <span>{{ 'staking.common.months' | translate }}</span>
+        </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.overview.$lockedRBC' | translate }}</div>
@@ -81,8 +82,9 @@
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
-        <!--        <div class="statistics__param-value">9 <span>months</span></div>-->
-        <div class="statistics__param-value">--.--</div>
+        <div class="statistics__param-value">
+          9 <span>{{ 'staking.common.months' | translate }}</span>
+        </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
         <div class="statistics__param-label">
