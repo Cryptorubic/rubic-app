@@ -240,6 +240,7 @@ export class StakeFormComponent implements OnInit {
           return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
         }),
         tap(([duration, blockTimestamp]) => {
+          duration = duration > 12 ? 12 : duration;
           this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
         }),
         watch(this.cdr),
