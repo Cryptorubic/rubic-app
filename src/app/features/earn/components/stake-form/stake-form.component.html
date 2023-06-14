@@ -82,7 +82,9 @@
     </div>
     <div class="hint__text">
       {{ selectedAmount || '0.00' }}
-      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ durationCtrl.value }}
+      {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }}
+      <!--      {{ durationCtrl.value > 12 ? 12 : durationCtrl.value }}-->
+      {{ durationCtrl.value }}
       {{ 'staking.common.months' | translate }}. <br />
       {{ 'staking.stakeForm.hint.lockedUntil' | translate }} {{ unlockDate | date : 'mediumDate' }}
     </div>
