@@ -3,6 +3,7 @@
     <span class="details-element__text-title">{{ title }}</span>
 
     <img
+      *ngIf="description"
       class="details-element__text-icon"
       src="assets/images/swaps/swaps-info/question-icon.svg"
       [alt]="title"
