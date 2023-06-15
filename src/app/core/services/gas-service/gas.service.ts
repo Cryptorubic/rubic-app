@@ -179,7 +179,7 @@ export class GasService {
       timeout(requestTimeout),
       map(response => ({
         baseFee: response.baseFee,
-        maxFeePerGas: new BigNumber(response.high.maxFeePerGas).multipliedBy(1.5).toFixed(),
+        maxFeePerGas: new BigNumber(response.high.maxFeePerGas).multipliedBy(1.2).toFixed(),
         maxPriorityFeePerGas: response.high.maxPriorityFeePerGas
       })),
       catchError(() => blockchainAdapter.getPriorityFeeGas()),
