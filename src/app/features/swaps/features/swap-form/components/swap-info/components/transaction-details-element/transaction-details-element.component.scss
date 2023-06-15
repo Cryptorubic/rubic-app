@@ -1,16 +1,28 @@
 .details-element {
   display: flex;
+  gap: 15px;
   align-items: center;
+  overflow: hidden;
 
   font-size: 16px;
 
-  &__value {
-    margin-left: auto;
+  &__text {
+    display: flex;
+
+    &-title {
+      white-space: nowrap;
+    }
+
+    &-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 10px;
+    }
   }
 
-  &__icon {
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
+  &__value {
+    margin-left: auto;
+
+    white-space: nowrap;
   }
 }
