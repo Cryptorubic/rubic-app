@@ -370,12 +370,21 @@ export class TokensListStoreService {
    */
   private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
-      const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
-      const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
-      const amountsDelta = bAmount.minus(aAmount).toNumber();
+      const aAmountInDollars = a.amount.isFinite()
+        ? a.amount.multipliedBy(a.price)
+        : new BigNumber(0);
+      const bAmountInDollars = b.amount.isFinite()
+        ? b.amount.multipliedBy(b.price)
+        : new BigNumber(0);
+
+      // const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
+      // const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
+      const amountsDelta = bAmountInDollars.minus(aAmountInDollars).toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
-    return tokens.sort(comparator);
+
+    const slicedTokensArray = tokens.slice(1, tokens.length);
+    return [tokens[0], ...slicedTokensArray.sort(comparator)];
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
