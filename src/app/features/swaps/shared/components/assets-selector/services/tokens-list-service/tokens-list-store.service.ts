@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -383,8 +383,15 @@ export class TokensListStoreService {
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
 
-    const slicedTokensArray = tokens.slice(1, tokens.length);
-    return [tokens[0], ...slicedTokensArray.sort(comparator)];
+    const nativeTokenIndex = tokens.findIndex(token => {
+      const chainType = BlockchainsInfo.getChainType(token.blockchain);
+      return Web3Pure[chainType].isNativeAddress(token.address);
+    });
+    const slicedTokensArray = [
+      ...tokens.slice(0, nativeTokenIndex),
+      ...tokens.slice(nativeTokenIndex + 1, tokens.length)
+    ];
+    return [tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)];
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
