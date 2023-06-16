@@ -391,7 +391,12 @@ export class TokensListStoreService {
       ...tokens.slice(0, nativeTokenIndex),
       ...tokens.slice(nativeTokenIndex + 1, tokens.length)
     ];
-    return [tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)];
+
+    if (nativeTokenIndex < 0) {
+      return tokens.sort(comparator);
+    } else {
+      return [tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)];
+    }
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
