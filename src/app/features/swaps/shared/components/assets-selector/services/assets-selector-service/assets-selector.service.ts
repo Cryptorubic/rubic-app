@@ -10,6 +10,12 @@ import { BlockchainName } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
+import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
+import {
+  NotEvmChangeNowBlockchainsList,
+  notEvmChangeNowBlockchainsList
+} from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -56,12 +62,36 @@ export class AssetsSelectorService {
     this.subscribeOnAssetChange();
   }
 
+  private isSupportedOnChainNetwork(
+    blockchain: BlockchainName
+  ): blockchain is SupportedOnChainNetworks {
+    return Object.entries(INSTANT_TRADE_PROVIDERS).some(
+      ([supportedNetwork, providers]) => supportedNetwork === blockchain && providers.length > 0
+    );
+  }
+
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
     const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
     const assetType = this.swapFormService.inputValue[assetTypeKey];
-    this.assetType = assetType;
+    const fromBlockchain =
+      this.swapFormService.inputValue.fromAsset &&
+      'blockchain' in this.swapFormService.inputValue.fromAsset
+        ? this.swapFormService.inputValue.fromAsset.blockchain
+        : null;
+
+    if (
+      !fromBlockchain ||
+      assetTypeKey !== 'toBlockchain' ||
+      !this.isSupportedOnChainNetwork(fromBlockchain) ||
+      notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]
+    ) {
+      this.assetType = assetType;
+    } else {
+      this.assetType = fromBlockchain;
+    }
+
     this.selectorListType = assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
