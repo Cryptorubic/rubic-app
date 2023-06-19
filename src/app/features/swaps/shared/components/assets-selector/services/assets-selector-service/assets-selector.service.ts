@@ -11,11 +11,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
-import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
-import {
-  NotEvmChangeNowBlockchainsList,
-  notEvmChangeNowBlockchainsList
-} from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -62,9 +58,7 @@ export class AssetsSelectorService {
     this.subscribeOnAssetChange();
   }
 
-  private isSupportedOnChainNetwork(
-    blockchain: BlockchainName
-  ): blockchain is SupportedOnChainNetworks {
+  private isSupportedOnChainNetwork(blockchain: BlockchainName): boolean {
     return Object.entries(INSTANT_TRADE_PROVIDERS).some(
       ([supportedNetwork, providers]) => supportedNetwork === blockchain && providers.length > 0
     );
@@ -73,15 +67,17 @@ export class AssetsSelectorService {
   private isUserFirstNetworkSelection(
     fromBlockchain: BlockchainName,
     assetTypeKey: 'fromAssetType' | 'toBlockchain'
-  ): boolean | string {
+  ): boolean {
     return (
       !fromBlockchain ||
       assetTypeKey !== 'toBlockchain' ||
-      (assetTypeKey === 'toBlockchain' &&
-        fromBlockchain &&
-        this.swapFormService.inputValue.toBlockchain) ||
+      Boolean(
+        assetTypeKey === 'toBlockchain' &&
+          fromBlockchain &&
+          this.swapFormService.inputValue.toBlockchain
+      ) ||
       !this.isSupportedOnChainNetwork(fromBlockchain) ||
-      notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]
+      fromBlockchain in notEvmChangeNowBlockchainsList
     );
   }
 
