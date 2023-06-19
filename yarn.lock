@@ -13883,10 +13883,8 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.4.1.tgz#bc73bf9142d60e63b1cb8a2d0ca0d25f3603e15c"
-  integrity sha512-rhfkz/TTSz1zlRBDpRRxrv9ouZ8byUarTUMU1IbZui/Bs/J17J152AVtxWghcGjslzNKY+ENI61g8kyok0imwg==
+"rubic-sdk@file:../rubic-sdk":
+  version "4.5.0-alpha-zkevm.0"
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@arbitrum/sdk" "^3.1.3"

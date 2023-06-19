@@ -58,6 +58,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ZRX,
       ON_CHAIN_TRADE_TYPE.CURVE
     ]),
+    [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [],
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.VIPER_SWAP

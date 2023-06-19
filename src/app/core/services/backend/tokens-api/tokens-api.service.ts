@@ -25,7 +25,7 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, EvmWeb3Pure, Injector } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
@@ -257,7 +257,7 @@ export class TokensApiService {
     );
     requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
 
-    return forkJoin(requests$).pipe(
+    const backendTokens$ = forkJoin(requests$).pipe(
       map(results => {
         if (results.every(el => el === null)) {
           this.needRefetchTokens = true;
@@ -272,6 +272,14 @@ export class TokensApiService {
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
         return TokensApiService.prepareTokens(backendTokens);
+      })
+    );
+
+    const staticTokens$ = this.fetchStaticTokens();
+
+    return forkJoin([backendTokens$, staticTokens$]).pipe(
+      map(([backendTokens, staticTokens]) => {
+        return backendTokens.concat(staticTokens);
       })
     );
   }
@@ -380,5 +388,27 @@ export class TokensApiService {
           };
         })
       );
+  }
+
+  private fetchStaticTokens(): Observable<Token[]> {
+    return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.ETHEREUM)]).pipe(
+      switchMap(([ethPrice]) =>
+        of([
+          {
+            image: '/assets/images/icons/coins/eth-contrast.svg',
+            rank: 1,
+            price: ethPrice.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+            tokenSecurity: null,
+            blockchain: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+            address: EvmWeb3Pure.nativeTokenAddress,
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18
+          }
+        ])
+      )
+    );
   }
 }

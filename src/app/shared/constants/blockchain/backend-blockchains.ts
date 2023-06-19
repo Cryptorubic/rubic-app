@@ -4,6 +4,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: 'polygon_zkevm',
   [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
   [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
