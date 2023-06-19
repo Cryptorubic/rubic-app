@@ -25,7 +25,7 @@ export class QueryParamsService {
 
   public testMode: boolean = false;
 
-  public get queryParams(): QueryParams | undefined {
+  public get queryParams(): QueryParams {
     return this._queryParams$.value;
   }
 
