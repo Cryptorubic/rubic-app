@@ -377,8 +377,6 @@ export class TokensListStoreService {
         ? b.amount.multipliedBy(b.price)
         : new BigNumber(0);
 
-      // const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
-      // const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
       const amountsDelta = bAmountInDollars.minus(aAmountInDollars).toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
@@ -387,14 +385,15 @@ export class TokensListStoreService {
       const chainType = BlockchainsInfo.getChainType(token.blockchain);
       return Web3Pure[chainType].isNativeAddress(token.address);
     });
-    const slicedTokensArray = [
-      ...tokens.slice(0, nativeTokenIndex),
-      ...tokens.slice(nativeTokenIndex + 1, tokens.length)
-    ];
 
     if (nativeTokenIndex < 0) {
       return tokens.sort(comparator);
     } else {
+      const slicedTokensArray = [
+        ...tokens.slice(0, nativeTokenIndex),
+        ...tokens.slice(nativeTokenIndex + 1, tokens.length)
+      ];
+
       return [tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)];
     }
   }
