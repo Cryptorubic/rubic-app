@@ -84,6 +84,9 @@ export class AssetsSelectorService {
     if (
       !fromBlockchain ||
       assetTypeKey !== 'toBlockchain' ||
+      (assetTypeKey === 'toBlockchain' &&
+        fromBlockchain &&
+        this.swapFormService.inputValue.toBlockchain) ||
       !this.isSupportedOnChainNetwork(fromBlockchain) ||
       notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]
     ) {
