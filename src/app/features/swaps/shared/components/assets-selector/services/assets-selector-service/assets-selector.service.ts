@@ -70,6 +70,21 @@ export class AssetsSelectorService {
     );
   }
 
+  private isUserFirstNetworkSelection(
+    fromBlockchain: BlockchainName,
+    assetTypeKey: 'fromAssetType' | 'toBlockchain'
+  ): boolean | string {
+    return (
+      !fromBlockchain ||
+      assetTypeKey !== 'toBlockchain' ||
+      (assetTypeKey === 'toBlockchain' &&
+        fromBlockchain &&
+        this.swapFormService.inputValue.toBlockchain) ||
+      !this.isSupportedOnChainNetwork(fromBlockchain) ||
+      notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]
+    );
+  }
+
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
@@ -81,15 +96,7 @@ export class AssetsSelectorService {
         ? this.swapFormService.inputValue.fromAsset.blockchain
         : null;
 
-    if (
-      !fromBlockchain ||
-      assetTypeKey !== 'toBlockchain' ||
-      (assetTypeKey === 'toBlockchain' &&
-        fromBlockchain &&
-        this.swapFormService.inputValue.toBlockchain) ||
-      !this.isSupportedOnChainNetwork(fromBlockchain) ||
-      notEvmChangeNowBlockchainsList[fromBlockchain as NotEvmChangeNowBlockchainsList]
-    ) {
+    if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
       this.assetType = assetType;
     } else {
       this.assetType = fromBlockchain;
