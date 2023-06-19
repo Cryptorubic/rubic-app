@@ -6,7 +6,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { copyObject } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
@@ -79,7 +79,7 @@ export class SettingsService {
   }
 
   public subscribeOnQueryParams(): void {
-    this.queryParamsService.queryParams$.pipe(first(Boolean)).subscribe(queryParams => {
+    this.queryParamsService.queryParams$.subscribe(queryParams => {
       if (queryParams.iframe) {
         const slippage = {
           slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
