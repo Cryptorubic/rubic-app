@@ -371,10 +371,10 @@ export class TokensListStoreService {
   private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const aAmountInDollars = a.amount.isFinite()
-        ? a.amount.multipliedBy(a.price)
+        ? a.amount.multipliedBy(a.price === null ? 0 : a.price)
         : new BigNumber(0);
       const bAmountInDollars = b.amount.isFinite()
-        ? b.amount.multipliedBy(b.price)
+        ? b.amount.multipliedBy(b.price === null ? 0 : b.price)
         : new BigNumber(0);
 
       const amountsDelta = bAmountInDollars.minus(aAmountInDollars).toNumber();
