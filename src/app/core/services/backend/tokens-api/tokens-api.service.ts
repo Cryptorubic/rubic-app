@@ -391,8 +391,22 @@ export class TokensApiService {
   }
 
   private fetchStaticTokens(): Observable<Token[]> {
-    return forkJoin([Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.ETHEREUM)]).pipe(
-      switchMap(([ethPrice]) =>
+    return forkJoin([
+      Injector.coingeckoApi.getNativeCoinPrice(BLOCKCHAIN_NAME.ETHEREUM),
+      Injector.coingeckoApi.getTokenPrice({
+        address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+        blockchain: BLOCKCHAIN_NAME.POLYGON
+      }),
+      Injector.coingeckoApi.getTokenPrice({
+        address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+        blockchain: BLOCKCHAIN_NAME.POLYGON
+      }),
+      Injector.coingeckoApi.getTokenPrice({
+        address: '0xb5c064f955d8e7f38fe0460c556a72987494ee17',
+        blockchain: BLOCKCHAIN_NAME.POLYGON
+      })
+    ]).pipe(
+      switchMap(([ethPrice, usdcPolygonPrice, usdtPolygonPrice, quickPolygonPrice]) =>
         of([
           {
             image: '/assets/images/icons/coins/eth-contrast.svg',
@@ -405,6 +419,45 @@ export class TokensApiService {
             address: EvmWeb3Pure.nativeTokenAddress,
             name: 'Ethereum',
             symbol: 'ETH',
+            decimals: 18
+          },
+          {
+            image: '/assets/images/icons/lp-providing/usdc.svg',
+            rank: 1,
+            price: usdcPolygonPrice.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+            tokenSecurity: null,
+            blockchain: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+            address: '0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035',
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6
+          },
+          {
+            image: '/assets/images/icons/default-tokens/usdt.png',
+            rank: 1,
+            price: usdtPolygonPrice.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+            tokenSecurity: null,
+            blockchain: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+            address: '0x1E4a5963aBFD975d8c9021ce480b42188849D41d',
+            name: 'USDT',
+            symbol: 'USDT',
+            decimals: 6
+          },
+          {
+            image: '/assets/images/icons/providers/on-chain/quickswap.svg',
+            rank: 1,
+            price: quickPolygonPrice.toNumber(),
+            usedInIframe: true,
+            hasDirectPair: null,
+            tokenSecurity: null,
+            blockchain: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+            address: '0x68286607A1d43602d880D349187c3c48c0fD05E6',
+            name: 'Quick',
+            symbol: 'QUICK',
             decimals: 18
           }
         ])
