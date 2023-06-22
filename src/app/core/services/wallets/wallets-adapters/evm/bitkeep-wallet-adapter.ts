@@ -101,7 +101,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
       });
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
-      this.selectedChain = String(chain) as EvmBlockchainName;
+      this.selectedChain = BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName;
       [this.selectedAddress] = accounts;
       this.onNetworkChanges$.next(this.selectedChain);
       this.onAddressChanges$.next(this.selectedAddress);
