@@ -62,19 +62,23 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
    * Handles chain and account change events.
    */
   private handleEvents(): void {
-    this.wallet.on('chainChanged', (chain: string) => {
+    this.wallet.on('chainChanged', async (chain: string) => {
       this.selectedChain = (chain as EvmBlockchainName) ?? null;
+
       if (this.isEnabled) {
         this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainNameById(chain));
-        console.info('Chain changed', chain);
+        console.info('Chain changed', BlockchainsInfo.getBlockchainNameById(chain));
       }
     });
-    this.wallet.on('accountsChanged', (accounts: string[]) => {
+
+    this.wallet.on('accountsChanged', async (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
+
       if (this.isEnabled) {
         this.onAddressChanges$.next(this.selectedAddress);
         console.info('Selected account changed to', accounts[0]);
       }
+
       if (!this.selectedAddress) {
         this.selectedChain = null;
         this.deActivate();
@@ -105,6 +109,8 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
       [this.selectedAddress] = accounts;
       this.onNetworkChanges$.next(this.selectedChain);
       this.onAddressChanges$.next(this.selectedAddress);
+
+      this.initSubscriptionsOnChanges();
     } catch (error) {
       if (
         error.code === 4001 ||
