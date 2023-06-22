@@ -51,6 +51,7 @@ export class ErrorButtonComponent {
 
     return (
       this.walletConnectorService?.provider.walletName === WALLET_NAME.METAMASK ||
+      this.walletConnectorService?.provider.walletName === WALLET_NAME.BITKEEP ||
       this.walletConnectorService?.provider.walletName === WALLET_NAME.WALLET_CONNECT
     );
   }
