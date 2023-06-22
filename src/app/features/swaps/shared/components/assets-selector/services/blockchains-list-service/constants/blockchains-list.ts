@@ -90,7 +90,7 @@ export const notEvmChangeNowBlockchainsList = {
 const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlockchainsList).map(
   blockchain => ({
     name: blockchain,
-    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN ? 0.5 : 0,
+    rank: blockchain === BLOCKCHAIN_NAME.LITECOIN || blockchain === BLOCKCHAIN_NAME.TON ? 0.5 : 0,
     tags: blockchain === BLOCKCHAIN_NAME.LITECOIN ? ['LTC'] : []
   })
 );
@@ -102,7 +102,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1, tags: [] },
-  { name: BLOCKCHAIN_NAME.PULSECHAIN, rank: 0.5, tags: [] },
+  // { name: BLOCKCHAIN_NAME.PULSECHAIN, rank: 0.5, tags: [] },
   { name: BLOCKCHAIN_NAME.FANTOM, rank: 0, tags: [] },
   { name: BLOCKCHAIN_NAME.BOBA, rank: 0, tags: [] },
   { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [] },
