@@ -29,6 +29,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { firstValueFrom, from, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
+import { isEdge, isEdgeOlderThan, isFirefox, isIE } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -43,11 +44,25 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
+  public get isChromium(): boolean {
+    if (isEdge(this.userAgent) || isEdgeOlderThan(13, this.userAgent) || isIE(this.userAgent)) {
+      return false;
+    }
+
+    return !isFirefox(this.userAgent);
+  }
+
   public get providers(): ReadonlyArray<WalletProvider> {
+    const isChromiumProviders = this.isChromium
+      ? this.allProviders
+      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
+
     const deviceFiltered =
       this.isMobile && !this.iframeService.isIframe
-        ? this.allProviders.filter(provider => !provider.desktopOnly)
-        : this.allProviders.filter(provider => !provider.mobileOnly);
+        ? isChromiumProviders.filter(
+            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+          )
+        : isChromiumProviders.filter(provider => !provider.mobileOnly);
 
     if (this.queryParamsService.hideUnusedUI && !this.queryParamsService.isDesktop) {
       return deviceFiltered.filter(provider => provider.supportsInIframe);
