@@ -4,5 +4,6 @@ export enum WALLET_NAME {
   WALLET_CONNECT = 'walletconnect',
   TRUST_WALLET = 'trustwallet',
   TRON_LINK = 'tronlink',
-  ARGENT = 'argent'
+  ARGENT = 'argent',
+  BITKEEP = 'bitkeep'
 }

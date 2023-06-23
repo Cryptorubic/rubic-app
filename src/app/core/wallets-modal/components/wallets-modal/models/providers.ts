@@ -79,5 +79,18 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInVerticalMobileIframe: true,
     supportsInIframe: true,
     disabled: false
+  },
+  {
+    name: 'BitKeep',
+    value: WALLET_NAME.BITKEEP,
+    img: './assets/images/icons/wallets/bitkeep.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: false,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: true,
+    supportsInIframe: true,
+    disabled: false
   }
 ];
