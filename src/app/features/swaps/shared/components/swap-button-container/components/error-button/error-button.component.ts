@@ -29,6 +29,8 @@ export class ErrorButtonComponent {
     map(fromBlockchain => blockchainLabel[fromBlockchain])
   );
 
+  public readonly currentWalletProvider = this.walletConnectorService?.provider.walletName;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapButtonContainerService: SwapButtonContainerService,
