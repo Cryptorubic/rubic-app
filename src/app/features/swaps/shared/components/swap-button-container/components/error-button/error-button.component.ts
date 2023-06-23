@@ -29,7 +29,7 @@ export class ErrorButtonComponent {
     map(fromBlockchain => blockchainLabel[fromBlockchain])
   );
 
-  public readonly currentWalletProvider = this.walletConnectorService?.provider.walletName;
+  public readonly currentWalletProvider$ = this.walletConnectorService.currentWalletName$;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,

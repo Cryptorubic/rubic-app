@@ -43,6 +43,10 @@ export class WalletConnectorService {
 
   private readonly addressChangeSubject$ = new BehaviorSubject<string>(null);
 
+  private readonly _currentWalletName$ = new BehaviorSubject<WALLET_NAME>(WALLET_NAME.METAMASK);
+
+  public readonly currentWalletName$ = this._currentWalletName$.asObservable();
+
   private privateProvider: CommonWalletAdapter;
 
   public get address(): string {
@@ -135,6 +139,7 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
+    this._currentWalletName$.next(this.provider.walletName);
     this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
   }
 
