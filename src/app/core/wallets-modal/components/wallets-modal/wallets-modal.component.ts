@@ -45,15 +45,7 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get isChromium(): boolean {
-    if (isEdge(this.userAgent)) {
-      if (isEdgeOlderThan(13, this.userAgent)) {
-        return false;
-      }
-
-      return false;
-    }
-
-    if (isIE(this.userAgent)) {
+    if (isEdge(this.userAgent) || isEdgeOlderThan(13, this.userAgent) || isIE(this.userAgent)) {
       return false;
     }
 
