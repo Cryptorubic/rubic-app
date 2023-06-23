@@ -7,7 +7,7 @@
   <ng-container
     *ngLet="button.error.type | functionCall : allowChangeNetwork : this as allowChange"
   >
-    <ng-container *ngIf="allowChange && !button.isMobile; else errorInfo">
+    <ng-container *ngIf="allowChange && button.isMobile; else errorInfo">
       <app-rubic-button
         [attr.error]="true"
         appearance="primary"
@@ -24,7 +24,7 @@
     </ng-container>
 
     <ng-template #errorInfo>
-      <ng-container *ngIf="!allowChange || button.isMobile">
+      <ng-container *ngIf="!allowChange || !button.isMobile">
         <app-rubic-button
           class="error-button"
           [attr.error]="true"
