@@ -1,16 +1,13 @@
 <ng-container
   *ngLet="{
     error: error$ | async,
-    isMobile: isMobile$ | async,
-    walletName: currentWalletProvider$ | async
+    isMobile: isMobile$ | async
   } as button"
 >
   <ng-container
     *ngLet="button.error.type | functionCall : allowChangeNetwork : this as allowChange"
   >
-    <ng-container
-      *ngIf="allowChange && (!button.isMobile || button.walletName === 'bitkeep'); else errorInfo"
-    >
+    <ng-container *ngIf="allowChange && !button.isMobile; else errorInfo">
       <app-rubic-button
         [attr.error]="true"
         appearance="primary"
