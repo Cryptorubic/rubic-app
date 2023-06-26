@@ -11,7 +11,7 @@ import { OneInchGasResponse } from './models/1inch-gas-response';
 import { shouldCalculateGas } from '@app/shared/models/blockchain/should-calculate-gas';
 import { GasInfo } from './models/gas-info';
 import { MetaMaskGasResponse } from './models/metamask-gas-response';
-import { getAverageGasPrice } from '@app/shared/utils/gas-price-deviation';
+import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas-price-deviation';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -211,7 +211,7 @@ export class GasService {
     );
 
     return forkJoin([oneInchEstimation$, metamaskEstimation$, web3Estimation$]).pipe(
-      map(estimations => getAverageGasPrice(estimations.filter(Boolean))),
+      map(estimations => this.getAverageGasPrice(estimations.filter(Boolean))),
       map(formatEIP1559Gas)
     );
   }
@@ -353,5 +353,40 @@ export class GasService {
     return of({
       gasPrice: new BigNumber(0.25).dividedBy(10 ** 9).toFixed()
     });
+  }
+
+  /**
+   * Calculates average gas price, with taking standard deviation into account
+   * @param estimations Gas price estimations from different sources
+   * @returns Average EIP-1559 compatible gas price values
+   */
+  public getAverageGasPrice(estimations: GasPrice[]): GasPrice {
+    if (estimations.length === 1) {
+      return estimations[0];
+    }
+
+    const [baseFees, maxFeesPerGas, maxPriorityFeesPerGas] = [
+      estimations.map(estimation => Number(estimation.baseFee)),
+      estimations.map(estimation => Number(estimation.maxFeePerGas)),
+      estimations.map(estimation => Number(estimation.maxPriorityFeePerGas))
+    ];
+
+    const baseFeeDeviation = calculateDeviation(baseFees);
+    const baseFee = calculateAverageValue(baseFees, baseFeeDeviation);
+
+    const maxPriorityFeePerGasDeviation = calculateDeviation(maxPriorityFeesPerGas);
+    const maxPriorityFeePerGas = calculateAverageValue(
+      maxPriorityFeesPerGas,
+      maxPriorityFeePerGasDeviation
+    );
+
+    const maxFeePerGasDeviation = calculateDeviation(maxFeesPerGas);
+    const expectedMaxFeePerGas = calculateAverageValue(maxFeesPerGas, maxFeePerGasDeviation);
+    const maxFeePerGas =
+      expectedMaxFeePerGas < baseFee
+        ? new BigNumber(baseFee).multipliedBy(1.5).plus(maxPriorityFeePerGas).toFixed()
+        : expectedMaxFeePerGas;
+
+    return { baseFee, maxFeePerGas, maxPriorityFeePerGas };
   }
 }

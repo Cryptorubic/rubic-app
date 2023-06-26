@@ -1,5 +1,3 @@
-import { GasPrice } from 'rubic-sdk/lib';
-
 /**
  * Calculates standard deviation for a given set of numbers
  * @param gasPrices Gas price values
@@ -41,32 +39,4 @@ export const calculateAverageValue = (gasPrices: number[], deviation: number): s
   }
 
   return Math.round(cleanData.reduce((acc, price) => acc + price, 0) / gasPrices.length).toFixed();
-};
-
-/**
- * Calculates average gas price, with taking standard deviation into account
- * @param estimations Gas price estimations from different sources
- * @returns Average EIP-1559 compatible gas price values
- */
-export const getAverageGasPrice = (estimations: GasPrice[]): GasPrice => {
-  if (estimations.length === 1) return estimations[0];
-
-  const [baseFees, maxFeesPerGas, maxPriorityFeesPerGas] = [
-    estimations.map(estimation => Number(estimation.baseFee)),
-    estimations.map(estimation => Number(estimation.maxFeePerGas)),
-    estimations.map(estimation => Number(estimation.maxPriorityFeePerGas))
-  ];
-
-  const baseFeeDeviation = calculateDeviation(baseFees);
-  const maxFeePerGasDeviation = calculateDeviation(maxFeesPerGas);
-  const maxPriorityFeePerGasDeviation = calculateDeviation(maxPriorityFeesPerGas);
-
-  return {
-    baseFee: calculateAverageValue(baseFees, baseFeeDeviation),
-    maxFeePerGas: calculateAverageValue(maxFeesPerGas, maxFeePerGasDeviation),
-    maxPriorityFeePerGas: calculateAverageValue(
-      maxPriorityFeesPerGas,
-      maxPriorityFeePerGasDeviation
-    )
-  };
 };
