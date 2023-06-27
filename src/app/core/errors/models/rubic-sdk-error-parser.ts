@@ -37,6 +37,7 @@ import { ExecutionRevertedError } from '@core/errors/models/common/execution-rev
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
+import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -98,6 +99,9 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err.message.includes('The rate has changed, update the trade')) {
+      return new CrossChainAmountChangeWarning();
+    }
     if (err.message.includes('You rejected the network switch.')) {
       return new UserRejectNetworkSwitchError();
     }
