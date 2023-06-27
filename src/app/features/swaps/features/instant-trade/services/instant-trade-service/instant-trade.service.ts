@@ -103,10 +103,7 @@ export class InstantTradeService extends TradeCalculationService {
 
   private static isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
     if (trade instanceof EvmOnChainTrade) {
-      if (
-        trade.from.blockchain === BLOCKCHAIN_NAME.PULSECHAIN ||
-        trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC
-      ) {
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
         return false;
       }
 
