@@ -371,32 +371,22 @@ export class GasService {
       estimations.map(estimation => Number(estimation.maxPriorityFeePerGas))
     ];
 
-    console.info('allBaseFees ', baseFees);
-    console.info('allMaxFeePerGas ', maxFeesPerGas);
-    console.info('allMaxPriorityFeePerGas ', maxPriorityFeesPerGas);
-
     const baseFeeDeviation = calculateDeviation(baseFees);
-    console.info('baseFeeDeviation ', baseFeeDeviation);
     const baseFee = calculateAverageValue(baseFees, baseFeeDeviation);
-    console.info('baseFeeAverage ', baseFee);
 
     const maxPriorityFeePerGasDeviation = calculateDeviation(maxPriorityFeesPerGas);
-    console.info('maxPriorityFeePerGasDeviation  ', maxPriorityFeePerGasDeviation);
     const maxPriorityFeePerGas = calculateAverageValue(
       maxPriorityFeesPerGas,
       maxPriorityFeePerGasDeviation
     );
-    console.info('maxPriorityFeePerGasAverage ', maxPriorityFeePerGas);
 
     const maxFeePerGasDeviation = calculateDeviation(maxFeesPerGas);
-    console.info('maxFeePerGasDeviation  ', maxFeePerGasDeviation);
     const expectedMaxFeePerGas = calculateAverageValue(maxFeesPerGas, maxFeePerGasDeviation);
-    console.info('maxFeePerGasAverage ', expectedMaxFeePerGas);
+
     const maxFeePerGas =
       expectedMaxFeePerGas < baseFee
         ? new BigNumber(baseFee).multipliedBy(1.5).plus(maxPriorityFeePerGas).toFixed()
         : expectedMaxFeePerGas;
-    console.info('maxFeePerGasUsed ', maxFeePerGas);
 
     return { baseFee, maxFeePerGas, maxPriorityFeePerGas };
   }
