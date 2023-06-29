@@ -13907,10 +13907,10 @@ rubic-sdk@4.1.0-beta.0:
     tronweb "^4.3.0"
     web3 "^1.8.1"
 
-rubic-sdk@4.5.3-alpha-dln.3:
-  version "4.5.3-alpha-dln.3"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.5.3-alpha-dln.3.tgz#e8a553dc346a8b4054a35b1e0382af77239bdce3"
-  integrity sha512-f4tXHEwXcQW2FQ1YAQB/XXyA5Xr1G/OZXKi++0IrLug2qFaoEdcpPjqO/MbSeTwybgBV53qGiKLe0R0fQ6DdtA==
+rubic-sdk@4.5.3-alpha-dln.4:
+  version "4.5.3-alpha-dln.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.5.3-alpha-dln.4.tgz#e03a8379a2c339fef9b4fad714e9aadaa553ca3f"
+  integrity sha512-mcduHgfMWEHt+Te2zkwo28qLMaTRy7ZcbnG2TdZn24R7AzTk0N70uUMfg4cwJiEvRRwhhwUE966/7uYeKcRzcA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@arbitrum/sdk" "^3.1.3"

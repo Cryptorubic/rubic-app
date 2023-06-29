@@ -909,7 +909,20 @@ export class CrossChainFormService {
       }
 
       if (parsedError instanceof CrossChainAmountChangeWarning) {
-        this.startRecalculation(false);
+        const currentTrade = this.taggedTrades.find(
+          trade => trade.tradeType === parsedError.trade.type
+        );
+        if (!currentTrade) {
+          return;
+        }
+        const newTrade = {
+          ...currentTrade,
+          trade: parsedError.trade
+        };
+        this.updateTradesList(newTrade);
+        if (this.selectedTrade.tradeType === parsedError.trade.type) {
+          this.updateSelectedTrade(newTrade);
+        }
       }
 
       this.errorsService.catch(parsedError);

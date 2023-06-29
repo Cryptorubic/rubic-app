@@ -16,7 +16,8 @@ import {
   MaxAmountError as SdkMaxAmountError,
   TooLowAmountError as SdkTooLowAmountError,
   UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
-  InsufficientFundsGasPriceValueError
+  InsufficientFundsGasPriceValueError,
+  UpdatedRatesError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -43,6 +44,9 @@ export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof UpdatedRatesError) {
+      return new CrossChainAmountChangeWarning(err.trade);
+    }
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
     }
@@ -99,9 +103,6 @@ export class RubicSdkErrorParser {
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
-    if (err.message.includes('The rate has changed, update the trade')) {
-      return new CrossChainAmountChangeWarning();
-    }
     if (err.message.includes('You rejected the network switch.')) {
       return new UserRejectNetworkSwitchError();
     }
