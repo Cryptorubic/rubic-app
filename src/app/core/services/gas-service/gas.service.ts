@@ -385,7 +385,7 @@ export class GasService {
 
     const maxFeePerGas =
       expectedMaxFeePerGas < baseFee
-        ? new BigNumber(baseFee).multipliedBy(1.5).plus(maxPriorityFeePerGas).toFixed()
+        ? new BigNumber(baseFee).multipliedBy(1.25).plus(maxPriorityFeePerGas).toFixed()
         : expectedMaxFeePerGas;
 
     return { baseFee, maxFeePerGas, maxPriorityFeePerGas };
