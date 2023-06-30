@@ -307,7 +307,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -333,7 +334,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({

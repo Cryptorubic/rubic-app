@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable, of, Subscription } from 'rxjs';
 import { LimitOrder } from '@core/services/limit-orders/models/limit-order';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
   EvmBlockchainName,
   Injector,
   Web3Pure,
-  Cache,
   CROSS_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 
@@ -34,6 +33,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { Cacheable } from 'ts-cacheable';
 
 @Injectable()
 export class LimitOrdersService {
@@ -116,7 +116,8 @@ export class LimitOrdersService {
             new PolymorpheusComponent(ProgressTrxNotificationComponent),
             {
               status: TuiNotification.Info,
-              autoClose: false
+              autoClose: false,
+              data: null
             }
           )
       );
@@ -155,7 +156,9 @@ export class LimitOrdersService {
 
     ({ fromTokenPrice, toTokenPrice } = await this.getInchPrices(fromToken, toToken));
     if (!fromTokenPrice && !toTokenPrice) {
-      [fromTokenPrice, toTokenPrice] = await this.getSpotAggregatorPrices([fromToken, toToken]);
+      [fromTokenPrice, toTokenPrice] = await firstValueFrom(
+        this.getSpotAggregatorPrices([fromToken, toToken])
+      );
     } else if (!fromTokenPrice || !toTokenPrice) {
       if (
         fromToken.blockchain === BLOCKCHAIN_NAME.FANTOM ||
@@ -164,9 +167,9 @@ export class LimitOrdersService {
         return new BigNumber(NaN);
       }
       if (!fromTokenPrice) {
-        [fromTokenPrice] = await this.getSpotAggregatorPrices([fromToken]);
+        [fromTokenPrice] = await firstValueFrom(this.getSpotAggregatorPrices([fromToken]));
       } else {
-        [toTokenPrice] = await this.getSpotAggregatorPrices([toToken]);
+        [toTokenPrice] = await firstValueFrom(this.getSpotAggregatorPrices([toToken]));
       }
     }
 
@@ -182,7 +185,7 @@ export class LimitOrdersService {
    * Gets tokens' prices from 1inch api.
    */
   private async getInchPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
-    const prices = await this.getInchAllPrices(blockchainId[fromToken.blockchain]);
+    const prices = await firstValueFrom(this.getInchAllPrices(blockchainId[fromToken.blockchain]));
     let fromTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, fromToken.address)
     )?.[1];
@@ -192,40 +195,45 @@ export class LimitOrdersService {
     return { fromTokenPrice, toTokenPrice };
   }
 
-  @Cache({
+  @Cacheable({
     maxAge: 15_000
   })
-  private getInchAllPrices(chainId: number): Promise<Record<string, string>> {
-    return firstValueFrom(
-      this.httpClient.get<Record<string, string>>(`https://token-prices.1inch.io/v1.1/${chainId}`)
+  private getInchAllPrices(chainId: number): Observable<Record<string, string>> {
+    return this.httpClient.get<Record<string, string>>(
+      `https://token-prices.1inch.io/v1.1/${chainId}`
     );
   }
 
   /**
    * Gets tokens' prices from spot aggregator contract through multicall.
    */
-  @Cache({
+  @Cacheable({
     maxAge: 15_000
   })
-  private async getSpotAggregatorPrices(tokens: Token[]): Promise<RateTokenPrice[]> {
+  private getSpotAggregatorPrices(tokens: Token[]): Observable<RateTokenPrice[]> {
     if (!tokens.length) {
-      return [];
+      return of([]);
     }
     const blockchain = tokens[0].blockchain as keyof typeof spotPriceContractAddress;
     const methodArguments = tokens.map(token => [token.address, true]);
-    const res = await Injector.web3PublicService
-      .getWeb3Public(blockchain)
-      .multicallContractMethod<string>(
-        spotPriceContractAddress[blockchain],
-        spotPriceContractAbi,
-        'getRateToEth',
-        methodArguments
-      );
-    return res.map((tokenPrice, index) => {
-      if (tokenPrice.success) {
-        return Web3Pure.fromWei(tokenPrice.output, 18 - tokens[index].decimals);
-      }
-      return new BigNumber(0);
-    });
+    from(
+      Injector.web3PublicService
+        .getWeb3Public(blockchain)
+        .multicallContractMethod<string>(
+          spotPriceContractAddress[blockchain],
+          spotPriceContractAbi,
+          'getRateToEth',
+          methodArguments
+        )
+    ).pipe(
+      map(res => {
+        return res.map((tokenPrice, index) => {
+          if (tokenPrice.success) {
+            return Web3Pure.fromWei(tokenPrice.output, 18 - tokens[index].decimals);
+          }
+          return new BigNumber(0);
+        });
+      })
+    );
   }
 }

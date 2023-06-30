@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core';
+import { TuiDialogModule, TuiRootModule, TuiAlertModule } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavigationEnd, Router, Scroll } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
@@ -19,7 +19,7 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-p
     CoreModule,
     SharedModule,
     TuiRootModule,
-    TuiNotificationsModule,
+    TuiAlertModule,
     TuiDialogModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',

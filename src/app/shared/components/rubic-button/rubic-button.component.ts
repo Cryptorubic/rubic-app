@@ -9,7 +9,7 @@ import {
   Self
 } from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
-import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

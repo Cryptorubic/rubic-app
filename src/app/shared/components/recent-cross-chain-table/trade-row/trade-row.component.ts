@@ -12,7 +12,7 @@ import {
   Self,
   ViewContainerRef
 } from '@angular/core';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { interval, timer } from 'rxjs';
 import { first, startWith, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
@@ -201,7 +201,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         startWith(-1),
         switchMap(() => this.getTradeData(this.trade, this.uiTrade)),
         tap(uiTrade => this.setUiTrade(uiTrade)),
-        watch(this.cdr),
+        tuiWatch(this.cdr),
         takeWhile(
           uiTrade =>
             uiTrade?.statusTo === TxStatus.PENDING ||

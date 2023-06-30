@@ -19,7 +19,7 @@
           src="assets/images/icons/exclamation-grey.svg"
           alt="Hint"
           [tuiHint]="about"
-          tuiHintMode="onDark"
+          tuiHintAppearance="onDark"
         />
       </div>
     </div>
@@ -27,7 +27,7 @@
       <div
         *ngLet="points.confirmed >= 300 as allowWithdraw"
         [tuiHint]="getButtonHint()"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       >
         <button
           [disabled]="!allowWithdraw"

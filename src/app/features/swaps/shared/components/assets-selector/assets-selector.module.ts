@@ -4,7 +4,6 @@ import {
   TuiButtonModule,
   TuiHintModule,
   TuiLoaderModule,
-  TuiManualHintModule,
   TuiScrollbarModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
@@ -54,7 +53,7 @@ import { FiatsListElementComponent } from '@features/swaps/shared/components/ass
     TuiButtonModule,
     ScrollingModule,
     TuiHintModule,
-    TuiManualHintModule,
+    TuiHintModule,
     TuiLoaderModule,
     InlineSVGModule,
     TuiAutoFocusModule

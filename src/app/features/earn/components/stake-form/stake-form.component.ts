@@ -5,7 +5,7 @@ import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
 import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
   tap,
@@ -218,7 +218,7 @@ export class StakeFormComponent implements OnInit {
               this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
               return of(null);
             }),
-            watch(this.cdr)
+            tuiWatch(this.cdr)
           );
         })
       )
@@ -242,7 +242,7 @@ export class StakeFormComponent implements OnInit {
         tap(([duration, blockTimestamp]) => {
           this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
         }),
-        watch(this.cdr),
+        tuiWatch(this.cdr),
         takeUntil(this.destroy$)
       )
       .subscribe();

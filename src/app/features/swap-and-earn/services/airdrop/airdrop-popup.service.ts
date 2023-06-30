@@ -21,7 +21,8 @@ export class AirdropPopupService {
       this.translateService.instant('airdrop.notification.progress'),
       {
         status: TuiNotification.Info,
-        autoClose: false
+        autoClose: false,
+        data: null
       }
     );
   }
@@ -31,7 +32,8 @@ export class AirdropPopupService {
       this.translateService.instant('airdrop.notification.unauthorized'),
       {
         status: TuiNotification.Warning,
-        autoClose: 10000
+        autoClose: 10000,
+        data: null
       }
     );
   }
@@ -41,7 +43,8 @@ export class AirdropPopupService {
       this.translateService.instant('airdrop.notification.success'),
       {
         status: TuiNotification.Success,
-        autoClose: 10000
+        autoClose: 10000,
+        data: null
       }
     );
   }
@@ -85,7 +88,7 @@ export class AirdropPopupService {
         status = TuiNotification.Error;
       }
 
-      this.notificationsService.show(label, { autoClose: 10000, status });
+      this.notificationsService.show(label, { autoClose: 10000, status, data: null });
     }
   }
 }

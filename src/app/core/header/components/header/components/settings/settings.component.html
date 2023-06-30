@@ -7,10 +7,6 @@
       (backClick)="backToSettings()"
     ></app-header-settings>
 
-    <div
-      polymorpheus-outlet
-      [content]="currentComponentData.component"
-      [context]="currentComponent$"
-    ></div>
+    <div *polymorpheusOutlet="currentComponentData.component; context: currentComponent$"></div>
   </aside>
 </ng-container>

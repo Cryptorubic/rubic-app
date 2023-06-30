@@ -182,7 +182,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     const message = this.translateService.instant('notifications.solanaBeta');
     this.notificationsService.show(message, {
       status: TuiNotification.Warning,
-      autoClose: 10000
+      autoClose: 10000,
+      data: null
     });
   }
 

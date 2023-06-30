@@ -3,13 +3,12 @@ import { SwapsRoutingModule } from 'src/app/features/swaps/swaps-routing.module'
 import { InstantTradeModule } from 'src/app/features/swaps/features/instant-trade/instant-trade.module';
 import {
   TuiDataListModule,
-  TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiDropdownModule
 } from '@taiga-ui/core';
 import { SettingsItComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
 import { SettingsContainerComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-container/settings-container.component';
@@ -84,7 +83,7 @@ import { TonPromoService } from '@features/swaps/features/cross-chain/services/t
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     ReactiveFormsModule,
     TuiInputModule,
     TuiSliderModule,
@@ -98,7 +97,7 @@ import { TonPromoService } from '@features/swaps/features/cross-chain/services/t
     TuiLoaderModule,
     ClipboardModule,
     TuiAccordionModule,
-    TuiManualHintModule
+    TuiHintModule
   ],
   providers: [
     SettingsService,
